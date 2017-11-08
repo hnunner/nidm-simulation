@@ -1,6 +1,7 @@
 package nl.uu.socnetid.network_games.players;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Interface of a basic player.
@@ -31,13 +32,23 @@ public interface Player {
 	void performAction();
 
 	/**
-     * @return the coPlayers
+     * @return players with no existing connection to this
      */
-	List<Player> getCoPlayers();
+	Map<Long, Player> getNotConnectedTos();
 
 	/**
-     * @return the connections
+     * @return the player's connections
      */
-	List<Player> getConnections();
+	Map<Long, Player> getConnectedTos();
+
+	/**
+	 * Request to create a new connection between the calling player
+	 * and the receiving player.
+	 *
+	 * @param player
+	 *         the calling player
+	 * @return true if the connection is accepted, false otherwise
+	 */
+	boolean requestConnection(Player player);
 
 }

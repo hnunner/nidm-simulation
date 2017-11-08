@@ -10,3 +10,55 @@
 2017-11-07 23:14:51 DEBUG SimplePlayer:12 - Performing action.
 2017-11-08 11:42:07 DEBUG SimplePlayer:12 - Performing action.
 2017-11-08 11:42:19 DEBUG SimplePlayer:12 - Performing action.
+2017-11-08 17:31:15 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 7
+2017-11-08 17:31:19 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 8
+2017-11-08 17:31:20 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 7
+2017-11-08 17:31:22 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 8
+2017-11-08 17:31:23 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 8
+2017-11-08 17:31:24 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 7
+2017-11-08 17:31:26 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 7
+2017-11-08 17:31:27 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 8
+2017-11-08 17:31:29 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 8
+2017-11-08 17:31:30 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 8
+2017-11-08 17:31:31 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 8
+2017-11-08 17:31:33 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 7
+2017-11-08 17:31:34 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 8
+2017-11-08 17:31:36 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 7
+2017-11-08 17:31:37 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 8
+2017-11-08 17:31:39 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 7
+2017-11-08 17:31:41 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 7
+2017-11-08 17:31:43 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 7
+2017-11-08 17:38:17 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 8
+2017-11-08 17:38:17 INFO  BasicNetworkTest:165 - Random not yet connected player for player 2: Player 11
+2017-11-08 17:38:23 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 7
+2017-11-08 17:38:23 INFO  BasicNetworkTest:165 - Random not yet connected player for player 2: Player 11
+2017-11-08 17:38:25 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 7
+2017-11-08 17:38:25 INFO  BasicNetworkTest:165 - Random not yet connected player for player 2: Player 11
+2017-11-08 17:38:26 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 7
+2017-11-08 17:38:26 INFO  BasicNetworkTest:165 - Random not yet connected player for player 2: Player 11
+2017-11-08 17:38:28 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 8
+2017-11-08 17:38:28 INFO  BasicNetworkTest:165 - Random not yet connected player for player 2: Player 12
+2017-11-08 17:38:29 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 7
+2017-11-08 17:38:29 INFO  BasicNetworkTest:165 - Random not yet connected player for player 2: Player 12
+2017-11-08 17:38:31 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 7
+2017-11-08 17:38:31 INFO  BasicNetworkTest:165 - Random not yet connected player for player 2: Player 12
+2017-11-08 17:38:33 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 7
+2017-11-08 17:38:33 INFO  BasicNetworkTest:165 - Random not yet connected player for player 2: Player 11
+2017-11-08 17:38:35 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 8
+2017-11-08 17:38:35 INFO  BasicNetworkTest:165 - Random not yet connected player for player 2: Player 12
+2017-11-08 17:38:37 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 7
+2017-11-08 17:38:37 INFO  BasicNetworkTest:165 - Random not yet connected player for player 2: Player 12
+2017-11-08 17:38:38 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 7
+2017-11-08 17:38:38 INFO  BasicNetworkTest:165 - Random not yet connected player for player 2: Player 12
+2017-11-08 17:38:40 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 7
+2017-11-08 17:38:40 INFO  BasicNetworkTest:165 - Random not yet connected player for player 2: Player 12
+2017-11-08 17:38:42 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 8
+2017-11-08 17:38:42 INFO  BasicNetworkTest:165 - Random not yet connected player for player 2: Player 12
+2017-11-08 17:38:44 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 7
+2017-11-08 17:38:44 INFO  BasicNetworkTest:165 - Random not yet connected player for player 2: Player 12
+2017-11-08 17:38:46 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 8
+2017-11-08 17:38:46 INFO  BasicNetworkTest:165 - Random not yet connected player for player 2: Player 12
+2017-11-08 17:38:48 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 7
+2017-11-08 17:38:48 INFO  BasicNetworkTest:165 - Random not yet connected player for player 2: Player 12
+2017-11-08 17:38:50 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 8
+2017-11-08 17:38:50 INFO  BasicNetworkTest:165 - Random not yet connected player for player 2: Player 11

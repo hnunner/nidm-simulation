@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -69,13 +70,13 @@ public class SimplePlayerTest {
      */
     @Test
     public void testCoPlayers() {
-        List<Player> p1CoPlayers = player1.getCoPlayers();
+        Map<Long, Player> p1CoPlayers = player1.getNotConnectedTos();
         assertEquals(1, p1CoPlayers.size());
-        assertEquals(2, p1CoPlayers.get(0).getId());
+        assertEquals(2, p1CoPlayers.get(Long.valueOf(2)).getId());
 
-        List<Player> p2CoPlayers = player2.getCoPlayers();
+        Map<Long, Player> p2CoPlayers = player2.getNotConnectedTos();
         assertEquals(1, p2CoPlayers.size());
-        assertEquals(1, p2CoPlayers.get(0).getId());
+        assertEquals(1, p2CoPlayers.get(Long.valueOf(1)).getId());
     }
 
 }
