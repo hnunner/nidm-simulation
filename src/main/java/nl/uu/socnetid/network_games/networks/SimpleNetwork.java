@@ -8,7 +8,7 @@ import nl.uu.socnetid.network_games.players.Player;
 /**
  * @author Hendrik Nunner
  */
-public class BasicNetwork extends AbstractNetwork implements Network {
+public class SimpleNetwork extends AbstractNetwork implements Network {
 
     /**
      * Constructor.
@@ -18,7 +18,7 @@ public class BasicNetwork extends AbstractNetwork implements Network {
      * @param networkWriter
      *          writer for network representation
      */
-    public BasicNetwork(Set<Player> players, NetworkWriter networkWriter) {
+    public SimpleNetwork(Set<Player> players, NetworkWriter networkWriter) {
         super(players, networkWriter);
     }
 

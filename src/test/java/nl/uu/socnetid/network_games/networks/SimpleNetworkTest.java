@@ -17,11 +17,11 @@ import nl.uu.socnetid.network_games.players.SimplePlayer;
 
 
 /**
- * Test cases for the {@link BasicNetwork} class.
+ * Test cases for the {@link SimpleNetwork} class.
  *
  * @author Hendrik Nunner
  */
-public class BasicNetworkTest {
+public class SimpleNetworkTest {
 
     /** players */
     Player player1;
@@ -50,7 +50,7 @@ public class BasicNetworkTest {
 		players.add(player3);
 		players.add(player4);
 
-		this.network = new BasicNetwork(players, new AdjacencyMatrixWriter());
+		this.network = new SimpleNetwork(players, new AdjacencyMatrixWriter());
 	}
 
 	/**
