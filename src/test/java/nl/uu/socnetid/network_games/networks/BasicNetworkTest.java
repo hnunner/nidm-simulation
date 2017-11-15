@@ -5,12 +5,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import nl.uu.socnetid.network_games.networks.writer.AdjacencyMatrixWriter;
 import nl.uu.socnetid.network_games.players.Player;
 import nl.uu.socnetid.network_games.players.SimplePlayer;
 
@@ -37,7 +38,7 @@ public class BasicNetworkTest {
 	 */
 	@Before
 	public void initPlayer() {
-	    List<Player> players = new LinkedList<Player>();
+	    Set<Player> players = new HashSet<Player>();
 
 	    player1 = SimplePlayer.newInstance();
 	    player2 = SimplePlayer.newInstance();
@@ -49,7 +50,7 @@ public class BasicNetworkTest {
 		players.add(player3);
 		players.add(player4);
 
-		this.network = new BasicNetwork(players);
+		this.network = new BasicNetwork(players, new AdjacencyMatrixWriter());
 	}
 
 	/**
@@ -106,13 +107,13 @@ public class BasicNetworkTest {
         this.network.addConnection(player1, player4);
         this.network.addConnection(player3, player4);
 
-        List<Player> connectionsOfPlayer1 = this.network.getConnectionsOfPlayer(player1);
+        Set<Player> connectionsOfPlayer1 = this.network.getConnectionsOfPlayer(player1);
         assertFalse(connectionsOfPlayer1.contains(player1));
         assertTrue(connectionsOfPlayer1.contains(player2));
         assertTrue(connectionsOfPlayer1.contains(player3));
         assertTrue(connectionsOfPlayer1.contains(player4));
 
-        List<Player> connectionsOfPlayer3 = this.network.getConnectionsOfPlayer(player3);
+        Set<Player> connectionsOfPlayer3 = this.network.getConnectionsOfPlayer(player3);
         assertTrue(connectionsOfPlayer3.contains(player1));
         assertFalse(connectionsOfPlayer3.contains(player2));
         assertFalse(connectionsOfPlayer3.contains(player3));

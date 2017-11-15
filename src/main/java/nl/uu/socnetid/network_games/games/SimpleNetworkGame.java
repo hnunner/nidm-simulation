@@ -29,7 +29,6 @@ public class SimpleNetworkGame implements NetworkGame {
         Iterator<Player> it = players.iterator();
         while (it.hasNext()) {
             Player currPlayer = it.next();
-            currPlayer.initCoPlayers(players);
         }
     }
 

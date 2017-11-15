@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,48 +34,15 @@ public class SimplePlayerTest {
 
 		player2 = SimplePlayer.newInstance();
 		players.add(player2);
-
-		player1.initCoPlayers(players);
-		player2.initCoPlayers(players);
 	}
-//
-//	/**
-//	 * Performed before each single test: Debug output.
-//	 */
-//	@Before
-//	public void beforeEachTest() {
-//		System.out.println("This is executed before each Test");
-//	}
-//
-//	/**
-//	 * Performed after eacg single test: Debug output.
-//	 */
-//	@After
-//	public void afterEachTest() {
-//		System.out.println("This is exceuted after each Test");
-//	}
 
 	/**
-	 * Test of performing an action.
+	 * Test of id coherence.
 	 */
 	@Test
 	public void testIds() {
 		assertEquals(1, player1.getId());
         assertEquals(2, player2.getId());
 	}
-
-    /**
-     * Test of performing an action.
-     */
-    @Test
-    public void testCoPlayers() {
-        Map<Long, Player> p1CoPlayers = player1.getNotConnectedTos();
-        assertEquals(1, p1CoPlayers.size());
-        assertEquals(2, p1CoPlayers.get(Long.valueOf(2)).getId());
-
-        Map<Long, Player> p2CoPlayers = player2.getNotConnectedTos();
-        assertEquals(1, p2CoPlayers.size());
-        assertEquals(1, p2CoPlayers.get(Long.valueOf(1)).getId());
-    }
 
 }
