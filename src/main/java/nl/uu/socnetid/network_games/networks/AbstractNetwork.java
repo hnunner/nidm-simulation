@@ -24,20 +24,19 @@ public abstract class AbstractNetwork implements Network {
 
 
     /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.networks.Network#getPlayers()
+     */
+    @Override
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    /* (non-Javadoc)
      * @see nl.uu.socnetid.network_games.networks.Network#getConnectionsForPlayer(nl.uu.socnetid.network_games.players.Player)
      */
     @Override
     public List<Player> getConnectionsOfPlayer(Player player) {
         return player.getConnections();
-    }
-
-
-    /**
-     * @return the network
-     */
-    @Override
-    public List<Player> getPlayers() {
-        return players;
     }
 
 }

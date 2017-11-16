@@ -37,6 +37,7 @@ public class AdjacencyMatrixWriterTest {
 
     @BeforeClass
     public static void initSuite() {
+        // for "Run as Junit Test"
         StringBuilder sb = new StringBuilder();
         sb.append(",1,2,3,4").append(System.getProperty("line.separator"));
         sb.append("1,,x,x,x").append(System.getProperty("line.separator"));
@@ -45,12 +46,13 @@ public class AdjacencyMatrixWriterTest {
         sb.append("4,x,,x,").append(System.getProperty("line.separator"));
         expectedMatrices.add(sb.toString());
 
+        // for "Run as Maven test"
         sb = new StringBuilder();
-        sb.append(",3,4,5,6").append(System.getProperty("line.separator"));
-        sb.append("3,,x,x,x").append(System.getProperty("line.separator"));
-        sb.append("4,x,,,").append(System.getProperty("line.separator"));
-        sb.append("5,x,,,x").append(System.getProperty("line.separator"));
-        sb.append("6,x,,x,").append(System.getProperty("line.separator"));
+        sb.append(",21,22,23,24").append(System.getProperty("line.separator"));
+        sb.append("21,,x,x,x").append(System.getProperty("line.separator"));
+        sb.append("22,x,,,").append(System.getProperty("line.separator"));
+        sb.append("23,x,,,x").append(System.getProperty("line.separator"));
+        sb.append("24,x,,x,").append(System.getProperty("line.separator"));
         expectedMatrices.add(sb.toString());
     }
 
