@@ -1,4 +1,4 @@
-package nl.uu.socnetid.network_games;
+package nl.uu.socnetid.network_games.games;
 
 import nl.uu.socnetid.network_games.games.SimpleNetworkGame;
 
