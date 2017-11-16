@@ -9,5 +9,4 @@ import nl.uu.socnetid.network_games.games.SimpleNetworkGame;
  */
 public class SimpleNetworkGameTest {
 
-
 }

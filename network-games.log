@@ -62,3 +62,1993 @@
 2017-11-08 17:38:48 INFO  BasicNetworkTest:165 - Random not yet connected player for player 2: Player 12
 2017-11-08 17:38:50 INFO  BasicNetworkTest:140 - Random connection of player 1: Player 8
 2017-11-08 17:38:50 INFO  BasicNetworkTest:165 - Random not yet connected player for player 2: Player 11
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 1
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 2
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 3
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 4
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 5
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 6
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 7
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 8
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 9
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 10
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 11
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 12
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 13
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 14
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 15
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 16
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 17
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 18
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 19
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 20
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 21
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 22
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 23
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 24
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 25
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 26
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 27
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 28
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 29
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 30
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 31
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 32
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 33
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 34
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 35
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 36
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 37
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 38
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 39
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 40
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 41
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 42
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 43
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 44
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 45
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 46
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 47
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 48
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 49
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 50
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 51
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 52
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 53
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 54
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 55
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 56
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 57
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 58
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 59
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 60
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 61
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 62
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 63
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 64
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 65
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 66
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 67
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 68
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 69
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 70
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 71
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 72
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 73
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 74
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 75
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 76
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 77
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 78
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 79
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 80
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 81
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 82
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 83
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 84
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 85
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 86
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 87
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 88
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 89
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 90
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 91
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 92
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 93
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 94
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 95
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 96
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 97
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 98
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 99
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 100
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 101
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 102
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 103
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 104
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 105
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 106
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 107
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 108
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 109
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 110
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 111
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 112
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 113
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 114
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 115
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 116
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 117
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 118
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 119
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 120
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 121
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 122
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 123
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 124
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 125
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 126
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 127
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 128
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 129
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 130
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 131
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 132
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 133
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 134
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 135
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 136
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 137
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 138
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 139
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 140
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 141
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 142
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 143
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 144
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 145
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 146
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 147
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 148
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 149
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 150
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 151
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 152
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 153
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 154
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 155
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 156
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 157
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 158
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 159
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 160
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 161
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 162
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 163
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 164
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 165
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 166
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 167
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 168
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 169
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 170
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 171
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 172
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 173
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 174
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 175
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 176
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 177
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 178
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 179
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 180
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 181
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 182
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 183
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 184
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 185
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 186
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 187
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 188
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 189
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 190
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 191
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 192
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 193
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 194
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 195
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 196
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 197
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 198
+
+2017-11-16 17:04:44 DEBUG SimpleNetworkGame:81 - Starting simulation round 199
+
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 1
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 2
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 3
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 4
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 5
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 6
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 7
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 8
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 9
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 10
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 11
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 12
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 13
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 14
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 15
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 16
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 17
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 18
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 19
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 20
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 21
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 22
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 23
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 24
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 25
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 26
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 27
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 28
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 29
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 30
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 31
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 32
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 33
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 34
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 35
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 36
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 37
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 38
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 39
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 40
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 41
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 42
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 43
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 44
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 45
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 46
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 47
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 48
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 49
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 50
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 51
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 52
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 53
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 54
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 55
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 56
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 57
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 58
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 59
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 60
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 61
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 62
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 63
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 64
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 65
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 66
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 67
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 68
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 69
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 70
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 71
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 72
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 73
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 74
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 75
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 76
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 77
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 78
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 79
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 80
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 81
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 82
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 83
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 84
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 85
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 86
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 87
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 88
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 89
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 90
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 91
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 92
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 93
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 94
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 95
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 96
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 97
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 98
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 99
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 100
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 101
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 102
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 103
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 104
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 105
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 106
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 107
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 108
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 109
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 110
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 111
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 112
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 113
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 114
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 115
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 116
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 117
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 118
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 119
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 120
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 121
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 122
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 123
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 124
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 125
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 126
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 127
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 128
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 129
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 130
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 131
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 132
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 133
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 134
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 135
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 136
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 137
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 138
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 139
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 140
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 141
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 142
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 143
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 144
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 145
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 146
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 147
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 148
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 149
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 150
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 151
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 152
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 153
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 154
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 155
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 156
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 157
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 158
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 159
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 160
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 161
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 162
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 163
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 164
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 165
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 166
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 167
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 168
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 169
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 170
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 171
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 172
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 173
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 174
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 175
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 176
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 177
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 178
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 179
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 180
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 181
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 182
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 183
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 184
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 185
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 186
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 187
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 188
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 189
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 190
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 191
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 192
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 193
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 194
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 195
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 196
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 197
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 198
+2017-11-16 17:05:29 DEBUG SimpleNetworkGame:81 - 
+##################################################Starting simulation round 199
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 1
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 2
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 3
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 4
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 5
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 6
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 7
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 8
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 9
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 10
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 11
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 12
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 13
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 14
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 15
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 16
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 17
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 18
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 19
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 20
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 21
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 22
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 23
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 24
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 25
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 26
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 27
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 28
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 29
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 30
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 31
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 32
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 33
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 34
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 35
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 36
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 37
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 38
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 39
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 40
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 41
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 42
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 43
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 44
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 45
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 46
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 47
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 48
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 49
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 50
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 51
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 52
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 53
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 54
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 55
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 56
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 57
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 58
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 59
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 60
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 61
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 62
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 63
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 64
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 65
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 66
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 67
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 68
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 69
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 70
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 71
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 72
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 73
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 74
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 75
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 76
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 77
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 78
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 79
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 80
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 81
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 82
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 83
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 84
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 85
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 86
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 87
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 88
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 89
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 90
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 91
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 92
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 93
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 94
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 95
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 96
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 97
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 98
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 99
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 100
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 101
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 102
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 103
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 104
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 105
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 106
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 107
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 108
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 109
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 110
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 111
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 112
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 113
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 114
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 115
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 116
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 117
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 118
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 119
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 120
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 121
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 122
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 123
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 124
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 125
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 126
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 127
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 128
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 129
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 130
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 131
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 132
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 133
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 134
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 135
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 136
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 137
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 138
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 139
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 140
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 141
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 142
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 143
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 144
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 145
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 146
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 147
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 148
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 149
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 150
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 151
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 152
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 153
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 154
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 155
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 156
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 157
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 158
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 159
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 160
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 161
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 162
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 163
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 164
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 165
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 166
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 167
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 168
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 169
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 170
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 171
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 172
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 173
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 174
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 175
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 176
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 177
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 178
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 179
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 180
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 181
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 182
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 183
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 184
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 185
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 186
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 187
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 188
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 189
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 190
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 191
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 192
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 193
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 194
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 195
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 196
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 197
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 198
+2017-11-16 17:05:37 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 199
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 1
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 2
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 3
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 4
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 5
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 6
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 7
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 8
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 9
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 10
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 11
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 12
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 13
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 14
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 15
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 16
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 17
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 18
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 19
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 20
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 21
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 22
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 23
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 24
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 25
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 26
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 27
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 28
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 29
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 30
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 31
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 32
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 33
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 34
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 35
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 36
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 37
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 38
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 39
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 40
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 41
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 42
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 43
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 44
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 45
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 46
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 47
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 48
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 49
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 50
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 51
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 52
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 53
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 54
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 55
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 56
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 57
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 58
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 59
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 60
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 61
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 62
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 63
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 64
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 65
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 66
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 67
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 68
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 69
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 70
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 71
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 72
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 73
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 74
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 75
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 76
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 77
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 78
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 79
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 80
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 81
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 82
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 83
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 84
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 85
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 86
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 87
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 88
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 89
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 90
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 91
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 92
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 93
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 94
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 95
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 96
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 97
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 98
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 99
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 100
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 101
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 102
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 103
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 104
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 105
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 106
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 107
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 108
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 109
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 110
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 111
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 112
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 113
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 114
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 115
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 116
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 117
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 118
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 119
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 120
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 121
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 122
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 123
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 124
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 125
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 126
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 127
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 128
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 129
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 130
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 131
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 132
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 133
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 134
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 135
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 136
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 137
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 138
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 139
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 140
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 141
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 142
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 143
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 144
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 145
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 146
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 147
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 148
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 149
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 150
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 151
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 152
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 153
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 154
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 155
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 156
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 157
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 158
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 159
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 160
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 161
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 162
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 163
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 164
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 165
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 166
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 167
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 168
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 169
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 170
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 171
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 172
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 173
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 174
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 175
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 176
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 177
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 178
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 179
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 180
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 181
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 182
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 183
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 184
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 185
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 186
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 187
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 188
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 189
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 190
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 191
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 192
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 193
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 194
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 195
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 196
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 197
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 198
+2017-11-16 17:21:08 DEBUG SimpleNetworkGame:81 - 
+##################################################
+Starting simulation round 199

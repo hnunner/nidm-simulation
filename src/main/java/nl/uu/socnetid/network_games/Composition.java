@@ -15,9 +15,7 @@ public class Composition {
     public static void main(String[] args) {
 
         NetworkGame game = SimpleNetworkGame.newInstance(4);
-
         game.simulateGame();
-
 
     }
 

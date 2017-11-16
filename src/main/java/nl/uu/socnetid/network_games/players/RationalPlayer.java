@@ -1,7 +1,7 @@
 package nl.uu.socnetid.network_games.players;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -37,16 +37,21 @@ public class RationalPlayer extends AbstractPlayer implements Player {
         return new RationalPlayer(utilityFunction);
     }
 
+
     /* (non-Javadoc)
      * @see nl.uu.socnetid.network_games.players.AbstractPlayer#checkToCreateConnection()
      */
     @Override
     public Player seekNewConnection() {
+        Player potentialConnection = getRandomNotYetConnectedPlayer();
 
-        Player newConnection = getRandomConnection();
+        List<Player> potentialConnections = new ArrayList<Player>(this.getConnections());
+        potentialConnections.add(potentialConnection);
 
-
-        return null;
+        if (this.getUtility() > this.getUtility(potentialConnections)) {
+            return null;
+        }
+        return potentialConnection;
     }
 
     /* (non-Javadoc)
@@ -54,7 +59,15 @@ public class RationalPlayer extends AbstractPlayer implements Player {
      */
     @Override
     public Player seekCostlyConnection() {
-        return null;
+        Player potentialRemoval = getRandomConnection();
+
+        List<Player> potentialConnections = new ArrayList<Player>(this.getConnections());
+        potentialConnections.remove(potentialRemoval);
+
+        if (this.getUtility() > this.getUtility(potentialConnections)) {
+            return null;
+        }
+        return potentialRemoval;
     }
 
     /* (non-Javadoc)
@@ -62,9 +75,9 @@ public class RationalPlayer extends AbstractPlayer implements Player {
      */
     @Override
     public boolean acceptConnection(Player newConnection) {
-        Set<Player> prospectiveConnections = new HashSet<Player>(this.getConnections());
+        List<Player> prospectiveConnections = new ArrayList<Player>(this.getConnections());
         prospectiveConnections.add(newConnection);
-        return this.getCurrentUtility() < utilityFunction.getUtility(this, prospectiveConnections);
+        return this.getUtility() < utilityFunction.getUtility(this, prospectiveConnections);
     }
 
 }

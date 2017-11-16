@@ -29,13 +29,20 @@ public interface Player extends Comparable<Player> {
      *
      * @return the player's current utility
      */
-    public long getCurrentUtility();
+    public double getUtility();
 
-
-
-
+    /**
+     * Gets the connections of the player.
+     *
+     * @return the connections of the player
+     */
     List<Player> getConnections();
 
+    /**
+     * Gets a random connection of the player.
+     *
+     * @return a random connection of the player.
+     */
     Player getRandomConnection();
 
     /**
@@ -45,17 +52,23 @@ public interface Player extends Comparable<Player> {
      */
     Player getRandomNotYetConnectedPlayer();
 
+    /**
+     * Adds a new connection between the player and another player.
+     *
+     * @param newConnection
+     *          the player to create the new connection to
+     * @return true if connection is created, false otherwise
+     */
     boolean addConnection(Player newConnection);
 
+    /**
+     * Removes a connection between the player and another player.
+     *
+     * @param connection
+     *          the other player to remove the connection to
+     * @return true if connection is removed, false otherwise
+     */
     boolean removeConnection(Player connection);
-
-
-
-
-
-
-
-
 
     /**
      * Checks whether a new connection creates higher utility. If so,

@@ -22,16 +22,16 @@ import nl.uu.socnetid.network_games.utility_functions.UtilityFunction;
  */
 public class AdjacencyMatrixWriterTest {
 
-    /** players */
+    //players
     Player player1;
     Player player2;
     Player player3;
     Player player4;
 
-    /** basic network */
+    // basic network
     private Network network;
 
-    /** expected adjacency matrix */
+    // expected adjacency matrix
     private static List<String> expectedMatrices = new LinkedList<String>();
 
 
@@ -90,7 +90,6 @@ public class AdjacencyMatrixWriterTest {
 
         player3.addConnection(player4);
         player4.addConnection(player3);
-
     }
 
     /**

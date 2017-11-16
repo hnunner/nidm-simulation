@@ -28,7 +28,7 @@ public class AdjacencyMatrixWriter implements NetworkWriter {
         Iterator<Player> playersIt = players.iterator();
         while (playersIt.hasNext()) {
             Player currPlayer = playersIt.next();
-            sb.append(",").append(currPlayer.getId());
+            sb.append(",").append(PLAYER_PREFIX).append(currPlayer.getId());
         }
         sb.append(System.getProperty("line.separator"));
 
@@ -36,7 +36,7 @@ public class AdjacencyMatrixWriter implements NetworkWriter {
         playersIt = players.iterator();
         while (playersIt.hasNext()) {
             Player currPlayer = playersIt.next();
-            sb.append(currPlayer.getId());
+            sb.append(PLAYER_PREFIX).append(currPlayer.getId());
 
             List<Player> connections = network.getConnectionsOfPlayer(currPlayer);
 
@@ -44,9 +44,9 @@ public class AdjacencyMatrixWriter implements NetworkWriter {
             while (connectionsIt.hasNext()) {
                 Player currConnection = connectionsIt.next();
                 if (connections.contains(currConnection)) {
-                    sb.append(",x");
+                    sb.append(VALUE_SEPERATOR).append(CONNECTION);
                 } else {
-                    sb.append(",");
+                    sb.append(VALUE_SEPERATOR).append(NO_CONNECTION);
                 }
             }
             sb.append(System.getProperty("line.separator"));

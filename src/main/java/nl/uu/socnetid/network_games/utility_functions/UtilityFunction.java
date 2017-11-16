@@ -1,6 +1,6 @@
 package nl.uu.socnetid.network_games.utility_functions;
 
-import java.util.Set;
+import java.util.List;
 
 import nl.uu.socnetid.network_games.players.Player;
 
@@ -18,6 +18,6 @@ public interface UtilityFunction {
      *          the player's connections
      * @return the player's utility based on her connections
      */
-    double getUtility(Player player, Set<Player> connections);
+    double getUtility(Player player, List<Player> connections);
 
 }

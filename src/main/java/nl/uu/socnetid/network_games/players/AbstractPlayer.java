@@ -24,8 +24,6 @@ public abstract class AbstractPlayer implements Player {
     private static final AtomicLong NEXT_ID = new AtomicLong(1);
     private final long id = NEXT_ID.getAndIncrement();
 
-    // current utility
-    protected long currentUtility = 0;
     // utility function
     protected UtilityFunction utilityFunction;
 
@@ -67,8 +65,19 @@ public abstract class AbstractPlayer implements Player {
      * @see nl.uu.socnetid.network_games.Player#getCurrentUtility()
      */
     @Override
-    public long getCurrentUtility() {
-        return currentUtility;
+    public double getUtility() {
+        return getUtility(this.connections);
+    }
+
+    /**
+     * Gets the utility for a player based on a list of connections.
+     *
+     * @param connections
+     *          the connections to compute the utility for
+     * @return the utility for a player based on a list of connections
+     */
+    protected double getUtility(List<Player> connections) {
+        return utilityFunction.getUtility(this, connections);
     }
 
     /* (non-Javadoc)
@@ -107,7 +116,6 @@ public abstract class AbstractPlayer implements Player {
         return noConnections.get(index);
     }
 
-
     /* (non-Javadoc)
      * @see nl.uu.socnetid.network_games.players.Player#addConnection(nl.uu.socnetid.network_games.players.Player)
      */
@@ -115,6 +123,9 @@ public abstract class AbstractPlayer implements Player {
     public boolean addConnection(Player newConnection) {
         if (newConnection.equals(this)) {
             throw new RuntimeException("Unable to create reflexive connections.");
+        }
+        if (connections.contains(newConnection)) {
+            throw new RuntimeException("Unable to create more than one connection to the same player.");
         }
         return this.connections.add(newConnection);
     }

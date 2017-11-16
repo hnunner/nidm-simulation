@@ -22,7 +22,6 @@ import nl.uu.socnetid.network_games.utility_functions.UtilityFunction;
  */
 public class RationalPlayerTest {
 
-
     // players
     Player player1;
     Player player2;
@@ -83,7 +82,6 @@ public class RationalPlayerTest {
      */
     @Test
     public void testAddConnection() {
-
         assertEquals(3, player1.getConnections().size());
         assertEquals(1, player2.getConnections().size());
         assertEquals(2, player3.getConnections().size());
@@ -95,7 +93,6 @@ public class RationalPlayerTest {
      */
     @Test
     public void testRemoveConnection() {
-
         // remove connections
         player1.removeConnection(player2);
         player2.removeConnection(player1);
@@ -116,7 +113,6 @@ public class RationalPlayerTest {
      */
     @Test
     public void testGetRandomConnectionOfPlayer() {
-
         // remove connection between players 1 and 2
         player1.removeConnection(player2);
         player2.removeConnection(player1);
@@ -135,7 +131,6 @@ public class RationalPlayerTest {
      */
     @Test
     public void testGetRandomNotYetConnectedPlayerForPlayer() {
-
         Player randomNotYetConnectedPlayerForPlayer1 = player1.getRandomNotYetConnectedPlayer();
         assertNull(randomNotYetConnectedPlayerForPlayer1);
 
