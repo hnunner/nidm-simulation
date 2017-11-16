@@ -5,15 +5,16 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import nl.uu.socnetid.network_games.networks.writer.AdjacencyMatrixWriter;
 import nl.uu.socnetid.network_games.players.Player;
-import nl.uu.socnetid.network_games.players.SimplePlayer;
+import nl.uu.socnetid.network_games.players.RationalPlayer;
+import nl.uu.socnetid.network_games.utility_functions.CumulativeUtilityFunction;
+import nl.uu.socnetid.network_games.utility_functions.UtilityFunction;
 
 
 /**
@@ -29,7 +30,7 @@ public class SimpleNetworkTest {
     Player player3;
     Player player4;
 
-	/** basic network */
+	/** network */
 	private Network network;
 
 
@@ -38,19 +39,26 @@ public class SimpleNetworkTest {
 	 */
 	@Before
 	public void initPlayer() {
-	    Set<Player> players = new HashSet<Player>();
+	    UtilityFunction utilityFunction = new CumulativeUtilityFunction();
 
-	    player1 = SimplePlayer.newInstance();
-	    player2 = SimplePlayer.newInstance();
-	    player3 = SimplePlayer.newInstance();
-	    player4 = SimplePlayer.newInstance();
+	    List<Player> players = new ArrayList<Player>();
+
+	    player1 = RationalPlayer.newInstance(utilityFunction);
+	    player2 = RationalPlayer.newInstance(utilityFunction);
+	    player3 = RationalPlayer.newInstance(utilityFunction);
+	    player4 = RationalPlayer.newInstance(utilityFunction);
 
         players.add(player1);
 		players.add(player2);
 		players.add(player3);
 		players.add(player4);
 
-		this.network = new SimpleNetwork(players, new AdjacencyMatrixWriter());
+		player1.initCoPlayers(players);
+		player2.initCoPlayers(players);
+		player3.initCoPlayers(players);
+		player4.initCoPlayers(players);
+
+		this.network = new SimpleNetwork(players);
 	}
 
 	/**
@@ -59,13 +67,18 @@ public class SimpleNetworkTest {
 	@Test
 	public void testAddConnection() {
 
-	    this.network.addConnection(player1, player2);
-	    this.network.addConnection(player1, player3);
-	    this.network.addConnection(player1, player4);
-	    this.network.addConnection(player3, player4);
+        // connections are always bidirectional
+        player1.addConnection(player2);
+        player2.addConnection(player1);
 
-	    // this shouldn't make a difference
-	    this.network.addConnection(player2, player1);
+        player1.addConnection(player3);
+        player3.addConnection(player1);
+
+        player1.addConnection(player4);
+        player4.addConnection(player1);
+
+        player3.addConnection(player4);
+        player4.addConnection(player3);
 
 	    assertEquals(3, network.getConnectionsOfPlayer(player1).size());
 	    assertEquals(1, network.getConnectionsOfPlayer(player2).size());
@@ -79,16 +92,25 @@ public class SimpleNetworkTest {
     @Test
     public void testRemoveConnection() {
 
-        this.network.addConnection(player1, player2);
-        this.network.addConnection(player1, player3);
-        this.network.addConnection(player1, player4);
-        this.network.addConnection(player3, player4);
+        // connections are always bidirectional
+        player1.addConnection(player2);
+        player2.addConnection(player1);
 
-        // this shouldn't make a difference
-        this.network.addConnection(player2, player1);
+        player1.addConnection(player3);
+        player3.addConnection(player1);
 
-        this.network.removeConnection(player1, player2);
-        this.network.removeConnection(player4, player3);
+        player1.addConnection(player4);
+        player4.addConnection(player1);
+
+        player3.addConnection(player4);
+        player4.addConnection(player3);
+
+        // remove connections
+        player1.removeConnection(player2);
+        player2.removeConnection(player1);
+
+        player3.removeConnection(player4);
+        player4.removeConnection(player3);
 
         assertEquals(2, network.getConnectionsOfPlayer(player1).size());
         assertEquals(0, network.getConnectionsOfPlayer(player2).size());
@@ -102,18 +124,26 @@ public class SimpleNetworkTest {
     @Test
     public void testGetConnectionsOfPlayer() {
 
-        this.network.addConnection(player1, player2);
-        this.network.addConnection(player1, player3);
-        this.network.addConnection(player1, player4);
-        this.network.addConnection(player3, player4);
+        // connections are always bidirectional
+        player1.addConnection(player2);
+        player2.addConnection(player1);
 
-        Set<Player> connectionsOfPlayer1 = this.network.getConnectionsOfPlayer(player1);
+        player1.addConnection(player3);
+        player3.addConnection(player1);
+
+        player1.addConnection(player4);
+        player4.addConnection(player1);
+
+        player3.addConnection(player4);
+        player4.addConnection(player3);
+
+        List<Player> connectionsOfPlayer1 = this.network.getConnectionsOfPlayer(player1);
         assertFalse(connectionsOfPlayer1.contains(player1));
         assertTrue(connectionsOfPlayer1.contains(player2));
         assertTrue(connectionsOfPlayer1.contains(player3));
         assertTrue(connectionsOfPlayer1.contains(player4));
 
-        Set<Player> connectionsOfPlayer3 = this.network.getConnectionsOfPlayer(player3);
+        List<Player> connectionsOfPlayer3 = this.network.getConnectionsOfPlayer(player3);
         assertTrue(connectionsOfPlayer3.contains(player1));
         assertFalse(connectionsOfPlayer3.contains(player2));
         assertFalse(connectionsOfPlayer3.contains(player3));
@@ -126,16 +156,22 @@ public class SimpleNetworkTest {
     @Test
     public void testGetRandomConnectionOfPlayer() {
 
-        this.network.addConnection(player1, player3);
-        this.network.addConnection(player1, player4);
-        this.network.addConnection(player3, player4);
+        // connections are always bidirectional
+        player1.addConnection(player3);
+        player3.addConnection(player1);
 
-        Player randomConnectionOfPlayer1 = this.network.getRandomConnectionOfPlayer(player1);
+        player1.addConnection(player4);
+        player4.addConnection(player1);
+
+        player3.addConnection(player4);
+        player4.addConnection(player3);
+
+        Player randomConnectionOfPlayer1 = player1.getRandomConnection();
         assertTrue(randomConnectionOfPlayer1.equals(player3)
                 || randomConnectionOfPlayer1.equals(player4));
         assertFalse(randomConnectionOfPlayer1.equals(player2));
 
-        Player randomConnectionOfPlayer2 = this.network.getRandomConnectionOfPlayer(player2);
+        Player randomConnectionOfPlayer2 = player2.getRandomConnection();
         assertNull(randomConnectionOfPlayer2);
     }
 
@@ -145,17 +181,23 @@ public class SimpleNetworkTest {
     @Test
     public void testGetRandomNotYetConnectedPlayerForPlayer() {
 
-        this.network.addConnection(player1, player2);
-        this.network.addConnection(player1, player3);
-        this.network.addConnection(player1, player4);
-        this.network.addConnection(player3, player4);
+        // connections are always bidirectional
+        player1.addConnection(player2);
+        player2.addConnection(player1);
 
-        Player randomNotYetConnectedPlayerForPlayer1 = this.network.
-                getRandomNotYetConnectedPlayerForPlayer(player1);
+        player1.addConnection(player3);
+        player3.addConnection(player1);
+
+        player1.addConnection(player4);
+        player4.addConnection(player1);
+
+        player3.addConnection(player4);
+        player4.addConnection(player3);
+
+        Player randomNotYetConnectedPlayerForPlayer1 = player1.getRandomNotYetConnectedPlayer();
         assertNull(randomNotYetConnectedPlayerForPlayer1);
 
-        Player randomNotYetConnectedPlayerForPlayer2 = this.network.
-                getRandomNotYetConnectedPlayerForPlayer(player2);
+        Player randomNotYetConnectedPlayerForPlayer2 = player2.getRandomNotYetConnectedPlayer();
         assertTrue(randomNotYetConnectedPlayerForPlayer2.equals(player3) ||
                 randomNotYetConnectedPlayerForPlayer2.equals(player4));
     }

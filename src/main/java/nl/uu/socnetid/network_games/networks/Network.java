@@ -1,6 +1,6 @@
 package nl.uu.socnetid.network_games.networks;
 
-import java.util.Set;
+import java.util.List;
 
 import nl.uu.socnetid.network_games.players.Player;
 
@@ -9,18 +9,8 @@ import nl.uu.socnetid.network_games.players.Player;
  */
 public interface Network {
 
-    void addConnection(Player player1, Player player2);
+    List<Player> getPlayers();
 
-    void removeConnection(Player player1, Player player2);
-
-    Set<Player> getPlayers();
-
-    Set<Player> getConnectionsOfPlayer(Player player);
-
-    Player getRandomConnectionOfPlayer(Player player);
-
-    Player getRandomNotYetConnectedPlayerForPlayer(Player player);
-
-    String write();
+    List<Player> getConnectionsOfPlayer(Player player);
 
 }

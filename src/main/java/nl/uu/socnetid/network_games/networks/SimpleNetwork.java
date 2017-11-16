@@ -1,8 +1,7 @@
 package nl.uu.socnetid.network_games.networks;
 
-import java.util.Set;
+import java.util.List;
 
-import nl.uu.socnetid.network_games.networks.writer.NetworkWriter;
 import nl.uu.socnetid.network_games.players.Player;
 
 /**
@@ -15,11 +14,9 @@ public class SimpleNetwork extends AbstractNetwork implements Network {
      *
      * @param players
      *          list of players in the network
-     * @param networkWriter
-     *          writer for network representation
      */
-    public SimpleNetwork(Set<Player> players, NetworkWriter networkWriter) {
-        super(players, networkWriter);
+    public SimpleNetwork(List<Player> players) {
+        super(players);
     }
 
 }

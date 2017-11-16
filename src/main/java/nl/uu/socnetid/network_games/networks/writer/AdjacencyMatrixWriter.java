@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import nl.uu.socnetid.network_games.networks.Network;
 import nl.uu.socnetid.network_games.players.Player;
@@ -37,9 +36,9 @@ public class AdjacencyMatrixWriter implements NetworkWriter {
         playersIt = players.iterator();
         while (playersIt.hasNext()) {
             Player currPlayer = playersIt.next();
-            sb.append(currPlayer);
+            sb.append(currPlayer.getId());
 
-            Set<Player> connections = network.getConnectionsOfPlayer(currPlayer);
+            List<Player> connections = network.getConnectionsOfPlayer(currPlayer);
 
             Iterator<Player> connectionsIt = players.iterator();
             while (connectionsIt.hasNext()) {

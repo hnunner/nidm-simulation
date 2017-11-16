@@ -8,9 +8,12 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import nl.uu.socnetid.network_games.utility_functions.CumulativeUtilityFunction;
+import nl.uu.socnetid.network_games.utility_functions.UtilityFunction;
+
 
 /**
- * Test cases for the {@link SimplePlayer} class.
+ * Test cases for the {@link RationalPlayer} class.
  *
  * @author Hendrik Nunner
  */
@@ -29,10 +32,12 @@ public class SimplePlayerTest {
 	 */
 	@BeforeClass
 	public static void initPlayer() {
-		player1 = SimplePlayer.newInstance();
+	    UtilityFunction utilityFunction = new CumulativeUtilityFunction();
+
+		player1 = RationalPlayer.newInstance(utilityFunction);
 		players.add(player1);
 
-		player2 = SimplePlayer.newInstance();
+		player2 = RationalPlayer.newInstance(utilityFunction);
 		players.add(player2);
 	}
 
