@@ -13,10 +13,8 @@ public class Composition {
      *          runtime arguments
      */
     public static void main(String[] args) {
-
-        NetworkGame game = SimpleNetworkGame.newInstance(4);
+        NetworkGame game = SimpleNetworkGame.newInstance(20);
         game.simulateGame();
-
     }
 
 }

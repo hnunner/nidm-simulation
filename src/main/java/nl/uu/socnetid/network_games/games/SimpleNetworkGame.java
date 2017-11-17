@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.log4j.Logger;
+import org.graphstream.graph.Graph;
+import org.graphstream.graph.implementations.SingleGraph;
 
 import nl.uu.socnetid.network_games.networks.Network;
 import nl.uu.socnetid.network_games.networks.SimpleNetwork;
 import nl.uu.socnetid.network_games.networks.io.NetworkFileWriter;
-import nl.uu.socnetid.network_games.networks.writer.AdjacencyMatrixWriter;
+import nl.uu.socnetid.network_games.networks.writer.EdgeListWriter;
 import nl.uu.socnetid.network_games.players.Player;
 import nl.uu.socnetid.network_games.players.RationalPlayer;
 import nl.uu.socnetid.network_games.utility_functions.CumulativeUtilityFunction;
@@ -24,11 +26,14 @@ import nl.uu.socnetid.network_games.utility_functions.CumulativeUtilityFunction;
 public class SimpleNetworkGame implements NetworkGame {
 
     // maximum rounds for the simulation
-    private static final int MAX_ROUNDS = 200;
+    private static final int MAX_ROUNDS = 5000;
     // network
     private Network network;
+    // graph
+    private Graph graph;
 
     // logger
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(SimpleNetworkGame.class);
 
 
@@ -40,10 +45,16 @@ public class SimpleNetworkGame implements NetworkGame {
         // init utility function
         CumulativeUtilityFunction utilityFunction = new CumulativeUtilityFunction();
 
+        // init graphstream
+        this.graph = new SingleGraph("NetworkGames");
+        this.graph.display();
+
         // init players
         List<Player> players = new ArrayList<Player>();
         for (int i = 0; i < playerCnt; i++) {
-            players.add(RationalPlayer.newInstance(utilityFunction));
+            Player player = RationalPlayer.newInstance(utilityFunction);
+            players.add(player);
+            this.graph.addNode(String.valueOf(player.getId()));
         }
 
         Iterator<Player> playersIt = players.iterator();
@@ -78,8 +89,6 @@ public class SimpleNetworkGame implements NetworkGame {
 
         while (!networkStable && currentRound < MAX_ROUNDS) {
 
-            logger.debug("Starting simulation round " + currentRound);
-
             // flag whether all players are satisfied with the current network
             boolean allSatisfied = true;
 
@@ -97,8 +106,6 @@ public class SimpleNetworkGame implements NetworkGame {
                 // 1st try to connect - 2nd try to disconnect if no new connection desired
                 if (tryToConnectFirst) {
 
-                    logger.debug("Player " + currPlayer.getId() + " trying to connect first.");
-
                     // try to connect
                     if (tryToConnect(currPlayer)) {
                         allSatisfied = false;
@@ -111,8 +118,6 @@ public class SimpleNetworkGame implements NetworkGame {
                 // 1st try to disconnect - 2nd try to connect if no disconnection desired
                 } else {
 
-                    logger.debug("Player " + currPlayer.getId() + " trying to disconnect first.");
-
                     // try to disconnect
                     if (tryToDisconnect(currPlayer)) {
                         allSatisfied = false;
@@ -121,18 +126,15 @@ public class SimpleNetworkGame implements NetworkGame {
                         boolean currSatisfied = !tryToConnect(currPlayer);
                         allSatisfied = allSatisfied && currSatisfied;
                     }
-
                 }
             }
             networkStable = allSatisfied;
             currentRound += 1;
-
-            logger.debug("###############################################################");
         }
 
         // write results
         NetworkFileWriter fileWriter = new NetworkFileWriter("network.csv",
-                new AdjacencyMatrixWriter(), network);
+                new EdgeListWriter(), network);
         fileWriter.write();
     }
 
@@ -143,28 +145,14 @@ public class SimpleNetworkGame implements NetworkGame {
         Player potentialNewConnection = currPlayer.seekNewConnection();
         if (potentialNewConnection != null) {
 
-            logger.debug("Player " + currPlayer.getId()
-                    + " trying to connect to player " + potentialNewConnection.getId());
-
             // other player accepting connection?
             if (potentialNewConnection.acceptConnection(currPlayer)) {
-
-
-                logger.debug("Player " + potentialNewConnection.getId()
-                        + " accepting connection from " + currPlayer.getId());
-
                 currPlayer.addConnection(potentialNewConnection);
                 potentialNewConnection.addConnection(currPlayer);
-            } else {
-
-                logger.debug("Player " + potentialNewConnection.getId()
-                        + " not accepting connection from " + currPlayer.getId());
+                addEdge(currPlayer, potentialNewConnection);
             }
-        } else {
-
-            logger.debug("Player " + currPlayer.getId()
-                    + " is happy with current connections: NO CONNECT.");
         }
+
         // the desire to create new connection counts as a move
         return (potentialNewConnection != null);
     }
@@ -175,20 +163,56 @@ public class SimpleNetworkGame implements NetworkGame {
     private boolean tryToDisconnect(Player currPlayer) {
         Player costlyConnection = currPlayer.seekCostlyConnection();
         if (costlyConnection != null) {
-
-            logger.debug("Player " + currPlayer.getId()
-                    + " disconnecting from player " + costlyConnection.getId());
-
             currPlayer.removeConnection(costlyConnection);
             costlyConnection.removeConnection(currPlayer);
-
-        } else {
-
-            logger.debug("Player " + currPlayer.getId()
-                    + " is happy with current connections: NO DISCONNECT");
+            removeEdge(currPlayer, costlyConnection);
         }
+
         // the desire to remove a connection counts as a move
         return (costlyConnection != null);
+    }
+
+
+    /**
+     * Adds a graph edge between players 1 and 2.
+     *
+     * @param player1
+     *          first player to create an edge for
+     * @param player2
+     *          second player to create an edge for
+     */
+    private void addEdge(Player player1, Player player2) {
+        // edge id consistency
+        ArrayList<Player> players = new ArrayList<Player>();
+        players.add(player1);
+        players.add(player2);
+        Collections.sort(players);
+
+        String edgeId = String.valueOf(players.get(0).getId()) + String.valueOf(players.get(1).getId());
+        String nodeId1 = String.valueOf(players.get(0).getId());
+        String nodeId2 = String.valueOf(players.get(1).getId());
+
+        this.graph.addEdge(edgeId, nodeId1, nodeId2);
+    }
+
+    /**
+     * Removes the graph edge between players 1 and 2.
+     *
+     * @param player1
+     *          first player to remove the edge between
+     * @param player2
+     *          second player to remove the edge between
+     */
+    private void removeEdge(Player player1, Player player2) {
+        // edge id consistency
+        ArrayList<Player> players = new ArrayList<Player>();
+        players.add(player1);
+        players.add(player2);
+        Collections.sort(players);
+
+        String edgeId = String.valueOf(players.get(0).getId()) + String.valueOf(players.get(1).getId());
+
+        this.graph.removeEdge(edgeId);
     }
 
 }
