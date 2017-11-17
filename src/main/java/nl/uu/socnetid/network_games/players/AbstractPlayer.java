@@ -141,6 +141,14 @@ public abstract class AbstractPlayer implements Player {
         return this.connections.remove(connection);
     }
 
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.players.Player#removeAllConnections()
+     */
+    @Override
+    public void removeAllConnections() {
+        this.connections = new ArrayList<Player>();
+    }
+
 
     /* (non-Javadoc)
      * @see java.lang.Comparable#compareTo(java.lang.Object)

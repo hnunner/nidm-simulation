@@ -1,13 +1,21 @@
-package nl.uu.socnetid.network_games.games;
+package nl.uu.socnetid.network_games;
 
+import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
+
 import org.apache.log4j.Logger;
+import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 
 import nl.uu.socnetid.network_games.networks.Network;
@@ -19,70 +27,163 @@ import nl.uu.socnetid.network_games.players.RationalPlayer;
 import nl.uu.socnetid.network_games.utility_functions.CumulativeUtilityFunction;
 
 /**
- * Implementation of a simple {@link NetworkGame}.
- *
  * @author Hendrik Nunner
  */
-public class SimpleNetworkGame implements NetworkGame {
+public class NetworkGame {
 
     // maximum rounds for the simulation
     private static final int MAX_ROUNDS = 5000;
+    // init utility function
+    private static CumulativeUtilityFunction UTILITY_FUNCTION = new CumulativeUtilityFunction();
+
     // network
     private Network network;
+    // players
+    private List<Player> players = new ArrayList<Player>();
     // graph
     private Graph graph;
 
     // logger
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(SimpleNetworkGame.class);
+    private static final Logger logger = Logger.getLogger(NetworkGame.class);
 
+    // swing frame
+    private JFrame frame;
 
     /**
-     * Private constructor.
+     * Launch the application.
+     *
+     * @param args
+     *          command line arguments
      */
-    private SimpleNetworkGame(int playerCnt) {
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
 
-        // init utility function
-        CumulativeUtilityFunction utilityFunction = new CumulativeUtilityFunction();
+            @Override
+            public void run() {
+                try {
+                    NetworkGame window = new NetworkGame();
+                    window.frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    /**
+     * Create the application.
+     */
+    public NetworkGame() {
+        initialize();
+    }
+
+    /**
+     * Initialize the contents of the frame.
+     */
+    private void initialize() {
+        // init swing frame
+        frame = new JFrame();
+        frame.setBounds(100, 100, 250, 300);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().setLayout(null);
+
+        JButton btnStart = new JButton("Start");
+        btnStart.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                simulateGame();
+            }
+        });
+        btnStart.setBounds(53, 208, 142, 45);
+        frame.getContentPane().add(btnStart);
+
+        JButton btnAddPlayer = new JButton("Add Player");
+        btnAddPlayer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addPlayer();
+            }
+        });
+        btnAddPlayer.setBounds(53, 22, 142, 29);
+        frame.getContentPane().add(btnAddPlayer);
+
+        JButton btnRemovePlayer = new JButton("Remove Player");
+        btnRemovePlayer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                removePlayer();
+            }
+        });
+        btnRemovePlayer.setBounds(53, 63, 142, 29);
+        frame.getContentPane().add(btnRemovePlayer);
+
+        JButton btnNewButton = new JButton("Clear Edges");
+        btnNewButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                clearEdges();
+            }
+        });
+        btnNewButton.setBounds(53, 128, 142, 29);
+        frame.getContentPane().add(btnNewButton);
+
 
         // init graphstream
         this.graph = new SingleGraph("NetworkGames");
         this.graph.display();
+    }
 
-        // init players
-        List<Player> players = new ArrayList<Player>();
-        for (int i = 0; i < playerCnt; i++) {
-            Player player = RationalPlayer.newInstance(utilityFunction);
-            players.add(player);
-            this.graph.addNode(String.valueOf(player.getId()));
+
+    /**
+     * Adds a player to the game.
+     */
+    private void addPlayer() {
+        Player player = RationalPlayer.newInstance(UTILITY_FUNCTION);
+        players.add(player);
+        this.graph.addNode(String.valueOf(player.getId()));
+    }
+
+    /**
+     * Removes a player from the game.
+     */
+    private void removePlayer() {
+        if (players.size() == 0) {
+            return;
         }
+        Player player = players.get(players.size() - 1);
+        players.remove(player);
+        this.graph.removeNode(String.valueOf(player.getId()));
+    }
 
+    /**
+     * Clears all edges from the graph.
+     */
+    private void clearEdges() {
+        for(Node node:this.graph) {
+            Edge[] edges = node.getEdgeSet().toArray(new Edge[0]);
+            for(int i = 0; i < edges.length; ++i){
+                graph.removeEdge(edges[i]);
+            }
+        }
+        this.network.clearConnections();
+    }
+
+
+    /**
+     * Runs the actual simulation of the network game.
+     */
+    public void simulateGame() {
+
+        // init Players
         Iterator<Player> playersIt = players.iterator();
         while (playersIt.hasNext()) {
             Player currPlayer = playersIt.next();
             currPlayer.initCoPlayers(players);
         }
-
         // init network
         this.network = new SimpleNetwork(players);
-    }
 
-    /**
-     * Factory method returning a new {@link NetworkGame} instance.
-     *
-     * @param playerCnt
-     *          the number of players in the game
-     * @return a new {@link NetworkGame} instance.
-     */
-    public static NetworkGame newInstance(int playerCnt) {
-        return new SimpleNetworkGame(playerCnt);
-    }
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.games.NetworkGame#simulateGame()
-     */
-    @Override
-    public void simulateGame() {
 
         boolean networkStable = false;
         int currentRound = 1;
@@ -97,7 +198,7 @@ public class SimpleNetworkGame implements NetworkGame {
             Collections.shuffle(players);
 
             // each player
-            Iterator<Player> playersIt = players.iterator();
+            playersIt = players.iterator();
             while (playersIt.hasNext()) {
                 Player currPlayer = playersIt.next();
 
@@ -214,5 +315,4 @@ public class SimpleNetworkGame implements NetworkGame {
 
         this.graph.removeEdge(edgeId);
     }
-
 }

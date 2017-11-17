@@ -25,4 +25,9 @@ public interface Network {
      */
     List<Player> getConnectionsOfPlayer(Player player);
 
+    /**
+     * Clears all connections between the players.
+     */
+    void clearConnections();
+
 }

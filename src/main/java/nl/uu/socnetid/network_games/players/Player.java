@@ -71,6 +71,11 @@ public interface Player extends Comparable<Player> {
     boolean removeConnection(Player connection);
 
     /**
+     * Removes all connections of the player.
+     */
+    void removeAllConnections();
+
+    /**
      * Checks whether a new connection creates higher utility. If so,
      * the player for a new desired connection is returned, null otherwise.
      *
