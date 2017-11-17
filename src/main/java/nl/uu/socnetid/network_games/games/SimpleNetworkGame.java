@@ -29,7 +29,7 @@ public class SimpleNetworkGame implements NetworkGame {
     private Network network;
 
     // logger
-    private static final Logger LOGGER = Logger.getLogger(SimpleNetworkGame.class);
+    private static final Logger logger = Logger.getLogger(SimpleNetworkGame.class);
 
 
     /**
@@ -78,9 +78,10 @@ public class SimpleNetworkGame implements NetworkGame {
 
         while (!networkStable && currentRound < MAX_ROUNDS) {
 
-            LOGGER.debug("\n"
-                    + "##################################################\n"
-                    + "Starting simulation round " + currentRound);
+            logger.debug("Starting simulation round " + currentRound);
+
+            // flag whether all players are satisfied with the current network
+            boolean allSatisfied = true;
 
             // players performing action in random order
             List<Player> players = new ArrayList<Player>(network.getPlayers());
@@ -96,23 +97,37 @@ public class SimpleNetworkGame implements NetworkGame {
                 // 1st try to connect - 2nd try to disconnect if no new connection desired
                 if (tryToConnectFirst) {
 
+                    logger.debug("Player " + currPlayer.getId() + " trying to connect first.");
+
                     // try to connect
-                    if (!tryToConnect(currPlayer)) {
+                    if (tryToConnect(currPlayer)) {
+                        allSatisfied = false;
+                    } else {
                         // try to disconnect
-                        tryToDisconnect(currPlayer);
+                        boolean currSatisfied = !tryToDisconnect(currPlayer);
+                        allSatisfied = allSatisfied && currSatisfied;
                     }
 
                 // 1st try to disconnect - 2nd try to connect if no disconnection desired
                 } else {
 
+                    logger.debug("Player " + currPlayer.getId() + " trying to disconnect first.");
+
                     // try to disconnect
-                    if (!tryToDisconnect(currPlayer)) {
+                    if (tryToDisconnect(currPlayer)) {
+                        allSatisfied = false;
+                    } else {
                         // try to connect
-                        tryToConnect(currPlayer);
+                        boolean currSatisfied = !tryToConnect(currPlayer);
+                        allSatisfied = allSatisfied && currSatisfied;
                     }
+
                 }
             }
+            networkStable = allSatisfied;
             currentRound += 1;
+
+            logger.debug("###############################################################");
         }
 
         // write results
@@ -127,13 +142,30 @@ public class SimpleNetworkGame implements NetworkGame {
     private boolean tryToConnect(Player currPlayer) {
         Player potentialNewConnection = currPlayer.seekNewConnection();
         if (potentialNewConnection != null) {
+
+            logger.debug("Player " + currPlayer.getId()
+                    + " trying to connect to player " + potentialNewConnection.getId());
+
             // other player accepting connection?
             if (potentialNewConnection.acceptConnection(currPlayer)) {
+
+
+                logger.debug("Player " + potentialNewConnection.getId()
+                        + " accepting connection from " + currPlayer.getId());
+
                 currPlayer.addConnection(potentialNewConnection);
                 potentialNewConnection.addConnection(currPlayer);
+            } else {
+
+                logger.debug("Player " + potentialNewConnection.getId()
+                        + " not accepting connection from " + currPlayer.getId());
             }
+        } else {
+
+            logger.debug("Player " + currPlayer.getId()
+                    + " is happy with current connections: NO CONNECT.");
         }
-        // potential new connection counts as a move
+        // the desire to create new connection counts as a move
         return (potentialNewConnection != null);
     }
 
@@ -143,9 +175,19 @@ public class SimpleNetworkGame implements NetworkGame {
     private boolean tryToDisconnect(Player currPlayer) {
         Player costlyConnection = currPlayer.seekCostlyConnection();
         if (costlyConnection != null) {
+
+            logger.debug("Player " + currPlayer.getId()
+                    + " disconnecting from player " + costlyConnection.getId());
+
             currPlayer.removeConnection(costlyConnection);
             costlyConnection.removeConnection(currPlayer);
+
+        } else {
+
+            logger.debug("Player " + currPlayer.getId()
+                    + " is happy with current connections: NO DISCONNECT");
         }
+        // the desire to remove a connection counts as a move
         return (costlyConnection != null);
     }
 

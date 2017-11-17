@@ -48,10 +48,12 @@ public class RationalPlayer extends AbstractPlayer implements Player {
         List<Player> potentialConnections = new ArrayList<Player>(this.getConnections());
         potentialConnections.add(potentialConnection);
 
-        if (this.getUtility() > this.getUtility(potentialConnections)) {
-            return null;
+        // connect if new connection creates higher or equal utility
+        if (this.getUtility(potentialConnections) >= this.getUtility()) {
+            return potentialConnection;
         }
-        return potentialConnection;
+
+        return null;
     }
 
     /* (non-Javadoc)
@@ -64,10 +66,12 @@ public class RationalPlayer extends AbstractPlayer implements Player {
         List<Player> potentialConnections = new ArrayList<Player>(this.getConnections());
         potentialConnections.remove(potentialRemoval);
 
-        if (this.getUtility() > this.getUtility(potentialConnections)) {
-            return null;
+        // disconnect only if removal creates higher utility
+        if (this.getUtility(potentialConnections) > this.getUtility()) {
+            return potentialRemoval;
         }
-        return potentialRemoval;
+
+        return null;
     }
 
     /* (non-Javadoc)
@@ -77,7 +81,9 @@ public class RationalPlayer extends AbstractPlayer implements Player {
     public boolean acceptConnection(Player newConnection) {
         List<Player> prospectiveConnections = new ArrayList<Player>(this.getConnections());
         prospectiveConnections.add(newConnection);
-        return this.getUtility() < utilityFunction.getUtility(this, prospectiveConnections);
+
+        // accept connection if the new connection creates higher or equal utility
+        return this.getUtility(prospectiveConnections) >= this.getUtility();
     }
 
 }
