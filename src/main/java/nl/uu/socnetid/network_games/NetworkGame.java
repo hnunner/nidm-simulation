@@ -14,6 +14,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JSpinner;
 
 import org.apache.log4j.Logger;
 import org.graphstream.graph.Edge;
@@ -62,6 +64,8 @@ public class NetworkGame {
     // edge writer combo box and selection
     private JComboBox<String> edgeWriterCBox;
     private String[] edgeWriters = {"Edge List", "Adjacency Matrix"};
+    // spinner for simulation delay
+    JSpinner simulationDelay;
 
     /**
      * Launch the application.
@@ -97,7 +101,7 @@ public class NetworkGame {
     private void initialize() {
         // init swing frame
         frame = new JFrame();
-        frame.setBounds(100, 100, 200, 365);
+        frame.setBounds(100, 100, 270, 536);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null);
 
@@ -145,7 +149,7 @@ public class NetworkGame {
         for (int i = 0; i < edgeWriters.length; i++) {
             edgeWriterCBox.addItem(edgeWriters[i]);
         }
-        edgeWriterCBox.setBounds(16, 301, 178, 29);
+        edgeWriterCBox.setBounds(16, 479, 178, 29);
         frame.getContentPane().add(edgeWriterCBox);
 
         JButton btnExportNetwork = new JButton("Export Network as:");
@@ -155,7 +159,7 @@ public class NetworkGame {
                 exportNetwork();
             }
         });
-        btnExportNetwork.setBounds(6, 260, 188, 29);
+        btnExportNetwork.setBounds(6, 438, 188, 29);
         frame.getContentPane().add(btnExportNetwork);
 
         utilityFunctionCBox = new JComboBox<String>();
@@ -164,6 +168,14 @@ public class NetworkGame {
         }
         utilityFunctionCBox.setBounds(16, 202, 166, 27);
         frame.getContentPane().add(utilityFunctionCBox);
+
+        simulationDelay = new JSpinner();
+        simulationDelay.setBounds(128, 241, 44, 26);
+        frame.getContentPane().add(simulationDelay);
+
+        JLabel simulationDelayLabel = new JLabel("Simulation delay:");
+        simulationDelayLabel.setBounds(16, 246, 126, 16);
+        frame.getContentPane().add(simulationDelayLabel);
 
 
         // init graphstream
@@ -255,6 +267,22 @@ public class NetworkGame {
             playersIt = players.iterator();
             while (playersIt.hasNext()) {
                 Player currPlayer = playersIt.next();
+
+
+
+
+
+
+                try {
+                    Thread.sleep((Integer) this.simulationDelay.getValue() * 100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+
+
+
+
 
                 boolean tryToConnectFirst = ThreadLocalRandom.current().nextBoolean();
 
@@ -371,6 +399,10 @@ public class NetworkGame {
         String nodeId2 = String.valueOf(players.get(1).getId());
 
         this.graph.addEdge(edgeId, nodeId1, nodeId2);
+
+
+
+        System.out.println("Edge added between node " + nodeId1 + " and node " + nodeId2);
     }
 
     /**
@@ -391,5 +423,8 @@ public class NetworkGame {
         String edgeId = String.valueOf(players.get(0).getId()) + String.valueOf(players.get(1).getId());
 
         this.graph.removeEdge(edgeId);
+
+
+        System.out.println("Edge " + edgeId + " removed.");
     }
 }
