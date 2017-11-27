@@ -2,6 +2,8 @@ package nl.uu.socnetid.network_games.players;
 
 import java.util.List;
 
+import nl.uu.socnetid.network_games.utility_functions.UtilityFunction;
+
 /**
  * Interface of a basic player.
  *
@@ -30,6 +32,14 @@ public interface Player extends Comparable<Player> {
      * @return the player's current utility
      */
     public double getUtility();
+
+    /**
+     * Sets the utility function.
+     *
+     * @param utilityFunction
+     *          the utility function to set
+     */
+    public void setUtilityFunction(UtilityFunction utilityFunction);
 
     /**
      * Gets the connections of the player.

@@ -41,15 +41,19 @@ public class SimpleNetworkTest {
 
 	    List<Player> players = new ArrayList<Player>();
 
-	    player1 = RationalPlayer.newInstance(utilityFunction);
-	    player2 = RationalPlayer.newInstance(utilityFunction);
-	    player3 = RationalPlayer.newInstance(utilityFunction);
-	    player4 = RationalPlayer.newInstance(utilityFunction);
+	    player1 = RationalPlayer.newInstance();
+	    player2 = RationalPlayer.newInstance();
+	    player3 = RationalPlayer.newInstance();
+	    player4 = RationalPlayer.newInstance();
 
         players.add(player1);
+        player1.setUtilityFunction(utilityFunction);
 		players.add(player2);
+        player2.setUtilityFunction(utilityFunction);
 		players.add(player3);
+        player3.setUtilityFunction(utilityFunction);
 		players.add(player4);
+        player4.setUtilityFunction(utilityFunction);
 
 		player1.initCoPlayers(players);
 		player2.initCoPlayers(players);

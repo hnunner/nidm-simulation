@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import nl.uu.socnetid.network_games.utility_functions.UtilityFunction;
-
 /**
  * Implementation of a simple {@link Player}.
  *
@@ -22,19 +20,17 @@ public class RationalPlayer extends AbstractPlayer implements Player {
     /**
      * Private constructor.
      */
-    private RationalPlayer(UtilityFunction utilityFunction) {
-        super(utilityFunction);
+    private RationalPlayer() {
+        super();
     }
 
     /**
      * Factory method returning a new {@link Player} instance.
      *
-     * @param utilityFunction
-     *          the utility function (rules of the game)
      * @return a new {@link Player} instance
      */
-    public static Player newInstance(UtilityFunction utilityFunction) {
-        return new RationalPlayer(utilityFunction);
+    public static Player newInstance() {
+        return new RationalPlayer();
     }
 
 

@@ -25,7 +25,7 @@ public abstract class AbstractPlayer implements Player {
     private final long id = NEXT_ID.getAndIncrement();
 
     // utility function
-    protected UtilityFunction utilityFunction;
+    public UtilityFunction utilityFunction;
 
     // co-players
     private List<Player> coPlayers;
@@ -35,13 +35,8 @@ public abstract class AbstractPlayer implements Player {
 
     /**
      * Constructor.
-     *
-     * @param utilityFunction
-     *          the utility function (rules of the network game)
      */
-    protected AbstractPlayer(UtilityFunction utilityFunction) {
-        this.utilityFunction = utilityFunction;
-    }
+    protected AbstractPlayer() { }
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.network_games.Player#initCoPlayers()
@@ -78,6 +73,14 @@ public abstract class AbstractPlayer implements Player {
      */
     protected double getUtility(List<Player> connections) {
         return utilityFunction.getUtility(this, connections);
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.players.Player#setUtilityFunction(nl.uu.socnetid.network_games.utility_functions.UtilityFunction)
+     */
+    @Override
+    public void setUtilityFunction(UtilityFunction utilityFunction) {
+        this.utilityFunction = utilityFunction;
     }
 
     /* (non-Javadoc)
