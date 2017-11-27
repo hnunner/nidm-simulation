@@ -397,12 +397,7 @@ public class NetworkGame {
         String edgeId = String.valueOf(players.get(0).getId()) + String.valueOf(players.get(1).getId());
         String nodeId1 = String.valueOf(players.get(0).getId());
         String nodeId2 = String.valueOf(players.get(1).getId());
-
         this.graph.addEdge(edgeId, nodeId1, nodeId2);
-
-
-
-        System.out.println("Edge added between node " + nodeId1 + " and node " + nodeId2);
     }
 
     /**
@@ -421,10 +416,6 @@ public class NetworkGame {
         Collections.sort(players);
 
         String edgeId = String.valueOf(players.get(0).getId()) + String.valueOf(players.get(1).getId());
-
         this.graph.removeEdge(edgeId);
-
-
-        System.out.println("Edge " + edgeId + " removed.");
     }
 }
