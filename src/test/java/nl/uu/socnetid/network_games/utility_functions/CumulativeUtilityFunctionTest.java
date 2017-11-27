@@ -37,11 +37,11 @@ public class CumulativeUtilityFunctionTest {
 
         List<Player> players = new ArrayList<Player>();
 
-        player1 = RationalPlayer.newInstance(utilityFunction);
-        player2 = RationalPlayer.newInstance(utilityFunction);
-        player3 = RationalPlayer.newInstance(utilityFunction);
-        player4 = RationalPlayer.newInstance(utilityFunction);
-        player5 = RationalPlayer.newInstance(utilityFunction);
+        player1 = RationalPlayer.newInstance();
+        player2 = RationalPlayer.newInstance();
+        player3 = RationalPlayer.newInstance();
+        player4 = RationalPlayer.newInstance();
+        player5 = RationalPlayer.newInstance();
 
         players.add(player1);
         players.add(player2);
@@ -50,10 +50,15 @@ public class CumulativeUtilityFunctionTest {
         players.add(player5);
 
         player1.initCoPlayers(players);
+        player1.setUtilityFunction(utilityFunction);
         player2.initCoPlayers(players);
+        player2.setUtilityFunction(utilityFunction);
         player3.initCoPlayers(players);
+        player3.setUtilityFunction(utilityFunction);
         player4.initCoPlayers(players);
+        player4.setUtilityFunction(utilityFunction);
         player5.initCoPlayers(players);
+        player5.setUtilityFunction(utilityFunction);
 
         // connections are always bidirectional
         player1.addConnection(player2);
