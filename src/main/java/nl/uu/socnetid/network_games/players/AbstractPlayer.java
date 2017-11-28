@@ -90,9 +90,9 @@ public abstract class AbstractPlayer implements Player {
     public void run() {
         // assumption that current connections are not optimal
         this.satisfied = false;
+        lock.lock();
 
         try {
-            lock.lock();
 
             // some delay before each player moves (e.g., for animation processes)
             Thread.sleep(this.delay * 100);
@@ -122,7 +122,7 @@ public abstract class AbstractPlayer implements Player {
                     }
                 }
             }
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             lock.unlock();

@@ -102,8 +102,6 @@ public abstract class AbstractNetwork implements Network {
         // loop while network is not stable and maximum simulation rounds not yet reached
         while (!networkStable && currentRound++ < maxRounds) {
 
-            logger.debug("Simulate round " + currentRound);
-
             // disease dynamics
             computeDiseaseDynamics();
 
@@ -112,18 +110,24 @@ public abstract class AbstractNetwork implements Network {
             Collections.shuffle(this.players);
 
             // each player
-            boolean allSatisfied = true;
             Iterator<Player> playersIt = players.iterator();
             while (playersIt.hasNext()) {
                 Player currPlayer = playersIt.next();
                 currPlayer.setLock(this.lock);
-
-
-
                 service.submit(currPlayer);
+            }
+
+            playersIt = players.iterator();
+            boolean allSatisfied = true;
+            while (playersIt.hasNext()) {
+                Player currPlayer = playersIt.next();
                 allSatisfied &= currPlayer.isSatisfied();
             }
-            //networkStable = allSatisfied;
+            networkStable = allSatisfied;
+        }
+
+        if (networkStable) {
+            logger.debug("Network stable after " + currentRound + " rounds.");
         }
     }
 
@@ -200,10 +204,8 @@ public abstract class AbstractNetwork implements Network {
 
             GenericDisease disease = new GenericDisease();
             player.infect(disease);
-            logger.debug("Player " + player.getId() + " successfully infected with " + disease.getClass());
             return;
         }
-        logger.debug("No player infected. All players infected already.");
     }
 
     /* (non-Javadoc)
@@ -223,22 +225,6 @@ public abstract class AbstractNetwork implements Network {
                 }
             }
         }
-
-        Collections.sort(this.players);
-        StringBuilder sb = new StringBuilder("###############################\n");
-        playersIt = players.iterator();
-        while (playersIt.hasNext()) {
-            Player currPlayer = playersIt.next();
-            sb.append("player ").append(currPlayer.getId());
-
-            if (currPlayer.isInfected()) {
-                sb.append(":     infected.\n");
-            } else {
-                sb.append(": not infected.\n");
-            }
-        }
-
-        logger.debug(sb.toString());
     }
 
 }
