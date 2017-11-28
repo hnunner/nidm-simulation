@@ -5,11 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -18,9 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JSpinner;
 
 import org.apache.log4j.Logger;
-import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
-import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 
 import nl.uu.socnetid.network_games.networks.Network;
@@ -29,8 +22,7 @@ import nl.uu.socnetid.network_games.networks.io.NetworkFileWriter;
 import nl.uu.socnetid.network_games.networks.writer.AdjacencyMatrixWriter;
 import nl.uu.socnetid.network_games.networks.writer.EdgeListWriter;
 import nl.uu.socnetid.network_games.networks.writer.NetworkWriter;
-import nl.uu.socnetid.network_games.players.Player;
-import nl.uu.socnetid.network_games.players.RationalPlayer;
+import nl.uu.socnetid.network_games.players.RationalPlayerNode;
 import nl.uu.socnetid.network_games.utility_functions.CumulativeUtilityFunction;
 import nl.uu.socnetid.network_games.utility_functions.UtilityFunction;
 
@@ -39,15 +31,11 @@ import nl.uu.socnetid.network_games.utility_functions.UtilityFunction;
  */
 public class NetworkGame {
 
-    // maximum rounds for the simulation
-    private static final int MAX_ROUNDS = 5000;
     // general export path
     private static final String EXPORT_PATH = "./network-exports/";
 
     // network
     private Network network;
-    // players
-    private List<Player> players = new ArrayList<Player>();
     // graph
     private Graph graph;
 
@@ -177,10 +165,12 @@ public class NetworkGame {
         simulationDelayLabel.setBounds(16, 246, 126, 16);
         frame.getContentPane().add(simulationDelayLabel);
 
-
         // init graphstream
         this.graph = new SingleGraph("NetworkGames");
         this.graph.display();
+
+        // init network
+        this.network = new SimpleNetwork();
     }
 
 
@@ -188,131 +178,50 @@ public class NetworkGame {
      * Adds a player to the game.
      */
     private void addPlayer() {
-        Player player = RationalPlayer.newInstance();
-        players.add(player);
-        this.graph.addNode(String.valueOf(player.getId()));
+        this.network.addPlayer(RationalPlayerNode.newInstance(this.graph));
     }
 
     /**
      * Removes a player from the game.
      */
     private void removePlayer() {
-        if (players.size() == 0) {
-            return;
-        }
-        Player player = players.get(players.size() - 1);
-        players.remove(player);
-        this.graph.removeNode(String.valueOf(player.getId()));
+        this.network.removePlayer();
     }
 
     /**
-     * Clears all edges from the graph.
+     * Clears all edges within the game.
      */
     private void clearEdges() {
-        for(Node node:this.graph) {
-            Edge[] edges = node.getEdgeSet().toArray(new Edge[0]);
-            for(int i = 0; i < edges.length; ++i){
-                graph.removeEdge(edges[i]);
-            }
-        }
-
-        if (network != null) {
+        if (this.network != null) {
             this.network.clearConnections();
         }
     }
-
 
     /**
      * Runs the actual simulation of the network game.
      */
     public void simulateGame() {
+        // initializations
+        UtilityFunction utilityFunction = getUtilityFunction();
+        this.network.initUtilityFunction(utilityFunction);
 
-        clearEdges();
+        // simulation
+        int delay = (Integer) this.simulationDelay.getValue();
+        this.network.simulate(5000, delay);
+        //this.network.simulate();
+    }
 
-        // determination of utility function
-        UtilityFunction utilityFunction;
+    /**
+     * Gets the utility function as selected in the GUI.
+     *
+     * @return the selected utility function
+     */
+    private UtilityFunction getUtilityFunction() {
         switch (utilityFunctionCBox.getSelectedIndex()) {
             case 0:
-                utilityFunction = new CumulativeUtilityFunction();
-                break;
-
+                return new CumulativeUtilityFunction();
             default:
                 throw new RuntimeException("Undefined utility function!");
-        }
-
-        // init Players
-        Iterator<Player> playersIt = players.iterator();
-        while (playersIt.hasNext()) {
-            Player currPlayer = playersIt.next();
-            currPlayer.setUtilityFunction(utilityFunction);
-            currPlayer.initCoPlayers(players);
-        }
-        // init network
-        this.network = new SimpleNetwork(players);
-
-
-        boolean networkStable = false;
-        int currentRound = 1;
-
-        while (!networkStable && currentRound < MAX_ROUNDS) {
-
-            // flag whether all players are satisfied with the current network
-            boolean allSatisfied = true;
-
-            // players performing action in random order
-            List<Player> players = new ArrayList<Player>(network.getPlayers());
-            Collections.shuffle(players);
-
-            // each player
-            playersIt = players.iterator();
-            while (playersIt.hasNext()) {
-                Player currPlayer = playersIt.next();
-
-
-
-
-
-
-                try {
-                    Thread.sleep((Integer) this.simulationDelay.getValue() * 100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-
-
-
-
-
-                boolean tryToConnectFirst = ThreadLocalRandom.current().nextBoolean();
-
-                // 1st try to connect - 2nd try to disconnect if no new connection desired
-                if (tryToConnectFirst) {
-
-                    // try to connect
-                    if (tryToConnect(currPlayer)) {
-                        allSatisfied = false;
-                    } else {
-                        // try to disconnect
-                        boolean currSatisfied = !tryToDisconnect(currPlayer);
-                        allSatisfied = allSatisfied && currSatisfied;
-                    }
-
-                // 1st try to disconnect - 2nd try to connect if no disconnection desired
-                } else {
-
-                    // try to disconnect
-                    if (tryToDisconnect(currPlayer)) {
-                        allSatisfied = false;
-                    } else {
-                        // try to connect
-                        boolean currSatisfied = !tryToConnect(currPlayer);
-                        allSatisfied = allSatisfied && currSatisfied;
-                    }
-                }
-            }
-            networkStable = allSatisfied;
-            currentRound += 1;
         }
     }
 
@@ -344,78 +253,4 @@ public class NetworkGame {
         fileWriter.write();
     }
 
-    /**
-     * @param currPlayer
-     */
-    private boolean tryToConnect(Player currPlayer) {
-        Player potentialNewConnection = currPlayer.seekNewConnection();
-        if (potentialNewConnection != null) {
-
-            // other player accepting connection?
-            if (potentialNewConnection.acceptConnection(currPlayer)) {
-                currPlayer.addConnection(potentialNewConnection);
-                potentialNewConnection.addConnection(currPlayer);
-                addEdge(currPlayer, potentialNewConnection);
-            }
-        }
-
-        // the desire to create new connection counts as a move
-        return (potentialNewConnection != null);
-    }
-
-    /**
-     * @param currPlayer
-     */
-    private boolean tryToDisconnect(Player currPlayer) {
-        Player costlyConnection = currPlayer.seekCostlyConnection();
-        if (costlyConnection != null) {
-            currPlayer.removeConnection(costlyConnection);
-            costlyConnection.removeConnection(currPlayer);
-            removeEdge(currPlayer, costlyConnection);
-        }
-
-        // the desire to remove a connection counts as a move
-        return (costlyConnection != null);
-    }
-
-
-    /**
-     * Adds a graph edge between players 1 and 2.
-     *
-     * @param player1
-     *          first player to create an edge for
-     * @param player2
-     *          second player to create an edge for
-     */
-    private void addEdge(Player player1, Player player2) {
-        // edge id consistency
-        ArrayList<Player> players = new ArrayList<Player>();
-        players.add(player1);
-        players.add(player2);
-        Collections.sort(players);
-
-        String edgeId = String.valueOf(players.get(0).getId()) + String.valueOf(players.get(1).getId());
-        String nodeId1 = String.valueOf(players.get(0).getId());
-        String nodeId2 = String.valueOf(players.get(1).getId());
-        this.graph.addEdge(edgeId, nodeId1, nodeId2);
-    }
-
-    /**
-     * Removes the graph edge between players 1 and 2.
-     *
-     * @param player1
-     *          first player to remove the edge between
-     * @param player2
-     *          second player to remove the edge between
-     */
-    private void removeEdge(Player player1, Player player2) {
-        // edge id consistency
-        ArrayList<Player> players = new ArrayList<Player>();
-        players.add(player1);
-        players.add(player2);
-        Collections.sort(players);
-
-        String edgeId = String.valueOf(players.get(0).getId()) + String.valueOf(players.get(1).getId());
-        this.graph.removeEdge(edgeId);
-    }
 }

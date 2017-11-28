@@ -152,6 +152,12 @@ public abstract class AbstractPlayer implements Player {
         this.connections = new ArrayList<Player>();
     }
 
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.players.Player#destroy()
+     */
+    @Override
+    public void destroy() { }
+
 
     /* (non-Javadoc)
      * @see java.lang.Comparable#compareTo(java.lang.Object)

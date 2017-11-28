@@ -113,4 +113,9 @@ public interface Player extends Comparable<Player> {
 	 */
 	boolean acceptConnection(Player newConnection);
 
+	/**
+	 * Clean up routine when player is removed from the game.
+	 */
+	void destroy();
+
 }

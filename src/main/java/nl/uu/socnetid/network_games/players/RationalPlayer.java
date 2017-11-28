@@ -20,7 +20,7 @@ public class RationalPlayer extends AbstractPlayer implements Player {
     /**
      * Private constructor.
      */
-    private RationalPlayer() {
+    protected RationalPlayer() {
         super();
     }
 
