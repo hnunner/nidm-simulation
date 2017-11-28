@@ -5,6 +5,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.apache.log4j.Logger;
+
+import nl.uu.socnetid.network_games.disease.GenericDisease;
 import nl.uu.socnetid.network_games.players.Player;
 import nl.uu.socnetid.network_games.utility_functions.UtilityFunction;
 
@@ -12,6 +15,8 @@ import nl.uu.socnetid.network_games.utility_functions.UtilityFunction;
  * @author Hendrik Nunner
  */
 public abstract class AbstractNetwork implements Network {
+
+    private static final Logger logger = Logger.getLogger(AbstractNetwork.class);
 
     // maximum rounds for the simulation
     private static final int MAX_ROUNDS = 5000;
@@ -87,6 +92,10 @@ public abstract class AbstractNetwork implements Network {
         // loop while network is not stable and maximum simulation rounds not yet reached
         while (!networkStable && currentRound < maxRounds) {
 
+            ////////// DISEASE DYNAMICS //////////
+            computeDiseaseDynamics();
+
+            ////////// PLAYER DYNAMICS //////////
             // flag whether all players are satisfied with the current network (
             boolean allSatisfied = true;
 
@@ -177,15 +186,6 @@ public abstract class AbstractNetwork implements Network {
         return (costlyConnection != null);
     }
 
-
-
-
-
-
-
-
-
-
     /* (non-Javadoc)
      * @see nl.uu.socnetid.network_games.networks.Network#getPlayers()
      */
@@ -223,6 +223,69 @@ public abstract class AbstractNetwork implements Network {
         while (playersIt.hasNext()) {
             playersIt.next().setUtilityFunction(utilityFunction);
         }
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.networks.Network#infectRandomPlayer()
+     */
+    @Override
+    public void infectRandomPlayer() {
+        if (this.players == null || this.players.isEmpty()) {
+            return;
+        }
+
+        // players performing action in random order
+        Collections.shuffle(this.players);
+
+        Iterator<Player> playersIt = players.iterator();
+        while (playersIt.hasNext()) {
+            Player player = playersIt.next();
+
+            if (player.isInfected()) {
+                continue;
+            }
+
+            GenericDisease disease = new GenericDisease();
+            player.infect(disease);
+            logger.debug("Player " + player.getId() + " successfully infected with " + disease.getClass());
+            return;
+        }
+        logger.debug("No player infected. All players infected already.");
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.networks.Network#computeDiseaseDynamics()
+     */
+    @Override
+    public void computeDiseaseDynamics() {
+        Iterator<Player> playersIt = players.iterator();
+        while (playersIt.hasNext()) {
+            Player currPlayer = playersIt.next();
+
+            if (currPlayer.isInfected()) {
+                currPlayer.fightDisease();
+
+                if (currPlayer.isInfectious()) {
+                    currPlayer.computeTransmissions();
+                }
+            }
+        }
+
+        Collections.sort(this.players);
+        StringBuilder sb = new StringBuilder("###############################\n");
+        playersIt = players.iterator();
+        while (playersIt.hasNext()) {
+            Player currPlayer = playersIt.next();
+            sb.append("player ").append(currPlayer.getId());
+
+            if (currPlayer.isInfected()) {
+                sb.append(":     infected.\n");
+            } else {
+                sb.append(": not infected.\n");
+            }
+        }
+
+        logger.debug(sb.toString());
     }
 
 }

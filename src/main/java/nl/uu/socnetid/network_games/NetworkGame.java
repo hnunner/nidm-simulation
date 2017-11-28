@@ -165,6 +165,26 @@ public class NetworkGame {
         simulationDelayLabel.setBounds(16, 246, 126, 16);
         frame.getContentPane().add(simulationDelayLabel);
 
+        JButton btnInfectPlayer = new JButton("Infect Player");
+        btnInfectPlayer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                network.infectRandomPlayer();
+            }
+        });
+        btnInfectPlayer.setBounds(30, 316, 197, 29);
+        frame.getContentPane().add(btnInfectPlayer);
+
+        JButton btnComputeTransmissions = new JButton("Compute Transmissions");
+        btnComputeTransmissions.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                network.computeDiseaseDynamics();
+            }
+        });
+        btnComputeTransmissions.setBounds(30, 357, 197, 29);
+        frame.getContentPane().add(btnComputeTransmissions);
+
         // init graphstream
         this.graph = new SingleGraph("NetworkGames");
         this.graph.display();
@@ -252,5 +272,4 @@ public class NetworkGame {
         NetworkFileWriter fileWriter = new NetworkFileWriter(EXPORT_PATH, file, networkWriter, network);
         fileWriter.write();
     }
-
 }
