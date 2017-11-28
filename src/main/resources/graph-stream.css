@@ -1,0 +1,25 @@
+graph {
+    fill-color: #DFDFDF;
+}
+
+node {
+	shape: circle;
+	fill-color: #FECD0A;
+	size: 15px;
+	stroke-mode: plain;
+	stroke-color: black;
+	stroke-width: 1px;
+	shadow-mode: gradient-radial;
+	shadow-color: #AAAAAA;
+	shadow-width: 1.5;
+	shadow-offset: 1.5, -1.5;
+}
+
+node.infected {
+	fill-color: #FF5500;
+}
+
+node:clicked {
+	shape:circle;
+	size: 30px;
+}

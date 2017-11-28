@@ -60,11 +60,11 @@
 		    <artifactId>gs-algo</artifactId>
 		    <version>${gs.version}</version>
 		</dependency>
-		<!-- dependency>
+		<dependency>
 		    <groupId>org.graphstream</groupId>
 		    <artifactId>gs-ui</artifactId>
 		    <version>${gs.version}</version>
-		</dependency -->
+		</dependency>
 
 		<dependency>
 			<groupId>junit</groupId>

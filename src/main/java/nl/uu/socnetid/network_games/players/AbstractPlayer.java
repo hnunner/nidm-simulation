@@ -192,6 +192,10 @@ public abstract class AbstractPlayer implements Player {
      */
     @Override
     public void infect(Disease disease) {
+        if (isImmune()) {
+            return;
+        }
+
         this.disease = disease;
         this.infectionState = InfectionState.INFECTED;
     }
