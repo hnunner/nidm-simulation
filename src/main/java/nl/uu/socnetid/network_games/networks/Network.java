@@ -72,4 +72,14 @@ public interface Network {
      */
     void initUtilityFunction(UtilityFunction utilityFunction);
 
+    /**
+     * Infects a random player.
+     */
+    void infectRandomPlayer();
+
+    /**
+     * Computes a single round of the disease dynamics of the network.
+     */
+    void computeDiseaseDynamics();
+
 }

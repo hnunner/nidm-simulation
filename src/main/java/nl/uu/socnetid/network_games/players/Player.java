@@ -2,6 +2,8 @@ package nl.uu.socnetid.network_games.players;
 
 import java.util.List;
 
+import nl.uu.socnetid.network_games.disease.Disease;
+import nl.uu.socnetid.network_games.disease.InfectionState;
 import nl.uu.socnetid.network_games.utility_functions.UtilityFunction;
 
 /**
@@ -117,5 +119,60 @@ public interface Player extends Comparable<Player> {
 	 * Clean up routine when player is removed from the game.
 	 */
 	void destroy();
+
+	/**
+	 * Gets the state of the infection the player is in.
+	 *
+	 * @return the infection state of the player
+	 */
+	InfectionState getInfectionState();
+
+	/**
+	 * Infects a player with a disease.
+	 *
+	 * @param disease
+	 *         the disease a player gets infected with
+	 */
+	void infect(Disease disease);
+
+	/**
+	 * Computes the transmissions of the disease between the player and
+	 * all of her non-infected connections.
+	 */
+	void computeTransmissions();
+
+    /**
+     * Checks whether a player is infected.
+     *
+     * @return true if player is infected, false otherwise
+     */
+    boolean isInfected();
+
+    /**
+     * Checks whether a player is immune.
+     *
+     * @return true if player is immune, false otherwise
+     */
+    boolean isImmune();
+
+    /**
+     * Checks whether a player is infectious, meaning that this player can
+     * transmit a disease.
+     *
+     * @return true if player is infectious, false otherwise
+     */
+    boolean isInfectious();
+
+	/**
+	 * Checks whether a player has symptoms from a disease.
+	 *
+	 * @return true if player has symptoms, false otherwise
+	 */
+	boolean hasSymptoms();
+
+    /**
+     * Triggers the player to fight the disease.
+     */
+    void fightDisease();
 
 }

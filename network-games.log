@@ -23559,3 +23559,820 @@ Starting simulation round 199
 2017-11-17 11:55:51 DEBUG SimpleNetworkGame:187 - Player 7 is happy with current connections: NO DISCONNECT
 2017-11-17 11:55:51 DEBUG SimpleNetworkGame:165 - Player 7 is happy with current connections: NO CONNECT.
 2017-11-17 11:55:51 DEBUG SimpleNetworkGame:130 - ###############################################################
+2017-11-28 13:50:52 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3not infected.
+player 4not infected.
+player 5not infected.
+player 6not infected.
+
+2017-11-28 13:51:04 DEBUG AbstractNetwork:250 - Player 4 successfully infected with class nl.uu.socnetid.network_games.disease.GenericDisease
+2017-11-28 13:51:09 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3not infected.
+player 4 infected.
+player 5not infected.
+player 6not infected.
+
+2017-11-28 13:51:10 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3not infected.
+player 4 infected.
+player 5not infected.
+player 6not infected.
+
+2017-11-28 13:51:10 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3not infected.
+player 4 infected.
+player 5not infected.
+player 6not infected.
+
+2017-11-28 13:51:11 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3not infected.
+player 4 infected.
+player 5not infected.
+player 6not infected.
+
+2017-11-28 13:51:11 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3not infected.
+player 4 infected.
+player 5not infected.
+player 6not infected.
+
+2017-11-28 13:51:12 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3not infected.
+player 4 infected.
+player 5not infected.
+player 6not infected.
+
+2017-11-28 13:51:12 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3not infected.
+player 4 infected.
+player 5not infected.
+player 6not infected.
+
+2017-11-28 13:51:12 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3not infected.
+player 4 infected.
+player 5not infected.
+player 6not infected.
+
+2017-11-28 13:51:13 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3not infected.
+player 4 infected.
+player 5not infected.
+player 6not infected.
+
+2017-11-28 13:51:13 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3not infected.
+player 4 infected.
+player 5not infected.
+player 6not infected.
+
+2017-11-28 13:51:14 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3not infected.
+player 4not infected.
+player 5not infected.
+player 6not infected.
+
+2017-11-28 13:53:15 DEBUG AbstractNetwork:250 - Player 3 successfully infected with class nl.uu.socnetid.network_games.disease.GenericDisease
+2017-11-28 13:53:18 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3 infected.
+player 4not infected.
+
+2017-11-28 13:53:20 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3 infected.
+player 4not infected.
+
+2017-11-28 13:53:21 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3 infected.
+player 4not infected.
+
+2017-11-28 13:53:22 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3 infected.
+player 4not infected.
+
+2017-11-28 13:53:22 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3 infected.
+player 4not infected.
+
+2017-11-28 13:53:23 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3 infected.
+player 4not infected.
+
+2017-11-28 13:53:24 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3 infected.
+player 4not infected.
+
+2017-11-28 13:53:24 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3 infected.
+player 4not infected.
+
+2017-11-28 13:53:25 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3 infected.
+player 4not infected.
+
+2017-11-28 13:53:25 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3 infected.
+player 4not infected.
+
+2017-11-28 13:53:26 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3not infected.
+player 4not infected.
+
+2017-11-28 13:53:26 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3not infected.
+player 4not infected.
+
+2017-11-28 13:53:28 DEBUG AbstractNetwork:250 - Player 3 successfully infected with class nl.uu.socnetid.network_games.disease.GenericDisease
+2017-11-28 13:53:30 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3 infected.
+player 4not infected.
+
+2017-11-28 13:53:30 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3 infected.
+player 4not infected.
+
+2017-11-28 13:53:31 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3 infected.
+player 4not infected.
+
+2017-11-28 13:53:32 DEBUG AbstractNetwork:250 - Player 4 successfully infected with class nl.uu.socnetid.network_games.disease.GenericDisease
+2017-11-28 13:53:34 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3 infected.
+player 4 infected.
+
+2017-11-28 13:53:34 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3 infected.
+player 4 infected.
+
+2017-11-28 13:53:35 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3 infected.
+player 4 infected.
+
+2017-11-28 13:53:36 DEBUG AbstractNetwork:250 - Player 1 successfully infected with class nl.uu.socnetid.network_games.disease.GenericDisease
+2017-11-28 13:53:37 DEBUG AbstractNetwork:288 - ###############################
+player 1 infected.
+player 2not infected.
+player 3 infected.
+player 4 infected.
+
+2017-11-28 13:53:38 DEBUG AbstractNetwork:250 - Player 2 successfully infected with class nl.uu.socnetid.network_games.disease.GenericDisease
+2017-11-28 13:53:40 DEBUG AbstractNetwork:288 - ###############################
+player 1 infected.
+player 2 infected.
+player 3 infected.
+player 4 infected.
+
+2017-11-28 13:53:41 DEBUG AbstractNetwork:253 - No player infected. All players infected already.
+2017-11-28 13:53:44 DEBUG AbstractNetwork:288 - ###############################
+player 1 infected.
+player 2 infected.
+player 3 infected.
+player 4 infected.
+
+2017-11-28 13:53:45 DEBUG AbstractNetwork:288 - ###############################
+player 1 infected.
+player 2 infected.
+player 3 infected.
+player 4 infected.
+
+2017-11-28 13:53:45 DEBUG AbstractNetwork:288 - ###############################
+player 1 infected.
+player 2 infected.
+player 3not infected.
+player 4 infected.
+
+2017-11-28 13:53:45 DEBUG AbstractNetwork:288 - ###############################
+player 1 infected.
+player 2 infected.
+player 3not infected.
+player 4 infected.
+
+2017-11-28 13:53:46 DEBUG AbstractNetwork:288 - ###############################
+player 1 infected.
+player 2 infected.
+player 3not infected.
+player 4 infected.
+
+2017-11-28 13:53:46 DEBUG AbstractNetwork:288 - ###############################
+player 1 infected.
+player 2 infected.
+player 3not infected.
+player 4not infected.
+
+2017-11-28 13:53:46 DEBUG AbstractNetwork:288 - ###############################
+player 1 infected.
+player 2 infected.
+player 3not infected.
+player 4not infected.
+
+2017-11-28 13:53:47 DEBUG AbstractNetwork:288 - ###############################
+player 1 infected.
+player 2 infected.
+player 3not infected.
+player 4not infected.
+
+2017-11-28 13:53:47 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2 infected.
+player 3not infected.
+player 4not infected.
+
+2017-11-28 13:53:47 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3not infected.
+player 4not infected.
+
+2017-11-28 13:53:47 DEBUG AbstractNetwork:288 - ###############################
+player 1not infected.
+player 2not infected.
+player 3not infected.
+player 4not infected.
+
+2017-11-28 13:54:19 DEBUG AbstractNetwork:250 - Player 4 successfully infected with class nl.uu.socnetid.network_games.disease.GenericDisease
+2017-11-28 13:54:20 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3: not infected.
+player 4:     infected.
+
+2017-11-28 13:54:22 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3: not infected.
+player 4:     infected.
+
+2017-11-28 13:54:23 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3: not infected.
+player 4:     infected.
+
+2017-11-28 13:54:24 DEBUG AbstractNetwork:250 - Player 3 successfully infected with class nl.uu.socnetid.network_games.disease.GenericDisease
+2017-11-28 13:54:24 DEBUG AbstractNetwork:250 - Player 2 successfully infected with class nl.uu.socnetid.network_games.disease.GenericDisease
+2017-11-28 13:54:25 DEBUG AbstractNetwork:250 - Player 1 successfully infected with class nl.uu.socnetid.network_games.disease.GenericDisease
+2017-11-28 13:54:25 DEBUG AbstractNetwork:253 - No player infected. All players infected already.
+2017-11-28 13:54:26 DEBUG AbstractNetwork:253 - No player infected. All players infected already.
+2017-11-28 13:54:26 DEBUG AbstractNetwork:253 - No player infected. All players infected already.
+2017-11-28 13:54:26 DEBUG AbstractNetwork:253 - No player infected. All players infected already.
+2017-11-28 13:54:27 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:54:28 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:54:28 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:54:28 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:54:28 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:54:28 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:54:28 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:54:29 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4: not infected.
+
+2017-11-28 13:54:29 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4: not infected.
+
+2017-11-28 13:54:29 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4: not infected.
+
+2017-11-28 13:54:29 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3: not infected.
+player 4: not infected.
+
+2017-11-28 13:54:30 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3: not infected.
+player 4: not infected.
+
+2017-11-28 13:56:45 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3: not infected.
+player 4: not infected.
+
+2017-11-28 13:56:45 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3: not infected.
+player 4: not infected.
+
+2017-11-28 13:56:45 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3: not infected.
+player 4: not infected.
+
+2017-11-28 13:56:50 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3: not infected.
+player 4: not infected.
+
+2017-11-28 13:56:51 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3: not infected.
+player 4: not infected.
+
+2017-11-28 13:56:52 DEBUG AbstractNetwork:250 - Player 4 successfully infected with class nl.uu.socnetid.network_games.disease.GenericDisease
+2017-11-28 13:56:56 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3: not infected.
+player 4:     infected.
+
+2017-11-28 13:56:57 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:00 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:00 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:01 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:01 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:01 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:01 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:01 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:02 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:02 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4: not infected.
+
+2017-11-28 13:57:02 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4: not infected.
+
+2017-11-28 13:57:02 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3: not infected.
+player 4: not infected.
+
+2017-11-28 13:57:03 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3: not infected.
+player 4: not infected.
+
+2017-11-28 13:57:04 DEBUG AbstractNetwork:250 - Player 1 successfully infected with class nl.uu.socnetid.network_games.disease.GenericDisease
+2017-11-28 13:57:05 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:08 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:08 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:08 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:08 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:08 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:09 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:09 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:09 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:09 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:09 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3: not infected.
+player 4: not infected.
+
+2017-11-28 13:57:09 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3: not infected.
+player 4: not infected.
+
+2017-11-28 13:57:09 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3: not infected.
+player 4: not infected.
+
+2017-11-28 13:57:11 DEBUG AbstractNetwork:250 - Player 1 successfully infected with class nl.uu.socnetid.network_games.disease.GenericDisease
+2017-11-28 13:57:12 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:34 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3: not infected.
+player 4: not infected.
+
+2017-11-28 13:57:35 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3: not infected.
+player 4: not infected.
+
+2017-11-28 13:57:35 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3: not infected.
+player 4: not infected.
+
+2017-11-28 13:57:39 DEBUG AbstractNetwork:250 - Player 3 successfully infected with class nl.uu.socnetid.network_games.disease.GenericDisease
+2017-11-28 13:57:40 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3:     infected.
+player 4: not infected.
+
+2017-11-28 13:57:41 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3:     infected.
+player 4: not infected.
+
+2017-11-28 13:57:42 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:42 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:43 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:44 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:44 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:45 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:45 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:46 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:47 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3: not infected.
+player 4:     infected.
+
+2017-11-28 13:57:47 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3: not infected.
+player 4:     infected.
+
+2017-11-28 13:57:48 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3: not infected.
+player 4: not infected.
+
+2017-11-28 13:57:48 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:49 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:50 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2: not infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:50 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:50 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:51 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:51 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:52 DEBUG AbstractNetwork:288 - ###############################
+player 1:     infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:52 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:52 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2:     infected.
+player 3:     infected.
+player 4:     infected.
+
+2017-11-28 13:57:52 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2:     infected.
+player 3: not infected.
+player 4: not infected.
+
+2017-11-28 13:57:52 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2:     infected.
+player 3: not infected.
+player 4: not infected.
+
+2017-11-28 13:57:53 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2:     infected.
+player 3: not infected.
+player 4: not infected.
+
+2017-11-28 13:57:53 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3: not infected.
+player 4: not infected.
+
+2017-11-28 13:57:53 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3: not infected.
+player 4: not infected.
+
+2017-11-28 13:57:53 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3: not infected.
+player 4: not infected.
+
+2017-11-28 13:57:53 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3: not infected.
+player 4: not infected.
+
+2017-11-28 13:57:53 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3: not infected.
+player 4: not infected.
+
+2017-11-28 13:57:54 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3: not infected.
+player 4: not infected.
+
+2017-11-28 13:57:54 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3: not infected.
+player 4: not infected.
+
+2017-11-28 13:57:54 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3: not infected.
+player 4: not infected.
+
+2017-11-28 13:57:54 DEBUG AbstractNetwork:288 - ###############################
+player 1: not infected.
+player 2: not infected.
+player 3: not infected.
+player 4: not infected.
+
