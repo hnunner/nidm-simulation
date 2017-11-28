@@ -53,7 +53,7 @@ public class NetworkGame {
     private JComboBox<String> edgeWriterCBox;
     private String[] edgeWriters = {"Edge List", "Adjacency Matrix"};
     // spinner for simulation delay
-    JSpinner simulationDelay;
+    private JSpinner simulationDelay;
 
     /**
      * Launch the application.
@@ -200,7 +200,7 @@ public class NetworkGame {
     /**
      * Runs the actual simulation of the network game.
      */
-    public void simulateGame() {
+    private void simulateGame() {
         // initializations
         UtilityFunction utilityFunction = getUtilityFunction();
         this.network.initUtilityFunction(utilityFunction);
