@@ -39,6 +39,12 @@ public abstract class AbstractPlayer implements Player {
     private InfectionState infectionState;
     private Disease disease;
 
+    // simulation delay
+    private int delay;
+
+    // flag indicating whether the player is satisfied with her current connections
+    private boolean satisfied = false;
+
 
     /**
      * Constructor.
@@ -64,6 +70,90 @@ public abstract class AbstractPlayer implements Player {
     public int compareTo(Player p) {
         return (int) (this.getId() - p.getId());
     }
+
+
+
+
+
+    /* (non-Javadoc)
+     * @see java.lang.Runnable#run()
+     */
+    @Override
+    public void run() {
+
+        // some delay before each player moves (e.g., for animation processes)
+        try {
+            Thread.sleep(this.delay * 100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // assumption that current connections are not optimal
+        this.satisfied = false;
+
+        // players try to connect or disconnect first in random order
+        boolean tryToConnectFirst = ThreadLocalRandom.current().nextBoolean();
+
+        // 1st try to connect - 2nd try to disconnect if no new connection desired
+        if (tryToConnectFirst) {
+
+            // try to connect
+            if (!tryToConnect()) {
+                // try to disconnect
+                if (!tryToDisconnect()) {
+                    this.satisfied = true;
+                }
+            }
+
+            // 1st try to disconnect - 2nd try to connect if no disconnection desired
+        } else {
+
+            // try to disconnect
+            if (!tryToDisconnect()) {
+                // try to connect
+                if (!tryToConnect()) {
+                    this.satisfied = true;
+                }
+            }
+        }
+    }
+
+
+    /**
+     * A player tries to connect. That means she first seeks a connection that gives higher
+     * utility as the current utility; and then requests the corresponding player to establish
+     * the new connection.
+     */
+    private boolean tryToConnect() {
+        Player potentialNewConnection = seekNewConnection();
+        if (potentialNewConnection != null) {
+            // other player accepting connection?
+            if (potentialNewConnection.acceptConnection(this)) {
+                addConnection(potentialNewConnection);
+                potentialNewConnection.addConnection(this);
+            }
+        }
+        // the desire to create new connection counts as a move
+        return (potentialNewConnection != null);
+    }
+
+    /**
+     * A player tries to disconnect. That means she seeks a connection that creates more costs
+     * than benefits. In case she finds such a connection, she removes the costly connection.
+     */
+    private boolean tryToDisconnect() {
+        Player costlyConnection = seekCostlyConnection();
+        if (costlyConnection != null) {
+            this.removeConnection(costlyConnection);
+            costlyConnection.removeConnection(this);
+        }
+        // the desire to remove a connection counts as a move
+        return (costlyConnection != null);
+    }
+
+
+
+
 
 
     /* (non-Javadoc)
@@ -94,7 +184,8 @@ public abstract class AbstractPlayer implements Player {
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.players.Player#setUtilityFunction(nl.uu.socnetid.network_games.utility_functions.UtilityFunction)
+     * @see nl.uu.socnetid.network_games.players.Player#setUtilityFunction(
+     * nl.uu.socnetid.network_games.utility_functions.UtilityFunction)
      */
     @Override
     public void setUtilityFunction(UtilityFunction utilityFunction) {
@@ -102,11 +193,27 @@ public abstract class AbstractPlayer implements Player {
     }
 
     /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.players.Player#setDelay(int)
+     */
+    @Override
+    public void setDelay(int delay) {
+        this.delay = delay;
+    }
+
+    /* (non-Javadoc)
      * @see nl.uu.socnetid.network_games.Player#getConnections()
      */
     @Override
     public List<Player> getConnections() {
-        return connections;
+        return this.connections;
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.Player#isSatisfied()
+     */
+    @Override
+    public boolean isSatisfied() {
+        return this.satisfied;
     }
 
     /* (non-Javadoc)

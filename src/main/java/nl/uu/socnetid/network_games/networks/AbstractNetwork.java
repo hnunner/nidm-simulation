@@ -3,7 +3,9 @@ package nl.uu.socnetid.network_games.networks;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.log4j.Logger;
 
@@ -16,6 +18,7 @@ import nl.uu.socnetid.network_games.utility_functions.UtilityFunction;
  */
 public abstract class AbstractNetwork implements Network {
 
+    // logger
     private static final Logger logger = Logger.getLogger(AbstractNetwork.class);
 
     // maximum rounds for the simulation
@@ -23,6 +26,11 @@ public abstract class AbstractNetwork implements Network {
 
     // set of players
     private List<Player> players;
+
+    // concurrency
+    final ExecutorService service = Executors.newCachedThreadPool();
+    final ReentrantLock lock = new ReentrantLock();
+
 
     /**
      * Constructor.
@@ -87,103 +95,29 @@ public abstract class AbstractNetwork implements Network {
 
         // initializations
         boolean networkStable = false;
-        int currentRound = 1;
+        int currentRound = 0;
 
         // loop while network is not stable and maximum simulation rounds not yet reached
-        while (!networkStable && currentRound < maxRounds) {
+        while (!networkStable && currentRound++ < maxRounds) {
 
-            ////////// DISEASE DYNAMICS //////////
+            // disease dynamics
             computeDiseaseDynamics();
 
-            ////////// PLAYER DYNAMICS //////////
-            // flag whether all players are satisfied with the current network (
-            boolean allSatisfied = true;
+            // player dynamics
 
             // players performing action in random order
             Collections.shuffle(this.players);
 
             // each player
+            boolean allSatisfied = true;
             Iterator<Player> playersIt = players.iterator();
             while (playersIt.hasNext()) {
                 Player currPlayer = playersIt.next();
-
-                // some delay before each player moves (e.g., for animation processes)
-                try {
-                    Thread.sleep(delay * 100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                // players try to connect or disconnect first in random order
-                boolean tryToConnectFirst = ThreadLocalRandom.current().nextBoolean();
-
-                // 1st try to connect - 2nd try to disconnect if no new connection desired
-                if (tryToConnectFirst) {
-
-                    // try to connect
-                    if (tryToConnect(currPlayer)) {
-                        allSatisfied = false;
-                    } else {
-                        // try to disconnect
-                        boolean currSatisfied = !tryToDisconnect(currPlayer);
-                        allSatisfied = allSatisfied && currSatisfied;
-                    }
-
-                    // 1st try to disconnect - 2nd try to connect if no disconnection desired
-                } else {
-
-                    // try to disconnect
-                    if (tryToDisconnect(currPlayer)) {
-                        allSatisfied = false;
-                    } else {
-                        // try to connect
-                        boolean currSatisfied = !tryToConnect(currPlayer);
-                        allSatisfied = allSatisfied && currSatisfied;
-                    }
-                }
+                service.submit(currPlayer);
+                allSatisfied &= currPlayer.isSatisfied();
             }
-            networkStable = allSatisfied;
-            currentRound += 1;
+            //networkStable = allSatisfied;
         }
-    }
-
-    /**
-     * A player tries to connect. That means she first seeks a connection that gives higher
-     * utility as the current utility; and then requests the corresponding player to establish
-     * the new connection.
-     *
-     * @param player
-     *          the player trying to find a new valuable connection
-     */
-    private boolean tryToConnect(Player player) {
-        Player potentialNewConnection = player.seekNewConnection();
-        if (potentialNewConnection != null) {
-            // other player accepting connection?
-            if (potentialNewConnection.acceptConnection(player)) {
-                player.addConnection(potentialNewConnection);
-                potentialNewConnection.addConnection(player);
-            }
-        }
-        // the desire to create new connection counts as a move
-        return (potentialNewConnection != null);
-    }
-
-    /**
-     * A player tries to disconnect. That means she seeks a connection that creates more costs
-     * than benefits. In case she finds such a connection, she removes the costly connection.
-     *
-     * @param player
-     *          the player trying to remove a costly connection
-     */
-    private boolean tryToDisconnect(Player player) {
-        Player costlyConnection = player.seekCostlyConnection();
-        if (costlyConnection != null) {
-            player.removeConnection(costlyConnection);
-            costlyConnection.removeConnection(player);
-        }
-
-        // the desire to remove a connection counts as a move
-        return (costlyConnection != null);
     }
 
     /* (non-Javadoc)
@@ -215,13 +149,25 @@ public abstract class AbstractNetwork implements Network {
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.networks.Network#initUtilityFunction(nl.uu.socnetid.network_games.utility_functions.UtilityFunction)
+     * @see nl.uu.socnetid.network_games.networks.Network#initUtilityFunction(nl.uu.socnetid.network_games.
+     * utility_functions.UtilityFunction)
      */
     @Override
     public void initUtilityFunction(UtilityFunction utilityFunction) {
         Iterator<Player> playersIt = this.players.iterator();
         while (playersIt.hasNext()) {
             playersIt.next().setUtilityFunction(utilityFunction);
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.networks.Network#initDelay(int)
+     */
+    @Override
+    public void initSimulationDelay(int delay) {
+        Iterator<Player> playersIt = this.players.iterator();
+        while (playersIt.hasNext()) {
+            playersIt.next().setDelay(delay);
         }
     }
 

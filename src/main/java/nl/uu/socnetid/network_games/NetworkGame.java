@@ -56,6 +56,8 @@ public class NetworkGame {
     // spinner for simulation delay
     private JSpinner simulationDelay;
 
+
+
     /**
      * Launch the application.
      *
@@ -232,6 +234,7 @@ public class NetworkGame {
         // initializations
         UtilityFunction utilityFunction = getUtilityFunction();
         this.network.initUtilityFunction(utilityFunction);
+        this.network.initSimulationDelay((Integer) this.simulationDelay.getValue());
 
         // simulation
         int delay = (Integer) this.simulationDelay.getValue();

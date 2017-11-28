@@ -73,6 +73,14 @@ public interface Network {
     void initUtilityFunction(UtilityFunction utilityFunction);
 
     /**
+     * Initializes the delay for the simulation.
+     *
+     * @param delay
+     *          the delay
+     */
+    void initSimulationDelay(int delay);
+
+    /**
      * Infects a random player.
      */
     void infectRandomPlayer();

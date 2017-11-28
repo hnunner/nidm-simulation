@@ -11,7 +11,7 @@ import nl.uu.socnetid.network_games.utility_functions.UtilityFunction;
  *
  * @author Hendrik Nunner
  */
-public interface Player extends Comparable<Player> {
+public interface Player extends Comparable<Player>, Runnable {
 
     /**
      * Initializes the player's list of co-players.
@@ -33,7 +33,14 @@ public interface Player extends Comparable<Player> {
      *
      * @return the player's current utility
      */
-    public double getUtility();
+    double getUtility();
+
+    /**
+     * Check whether a player is satisfied with the current connections.
+     *
+     * @return true if no connections want to be added or removed, false otherwise
+     */
+    boolean isSatisfied();
 
     /**
      * Sets the utility function.
@@ -42,6 +49,14 @@ public interface Player extends Comparable<Player> {
      *          the utility function to set
      */
     public void setUtilityFunction(UtilityFunction utilityFunction);
+
+    /**
+     * Sets the delay.
+     *
+     * @param delay
+     *          the delay
+     */
+    public void setDelay(int delay);
 
     /**
      * Gets the connections of the player.
