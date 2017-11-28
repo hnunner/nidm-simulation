@@ -1,6 +1,7 @@
 package nl.uu.socnetid.network_games.players;
 
 import java.util.List;
+import java.util.concurrent.locks.Lock;
 
 import nl.uu.socnetid.network_games.disease.Disease;
 import nl.uu.socnetid.network_games.disease.InfectionState;
@@ -57,6 +58,8 @@ public interface Player extends Comparable<Player>, Runnable {
      *          the delay
      */
     public void setDelay(int delay);
+
+    void setLock(Lock lock);
 
     /**
      * Gets the connections of the player.

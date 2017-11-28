@@ -28,7 +28,7 @@ public abstract class AbstractNetwork implements Network {
     private List<Player> players;
 
     // concurrency
-    final ExecutorService service = Executors.newCachedThreadPool();
+    ExecutorService service;
     final ReentrantLock lock = new ReentrantLock();
 
 
@@ -90,6 +90,8 @@ public abstract class AbstractNetwork implements Network {
     @Override
     public void simulate(int maxRounds, int delay) {
 
+        service = Executors.newFixedThreadPool(this.players.size());
+
         // for !RE!-starting the simulation
         clearConnections();
 
@@ -100,11 +102,12 @@ public abstract class AbstractNetwork implements Network {
         // loop while network is not stable and maximum simulation rounds not yet reached
         while (!networkStable && currentRound++ < maxRounds) {
 
+            logger.debug("Simulate round " + currentRound);
+
             // disease dynamics
             computeDiseaseDynamics();
 
             // player dynamics
-
             // players performing action in random order
             Collections.shuffle(this.players);
 
@@ -113,6 +116,10 @@ public abstract class AbstractNetwork implements Network {
             Iterator<Player> playersIt = players.iterator();
             while (playersIt.hasNext()) {
                 Player currPlayer = playersIt.next();
+                currPlayer.setLock(this.lock);
+
+
+
                 service.submit(currPlayer);
                 allSatisfied &= currPlayer.isSatisfied();
             }

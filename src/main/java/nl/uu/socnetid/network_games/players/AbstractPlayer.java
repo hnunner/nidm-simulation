@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Lock;
 
 import org.apache.log4j.Logger;
 
@@ -46,6 +47,9 @@ public abstract class AbstractPlayer implements Player {
     private boolean satisfied = false;
 
 
+    private Lock lock;
+
+
     /**
      * Constructor.
      */
@@ -74,47 +78,54 @@ public abstract class AbstractPlayer implements Player {
 
 
 
+    public void setLock(Lock lock) {
+        this.lock = lock;
+    }
+
 
     /* (non-Javadoc)
      * @see java.lang.Runnable#run()
      */
     @Override
     public void run() {
-
-        // some delay before each player moves (e.g., for animation processes)
-        try {
-            Thread.sleep(this.delay * 100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         // assumption that current connections are not optimal
         this.satisfied = false;
 
-        // players try to connect or disconnect first in random order
-        boolean tryToConnectFirst = ThreadLocalRandom.current().nextBoolean();
+        try {
+            lock.lock();
 
-        // 1st try to connect - 2nd try to disconnect if no new connection desired
-        if (tryToConnectFirst) {
+            // some delay before each player moves (e.g., for animation processes)
+            Thread.sleep(this.delay * 100);
 
-            // try to connect
-            if (!tryToConnect()) {
-                // try to disconnect
-                if (!tryToDisconnect()) {
-                    this.satisfied = true;
-                }
-            }
+            // players try to connect or disconnect first in random order
+            boolean tryToConnectFirst = ThreadLocalRandom.current().nextBoolean();
 
-            // 1st try to disconnect - 2nd try to connect if no disconnection desired
-        } else {
+            // 1st try to connect - 2nd try to disconnect if no new connection desired
+            if (tryToConnectFirst) {
 
-            // try to disconnect
-            if (!tryToDisconnect()) {
                 // try to connect
                 if (!tryToConnect()) {
-                    this.satisfied = true;
+                    // try to disconnect
+                    if (!tryToDisconnect()) {
+                        this.satisfied = true;
+                    }
+                }
+
+                // 1st try to disconnect - 2nd try to connect if no disconnection desired
+            } else {
+
+                // try to disconnect
+                if (!tryToDisconnect()) {
+                    // try to connect
+                    if (!tryToConnect()) {
+                        this.satisfied = true;
+                    }
                 }
             }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            lock.unlock();
         }
     }
 
