@@ -5,6 +5,9 @@ import java.util.Collections;
 
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
+
+import nl.uu.socnetid.network_games.disease.Disease;
 
 /**
  * @author Hendrik Nunner
@@ -101,6 +104,28 @@ public class RationalPlayerNode extends RationalPlayer implements Player {
     @Override
     public void destroy() {
         this.graph.removeNode(String.valueOf(getId()));
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.players.Player#fightDisease()
+     */
+    @Override
+    public void fightDisease() {
+        super.fightDisease();
+        if (!this.isInfected()) {
+            Node node = this.graph.getNode(String.valueOf(getId()));
+            node.removeAttribute("ui.class");
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.players.Player#infect(nl.uu.socnetid.network_games.disease.Disease)
+     */
+    @Override
+    public void infect(Disease disease) {
+        super.infect(disease);
+        Node node = this.graph.getNode(String.valueOf(getId()));
+        node.addAttribute("ui.class", "infected");
     }
 
 }

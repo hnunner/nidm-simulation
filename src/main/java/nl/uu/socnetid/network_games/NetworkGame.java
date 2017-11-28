@@ -3,6 +3,7 @@ package nl.uu.socnetid.network_games;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -187,6 +188,13 @@ public class NetworkGame {
 
         // init graphstream
         this.graph = new SingleGraph("NetworkGames");
+        // graph-stream CSS styles and rendering properties
+        graph.addAttribute("ui.quality");
+        graph.addAttribute("ui.antialias");
+        URL gsStyles = this.getClass().getClassLoader().getResource("graph-stream.css");
+        graph.addAttribute("ui.stylesheet", "url('file:" + gsStyles.getPath() + "')");
+        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
+        // show
         this.graph.display();
 
         // init network
