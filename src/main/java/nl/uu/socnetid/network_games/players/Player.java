@@ -52,13 +52,11 @@ public interface Player extends Comparable<Player>, Runnable {
     public void setUtilityFunction(UtilityFunction utilityFunction);
 
     /**
-     * Sets the delay.
+     * Sets the lock required to synchronize threaded players.
      *
-     * @param delay
-     *          the delay
+     * @param lock
+     *          the lock used to synchronize threaded players.
      */
-    public void setDelay(int delay);
-
     void setLock(Lock lock);
 
     /**
