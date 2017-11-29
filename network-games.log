@@ -120431,3 +120431,23 @@ player 4: not infected.
 2017-11-28 18:35:42 DEBUG AbstractNetwork:141 - Network stable after 4 rounds.
 2017-11-28 18:36:13 DEBUG AbstractNetwork:130 - Network stable after 230 rounds.
 2017-11-29 12:31:04 DEBUG AbstractNetwork:130 - Network stable after 114 rounds.
+2017-11-29 12:37:34 DEBUG AbstractNetwork:130 - Network stable after 25 rounds.
+2017-11-29 16:14:46 DEBUG AbstractNetwork:126 - Simulation stopped after 0 rounds.
+2017-11-29 16:15:02 DEBUG AbstractNetwork:126 - Simulation stopped after 0 rounds.
+2017-11-29 16:18:09 DEBUG AbstractNetwork:126 - Simulation stopped after 0 rounds.
+2017-11-29 16:21:38 DEBUG AbstractNetwork:133 - Simulation stopped after 0 rounds.
+2017-11-29 16:22:50 DEBUG AbstractNetwork:136 - Simulation stopped after 1254374 rounds.
+2017-11-29 16:42:43 DEBUG AbstractNetwork:153 - Simulation stopped after 68 rounds. Network was stable.
+2017-11-29 16:42:48 DEBUG AbstractNetwork:153 - Simulation stopped after 49 rounds. Network was stable.
+2017-11-29 16:43:02 DEBUG AbstractNetwork:153 - Simulation stopped after 0 rounds. Network was not yet stable.
+2017-11-29 16:47:34 DEBUG AbstractNetwork:159 - Simulation stopped after 51 rounds. Network was stable.
+2017-11-29 16:47:49 DEBUG AbstractNetwork:159 - Simulation stopped after 1 rounds. Network was not yet stable.
+2017-11-29 16:49:06 DEBUG AbstractNetwork:160 - Simulation stopped after 6 players in round 116. Network was stable.
+2017-11-29 16:49:24 DEBUG AbstractNetwork:160 - Simulation stopped after 4 players in round 0. Network was not yet stable.
+2017-11-29 16:50:09 DEBUG AbstractNetwork:160 - Simulation stopped after 4 players in round 4. Network was not yet stable.
+2017-11-29 16:50:23 DEBUG AbstractNetwork:160 - Simulation stopped after 6 players in round 5. Network was stable.
+2017-11-29 16:51:14 DEBUG AbstractNetwork:160 - Simulation stopped after 7 players in round 8. Network was stable.
+2017-11-29 17:22:52 DEBUG AbstractNetwork:160 - Simulation stopped after 4 players in round 62. Network was stable.
+2017-11-29 17:22:58 DEBUG AbstractNetwork:160 - Simulation stopped after 7 players in round 57. Network was stable.
+2017-11-29 17:23:18 DEBUG AbstractNetwork:160 - Simulation stopped after 7 players in round 5. Network was stable.
+2017-11-29 17:23:27 DEBUG AbstractNetwork:160 - Simulation stopped after 4 players in round 3. Network was stable.

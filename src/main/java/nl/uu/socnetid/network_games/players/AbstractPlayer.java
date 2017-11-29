@@ -40,13 +40,10 @@ public abstract class AbstractPlayer implements Player {
     private InfectionState infectionState;
     private Disease disease;
 
-    // simulation delay
-    private int delay;
-
     // flag indicating whether the player is satisfied with her current connections
     private boolean satisfied = false;
 
-
+    // concurrency lock
     private Lock lock;
 
 
@@ -75,13 +72,13 @@ public abstract class AbstractPlayer implements Player {
         return (int) (this.getId() - p.getId());
     }
 
-
-
-
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.Player#setLock()
+     */
+    @Override
     public void setLock(Lock lock) {
         this.lock = lock;
     }
-
 
     /* (non-Javadoc)
      * @see java.lang.Runnable#run()
@@ -95,7 +92,7 @@ public abstract class AbstractPlayer implements Player {
         try {
 
             // some delay before each player moves (e.g., for animation processes)
-            Thread.sleep(this.delay * 100);
+            //Thread.sleep(this.delay * 100);
 
             // players try to connect or disconnect first in random order
             boolean tryToConnectFirst = ThreadLocalRandom.current().nextBoolean();
@@ -201,14 +198,6 @@ public abstract class AbstractPlayer implements Player {
     @Override
     public void setUtilityFunction(UtilityFunction utilityFunction) {
         this.utilityFunction = utilityFunction;
-    }
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.players.Player#setDelay(int)
-     */
-    @Override
-    public void setDelay(int delay) {
-        this.delay = delay;
     }
 
     /* (non-Javadoc)
