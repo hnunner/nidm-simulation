@@ -6,6 +6,9 @@ import java.awt.event.ActionListener;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -36,7 +39,7 @@ public class NetworkGame {
     private static final String EXPORT_PATH = "./network-exports/";
 
     // network
-    private Network network;
+    private final Network network = new SimpleNetwork();
     // graph
     private Graph graph;
 
@@ -55,6 +58,10 @@ public class NetworkGame {
     private String[] edgeWriters = {"Edge List", "Adjacency Matrix"};
     // spinner for simulation delay
     private JSpinner simulationDelay;
+
+    // concurrency for simulation
+    private ExecutorService simulationExecutor = Executors.newSingleThreadExecutor();
+    private Future<?> simulationTask;
 
 
 
@@ -92,7 +99,7 @@ public class NetworkGame {
     private void initialize() {
         // init swing frame
         frame = new JFrame();
-        frame.setBounds(100, 100, 270, 536);
+        frame.setBounds(100, 100, 430, 680);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null);
 
@@ -100,7 +107,7 @@ public class NetworkGame {
         btnStart.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                simulateGame();
+                startSimulation();
             }
         });
         btnStart.setBounds(30, 145, 142, 45);
@@ -157,15 +164,15 @@ public class NetworkGame {
         for (int i = 0; i < utilityFunctions.length; i++) {
             utilityFunctionCBox.addItem(utilityFunctions[i]);
         }
-        utilityFunctionCBox.setBounds(16, 202, 166, 27);
+        utilityFunctionCBox.setBounds(28, 201, 166, 27);
         frame.getContentPane().add(utilityFunctionCBox);
 
         simulationDelay = new JSpinner();
-        simulationDelay.setBounds(128, 241, 44, 26);
+        simulationDelay.setBounds(140, 240, 44, 26);
         frame.getContentPane().add(simulationDelay);
 
         JLabel simulationDelayLabel = new JLabel("Simulation delay:");
-        simulationDelayLabel.setBounds(16, 246, 126, 16);
+        simulationDelayLabel.setBounds(28, 245, 126, 16);
         frame.getContentPane().add(simulationDelayLabel);
 
         JButton btnInfectPlayer = new JButton("Infect Player");
@@ -188,6 +195,16 @@ public class NetworkGame {
         btnComputeTransmissions.setBounds(30, 357, 197, 29);
         frame.getContentPane().add(btnComputeTransmissions);
 
+        JButton btnStopSimulation = new JButton("Stop Simulation");
+        btnStopSimulation.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                stopSimulation();
+            }
+        });
+        btnStopSimulation.setBounds(198, 145, 126, 45);
+        frame.getContentPane().add(btnStopSimulation);
+
         // init graphstream
         this.graph = new SingleGraph("NetworkGames");
         // graph-stream CSS styles and rendering properties
@@ -198,9 +215,6 @@ public class NetworkGame {
         System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
         // show
         this.graph.display();
-
-        // init network
-        this.network = new SimpleNetwork();
     }
 
 
@@ -230,16 +244,23 @@ public class NetworkGame {
     /**
      * Runs the actual simulation of the network game.
      */
-    private void simulateGame() {
+    private void startSimulation() {
         // initializations
         UtilityFunction utilityFunction = getUtilityFunction();
         this.network.initUtilityFunction(utilityFunction);
         this.network.initSimulationDelay((Integer) this.simulationDelay.getValue());
 
-        // simulation
-        int delay = (Integer) this.simulationDelay.getValue();
-        this.network.simulate(5000, delay);
-        //this.network.simulate();
+        if (simulationTask != null) {
+            simulationTask.cancel(true);
+        }
+        simulationTask = simulationExecutor.submit(this.network);
+    }
+
+    /**
+     * Stops the simulation of the network game.
+     */
+    private void stopSimulation() {
+        simulationTask.cancel(true);
     }
 
     /**

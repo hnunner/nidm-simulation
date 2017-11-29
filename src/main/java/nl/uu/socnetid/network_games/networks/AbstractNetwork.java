@@ -21,15 +21,18 @@ public abstract class AbstractNetwork implements Network {
     // logger
     private static final Logger logger = Logger.getLogger(AbstractNetwork.class);
 
-    // maximum rounds for the simulation
-    private static final int MAX_ROUNDS = 5000;
-
     // set of players
     private List<Player> players;
+    // flag indicating whether all players are happy with their current connections
+    boolean networkStable = false;
+
+    // simulation delay
+    private int delay = 0;
 
     // concurrency
-    ExecutorService service;
-    final ReentrantLock lock = new ReentrantLock();
+    private ExecutorService service;
+    private final ReentrantLock lock = new ReentrantLock();
+
 
 
     /**
@@ -77,18 +80,10 @@ public abstract class AbstractNetwork implements Network {
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.networks.Network#simulate()
+     * @see java.lang.Runnable#run()
      */
     @Override
-    public void simulate() {
-        simulate(MAX_ROUNDS, 0);
-    }
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.networks.Network#simulate(int, int)
-     */
-    @Override
-    public void simulate(int maxRounds, int delay) {
+    public void run() {
 
         service = Executors.newFixedThreadPool(this.players.size());
 
@@ -96,11 +91,11 @@ public abstract class AbstractNetwork implements Network {
         clearConnections();
 
         // initializations
-        boolean networkStable = false;
+        this.networkStable = false;
         int currentRound = 0;
 
         // loop while network is not stable and maximum simulation rounds not yet reached
-        while (!networkStable && currentRound++ < maxRounds) {
+        while (!this.networkStable) {
 
             // disease dynamics
             computeDiseaseDynamics();
@@ -110,25 +105,59 @@ public abstract class AbstractNetwork implements Network {
             Collections.shuffle(this.players);
 
             // each player
-            Iterator<Player> playersIt = players.iterator();
+            int currentPlayer = 0;
+            Iterator<Player> playersIt = this.players.iterator();
             while (playersIt.hasNext()) {
+
+                // some delay before each player moves (e.g., for animation processes)
+                try {
+                    Thread.sleep(this.delay * 100);
+                } catch (InterruptedException e) {
+                    logStopMessage(currentPlayer, currentRound);
+                    return;
+                }
+
                 Player currPlayer = playersIt.next();
                 currPlayer.setLock(this.lock);
                 service.submit(currPlayer);
+                currentPlayer++;
             }
 
-            playersIt = players.iterator();
+            playersIt = this.players.iterator();
             boolean allSatisfied = true;
             while (playersIt.hasNext()) {
                 Player currPlayer = playersIt.next();
                 allSatisfied &= currPlayer.isSatisfied();
             }
-            networkStable = allSatisfied;
-        }
+            this.networkStable = allSatisfied;
+            currentRound++;
 
-        if (networkStable) {
-            logger.debug("Network stable after " + currentRound + " rounds.");
+            if (Thread.currentThread().isInterrupted()) {
+                logStopMessage(this.players.size(), currentRound);
+                return;
+            }
         }
+        logStopMessage(this.players.size(), currentRound);
+    }
+
+    /**
+     * Logs a message at the end of the simulation.
+     *
+     * @param lastPlayerInRound
+     *          the amount of players performing an action in the current round
+     * @param lastRound
+     *          the round the simulation has stopped
+     */
+    private void logStopMessage(int lastPlayerInRound, int lastRound) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Simulation stopped after ").append(lastPlayerInRound).append(" players in round ")
+                .append(lastRound).append(". Network was ");
+        if (networkStable) {
+            sb.append("stable.");
+        } else {
+            sb.append("not yet stable.");
+        }
+        logger.debug(sb.toString());
     }
 
     /* (non-Javadoc)
@@ -176,10 +205,7 @@ public abstract class AbstractNetwork implements Network {
      */
     @Override
     public void initSimulationDelay(int delay) {
-        Iterator<Player> playersIt = this.players.iterator();
-        while (playersIt.hasNext()) {
-            playersIt.next().setDelay(delay);
-        }
+        this.delay = delay;
     }
 
     /* (non-Javadoc)
