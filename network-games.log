@@ -120430,3 +120430,4 @@ player 4: not infected.
 2017-11-28 18:35:27 DEBUG AbstractNetwork:141 - Network stable after 3 rounds.
 2017-11-28 18:35:42 DEBUG AbstractNetwork:141 - Network stable after 4 rounds.
 2017-11-28 18:36:13 DEBUG AbstractNetwork:130 - Network stable after 230 rounds.
+2017-11-29 12:31:04 DEBUG AbstractNetwork:130 - Network stable after 114 rounds.
