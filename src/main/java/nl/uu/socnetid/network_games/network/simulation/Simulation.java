@@ -6,7 +6,7 @@ package nl.uu.socnetid.network_games.network.simulation;
 public interface Simulation {
 
     /**
-     * Adds a listener to be notified once a simulation is finished.
+     * Adds a listener to be notified when a simulation event occurs.
      *
      * @param listener
      *          the listener to be notified
@@ -14,7 +14,7 @@ public interface Simulation {
     void addListener(final SimulationCompleteListener listener);
 
     /**
-     * Removes a listener used to be notified once a simulation is finished.
+     * Removes a listener.
      *
      * @param listener
      *          the listener to be removed

@@ -6,11 +6,11 @@ package nl.uu.socnetid.network_games.network.simulation;
 public interface SimulationCompleteListener {
 
     /**
-     * Entry point for notification of completed simulation routines.
+     * Entry point for completed simulation notification.
      *
      * @param simulation
-     *          the completed simulation
+     *          the finished simulation
      */
-    void notifyOfSimulationComplete(final Simulation simulation);
+    void notify(final Simulation simulation);
 
 }

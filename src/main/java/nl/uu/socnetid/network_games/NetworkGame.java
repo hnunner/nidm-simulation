@@ -16,11 +16,15 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
+import javax.swing.JToggleButton;
 
 import org.apache.log4j.Logger;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.ui.view.Viewer;
 
+import nl.uu.socnetid.network_games.events.gui.NodeClick;
+import nl.uu.socnetid.network_games.events.gui.NodeClickListener;
 import nl.uu.socnetid.network_games.network.io.NetworkFileWriter;
 import nl.uu.socnetid.network_games.network.networks.Network;
 import nl.uu.socnetid.network_games.network.networks.SimpleNetwork;
@@ -37,7 +41,7 @@ import nl.uu.socnetid.network_games.utility_functions.UtilityFunction;
 /**
  * @author Hendrik Nunner
  */
-public class NetworkGame implements SimulationCompleteListener {
+public class NetworkGame implements SimulationCompleteListener, NodeClickListener {
 
     // general export path
     private static final String EXPORT_PATH = "./network-exports/";
@@ -48,7 +52,6 @@ public class NetworkGame implements SimulationCompleteListener {
     private Graph graph;
 
     // logger
-    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(NetworkGame.class);
 
     // swing components
@@ -62,8 +65,11 @@ public class NetworkGame implements SimulationCompleteListener {
     private String[] edgeWriters = {"Edge List", "Adjacency Matrix"};
     // spinner for simulation delay
     private JSpinner simulationDelay;
+    // toggle button for player infections
+    JToggleButton tglbtnToggleInfection;
 
     // concurrency for simulation
+    private ExecutorService nodeClickExecutor = Executors.newSingleThreadExecutor();
     private ExecutorService simulationExecutor = Executors.newSingleThreadExecutor();
     private Future<?> simulationTask;
 
@@ -103,7 +109,7 @@ public class NetworkGame implements SimulationCompleteListener {
     private void initialize() {
         // init swing frame
         frame = new JFrame();
-        frame.setBounds(100, 100, 430, 680);
+        frame.setBounds(100, 100, 250, 580);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null);
 
@@ -186,7 +192,7 @@ public class NetworkGame implements SimulationCompleteListener {
                 infectPlayer();
             }
         });
-        btnInfectPlayer.setBounds(30, 316, 197, 29);
+        btnInfectPlayer.setBounds(30, 383, 197, 29);
         frame.getContentPane().add(btnInfectPlayer);
 
         JButton btnStopSimulation = new JButton("Stop Simulation");
@@ -196,19 +202,27 @@ public class NetworkGame implements SimulationCompleteListener {
                 stopSimulation();
             }
         });
-        btnStopSimulation.setBounds(198, 145, 126, 45);
+        btnStopSimulation.setBounds(46, 278, 126, 45);
         frame.getContentPane().add(btnStopSimulation);
+
+        tglbtnToggleInfection = new JToggleButton("Toggle Infection");
+        tglbtnToggleInfection.setBounds(73, 351, 126, 20);
+        frame.getContentPane().add(tglbtnToggleInfection);
 
         // init graphstream
         this.graph = new SingleGraph("NetworkGames");
         // graph-stream CSS styles and rendering properties
-        graph.addAttribute("ui.quality");
-        graph.addAttribute("ui.antialias");
+        this.graph.addAttribute("ui.quality");
+        this.graph.addAttribute("ui.antialias");
         URL gsStyles = this.getClass().getClassLoader().getResource("graph-stream.css");
-        graph.addAttribute("ui.stylesheet", "url('file:" + gsStyles.getPath() + "')");
+        this.graph.addAttribute("ui.stylesheet", "url('file:" + gsStyles.getPath() + "')");
         System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
         // show
-        this.graph.display();
+        Viewer viewer = this.graph.display();
+        // init click listener
+        NodeClick nodeClickListener = new NodeClick(graph, viewer);
+        nodeClickListener.addListener(this);
+        this.nodeClickExecutor.submit(nodeClickListener);
     }
 
 
@@ -216,6 +230,7 @@ public class NetworkGame implements SimulationCompleteListener {
      * Adds a player to the game.
      */
     private void addPlayer() {
+//        this.fromViewer.pump();
         this.network.addPlayer(RationalPlayerNode.newInstance(this.graph));
     }
 
@@ -239,6 +254,9 @@ public class NetworkGame implements SimulationCompleteListener {
      * Runs the actual simulation of the network game.
      */
     private void startSimulation() {
+
+//        this.fromViewer.pump();
+
         // initializations
         UtilityFunction utilityFunction = getUtilityFunction();
         NetworkSimulation networkSimulation = new NetworkSimulation(this.network);
@@ -309,12 +327,23 @@ public class NetworkGame implements SimulationCompleteListener {
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.network.simulation.SimulationCompleteListener#notifyOfSimulationComplete(nl.uu.socnetid.network_games.network.simulation.Simulation)
+     * @see nl.uu.socnetid.network_games.network.simulation.SimulationCompleteListener#notify(
+     * nl.uu.socnetid.network_games.network.simulation.Simulation)
      */
     @Override
-    public void notifyOfSimulationComplete(Simulation simulation) {
+    public void notify(Simulation simulation) {
         logger.debug("Simulation completed.");
         JOptionPane.showMessageDialog(null, simulation.getStatusMessage());
     }
 
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.events.gui.NodeClickListener#notify(
+     * nl.uu.socnetid.network_games.events.gui.NodeClick)
+     */
+    @Override
+    public void notify(NodeClick nodeClick) {
+        if (tglbtnToggleInfection.isSelected()) {
+            this.network.infectPlayer(nodeClick.getClickedNodeId());
+        }
+    }
 }
