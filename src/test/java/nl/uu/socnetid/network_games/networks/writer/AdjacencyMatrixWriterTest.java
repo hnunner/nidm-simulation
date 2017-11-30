@@ -10,8 +10,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import nl.uu.socnetid.network_games.networks.Network;
-import nl.uu.socnetid.network_games.networks.SimpleNetwork;
+import nl.uu.socnetid.network_games.network.networks.Network;
+import nl.uu.socnetid.network_games.network.networks.SimpleNetwork;
+import nl.uu.socnetid.network_games.network.writer.AdjacencyMatrixWriter;
+import nl.uu.socnetid.network_games.network.writer.NetworkWriter;
 import nl.uu.socnetid.network_games.players.Player;
 import nl.uu.socnetid.network_games.players.RationalPlayer;
 import nl.uu.socnetid.network_games.utility_functions.CumulativeUtilityFunction;
