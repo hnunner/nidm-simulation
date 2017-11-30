@@ -115,7 +115,7 @@ public class NetworkSimulation implements Runnable, Simulation {
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.network_games.network.simulation.Simulation#addListener(
-     * nl.uu.socnetid.network_games.SimulationCompleteListener)
+     * nl.uu.socnetid.network_games.SimulationListener)
      */
     @Override
     public void addListener(SimulationCompleteListener listener) {
@@ -124,7 +124,7 @@ public class NetworkSimulation implements Runnable, Simulation {
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.network_games.network.simulation.Simulation#removeListener(
-     * nl.uu.socnetid.network_games.SimulationCompleteListener)
+     * nl.uu.socnetid.network_games.SimulationListener)
      */
     @Override
     public void removeListener(SimulationCompleteListener listener) {
@@ -161,7 +161,7 @@ public class NetworkSimulation implements Runnable, Simulation {
     private final void notifyListeners() {
         Iterator<SimulationCompleteListener> listenersIt = this.listeners.iterator();
         while (listenersIt.hasNext()) {
-            listenersIt.next().notifyOfSimulationComplete(this);
+            listenersIt.next().notify(this);
         }
     }
 

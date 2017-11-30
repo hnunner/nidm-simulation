@@ -111,14 +111,25 @@ public abstract class AbstractNetwork implements Network {
         Iterator<Player> playersIt = players.iterator();
         while (playersIt.hasNext()) {
             Player player = playersIt.next();
-
             if (player.isInfected()) {
                 continue;
             }
-
-            GenericDisease disease = new GenericDisease();
-            player.infect(disease);
+            player.infect(new GenericDisease());
             return;
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.network.networks.Network#infectPlayer(long)
+     */
+    @Override
+    public void infectPlayer(long id) {
+        Iterator<Player> playersIt = this.players.iterator();
+        while (playersIt.hasNext()) {
+            Player player = playersIt.next();
+            if (player.getId() == id) {
+                player.infect(new GenericDisease());
+            }
         }
     }
 

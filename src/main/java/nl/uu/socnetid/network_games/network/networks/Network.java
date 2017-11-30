@@ -48,4 +48,12 @@ public interface Network {
      */
     void infectRandomPlayer();
 
+    /**
+     * Infects a specific player.
+     *
+     * @param id
+     *          the id of the player to be infectd
+     */
+    void infectPlayer(long id);
+
 }
