@@ -1,4 +1,4 @@
-package nl.uu.socnetid.network_games.networks;
+package nl.uu.socnetid.network_games.network.networks;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -9,6 +9,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import nl.uu.socnetid.network_games.network.networks.Network;
+import nl.uu.socnetid.network_games.network.networks.SimpleNetwork;
 import nl.uu.socnetid.network_games.players.Player;
 import nl.uu.socnetid.network_games.players.RationalPlayer;
 import nl.uu.socnetid.network_games.utility_functions.CumulativeUtilityFunction;

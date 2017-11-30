@@ -1,6 +1,6 @@
-package nl.uu.socnetid.network_games.networks.writer;
+package nl.uu.socnetid.network_games.network.writer;
 
-import nl.uu.socnetid.network_games.networks.Network;
+import nl.uu.socnetid.network_games.network.networks.Network;
 
 /**
  *
