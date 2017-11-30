@@ -1,4 +1,4 @@
-package nl.uu.socnetid.network_games.networks.io;
+package nl.uu.socnetid.network_games.network.io;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -7,8 +7,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import nl.uu.socnetid.network_games.networks.Network;
-import nl.uu.socnetid.network_games.networks.writer.NetworkWriter;
+import nl.uu.socnetid.network_games.network.networks.Network;
+import nl.uu.socnetid.network_games.network.writer.NetworkWriter;
 
 /**
  * @author Hendrik Nunner

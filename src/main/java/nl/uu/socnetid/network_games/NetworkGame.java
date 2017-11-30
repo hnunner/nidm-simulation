@@ -14,18 +14,22 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 
 import org.apache.log4j.Logger;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.SingleGraph;
 
-import nl.uu.socnetid.network_games.networks.Network;
-import nl.uu.socnetid.network_games.networks.SimpleNetwork;
-import nl.uu.socnetid.network_games.networks.io.NetworkFileWriter;
-import nl.uu.socnetid.network_games.networks.writer.AdjacencyMatrixWriter;
-import nl.uu.socnetid.network_games.networks.writer.EdgeListWriter;
-import nl.uu.socnetid.network_games.networks.writer.NetworkWriter;
+import nl.uu.socnetid.network_games.network.io.NetworkFileWriter;
+import nl.uu.socnetid.network_games.network.networks.Network;
+import nl.uu.socnetid.network_games.network.networks.SimpleNetwork;
+import nl.uu.socnetid.network_games.network.simulation.NetworkSimulation;
+import nl.uu.socnetid.network_games.network.simulation.Simulation;
+import nl.uu.socnetid.network_games.network.simulation.SimulationCompleteListener;
+import nl.uu.socnetid.network_games.network.writer.AdjacencyMatrixWriter;
+import nl.uu.socnetid.network_games.network.writer.EdgeListWriter;
+import nl.uu.socnetid.network_games.network.writer.NetworkWriter;
 import nl.uu.socnetid.network_games.players.RationalPlayerNode;
 import nl.uu.socnetid.network_games.utility_functions.CumulativeUtilityFunction;
 import nl.uu.socnetid.network_games.utility_functions.UtilityFunction;
@@ -33,7 +37,7 @@ import nl.uu.socnetid.network_games.utility_functions.UtilityFunction;
 /**
  * @author Hendrik Nunner
  */
-public class NetworkGame {
+public class NetworkGame implements SimulationCompleteListener {
 
     // general export path
     private static final String EXPORT_PATH = "./network-exports/";
@@ -179,21 +183,11 @@ public class NetworkGame {
         btnInfectPlayer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                network.infectRandomPlayer();
+                infectPlayer();
             }
         });
         btnInfectPlayer.setBounds(30, 316, 197, 29);
         frame.getContentPane().add(btnInfectPlayer);
-
-        JButton btnComputeTransmissions = new JButton("Compute Transmissions");
-        btnComputeTransmissions.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                network.computeDiseaseDynamics();
-            }
-        });
-        btnComputeTransmissions.setBounds(30, 357, 197, 29);
-        frame.getContentPane().add(btnComputeTransmissions);
 
         JButton btnStopSimulation = new JButton("Stop Simulation");
         btnStopSimulation.addActionListener(new ActionListener() {
@@ -247,13 +241,15 @@ public class NetworkGame {
     private void startSimulation() {
         // initializations
         UtilityFunction utilityFunction = getUtilityFunction();
-        this.network.initUtilityFunction(utilityFunction);
-        this.network.initSimulationDelay((Integer) this.simulationDelay.getValue());
+        NetworkSimulation networkSimulation = new NetworkSimulation(this.network);
+        networkSimulation.addListener(this);
+        networkSimulation.initUtilityFunction(utilityFunction);
+        networkSimulation.initSimulationDelay((Integer) this.simulationDelay.getValue());
 
         if (simulationTask != null) {
             simulationTask.cancel(true);
         }
-        simulationTask = simulationExecutor.submit(this.network);
+        simulationTask = simulationExecutor.submit(networkSimulation);
     }
 
     /**
@@ -304,4 +300,21 @@ public class NetworkGame {
         NetworkFileWriter fileWriter = new NetworkFileWriter(EXPORT_PATH, file, networkWriter, network);
         fileWriter.write();
     }
+
+    /**
+     * Infects a player.
+     */
+    private void infectPlayer() {
+        this.network.infectRandomPlayer();
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.network.simulation.SimulationCompleteListener#notifyOfSimulationComplete(nl.uu.socnetid.network_games.network.simulation.Simulation)
+     */
+    @Override
+    public void notifyOfSimulationComplete(Simulation simulation) {
+        logger.debug("Simulation completed.");
+        JOptionPane.showMessageDialog(null, simulation.getStatusMessage());
+    }
+
 }
