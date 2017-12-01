@@ -11,6 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -18,8 +19,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 
 import org.apache.log4j.Logger;
@@ -30,8 +29,12 @@ import org.graphstream.ui.view.Viewer;
 import nl.uu.socnetid.network_games.disease.Disease;
 import nl.uu.socnetid.network_games.disease.ThreeStageDisease;
 import nl.uu.socnetid.network_games.disease.TwoStageDisease;
+import nl.uu.socnetid.network_games.gui.CumulativePanel;
 import nl.uu.socnetid.network_games.gui.NodeClick;
 import nl.uu.socnetid.network_games.gui.NodeClickListener;
+import nl.uu.socnetid.network_games.gui.ThreeStageDiseasePanel;
+import nl.uu.socnetid.network_games.gui.TruncatedConnectionsPanel;
+import nl.uu.socnetid.network_games.gui.TwoStageDiseasePanel;
 import nl.uu.socnetid.network_games.network.io.NetworkFileWriter;
 import nl.uu.socnetid.network_games.network.networks.Network;
 import nl.uu.socnetid.network_games.network.networks.SimpleNetwork;
@@ -73,22 +76,24 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     private String[] edgeWriters = {"Edge List", "Adjacency Matrix"};
     // spinner for simulation delay
     private JSpinner simulationDelay;
-    // toggle button for player infections
-    private JToggleButton tglbtnToggleInfection;
     // disease selection combo box
     private JComboBox<String> diseaseCBox;
     private String[] diseases = {"Two Stage", "Three Stage"};
-    // connections model
-    private JTextField txtConnectionsDelta;
-    private JTextField txtConnectionsCosts;
+    // panel for cumulative model settings
+    private CumulativePanel cumulativePanel;
+    // panel for truncated connections model settings
+    private TruncatedConnectionsPanel truncatedConnectionsPanel;
+    // panel for two stage disease
+    private TwoStageDiseasePanel twoStageDiseasePanel;
+    // panel for three stage disease
+    private ThreeStageDiseasePanel threeStageDiseasePanel;
+    // check box to toggle between infect / cure on mouse clicks
+    private JCheckBox chckbxToggleInfection;
 
     // concurrency for simulation
     private ExecutorService nodeClickExecutor = Executors.newSingleThreadExecutor();
     private ExecutorService simulationExecutor = Executors.newSingleThreadExecutor();
     private Future<?> simulationTask;
-    private JTextField txtDiseaseDuration;
-    private JTextField txtDiseaseTransmissionRate;
-    private JTextField txtDiseaseTreatmentCosts;
 
 
     /**
@@ -125,7 +130,7 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     private void initialize() {
         // init swing frame
         frame = new JFrame();
-        frame.setBounds(100, 100, 512, 420);
+        frame.setBounds(100, 100, 236, 420);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null);
 
@@ -173,67 +178,78 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         tabbedPane.add("Utility", utilityPane);
         utilityPane.setLayout(null);
 
-                utilityFunctionCBox = new JComboBox<String>();
-                utilityFunctionCBox.setBounds(6, 6, 165, 27);
-                utilityPane.add(utilityFunctionCBox);
+        utilityFunctionCBox = new JComboBox<String>();
+        utilityFunctionCBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                switch (utilityFunctionCBox.getSelectedIndex()) {
+                    case 0:
+                        cumulativePanel.setVisible(true);
+                        truncatedConnectionsPanel.setVisible(false);
+                        break;
 
-                JPanel panel = new JPanel();
-                panel.setBounds(6, 45, 166, 232);
-                utilityPane.add(panel);
+                    case 1:
+                        cumulativePanel.setVisible(false);
+                        truncatedConnectionsPanel.setVisible(true);
+                        break;
+
+                    default:
+                        throw new RuntimeException("Undefined utility function!");
+                }
+            }
+        });
+        utilityFunctionCBox.setBounds(6, 6, 165, 27);
+        utilityPane.add(utilityFunctionCBox);
+
+        cumulativePanel = new CumulativePanel();
+        cumulativePanel.setBounds(6, 45, 166, 232);
+        utilityPane.add(cumulativePanel);
+
+        truncatedConnectionsPanel = new TruncatedConnectionsPanel();
+        truncatedConnectionsPanel.setBounds(6, 45, 166, 232);
+        truncatedConnectionsPanel.setVisible(false);
+        utilityPane.add(truncatedConnectionsPanel);
+
+
         tabbedPane.add("Diseas", diseasePane);
         diseasePane.setLayout(null);
 
         diseaseCBox = new JComboBox<String>();
-        diseaseCBox.setBounds(6, 6, 165, 27);
-        diseasePane.add(diseaseCBox);
-
-        JLabel lblDuration = new JLabel("Duration:");
-        lblDuration.setBounds(6, 50, 134, 16);
-        diseasePane.add(lblDuration);
-
-        txtDiseaseDuration = new JTextField();
-        txtDiseaseDuration.setHorizontalAlignment(SwingConstants.RIGHT);
-        txtDiseaseDuration.setBounds(127, 45, 44, 26);
-        diseasePane.add(txtDiseaseDuration);
-        txtDiseaseDuration.setText("10");
-        txtDiseaseDuration.setColumns(10);
-
-        JLabel lblTransmissionRate = new JLabel("Transmission Rate:");
-        lblTransmissionRate.setBounds(6, 78, 134, 16);
-        diseasePane.add(lblTransmissionRate);
-
-        txtDiseaseTransmissionRate = new JTextField();
-        txtDiseaseTransmissionRate.setHorizontalAlignment(SwingConstants.RIGHT);
-        txtDiseaseTransmissionRate.setBounds(127, 73, 44, 26);
-        diseasePane.add(txtDiseaseTransmissionRate);
-        txtDiseaseTransmissionRate.setText("0.1");
-        txtDiseaseTransmissionRate.setColumns(10);
-
-        JLabel lblTreatmentCosts = new JLabel("Treatment Costs:");
-        lblTreatmentCosts.setBounds(6, 106, 134, 16);
-        diseasePane.add(lblTreatmentCosts);
-
-        txtDiseaseTreatmentCosts = new JTextField();
-        txtDiseaseTreatmentCosts.setHorizontalAlignment(SwingConstants.RIGHT);
-        txtDiseaseTreatmentCosts.setBounds(127, 101, 44, 26);
-        diseasePane.add(txtDiseaseTreatmentCosts);
-        txtDiseaseTreatmentCosts.setText("1");
-        txtDiseaseTreatmentCosts.setColumns(10);
-
-        tglbtnToggleInfection = new JToggleButton("Toggle Infection");
-        tglbtnToggleInfection.setToolTipText("When activated: Single nodes can be infected or cured by simply clicking on them.");
-        tglbtnToggleInfection.setBounds(6, 139, 165, 20);
-        diseasePane.add(tglbtnToggleInfection);
-
-        JButton btnInfectPlayer = new JButton("Infect Random Player");
-        btnInfectPlayer.setBounds(6, 171, 171, 29);
-        diseasePane.add(btnInfectPlayer);
-        btnInfectPlayer.addActionListener(new ActionListener() {
+        diseaseCBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                infectRandomPlayer();
+                switch (diseaseCBox.getSelectedIndex()) {
+                    case 0:
+                        twoStageDiseasePanel.setVisible(true);
+                        threeStageDiseasePanel.setVisible(false);
+                        break;
+
+                    case 1:
+                        twoStageDiseasePanel.setVisible(false);
+                        threeStageDiseasePanel.setVisible(true);
+                        break;
+
+                    default:
+                        throw new RuntimeException("Undefined disease!");
+                }
             }
         });
+        diseaseCBox.setBounds(6, 41, 165, 27);
+        diseasePane.add(diseaseCBox);
+
+        chckbxToggleInfection = new JCheckBox("Infect / cure on click");
+        chckbxToggleInfection.setBounds(6, 6, 165, 23);
+        diseasePane.add(chckbxToggleInfection);
+
+        twoStageDiseasePanel = new TwoStageDiseasePanel();
+        twoStageDiseasePanel.setBounds(6, 80, 165, 197);
+        diseasePane.add(twoStageDiseasePanel);
+
+        threeStageDiseasePanel = new ThreeStageDiseasePanel();
+        threeStageDiseasePanel.setBounds(6, 80, 165, 197);
+        threeStageDiseasePanel.setVisible(false);
+        diseasePane.add(threeStageDiseasePanel);
+
         tabbedPane.add("Export", exportPane);
         exportPane.setLayout(null);
 
@@ -250,14 +266,6 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
                 exportNetwork();
             }
         });
-
-
-
-
-
-
-
-
 
         JButton btnStart = new JButton("Start");
         btnStart.addActionListener(new ActionListener() {
@@ -292,28 +300,6 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         });
         btnStopSimulation.setBounds(120, 355, 110, 35);
         frame.getContentPane().add(btnStopSimulation);
-
-                txtConnectionsDelta = new JTextField();
-                txtConnectionsDelta.setBounds(388, 63, 44, 26);
-                frame.getContentPane().add(txtConnectionsDelta);
-                txtConnectionsDelta.setHorizontalAlignment(SwingConstants.RIGHT);
-                txtConnectionsDelta.setText("0.5");
-                txtConnectionsDelta.setColumns(10);
-
-                        JLabel lblConnectionBenefitdelta = new JLabel("Benefit (delta): ");
-                        lblConnectionBenefitdelta.setBounds(267, 68, 134, 16);
-                        frame.getContentPane().add(lblConnectionBenefitdelta);
-
-                                JLabel lblConnectionCostsc = new JLabel("Costs (c):");
-                                lblConnectionCostsc.setBounds(267, 96, 134, 16);
-                                frame.getContentPane().add(lblConnectionCostsc);
-
-                                        txtConnectionsCosts = new JTextField();
-                                        txtConnectionsCosts.setBounds(388, 91, 44, 26);
-                                        frame.getContentPane().add(txtConnectionsCosts);
-                                        txtConnectionsCosts.setHorizontalAlignment(SwingConstants.RIGHT);
-                                        txtConnectionsCosts.setText("0.45");
-                                        txtConnectionsCosts.setColumns(10);
         for (int i = 0; i < diseases.length; i ++) {
             diseaseCBox.addItem(diseases[i]);
         }
@@ -393,12 +379,12 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     private UtilityFunction getUtilityFunction() {
         switch (utilityFunctionCBox.getSelectedIndex()) {
             case 0:
-                return new Cumulative();
+                return new Cumulative(this.cumulativePanel.getDirectBenefit(),
+                        this.cumulativePanel.getIndirectBenefit());
 
             case 1:
-                double delta = Double.valueOf(this.txtConnectionsDelta.getText());
-                double costs = Double.valueOf(this.txtConnectionsCosts.getText());
-                return new TruncatedConnections(delta, costs);
+                return new TruncatedConnections(this.truncatedConnectionsPanel.getDelta(),
+                        this.truncatedConnectionsPanel.getCosts());
 
             default:
                 throw new RuntimeException("Undefined utility function!");
@@ -433,20 +419,13 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         fileWriter.write();
     }
 
-    /**
-     * Infects a player.
-     */
-    private void infectRandomPlayer() {
-        this.network.infectRandomPlayer(getDisease());
-    }
-
     /* (non-Javadoc)
      * @see nl.uu.socnetid.network_games.gui.NodeClickListener#notify(
      * nl.uu.socnetid.network_games.gui.NodeClick)
      */
     @Override
     public void notify(NodeClick nodeClick) {
-        if (tglbtnToggleInfection.isSelected()) {
+        if (this.chckbxToggleInfection.isSelected()) {
             this.network.toggleInfection(nodeClick.getClickedNodeId(), getDisease());
         }
     }
@@ -457,13 +436,17 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     private Disease getDisease() {
         switch (diseaseCBox.getSelectedIndex()) {
             case 0:
-                int diseaseDuration = Integer.valueOf(this.txtDiseaseDuration.getText());
-                Double diseaseTransmissionRate = Double.valueOf(this.txtDiseaseTransmissionRate.getText());
-                Double diseaseTreatmentCosts = Double.valueOf(this.txtDiseaseTreatmentCosts.getText());
-                return new TwoStageDisease(diseaseDuration, diseaseTransmissionRate, diseaseTreatmentCosts);
+                return new TwoStageDisease(
+                        this.twoStageDiseasePanel.getDuration(),
+                        this.twoStageDiseasePanel.getTransmissionRate(),
+                        this.twoStageDiseasePanel.getTreatmentCosts());
 
             case 1:
-                return new ThreeStageDisease();
+                return new ThreeStageDisease(
+                        this.threeStageDiseasePanel.getDuration(),
+                        this.threeStageDiseasePanel.getInvisibleDuration(),
+                        this.threeStageDiseasePanel.getTreatmentCosts(),
+                        this.threeStageDiseasePanel.getTransmissionRate());
 
             default:
                 throw new RuntimeException("Undefined disease type!");
