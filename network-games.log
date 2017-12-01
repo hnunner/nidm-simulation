@@ -120697,3 +120697,7 @@ player 4: not infected.
 2017-12-01 16:52:30 DEBUG NetworkGame:472 - Simulation completed.
 2017-12-01 16:53:18 DEBUG NetworkGame:472 - Simulation completed.
 2017-12-01 17:05:31 DEBUG NetworkGame:469 - Simulation completed.
+2017-12-01 17:36:33 DEBUG NetworkSimulation:186 - Simulation stopped in round 189991. Network was stable.
+2017-12-01 17:36:51 DEBUG NetworkSimulation:186 - Simulation stopped in round 15. Network was stable.
+2017-12-01 17:37:00 DEBUG NetworkSimulation:186 - Simulation stopped in round 2. Network was not yet stable.
+2017-12-01 17:37:28 DEBUG NetworkSimulation:186 - Simulation stopped in round 32. Network was stable.
