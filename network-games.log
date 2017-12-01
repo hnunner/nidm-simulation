@@ -120528,3 +120528,31 @@ player 4: not infected.
 2017-11-30 17:35:15 DEBUG NetworkGame:335 - Simulation completed.
 2017-11-30 17:36:39 DEBUG NetworkSimulation:185 - Simulation stopped after 5 players in round 4. Network was stable.
 2017-11-30 17:36:39 DEBUG NetworkGame:335 - Simulation completed.
+2017-12-01 09:58:50 DEBUG NetworkSimulation:186 - Simulation stopped after 3 players in round 10. Network was stable.
+2017-12-01 09:58:50 DEBUG NetworkGame:332 - Simulation completed.
+2017-12-01 09:58:53 DEBUG NetworkSimulation:186 - Simulation stopped after 4 players in round 10. Network was stable.
+2017-12-01 09:58:53 DEBUG NetworkGame:332 - Simulation completed.
+2017-12-01 10:00:09 DEBUG NetworkSimulation:185 - Simulation stopped after 0 players in round 1. Network was not yet stable.
+2017-12-01 10:00:09 DEBUG NetworkGame:332 - Simulation completed.
+2017-12-01 10:00:11 DEBUG NetworkSimulation:185 - Simulation stopped after 4 players in round 1. Network was not yet stable.
+2017-12-01 10:00:11 DEBUG NetworkGame:332 - Simulation completed.
+2017-12-01 10:00:20 DEBUG NetworkSimulation:185 - Simulation stopped after 2 players in round 2. Network was not yet stable.
+2017-12-01 10:00:20 DEBUG NetworkGame:332 - Simulation completed.
+2017-12-01 10:00:23 DEBUG NetworkSimulation:185 - Simulation stopped after 4 players in round 2. Network was not yet stable.
+2017-12-01 10:00:23 DEBUG NetworkGame:332 - Simulation completed.
+2017-12-01 10:00:42 DEBUG NetworkSimulation:185 - Simulation stopped after 0 players in round 6. Network was stable.
+2017-12-01 10:00:42 DEBUG NetworkGame:332 - Simulation completed.
+2017-12-01 10:00:43 DEBUG NetworkSimulation:185 - Simulation stopped after 4 players in round 6. Network was stable.
+2017-12-01 10:00:43 DEBUG NetworkGame:332 - Simulation completed.
+2017-12-01 10:01:12 DEBUG NetworkSimulation:184 - Simulation stopped after 4 players in round 1941. Network was stable.
+2017-12-01 10:01:12 DEBUG NetworkGame:332 - Simulation completed.
+2017-12-01 10:01:22 DEBUG NetworkSimulation:184 - Simulation stopped after 4 players in round 1. Network was not yet stable.
+2017-12-01 10:01:22 DEBUG NetworkGame:332 - Simulation completed.
+2017-12-01 10:04:03 DEBUG NetworkSimulation:167 - Simulation stopped in round 1139. Network was stable.
+2017-12-01 10:04:03 DEBUG NetworkGame:332 - Simulation completed.
+2017-12-01 10:04:26 DEBUG NetworkSimulation:167 - Simulation stopped in round 5. Network was stable.
+2017-12-01 10:04:26 DEBUG NetworkGame:332 - Simulation completed.
+2017-12-01 10:25:46 DEBUG NetworkSimulation:167 - Simulation stopped in round 18. Network was stable.
+2017-12-01 10:25:46 DEBUG NetworkGame:342 - Simulation completed.
+2017-12-01 10:48:44 DEBUG NetworkSimulation:167 - Simulation stopped in round 28. Network was stable.
+2017-12-01 10:48:44 DEBUG NetworkGame:372 - Simulation completed.

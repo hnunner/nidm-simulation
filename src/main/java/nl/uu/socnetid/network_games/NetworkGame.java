@@ -23,6 +23,9 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.view.Viewer;
 
+import nl.uu.socnetid.network_games.disease.Disease;
+import nl.uu.socnetid.network_games.disease.ThreeStageDisease;
+import nl.uu.socnetid.network_games.disease.TwoStageDisease;
 import nl.uu.socnetid.network_games.gui.NodeClick;
 import nl.uu.socnetid.network_games.gui.NodeClickListener;
 import nl.uu.socnetid.network_games.network.io.NetworkFileWriter;
@@ -35,8 +38,8 @@ import nl.uu.socnetid.network_games.network.writer.AdjacencyMatrixWriter;
 import nl.uu.socnetid.network_games.network.writer.EdgeListWriter;
 import nl.uu.socnetid.network_games.network.writer.NetworkWriter;
 import nl.uu.socnetid.network_games.players.RationalPlayerNode;
-import nl.uu.socnetid.network_games.utility_functions.CumulativeUtilityFunction;
-import nl.uu.socnetid.network_games.utility_functions.UtilityFunction;
+import nl.uu.socnetid.network_games.utilities.CumulativeUtilityFunction;
+import nl.uu.socnetid.network_games.utilities.UtilityFunction;
 
 /**
  * @author Hendrik Nunner
@@ -66,7 +69,10 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     // spinner for simulation delay
     private JSpinner simulationDelay;
     // toggle button for player infections
-    JToggleButton tglbtnToggleInfection;
+    private JToggleButton tglbtnToggleInfection;
+    // disease selection combo box
+    private JComboBox<String> diseaseCBox;
+    private String[] diseases = {"Two Stage", "Three Stage"};
 
     // concurrency for simulation
     private ExecutorService nodeClickExecutor = Executors.newSingleThreadExecutor();
@@ -108,7 +114,7 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     private void initialize() {
         // init swing frame
         frame = new JFrame();
-        frame.setBounds(100, 100, 250, 580);
+        frame.setBounds(100, 100, 250, 680);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null);
 
@@ -156,7 +162,7 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         for (int i = 0; i < edgeWriters.length; i++) {
             edgeWriterCBox.addItem(edgeWriters[i]);
         }
-        edgeWriterCBox.setBounds(16, 479, 178, 29);
+        edgeWriterCBox.setBounds(31, 623, 178, 29);
         frame.getContentPane().add(edgeWriterCBox);
 
         JButton btnExportNetwork = new JButton("Export Network as:");
@@ -166,7 +172,7 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
                 exportNetwork();
             }
         });
-        btnExportNetwork.setBounds(6, 438, 188, 29);
+        btnExportNetwork.setBounds(21, 582, 188, 29);
         frame.getContentPane().add(btnExportNetwork);
 
         utilityFunctionCBox = new JComboBox<String>();
@@ -188,10 +194,10 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         btnInfectPlayer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                infectPlayer();
+                infectRandomPlayer();
             }
         });
-        btnInfectPlayer.setBounds(30, 383, 197, 29);
+        btnInfectPlayer.setBounds(30, 502, 197, 29);
         frame.getContentPane().add(btnInfectPlayer);
 
         JButton btnStopSimulation = new JButton("Stop Simulation");
@@ -205,8 +211,16 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         frame.getContentPane().add(btnStopSimulation);
 
         tglbtnToggleInfection = new JToggleButton("Toggle Infection");
-        tglbtnToggleInfection.setBounds(73, 351, 126, 20);
+        tglbtnToggleInfection.setBounds(73, 470, 126, 20);
         frame.getContentPane().add(tglbtnToggleInfection);
+
+        diseaseCBox = new JComboBox<String>();
+        for (int i = 0; i < diseases.length; i ++) {
+            diseaseCBox.addItem(diseases[i]);
+        }
+        diseaseCBox.setBounds(48, 418, 161, 27);
+        frame.getContentPane().add(diseaseCBox);
+
 
         // init graphstream
         this.graph = new SingleGraph("NetworkGames");
@@ -229,7 +243,6 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
      * Adds a player to the game.
      */
     private void addPlayer() {
-//        this.fromViewer.pump();
         this.network.addPlayer(RationalPlayerNode.newInstance(this.graph));
     }
 
@@ -319,8 +332,35 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     /**
      * Infects a player.
      */
-    private void infectPlayer() {
-        this.network.infectRandomPlayer();
+    private void infectRandomPlayer() {
+        this.network.infectRandomPlayer(getDisease());
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.gui.NodeClickListener#notify(
+     * nl.uu.socnetid.network_games.gui.NodeClick)
+     */
+    @Override
+    public void notify(NodeClick nodeClick) {
+        if (tglbtnToggleInfection.isSelected()) {
+            this.network.toggleInfection(nodeClick.getClickedNodeId(), getDisease());
+        }
+    }
+
+    /**
+     * @return the selected disease
+     */
+    private Disease getDisease() {
+        switch (diseaseCBox.getSelectedIndex()) {
+            case 0:
+                return new TwoStageDisease();
+
+            case 1:
+                return new ThreeStageDisease();
+
+            default:
+                throw new RuntimeException("Undefined disease type!");
+        }
     }
 
     /* (non-Javadoc)
@@ -331,16 +371,5 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     public void notify(Simulation simulation) {
         logger.debug("Simulation completed.");
         JOptionPane.showMessageDialog(null, simulation.getStatusMessage());
-    }
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.gui.NodeClickListener#notify(
-     * nl.uu.socnetid.network_games.gui.NodeClick)
-     */
-    @Override
-    public void notify(NodeClick nodeClick) {
-        if (tglbtnToggleInfection.isSelected()) {
-            this.network.infectPlayer(nodeClick.getClickedNodeId());
-        }
     }
 }

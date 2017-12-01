@@ -16,8 +16,8 @@ import nl.uu.socnetid.network_games.network.writer.AdjacencyMatrixWriter;
 import nl.uu.socnetid.network_games.network.writer.NetworkWriter;
 import nl.uu.socnetid.network_games.players.Player;
 import nl.uu.socnetid.network_games.players.RationalPlayer;
-import nl.uu.socnetid.network_games.utility_functions.CumulativeUtilityFunction;
-import nl.uu.socnetid.network_games.utility_functions.UtilityFunction;
+import nl.uu.socnetid.network_games.utilities.CumulativeUtilityFunction;
+import nl.uu.socnetid.network_games.utilities.UtilityFunction;
 
 /**
  * @author Hendrik Nunner

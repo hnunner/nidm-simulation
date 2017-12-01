@@ -1,4 +1,4 @@
-package nl.uu.socnetid.network_games.utility_functions;
+package nl.uu.socnetid.network_games.utilities;
 
 import java.util.Iterator;
 import java.util.List;
@@ -15,7 +15,7 @@ public final class CumulativeUtilityFunction implements UtilityFunction {
     private static final float UTILITY_INDIRECT_CONNECTIONS = 0.5f;
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.utility_functions.UtilityFunction#getUtility()
+     * @see nl.uu.socnetid.network_games.utilities.UtilityFunction#getUtility()
      */
     @Override
     public double getUtility(Player player, List<Player> connections) {

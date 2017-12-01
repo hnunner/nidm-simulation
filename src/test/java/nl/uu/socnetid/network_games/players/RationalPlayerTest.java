@@ -11,8 +11,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import nl.uu.socnetid.network_games.utility_functions.CumulativeUtilityFunction;
-import nl.uu.socnetid.network_games.utility_functions.UtilityFunction;
+import nl.uu.socnetid.network_games.utilities.CumulativeUtilityFunction;
+import nl.uu.socnetid.network_games.utilities.UtilityFunction;
 
 
 /**

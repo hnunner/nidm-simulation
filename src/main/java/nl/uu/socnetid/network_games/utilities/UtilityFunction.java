@@ -1,4 +1,4 @@
-package nl.uu.socnetid.network_games.utility_functions;
+package nl.uu.socnetid.network_games.utilities;
 
 import java.util.List;
 

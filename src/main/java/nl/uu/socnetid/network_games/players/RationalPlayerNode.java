@@ -112,10 +112,16 @@ public class RationalPlayerNode extends RationalPlayer implements Player {
     @Override
     public void fightDisease() {
         super.fightDisease();
-        if (!this.isInfected()) {
-            Node node = this.graph.getNode(String.valueOf(getId()));
-            node.removeAttribute("ui.class");
-        }
+        updateAppearance();
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.players.Player#cure()
+     */
+    @Override
+    public void cure() {
+        super.cure();
+        updateAppearance();
     }
 
     /* (non-Javadoc)
@@ -124,8 +130,29 @@ public class RationalPlayerNode extends RationalPlayer implements Player {
     @Override
     public void infect(Disease disease) {
         super.infect(disease);
+        updateAppearance();
+    }
+
+    /**
+     * Updates the appearance of the displayed node.
+     */
+    private void updateAppearance() {
         Node node = this.graph.getNode(String.valueOf(getId()));
-        node.addAttribute("ui.class", "infected");
+
+        // not infected
+        if (!this.isInfected()) {
+            node.removeAttribute("ui.class");
+            return;
+        }
+
+        // infected without symptoms
+        if (!this.getDisease().isVisible()) {
+            node.addAttribute("ui.class", "infectedinvisible");
+            return;
+        }
+
+        // infected with symptoms
+        node.addAttribute("ui.class", "infectedvisible");
     }
 
 }
