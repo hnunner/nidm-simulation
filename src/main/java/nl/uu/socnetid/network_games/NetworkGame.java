@@ -23,8 +23,8 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.view.Viewer;
 
-import nl.uu.socnetid.network_games.events.gui.NodeClick;
-import nl.uu.socnetid.network_games.events.gui.NodeClickListener;
+import nl.uu.socnetid.network_games.gui.NodeClick;
+import nl.uu.socnetid.network_games.gui.NodeClickListener;
 import nl.uu.socnetid.network_games.network.io.NetworkFileWriter;
 import nl.uu.socnetid.network_games.network.networks.Network;
 import nl.uu.socnetid.network_games.network.networks.SimpleNetwork;
@@ -72,7 +72,6 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     private ExecutorService nodeClickExecutor = Executors.newSingleThreadExecutor();
     private ExecutorService simulationExecutor = Executors.newSingleThreadExecutor();
     private Future<?> simulationTask;
-
 
 
     /**
@@ -255,8 +254,6 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
      */
     private void startSimulation() {
 
-//        this.fromViewer.pump();
-
         // initializations
         UtilityFunction utilityFunction = getUtilityFunction();
         NetworkSimulation networkSimulation = new NetworkSimulation(this.network);
@@ -337,8 +334,8 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.events.gui.NodeClickListener#notify(
-     * nl.uu.socnetid.network_games.events.gui.NodeClick)
+     * @see nl.uu.socnetid.network_games.gui.NodeClickListener#notify(
+     * nl.uu.socnetid.network_games.gui.NodeClick)
      */
     @Override
     public void notify(NodeClick nodeClick) {

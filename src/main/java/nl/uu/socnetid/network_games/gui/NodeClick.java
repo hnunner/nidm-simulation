@@ -1,4 +1,4 @@
-package nl.uu.socnetid.network_games.events.gui;
+package nl.uu.socnetid.network_games.gui;
 
 import java.util.Iterator;
 import java.util.Set;
