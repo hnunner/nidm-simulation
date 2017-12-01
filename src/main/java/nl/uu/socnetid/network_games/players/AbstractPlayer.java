@@ -328,12 +328,7 @@ public abstract class AbstractPlayer implements Player {
 
             if (!currConnection.isInfected() && !currConnection.isImmune()
                     && this.disease.isTransmitted()) {
-                try {
-                    Disease newDiseaseInstance = this.disease.getClass().newInstance();
-                    currConnection.infect(newDiseaseInstance);
-                } catch (InstantiationException | IllegalAccessException e) {
-                    e.printStackTrace();
-                }
+                currConnection.infect(this.disease.copy());
             }
         }
     }
@@ -390,6 +385,17 @@ public abstract class AbstractPlayer implements Player {
             this.disease = null;
             this.infectionState = InfectionState.RECOVERED;
         }
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.players.Player#getNursingCosts()
+     */
+    @Override
+    public double getNursingCosts() {
+        if (this.disease == null) {
+            return 0;
+        }
+        return disease.getTreatmentCosts();
     }
 
     /**

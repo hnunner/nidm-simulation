@@ -11,6 +11,7 @@ public class ThreeStageDisease implements Disease {
     private static final int OVERALL_DURATION = 10;
     private static final int INVISIBLE_DURATION = 2;
     private static final int VISIBLE_DURATION = OVERALL_DURATION - 2*INVISIBLE_DURATION;
+    private static final double TREATMENT_COSTS = 1;
 
     // transmission rate
     private static final double TRANSMISSION_RATE = 0.1;
@@ -20,7 +21,6 @@ public class ThreeStageDisease implements Disease {
 
     // state of the disease
     private DiseaseState diseaseState;
-
 
 
     /**
@@ -83,6 +83,22 @@ public class ThreeStageDisease implements Disease {
     @Override
     public boolean isTransmitted() {
         return ThreadLocalRandom.current().nextDouble() <= TRANSMISSION_RATE;
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.disease.Disease#getTreatmentCosts()
+     */
+    @Override
+    public double getTreatmentCosts() {
+        return TREATMENT_COSTS;
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.disease.Disease#copy()
+     */
+    @Override
+    public Disease copy() {
+        return new ThreeStageDisease();
     }
 
 }
