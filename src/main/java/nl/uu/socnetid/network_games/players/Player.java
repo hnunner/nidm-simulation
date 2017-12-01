@@ -5,7 +5,7 @@ import java.util.concurrent.locks.Lock;
 
 import nl.uu.socnetid.network_games.disease.Disease;
 import nl.uu.socnetid.network_games.disease.InfectionState;
-import nl.uu.socnetid.network_games.utility_functions.UtilityFunction;
+import nl.uu.socnetid.network_games.utilities.UtilityFunction;
 
 /**
  * Interface of a basic player.
@@ -150,6 +150,11 @@ public interface Player extends Comparable<Player>, Runnable {
 	 *         the disease a player gets infected with
 	 */
 	void infect(Disease disease);
+
+    /**
+     * Cures a player from a disease.
+     */
+    void cure();
 
 	/**
 	 * Computes the transmissions of the disease between the player and

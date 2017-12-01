@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import nl.uu.socnetid.network_games.disease.GenericDisease;
+import nl.uu.socnetid.network_games.disease.Disease;
 import nl.uu.socnetid.network_games.players.Player;
 
 /**
@@ -97,10 +97,11 @@ public abstract class AbstractNetwork implements Network {
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.network.Network#infectRandomPlayer()
+     * @see nl.uu.socnetid.network_games.network.Network#infectRandomPlayer(
+     * nl.uu.socnetid.network_games.disease.Disease)
      */
     @Override
-    public void infectRandomPlayer() {
+    public void infectRandomPlayer(Disease disease) {
         if (this.players == null || this.players.isEmpty()) {
             return;
         }
@@ -114,21 +115,26 @@ public abstract class AbstractNetwork implements Network {
             if (player.isInfected()) {
                 continue;
             }
-            player.infect(new GenericDisease());
+            player.infect(disease);
             return;
         }
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.network.networks.Network#infectPlayer(long)
+     * @see nl.uu.socnetid.network_games.network.networks.Network#toggleInfection(long,
+     * nl.uu.socnetid.network_games.disease.Disease)
      */
     @Override
-    public void infectPlayer(long id) {
+    public void toggleInfection(long playerId, Disease disease) {
         Iterator<Player> playersIt = this.players.iterator();
         while (playersIt.hasNext()) {
             Player player = playersIt.next();
-            if (player.getId() == id) {
-                player.infect(new GenericDisease());
+            if (player.getId() == playerId) {
+                if (player.isInfected()) {
+                    player.cure();
+                } else {
+                    player.infect(disease);
+                }
             }
         }
     }

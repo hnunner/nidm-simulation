@@ -10,6 +10,8 @@ import org.junit.Test;
 
 import nl.uu.socnetid.network_games.players.Player;
 import nl.uu.socnetid.network_games.players.RationalPlayer;
+import nl.uu.socnetid.network_games.utilities.CumulativeUtilityFunction;
+import nl.uu.socnetid.network_games.utilities.UtilityFunction;
 
 /**
  * Tests for {@link CumulativeUtilityFunction} class.
