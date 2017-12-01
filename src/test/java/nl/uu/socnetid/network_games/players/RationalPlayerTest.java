@@ -11,7 +11,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import nl.uu.socnetid.network_games.utilities.CumulativeUtilityFunction;
+import nl.uu.socnetid.network_games.utilities.Cumulative;
 import nl.uu.socnetid.network_games.utilities.UtilityFunction;
 
 
@@ -34,7 +34,7 @@ public class RationalPlayerTest {
      */
     @Before
     public void initPlayer() {
-        UtilityFunction utilityFunction = new CumulativeUtilityFunction();
+        UtilityFunction utilityFunction = new Cumulative();
 
         List<Player> players = new ArrayList<Player>();
 
