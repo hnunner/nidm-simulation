@@ -3,9 +3,8 @@ package nl.uu.socnetid.network_games;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.net.URL;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -13,6 +12,7 @@ import java.util.concurrent.Future;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -395,28 +395,35 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
      * Exports the network into a csv file.
      */
     private void exportNetwork() {
-        NetworkWriter networkWriter;
-        String file;
-        LocalDateTime now = LocalDateTime.now();
-        String formattedNow = now.format(DateTimeFormatter.ofPattern("yyyyMMdd:HHmmss"));
 
+        JFileChooser fileChooser = new JFileChooser();
+        int popdownState = fileChooser.showSaveDialog(null);
+        if(popdownState == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            String file = fileChooser.getSelectedFile().getPath();
+            String filePath = file.replace(selectedFile.getName(), "");
+
+            NetworkWriter networkWriter = getSelectedNetworkWriter();
+
+            NetworkFileWriter fileWriter = new NetworkFileWriter(filePath, file, networkWriter, network);
+            fileWriter.write();
+        }
+    }
+
+    /**
+     * @return the selected network writer
+     */
+    private NetworkWriter getSelectedNetworkWriter() {
         switch (edgeWriterCBox.getSelectedIndex()) {
             case 0:
-                networkWriter = new EdgeListWriter();
-                file = EXPORT_PATH + "edge-list_" + formattedNow + ".csv";
-                break;
+                return new EdgeListWriter();
 
             case 1:
-                networkWriter = new AdjacencyMatrixWriter();
-                file = EXPORT_PATH + "adjacency-matrix_" + formattedNow + ".csv";
-                break;
+                return new AdjacencyMatrixWriter();
 
             default:
                 throw new RuntimeException("Undefined network writer!");
         }
-
-        NetworkFileWriter fileWriter = new NetworkFileWriter(EXPORT_PATH, file, networkWriter, network);
-        fileWriter.write();
     }
 
     /* (non-Javadoc)
