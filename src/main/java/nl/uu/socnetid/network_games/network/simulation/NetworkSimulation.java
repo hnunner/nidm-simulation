@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 
 import nl.uu.socnetid.network_games.network.networks.Network;
 import nl.uu.socnetid.network_games.players.Player;
-import nl.uu.socnetid.network_games.utility_functions.UtilityFunction;
+import nl.uu.socnetid.network_games.utilities.UtilityFunction;
 
 /**
  * @author Hendrik Nunner
@@ -66,7 +66,8 @@ public class NetworkSimulation implements Runnable, Simulation {
             // for !RE!-starting the simulation
             this.network.clearConnections();
             // loop while network is not stable and maximum simulation rounds not yet reached
-            while (!this.networkStable) {
+            //while (!this.networkStable) {
+            while (true) {
 
                 // disease dynamics
                 computeDiseaseDynamics();
@@ -76,7 +77,6 @@ public class NetworkSimulation implements Runnable, Simulation {
                 Collections.shuffle(this.players);
 
                 // each player
-                int currentPlayer = 0;
                 Iterator<Player> playersIt = this.players.iterator();
                 while (playersIt.hasNext()) {
 
@@ -84,14 +84,12 @@ public class NetworkSimulation implements Runnable, Simulation {
                     try {
                         Thread.sleep(this.delay * 100);
                     } catch (InterruptedException e) {
-                        shutdown(service, currentPlayer, currentRound);
                         return;
                     }
 
                     Player currPlayer = playersIt.next();
                     currPlayer.setLock(this.lock);
                     service.submit(currPlayer);
-                    currentPlayer++;
                 }
 
                 playersIt = this.players.iterator();
@@ -104,12 +102,11 @@ public class NetworkSimulation implements Runnable, Simulation {
                 currentRound++;
 
                 if (Thread.currentThread().isInterrupted()) {
-                    shutdown(service, this.players.size(), currentRound);
                     return;
                 }
             }
         } finally {
-            shutdown(service, this.players.size(), currentRound);
+            shutdown(service, currentRound);
         }
     }
 
@@ -144,15 +141,30 @@ public class NetworkSimulation implements Runnable, Simulation {
      *
      * @param service
      *          the service to be shut down
-     * @param lastPlayerInRound
-     *          the number of players that performed an action in the current round
      * @param lastRound
      *          the round the simulation has stopped
      */
-    private void shutdown(ExecutorService service, int lastPlayerInRound, int lastRound) {
+    private void shutdown(ExecutorService service, int lastRound) {
         service.shutdownNow();
-        logStopMessage(lastPlayerInRound, lastRound);
+        logStopMessage(lastRound);
         notifyListeners();
+    }
+
+    /**
+     * Logs a message at the end of the simulation.
+     *
+     * @param lastRound
+     *          the round the simulation has stopped
+     */
+    private void logStopMessage(int lastRound) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Simulation stopped in round ").append(lastRound).append(". Network was ");
+        if (networkStable) {
+            sb.append("stable.");
+        } else {
+            sb.append("not yet stable.");
+        }
+        logger.debug(sb.toString());
     }
 
     /**
@@ -163,26 +175,6 @@ public class NetworkSimulation implements Runnable, Simulation {
         while (listenersIt.hasNext()) {
             listenersIt.next().notify(this);
         }
-    }
-
-    /**
-     * Logs a message at the end of the simulation.
-     *
-     * @param lastPlayerInRound
-     *          the number of players that performed an action in the current round
-     * @param lastRound
-     *          the round the simulation has stopped
-     */
-    private void logStopMessage(int lastPlayerInRound, int lastRound) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Simulation stopped after ").append(lastPlayerInRound).append(" players in round ")
-        .append(lastRound).append(". Network was ");
-        if (networkStable) {
-            sb.append("stable.");
-        } else {
-            sb.append("not yet stable.");
-        }
-        logger.debug(sb.toString());
     }
 
     /**

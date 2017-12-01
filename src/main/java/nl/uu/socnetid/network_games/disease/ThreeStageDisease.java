@@ -3,10 +3,9 @@ package nl.uu.socnetid.network_games.disease;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- *
  * @author Hendrik Nunner
  */
-public abstract class AbstractDisease implements Disease {
+public class ThreeStageDisease implements Disease {
 
     // duration a disease lasts
     private static final int OVERALL_DURATION = 10;
@@ -27,7 +26,7 @@ public abstract class AbstractDisease implements Disease {
     /**
      * Constructor initializations.
      */
-    protected AbstractDisease() {
+    public ThreeStageDisease() {
         this.currDuration = 0;
         this.diseaseState = DiseaseState.INFECTIOUS_NOT_VISIBLE;
     }

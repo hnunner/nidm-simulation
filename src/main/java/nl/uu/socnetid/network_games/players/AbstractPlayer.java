@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 
 import nl.uu.socnetid.network_games.disease.Disease;
 import nl.uu.socnetid.network_games.disease.InfectionState;
-import nl.uu.socnetid.network_games.utility_functions.UtilityFunction;
+import nl.uu.socnetid.network_games.utilities.UtilityFunction;
 
 /**
  * Shared fields and methods for all {@link Player} types.
@@ -193,7 +193,7 @@ public abstract class AbstractPlayer implements Player {
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.network_games.players.Player#setUtilityFunction(
-     * nl.uu.socnetid.network_games.utility_functions.UtilityFunction)
+     * nl.uu.socnetid.network_games.utilities.UtilityFunction)
      */
     @Override
     public void setUtilityFunction(UtilityFunction utilityFunction) {
@@ -295,6 +295,15 @@ public abstract class AbstractPlayer implements Player {
     }
 
     /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.players.Player#cure()
+     */
+    @Override
+    public void cure() {
+        this.disease = null;
+        this.infectionState = InfectionState.RECOVERED;
+    }
+
+    /* (non-Javadoc)
      * @see nl.uu.socnetid.network_games.players.Player#infect(nl.uu.socnetid.network_games.disease.Disease)
      */
     @Override
@@ -381,6 +390,13 @@ public abstract class AbstractPlayer implements Player {
             this.disease = null;
             this.infectionState = InfectionState.RECOVERED;
         }
+    }
+
+    /**
+     * @return the disease
+     */
+    protected Disease getDisease() {
+        return disease;
     }
 
 }

@@ -2,6 +2,7 @@ package nl.uu.socnetid.network_games.network.networks;
 
 import java.util.List;
 
+import nl.uu.socnetid.network_games.disease.Disease;
 import nl.uu.socnetid.network_games.players.Player;
 
 /**
@@ -45,15 +46,20 @@ public interface Network {
 
     /**
      * Infects a random player.
+     *
+     * @param disease
+     *          the disease to infect a player with
      */
-    void infectRandomPlayer();
+    void infectRandomPlayer(Disease disease);
 
     /**
-     * Infects a specific player.
+     * Toggles the infection of a specific player.
      *
-     * @param id
-     *          the id of the player to be infectd
+     * @param playerId
+     *          the player's id
+     * @param disease
+     *          the disease to infect the player with
      */
-    void infectPlayer(long id);
+    void toggleInfection(long playerId, Disease disease);
 
 }
