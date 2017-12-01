@@ -13,6 +13,7 @@ public class TruncatedConnections implements UtilityFunction {
     // how much is a connection worth
     private final double directUtility;
     private final double indirectUtility;
+    private final double costs;
 
     /**
      * Constructor.
@@ -23,8 +24,9 @@ public class TruncatedConnections implements UtilityFunction {
      *          the costs to maintain direct connections
      */
     public TruncatedConnections(double delta, double costs) {
-        this.directUtility = delta - costs;
+        this.directUtility = delta;
         this.indirectUtility = delta * delta;
+        this.costs = costs;
     }
 
 
@@ -44,7 +46,10 @@ public class TruncatedConnections implements UtilityFunction {
                 continue;
             }
 
-            utility += this.directUtility;
+            utility += this.directUtility - this.costs;
+            if (directConnection.isInfected()) {
+                utility -= directConnection.getNursingCosts();
+            }
 
             // indirect connections at distance 2
             List<Player> indirectConnections = directConnection.getConnections();

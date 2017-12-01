@@ -8,10 +8,11 @@ import java.util.concurrent.ThreadLocalRandom;
 public class TwoStageDisease implements Disease {
 
     // duration a disease lasts
-    private static final int OVERALL_DURATION = 10;
-
+    private final int duration;
     // transmission rate
-    private static final double TRANSMISSION_RATE = 0.1;
+    private final double transmissionRate;
+    // costs to treat the disease
+    private final double treatmentCosts;
 
     // time the disease lasts
     private int currDuration;
@@ -22,8 +23,19 @@ public class TwoStageDisease implements Disease {
 
     /**
      * Constructor initializations.
+     *
+     * @param duration
+     *          the duration the disease takes to recover
+     * @param transmissionRate
+     *          the rate at which the disease is being transmitted
+     * @param treatmentCosts
+     *          the costs to treat the disease
      */
-    public TwoStageDisease() {
+    public TwoStageDisease(int duration, double transmissionRate, double treatmentCosts) {
+        this.duration = duration;
+        this.transmissionRate = transmissionRate;
+        this.treatmentCosts = treatmentCosts;
+
         this.currDuration = 0;
         this.diseaseState = DiseaseState.INFECTIOUS_VISIBLE;
     }
@@ -35,7 +47,7 @@ public class TwoStageDisease implements Disease {
     public void evolve() {
         this.currDuration++;
 
-        if (currDuration > OVERALL_DURATION) {
+        if (currDuration > this.duration) {
             this.diseaseState = DiseaseState.DEFEATED;
         }
     }
@@ -69,7 +81,23 @@ public class TwoStageDisease implements Disease {
      */
     @Override
     public boolean isTransmitted() {
-        return ThreadLocalRandom.current().nextDouble() <= TRANSMISSION_RATE;
+        return ThreadLocalRandom.current().nextDouble() <= this.transmissionRate;
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.disease.Disease#getCureCosts()
+     */
+    @Override
+    public double getTreatmentCosts() {
+        return this.treatmentCosts;
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.disease.Disease#copy()
+     */
+    @Override
+    public Disease copy() {
+        return new TwoStageDisease(this.duration, this.transmissionRate, this.treatmentCosts);
     }
 
 }

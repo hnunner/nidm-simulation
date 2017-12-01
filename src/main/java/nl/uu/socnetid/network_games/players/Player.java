@@ -196,4 +196,11 @@ public interface Player extends Comparable<Player>, Runnable {
      */
     void fightDisease();
 
+    /**
+     * Gets the costs to nurse an infected player.
+     *
+     * @return the costs to nurse an infected player
+     */
+    double getNursingCosts();
+
 }
