@@ -8,13 +8,14 @@ import java.util.concurrent.ThreadLocalRandom;
 public class ThreeStageDisease implements Disease {
 
     // duration a disease lasts
-    private static final int OVERALL_DURATION = 10;
-    private static final int INVISIBLE_DURATION = 2;
-    private static final int VISIBLE_DURATION = OVERALL_DURATION - 2*INVISIBLE_DURATION;
-    private static final double TREATMENT_COSTS = 1;
+    private final int duration;
+    private final int invisible;
+    private final int visible;
 
+    // treatment costs
+    private final double treatmentCosts;
     // transmission rate
-    private static final double TRANSMISSION_RATE = 0.1;
+    private final double transmissionRate;
 
     // time the disease lasts
     private int currDuration;
@@ -25,8 +26,23 @@ public class ThreeStageDisease implements Disease {
 
     /**
      * Constructor initializations.
+     *
+     * @param duration
+     *          the amount of rounds the disease requires for recovery
+     * @param invisible
+     *          the amount of rounds a disease is invisible in the beginning and the end
+     * @param treatmentCosts
+     *          the utility required each round to care for infected direct connections
+     * @param transmissionRate
+     *          the probability to transmit the disease each round
      */
-    public ThreeStageDisease() {
+    public ThreeStageDisease(int duration, int invisible, double treatmentCosts, double transmissionRate) {
+        this.duration = duration;
+        this.invisible = invisible;
+        this.visible = duration - 2*invisible;
+        this.treatmentCosts = treatmentCosts;
+        this.transmissionRate = transmissionRate;
+
         this.currDuration = 0;
         this.diseaseState = DiseaseState.INFECTIOUS_NOT_VISIBLE;
     }
@@ -38,13 +54,13 @@ public class ThreeStageDisease implements Disease {
     public void evolve() {
         this.currDuration++;
 
-        if (currDuration <= INVISIBLE_DURATION) {
+        if (currDuration <= this.invisible) {
             this.diseaseState = DiseaseState.INFECTIOUS_NOT_VISIBLE;
 
-        } else if (currDuration <= INVISIBLE_DURATION + VISIBLE_DURATION) {
+        } else if (currDuration <= this.invisible + this.visible) {
             this.diseaseState = DiseaseState.INFECTIOUS_VISIBLE;
 
-        } else if (currDuration <= INVISIBLE_DURATION + VISIBLE_DURATION + INVISIBLE_DURATION) {
+        } else if (currDuration <= this.invisible + this.visible + this.visible) {
             this.diseaseState = DiseaseState.INFECTIOUS_NOT_VISIBLE;
 
         } else {
@@ -82,7 +98,7 @@ public class ThreeStageDisease implements Disease {
      */
     @Override
     public boolean isTransmitted() {
-        return ThreadLocalRandom.current().nextDouble() <= TRANSMISSION_RATE;
+        return ThreadLocalRandom.current().nextDouble() <= this.transmissionRate;
     }
 
     /* (non-Javadoc)
@@ -90,7 +106,7 @@ public class ThreeStageDisease implements Disease {
      */
     @Override
     public double getTreatmentCosts() {
-        return TREATMENT_COSTS;
+        return this.treatmentCosts;
     }
 
     /* (non-Javadoc)
@@ -98,7 +114,7 @@ public class ThreeStageDisease implements Disease {
      */
     @Override
     public Disease copy() {
-        return new ThreeStageDisease();
+        return new ThreeStageDisease(this.duration, this.invisible, this.treatmentCosts, this.transmissionRate);
     }
 
 }

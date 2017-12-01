@@ -10,9 +10,34 @@ import nl.uu.socnetid.network_games.players.Player;
  */
 public final class Cumulative implements UtilityFunction {
 
+    // default values
+    private static final double DEFAULT_DIRECT = 1.0;
+    private static final double DEFAULT_INDIRECT = 0.5;
+
     // how much is a connection worth
-    private static final float UTILITY_DIRECT_CONNECTIONS = 1f;
-    private static final float UTILITY_INDIRECT_CONNECTIONS = 0.5f;
+    private final double utilityDirectConnections;
+    private final double utilityIndirectConnections;
+
+    /**
+     * Constructor with default values.
+     */
+    public Cumulative() {
+        this(DEFAULT_DIRECT, DEFAULT_INDIRECT);
+    }
+
+    /**
+     * Constructor
+     *
+     * @param utilityDirectConnections
+     *          the utility for direct connections
+     * @param utilityIndirectConnections
+     *          the utility for indirect connections (distance 2)
+     */
+    public Cumulative(double utilityDirectConnections, double utilityIndirectConnections) {
+        this.utilityDirectConnections = utilityDirectConnections;
+        this.utilityIndirectConnections = utilityIndirectConnections;
+    }
+
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.network_games.utilities.UtilityFunction#getUtility()
@@ -29,7 +54,7 @@ public final class Cumulative implements UtilityFunction {
                 continue;
             }
 
-            utility += UTILITY_DIRECT_CONNECTIONS;
+            utility += this.utilityDirectConnections;
 
             // indirect connections at distance 2
             List<Player> indirectConnections = directConnection.getConnections();
@@ -45,7 +70,7 @@ public final class Cumulative implements UtilityFunction {
                         || connections.contains(indirectConnection)) {
                     continue;
                 }
-                utility += UTILITY_INDIRECT_CONNECTIONS;
+                utility += this.utilityIndirectConnections;
             }
         }
 
