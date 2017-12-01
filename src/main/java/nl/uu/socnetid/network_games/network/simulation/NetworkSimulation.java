@@ -58,7 +58,7 @@ public class NetworkSimulation implements Runnable, Simulation {
     public void run() {
 
         // initializations
-        this.networkStable = false;
+        setNetworkStability(false);
         int currentRound = 0;
         ExecutorService service = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         boolean notified = false;
@@ -99,14 +99,15 @@ public class NetworkSimulation implements Runnable, Simulation {
                     Player currPlayer = playersIt.next();
                     allSatisfied &= currPlayer.isSatisfied();
                 }
-                this.networkStable = allSatisfied;
+
+                setNetworkStability(allSatisfied);
                 currentRound++;
 
                 if (Thread.currentThread().isInterrupted()) {
                     return;
                 }
 
-                if (!notified && networkStable) {
+                if (!notified && this.networkStable) {
                     notified = true;
                     notifyListeners();
                 }
@@ -115,6 +116,18 @@ public class NetworkSimulation implements Runnable, Simulation {
         } finally {
             shutdown(service, currentRound);
         }
+    }
+
+
+    /**
+     * Sets the network stability.
+     *
+     * @param stable
+     *          flag whether network is stable or not
+     */
+    private void setNetworkStability(boolean stable) {
+        this.networkStable = stable;
+        this.network.setStable(stable);
     }
 
     /* (non-Javadoc)
@@ -154,7 +167,6 @@ public class NetworkSimulation implements Runnable, Simulation {
     private void shutdown(ExecutorService service, int lastRound) {
         service.shutdownNow();
         logStopMessage(lastRound);
-//        notifyListeners();
     }
 
     /**

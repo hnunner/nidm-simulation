@@ -1,6 +1,7 @@
 package nl.uu.socnetid.network_games;
 
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -15,7 +16,6 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
@@ -37,6 +37,7 @@ import nl.uu.socnetid.network_games.gui.TruncatedConnectionsPanel;
 import nl.uu.socnetid.network_games.gui.TwoStageDiseasePanel;
 import nl.uu.socnetid.network_games.network.io.NetworkFileWriter;
 import nl.uu.socnetid.network_games.network.networks.Network;
+import nl.uu.socnetid.network_games.network.networks.NetworkStabilityListener;
 import nl.uu.socnetid.network_games.network.networks.SimpleNetwork;
 import nl.uu.socnetid.network_games.network.simulation.NetworkSimulation;
 import nl.uu.socnetid.network_games.network.simulation.Simulation;
@@ -52,9 +53,10 @@ import nl.uu.socnetid.network_games.utilities.UtilityFunction;
 /**
  * @author Hendrik Nunner
  */
-public class NetworkGame implements SimulationCompleteListener, NodeClickListener {
+public class NetworkGame implements SimulationCompleteListener, NodeClickListener, NetworkStabilityListener {
 
     // general export path
+    @SuppressWarnings("unused")
     private static final String EXPORT_PATH = "./network-exports/";
 
     // network
@@ -63,6 +65,7 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     private Graph graph;
 
     // logger
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(NetworkGame.class);
 
     // swing components
@@ -89,6 +92,8 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     private ThreeStageDiseasePanel threeStageDiseasePanel;
     // check box to toggle between infect / cure on mouse clicks
     private JCheckBox chckbxToggleInfection;
+    // status label for stable network
+    private JLabel lblStable;
 
     // concurrency for simulation
     private ExecutorService nodeClickExecutor = Executors.newSingleThreadExecutor();
@@ -130,7 +135,7 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     private void initialize() {
         // init swing frame
         frame = new JFrame();
-        frame.setBounds(100, 100, 236, 420);
+        frame.setBounds(100, 100, 236, 650);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null);
 
@@ -300,6 +305,24 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         });
         btnStopSimulation.setBounds(120, 355, 110, 35);
         frame.getContentPane().add(btnStopSimulation);
+
+        JPanel panel = new JPanel();
+        panel.setBounds(6, 402, 224, 220);
+        frame.getContentPane().add(panel);
+        panel.setLayout(null);
+
+        JLabel lblStats = new JLabel("Stats");
+        lblStats.setFont(new Font("Lucida Grande", Font.BOLD, 15));
+        lblStats.setBounds(6, 6, 61, 19);
+        panel.add(lblStats);
+
+        JLabel lblNetworkStable = new JLabel("Network stable:");
+        lblNetworkStable.setBounds(6, 34, 113, 16);
+        panel.add(lblNetworkStable);
+
+        lblStable = new JLabel("no");
+        lblStable.setBounds(131, 34, 61, 16);
+        panel.add(lblStable);
         for (int i = 0; i < diseases.length; i ++) {
             diseaseCBox.addItem(diseases[i]);
         }
@@ -320,6 +343,9 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         NodeClick nodeClickListener = new NodeClick(graph, viewer);
         nodeClickListener.addListener(this);
         this.nodeClickExecutor.submit(nodeClickListener);
+
+        // init network stability listener
+        this.network.addListener(this);
     }
 
 
@@ -465,8 +491,18 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
      * nl.uu.socnetid.network_games.network.simulation.Simulation)
      */
     @Override
-    public void notify(Simulation simulation) {
-        logger.debug("Simulation completed.");
-        JOptionPane.showMessageDialog(null, simulation.getStatusMessage());
+    public void notify(Simulation simulation) { }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.network.networks.NetworkStabilityListener#notify(nl.uu.socnetid.network_games.network.networks.Network)
+     */
+    @Override
+    public void notify(Network network) {
+
+        if (network.isStable()) {
+            this.lblStable.setText("yes");
+        } else {
+            this.lblStable.setText("no");
+        }
     }
 }

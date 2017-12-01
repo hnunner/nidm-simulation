@@ -3,6 +3,8 @@ package nl.uu.socnetid.network_games.network.networks;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.apache.log4j.Logger;
 
@@ -21,7 +23,10 @@ public abstract class AbstractNetwork implements Network {
     // set of players
     private List<Player> players;
     // flag indicating whether all players are happy with their current connections
-    boolean networkStable = false;
+    private boolean stable = false;
+
+    // listener
+    private final Set<NetworkStabilityListener> listeners = new CopyOnWriteArraySet<NetworkStabilityListener>();
 
 
     /**
@@ -136,6 +141,53 @@ public abstract class AbstractNetwork implements Network {
                     player.infect(disease);
                 }
             }
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.network.networks.Network#setStable(boolean)
+     */
+    @Override
+    public void setStable(boolean stable) {
+        if (this.stable != stable) {
+            this.stable = stable;
+            notifyListeners();
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.network.networks.Network#isStable()
+     */
+    @Override
+    public boolean isStable() {
+        return this.stable;
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.network.networks.Network#addListener(
+     * nl.uu.socnetid.network_games.network.networks.NetworkStabilityListener)
+     */
+    @Override
+    public void addListener(NetworkStabilityListener listener) {
+        this.listeners.add(listener);
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.network.networks.Network#removeListener(
+     * nl.uu.socnetid.network_games.network.networks.NetworkStabilityListener)
+     */
+    @Override
+    public void removeListener(NetworkStabilityListener listener) {
+        this.listeners.remove(listener);
+    }
+
+    /**
+     * Notifies the listeners of task completion.
+     */
+    private final void notifyListeners() {
+        Iterator<NetworkStabilityListener> listenersIt = this.listeners.iterator();
+        while (listenersIt.hasNext()) {
+            listenersIt.next().notify(this);
         }
     }
 
