@@ -15,9 +15,12 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.SwingConstants;
 
 import org.apache.log4j.Logger;
 import org.graphstream.graph.Graph;
@@ -122,162 +125,199 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     private void initialize() {
         // init swing frame
         frame = new JFrame();
-        frame.setBounds(100, 100, 250, 747);
+        frame.setBounds(100, 100, 512, 420);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null);
 
-        JButton btnStart = new JButton("(Re-) Start with:");
-        btnStart.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                startSimulation();
-            }
-        });
-        btnStart.setBounds(30, 145, 142, 45);
-        frame.getContentPane().add(btnStart);
+        // panes
+        JPanel playerPane = new JPanel();
+        JPanel utilityPane = new JPanel();
+        JPanel diseasePane = new JPanel();
+        JPanel exportPane = new JPanel();
+        // tabbed pane
+        JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.LEFT, JTabbedPane.WRAP_TAB_LAYOUT);
+        tabbedPane.setBounds(6, 6, 224, 304);
+        frame.getContentPane().add(tabbedPane);
+        tabbedPane.addTab("Players", playerPane);
+        playerPane.setLayout(null);
 
         JButton btnAddPlayer = new JButton("Add Player");
-        btnAddPlayer.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addPlayer();
-            }
-        });
-        btnAddPlayer.setBounds(30, 22, 142, 29);
-        frame.getContentPane().add(btnAddPlayer);
+        btnAddPlayer.setBounds(6, 6, 165, 29);
+        playerPane.add(btnAddPlayer);
 
         JButton btnRemovePlayer = new JButton("Remove Player");
-        btnRemovePlayer.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                removePlayer();
-            }
-        });
-        btnRemovePlayer.setBounds(30, 63, 142, 29);
-        frame.getContentPane().add(btnRemovePlayer);
+        btnRemovePlayer.setBounds(6, 47, 165, 29);
+        playerPane.add(btnRemovePlayer);
 
         JButton btnClearEdges = new JButton("Clear Edges");
+        btnClearEdges.setBounds(6, 88, 165, 29);
+        playerPane.add(btnClearEdges);
         btnClearEdges.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 clearEdges();
             }
         });
-        btnClearEdges.setBounds(30, 104, 142, 29);
-        frame.getContentPane().add(btnClearEdges);
-
-        edgeWriterCBox = new JComboBox<String>();
-        for (int i = 0; i < edgeWriters.length; i++) {
-            edgeWriterCBox.addItem(edgeWriters[i]);
-        }
-        edgeWriterCBox.setBounds(31, 690, 178, 29);
-        frame.getContentPane().add(edgeWriterCBox);
-
-        JButton btnExportNetwork = new JButton("Export Network as:");
-        btnExportNetwork.addActionListener(new ActionListener() {
+        btnRemovePlayer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                exportNetwork();
+                removePlayer();
             }
         });
-        btnExportNetwork.setBounds(21, 649, 188, 29);
-        frame.getContentPane().add(btnExportNetwork);
+        btnAddPlayer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addPlayer();
+            }
+        });
+        tabbedPane.add("Utility", utilityPane);
+        utilityPane.setLayout(null);
 
-        utilityFunctionCBox = new JComboBox<String>();
-        for (int i = 0; i < utilityFunctions.length; i++) {
-            utilityFunctionCBox.addItem(utilityFunctions[i]);
-        }
-        utilityFunctionCBox.setBounds(28, 201, 166, 27);
-        frame.getContentPane().add(utilityFunctionCBox);
+                utilityFunctionCBox = new JComboBox<String>();
+                utilityFunctionCBox.setBounds(6, 6, 165, 27);
+                utilityPane.add(utilityFunctionCBox);
 
-        simulationDelay = new JSpinner();
-        simulationDelay.setBounds(142, 312, 44, 26);
-        frame.getContentPane().add(simulationDelay);
+                JPanel panel = new JPanel();
+                panel.setBounds(6, 45, 166, 232);
+                utilityPane.add(panel);
+        tabbedPane.add("Diseas", diseasePane);
+        diseasePane.setLayout(null);
 
-        JLabel simulationDelayLabel = new JLabel("Simulation delay:");
-        simulationDelayLabel.setBounds(30, 317, 126, 16);
-        frame.getContentPane().add(simulationDelayLabel);
+        diseaseCBox = new JComboBox<String>();
+        diseaseCBox.setBounds(6, 6, 165, 27);
+        diseasePane.add(diseaseCBox);
 
-        JButton btnInfectPlayer = new JButton("Infect Player");
+        JLabel lblDuration = new JLabel("Duration:");
+        lblDuration.setBounds(6, 50, 134, 16);
+        diseasePane.add(lblDuration);
+
+        txtDiseaseDuration = new JTextField();
+        txtDiseaseDuration.setHorizontalAlignment(SwingConstants.RIGHT);
+        txtDiseaseDuration.setBounds(127, 45, 44, 26);
+        diseasePane.add(txtDiseaseDuration);
+        txtDiseaseDuration.setText("10");
+        txtDiseaseDuration.setColumns(10);
+
+        JLabel lblTransmissionRate = new JLabel("Transmission Rate:");
+        lblTransmissionRate.setBounds(6, 78, 134, 16);
+        diseasePane.add(lblTransmissionRate);
+
+        txtDiseaseTransmissionRate = new JTextField();
+        txtDiseaseTransmissionRate.setHorizontalAlignment(SwingConstants.RIGHT);
+        txtDiseaseTransmissionRate.setBounds(127, 73, 44, 26);
+        diseasePane.add(txtDiseaseTransmissionRate);
+        txtDiseaseTransmissionRate.setText("0.1");
+        txtDiseaseTransmissionRate.setColumns(10);
+
+        JLabel lblTreatmentCosts = new JLabel("Treatment Costs:");
+        lblTreatmentCosts.setBounds(6, 106, 134, 16);
+        diseasePane.add(lblTreatmentCosts);
+
+        txtDiseaseTreatmentCosts = new JTextField();
+        txtDiseaseTreatmentCosts.setHorizontalAlignment(SwingConstants.RIGHT);
+        txtDiseaseTreatmentCosts.setBounds(127, 101, 44, 26);
+        diseasePane.add(txtDiseaseTreatmentCosts);
+        txtDiseaseTreatmentCosts.setText("1");
+        txtDiseaseTreatmentCosts.setColumns(10);
+
+        tglbtnToggleInfection = new JToggleButton("Toggle Infection");
+        tglbtnToggleInfection.setToolTipText("When activated: Single nodes can be infected or cured by simply clicking on them.");
+        tglbtnToggleInfection.setBounds(6, 139, 165, 20);
+        diseasePane.add(tglbtnToggleInfection);
+
+        JButton btnInfectPlayer = new JButton("Infect Random Player");
+        btnInfectPlayer.setBounds(6, 171, 171, 29);
+        diseasePane.add(btnInfectPlayer);
         btnInfectPlayer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 infectRandomPlayer();
             }
         });
-        btnInfectPlayer.setBounds(30, 583, 197, 29);
-        frame.getContentPane().add(btnInfectPlayer);
+        tabbedPane.add("Export", exportPane);
+        exportPane.setLayout(null);
 
-        JButton btnStopSimulation = new JButton("Stop Simulation");
+        edgeWriterCBox = new JComboBox<String>();
+        edgeWriterCBox.setBounds(6, 6, 165, 27);
+        exportPane.add(edgeWriterCBox);
+
+        JButton btnExportNetwork = new JButton("Export");
+        btnExportNetwork.setBounds(6, 45, 165, 29);
+        exportPane.add(btnExportNetwork);
+        btnExportNetwork.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                exportNetwork();
+            }
+        });
+
+
+
+
+
+
+
+
+
+        JButton btnStart = new JButton("Start");
+        btnStart.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                startSimulation();
+            }
+        });
+        btnStart.setBounds(6, 355, 110, 35);
+        frame.getContentPane().add(btnStart);
+        for (int i = 0; i < edgeWriters.length; i++) {
+            edgeWriterCBox.addItem(edgeWriters[i]);
+        }
+        for (int i = 0; i < utilityFunctions.length; i++) {
+            utilityFunctionCBox.addItem(utilityFunctions[i]);
+        }
+
+        simulationDelay = new JSpinner();
+        simulationDelay.setBounds(180, 322, 50, 26);
+        frame.getContentPane().add(simulationDelay);
+
+        JLabel simulationDelayLabel = new JLabel("Simulation delay (100 ms):");
+        simulationDelayLabel.setBounds(10, 327, 179, 16);
+        frame.getContentPane().add(simulationDelayLabel);
+
+        JButton btnStopSimulation = new JButton("Stop");
         btnStopSimulation.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 stopSimulation();
             }
         });
-        btnStopSimulation.setBounds(48, 350, 126, 45);
+        btnStopSimulation.setBounds(120, 355, 110, 35);
         frame.getContentPane().add(btnStopSimulation);
 
-        tglbtnToggleInfection = new JToggleButton("Toggle Infection");
-        tglbtnToggleInfection.setBounds(73, 551, 126, 20);
-        frame.getContentPane().add(tglbtnToggleInfection);
+                txtConnectionsDelta = new JTextField();
+                txtConnectionsDelta.setBounds(388, 63, 44, 26);
+                frame.getContentPane().add(txtConnectionsDelta);
+                txtConnectionsDelta.setHorizontalAlignment(SwingConstants.RIGHT);
+                txtConnectionsDelta.setText("0.5");
+                txtConnectionsDelta.setColumns(10);
 
-        diseaseCBox = new JComboBox<String>();
+                        JLabel lblConnectionBenefitdelta = new JLabel("Benefit (delta): ");
+                        lblConnectionBenefitdelta.setBounds(267, 68, 134, 16);
+                        frame.getContentPane().add(lblConnectionBenefitdelta);
+
+                                JLabel lblConnectionCostsc = new JLabel("Costs (c):");
+                                lblConnectionCostsc.setBounds(267, 96, 134, 16);
+                                frame.getContentPane().add(lblConnectionCostsc);
+
+                                        txtConnectionsCosts = new JTextField();
+                                        txtConnectionsCosts.setBounds(388, 91, 44, 26);
+                                        frame.getContentPane().add(txtConnectionsCosts);
+                                        txtConnectionsCosts.setHorizontalAlignment(SwingConstants.RIGHT);
+                                        txtConnectionsCosts.setText("0.45");
+                                        txtConnectionsCosts.setColumns(10);
         for (int i = 0; i < diseases.length; i ++) {
             diseaseCBox.addItem(diseases[i]);
         }
-        diseaseCBox.setBounds(48, 428, 161, 27);
-        frame.getContentPane().add(diseaseCBox);
 
-        JLabel lblConnectionBenefitdelta = new JLabel("Connection benefit (delta): ");
-        lblConnectionBenefitdelta.setBounds(6, 245, 173, 16);
-        frame.getContentPane().add(lblConnectionBenefitdelta);
-
-        txtConnectionsDelta = new JTextField();
-        txtConnectionsDelta.setText("0.5");
-        txtConnectionsDelta.setBounds(177, 240, 50, 26);
-        frame.getContentPane().add(txtConnectionsDelta);
-        txtConnectionsDelta.setColumns(10);
-
-        JLabel lblConnectionCostsc = new JLabel("Connection Costs (c):");
-        lblConnectionCostsc.setBounds(6, 273, 166, 16);
-        frame.getContentPane().add(lblConnectionCostsc);
-
-        txtConnectionsCosts = new JTextField();
-        txtConnectionsCosts.setText("0.45");
-        txtConnectionsCosts.setBounds(177, 268, 50, 26);
-        frame.getContentPane().add(txtConnectionsCosts);
-        txtConnectionsCosts.setColumns(10);
-
-        JLabel lblDuration = new JLabel("Duration:");
-        lblDuration.setBounds(6, 465, 166, 16);
-        frame.getContentPane().add(lblDuration);
-
-        JLabel lblTransmissionRate = new JLabel("Transmission Rate:");
-        lblTransmissionRate.setBounds(6, 489, 166, 16);
-        frame.getContentPane().add(lblTransmissionRate);
-
-        JLabel lblTreatmentCosts = new JLabel("Treatment Costs:");
-        lblTreatmentCosts.setBounds(6, 517, 166, 16);
-        frame.getContentPane().add(lblTreatmentCosts);
-
-        txtDiseaseDuration = new JTextField();
-        txtDiseaseDuration.setText("10");
-        txtDiseaseDuration.setBounds(177, 460, 50, 26);
-        frame.getContentPane().add(txtDiseaseDuration);
-        txtDiseaseDuration.setColumns(10);
-
-        txtDiseaseTransmissionRate = new JTextField();
-        txtDiseaseTransmissionRate.setText("0.1");
-        txtDiseaseTransmissionRate.setBounds(177, 484, 50, 26);
-        frame.getContentPane().add(txtDiseaseTransmissionRate);
-        txtDiseaseTransmissionRate.setColumns(10);
-
-        txtDiseaseTreatmentCosts = new JTextField();
-        txtDiseaseTreatmentCosts.setText("1");
-        txtDiseaseTreatmentCosts.setBounds(177, 513, 50, 26);
-        frame.getContentPane().add(txtDiseaseTreatmentCosts);
-        txtDiseaseTreatmentCosts.setColumns(10);
 
 
         // init graphstream
