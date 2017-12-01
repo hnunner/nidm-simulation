@@ -120556,3 +120556,56 @@ player 4: not infected.
 2017-12-01 10:25:46 DEBUG NetworkGame:342 - Simulation completed.
 2017-12-01 10:48:44 DEBUG NetworkSimulation:167 - Simulation stopped in round 28. Network was stable.
 2017-12-01 10:48:44 DEBUG NetworkGame:372 - Simulation completed.
+2017-12-01 11:01:52 DEBUG NetworkSimulation:167 - Simulation stopped in round 162454. Network was not yet stable.
+2017-12-01 11:01:52 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:01:55 DEBUG NetworkSimulation:167 - Simulation stopped in round 19322. Network was stable.
+2017-12-01 11:01:55 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:02:01 DEBUG NetworkSimulation:167 - Simulation stopped in round 271962. Network was stable.
+2017-12-01 11:02:01 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:02:08 DEBUG NetworkSimulation:167 - Simulation stopped in round 320845. Network was stable.
+2017-12-01 11:02:08 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:02:27 DEBUG NetworkSimulation:167 - Simulation stopped in round 535055. Network was stable.
+2017-12-01 11:02:27 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:02:31 DEBUG NetworkSimulation:167 - Simulation stopped in round 124192. Network was stable.
+2017-12-01 11:02:31 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:08:55 DEBUG NetworkSimulation:167 - Simulation stopped in round 75189. Network was stable.
+2017-12-01 11:08:55 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:10:20 DEBUG NetworkSimulation:167 - Simulation stopped in round 4. Network was stable.
+2017-12-01 11:10:20 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:10:42 DEBUG NetworkSimulation:167 - Simulation stopped in round 12. Network was stable.
+2017-12-01 11:10:42 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:12:59 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:31:46 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:31:52 DEBUG NetworkSimulation:174 - Simulation stopped in round 151383. Network was stable.
+2017-12-01 11:31:52 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:31:53 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:32:02 DEBUG NetworkSimulation:174 - Simulation stopped in round 435171. Network was stable.
+2017-12-01 11:32:02 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:32:03 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:32:08 DEBUG NetworkSimulation:174 - Simulation stopped in round 152013. Network was stable.
+2017-12-01 11:32:08 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:32:09 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:32:29 DEBUG NetworkSimulation:174 - Simulation stopped in round 1415738. Network was stable.
+2017-12-01 11:32:29 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:33:24 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:33:29 DEBUG NetworkSimulation:174 - Simulation stopped in round 11. Network was stable.
+2017-12-01 11:33:30 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:33:33 DEBUG NetworkSimulation:174 - Simulation stopped in round 6. Network was stable.
+2017-12-01 11:33:34 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:36:57 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:37:48 DEBUG NetworkSimulation:174 - Simulation stopped in round 127. Network was stable.
+2017-12-01 11:37:50 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:37:52 DEBUG NetworkSimulation:174 - Simulation stopped in round 5. Network was stable.
+2017-12-01 11:37:54 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:37:57 DEBUG NetworkSimulation:174 - Simulation stopped in round 7. Network was stable.
+2017-12-01 11:37:58 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:37:59 DEBUG NetworkSimulation:174 - Simulation stopped in round 5. Network was stable.
+2017-12-01 11:38:01 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:38:01 DEBUG NetworkSimulation:174 - Simulation stopped in round 3. Network was stable.
+2017-12-01 11:38:03 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:38:06 DEBUG NetworkSimulation:174 - Simulation stopped in round 9. Network was stable.
+2017-12-01 11:38:08 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:38:09 DEBUG NetworkSimulation:174 - Simulation stopped in round 5. Network was stable.
+2017-12-01 11:38:10 DEBUG NetworkGame:377 - Simulation completed.
+2017-12-01 11:38:11 DEBUG NetworkSimulation:174 - Simulation stopped in round 4. Network was stable.
+2017-12-01 11:38:12 DEBUG NetworkGame:377 - Simulation completed.

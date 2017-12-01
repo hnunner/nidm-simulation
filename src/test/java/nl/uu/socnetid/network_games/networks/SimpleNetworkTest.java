@@ -13,7 +13,7 @@ import nl.uu.socnetid.network_games.network.networks.Network;
 import nl.uu.socnetid.network_games.network.networks.SimpleNetwork;
 import nl.uu.socnetid.network_games.players.Player;
 import nl.uu.socnetid.network_games.players.RationalPlayer;
-import nl.uu.socnetid.network_games.utilities.CumulativeUtilityFunction;
+import nl.uu.socnetid.network_games.utilities.Cumulative;
 import nl.uu.socnetid.network_games.utilities.UtilityFunction;
 
 
@@ -39,7 +39,7 @@ public class SimpleNetworkTest {
 	 */
 	@Before
 	public void initPlayer() {
-	    UtilityFunction utilityFunction = new CumulativeUtilityFunction();
+	    UtilityFunction utilityFunction = new Cumulative();
 
 	    List<Player> players = new ArrayList<Player>();
 
