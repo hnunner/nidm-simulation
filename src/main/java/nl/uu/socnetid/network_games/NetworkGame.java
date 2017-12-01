@@ -494,7 +494,8 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     public void notify(Simulation simulation) { }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.network.networks.NetworkStabilityListener#notify(nl.uu.socnetid.network_games.network.networks.Network)
+     * @see nl.uu.socnetid.network_games.network.networks.NetworkStabilityListener#notify(
+     * nl.uu.socnetid.network_games.network.networks.Network)
      */
     @Override
     public void notify(Network network) {
