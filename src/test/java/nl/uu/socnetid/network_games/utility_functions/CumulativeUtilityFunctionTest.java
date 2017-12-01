@@ -10,11 +10,11 @@ import org.junit.Test;
 
 import nl.uu.socnetid.network_games.players.Player;
 import nl.uu.socnetid.network_games.players.RationalPlayer;
-import nl.uu.socnetid.network_games.utilities.CumulativeUtilityFunction;
+import nl.uu.socnetid.network_games.utilities.Cumulative;
 import nl.uu.socnetid.network_games.utilities.UtilityFunction;
 
 /**
- * Tests for {@link CumulativeUtilityFunction} class.
+ * Tests for {@link Cumulative} class.
  *
  * @author Hendrik Nunner
  */
@@ -35,7 +35,7 @@ public class CumulativeUtilityFunctionTest {
      */
     @Before
     public void initPlayer() {
-        utilityFunction = new CumulativeUtilityFunction();
+        utilityFunction = new Cumulative();
 
         List<Player> players = new ArrayList<Player>();
 

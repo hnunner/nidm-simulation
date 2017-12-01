@@ -38,7 +38,8 @@ import nl.uu.socnetid.network_games.network.writer.AdjacencyMatrixWriter;
 import nl.uu.socnetid.network_games.network.writer.EdgeListWriter;
 import nl.uu.socnetid.network_games.network.writer.NetworkWriter;
 import nl.uu.socnetid.network_games.players.RationalPlayerNode;
-import nl.uu.socnetid.network_games.utilities.CumulativeUtilityFunction;
+import nl.uu.socnetid.network_games.utilities.Cumulative;
+import nl.uu.socnetid.network_games.utilities.TruncatedConnections;
 import nl.uu.socnetid.network_games.utilities.UtilityFunction;
 
 /**
@@ -62,7 +63,7 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     private JFrame frame;
     // utility function combo box and selection
     private JComboBox<String> utilityFunctionCBox;
-    private String[] utilityFunctions = {"Cumulative"};
+    private String[] utilityFunctions = {"Cumulative", "Truncated Connections"};
     // edge writer combo box and selection
     private JComboBox<String> edgeWriterCBox;
     private String[] edgeWriters = {"Edge List", "Adjacency Matrix"};
@@ -295,7 +296,11 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     private UtilityFunction getUtilityFunction() {
         switch (utilityFunctionCBox.getSelectedIndex()) {
             case 0:
-                return new CumulativeUtilityFunction();
+                return new Cumulative();
+
+            case 1:
+                return new TruncatedConnections(0.5, 0.45);
+
             default:
                 throw new RuntimeException("Undefined utility function!");
         }

@@ -8,14 +8,29 @@ import nl.uu.socnetid.network_games.players.Player;
 /**
  * @author Hendrik Nunner
  */
-public final class CumulativeUtilityFunction implements UtilityFunction {
+public class TruncatedConnections implements UtilityFunction {
 
     // how much is a connection worth
-    private static final float UTILITY_DIRECT_CONNECTIONS = 1f;
-    private static final float UTILITY_INDIRECT_CONNECTIONS = 0.5f;
+    private final double directUtility;
+    private final double indirectUtility;
+
+    /**
+     * Constructor.
+     *
+     * @param delta
+     *          the benefit for connections, deteriorating over distance
+     * @param costs
+     *          the costs to maintain direct connections
+     */
+    public TruncatedConnections(double delta, double costs) {
+        this.directUtility = delta - costs;
+        this.indirectUtility = delta * delta;
+    }
+
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.utilities.UtilityFunction#getUtility()
+     * @see nl.uu.socnetid.network_games.utilities.UtilityFunction#getUtility(
+     * nl.uu.socnetid.network_games.players.Player, java.util.List)
      */
     @Override
     public double getUtility(Player player, List<Player> connections) {
@@ -29,7 +44,7 @@ public final class CumulativeUtilityFunction implements UtilityFunction {
                 continue;
             }
 
-            utility += UTILITY_DIRECT_CONNECTIONS;
+            utility += this.directUtility;
 
             // indirect connections at distance 2
             List<Player> indirectConnections = directConnection.getConnections();
@@ -42,10 +57,15 @@ public final class CumulativeUtilityFunction implements UtilityFunction {
                 Player indirectConnection = indirectIt.next();
 
                 if (indirectConnection.equals(player)
+
+
+
+
+                        ////////// TODO: ??? DOUBLE BENEFITS FOR DIRECT + INDIRECT ??? //////////
                         || connections.contains(indirectConnection)) {
                     continue;
                 }
-                utility += UTILITY_INDIRECT_CONNECTIONS;
+                utility += this.indirectUtility;
             }
         }
 
