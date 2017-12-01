@@ -1,4 +1,4 @@
-package nl.uu.socnetid.network_games.events.gui;
+package nl.uu.socnetid.network_games.gui;
 
 /**
  * @author Hendrik Nunner
