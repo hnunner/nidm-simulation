@@ -120648,3 +120648,26 @@ player 4: not infected.
 2017-12-01 12:28:23 DEBUG NetworkGame:439 - Simulation completed.
 2017-12-01 12:28:45 DEBUG NetworkSimulation:174 - Simulation stopped in round 54. Network was stable.
 2017-12-01 12:29:00 DEBUG NetworkGame:439 - Simulation completed.
+2017-12-01 14:28:53 DEBUG NetworkGame:470 - Simulation completed.
+2017-12-01 14:28:57 DEBUG NetworkSimulation:174 - Simulation stopped in round 13581. Network was stable.
+2017-12-01 14:30:07 DEBUG NetworkGame:470 - Simulation completed.
+2017-12-01 14:31:08 DEBUG NetworkSimulation:174 - Simulation stopped in round 53. Network was stable.
+2017-12-01 14:32:11 DEBUG NetworkGame:470 - Simulation completed.
+2017-12-01 14:32:28 DEBUG NetworkSimulation:174 - Simulation stopped in round 31. Network was stable.
+2017-12-01 14:32:32 DEBUG NetworkGame:470 - Simulation completed.
+2017-12-01 14:33:05 DEBUG NetworkSimulation:174 - Simulation stopped in round 41. Network was stable.
+2017-12-01 14:33:08 DEBUG NetworkGame:470 - Simulation completed.
+2017-12-01 14:33:29 DEBUG NetworkSimulation:174 - Simulation stopped in round 1056302. Network was stable.
+2017-12-01 14:33:30 DEBUG NetworkGame:470 - Simulation completed.
+2017-12-01 14:33:32 DEBUG NetworkSimulation:174 - Simulation stopped in round 58391. Network was stable.
+2017-12-01 14:33:32 DEBUG NetworkGame:470 - Simulation completed.
+2017-12-01 14:33:34 DEBUG NetworkSimulation:174 - Simulation stopped in round 29725. Network was stable.
+2017-12-01 14:33:34 DEBUG NetworkGame:470 - Simulation completed.
+2017-12-01 14:33:35 DEBUG NetworkSimulation:174 - Simulation stopped in round 30809. Network was stable.
+2017-12-01 14:33:35 DEBUG NetworkGame:470 - Simulation completed.
+2017-12-01 14:33:36 DEBUG NetworkSimulation:174 - Simulation stopped in round 38279. Network was stable.
+2017-12-01 14:33:36 DEBUG NetworkGame:470 - Simulation completed.
+2017-12-01 14:33:37 DEBUG NetworkSimulation:174 - Simulation stopped in round 30301. Network was stable.
+2017-12-01 14:33:37 DEBUG NetworkGame:470 - Simulation completed.
+2017-12-01 14:33:38 DEBUG NetworkSimulation:174 - Simulation stopped in round 18180. Network was stable.
+2017-12-01 14:33:38 DEBUG NetworkGame:470 - Simulation completed.
