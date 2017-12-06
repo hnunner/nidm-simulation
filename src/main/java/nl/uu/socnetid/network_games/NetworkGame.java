@@ -4,12 +4,15 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -17,6 +20,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
@@ -29,12 +33,17 @@ import org.graphstream.ui.view.Viewer;
 import nl.uu.socnetid.network_games.disease.Disease;
 import nl.uu.socnetid.network_games.disease.ThreeStageDisease;
 import nl.uu.socnetid.network_games.disease.TwoStageDisease;
+import nl.uu.socnetid.network_games.gui.AddPlayerListener;
+import nl.uu.socnetid.network_games.gui.ClearEdgesListener;
 import nl.uu.socnetid.network_games.gui.CumulativePanel;
+import nl.uu.socnetid.network_games.gui.ExportOutputPlayerPanel;
 import nl.uu.socnetid.network_games.gui.NodeClick;
 import nl.uu.socnetid.network_games.gui.NodeClickListener;
+import nl.uu.socnetid.network_games.gui.RemovePlayerListener;
 import nl.uu.socnetid.network_games.gui.ThreeStageDiseasePanel;
 import nl.uu.socnetid.network_games.gui.TruncatedConnectionsPanel;
 import nl.uu.socnetid.network_games.gui.TwoStageDiseasePanel;
+import nl.uu.socnetid.network_games.gui.VisualOutputPlayerPanel;
 import nl.uu.socnetid.network_games.network.io.NetworkFileWriter;
 import nl.uu.socnetid.network_games.network.networks.Network;
 import nl.uu.socnetid.network_games.network.networks.NetworkStabilityListener;
@@ -53,7 +62,7 @@ import nl.uu.socnetid.network_games.utilities.UtilityFunction;
 /**
  * @author Hendrik Nunner
  */
-public class NetworkGame implements SimulationCompleteListener, NodeClickListener, NetworkStabilityListener {
+public class NetworkGame implements SimulationCompleteListener, NodeClickListener, NetworkStabilityListener, AddPlayerListener, RemovePlayerListener, ClearEdgesListener {
 
     // general export path
     @SuppressWarnings("unused")
@@ -63,6 +72,7 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     private final Network network = new SimpleNetwork();
     // graph
     private Graph graph;
+    private Viewer viewer;
 
     // logger
     @SuppressWarnings("unused")
@@ -94,9 +104,17 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     private JCheckBox chckbxToggleInfection;
     // status label for stable network
     private JLabel lblStable;
+    // radio buttons for output selection
+    private ButtonGroup bgOutput;
+    private JRadioButton rdbtnOutputExport;
+    private JRadioButton rdbtnOutputVisual;
+    // player configuration panels
+    private VisualOutputPlayerPanel visualOutoutPlayerPanel;
+    private ExportOutputPlayerPanel exportOutoutPlayerPanel;
+
 
     // concurrency for simulation
-    private ExecutorService nodeClickExecutor = Executors.newSingleThreadExecutor();
+    private ExecutorService nodeClickExecutor;
     private ExecutorService simulationExecutor = Executors.newSingleThreadExecutor();
     private Future<?> simulationTask;
 
@@ -135,7 +153,7 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     private void initialize() {
         // init swing frame
         frame = new JFrame();
-        frame.setBounds(100, 100, 236, 650);
+        frame.setBounds(100, 100, 236, 715);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null);
 
@@ -146,40 +164,21 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         JPanel exportPane = new JPanel();
         // tabbed pane
         JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.LEFT, JTabbedPane.WRAP_TAB_LAYOUT);
-        tabbedPane.setBounds(6, 6, 224, 304);
+        tabbedPane.setBounds(6, 69, 224, 304);
         frame.getContentPane().add(tabbedPane);
         tabbedPane.addTab("Players", playerPane);
         playerPane.setLayout(null);
 
-        JButton btnAddPlayer = new JButton("Add Player");
-        btnAddPlayer.setBounds(6, 6, 165, 29);
-        playerPane.add(btnAddPlayer);
+        visualOutoutPlayerPanel = new VisualOutputPlayerPanel();
+        visualOutoutPlayerPanel.setBounds(6, 6, 166, 271);
+        visualOutoutPlayerPanel.setVisible(false);
+        playerPane.add(visualOutoutPlayerPanel);
 
-        JButton btnRemovePlayer = new JButton("Remove Player");
-        btnRemovePlayer.setBounds(6, 47, 165, 29);
-        playerPane.add(btnRemovePlayer);
+        exportOutoutPlayerPanel = new ExportOutputPlayerPanel();
+        exportOutoutPlayerPanel.setBounds(6, 6, 166, 271);
+        exportOutoutPlayerPanel.setVisible(false);
+        playerPane.add(exportOutoutPlayerPanel);
 
-        JButton btnClearEdges = new JButton("Clear Edges");
-        btnClearEdges.setBounds(6, 88, 165, 29);
-        playerPane.add(btnClearEdges);
-        btnClearEdges.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                clearEdges();
-            }
-        });
-        btnRemovePlayer.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                removePlayer();
-            }
-        });
-        btnAddPlayer.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addPlayer();
-            }
-        });
         tabbedPane.add("Utility", utilityPane);
         utilityPane.setLayout(null);
 
@@ -279,7 +278,7 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
                 startSimulation();
             }
         });
-        btnStart.setBounds(6, 355, 110, 35);
+        btnStart.setBounds(6, 418, 110, 35);
         frame.getContentPane().add(btnStart);
         for (int i = 0; i < edgeWriters.length; i++) {
             edgeWriterCBox.addItem(edgeWriters[i]);
@@ -289,11 +288,11 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         }
 
         simulationDelay = new JSpinner();
-        simulationDelay.setBounds(180, 322, 50, 26);
+        simulationDelay.setBounds(180, 385, 50, 26);
         frame.getContentPane().add(simulationDelay);
 
         JLabel simulationDelayLabel = new JLabel("Simulation delay (100 ms):");
-        simulationDelayLabel.setBounds(10, 327, 179, 16);
+        simulationDelayLabel.setBounds(10, 390, 179, 16);
         frame.getContentPane().add(simulationDelayLabel);
 
         JButton btnStopSimulation = new JButton("Stop");
@@ -303,11 +302,11 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
                 stopSimulation();
             }
         });
-        btnStopSimulation.setBounds(120, 355, 110, 35);
+        btnStopSimulation.setBounds(120, 418, 110, 35);
         frame.getContentPane().add(btnStopSimulation);
 
         JPanel panel = new JPanel();
-        panel.setBounds(6, 402, 224, 220);
+        panel.setBounds(6, 465, 224, 220);
         frame.getContentPane().add(panel);
         panel.setLayout(null);
 
@@ -323,54 +322,43 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         lblStable = new JLabel("no");
         lblStable.setBounds(131, 34, 61, 16);
         panel.add(lblStable);
+
+        rdbtnOutputExport = new JRadioButton("Export");
+        rdbtnOutputExport.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                outputTypeChanged();
+            }
+        });
+        rdbtnOutputExport.setBounds(105, 34, 80, 23);
+        frame.getContentPane().add(rdbtnOutputExport);
+
+        rdbtnOutputVisual = new JRadioButton("Visual");
+        rdbtnOutputVisual.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                outputTypeChanged();
+            }
+        });
+        rdbtnOutputVisual.setBounds(16, 34, 80, 23);
+        frame.getContentPane().add(rdbtnOutputVisual);
+
+        bgOutput = new ButtonGroup();
+        bgOutput.add(rdbtnOutputExport);
+        bgOutput.add(rdbtnOutputVisual);
+
+        JLabel lblOutputType = new JLabel("Output Type:");
+        lblOutputType.setBounds(6, 6, 110, 16);
+        frame.getContentPane().add(lblOutputType);
         for (int i = 0; i < diseases.length; i ++) {
             diseaseCBox.addItem(diseases[i]);
         }
 
 
-
-        // init graphstream
-        this.graph = new SingleGraph("NetworkGames");
-        // graph-stream CSS styles and rendering properties
-        this.graph.addAttribute("ui.quality");
-        this.graph.addAttribute("ui.antialias");
-        URL gsStyles = this.getClass().getClassLoader().getResource("graph-stream.css");
-        this.graph.addAttribute("ui.stylesheet", "url('file:" + gsStyles.getPath() + "')");
-        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
-        // show
-        Viewer viewer = this.graph.display();
-        // init click listener
-        NodeClick nodeClickListener = new NodeClick(graph, viewer);
-        nodeClickListener.addListener(this);
-        this.nodeClickExecutor.submit(nodeClickListener);
-
         // init network stability listener
         this.network.addListener(this);
     }
 
-
-    /**
-     * Adds a player to the game.
-     */
-    private void addPlayer() {
-        this.network.addPlayer(RationalPlayerNode.newInstance(this.graph));
-    }
-
-    /**
-     * Removes a player from the game.
-     */
-    private void removePlayer() {
-        this.network.removePlayer();
-    }
-
-    /**
-     * Clears all edges within the game.
-     */
-    private void clearEdges() {
-        if (this.network != null) {
-            this.network.clearConnections();
-        }
-    }
 
     /**
      * Runs the actual simulation of the network game.
@@ -486,6 +474,93 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         }
     }
 
+    /**
+     * Refreshes the GUI depending on the selected output type.
+     */
+    private void outputTypeChanged() {
+        if (rdbtnOutputVisual.isSelected()) {
+            enableOutputVisualElements();
+            initGraphStream();
+        }
+
+        if (rdbtnOutputExport.isSelected()) {
+            enableOutputExportElements();
+            releaseGraphStream();
+        }
+    }
+
+    /**
+     * Initializes graph-stream for visual output.
+     */
+    private void initGraphStream() {
+        // init graphstream
+        this.graph = new SingleGraph("NetworkGames");
+        // graph-stream CSS styles and rendering properties
+        this.graph.addAttribute("ui.quality");
+        this.graph.addAttribute("ui.antialias");
+        URL gsStyles = this.getClass().getClassLoader().getResource("graph-stream.css");
+        this.graph.addAttribute("ui.stylesheet", "url('file:" + gsStyles.getPath() + "')");
+        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
+        // show
+        this.viewer = this.graph.display();
+
+
+        // init click listener
+        NodeClick nodeClickListener = new NodeClick(graph, viewer);
+        nodeClickListener.addListener(this);
+        this.nodeClickExecutor = Executors.newSingleThreadExecutor();
+        this.nodeClickExecutor.submit(nodeClickListener);
+    }
+
+    /**
+     * Releases graph-stream for export output.
+     */
+    private void releaseGraphStream() {
+        this.viewer.close();
+        this.graph.clear();
+        this.graph = null;
+        System.clearProperty("org.graphstream.ui.renderer");
+        // init click listener
+        this.nodeClickExecutor.shutdown();
+    }
+
+    /**
+     * Toggles the visibility of elements for visual outputs.
+     *
+     * @param visualSelected
+     *          flag to indicate whether visual ouput has been selected
+     */
+    private void enableOutputVisualElements() {
+
+        this.exportOutoutPlayerPanel.setVisible(false);
+
+        this.simulationDelay.setEnabled(true);
+        this.visualOutoutPlayerPanel.setVisible(true);
+
+        this.visualOutoutPlayerPanel.addAddPlayerListener(this);
+        this.visualOutoutPlayerPanel.addRemovePlayerListener(this);
+        this.visualOutoutPlayerPanel.addClearEdgesListener(this);
+    }
+
+    /**
+     * Toggles the visibility of elements for export ouputs.
+     *
+     * @param exportSelected
+     *          flag to indicate whether export output has been selected
+     */
+    private void enableOutputExportElements() {
+        this.simulationDelay.setValue(0);
+        this.simulationDelay.setEnabled(false);
+        this.visualOutoutPlayerPanel.setVisible(false);
+
+        this.exportOutoutPlayerPanel.setVisible(true);
+
+        this.visualOutoutPlayerPanel.removeAddPlayerListener(this);
+        this.visualOutoutPlayerPanel.removeRemovePlayerListener(this);
+        this.visualOutoutPlayerPanel.removeClearEdgesListener(this);
+    }
+
+
     /* (non-Javadoc)
      * @see nl.uu.socnetid.network_games.network.simulation.SimulationCompleteListener#notify(
      * nl.uu.socnetid.network_games.network.simulation.Simulation)
@@ -504,6 +579,33 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
             this.lblStable.setText("yes");
         } else {
             this.lblStable.setText("no");
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.gui.AddPlayerListener#notifyAddPlayer()
+     */
+    @Override
+    public void notifyAddPlayer() {
+        this.network.addPlayer(RationalPlayerNode.newInstance(this.graph));
+    }
+
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.gui.ClearEdgesListener#notifyRemovePlayer()
+     */
+    @Override
+    public void notifyRemovePlayer() {
+        this.network.removePlayer();
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.gui.RemovePlayerListener#notifyClearEdges()
+     */
+    @Override
+    public void notifyClearEdges() {
+        if (this.network != null) {
+            this.network.clearConnections();
         }
     }
 }
