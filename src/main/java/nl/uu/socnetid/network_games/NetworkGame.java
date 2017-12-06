@@ -36,6 +36,7 @@ import nl.uu.socnetid.network_games.disease.TwoStageDisease;
 import nl.uu.socnetid.network_games.gui.AddPlayerListener;
 import nl.uu.socnetid.network_games.gui.ClearEdgesListener;
 import nl.uu.socnetid.network_games.gui.CumulativePanel;
+import nl.uu.socnetid.network_games.gui.ExportNetworkListener;
 import nl.uu.socnetid.network_games.gui.ExportOutputPlayerPanel;
 import nl.uu.socnetid.network_games.gui.NodeClick;
 import nl.uu.socnetid.network_games.gui.NodeClickListener;
@@ -43,6 +44,7 @@ import nl.uu.socnetid.network_games.gui.RemovePlayerListener;
 import nl.uu.socnetid.network_games.gui.ThreeStageDiseasePanel;
 import nl.uu.socnetid.network_games.gui.TruncatedConnectionsPanel;
 import nl.uu.socnetid.network_games.gui.TwoStageDiseasePanel;
+import nl.uu.socnetid.network_games.gui.VisualOutputExportPanel;
 import nl.uu.socnetid.network_games.gui.VisualOutputPlayerPanel;
 import nl.uu.socnetid.network_games.network.io.NetworkFileWriter;
 import nl.uu.socnetid.network_games.network.networks.Network;
@@ -51,8 +53,6 @@ import nl.uu.socnetid.network_games.network.networks.SimpleNetwork;
 import nl.uu.socnetid.network_games.network.simulation.NetworkSimulation;
 import nl.uu.socnetid.network_games.network.simulation.Simulation;
 import nl.uu.socnetid.network_games.network.simulation.SimulationCompleteListener;
-import nl.uu.socnetid.network_games.network.writer.AdjacencyMatrixWriter;
-import nl.uu.socnetid.network_games.network.writer.EdgeListWriter;
 import nl.uu.socnetid.network_games.network.writer.NetworkWriter;
 import nl.uu.socnetid.network_games.players.RationalPlayerNode;
 import nl.uu.socnetid.network_games.utilities.Cumulative;
@@ -62,7 +62,8 @@ import nl.uu.socnetid.network_games.utilities.UtilityFunction;
 /**
  * @author Hendrik Nunner
  */
-public class NetworkGame implements SimulationCompleteListener, NodeClickListener, NetworkStabilityListener, AddPlayerListener, RemovePlayerListener, ClearEdgesListener {
+public class NetworkGame implements SimulationCompleteListener, NodeClickListener, NetworkStabilityListener,
+AddPlayerListener, RemovePlayerListener, ClearEdgesListener, ExportNetworkListener {
 
     // general export path
     @SuppressWarnings("unused")
@@ -84,9 +85,6 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     // utility function combo box and selection
     private JComboBox<String> utilityFunctionCBox;
     private String[] utilityFunctions = {"Cumulative", "Truncated Connections"};
-    // edge writer combo box and selection
-    private JComboBox<String> edgeWriterCBox;
-    private String[] edgeWriters = {"Edge List", "Adjacency Matrix"};
     // spinner for simulation delay
     private JSpinner simulationDelay;
     // disease selection combo box
@@ -109,9 +107,10 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     private JRadioButton rdbtnOutputExport;
     private JRadioButton rdbtnOutputVisual;
     // player configuration panels
-    private VisualOutputPlayerPanel visualOutoutPlayerPanel;
-    private ExportOutputPlayerPanel exportOutoutPlayerPanel;
-
+    private VisualOutputPlayerPanel visualOutputPlayerPanel;
+    private ExportOutputPlayerPanel exportOutputPlayerPanel;
+    // export panels
+    private VisualOutputExportPanel visualOutputExportPanel;
 
     // concurrency for simulation
     private ExecutorService nodeClickExecutor;
@@ -169,15 +168,15 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         tabbedPane.addTab("Players", playerPane);
         playerPane.setLayout(null);
 
-        visualOutoutPlayerPanel = new VisualOutputPlayerPanel();
-        visualOutoutPlayerPanel.setBounds(6, 6, 166, 271);
-        visualOutoutPlayerPanel.setVisible(false);
-        playerPane.add(visualOutoutPlayerPanel);
+        visualOutputPlayerPanel = new VisualOutputPlayerPanel();
+        visualOutputPlayerPanel.setBounds(6, 6, 166, 271);
+        visualOutputPlayerPanel.setVisible(false);
+        playerPane.add(visualOutputPlayerPanel);
 
-        exportOutoutPlayerPanel = new ExportOutputPlayerPanel();
-        exportOutoutPlayerPanel.setBounds(6, 6, 166, 271);
-        exportOutoutPlayerPanel.setVisible(false);
-        playerPane.add(exportOutoutPlayerPanel);
+        exportOutputPlayerPanel = new ExportOutputPlayerPanel();
+        exportOutputPlayerPanel.setBounds(6, 6, 166, 271);
+        exportOutputPlayerPanel.setVisible(false);
+        playerPane.add(exportOutputPlayerPanel);
 
         tabbedPane.add("Utility", utilityPane);
         utilityPane.setLayout(null);
@@ -257,19 +256,10 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         tabbedPane.add("Export", exportPane);
         exportPane.setLayout(null);
 
-        edgeWriterCBox = new JComboBox<String>();
-        edgeWriterCBox.setBounds(6, 6, 165, 27);
-        exportPane.add(edgeWriterCBox);
-
-        JButton btnExportNetwork = new JButton("Export");
-        btnExportNetwork.setBounds(6, 45, 165, 29);
-        exportPane.add(btnExportNetwork);
-        btnExportNetwork.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                exportNetwork();
-            }
-        });
+        visualOutputExportPanel = new VisualOutputExportPanel();
+        visualOutputExportPanel.setBounds(6, 6, 166, 271);
+        visualOutputExportPanel.setVisible(false);
+        exportPane.add(visualOutputExportPanel);
 
         JButton btnStart = new JButton("Start");
         btnStart.addActionListener(new ActionListener() {
@@ -280,9 +270,7 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         });
         btnStart.setBounds(6, 418, 110, 35);
         frame.getContentPane().add(btnStart);
-        for (int i = 0; i < edgeWriters.length; i++) {
-            edgeWriterCBox.addItem(edgeWriters[i]);
-        }
+
         for (int i = 0; i < utilityFunctions.length; i++) {
             utilityFunctionCBox.addItem(utilityFunctions[i]);
         }
@@ -405,41 +393,6 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         }
     }
 
-    /**
-     * Exports the network into a csv file.
-     */
-    private void exportNetwork() {
-
-        JFileChooser fileChooser = new JFileChooser();
-        int popdownState = fileChooser.showSaveDialog(null);
-        if(popdownState == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = fileChooser.getSelectedFile();
-            String file = fileChooser.getSelectedFile().getPath();
-            String filePath = file.replace(selectedFile.getName(), "");
-
-            NetworkWriter networkWriter = getSelectedNetworkWriter();
-
-            NetworkFileWriter fileWriter = new NetworkFileWriter(filePath, file, networkWriter, network);
-            fileWriter.write();
-        }
-    }
-
-    /**
-     * @return the selected network writer
-     */
-    private NetworkWriter getSelectedNetworkWriter() {
-        switch (edgeWriterCBox.getSelectedIndex()) {
-            case 0:
-                return new EdgeListWriter();
-
-            case 1:
-                return new AdjacencyMatrixWriter();
-
-            default:
-                throw new RuntimeException("Undefined network writer!");
-        }
-    }
-
     /* (non-Javadoc)
      * @see nl.uu.socnetid.network_games.gui.NodeClickListener#notify(
      * nl.uu.socnetid.network_games.gui.NodeClick)
@@ -532,14 +485,17 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
      */
     private void enableOutputVisualElements() {
 
-        this.exportOutoutPlayerPanel.setVisible(false);
+        this.exportOutputPlayerPanel.setVisible(false);
 
         this.simulationDelay.setEnabled(true);
-        this.visualOutoutPlayerPanel.setVisible(true);
 
-        this.visualOutoutPlayerPanel.addAddPlayerListener(this);
-        this.visualOutoutPlayerPanel.addRemovePlayerListener(this);
-        this.visualOutoutPlayerPanel.addClearEdgesListener(this);
+        this.visualOutputPlayerPanel.setVisible(true);
+        this.visualOutputPlayerPanel.addAddPlayerListener(this);
+        this.visualOutputPlayerPanel.addRemovePlayerListener(this);
+        this.visualOutputPlayerPanel.addClearEdgesListener(this);
+
+        this.visualOutputExportPanel.setVisible(true);
+        this.visualOutputExportPanel.addAddListener(this);
     }
 
     /**
@@ -551,13 +507,15 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     private void enableOutputExportElements() {
         this.simulationDelay.setValue(0);
         this.simulationDelay.setEnabled(false);
-        this.visualOutoutPlayerPanel.setVisible(false);
+        this.visualOutputPlayerPanel.setVisible(false);
 
-        this.exportOutoutPlayerPanel.setVisible(true);
+        this.exportOutputPlayerPanel.setVisible(true);
+        this.visualOutputPlayerPanel.removeAddPlayerListener(this);
+        this.visualOutputPlayerPanel.removeRemovePlayerListener(this);
+        this.visualOutputPlayerPanel.removeClearEdgesListener(this);
 
-        this.visualOutoutPlayerPanel.removeAddPlayerListener(this);
-        this.visualOutoutPlayerPanel.removeRemovePlayerListener(this);
-        this.visualOutoutPlayerPanel.removeClearEdgesListener(this);
+        this.visualOutputExportPanel.setVisible(false);
+        this.visualOutputExportPanel.removeExportNetworkListener(this);
     }
 
 
@@ -606,6 +564,24 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     public void notifyClearEdges() {
         if (this.network != null) {
             this.network.clearConnections();
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.gui.ExportNetworkListener#notifyExportNetwork(
+     * nl.uu.socnetid.network_games.gui.VisualOutputExportPanel)
+     */
+    @Override
+    public void notifyExportNetwork(VisualOutputExportPanel panel) {
+        JFileChooser fileChooser = new JFileChooser();
+        int popdownState = fileChooser.showSaveDialog(null);
+        if(popdownState == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            String file = fileChooser.getSelectedFile().getPath();
+            String filePath = file.replace(selectedFile.getName(), "");
+            NetworkWriter networkWriter = panel.getSelectedNetworkWriter();
+            NetworkFileWriter fileWriter = new NetworkFileWriter(filePath, file, networkWriter, network);
+            fileWriter.write();
         }
     }
 }
