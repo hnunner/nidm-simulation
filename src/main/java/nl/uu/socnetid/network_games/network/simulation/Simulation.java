@@ -21,11 +21,4 @@ public interface Simulation {
      */
     void removeListener(final SimulationCompleteListener listener);
 
-    /**
-     * Gets a status message of the simulation.
-     *
-     * @return a status message
-     */
-    String getStatusMessage();
-
 }

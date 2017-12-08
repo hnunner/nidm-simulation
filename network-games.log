@@ -120727,3 +120727,13 @@ player 4: not infected.
 2017-12-06 13:29:19 DEBUG NetworkSimulation:186 - Simulation stopped in round 25082. Network was stable.
 2017-12-06 13:29:22 DEBUG NetworkSimulation:186 - Simulation stopped in round 94206. Network was stable.
 2017-12-06 13:29:50 DEBUG NetworkSimulation:186 - Simulation stopped in round 1009562. Network was stable.
+2017-12-06 13:37:17 DEBUG NetworkSimulation:186 - Simulation stopped in round 9. Network was stable.
+2017-12-06 14:03:57 DEBUG NetworkSimulation:186 - Simulation stopped in round 41. Network was stable.
+2017-12-06 14:04:13 DEBUG NetworkSimulation:186 - Simulation stopped in round 19. Network was stable.
+2017-12-06 14:04:16 DEBUG NetworkSimulation:186 - Simulation stopped in round 3. Network was stable.
+2017-12-06 14:04:20 DEBUG NetworkSimulation:186 - Simulation stopped in round 4. Network was stable.
+2017-12-06 14:04:22 DEBUG NetworkSimulation:186 - Simulation stopped in round 2. Network was not yet stable.
+2017-12-06 14:04:47 DEBUG NetworkSimulation:186 - Simulation stopped in round 31. Network was stable.
+2017-12-06 14:06:29 DEBUG NetworkSimulation:186 - Simulation stopped in round 119. Network was not yet stable.
+2017-12-06 14:08:26 DEBUG NetworkSimulation:186 - Simulation stopped in round 72. Network was stable.
+2017-12-06 14:09:31 DEBUG NetworkSimulation:186 - Simulation stopped in round 79. Network was stable.

@@ -3,7 +3,7 @@ package nl.uu.socnetid.network_games.gui;
 /**
  * @author Hendrik Nunner
  */
-public interface ExportNetworkListener {
+public interface VisualOutputExportListener {
 
     /**
      * Entry point for notification of exporting networks.

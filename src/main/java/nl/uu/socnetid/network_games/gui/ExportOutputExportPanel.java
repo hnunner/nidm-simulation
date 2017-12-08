@@ -6,9 +6,13 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JSpinner;
 
 import nl.uu.socnetid.network_games.network.writer.AdjacencyMatrixWriter;
 import nl.uu.socnetid.network_games.network.writer.EdgeListWriter;
@@ -18,25 +22,31 @@ import nl.uu.socnetid.network_games.network.writer.NetworkWriter;
 /**
  * @author Hendrik Nunner
  */
-public class VisualOutputExportPanel extends JPanel {
+public class ExportOutputExportPanel extends JPanel {
 
-    private static final long serialVersionUID = 8666500343794536885L;
+    private static final long serialVersionUID = 7454884529858650022L;
 
     // listener
-    private final Set<VisualOutputExportListener> exportNetworkListeners =
-            new CopyOnWriteArraySet<VisualOutputExportListener>();
+    private final Set<ExportOutputExportListener> exportNetworkListeners =
+            new CopyOnWriteArraySet<ExportOutputExportListener>();
 
     // edge writer combo box and selection
     private JComboBox<String> edgeWriterCBox;
+    // amount of simulation
+    private JSpinner simAmount;
+    // final state / sequence
+    private JRadioButton rdbtnFinalState;
+    private JRadioButton rdbtnSequence;
+    private ButtonGroup bgStateVsSequence;
 
     /**
      * Create the panel.
      */
-    public VisualOutputExportPanel() {
+    public ExportOutputExportPanel() {
         setLayout(null);
 
         edgeWriterCBox = new JComboBox<String>();
-        edgeWriterCBox.setBounds(6, 6, 154, 27);
+        edgeWriterCBox.setBounds(6, 132, 154, 27);
         add(edgeWriterCBox);
 
         for (NetworkOutputType type : NetworkOutputType.values()) {
@@ -50,8 +60,32 @@ public class VisualOutputExportPanel extends JPanel {
                 notifyExportNetworkListeners();
             }
         });
-        btnNewButton.setBounds(6, 45, 154, 29);
+        btnNewButton.setBounds(6, 171, 154, 29);
         add(btnNewButton);
+
+        JLabel lblNewLabel = new JLabel("Simulations:");
+        lblNewLabel.setBounds(6, 6, 83, 16);
+        add(lblNewLabel);
+
+        simAmount = new JSpinner();
+        simAmount.setBounds(101, 1, 59, 26);
+        add(simAmount);
+
+        JLabel lblFinalNetwork = new JLabel("Final State / Sequence:");
+        lblFinalNetwork.setBounds(6, 34, 154, 16);
+        add(lblFinalNetwork);
+
+        rdbtnFinalState = new JRadioButton("Final State");
+        rdbtnFinalState.setBounds(19, 62, 141, 23);
+        add(rdbtnFinalState);
+
+        rdbtnSequence = new JRadioButton("Sequence");
+        rdbtnSequence.setBounds(19, 97, 141, 23);
+        add(rdbtnSequence);
+
+        bgStateVsSequence = new ButtonGroup();
+        bgStateVsSequence.add(rdbtnFinalState);
+        bgStateVsSequence.add(rdbtnSequence);
     }
 
     /**
@@ -60,7 +94,7 @@ public class VisualOutputExportPanel extends JPanel {
      * @param listener
      *          the listener to be notified
      */
-    public void addListener(VisualOutputExportListener listener) {
+    public void addListener(ExportOutputExportListener listener) {
         this.exportNetworkListeners.add(listener);
     }
 
@@ -70,7 +104,7 @@ public class VisualOutputExportPanel extends JPanel {
      * @param listener
      *          the listener to be removed
      */
-    public void removeExportNetworkListener(VisualOutputExportListener listener) {
+    public void removeExportNetworkListener(ExportOutputExportListener listener) {
         this.exportNetworkListeners.remove(listener);
     }
 
@@ -78,7 +112,7 @@ public class VisualOutputExportPanel extends JPanel {
      * Notifies the listeners of added player.
      */
     private final void notifyExportNetworkListeners() {
-        Iterator<VisualOutputExportListener> listenersIt = this.exportNetworkListeners.iterator();
+        Iterator<ExportOutputExportListener> listenersIt = this.exportNetworkListeners.iterator();
         while (listenersIt.hasNext()) {
             listenersIt.next().notifyExportNetwork(this);
         }
@@ -102,6 +136,20 @@ public class VisualOutputExportPanel extends JPanel {
         }
     }
 
+    /**
+     * Gets the amount of simulations.
+     *
+     * @return the amount of simulations
+     */
+    public int getSimAmount() {
+        return (Integer) this.simAmount.getValue();
+    }
 
+    /**
+     * @return true, if simulation is to be exported as sequence, false otherwise
+     */
+    public boolean exportAsSequence() {
+        return this.rdbtnSequence.isSelected();
+    }
 
 }

@@ -18,10 +18,10 @@ import nl.uu.socnetid.network_games.utilities.UtilityFunction;
 /**
  * @author Hendrik Nunner
  */
-public class NetworkSimulation implements Runnable, Simulation {
+public class VisualNetworkSimulation implements Runnable, Simulation {
 
     // logger
-    private static final Logger logger = Logger.getLogger(NetworkSimulation.class);
+    private static final Logger logger = Logger.getLogger(VisualNetworkSimulation.class);
 
     // the network
     private Network network;
@@ -45,7 +45,7 @@ public class NetworkSimulation implements Runnable, Simulation {
      * @param network
      *          the network as basis for the simulation
      */
-    public NetworkSimulation(Network network) {
+    public VisualNetworkSimulation(Network network) {
         this.network = network;
         this.players = this.network.getPlayers();
     }
@@ -146,14 +146,6 @@ public class NetworkSimulation implements Runnable, Simulation {
     @Override
     public void removeListener(SimulationCompleteListener listener) {
         this.listeners.remove(listener);
-    }
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.network.simulation.Simulation#getStatusMessage()
-     */
-    @Override
-    public String getStatusMessage() {
-        return this.networkStable ? "Network stable." : "Network instable.";
     }
 
     /**

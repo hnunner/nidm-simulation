@@ -36,7 +36,8 @@ import nl.uu.socnetid.network_games.disease.TwoStageDisease;
 import nl.uu.socnetid.network_games.gui.AddPlayerListener;
 import nl.uu.socnetid.network_games.gui.ClearEdgesListener;
 import nl.uu.socnetid.network_games.gui.CumulativePanel;
-import nl.uu.socnetid.network_games.gui.ExportNetworkListener;
+import nl.uu.socnetid.network_games.gui.ExportOutputExportListener;
+import nl.uu.socnetid.network_games.gui.ExportOutputExportPanel;
 import nl.uu.socnetid.network_games.gui.ExportOutputPlayerPanel;
 import nl.uu.socnetid.network_games.gui.NodeClick;
 import nl.uu.socnetid.network_games.gui.NodeClickListener;
@@ -44,16 +45,19 @@ import nl.uu.socnetid.network_games.gui.RemovePlayerListener;
 import nl.uu.socnetid.network_games.gui.ThreeStageDiseasePanel;
 import nl.uu.socnetid.network_games.gui.TruncatedConnectionsPanel;
 import nl.uu.socnetid.network_games.gui.TwoStageDiseasePanel;
+import nl.uu.socnetid.network_games.gui.VisualOutputExportListener;
 import nl.uu.socnetid.network_games.gui.VisualOutputExportPanel;
 import nl.uu.socnetid.network_games.gui.VisualOutputPlayerPanel;
 import nl.uu.socnetid.network_games.network.io.NetworkFileWriter;
 import nl.uu.socnetid.network_games.network.networks.Network;
 import nl.uu.socnetid.network_games.network.networks.NetworkStabilityListener;
 import nl.uu.socnetid.network_games.network.networks.SimpleNetwork;
-import nl.uu.socnetid.network_games.network.simulation.NetworkSimulation;
+import nl.uu.socnetid.network_games.network.simulation.ExportNetworkSimulation;
 import nl.uu.socnetid.network_games.network.simulation.Simulation;
 import nl.uu.socnetid.network_games.network.simulation.SimulationCompleteListener;
+import nl.uu.socnetid.network_games.network.simulation.VisualNetworkSimulation;
 import nl.uu.socnetid.network_games.network.writer.NetworkWriter;
+import nl.uu.socnetid.network_games.players.RationalPlayer;
 import nl.uu.socnetid.network_games.players.RationalPlayerNode;
 import nl.uu.socnetid.network_games.utilities.Cumulative;
 import nl.uu.socnetid.network_games.utilities.TruncatedConnections;
@@ -63,14 +67,14 @@ import nl.uu.socnetid.network_games.utilities.UtilityFunction;
  * @author Hendrik Nunner
  */
 public class NetworkGame implements SimulationCompleteListener, NodeClickListener, NetworkStabilityListener,
-AddPlayerListener, RemovePlayerListener, ClearEdgesListener, ExportNetworkListener {
+AddPlayerListener, RemovePlayerListener, ClearEdgesListener, VisualOutputExportListener, ExportOutputExportListener {
 
     // general export path
     @SuppressWarnings("unused")
     private static final String EXPORT_PATH = "./network-exports/";
 
     // network
-    private final Network network = new SimpleNetwork();
+    private Network network;
     // graph
     private Graph graph;
     private Viewer viewer;
@@ -111,6 +115,7 @@ AddPlayerListener, RemovePlayerListener, ClearEdgesListener, ExportNetworkListen
     private ExportOutputPlayerPanel exportOutputPlayerPanel;
     // export panels
     private VisualOutputExportPanel visualOutputExportPanel;
+    private ExportOutputExportPanel exportOutputExportPanel;
 
     // concurrency for simulation
     private ExecutorService nodeClickExecutor;
@@ -261,6 +266,11 @@ AddPlayerListener, RemovePlayerListener, ClearEdgesListener, ExportNetworkListen
         visualOutputExportPanel.setVisible(false);
         exportPane.add(visualOutputExportPanel);
 
+        exportOutputExportPanel = new ExportOutputExportPanel();
+        exportOutputExportPanel.setBounds(6, 6, 166, 271);
+        exportOutputExportPanel.setVisible(false);
+        exportPane.add(exportOutputExportPanel);
+
         JButton btnStart = new JButton("Start");
         btnStart.addActionListener(new ActionListener() {
             @Override
@@ -341,10 +351,6 @@ AddPlayerListener, RemovePlayerListener, ClearEdgesListener, ExportNetworkListen
         for (int i = 0; i < diseases.length; i ++) {
             diseaseCBox.addItem(diseases[i]);
         }
-
-
-        // init network stability listener
-        this.network.addListener(this);
     }
 
 
@@ -355,7 +361,7 @@ AddPlayerListener, RemovePlayerListener, ClearEdgesListener, ExportNetworkListen
 
         // initializations
         UtilityFunction utilityFunction = getUtilityFunction();
-        NetworkSimulation networkSimulation = new NetworkSimulation(this.network);
+        VisualNetworkSimulation networkSimulation = new VisualNetworkSimulation(this.network);
         networkSimulation.addListener(this);
         networkSimulation.initUtilityFunction(utilityFunction);
         networkSimulation.initSimulationDelay((Integer) this.simulationDelay.getValue());
@@ -432,6 +438,9 @@ AddPlayerListener, RemovePlayerListener, ClearEdgesListener, ExportNetworkListen
      */
     private void outputTypeChanged() {
         if (rdbtnOutputVisual.isSelected()) {
+            this.network = new SimpleNetwork();
+            // init network stability listener
+            this.network.addListener(this);
             enableOutputVisualElements();
             initGraphStream();
         }
@@ -469,6 +478,10 @@ AddPlayerListener, RemovePlayerListener, ClearEdgesListener, ExportNetworkListen
      * Releases graph-stream for export output.
      */
     private void releaseGraphStream() {
+        if (this.viewer == null) {
+            return;
+        }
+
         this.viewer.close();
         this.graph.clear();
         this.graph = null;
@@ -486,6 +499,7 @@ AddPlayerListener, RemovePlayerListener, ClearEdgesListener, ExportNetworkListen
     private void enableOutputVisualElements() {
 
         this.exportOutputPlayerPanel.setVisible(false);
+        this.exportOutputExportPanel.setVisible(false);
 
         this.simulationDelay.setEnabled(true);
 
@@ -495,7 +509,7 @@ AddPlayerListener, RemovePlayerListener, ClearEdgesListener, ExportNetworkListen
         this.visualOutputPlayerPanel.addClearEdgesListener(this);
 
         this.visualOutputExportPanel.setVisible(true);
-        this.visualOutputExportPanel.addAddListener(this);
+        this.visualOutputExportPanel.addListener(this);
     }
 
     /**
@@ -507,15 +521,19 @@ AddPlayerListener, RemovePlayerListener, ClearEdgesListener, ExportNetworkListen
     private void enableOutputExportElements() {
         this.simulationDelay.setValue(0);
         this.simulationDelay.setEnabled(false);
-        this.visualOutputPlayerPanel.setVisible(false);
 
-        this.exportOutputPlayerPanel.setVisible(true);
+        this.visualOutputPlayerPanel.setVisible(false);
         this.visualOutputPlayerPanel.removeAddPlayerListener(this);
         this.visualOutputPlayerPanel.removeRemovePlayerListener(this);
         this.visualOutputPlayerPanel.removeClearEdgesListener(this);
 
         this.visualOutputExportPanel.setVisible(false);
         this.visualOutputExportPanel.removeExportNetworkListener(this);
+
+        this.exportOutputPlayerPanel.setVisible(true);
+
+        this.exportOutputExportPanel.setVisible(true);
+        this.exportOutputExportPanel.addListener(this);
     }
 
 
@@ -568,7 +586,7 @@ AddPlayerListener, RemovePlayerListener, ClearEdgesListener, ExportNetworkListen
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.gui.ExportNetworkListener#notifyExportNetwork(
+     * @see nl.uu.socnetid.network_games.gui.VisualOutputExportListener#notifyExportNetwork(
      * nl.uu.socnetid.network_games.gui.VisualOutputExportPanel)
      */
     @Override
@@ -577,11 +595,54 @@ AddPlayerListener, RemovePlayerListener, ClearEdgesListener, ExportNetworkListen
         int popdownState = fileChooser.showSaveDialog(null);
         if(popdownState == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            String file = fileChooser.getSelectedFile().getPath();
+            String file = selectedFile.getPath();
             String filePath = file.replace(selectedFile.getName(), "");
             NetworkWriter networkWriter = panel.getSelectedNetworkWriter();
-            NetworkFileWriter fileWriter = new NetworkFileWriter(filePath, file, networkWriter, network);
+            NetworkFileWriter fileWriter = new NetworkFileWriter(filePath, file, networkWriter, this.network);
             fileWriter.write();
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.gui.ExportOutputExportListener#notifyExportNetwork(nl.uu.socnetid.network_games.gui.ExportOutputExportPanel)
+     */
+    @Override
+    public void notifyExportNetwork(ExportOutputExportPanel panel) {
+        JFileChooser fileChooser = new JFileChooser();
+        int popdownState = fileChooser.showSaveDialog(null);
+        if(popdownState == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            String file = selectedFile.getPath();
+            String filePath = file.replace(selectedFile.getName(), "");
+
+            int simAmount = panel.getSimAmount();
+            boolean exportAsSequence = panel.exportAsSequence();
+
+            for (int i = 0; i < simAmount; i++) {
+
+
+
+                network = new SimpleNetwork();
+
+                for (int j = 0; j <  this.exportOutputPlayerPanel.getPlayerAmount(); j++) {
+                    this.network.addPlayer(RationalPlayer.newInstance());
+                }
+
+                // initializations
+                UtilityFunction utilityFunction = getUtilityFunction();
+                ExportNetworkSimulation networkSimulation = new ExportNetworkSimulation(this.network);
+                networkSimulation.addListener(this);
+                networkSimulation.initUtilityFunction(utilityFunction);
+                networkSimulation.setFilePath(filePath);
+                networkSimulation.setFile(file + (i+1) + ".csv");
+                networkSimulation.setNetworkWriter(panel.getSelectedNetworkWriter());
+
+                if (simulationTask != null) {
+                    simulationTask.cancel(true);
+                }
+                simulationExecutor.submit(networkSimulation);
+            }
+
         }
     }
 }
