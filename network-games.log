@@ -120737,3 +120737,55 @@ player 4: not infected.
 2017-12-06 14:06:29 DEBUG NetworkSimulation:186 - Simulation stopped in round 119. Network was not yet stable.
 2017-12-06 14:08:26 DEBUG NetworkSimulation:186 - Simulation stopped in round 72. Network was stable.
 2017-12-06 14:09:31 DEBUG NetworkSimulation:186 - Simulation stopped in round 79. Network was stable.
+2017-12-12 17:08:37 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 15. Network was not yet stable.
+2017-12-12 17:09:10 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 19. Network was not yet stable.
+2017-12-12 17:10:01 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 11. Network was stable.
+2017-12-12 17:10:16 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 5. Network was stable.
+2017-12-12 17:10:19 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 2. Network was not yet stable.
+2017-12-12 17:10:22 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 2. Network was not yet stable.
+2017-12-12 17:10:25 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 2. Network was not yet stable.
+2017-12-12 17:10:31 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 5. Network was stable.
+2017-12-12 17:10:34 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 2. Network was not yet stable.
+2017-12-12 17:10:42 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 6. Network was stable.
+2017-12-12 17:10:54 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 3. Network was stable.
+2017-12-12 17:10:59 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 3. Network was stable.
+2017-12-12 17:11:01 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 2. Network was not yet stable.
+2017-12-12 17:11:05 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 3. Network was stable.
+2017-12-12 17:11:11 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 4. Network was stable.
+2017-12-12 17:11:14 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 2. Network was not yet stable.
+2017-12-12 17:11:17 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 2. Network was not yet stable.
+2017-12-12 17:11:28 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 9. Network was stable.
+2017-12-12 17:11:45 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 4. Network was stable.
+2017-12-12 17:11:53 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 6. Network was stable.
+2017-12-12 17:12:52 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 44. Network was stable.
+2017-12-12 17:21:44 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 2. Network was not yet stable.
+2017-12-12 17:21:47 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 2. Network was not yet stable.
+2017-12-12 17:21:51 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 2. Network was not yet stable.
+2017-12-12 17:22:05 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 11. Network was not yet stable.
+2017-12-12 17:23:04 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 19072. Network was stable.
+2017-12-12 17:23:13 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 2. Network was not yet stable.
+2017-12-12 17:23:16 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 2. Network was not yet stable.
+2017-12-12 17:26:10 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 3. Network was not yet stable.
+2017-12-12 17:26:14 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 3. Network was stable.
+2017-12-13 12:11:09 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 6. Network was stable.
+2017-12-13 12:11:12 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 2. Network was not yet stable.
+2017-12-13 12:11:29 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 21. Network was stable.
+2017-12-13 12:11:40 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 13. Network was stable.
+2017-12-13 12:11:43 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 3. Network was stable.
+2017-12-13 12:11:59 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 20. Network was stable.
+2017-12-13 12:12:08 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 10. Network was stable.
+2017-12-13 12:12:10 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 3. Network was not yet stable.
+2017-12-13 12:12:44 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 41. Network was stable.
+2017-12-13 12:12:47 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 3. Network was stable.
+2017-12-13 12:12:56 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 11. Network was not yet stable.
+2017-12-13 12:17:32 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 341. Network was stable.
+2017-12-13 12:18:34 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 51. Network was stable.
+2017-12-13 12:18:38 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 2. Network was not yet stable.
+2018-01-19 12:07:04 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 2761. Network was stable.
+2018-01-19 12:07:10 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 608. Network was stable.
+2018-01-19 12:07:11 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 660. Network was stable.
+2018-01-19 12:07:12 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 59. Network was stable.
+2018-01-19 12:07:13 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 17. Network was stable.
+2018-01-19 12:07:13 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 32. Network was stable.
+2018-01-19 12:07:15 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 151. Network was stable.
+2018-01-19 12:07:17 DEBUG VisualNetworkSimulation:178 - Simulation stopped in round 159. Network was stable.

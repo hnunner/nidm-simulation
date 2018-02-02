@@ -164,7 +164,6 @@ AddPlayerListener, RemovePlayerListener, ClearEdgesListener, VisualOutputExportL
         // panes
         JPanel playerPane = new JPanel();
         JPanel utilityPane = new JPanel();
-        JPanel diseasePane = new JPanel();
         JPanel exportPane = new JPanel();
         // tabbed pane
         JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.LEFT, JTabbedPane.WRAP_TAB_LAYOUT);
@@ -217,6 +216,7 @@ AddPlayerListener, RemovePlayerListener, ClearEdgesListener, VisualOutputExportL
         truncatedConnectionsPanel.setBounds(6, 45, 166, 232);
         truncatedConnectionsPanel.setVisible(false);
         utilityPane.add(truncatedConnectionsPanel);
+        JPanel diseasePane = new JPanel();
 
 
         tabbedPane.add("Diseas", diseasePane);
@@ -242,21 +242,31 @@ AddPlayerListener, RemovePlayerListener, ClearEdgesListener, VisualOutputExportL
                 }
             }
         });
-        diseaseCBox.setBounds(6, 41, 165, 27);
+        diseaseCBox.setBounds(6, 82, 165, 27);
         diseasePane.add(diseaseCBox);
 
         chckbxToggleInfection = new JCheckBox("Infect / cure on click");
-        chckbxToggleInfection.setBounds(6, 6, 165, 23);
+        chckbxToggleInfection.setBounds(6, 47, 165, 23);
         diseasePane.add(chckbxToggleInfection);
 
+        JButton btnNewButton = new JButton("Infect Random Player");
+        btnNewButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                infectRandomPlayer();
+            }
+        });
+        btnNewButton.setBounds(6, 6, 165, 29);
+        diseasePane.add(btnNewButton);
+
         twoStageDiseasePanel = new TwoStageDiseasePanel();
-        twoStageDiseasePanel.setBounds(6, 80, 165, 197);
+        twoStageDiseasePanel.setBounds(6, 121, 165, 156);
         diseasePane.add(twoStageDiseasePanel);
 
         threeStageDiseasePanel = new ThreeStageDiseasePanel();
-        threeStageDiseasePanel.setBounds(6, 80, 165, 197);
+        threeStageDiseasePanel.setBounds(0, 0, 165, 156);
+        twoStageDiseasePanel.add(threeStageDiseasePanel);
         threeStageDiseasePanel.setVisible(false);
-        diseasePane.add(threeStageDiseasePanel);
 
         tabbedPane.add("Export", exportPane);
         exportPane.setLayout(null);
@@ -644,5 +654,12 @@ AddPlayerListener, RemovePlayerListener, ClearEdgesListener, VisualOutputExportL
             }
 
         }
+    }
+
+    /**
+     * Infects a random non-infected player.
+     */
+    private void infectRandomPlayer() {
+        this.network.infectRandomPlayer(getDisease());
     }
 }
