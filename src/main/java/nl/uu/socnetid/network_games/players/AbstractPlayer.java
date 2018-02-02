@@ -28,6 +28,9 @@ public abstract class AbstractPlayer implements Player {
     private static final AtomicLong NEXT_ID = new AtomicLong(1);
     private final long id = NEXT_ID.getAndIncrement();
 
+    // risk factor
+    private double riskFactor;
+
     // utility function
     public UtilityFunction utilityFunction;
 
@@ -160,10 +163,6 @@ public abstract class AbstractPlayer implements Player {
     }
 
 
-
-
-
-
     /* (non-Javadoc)
      * @see nl.uu.socnetid.network_games.Player#getId()
      */
@@ -173,7 +172,7 @@ public abstract class AbstractPlayer implements Player {
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.Player#getCurrentUtility()
+     * @see nl.uu.socnetid.network_games.Player#getUtility()
      */
     @Override
     public double getUtility() {
@@ -189,6 +188,24 @@ public abstract class AbstractPlayer implements Player {
      */
     protected double getUtility(List<Player> connections) {
         return utilityFunction.getUtility(this, connections);
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.Player#getRiskFactor()
+     */
+    @Override
+    public double getRiskFactor() {
+        return this.riskFactor;
+    }
+
+    /**
+     * Sets the player's risk factor.
+     *
+     * @param riskFactor
+     *          the risk factor to set
+     */
+    protected void setRiskFactor(double riskFactor) {
+        this.riskFactor = riskFactor;
     }
 
     /* (non-Javadoc)
