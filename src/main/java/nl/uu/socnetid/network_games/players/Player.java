@@ -37,6 +37,13 @@ public interface Player extends Comparable<Player>, Runnable {
     double getUtility();
 
     /**
+     * Gets the player's risk factor (r<1: risk seeking; r=1: risk neutral; r>1: risk averse).
+     *
+     * @return the player's risk factor
+     */
+    double getRiskFactor();
+
+    /**
      * Check whether a player is satisfied with the current connections.
      *
      * @return true if no connections want to be added or removed, false otherwise

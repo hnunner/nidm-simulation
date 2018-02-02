@@ -41,6 +41,33 @@ public class RationalPlayerNode extends RationalPlayer implements Player {
         return new RationalPlayerNode(graph);
     }
 
+    /**
+     * Private constructor.
+     *
+     * @param graph
+     *          the graph the player acts as node in
+     * @param riskFactor
+     *          the risk factor of the new player
+     */
+    protected RationalPlayerNode(Graph graph, double riskFactor) {
+        super(riskFactor);
+        this.graph = graph;
+        this.graph.addNode(String.valueOf(getId()));
+    }
+
+    /**
+     * Factory method returning a new {@link Player} instance.
+     *
+     * @param graph
+     *          the graph the player acts as node in
+     * @param riskFactor
+     *          the risk factor of the new player
+     * @return a new {@link Player} instance
+     */
+    public static Player newInstance(Graph graph, double riskFactor) {
+        return new RationalPlayerNode(graph, riskFactor);
+    }
+
     /* (non-Javadoc)
      * @see nl.uu.socnetid.network_games.players.Player#addConnection(nl.uu.socnetid.network_games.players.Player)
      */
