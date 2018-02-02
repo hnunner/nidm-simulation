@@ -34,6 +34,29 @@ public class RationalPlayer extends AbstractPlayer implements Player {
     }
 
 
+    /**
+     * Private constructor.
+     *
+     * @param riskFactor
+     *          the risk factor of the new player
+     */
+    protected RationalPlayer(double riskFactor) {
+        super();
+        setRiskFactor(riskFactor);
+    }
+
+    /**
+     * Factory method returning a new {@link Player} instance with a custom risk factor.
+     *
+     * @param riskFactor
+     *          the custom risk factor
+     * @return a new {@link Player} instance with a custom risk factor
+     */
+    public static Player newInstance(double riskFactor) {
+        return new RationalPlayer(riskFactor);
+    }
+
+
     /* (non-Javadoc)
      * @see nl.uu.socnetid.network_games.players.AbstractPlayer#checkToCreateConnection()
      */

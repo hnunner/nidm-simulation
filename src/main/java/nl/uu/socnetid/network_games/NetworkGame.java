@@ -19,6 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import org.apache.log4j.Logger;
@@ -30,6 +31,7 @@ import nl.uu.socnetid.network_games.disease.Disease;
 import nl.uu.socnetid.network_games.disease.ThreeStageDisease;
 import nl.uu.socnetid.network_games.disease.TwoStageDisease;
 import nl.uu.socnetid.network_games.gui.CumulativePanel;
+import nl.uu.socnetid.network_games.gui.IRTCPanel;
 import nl.uu.socnetid.network_games.gui.NodeClick;
 import nl.uu.socnetid.network_games.gui.NodeClickListener;
 import nl.uu.socnetid.network_games.gui.ThreeStageDiseasePanel;
@@ -47,6 +49,7 @@ import nl.uu.socnetid.network_games.network.writer.EdgeListWriter;
 import nl.uu.socnetid.network_games.network.writer.NetworkWriter;
 import nl.uu.socnetid.network_games.players.RationalPlayerNode;
 import nl.uu.socnetid.network_games.utilities.Cumulative;
+import nl.uu.socnetid.network_games.utilities.IRTC;
 import nl.uu.socnetid.network_games.utilities.TruncatedConnections;
 import nl.uu.socnetid.network_games.utilities.UtilityFunction;
 
@@ -73,7 +76,7 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     private JFrame frame;
     // utility function combo box and selection
     private JComboBox<String> utilityFunctionCBox;
-    private String[] utilityFunctions = {"Cumulative", "Truncated Connections"};
+    private String[] utilityFunctions = {"IRTC", "Cumulative", "Truncated Connections"};
     // edge writer combo box and selection
     private JComboBox<String> edgeWriterCBox;
     private String[] edgeWriters = {"Edge List", "Adjacency Matrix"};
@@ -86,6 +89,8 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     private CumulativePanel cumulativePanel;
     // panel for truncated connections model settings
     private TruncatedConnectionsPanel truncatedConnectionsPanel;
+    // panel for Infections Risk Truncated connections model settings
+    private IRTCPanel irtcPanel;
     // panel for two stage disease
     private TwoStageDiseasePanel twoStageDiseasePanel;
     // panel for three stage disease
@@ -94,6 +99,9 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     private JCheckBox chckbxToggleInfection;
     // status label for stable network
     private JLabel lblStable;
+    // risk behavior of player
+    private JLabel lblR;
+    private JTextField txtR;
 
     // concurrency for simulation
     private ExecutorService nodeClickExecutor = Executors.newSingleThreadExecutor();
@@ -162,6 +170,18 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         JButton btnClearEdges = new JButton("Clear Edges");
         btnClearEdges.setBounds(6, 88, 165, 29);
         playerPane.add(btnClearEdges);
+
+        txtR = new JTextField();
+        txtR.setText("1");
+        txtR.setHorizontalAlignment(SwingConstants.RIGHT);
+        txtR.setColumns(10);
+        txtR.setBounds(120, 141, 44, 26);
+        playerPane.add(txtR);
+
+        lblR = new JLabel("risk behavior:");
+        lblR.setToolTipText("Risk behavior of the player - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
+        lblR.setBounds(19, 146, 98, 16);
+        playerPane.add(lblR);
         btnClearEdges.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -189,11 +209,25 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
             public void actionPerformed(ActionEvent e) {
                 switch (utilityFunctionCBox.getSelectedIndex()) {
                     case 0:
-                        cumulativePanel.setVisible(true);
+                        irtcPanel.setVisible(true);
+                        lblR.setVisible(true);
+                        txtR.setVisible(true);
+                        cumulativePanel.setVisible(false);
                         truncatedConnectionsPanel.setVisible(false);
                         break;
 
                     case 1:
+                        irtcPanel.setVisible(false);
+                        lblR.setVisible(false);
+                        txtR.setVisible(false);
+                        cumulativePanel.setVisible(true);
+                        truncatedConnectionsPanel.setVisible(false);
+                        break;
+
+                    case 2:
+                        irtcPanel.setVisible(false);
+                        lblR.setVisible(false);
+                        txtR.setVisible(false);
                         cumulativePanel.setVisible(false);
                         truncatedConnectionsPanel.setVisible(true);
                         break;
@@ -206,8 +240,13 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         utilityFunctionCBox.setBounds(6, 6, 165, 27);
         utilityPane.add(utilityFunctionCBox);
 
+        irtcPanel = new IRTCPanel();
+        irtcPanel.setBounds(6, 45, 166, 232);
+        utilityPane.add(irtcPanel);
+
         cumulativePanel = new CumulativePanel();
         cumulativePanel.setBounds(6, 45, 166, 232);
+        cumulativePanel.setVisible(false);
         utilityPane.add(cumulativePanel);
 
         truncatedConnectionsPanel = new TruncatedConnectionsPanel();
@@ -216,7 +255,7 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         utilityPane.add(truncatedConnectionsPanel);
 
 
-        tabbedPane.add("Diseas", diseasePane);
+        tabbedPane.add("Disease", diseasePane);
         diseasePane.setLayout(null);
 
         diseaseCBox = new JComboBox<String>();
@@ -353,7 +392,17 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
      * Adds a player to the game.
      */
     private void addPlayer() {
-        this.network.addPlayer(RationalPlayerNode.newInstance(this.graph));
+        switch (utilityFunctionCBox.getSelectedIndex()) {
+            // IRTC -- player including risk behavior
+            case 0:
+                this.network.addPlayer(
+                        RationalPlayerNode.newInstance(this.graph, Double.valueOf(this.txtR.getText())));
+                break;
+
+            default:
+                this.network.addPlayer(RationalPlayerNode.newInstance(this.graph));
+                break;
+        }
     }
 
     /**
@@ -405,10 +454,23 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     private UtilityFunction getUtilityFunction() {
         switch (utilityFunctionCBox.getSelectedIndex()) {
             case 0:
+                return new IRTC(this.irtcPanel.getAlpha(),
+                        this.irtcPanel.getBeta(),
+                        this.irtcPanel.getMu(),
+                        this.irtcPanel.getC(),
+
+
+
+
+                        // TODO provide proper values: gamma, delta (SIR-view)
+                        -1,
+                        -1);
+
+            case 1:
                 return new Cumulative(this.cumulativePanel.getDirectBenefit(),
                         this.cumulativePanel.getIndirectBenefit());
 
-            case 1:
+            case 2:
                 return new TruncatedConnections(this.truncatedConnectionsPanel.getDelta(),
                         this.truncatedConnectionsPanel.getCosts());
 
