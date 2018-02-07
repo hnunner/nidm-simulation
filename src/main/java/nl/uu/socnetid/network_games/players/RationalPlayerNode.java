@@ -166,20 +166,23 @@ public class RationalPlayerNode extends RationalPlayer implements Player {
     private void updateAppearance() {
         Node node = this.graph.getNode(String.valueOf(getId()));
 
-        // not infected
-        if (!this.isInfected()) {
-            node.removeAttribute("ui.class");
+        // susceptible
+        if (this.isSusceptible()) {
+            node.addAttribute("ui.class", "susceptible");
             return;
         }
 
-        // infected without symptoms
-        if (!this.getDisease().isVisible()) {
-            node.addAttribute("ui.class", "infectedinvisible");
+        // infected
+        if (this.isInfected()) {
+            node.addAttribute("ui.class", "infected");
             return;
         }
 
-        // infected with symptoms
-        node.addAttribute("ui.class", "infectedvisible");
+        // recovered
+        if (this.isRecovered()) {
+            node.addAttribute("ui.class", "recovered");
+            return;
+        }
     }
 
 }

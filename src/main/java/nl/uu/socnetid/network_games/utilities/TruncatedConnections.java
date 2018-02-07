@@ -46,9 +46,10 @@ public class TruncatedConnections implements UtilityFunction {
                 continue;
             }
 
-            utility += this.directUtility - this.costs;
             if (directConnection.isInfected()) {
-                utility -= directConnection.getNursingCosts();
+                utility += this.directUtility - this.costs * directConnection.getMu();
+            } else {
+                utility += this.directUtility - this.costs;
             }
 
             // indirect connections at distance 2

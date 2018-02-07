@@ -36,14 +36,14 @@ public class CumulativePanel extends JPanel {
 
         JLabel lblCostsc = new JLabel("Indirect benefit:");
         lblCostsc.setToolTipText("The benefit a player gets from indirect connections. That is, connections at distance 2.");
-        lblCostsc.setBounds(6, 39, 109, 16);
+        lblCostsc.setBounds(6, 44, 109, 16);
         add(lblCostsc);
 
         txtIndirect = new JTextField();
         txtIndirect.setHorizontalAlignment(SwingConstants.RIGHT);
         txtIndirect.setToolTipText("The benefit a player gets from indirect connections. That is, connections at distance 2.");
         txtIndirect.setText("0.5");
-        txtIndirect.setBounds(116, 34, 44, 26);
+        txtIndirect.setBounds(116, 39, 44, 26);
         add(txtIndirect);
         txtIndirect.setColumns(10);
     }

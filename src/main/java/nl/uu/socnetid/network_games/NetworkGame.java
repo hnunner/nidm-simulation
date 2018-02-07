@@ -28,15 +28,13 @@ import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.view.Viewer;
 
 import nl.uu.socnetid.network_games.disease.Disease;
-import nl.uu.socnetid.network_games.disease.ThreeStageDisease;
-import nl.uu.socnetid.network_games.disease.TwoStageDisease;
+import nl.uu.socnetid.network_games.disease.SIRDisease;
 import nl.uu.socnetid.network_games.gui.CumulativePanel;
 import nl.uu.socnetid.network_games.gui.IRTCPanel;
 import nl.uu.socnetid.network_games.gui.NodeClick;
 import nl.uu.socnetid.network_games.gui.NodeClickListener;
-import nl.uu.socnetid.network_games.gui.ThreeStageDiseasePanel;
+import nl.uu.socnetid.network_games.gui.SIRPanel;
 import nl.uu.socnetid.network_games.gui.TruncatedConnectionsPanel;
-import nl.uu.socnetid.network_games.gui.TwoStageDiseasePanel;
 import nl.uu.socnetid.network_games.network.io.NetworkFileWriter;
 import nl.uu.socnetid.network_games.network.networks.Network;
 import nl.uu.socnetid.network_games.network.networks.NetworkStabilityListener;
@@ -84,17 +82,15 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     private JSpinner simulationDelay;
     // disease selection combo box
     private JComboBox<String> diseaseCBox;
-    private String[] diseases = {"Two Stage", "Three Stage"};
+    private String[] diseases = {"SIR"};
     // panel for cumulative model settings
     private CumulativePanel cumulativePanel;
     // panel for truncated connections model settings
     private TruncatedConnectionsPanel truncatedConnectionsPanel;
     // panel for Infections Risk Truncated connections model settings
     private IRTCPanel irtcPanel;
-    // panel for two stage disease
-    private TwoStageDiseasePanel twoStageDiseasePanel;
-    // panel for three stage disease
-    private ThreeStageDiseasePanel threeStageDiseasePanel;
+    // panel for generic SIR diseases
+    private SIRPanel sirPanel;
     // check box to toggle between infect / cure on mouse clicks
     private JCheckBox chckbxToggleInfection;
     // status label for stable network
@@ -149,13 +145,96 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
 
         // panes
         JPanel playerPane = new JPanel();
-        JPanel utilityPane = new JPanel();
-        JPanel diseasePane = new JPanel();
         JPanel exportPane = new JPanel();
         // tabbed pane
         JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.LEFT, JTabbedPane.WRAP_TAB_LAYOUT);
         tabbedPane.setBounds(6, 6, 224, 304);
         frame.getContentPane().add(tabbedPane);
+        JPanel utilityPane = new JPanel();
+        tabbedPane.add("Utility", utilityPane);
+        utilityPane.setLayout(null);
+
+                utilityFunctionCBox = new JComboBox<String>();
+                utilityFunctionCBox.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        switch (utilityFunctionCBox.getSelectedIndex()) {
+                            case 0:
+                                irtcPanel.setVisible(true);
+                                lblR.setVisible(true);
+                                txtR.setVisible(true);
+                                cumulativePanel.setVisible(false);
+                                truncatedConnectionsPanel.setVisible(false);
+                                break;
+
+                            case 1:
+                                irtcPanel.setVisible(false);
+                                lblR.setVisible(false);
+                                txtR.setVisible(false);
+                                cumulativePanel.setVisible(true);
+                                truncatedConnectionsPanel.setVisible(false);
+                                break;
+
+                            case 2:
+                                irtcPanel.setVisible(false);
+                                lblR.setVisible(false);
+                                txtR.setVisible(false);
+                                cumulativePanel.setVisible(false);
+                                truncatedConnectionsPanel.setVisible(true);
+                                break;
+
+                            default:
+                                throw new RuntimeException("Undefined utility function!");
+                        }
+                    }
+                });
+                utilityFunctionCBox.setBounds(6, 6, 165, 27);
+                utilityPane.add(utilityFunctionCBox);
+
+                        irtcPanel = new IRTCPanel();
+                        irtcPanel.setBounds(6, 45, 166, 232);
+                        utilityPane.add(irtcPanel);
+
+                                cumulativePanel = new CumulativePanel();
+                                cumulativePanel.setBounds(6, 45, 166, 232);
+                                cumulativePanel.setVisible(false);
+                                utilityPane.add(cumulativePanel);
+
+                                        truncatedConnectionsPanel = new TruncatedConnectionsPanel();
+                                        truncatedConnectionsPanel.setBounds(6, 45, 166, 232);
+                                        truncatedConnectionsPanel.setVisible(false);
+                                        utilityPane.add(truncatedConnectionsPanel);
+        JPanel diseasePane = new JPanel();
+
+
+                tabbedPane.add("Disease", diseasePane);
+                diseasePane.setLayout(null);
+
+                        diseaseCBox = new JComboBox<String>();
+                        diseaseCBox.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                switch (diseaseCBox.getSelectedIndex()) {
+                                    case 0:
+                                        sirPanel.setVisible(true);
+                                        break;
+
+                                    default:
+                                        throw new RuntimeException("Undefined disease!");
+                                }
+                            }
+                        });
+                        diseaseCBox.setBounds(6, 41, 165, 27);
+                        diseasePane.add(diseaseCBox);
+
+                                chckbxToggleInfection = new JCheckBox("Infect / cure on click");
+                                chckbxToggleInfection.setBounds(6, 6, 165, 23);
+                                diseasePane.add(chckbxToggleInfection);
+
+                                        sirPanel = new SIRPanel();
+                                        sirPanel.setBounds(6, 80, 165, 197);
+                                        sirPanel.setVisible(true);
+                                        diseasePane.add(sirPanel);
         tabbedPane.addTab("Players", playerPane);
         playerPane.setLayout(null);
 
@@ -178,7 +257,7 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         txtR.setBounds(120, 141, 44, 26);
         playerPane.add(txtR);
 
-        lblR = new JLabel("risk behavior:");
+        lblR = new JLabel("risk pref. (r):");
         lblR.setToolTipText("Risk behavior of the player - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
         lblR.setBounds(19, 146, 98, 16);
         playerPane.add(lblR);
@@ -200,99 +279,6 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
                 addPlayer();
             }
         });
-        tabbedPane.add("Utility", utilityPane);
-        utilityPane.setLayout(null);
-
-        utilityFunctionCBox = new JComboBox<String>();
-        utilityFunctionCBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                switch (utilityFunctionCBox.getSelectedIndex()) {
-                    case 0:
-                        irtcPanel.setVisible(true);
-                        lblR.setVisible(true);
-                        txtR.setVisible(true);
-                        cumulativePanel.setVisible(false);
-                        truncatedConnectionsPanel.setVisible(false);
-                        break;
-
-                    case 1:
-                        irtcPanel.setVisible(false);
-                        lblR.setVisible(false);
-                        txtR.setVisible(false);
-                        cumulativePanel.setVisible(true);
-                        truncatedConnectionsPanel.setVisible(false);
-                        break;
-
-                    case 2:
-                        irtcPanel.setVisible(false);
-                        lblR.setVisible(false);
-                        txtR.setVisible(false);
-                        cumulativePanel.setVisible(false);
-                        truncatedConnectionsPanel.setVisible(true);
-                        break;
-
-                    default:
-                        throw new RuntimeException("Undefined utility function!");
-                }
-            }
-        });
-        utilityFunctionCBox.setBounds(6, 6, 165, 27);
-        utilityPane.add(utilityFunctionCBox);
-
-        irtcPanel = new IRTCPanel();
-        irtcPanel.setBounds(6, 45, 166, 232);
-        utilityPane.add(irtcPanel);
-
-        cumulativePanel = new CumulativePanel();
-        cumulativePanel.setBounds(6, 45, 166, 232);
-        cumulativePanel.setVisible(false);
-        utilityPane.add(cumulativePanel);
-
-        truncatedConnectionsPanel = new TruncatedConnectionsPanel();
-        truncatedConnectionsPanel.setBounds(6, 45, 166, 232);
-        truncatedConnectionsPanel.setVisible(false);
-        utilityPane.add(truncatedConnectionsPanel);
-
-
-        tabbedPane.add("Disease", diseasePane);
-        diseasePane.setLayout(null);
-
-        diseaseCBox = new JComboBox<String>();
-        diseaseCBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                switch (diseaseCBox.getSelectedIndex()) {
-                    case 0:
-                        twoStageDiseasePanel.setVisible(true);
-                        threeStageDiseasePanel.setVisible(false);
-                        break;
-
-                    case 1:
-                        twoStageDiseasePanel.setVisible(false);
-                        threeStageDiseasePanel.setVisible(true);
-                        break;
-
-                    default:
-                        throw new RuntimeException("Undefined disease!");
-                }
-            }
-        });
-        diseaseCBox.setBounds(6, 41, 165, 27);
-        diseasePane.add(diseaseCBox);
-
-        chckbxToggleInfection = new JCheckBox("Infect / cure on click");
-        chckbxToggleInfection.setBounds(6, 6, 165, 23);
-        diseasePane.add(chckbxToggleInfection);
-
-        twoStageDiseasePanel = new TwoStageDiseasePanel();
-        twoStageDiseasePanel.setBounds(6, 80, 165, 197);
-        diseasePane.add(twoStageDiseasePanel);
-
-        threeStageDiseasePanel = new ThreeStageDiseasePanel();
-        threeStageDiseasePanel.setBounds(6, 80, 165, 197);
-        threeStageDiseasePanel.setVisible(false);
-        diseasePane.add(threeStageDiseasePanel);
 
         tabbedPane.add("Export", exportPane);
         exportPane.setLayout(null);
@@ -456,15 +442,10 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
             case 0:
                 return new IRTC(this.irtcPanel.getAlpha(),
                         this.irtcPanel.getBeta(),
-                        this.irtcPanel.getMu(),
                         this.irtcPanel.getC(),
-
-
-
-
-                        // TODO provide proper values: gamma, delta (SIR-view)
-                        -1,
-                        -1);
+                        this.sirPanel.getDelta(),
+                        this.sirPanel.getGamma(),
+                        this.sirPanel.getMu());
 
             case 1:
                 return new Cumulative(this.cumulativePanel.getDirectBenefit(),
@@ -531,17 +512,11 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     private Disease getDisease() {
         switch (diseaseCBox.getSelectedIndex()) {
             case 0:
-                return new TwoStageDisease(
-                        this.twoStageDiseasePanel.getDuration(),
-                        this.twoStageDiseasePanel.getTransmissionRate(),
-                        this.twoStageDiseasePanel.getTreatmentCosts());
-
-            case 1:
-                return new ThreeStageDisease(
-                        this.threeStageDiseasePanel.getDuration(),
-                        this.threeStageDiseasePanel.getInvisibleDuration(),
-                        this.threeStageDiseasePanel.getTreatmentCosts(),
-                        this.threeStageDiseasePanel.getTransmissionRate());
+                return new SIRDisease(
+                        this.sirPanel.getTau(),
+                        this.sirPanel.getDelta(),
+                        this.sirPanel.getGamma(),
+                        this.sirPanel.getMu());
 
             default:
                 throw new RuntimeException("Undefined disease type!");

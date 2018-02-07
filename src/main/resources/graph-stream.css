@@ -4,7 +4,7 @@ graph {
 
 node {
 	shape: circle;
-	fill-color: #56B4E9;
+	fill-color: #FECD0A;
 	size: 15px;
 	stroke-mode: plain;
 	stroke-color: black;
@@ -15,12 +15,16 @@ node {
 	shadow-offset: 1.5, -1.5;
 }
 
-node.infectedinvisible {
-    fill-color: #FECD0A;
+node.susceptible {
+	fill-color: #FECD0A;
 }
 
-node.infectedvisible {
-	fill-color: #FF5500;
+node.infected {
+    fill-color: #FF5500;
+}
+
+node.recovered {
+	fill-color: #56B4E9;
 }
 
 node:clicked {

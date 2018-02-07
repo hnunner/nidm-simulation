@@ -230,7 +230,7 @@ public class NetworkSimulation implements Runnable, Simulation {
             if (currPlayer.isInfected()) {
                 currPlayer.fightDisease();
 
-                if (currPlayer.isInfectious()) {
+                if (currPlayer.isInfected()) {
                     currPlayer.computeTransmissions();
                 }
             }
