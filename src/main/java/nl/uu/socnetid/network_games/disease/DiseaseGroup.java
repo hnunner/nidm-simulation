@@ -3,7 +3,7 @@ package nl.uu.socnetid.network_games.disease;
 /**
  * @author Hendrik Nunner
  */
-public enum InfectionState {
+public enum DiseaseGroup {
     SUSCEPTIBLE,
     INFECTED,
     RECOVERED;

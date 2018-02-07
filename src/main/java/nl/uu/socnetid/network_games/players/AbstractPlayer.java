@@ -10,7 +10,7 @@ import java.util.concurrent.locks.Lock;
 import org.apache.log4j.Logger;
 
 import nl.uu.socnetid.network_games.disease.Disease;
-import nl.uu.socnetid.network_games.disease.InfectionState;
+import nl.uu.socnetid.network_games.disease.DiseaseGroup;
 import nl.uu.socnetid.network_games.utilities.UtilityFunction;
 
 /**
@@ -40,7 +40,7 @@ public abstract class AbstractPlayer implements Player {
     private List<Player> connections = new ArrayList<Player>();
 
     // disease
-    private InfectionState infectionState;
+    private DiseaseGroup diseaseGroup;
     private Disease disease;
 
     // flag indicating whether the player is satisfied with her current connections
@@ -54,7 +54,7 @@ public abstract class AbstractPlayer implements Player {
      * Constructor.
      */
     protected AbstractPlayer() {
-        this.infectionState = InfectionState.SUSCEPTIBLE;
+        this.diseaseGroup = DiseaseGroup.SUSCEPTIBLE;
     }
 
     /* (non-Javadoc)
@@ -301,23 +301,13 @@ public abstract class AbstractPlayer implements Player {
     public void destroy() { }
 
 
-
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.players.Player#getInfectionState()
-     */
-    @Override
-    public InfectionState getInfectionState() {
-        return this.infectionState;
-    }
-
     /* (non-Javadoc)
      * @see nl.uu.socnetid.network_games.players.Player#cure()
      */
     @Override
     public void cure() {
         this.disease = null;
-        this.infectionState = InfectionState.RECOVERED;
+        this.diseaseGroup = DiseaseGroup.RECOVERED;
     }
 
     /* (non-Javadoc)
@@ -325,12 +315,11 @@ public abstract class AbstractPlayer implements Player {
      */
     @Override
     public void infect(Disease disease) {
-        if (isImmune()) {
+        if (isRecovered()) {
             return;
         }
-
         this.disease = disease;
-        this.infectionState = InfectionState.INFECTED;
+        this.diseaseGroup = DiseaseGroup.INFECTED;
     }
 
     /* (non-Javadoc)
@@ -343,7 +332,7 @@ public abstract class AbstractPlayer implements Player {
         while (connectionsIt.hasNext()) {
             Player currConnection = connectionsIt.next();
 
-            if (!currConnection.isInfected() && !currConnection.isImmune()
+            if (!currConnection.isInfected() && !currConnection.isRecovered()
                     && this.disease.isTransmitted()) {
                 currConnection.infect(this.disease.copy());
             }
@@ -351,41 +340,27 @@ public abstract class AbstractPlayer implements Player {
     }
 
     /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.players.Player#isSusceptible()
+     */
+    @Override
+    public boolean isSusceptible() {
+        return this.diseaseGroup == DiseaseGroup.SUSCEPTIBLE;
+    }
+
+    /* (non-Javadoc)
      * @see nl.uu.socnetid.network_games.players.Player#isInfected()
      */
     @Override
     public boolean isInfected() {
-        return this.disease != null;
+        return this.diseaseGroup == DiseaseGroup.INFECTED;
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.players.Player#isImmune()
+     * @see nl.uu.socnetid.network_games.players.Player#isRecovered()
      */
     @Override
-    public boolean isImmune() {
-        return false;
-    }
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.players.Player#isInfectious()
-     */
-    @Override
-    public boolean isInfectious() {
-        if (this.disease == null) {
-            return false;
-        }
-        return this.disease.isInfectious();
-    }
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.players.Player#hasSymptoms()
-     */
-    @Override
-    public boolean hasSymptoms() {
-        if (this.disease == null) {
-            return false;
-        }
-        return this.disease.isVisible();
+    public boolean isRecovered() {
+        return this.diseaseGroup == DiseaseGroup.RECOVERED;
     }
 
     /* (non-Javadoc)
@@ -400,19 +375,19 @@ public abstract class AbstractPlayer implements Player {
         this.disease.evolve();
         if (this.disease.isDefeated()) {
             this.disease = null;
-            this.infectionState = InfectionState.RECOVERED;
+            this.diseaseGroup = DiseaseGroup.RECOVERED;
         }
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.players.Player#getNursingCosts()
+     * @see nl.uu.socnetid.network_games.players.Player#getMu()
      */
     @Override
-    public double getNursingCosts() {
+    public double getMu() {
         if (this.disease == null) {
             return 0;
         }
-        return disease.getTreatmentCosts();
+        return disease.getMu();
     }
 
     /**
