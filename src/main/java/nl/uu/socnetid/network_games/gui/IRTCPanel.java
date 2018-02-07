@@ -14,7 +14,6 @@ public class IRTCPanel extends JPanel {
 
     private JTextField txtAlpha;
     private JTextField txtBeta;
-    private JTextField txtMu;
     private JTextField txtC;
 
     /**
@@ -35,36 +34,25 @@ public class IRTCPanel extends JPanel {
         txtAlpha.setColumns(10);
 
         JLabel lblBeta = new JLabel("ind. benefit (β):");
-        lblBeta.setBounds(6, 39, 100, 16);
+        lblBeta.setBounds(6, 44, 100, 16);
         add(lblBeta);
 
         txtBeta = new JTextField();
         txtBeta.setHorizontalAlignment(SwingConstants.RIGHT);
         txtBeta.setText("1");
-        txtBeta.setBounds(116, 34, 44, 26);
+        txtBeta.setBounds(116, 39, 44, 26);
         add(txtBeta);
         txtBeta.setColumns(10);
 
-        JLabel lblMu = new JLabel("care factor (μ):");
-        lblMu.setBounds(6, 67, 100, 16);
-        add(lblMu);
-
-        txtMu = new JTextField();
-        txtMu.setText("2.5");
-        txtMu.setHorizontalAlignment(SwingConstants.RIGHT);
-        txtMu.setColumns(10);
-        txtMu.setBounds(116, 62, 44, 26);
-        add(txtMu);
-
         JLabel lblC = new JLabel("costs (c):");
-        lblC.setBounds(6, 95, 100, 16);
+        lblC.setBounds(6, 77, 100, 16);
         add(lblC);
 
         txtC = new JTextField();
         txtC.setText("4");
         txtC.setHorizontalAlignment(SwingConstants.RIGHT);
         txtC.setColumns(10);
-        txtC.setBounds(116, 90, 44, 26);
+        txtC.setBounds(116, 72, 44, 26);
         add(txtC);
     }
 
@@ -87,15 +75,6 @@ public class IRTCPanel extends JPanel {
     }
 
     /**
-     * Gets the care factor for infected direct connections (mu).
-     *
-     * @return the care factor for infected direct connections (mu)
-     */
-    public double getMu() {
-        return Double.valueOf(this.txtMu.getText());
-    }
-
-    /**
      * Gets the costs for direct connections (c).
      *
      * @return the costs for direct connections (c)
@@ -103,4 +82,5 @@ public class IRTCPanel extends JPanel {
     public double getC() {
         return Double.valueOf(this.txtC.getText());
     }
+
 }

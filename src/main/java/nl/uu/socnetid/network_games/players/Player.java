@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 
 import nl.uu.socnetid.network_games.disease.Disease;
-import nl.uu.socnetid.network_games.disease.InfectionState;
 import nl.uu.socnetid.network_games.utilities.UtilityFunction;
 
 /**
@@ -144,13 +143,6 @@ public interface Player extends Comparable<Player>, Runnable {
 	void destroy();
 
 	/**
-	 * Gets the state of the infection the player is in.
-	 *
-	 * @return the infection state of the player
-	 */
-	InfectionState getInfectionState();
-
-	/**
 	 * Infects a player with a disease.
 	 *
 	 * @param disease
@@ -170,6 +162,13 @@ public interface Player extends Comparable<Player>, Runnable {
 	void computeTransmissions();
 
     /**
+     * Checks whether a player is susceptible for a disease.
+     *
+     * @return true if player is susceptible, false otherwise
+     */
+    boolean isSusceptible();
+
+    /**
      * Checks whether a player is infected.
      *
      * @return true if player is infected, false otherwise
@@ -177,26 +176,11 @@ public interface Player extends Comparable<Player>, Runnable {
     boolean isInfected();
 
     /**
-     * Checks whether a player is immune.
+     * Checks whether a player has recovered from a disease.
      *
-     * @return true if player is immune, false otherwise
+     * @return true if player has recovered, false otherwise
      */
-    boolean isImmune();
-
-    /**
-     * Checks whether a player is infectious, meaning that this player can
-     * transmit a disease.
-     *
-     * @return true if player is infectious, false otherwise
-     */
-    boolean isInfectious();
-
-	/**
-	 * Checks whether a player has symptoms from a disease.
-	 *
-	 * @return true if player has symptoms, false otherwise
-	 */
-	boolean hasSymptoms();
+    boolean isRecovered();
 
     /**
      * Triggers the player to fight the disease.
@@ -204,10 +188,10 @@ public interface Player extends Comparable<Player>, Runnable {
     void fightDisease();
 
     /**
-     * Gets the costs to nurse an infected player.
+     * Gets the factor that increases maintenance costs for infected connections.
      *
-     * @return the costs to nurse an infected player
+     * @return the factor that increases maintenance costs for infected connections
      */
-    double getNursingCosts();
+    double getMu();
 
 }

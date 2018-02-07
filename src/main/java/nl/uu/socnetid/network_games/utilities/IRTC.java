@@ -24,22 +24,22 @@ public class IRTC implements UtilityFunction {
      *          the benefit of a direct connection
      * @param beta
      *          the benefit of an indirect connection
-     * @param mu
-     *          the care factor for an infected direct connection
      * @param c
      *          the maintenance costs for a direct connection
-     * @param gamma
-     *          the infection rate of the infectious disease
      * @param delta
      *          the severity of the disease
+     * @param gamma
+     *          the infection rate of the infectious disease
+     * @param mu
+     *          the care factor for an infected direct connection
      */
-    public IRTC(double alpha, double beta, double mu, double c, double gamma, double delta) {
+    public IRTC(double alpha, double beta, double c, double delta, double gamma, double mu) {
         this.alpha = alpha;
         this.beta = beta;
-        this.mu = mu;
         this.c= c;
-        this.gamma = gamma;
         this.delta = delta;
+        this.gamma = gamma;
+        this.mu = mu;
     }
 
 

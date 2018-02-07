@@ -33,13 +33,13 @@ public class TruncatedConnectionsPanel extends JPanel {
         txtDelta.setColumns(10);
 
         JLabel lblCostsc = new JLabel("Costs (c):");
-        lblCostsc.setBounds(6, 39, 61, 16);
+        lblCostsc.setBounds(6, 44, 61, 16);
         add(lblCostsc);
 
         txtCosts = new JTextField();
         txtCosts.setHorizontalAlignment(SwingConstants.RIGHT);
         txtCosts.setText("0.45");
-        txtCosts.setBounds(116, 34, 44, 26);
+        txtCosts.setBounds(116, 39, 44, 26);
         add(txtCosts);
         txtCosts.setColumns(10);
     }

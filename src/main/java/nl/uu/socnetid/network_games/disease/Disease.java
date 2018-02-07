@@ -10,8 +10,8 @@ public interface Disease {
 
     boolean isTransmitted();
     boolean isInfectious();
-    boolean isVisible();
     boolean isDefeated();
 
-    double getTreatmentCosts();
+    double getDelta();
+    double getMu();
 }
