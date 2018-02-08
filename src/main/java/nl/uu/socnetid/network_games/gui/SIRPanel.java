@@ -23,36 +23,36 @@ public class SIRPanel extends JPanel {
     public SIRPanel() {
         setLayout(null);
 
-        JLabel lblTau = new JLabel("recov. time (τ):");
+        JLabel lblTau = new JLabel("Recovery time");
         lblTau.setToolTipText("The duration of the disease in rounds.");
-        lblTau.setBounds(6, 11, 100, 16);
+        lblTau.setBounds(10, 5, 91, 16);
         add(lblTau);
 
         txtTau = new JTextField();
         txtTau.setHorizontalAlignment(SwingConstants.RIGHT);
         txtTau.setToolTipText("The duration of the disease in rounds.");
         txtTau.setText("10");
-        txtTau.setBounds(116, 6, 44, 26);
+        txtTau.setBounds(151, 3, 60, 20);
         add(txtTau);
         txtTau.setColumns(10);
 
-        JLabel lblDelta = new JLabel("severity (δ):");
+        JLabel lblDelta = new JLabel("Severity");
         lblDelta.setToolTipText("The punishment for an agent to be infected.");
-        lblDelta.setBounds(6, 44, 111, 16);
+        lblDelta.setBounds(10, 28, 65, 16);
         add(lblDelta);
 
         txtDelta = new JTextField();
         txtDelta.setHorizontalAlignment(SwingConstants.RIGHT);
         txtDelta.setToolTipText("The punishment for an agent to be infected.");
         txtDelta.setText("5");
-        txtDelta.setBounds(116, 39, 44, 26);
+        txtDelta.setBounds(151, 26, 60, 20);
         add(txtDelta);
         txtDelta.setColumns(10);
 
-        JLabel lblGamma = new JLabel("transm. rate (ɣ):");
+        JLabel lblGamma = new JLabel("Transmission rate");
         lblGamma.setToolTipText("The probability a disease is spread between an infected "
                 + "and a non-infected agent per round.");
-        lblGamma.setBounds(6, 77, 111, 16);
+        lblGamma.setBounds(10, 51, 116, 16);
         add(lblGamma);
 
         txtGamma = new JTextField();
@@ -60,20 +60,36 @@ public class SIRPanel extends JPanel {
                 + "and a non-infected agent per round.");
         txtGamma.setText("0.1");
         txtGamma.setHorizontalAlignment(SwingConstants.RIGHT);
-        txtGamma.setBounds(116, 72, 44, 26);
+        txtGamma.setBounds(151, 49, 60, 20);
         add(txtGamma);
         txtGamma.setColumns(10);
 
-        JLabel lblMu = new JLabel("care factor (μ):");
-        lblMu.setBounds(6, 110, 100, 16);
+        JLabel lblMu = new JLabel("Care factor");
+        lblMu.setBounds(10, 74, 77, 16);
         add(lblMu);
 
         txtMu = new JTextField();
         txtMu.setText("2.5");
         txtMu.setHorizontalAlignment(SwingConstants.RIGHT);
         txtMu.setColumns(10);
-        txtMu.setBounds(116, 105, 44, 26);
+        txtMu.setBounds(151, 72, 60, 20);
         add(txtMu);
+
+        JLabel lblTau2 = new JLabel("(τ):");
+        lblTau2.setBounds(127, 5, 24, 16);
+        add(lblTau2);
+
+        JLabel label = new JLabel("(δ):");
+        label.setBounds(127, 28, 24, 16);
+        add(label);
+
+        JLabel label_1 = new JLabel("(ɣ):");
+        label_1.setBounds(127, 51, 24, 16);
+        add(label_1);
+
+        JLabel label_2 = new JLabel("(μ):");
+        label_2.setBounds(127, 74, 24, 16);
+        add(label_2);
     }
 
 
@@ -106,5 +122,4 @@ public class SIRPanel extends JPanel {
     public double getMu() {
         return Double.valueOf(this.txtMu.getText());
     }
-
 }

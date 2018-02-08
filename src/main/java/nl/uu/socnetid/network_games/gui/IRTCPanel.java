@@ -15,6 +15,9 @@ public class IRTCPanel extends JPanel {
     private JTextField txtAlpha;
     private JTextField txtBeta;
     private JTextField txtC;
+    private JLabel label;
+    private JLabel label_1;
+    private JLabel lblc;
 
     /**
      * Create the panel.
@@ -22,38 +25,50 @@ public class IRTCPanel extends JPanel {
     public IRTCPanel() {
         setLayout(null);
 
-        JLabel lblAlpha = new JLabel("dir. benefit (α):");
-        lblAlpha.setBounds(6, 11, 100, 16);
+        JLabel lblAlpha = new JLabel("Direct benefit");
+        lblAlpha.setBounds(10, 5, 100, 16);
         add(lblAlpha);
 
         txtAlpha = new JTextField();
         txtAlpha.setHorizontalAlignment(SwingConstants.RIGHT);
         txtAlpha.setText("5");
-        txtAlpha.setBounds(116, 6, 44, 26);
+        txtAlpha.setBounds(151, 3, 60, 20);
         add(txtAlpha);
         txtAlpha.setColumns(10);
 
-        JLabel lblBeta = new JLabel("ind. benefit (β):");
-        lblBeta.setBounds(6, 44, 100, 16);
+        JLabel lblBeta = new JLabel("Indirect benefit");
+        lblBeta.setBounds(10, 28, 109, 16);
         add(lblBeta);
 
         txtBeta = new JTextField();
         txtBeta.setHorizontalAlignment(SwingConstants.RIGHT);
         txtBeta.setText("1");
-        txtBeta.setBounds(116, 39, 44, 26);
+        txtBeta.setBounds(151, 26, 60, 20);
         add(txtBeta);
         txtBeta.setColumns(10);
 
-        JLabel lblC = new JLabel("costs (c):");
-        lblC.setBounds(6, 77, 100, 16);
+        JLabel lblC = new JLabel("costs");
+        lblC.setBounds(10, 51, 100, 16);
         add(lblC);
 
         txtC = new JTextField();
         txtC.setText("4");
         txtC.setHorizontalAlignment(SwingConstants.RIGHT);
         txtC.setColumns(10);
-        txtC.setBounds(116, 72, 44, 26);
+        txtC.setBounds(151, 49, 60, 20);
         add(txtC);
+
+        label = new JLabel("(α):");
+        label.setBounds(127, 5, 24, 16);
+        add(label);
+
+        label_1 = new JLabel("(β):");
+        label_1.setBounds(127, 28, 24, 16);
+        add(label_1);
+
+        lblc = new JLabel("(c):");
+        lblc.setBounds(127, 51, 24, 16);
+        add(lblc);
     }
 
     /**
