@@ -3,6 +3,8 @@ package nl.uu.socnetid.network_games.utilities;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import nl.uu.socnetid.network_games.players.Player;
 
 /**
@@ -10,12 +12,16 @@ import nl.uu.socnetid.network_games.players.Player;
  */
 public class IRTC implements UtilityFunction {
 
+    // logger
+    private static final Logger logger = Logger.getLogger(IRTC.class);
+
     private final double alpha;
     private final double beta;
-    private final double mu;
     private final double c;
-    private final double gamma;
+
     private final double delta;
+    private final double gamma;
+    private final double mu;
 
     /**
      * Constructor.
@@ -49,64 +55,113 @@ public class IRTC implements UtilityFunction {
      */
     @Override
     public double getUtility(Player player, List<Player> connections) {
-        double utility = 0;
-        double riskFactor = player.getRiskFactor();
 
+        // amount of direct connections according to disease groups
+        int nSR = 0;
+        int nI = 0;
+        // amount of indirect connections neglecting disease groups
+        int m = 0;
+
+        // for every direct connection
         Iterator<Player> directIt = connections.iterator();
         while (directIt.hasNext()) {
 
+            // no direct connection? do nothing
             Player directConnection = directIt.next();
             if (directConnection == null) {
                 continue;
             }
 
-            // TODO implement utility of direct connections (benefits - costs)
+            // keeping track of disease groups of direct connections
+            if (directConnection.isInfected()) {
+                nI++;
+            } else {
+                nSR++;
+            }
 
-
-
-
-
-//            utility += this.directUtility - this.costs;
-//            if (directConnection.isInfected()) {
-//                utility -= directConnection.getNursingCosts();
-//            }
-
-
-            // TODO implement effect of disease
-
-
-
-
-
-            // indirect connections at distance 2
+            // no indirect connections --> go to next direct connection
             List<Player> indirectConnections = directConnection.getConnections();
             if (indirectConnections == null) {
                 continue;
             }
 
+            // for every indirect connection at distance 2
             Iterator<Player> indirectIt = indirectConnections.iterator();
             while (indirectIt.hasNext()) {
-
                 Player indirectConnection = indirectIt.next();
+                // no double benefit for indirect connections that is also a direct connection
                 if (indirectConnection.equals(player)
-                        ////////// TODO: ??? DOUBLE BENEFITS FOR DIRECT + INDIRECT ??? //////////
+                        ////////// TODO: ??? ALLOW DOUBLE BENEFITS FOR DIRECT + INDIRECT ??? //////////
                         || connections.contains(indirectConnection)) {
                     continue;
                 }
-
-
-                // TODO implement utility of indirect connections
-
-
-//                utility += this.indirectUtility;
-
-
-
-
+                m++;
             }
         }
 
+        // benefit of direct connections
+        double utility = this.alpha * (nSR + nI);
+
+        // benefit of indirect connections
+        utility += this.beta * m;
+
+        // costs to maintain direct connection
+        utility -= (nSR + (nI * this.mu)) * this.c;
+
+        // effect of disease
+        double p;
+        double r;
+        // depending own player's own risk group
+        switch (player.getDiseaseGroup()) {
+            case SUSCEPTIBLE:
+                p = 1 - Math.pow((1 - this.gamma), nI);
+                r = player.getRiskFactor();
+                break;
+
+            case INFECTED:
+                p = 1;
+                r = 1;
+                break;
+
+            case RECOVERED:
+                p = 0;
+                r = 1;
+                break;
+
+            default:
+                throw new RuntimeException("Unknown disease group: " + player.getDiseaseGroup());
+        }
+        utility -= p * Math.pow(this.delta, r);
+        // end: effect of disease
+
+        logUtility(player, nSR, nI, m, utility);
         return utility;
+    }
+
+    /**
+     * Logs information
+     *
+     * @param player
+     * @param connections
+     * @param utility
+     */
+    private void logUtility(Player player, int nSR, int nI, int m, double utility) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Utility for player ").append(player.getId()).append("\n\t").
+                append("(nSR  = ").append(nSR).append(",\n\t").
+                append("(nI   = ").append(nI).append(",\n\t").
+                append("(m    = ").append(m).append(",\n\t").
+                append("alpha = ").append(this.alpha).append(",\n\t").
+                append("beta  = ").append(this.beta).append(",\n\t").
+                append("c     = ").append(this.c).append(",\n\t").
+                append("delta = ").append(this.delta).append(",\n\t").
+                append("gamma = ").append(this.gamma).append(",\n\t").
+                append("mu    = ").append(this.mu).append(",\n\t").
+                append("r     = ").append(player.getRiskFactor()).append(",\n").
+                append("): ").append(utility);
+
+        logger.debug(sb.toString());
     }
 
 }
