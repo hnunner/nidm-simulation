@@ -348,6 +348,14 @@ public abstract class AbstractPlayer implements Player {
     }
 
     /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.players.Player#getDiseaseGroup()
+     */
+    @Override
+    public DiseaseGroup getDiseaseGroup() {
+        return this.diseaseGroup;
+    }
+
+    /* (non-Javadoc)
      * @see nl.uu.socnetid.network_games.players.Player#isInfected()
      */
     @Override

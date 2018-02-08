@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 
 import nl.uu.socnetid.network_games.disease.Disease;
+import nl.uu.socnetid.network_games.disease.DiseaseGroup;
 import nl.uu.socnetid.network_games.utilities.UtilityFunction;
 
 /**
@@ -160,6 +161,13 @@ public interface Player extends Comparable<Player>, Runnable {
 	 * all of her non-infected connections.
 	 */
 	void computeTransmissions();
+
+	/**
+	 * Gets the disease group (SIR) the player is currently in.
+	 *
+	 * @return the disease group (SIR) the player is currently in
+	 */
+	DiseaseGroup getDiseaseGroup();
 
     /**
      * Checks whether a player is susceptible for a disease.
