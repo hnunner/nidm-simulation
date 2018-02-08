@@ -1,0 +1,109 @@
+package nl.uu.socnetid.network_games.utilities;
+
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.math3.util.Precision;
+import org.junit.Before;
+import org.junit.Test;
+
+import nl.uu.socnetid.network_games.disease.SIRDisease;
+import nl.uu.socnetid.network_games.players.Player;
+import nl.uu.socnetid.network_games.players.RationalPlayer;
+
+/**
+ * Tests for {@link Cumulative} class.
+ *
+ * @author Hendrik Nunner
+ */
+public class IRTCTest {
+
+    // constants
+    private static final double alpha = 5.3;
+    private static final double beta  = 1.2;
+    private static final double c     = 4.1;
+    private static final double delta = 8.4;
+    private static final double gamma = 0.1;
+    private static final double mu    = 2.5;
+    private static final double r     = 1.2;
+    private static final int    tau   = 10;
+
+    // players
+    Player player1;
+    Player player2;
+    Player player3;
+    Player player4;
+    Player player5;
+
+    // utility function
+    UtilityFunction utilityFunction;
+
+    /**
+     * Performed before each test: Initialization of the network.
+     */
+    @Before
+    public void initPlayer() {
+        utilityFunction = new IRTC(alpha, beta, c, delta, gamma, mu);
+        SIRDisease disease = new SIRDisease(tau, delta, gamma, mu);
+
+        List<Player> players = new ArrayList<Player>();
+        player1 = RationalPlayer.newInstance(r);
+        player2 = RationalPlayer.newInstance(r);
+        player3 = RationalPlayer.newInstance(r);
+        player4 = RationalPlayer.newInstance(r);
+        player5 = RationalPlayer.newInstance(r);
+
+        // infections
+        player3.infect(disease);
+        player5.infect(disease);
+
+        players.add(player1);
+        players.add(player2);
+        players.add(player3);
+        players.add(player4);
+        players.add(player5);
+
+        player1.initCoPlayers(players);
+        player1.setUtilityFunction(utilityFunction);
+        player2.initCoPlayers(players);
+        player2.setUtilityFunction(utilityFunction);
+        player3.initCoPlayers(players);
+        player3.setUtilityFunction(utilityFunction);
+        player4.initCoPlayers(players);
+        player4.setUtilityFunction(utilityFunction);
+        player5.initCoPlayers(players);
+        player5.setUtilityFunction(utilityFunction);
+
+        // connections are always bidirectional
+        player1.addConnection(player2);
+        player2.addConnection(player1);
+
+        player1.addConnection(player3);
+        player3.addConnection(player1);
+
+        player1.addConnection(player4);
+        player4.addConnection(player1);
+
+        player3.addConnection(player4);
+        player4.addConnection(player3);
+
+        player4.addConnection(player5);
+        player5.addConnection(player4);
+    }
+
+
+    /**
+     * Test of utility calculation.
+     */
+    @Test
+    public void testGetUtility() {
+        assertEquals(-2.6, Precision.round(player1.getUtility(), 1), 0);
+        assertEquals( 3.6, Precision.round(player2.getUtility(), 1), 0);
+        assertEquals(-3.6, Precision.round(player3.getUtility(), 1), 0);
+        assertEquals(-9.9, Precision.round(player4.getUtility(), 1), 0);
+        assertEquals(-4.8, Precision.round(player5.getUtility(), 1), 0);
+    }
+
+}

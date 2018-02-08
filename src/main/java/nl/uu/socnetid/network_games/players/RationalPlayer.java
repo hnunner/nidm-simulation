@@ -68,6 +68,7 @@ public class RationalPlayer extends AbstractPlayer implements Player {
         potentialConnections.add(potentialConnection);
 
         // connect if new connection creates higher or equal utility
+        // TODO is higher OR EQUAL what we want, or only higher?
         if (this.getUtility(potentialConnections) >= this.getUtility()) {
             return potentialConnection;
         }
@@ -102,6 +103,7 @@ public class RationalPlayer extends AbstractPlayer implements Player {
         prospectiveConnections.add(newConnection);
 
         // accept connection if the new connection creates higher or equal utility
+        // TODO is higher OR EQUAL what we want, or only higher?
         return this.getUtility(prospectiveConnections) >= this.getUtility();
     }
 
