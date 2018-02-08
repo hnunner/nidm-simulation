@@ -14,6 +14,8 @@ public class TruncatedConnectionsPanel extends JPanel {
 
     private JTextField txtDelta;
     private JTextField txtCosts;
+    private JLabel label;
+    private JLabel lblc;
 
     /**
      * Create the panel.
@@ -21,27 +23,35 @@ public class TruncatedConnectionsPanel extends JPanel {
     public TruncatedConnectionsPanel() {
         setLayout(null);
 
-        JLabel lblBenefitdelta = new JLabel("Benefit (delta):");
-        lblBenefitdelta.setBounds(6, 11, 100, 16);
+        JLabel lblBenefitdelta = new JLabel("Benefit");
+        lblBenefitdelta.setBounds(10, 5, 100, 16);
         add(lblBenefitdelta);
 
         txtDelta = new JTextField();
+        txtDelta.setBounds(151, 3, 60, 20);
         txtDelta.setHorizontalAlignment(SwingConstants.RIGHT);
         txtDelta.setText("0.5");
-        txtDelta.setBounds(116, 6, 44, 26);
         add(txtDelta);
         txtDelta.setColumns(10);
 
-        JLabel lblCostsc = new JLabel("Costs (c):");
-        lblCostsc.setBounds(6, 44, 61, 16);
+        JLabel lblCostsc = new JLabel("Costs");
+        lblCostsc.setBounds(10, 28, 109, 16);
         add(lblCostsc);
 
         txtCosts = new JTextField();
+        txtCosts.setBounds(151, 26, 60, 20);
         txtCosts.setHorizontalAlignment(SwingConstants.RIGHT);
         txtCosts.setText("0.45");
-        txtCosts.setBounds(116, 39, 44, 26);
         add(txtCosts);
         txtCosts.setColumns(10);
+
+        label = new JLabel("(δ):");
+        label.setBounds(127, 5, 24, 16);
+        add(label);
+
+        lblc = new JLabel("(c):");
+        lblc.setBounds(127, 28, 24, 16);
+        add(lblc);
     }
 
     /**
