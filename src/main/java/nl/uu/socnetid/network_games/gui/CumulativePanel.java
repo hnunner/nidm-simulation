@@ -14,6 +14,8 @@ public class CumulativePanel extends JPanel {
 
     private JTextField txtDirect;
     private JTextField txtIndirect;
+    private JLabel label;
+    private JLabel label_1;
 
     /**
      * Create the panel.
@@ -21,31 +23,39 @@ public class CumulativePanel extends JPanel {
     public CumulativePanel() {
         setLayout(null);
 
-        JLabel lblBenefitdelta = new JLabel("Direct benefit:");
+        JLabel lblBenefitdelta = new JLabel("Direct benefit");
+        lblBenefitdelta.setBounds(10, 5, 100, 16);
         lblBenefitdelta.setToolTipText("The benefit a player gets from direct connections.");
-        lblBenefitdelta.setBounds(6, 11, 100, 16);
         add(lblBenefitdelta);
 
         txtDirect = new JTextField();
+        txtDirect.setBounds(151, 3, 60, 20);
         txtDirect.setHorizontalAlignment(SwingConstants.RIGHT);
         txtDirect.setToolTipText("The benefit a player gets from direct connections.");
         txtDirect.setText("1");
-        txtDirect.setBounds(116, 6, 44, 26);
         add(txtDirect);
         txtDirect.setColumns(10);
 
-        JLabel lblCostsc = new JLabel("Indirect benefit:");
+        JLabel lblCostsc = new JLabel("Indirect benefit");
+        lblCostsc.setBounds(10, 28, 109, 16);
         lblCostsc.setToolTipText("The benefit a player gets from indirect connections. That is, connections at distance 2.");
-        lblCostsc.setBounds(6, 44, 109, 16);
         add(lblCostsc);
 
         txtIndirect = new JTextField();
+        txtIndirect.setBounds(151, 26, 60, 20);
         txtIndirect.setHorizontalAlignment(SwingConstants.RIGHT);
         txtIndirect.setToolTipText("The benefit a player gets from indirect connections. That is, connections at distance 2.");
         txtIndirect.setText("0.5");
-        txtIndirect.setBounds(116, 39, 44, 26);
         add(txtIndirect);
         txtIndirect.setColumns(10);
+
+        label = new JLabel("(α):");
+        label.setBounds(127, 5, 24, 16);
+        add(label);
+
+        label_1 = new JLabel("(β):");
+        label_1.setBounds(127, 28, 24, 16);
+        add(label_1);
     }
 
     /**

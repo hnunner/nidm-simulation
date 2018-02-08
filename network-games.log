@@ -66218,3 +66218,5 @@
 	r     = 1.0,
 ): 4.0
 2018-02-08 11:00:58 DEBUG NetworkSimulation:186 - Simulation stopped in round 36. Network was stable.
+2018-02-08 14:43:15 DEBUG NetworkSimulation:186 - Simulation stopped in round 75100086. Network was stable.
+2018-02-08 14:43:16 DEBUG NetworkSimulation:186 - Simulation stopped in round 28023817. Network was stable.
