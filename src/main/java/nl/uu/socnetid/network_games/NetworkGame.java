@@ -148,22 +148,22 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     private void initialize() {
         // init swing frame
         frame = new JFrame();
-        frame.setBounds(100, 100, 285, 800);
+        frame.setBounds(100, 100, 285, 835);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null);
 
         // panes
         JPanel playerPane = new JPanel();
-        playerPane.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.LIGHT_GRAY));
+        playerPane.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
         JPanel exportPane = new JPanel();
-        exportPane.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.LIGHT_GRAY));
+        exportPane.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
         // tabbed pane
         JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.LEFT, JTabbedPane.WRAP_TAB_LAYOUT);
         tabbedPane.setBorder(null);
         tabbedPane.setBounds(6, 6, 275, 290);
         frame.getContentPane().add(tabbedPane);
         JPanel utilityPane = new JPanel();
-        utilityPane.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.LIGHT_GRAY));
+        utilityPane.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
         tabbedPane.add("Utility", utilityPane);
         utilityPane.setLayout(null);
 
@@ -218,7 +218,7 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
                                         truncatedConnectionsPanel.setVisible(false);
                                         utilityPane.add(truncatedConnectionsPanel);
         JPanel diseasePane = new JPanel();
-        diseasePane.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.LIGHT_GRAY));
+        diseasePane.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
 
 
                 tabbedPane.add("Disease", diseasePane);
@@ -267,7 +267,7 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         txtR.setBounds(157, 59, 60, 20);
         playerPane.add(txtR);
 
-        lblR = new JLabel("Risk behavior");
+        lblR = new JLabel("Risk factor");
         lblR.setToolTipText("Risk behavior of the player - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
         lblR.setBounds(16, 61, 96, 16);
         playerPane.add(lblR);
@@ -275,7 +275,7 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         ButtonGroup btnGroup = new ButtonGroup();
 
         JPanel pnlNodeClick = new JPanel();
-        pnlNodeClick.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.LIGHT_GRAY));
+        pnlNodeClick.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
         pnlNodeClick.setBounds(10, 179, 207, 81);
         playerPane.add(pnlNodeClick);
         pnlNodeClick.setLayout(null);
@@ -362,7 +362,7 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
             }
         });
 
-        JButton btnStart = new JButton("Start");
+        JButton btnStart = new JButton("   Start");
         btnStart.setFont(new Font("Lucida Grande", Font.PLAIN, 14));
         btnStart.setIcon(new ImageIcon(getClass().getResource("/start.png")));
         btnStart.addActionListener(new ActionListener() {
@@ -388,229 +388,296 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         simulationDelayLabel.setBounds(16, 295, 170, 16);
         frame.getContentPane().add(simulationDelayLabel);
 
-        JButton btnStopSimulation = new JButton("Stop");
-        btnStopSimulation.setIcon(new ImageIcon(getClass().getResource("/stop.png")));
-        btnStopSimulation.setFont(new Font("Lucida Grande", Font.PLAIN, 14));
-        btnStopSimulation.addActionListener(new ActionListener() {
+        JButton btnPauseSimulation = new JButton(" Pause");
+        btnPauseSimulation.setIcon(new ImageIcon(getClass().getResource("/pause.png")));
+        btnPauseSimulation.setFont(new Font("Lucida Grande", Font.PLAIN, 14));
+        btnPauseSimulation.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                stopSimulation();
+                pauseSimulation();
             }
         });
-        btnStopSimulation.setBounds(10, 355, 259, 35);
-        frame.getContentPane().add(btnStopSimulation);
+        btnPauseSimulation.setBounds(10, 355, 259, 35);
+        frame.getContentPane().add(btnPauseSimulation);
 
         JPanel pnlGlobalStats = new JPanel();
-        pnlGlobalStats.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.LIGHT_GRAY));
-        pnlGlobalStats.setBounds(6, 400, 134, 372);
+        pnlGlobalStats.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
+        pnlGlobalStats.setBounds(6, 434, 134, 372);
         frame.getContentPane().add(pnlGlobalStats);
         pnlGlobalStats.setLayout(null);
 
-        JLabel lblGlobalStats = new JLabel("Global Stats");
-        lblGlobalStats.setBounds(6, 6, 113, 19);
-        lblGlobalStats.setFont(new Font("Lucida Grande", Font.PLAIN, 13));
-        pnlGlobalStats.add(lblGlobalStats);
+        JLabel lblNetworkStats = new JLabel("Network Stats");
+        lblNetworkStats.setBounds(6, 6, 113, 19);
+        lblNetworkStats.setFont(new Font("Lucida Grande", Font.PLAIN, 13));
+        pnlGlobalStats.add(lblNetworkStats);
 
         JLabel lblStable = new JLabel("Network stable:");
         lblStable.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblStable.setBounds(6, 34, 71, 16);
+        lblStable.setBounds(16, 30, 71, 16);
         pnlGlobalStats.add(lblStable);
 
         lblStatStable = new JLabel("no");
         lblStatStable.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblStatStable.setBounds(89, 34, 61, 16);
+        lblStatStable.setBounds(99, 30, 61, 16);
         pnlGlobalStats.add(lblStatStable);
-
-        JLabel lblActorStats = new JLabel("Actor Stats");
-        lblActorStats.setBounds(6, 62, 174, 19);
-        lblActorStats.setFont(new Font("Lucida Grande", Font.PLAIN, 13));
-        pnlGlobalStats.add(lblActorStats);
 
         JLabel lblID = new JLabel("ID:");
         lblID.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblID.setBounds(16, 82, 61, 16);
+        lblID.setBounds(16, 45, 61, 16);
         pnlGlobalStats.add(lblID);
 
         lblStatID = new JLabel("---");
         lblStatID.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblStatID.setBounds(99, 82, 61, 16);
+        lblStatID.setBounds(99, 45, 61, 16);
         pnlGlobalStats.add(lblStatID);
 
         JLabel lblStatUtilityFunction = new JLabel("---");
         lblStatUtilityFunction.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblStatUtilityFunction.setBounds(99, 97, 61, 16);
+        lblStatUtilityFunction.setBounds(99, 60, 61, 16);
         pnlGlobalStats.add(lblStatUtilityFunction);
 
         JLabel lblUtilityFunction = new JLabel("Utility function:");
         lblUtilityFunction.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblUtilityFunction.setBounds(16, 97, 97, 16);
+        lblUtilityFunction.setBounds(16, 60, 97, 16);
         pnlGlobalStats.add(lblUtilityFunction);
 
         JLabel lblStatDiseaseGroup = new JLabel("---");
         lblStatDiseaseGroup.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblStatDiseaseGroup.setBounds(99, 112, 61, 16);
+        lblStatDiseaseGroup.setBounds(99, 75, 61, 16);
         pnlGlobalStats.add(lblStatDiseaseGroup);
 
         JLabel lblDiseaseGroup = new JLabel("Disease Group:");
         lblDiseaseGroup.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblDiseaseGroup.setBounds(16, 112, 97, 16);
+        lblDiseaseGroup.setBounds(16, 75, 97, 16);
         pnlGlobalStats.add(lblDiseaseGroup);
 
         JLabel label = new JLabel("---");
         label.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label.setBounds(99, 127, 61, 16);
+        label.setBounds(99, 90, 61, 16);
         pnlGlobalStats.add(label);
 
         JLabel label_1 = new JLabel("Disease Group:");
         label_1.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_1.setBounds(16, 127, 97, 16);
+        label_1.setBounds(16, 90, 97, 16);
         pnlGlobalStats.add(label_1);
 
         JLabel label_2 = new JLabel("---");
         label_2.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_2.setBounds(99, 142, 61, 16);
+        label_2.setBounds(99, 105, 61, 16);
         pnlGlobalStats.add(label_2);
 
         JLabel label_3 = new JLabel("Disease Group:");
         label_3.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_3.setBounds(16, 142, 97, 16);
+        label_3.setBounds(16, 105, 97, 16);
         pnlGlobalStats.add(label_3);
 
         JLabel label_4 = new JLabel("---");
         label_4.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_4.setBounds(99, 157, 61, 16);
+        label_4.setBounds(99, 120, 61, 16);
         pnlGlobalStats.add(label_4);
 
         JLabel label_5 = new JLabel("Disease Group:");
         label_5.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_5.setBounds(16, 157, 97, 16);
+        label_5.setBounds(16, 120, 97, 16);
         pnlGlobalStats.add(label_5);
 
         JLabel label_6 = new JLabel("---");
         label_6.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_6.setBounds(99, 172, 61, 16);
+        label_6.setBounds(99, 135, 61, 16);
         pnlGlobalStats.add(label_6);
 
         JLabel label_7 = new JLabel("Disease Group:");
         label_7.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_7.setBounds(16, 172, 97, 16);
+        label_7.setBounds(16, 135, 97, 16);
         pnlGlobalStats.add(label_7);
 
         JLabel label_8 = new JLabel("---");
         label_8.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_8.setBounds(99, 187, 61, 16);
+        label_8.setBounds(99, 150, 61, 16);
         pnlGlobalStats.add(label_8);
 
         JLabel label_9 = new JLabel("Disease Group:");
         label_9.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_9.setBounds(16, 187, 97, 16);
+        label_9.setBounds(16, 150, 97, 16);
         pnlGlobalStats.add(label_9);
 
         JPanel panel = new JPanel();
         panel.setLayout(null);
-        panel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.LIGHT_GRAY));
-        panel.setBounds(145, 400, 134, 372);
+        panel.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
+        panel.setBounds(145, 434, 134, 372);
         frame.getContentPane().add(panel);
 
-        JLabel label_10 = new JLabel("Global Stats");
-        label_10.setFont(new Font("Lucida Grande", Font.PLAIN, 13));
-        label_10.setBounds(6, 6, 113, 19);
-        panel.add(label_10);
+        JLabel lblActorStats_1 = new JLabel("Actor Stats");
+        lblActorStats_1.setFont(new Font("Lucida Grande", Font.PLAIN, 13));
+        lblActorStats_1.setBounds(6, 6, 113, 19);
+        panel.add(lblActorStats_1);
 
-        JLabel label_11 = new JLabel("Network stable:");
-        label_11.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_11.setBounds(6, 34, 71, 16);
-        panel.add(label_11);
-
-        JLabel label_12 = new JLabel("no");
-        label_12.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_12.setBounds(89, 34, 61, 16);
-        panel.add(label_12);
-
-        JLabel label_13 = new JLabel("Actor Stats");
-        label_13.setFont(new Font("Lucida Grande", Font.PLAIN, 13));
-        label_13.setBounds(6, 62, 174, 19);
-        panel.add(label_13);
-
-        JLabel label_14 = new JLabel("ID:");
-        label_14.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_14.setBounds(16, 82, 61, 16);
-        panel.add(label_14);
+        JLabel lblId = new JLabel("ID");
+        lblId.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblId.setBounds(10, 30, 61, 16);
+        panel.add(lblId);
 
         JLabel label_15 = new JLabel("---");
         label_15.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_15.setBounds(99, 82, 61, 16);
+        label_15.setBounds(99, 30, 61, 16);
         panel.add(label_15);
 
-        JLabel label_16 = new JLabel("---");
-        label_16.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_16.setBounds(99, 97, 61, 16);
-        panel.add(label_16);
-
-        JLabel label_17 = new JLabel("Utility function:");
-        label_17.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_17.setBounds(16, 97, 97, 16);
-        panel.add(label_17);
+        JLabel lblUtility = new JLabel("Utility");
+        lblUtility.setFont(new Font("Lucida Grande", Font.BOLD, 9));
+        lblUtility.setBounds(10, 45, 97, 16);
+        panel.add(lblUtility);
 
         JLabel label_18 = new JLabel("---");
         label_18.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_18.setBounds(99, 112, 61, 16);
+        label_18.setBounds(99, 60, 61, 16);
         panel.add(label_18);
 
-        JLabel label_19 = new JLabel("Disease Group:");
-        label_19.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_19.setBounds(16, 112, 97, 16);
-        panel.add(label_19);
+        JLabel lblFunction = new JLabel("Function");
+        lblFunction.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblFunction.setBounds(20, 60, 97, 16);
+        panel.add(lblFunction);
 
         JLabel label_20 = new JLabel("---");
         label_20.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_20.setBounds(99, 127, 61, 16);
+        label_20.setBounds(99, 75, 61, 16);
         panel.add(label_20);
 
-        JLabel label_21 = new JLabel("Disease Group:");
-        label_21.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_21.setBounds(16, 127, 97, 16);
-        panel.add(label_21);
+        JLabel lblDirBenefit = new JLabel("Dir. benefit");
+        lblDirBenefit.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblDirBenefit.setBounds(20, 75, 97, 16);
+        panel.add(lblDirBenefit);
 
         JLabel label_22 = new JLabel("---");
         label_22.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_22.setBounds(99, 142, 61, 16);
+        label_22.setBounds(99, 90, 61, 16);
         panel.add(label_22);
 
-        JLabel label_23 = new JLabel("Disease Group:");
-        label_23.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_23.setBounds(16, 142, 97, 16);
-        panel.add(label_23);
+        JLabel lblIndBenefit = new JLabel("Ind. benefit");
+        lblIndBenefit.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblIndBenefit.setBounds(20, 90, 97, 16);
+        panel.add(lblIndBenefit);
 
         JLabel label_24 = new JLabel("---");
         label_24.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_24.setBounds(99, 157, 61, 16);
+        label_24.setBounds(99, 105, 61, 16);
         panel.add(label_24);
 
-        JLabel label_25 = new JLabel("Disease Group:");
-        label_25.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_25.setBounds(16, 157, 97, 16);
-        panel.add(label_25);
+        JLabel lblCosts = new JLabel("Costs");
+        lblCosts.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblCosts.setBounds(20, 105, 97, 16);
+        panel.add(lblCosts);
 
-        JLabel label_26 = new JLabel("---");
-        label_26.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_26.setBounds(99, 172, 61, 16);
-        panel.add(label_26);
-
-        JLabel label_27 = new JLabel("Disease Group:");
-        label_27.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_27.setBounds(16, 172, 97, 16);
-        panel.add(label_27);
+        JLabel lblDisease = new JLabel("Disease");
+        lblDisease.setFont(new Font("Lucida Grande", Font.BOLD, 9));
+        lblDisease.setBounds(10, 120, 97, 16);
+        panel.add(lblDisease);
 
         JLabel label_28 = new JLabel("---");
         label_28.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_28.setBounds(99, 187, 61, 16);
+        label_28.setBounds(99, 135, 61, 16);
         panel.add(label_28);
 
-        JLabel label_29 = new JLabel("Disease Group:");
-        label_29.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_29.setBounds(16, 187, 97, 16);
-        panel.add(label_29);
+        JLabel lblType = new JLabel("Group");
+        lblType.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblType.setBounds(20, 135, 97, 16);
+        panel.add(lblType);
+
+        JLabel label_10 = new JLabel("---");
+        label_10.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_10.setBounds(99, 150, 61, 16);
+        panel.add(label_10);
+
+        JLabel lblType_1 = new JLabel("Type");
+        lblType_1.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblType_1.setBounds(20, 150, 97, 16);
+        panel.add(lblType_1);
+
+        JLabel lblRecoveryTime = new JLabel("Recovery time");
+        lblRecoveryTime.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblRecoveryTime.setBounds(20, 165, 97, 16);
+        panel.add(lblRecoveryTime);
+
+        JLabel label_13 = new JLabel("---");
+        label_13.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_13.setBounds(99, 165, 61, 16);
+        panel.add(label_13);
+
+        JLabel lblTimeRemaining = new JLabel("Time remaining");
+        lblTimeRemaining.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblTimeRemaining.setBounds(20, 180, 97, 16);
+        panel.add(lblTimeRemaining);
+
+        JLabel label_16 = new JLabel("---");
+        label_16.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_16.setBounds(99, 180, 61, 16);
+        panel.add(label_16);
+
+        JLabel lblSeverity = new JLabel("Severity");
+        lblSeverity.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblSeverity.setBounds(20, 195, 97, 16);
+        panel.add(lblSeverity);
+
+        JLabel label_19 = new JLabel("---");
+        label_19.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_19.setBounds(99, 195, 61, 16);
+        panel.add(label_19);
+
+        JLabel lblTransmissionRate = new JLabel("Transm. rate");
+        lblTransmissionRate.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblTransmissionRate.setBounds(20, 210, 97, 16);
+        panel.add(lblTransmissionRate);
+
+        JLabel label_23 = new JLabel("---");
+        label_23.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_23.setBounds(99, 210, 61, 16);
+        panel.add(label_23);
+
+        JLabel lblRiskBehavior = new JLabel("Risk behavior");
+        lblRiskBehavior.setFont(new Font("Lucida Grande", Font.BOLD, 9));
+        lblRiskBehavior.setBounds(10, 240, 97, 16);
+        panel.add(lblRiskBehavior);
+
+        JLabel lblFactor = new JLabel("Risk factor");
+        lblFactor.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblFactor.setBounds(20, 255, 97, 16);
+        panel.add(lblFactor);
+
+        JLabel label_27 = new JLabel("---");
+        label_27.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_27.setBounds(99, 255, 61, 16);
+        panel.add(label_27);
+
+        JLabel lblMeaning = new JLabel("Meaning");
+        lblMeaning.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblMeaning.setBounds(20, 270, 97, 16);
+        panel.add(lblMeaning);
+
+        JLabel label_30 = new JLabel("---");
+        label_30.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_30.setBounds(99, 270, 61, 16);
+        panel.add(label_30);
+
+        JLabel lblCareFactor = new JLabel("Care factor");
+        lblCareFactor.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblCareFactor.setBounds(20, 225, 97, 16);
+        panel.add(lblCareFactor);
+
+        JLabel label_26 = new JLabel("---");
+        label_26.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_26.setBounds(99, 225, 61, 16);
+        panel.add(label_26);
+
+        JButton btnReset = new JButton(" Reset");
+        btnReset.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO implement
+            }
+        });
+        btnReset.setIcon(new ImageIcon(getClass().getResource("/reset.png")));
+        btnReset.setFont(new Font("Lucida Grande", Font.PLAIN, 14));
+        btnReset.setBounds(10, 392, 259, 35);
+        frame.getContentPane().add(btnReset);
 
 
         for (int i = 0; i < diseases.length; i ++) {
@@ -689,9 +756,9 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     }
 
     /**
-     * Stops the simulation of the network game.
+     * Pauses the simulation of the network game.
      */
-    private void stopSimulation() {
+    private void pauseSimulation() {
         simulationTask.cancel(true);
     }
 
