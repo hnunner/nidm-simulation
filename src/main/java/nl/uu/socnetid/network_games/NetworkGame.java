@@ -10,13 +10,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
@@ -91,10 +92,14 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     private IRTCPanel irtcPanel;
     // panel for generic SIR diseases
     private SIRPanel sirPanel;
-    // check box to toggle between infect / cure on mouse clicks
-    private JCheckBox chckbxToggleInfection;
+    // radio button for showing agent info on node click
+    private JRadioButton rdbtnShowAgentInfo;
+    // radio button for toggling infection on node click
+    private JRadioButton rdbtnToggleInfection;
     // status label for stable network
-    private JLabel lblStable;
+    private JLabel lblStatStable;
+    // label for actor ID
+    private JLabel lblStatID;
     // risk behavior of player
     private JLabel lblR;
     private JTextField txtR;
@@ -224,15 +229,11 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
                                 }
                             }
                         });
-                        diseaseCBox.setBounds(6, 41, 165, 27);
+                        diseaseCBox.setBounds(6, 6, 165, 27);
                         diseasePane.add(diseaseCBox);
 
-                                chckbxToggleInfection = new JCheckBox("Infect / cure on click");
-                                chckbxToggleInfection.setBounds(6, 6, 165, 23);
-                                diseasePane.add(chckbxToggleInfection);
-
                                         sirPanel = new SIRPanel();
-                                        sirPanel.setBounds(6, 80, 165, 197);
+                                        sirPanel.setBounds(6, 45, 165, 232);
                                         sirPanel.setVisible(true);
                                         diseasePane.add(sirPanel);
         tabbedPane.addTab("Players", playerPane);
@@ -254,13 +255,37 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         txtR.setText("1");
         txtR.setHorizontalAlignment(SwingConstants.RIGHT);
         txtR.setColumns(10);
-        txtR.setBounds(120, 141, 44, 26);
+        txtR.setBounds(117, 222, 44, 26);
         playerPane.add(txtR);
 
         lblR = new JLabel("risk pref. (r):");
         lblR.setToolTipText("Risk behavior of the player - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
-        lblR.setBounds(19, 146, 98, 16);
+        lblR.setBounds(16, 227, 98, 16);
         playerPane.add(lblR);
+
+        ButtonGroup btnGroup = new ButtonGroup();
+
+        JPanel pnlNodeClick = new JPanel();
+        pnlNodeClick.setBounds(6, 129, 166, 81);
+        playerPane.add(pnlNodeClick);
+        pnlNodeClick.setLayout(null);
+
+                rdbtnToggleInfection = new JRadioButton("Toggle infection");
+                rdbtnToggleInfection.setBounds(6, 52, 141, 23);
+                pnlNodeClick.add(rdbtnToggleInfection);
+                rdbtnToggleInfection.setSelected(false);
+                btnGroup.add(rdbtnToggleInfection);
+
+                        rdbtnShowAgentInfo = new JRadioButton("Show agent info");
+                        rdbtnShowAgentInfo.setBounds(6, 29, 141, 23);
+                        pnlNodeClick.add(rdbtnShowAgentInfo);
+                        rdbtnShowAgentInfo.setSelected(true);
+                        btnGroup.add(rdbtnShowAgentInfo);
+
+                        JLabel lblOnNodeClick = new JLabel("On node click:");
+                        lblOnNodeClick.setBounds(6, 6, 127, 16);
+                        pnlNodeClick.add(lblOnNodeClick);
+
         btnClearEdges.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -331,28 +356,115 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         btnStopSimulation.setBounds(120, 355, 110, 35);
         frame.getContentPane().add(btnStopSimulation);
 
-        JPanel panel = new JPanel();
-        panel.setBounds(6, 402, 224, 220);
-        frame.getContentPane().add(panel);
-        panel.setLayout(null);
+        JPanel pnlStats = new JPanel();
+        pnlStats.setBounds(6, 402, 224, 220);
+        frame.getContentPane().add(pnlStats);
+        pnlStats.setLayout(null);
 
-        JLabel lblStats = new JLabel("Stats");
-        lblStats.setFont(new Font("Lucida Grande", Font.BOLD, 15));
-        lblStats.setBounds(6, 6, 61, 19);
-        panel.add(lblStats);
+        JLabel lblGlobalStats = new JLabel("Global Stats");
+        lblGlobalStats.setBounds(6, 6, 174, 19);
+        lblGlobalStats.setFont(new Font("Lucida Grande", Font.PLAIN, 13));
+        pnlStats.add(lblGlobalStats);
 
-        JLabel lblNetworkStable = new JLabel("Network stable:");
-        lblNetworkStable.setBounds(6, 34, 113, 16);
-        panel.add(lblNetworkStable);
+        JLabel lblStable = new JLabel("Network stable:");
+        lblStable.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblStable.setBounds(6, 34, 113, 16);
+        pnlStats.add(lblStable);
 
-        lblStable = new JLabel("no");
-        lblStable.setBounds(131, 34, 61, 16);
-        panel.add(lblStable);
+        lblStatStable = new JLabel("no");
+        lblStatStable.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblStatStable.setBounds(131, 34, 61, 16);
+        pnlStats.add(lblStatStable);
+
+        JLabel lblActorStats = new JLabel("Actor Stats");
+        lblActorStats.setBounds(6, 62, 174, 19);
+        lblActorStats.setFont(new Font("Lucida Grande", Font.PLAIN, 13));
+        pnlStats.add(lblActorStats);
+
+        JLabel lblID = new JLabel("ID:");
+        lblID.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblID.setBounds(16, 82, 61, 16);
+        pnlStats.add(lblID);
+
+        lblStatID = new JLabel("---");
+        lblStatID.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblStatID.setBounds(141, 82, 61, 16);
+        pnlStats.add(lblStatID);
+
+        JLabel lblStatUtilityFunction = new JLabel("---");
+        lblStatUtilityFunction.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblStatUtilityFunction.setBounds(141, 97, 61, 16);
+        pnlStats.add(lblStatUtilityFunction);
+
+        JLabel lblUtilityFunction = new JLabel("Utility function:");
+        lblUtilityFunction.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblUtilityFunction.setBounds(16, 97, 97, 16);
+        pnlStats.add(lblUtilityFunction);
+
+        JLabel lblStatDiseaseGroup = new JLabel("---");
+        lblStatDiseaseGroup.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblStatDiseaseGroup.setBounds(141, 112, 61, 16);
+        pnlStats.add(lblStatDiseaseGroup);
+
+        JLabel lblDiseaseGroup = new JLabel("Disease Group:");
+        lblDiseaseGroup.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblDiseaseGroup.setBounds(16, 112, 97, 16);
+        pnlStats.add(lblDiseaseGroup);
+
+        JLabel label = new JLabel("---");
+        label.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label.setBounds(141, 127, 61, 16);
+        pnlStats.add(label);
+
+        JLabel label_1 = new JLabel("Disease Group:");
+        label_1.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_1.setBounds(16, 127, 97, 16);
+        pnlStats.add(label_1);
+
+        JLabel label_2 = new JLabel("---");
+        label_2.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_2.setBounds(141, 142, 61, 16);
+        pnlStats.add(label_2);
+
+        JLabel label_3 = new JLabel("Disease Group:");
+        label_3.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_3.setBounds(16, 142, 97, 16);
+        pnlStats.add(label_3);
+
+        JLabel label_4 = new JLabel("---");
+        label_4.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_4.setBounds(141, 157, 61, 16);
+        pnlStats.add(label_4);
+
+        JLabel label_5 = new JLabel("Disease Group:");
+        label_5.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_5.setBounds(16, 157, 97, 16);
+        pnlStats.add(label_5);
+
+        JLabel label_6 = new JLabel("---");
+        label_6.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_6.setBounds(141, 172, 61, 16);
+        pnlStats.add(label_6);
+
+        JLabel label_7 = new JLabel("Disease Group:");
+        label_7.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_7.setBounds(16, 172, 97, 16);
+        pnlStats.add(label_7);
+
+        JLabel label_8 = new JLabel("---");
+        label_8.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_8.setBounds(141, 187, 61, 16);
+        pnlStats.add(label_8);
+
+        JLabel label_9 = new JLabel("Disease Group:");
+        label_9.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_9.setBounds(16, 187, 97, 16);
+        pnlStats.add(label_9);
+
+
         for (int i = 0; i < diseases.length; i ++) {
             diseaseCBox.addItem(diseases[i]);
         }
-
-
 
         // init graphstream
         this.graph = new SingleGraph("NetworkGames");
@@ -501,7 +613,13 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
      */
     @Override
     public void notify(NodeClick nodeClick) {
-        if (this.chckbxToggleInfection.isSelected()) {
+        // show agent info on node click
+        if (this.rdbtnShowAgentInfo.isSelected()) {
+            this.lblStatID.setText("???");
+        }
+
+        // toggle infection on node click
+        if (this.rdbtnToggleInfection.isSelected()) {
             this.network.toggleInfection(nodeClick.getClickedNodeId(), getDisease());
         }
     }
@@ -538,9 +656,9 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     public void notify(Network network) {
 
         if (network.isStable()) {
-            this.lblStable.setText("yes");
+            this.lblStatStable.setText("yes");
         } else {
-            this.lblStable.setText("no");
+            this.lblStatStable.setText("no");
         }
     }
 }
