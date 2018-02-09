@@ -7,7 +7,8 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 
-import nl.uu.socnetid.network_games.disease.Disease;
+import nl.uu.socnetid.network_games.disease.DiseaseSpecs;
+import nl.uu.socnetid.network_games.utilities.UtilityFunction;
 
 /**
  * @author Hendrik Nunner
@@ -23,9 +24,13 @@ public class RationalPlayerNode extends RationalPlayer implements Player {
      *
      * @param graph
      *          the graph the player acts as node in
+     * @param utilityFunction
+     *          the function the player uses to compute his utility of the network
+     * @param diseaseSpecs
+     *          the disease that is or might become present in the network
      */
-    protected RationalPlayerNode(Graph graph) {
-        super();
+    protected RationalPlayerNode(Graph graph, UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs) {
+        super(utilityFunction, diseaseSpecs);
         this.graph = graph;
         this.graph.addNode(String.valueOf(getId()));
     }
@@ -35,10 +40,14 @@ public class RationalPlayerNode extends RationalPlayer implements Player {
      *
      * @param graph
      *          the graph the player acts as node in
+     * @param utilityFunction
+     *          the function the player uses to compute his utility of the network
+     * @param diseaseSpecs
+     *          the disease that is or might become present in the network
      * @return a new {@link Player} instance
      */
-    public static Player newInstance(Graph graph) {
-        return new RationalPlayerNode(graph);
+    public static Player newInstance(Graph graph, UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs) {
+        return new RationalPlayerNode(graph, utilityFunction, diseaseSpecs);
     }
 
     /**
@@ -46,11 +55,16 @@ public class RationalPlayerNode extends RationalPlayer implements Player {
      *
      * @param graph
      *          the graph the player acts as node in
+     * @param uf
+     *          the function the player uses to compute his utility of the network
+     * @param diseaseSpecs
+     *          the disease that is or might become present in the network
      * @param riskFactor
      *          the risk factor of the new player
      */
-    protected RationalPlayerNode(Graph graph, double riskFactor) {
-        super(riskFactor);
+    protected RationalPlayerNode(Graph graph, UtilityFunction utilityFunction,
+            DiseaseSpecs diseaseSpecs, double riskFactor) {
+        super(utilityFunction, diseaseSpecs, riskFactor);
         this.graph = graph;
         this.graph.addNode(String.valueOf(getId()));
     }
@@ -60,12 +74,17 @@ public class RationalPlayerNode extends RationalPlayer implements Player {
      *
      * @param graph
      *          the graph the player acts as node in
+     * @param uf
+     *          the function the player uses to compute his utility of the network
+     * @param diseaseSpecs
+     *          the disease that is or might become present in the network
      * @param riskFactor
      *          the risk factor of the new player
      * @return a new {@link Player} instance
      */
-    public static Player newInstance(Graph graph, double riskFactor) {
-        return new RationalPlayerNode(graph, riskFactor);
+    public static Player newInstance(Graph graph, UtilityFunction utilityFunction,
+            DiseaseSpecs diseaseSpecs, double riskFactor) {
+        return new RationalPlayerNode(graph, utilityFunction, diseaseSpecs, riskFactor);
     }
 
     /* (non-Javadoc)
@@ -152,11 +171,21 @@ public class RationalPlayerNode extends RationalPlayer implements Player {
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.players.Player#infect(nl.uu.socnetid.network_games.disease.Disease)
+     * @see nl.uu.socnetid.network_games.players.Player#infect(nl.uu.socnetid.network_games.disease.DiseaseSpecs)
      */
     @Override
-    public void infect(Disease disease) {
-        super.infect(disease);
+    public void infect(DiseaseSpecs diseaseSpecs) {
+        super.infect(diseaseSpecs);
+        updateAppearance();
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.players.AbstractPlayer#forceInfect(
+     * nl.uu.socnetid.network_games.disease.DiseaseSpecs)
+     */
+    @Override
+    public void forceInfect(DiseaseSpecs diseaseSpecs) {
+        super.forceInfect(diseaseSpecs);
         updateAppearance();
     }
 

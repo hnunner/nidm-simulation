@@ -3,8 +3,8 @@ package nl.uu.socnetid.network_games.players;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 
-import nl.uu.socnetid.network_games.disease.Disease;
-import nl.uu.socnetid.network_games.disease.DiseaseGroup;
+import nl.uu.socnetid.network_games.disease.DiseaseSpecs;
+import nl.uu.socnetid.network_games.disease.types.DiseaseGroup;
 import nl.uu.socnetid.network_games.utilities.UtilityFunction;
 
 /**
@@ -30,6 +30,13 @@ public interface Player extends Comparable<Player>, Runnable {
     long getId();
 
     /**
+     * Gets the disease characteristics the player requires to compute the utility.
+     *
+     * @return the disease characteristics
+     */
+    DiseaseSpecs getDiseaseSpecs();
+
+    /**
      * Getter for the player's current utility.
      *
      * @return the player's current utility
@@ -51,12 +58,11 @@ public interface Player extends Comparable<Player>, Runnable {
     boolean isSatisfied();
 
     /**
-     * Sets the utility function.
+     * Gets the player's function to compute utilities.
      *
-     * @param utilityFunction
-     *          the utility function to set
+     * @return the player's function to compute utilities
      */
-    public void setUtilityFunction(UtilityFunction utilityFunction);
+    public UtilityFunction getUtilityFunction();
 
     /**
      * Sets the lock required to synchronize threaded players.
@@ -146,10 +152,18 @@ public interface Player extends Comparable<Player>, Runnable {
 	/**
 	 * Infects a player with a disease.
 	 *
-	 * @param disease
+	 * @param diseaseSpecs
 	 *         the disease a player gets infected with
 	 */
-	void infect(Disease disease);
+	void infect(DiseaseSpecs diseaseSpecs);
+
+    /**
+     * Infects a player with a disease, no matter his disease state.
+     *
+     * @param diseaseSpecs
+     *         the disease a player gets infected with
+     */
+    void forceInfect(DiseaseSpecs diseaseSpecs);
 
     /**
      * Cures a player from a disease.
@@ -196,10 +210,9 @@ public interface Player extends Comparable<Player>, Runnable {
     void fightDisease();
 
     /**
-     * Gets the factor that increases maintenance costs for infected connections.
-     *
-     * @return the factor that increases maintenance costs for infected connections
+     * @return if the player is infected the function returns the amount of rounds until the player has recovered,
+     *          0 otherwise
      */
-    double getMu();
+    int getTimeUntilRecovered();
 
 }

@@ -20,4 +20,24 @@ public interface UtilityFunction {
      */
     double getUtility(Player player, List<Player> connections);
 
+    /**
+     * @return the name of the utility function to be used in the stats window
+     */
+    String getStatsName();
+
+    /**
+     * @return the utility for direct connections
+     */
+    double getAlpha();
+
+    /**
+     * @return the utility for indirect connections
+     */
+    double getBeta();
+
+    /**
+     * @return the costs to maintain direct connections
+     */
+    double getC();
+
 }

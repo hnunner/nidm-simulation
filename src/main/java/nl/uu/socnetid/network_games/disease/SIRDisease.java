@@ -2,15 +2,15 @@ package nl.uu.socnetid.network_games.disease;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+import nl.uu.socnetid.network_games.disease.types.DiseaseState;
+
 /**
  * @author Hendrik Nunner
  */
 public class SIRDisease implements Disease {
 
-    private final int tau;
-    private final double delta;
-    private final double gamma;
-    private final double mu;
+    // the characteristics of the disease
+    private final DiseaseSpecs diseaseSpecs;
 
     // time the already disease lasts
     private int currDuration;
@@ -22,22 +22,11 @@ public class SIRDisease implements Disease {
     /**
      * Constructor initializations.
      *
-     * @param tau
-     *          the duration a disease requires to recover from in rounds
-     * @param delta
-     *          the severity of the disease represented by the amount of punishment for having a disease
-     * @param gamma
-     *          the transmission rate - the probability a disease is spread between an infected and a non-infected
-     *          agent per round
-     * @param mu
-     *          the factor that increases maintenance costs for infected connections
+     * @param diseaseSpecs
+     *          the characteristics of the disease
      */
-    public SIRDisease(int tau, double delta, double gamma, double mu) {
-        this.tau = tau;
-        this.delta = delta;
-        this.gamma = gamma;
-        this.mu = mu;
-
+    protected SIRDisease(DiseaseSpecs diseaseSpecs) {
+        this.diseaseSpecs = diseaseSpecs;
         this.currDuration = 0;
         this.diseaseState = DiseaseState.INFECTIOUS;
     }
@@ -49,9 +38,17 @@ public class SIRDisease implements Disease {
     public void evolve() {
         this.currDuration++;
 
-        if (currDuration >= this.tau) {
+        if (currDuration >= this.diseaseSpecs.getTau()) {
             this.diseaseState = DiseaseState.DEFEATED;
         }
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.disease.Disease#getDiseaseSpecs()
+     */
+    @Override
+    public DiseaseSpecs getDiseaseSpecs() {
+        return this.diseaseSpecs;
     }
 
     /* (non-Javadoc)
@@ -75,31 +72,15 @@ public class SIRDisease implements Disease {
      */
     @Override
     public boolean isTransmitted() {
-        return ThreadLocalRandom.current().nextDouble() <= this.gamma;
+        return ThreadLocalRandom.current().nextDouble() <= this.diseaseSpecs.getGamma();
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.disease.Disease#getDelta()
+     * @see nl.uu.socnetid.network_games.disease.Disease#getTimeRemaining()
      */
     @Override
-    public double getDelta() {
-        return this.delta;
-    }
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.disease.Disease#getMu()
-     */
-    @Override
-    public double getMu() {
-        return this.mu;
-    }
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.disease.Disease#copy()
-     */
-    @Override
-    public Disease copy() {
-        return new SIRDisease(this.tau, this.delta, this.gamma, this.mu);
+    public int getTimeUntilRecovered() {
+        return this.getDiseaseSpecs().getTau() - this.currDuration;
     }
 
 }

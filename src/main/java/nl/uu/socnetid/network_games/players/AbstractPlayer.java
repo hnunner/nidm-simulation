@@ -10,7 +10,9 @@ import java.util.concurrent.locks.Lock;
 import org.apache.log4j.Logger;
 
 import nl.uu.socnetid.network_games.disease.Disease;
-import nl.uu.socnetid.network_games.disease.DiseaseGroup;
+import nl.uu.socnetid.network_games.disease.DiseaseFactory;
+import nl.uu.socnetid.network_games.disease.DiseaseSpecs;
+import nl.uu.socnetid.network_games.disease.types.DiseaseGroup;
 import nl.uu.socnetid.network_games.utilities.UtilityFunction;
 
 /**
@@ -19,6 +21,9 @@ import nl.uu.socnetid.network_games.utilities.UtilityFunction;
  * @author Hendrik Nunner
  */
 public abstract class AbstractPlayer implements Player {
+
+    // risk neutral risk factor
+    protected static final double RISK_NEUTRAL = 1.0;
 
     // logger
     @SuppressWarnings("unused")
@@ -32,7 +37,7 @@ public abstract class AbstractPlayer implements Player {
     private double riskFactor;
 
     // utility function
-    public UtilityFunction utilityFunction;
+    private UtilityFunction utilityFunction;
 
     // co-players
     private List<Player> coPlayers;
@@ -41,6 +46,7 @@ public abstract class AbstractPlayer implements Player {
 
     // disease
     private DiseaseGroup diseaseGroup;
+    private DiseaseSpecs diseaseSpecs;
     private Disease disease;
 
     // flag indicating whether the player is satisfied with her current connections
@@ -52,9 +58,19 @@ public abstract class AbstractPlayer implements Player {
 
     /**
      * Constructor.
+     *
+     * @param utilityFunction
+     *          the function the player uses to compute his utility of the network
+     * @param diseaseSpecs
+     *          the disease characteristics that is or might become present in the network
+     * @param riskFactor
+     *          the risk factor of a player (<1: risk seeking, =1: risk neutral; >1: risk averse)
      */
-    protected AbstractPlayer() {
+    protected AbstractPlayer(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double riskFactor) {
+        this.utilityFunction = utilityFunction;
+        this.diseaseSpecs = diseaseSpecs;
         this.diseaseGroup = DiseaseGroup.SUSCEPTIBLE;
+        this.riskFactor = riskFactor;
     }
 
     /* (non-Javadoc)
@@ -198,23 +214,13 @@ public abstract class AbstractPlayer implements Player {
         return this.riskFactor;
     }
 
-    /**
-     * Sets the player's risk factor.
-     *
-     * @param riskFactor
-     *          the risk factor to set
-     */
-    protected void setRiskFactor(double riskFactor) {
-        this.riskFactor = riskFactor;
-    }
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.players.Player#setUtilityFunction(
-     * nl.uu.socnetid.network_games.utilities.UtilityFunction)
+    /*
+     * (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.players.Player#getUtilityFunction()
      */
     @Override
-    public void setUtilityFunction(UtilityFunction utilityFunction) {
-        this.utilityFunction = utilityFunction;
+    public UtilityFunction getUtilityFunction() {
+        return this.utilityFunction;
     }
 
     /* (non-Javadoc)
@@ -311,14 +317,26 @@ public abstract class AbstractPlayer implements Player {
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.players.Player#infect(nl.uu.socnetid.network_games.disease.Disease)
+     * @see nl.uu.socnetid.network_games.players.Player#infect(nl.uu.socnetid.network_games.disease.DiseaseSpecs)
      */
     @Override
-    public void infect(Disease disease) {
+    public void infect(DiseaseSpecs diseaseSpecs) {
         if (isRecovered()) {
             return;
         }
-        this.disease = disease;
+        forceInfect(diseaseSpecs);
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.players.Player#forceInfect(nl.uu.socnetid.network_games.disease.DiseaseSpecs)
+     */
+    @Override
+    public void forceInfect(DiseaseSpecs diseaseSpecs) {
+        if (!this.diseaseSpecs.equals(diseaseSpecs)) {
+            throw new RuntimeException("Known disease and caught disease mismatch!");
+        }
+        this.disease = DiseaseFactory.createInfection(diseaseSpecs);
         this.diseaseGroup = DiseaseGroup.INFECTED;
     }
 
@@ -334,7 +352,7 @@ public abstract class AbstractPlayer implements Player {
 
             if (!currConnection.isInfected() && !currConnection.isRecovered()
                     && this.disease.isTransmitted()) {
-                currConnection.infect(this.disease.copy());
+                currConnection.infect(diseaseSpecs);
             }
         }
     }
@@ -387,22 +405,24 @@ public abstract class AbstractPlayer implements Player {
         }
     }
 
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.players.Player#getMu()
+    /*
+     * (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.players.Player#getDiseaseSpecs()
      */
     @Override
-    public double getMu() {
-        if (this.disease == null) {
-            return 0;
-        }
-        return disease.getMu();
+    public DiseaseSpecs getDiseaseSpecs() {
+        return diseaseSpecs;
     }
 
-    /**
-     * @return the disease
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.players.Player#getTimeUntilRecovered()
      */
-    protected Disease getDisease() {
-        return disease;
+    @Override
+    public int getTimeUntilRecovered() {
+        if (isInfected()) {
+            return this.disease.getTimeUntilRecovered();
+        }
+        return 0;
     }
 
 }
