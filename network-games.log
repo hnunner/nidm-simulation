@@ -236896,3 +236896,7 @@
 	mu    = 2.5,
 	r     = 1.0,
 ): 4.0
+2018-02-09 14:25:03 DEBUG NetworkSimulation:185 - Simulation stopped in round 14. Network was stable.
+2018-02-09 14:25:12 DEBUG NetworkSimulation:185 - Simulation stopped in round 0. Network was not yet stable.
+2018-02-09 14:25:18 DEBUG NetworkSimulation:185 - Simulation stopped in round 0. Network was not yet stable.
+2018-02-09 14:25:21 DEBUG NetworkSimulation:185 - Simulation stopped in round 0. Network was not yet stable.

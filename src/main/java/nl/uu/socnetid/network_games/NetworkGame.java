@@ -426,7 +426,7 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         URL gsStyles = this.getClass().getClassLoader().getResource("graph-stream.css");
         this.graph.addAttribute("ui.stylesheet", "url('file:" + gsStyles.getPath() + "')");
         System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
-//        // show
+        // show
         Viewer viewer = this.graph.display();
 
         // init click listener
@@ -566,7 +566,6 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
      */
     @Override
     public void notify(NodeClick nodeClick) {
-        System.out.println("CLICK: " + nodeClick.getClickedNodeId());
         // show agent info on node click
         // TODO add NodeClickListener to StatsFrame
         if (this.rdbtnShowAgentInfo.isSelected()) {

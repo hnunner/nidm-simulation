@@ -55,7 +55,7 @@ public class RationalPlayerNode extends RationalPlayer implements Player {
      *
      * @param graph
      *          the graph the player acts as node in
-     * @param uf
+     * @param utilityFunction
      *          the function the player uses to compute his utility of the network
      * @param diseaseSpecs
      *          the disease that is or might become present in the network
@@ -74,7 +74,7 @@ public class RationalPlayerNode extends RationalPlayer implements Player {
      *
      * @param graph
      *          the graph the player acts as node in
-     * @param uf
+     * @param utilityFunction
      *          the function the player uses to compute his utility of the network
      * @param diseaseSpecs
      *          the disease that is or might become present in the network
