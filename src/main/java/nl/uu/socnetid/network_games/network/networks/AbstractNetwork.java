@@ -8,7 +8,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.apache.log4j.Logger;
 
-import nl.uu.socnetid.network_games.disease.Disease;
+import nl.uu.socnetid.network_games.disease.DiseaseSpecs;
 import nl.uu.socnetid.network_games.players.Player;
 
 /**
@@ -82,6 +82,24 @@ public abstract class AbstractNetwork implements Network {
     }
 
     /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.network.networks.Network#getPlayer(long)
+     */
+    @Override
+    public Player getPlayer(long id) {
+        // dirty but okay for now
+        Iterator<Player> it = this.players.iterator();
+        while (it.hasNext()) {
+            Player player = it.next();
+            if (player.getId() == id) {
+                return player;
+            }
+        }
+
+        logger.warn("No player found for ID " + id);
+        return null;
+    }
+
+    /* (non-Javadoc)
      * @see nl.uu.socnetid.network_games.network.Network#getConnectionsForPlayer(nl.uu.socnetid.network_games.
      * players.Player)
      */
@@ -103,10 +121,10 @@ public abstract class AbstractNetwork implements Network {
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.network_games.network.Network#infectRandomPlayer(
-     * nl.uu.socnetid.network_games.disease.Disease)
+     * nl.uu.socnetid.network_games.disease.DiseaseSpecs)
      */
     @Override
-    public void infectRandomPlayer(Disease disease) {
+    public void infectRandomPlayer(DiseaseSpecs diseaseSpecs) {
         if (this.players == null || this.players.isEmpty()) {
             return;
         }
@@ -120,17 +138,17 @@ public abstract class AbstractNetwork implements Network {
             if (player.isInfected()) {
                 continue;
             }
-            player.infect(disease);
+            player.forceInfect(diseaseSpecs);
             return;
         }
     }
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.network_games.network.networks.Network#toggleInfection(long,
-     * nl.uu.socnetid.network_games.disease.Disease)
+     * nl.uu.socnetid.network_games.disease.DiseaseSpecs)
      */
     @Override
-    public void toggleInfection(long playerId, Disease disease) {
+    public void toggleInfection(long playerId, DiseaseSpecs diseaseSpecs) {
         Iterator<Player> playersIt = this.players.iterator();
         while (playersIt.hasNext()) {
             Player player = playersIt.next();
@@ -138,7 +156,7 @@ public abstract class AbstractNetwork implements Network {
                 if (player.isInfected()) {
                     player.cure();
                 } else {
-                    player.infect(disease);
+                    player.forceInfect(diseaseSpecs);
                 }
             }
         }
