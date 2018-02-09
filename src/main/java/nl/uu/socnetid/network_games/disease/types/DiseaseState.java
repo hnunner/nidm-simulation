@@ -1,4 +1,4 @@
-package nl.uu.socnetid.network_games.disease;
+package nl.uu.socnetid.network_games.disease.types;
 
 /**
  * @author Hendrik Nunner

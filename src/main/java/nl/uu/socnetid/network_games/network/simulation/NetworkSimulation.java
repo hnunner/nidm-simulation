@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 
 import nl.uu.socnetid.network_games.network.networks.Network;
 import nl.uu.socnetid.network_games.players.Player;
-import nl.uu.socnetid.network_games.utilities.UtilityFunction;
 
 /**
  * @author Hendrik Nunner
@@ -193,19 +192,6 @@ public class NetworkSimulation implements Runnable, Simulation {
         Iterator<SimulationCompleteListener> listenersIt = this.listeners.iterator();
         while (listenersIt.hasNext()) {
             listenersIt.next().notify(this);
-        }
-    }
-
-    /**
-     * Initializes the utility function.
-     *
-     * @param utilityFunction
-     *          the utility function
-     */
-    public void initUtilityFunction(UtilityFunction utilityFunction) {
-        Iterator<Player> playersIt = this.players.iterator();
-        while (playersIt.hasNext()) {
-            playersIt.next().setUtilityFunction(utilityFunction);
         }
     }
 

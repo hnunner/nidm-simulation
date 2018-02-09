@@ -2,7 +2,7 @@ package nl.uu.socnetid.network_games.network.networks;
 
 import java.util.List;
 
-import nl.uu.socnetid.network_games.disease.Disease;
+import nl.uu.socnetid.network_games.disease.DiseaseSpecs;
 import nl.uu.socnetid.network_games.players.Player;
 
 /**
@@ -31,6 +31,15 @@ public interface Network {
     List<Player> getPlayers();
 
     /**
+     * Get the player with the corresponding identifier.
+     *
+     * @param id
+     *          the identifier of the player to get
+     * @return the player with the corresponding identifier
+     */
+    Player getPlayer(long id);
+
+    /**
      * Gets all connections of a specific player within the network.
      *
      * @param player
@@ -47,20 +56,20 @@ public interface Network {
     /**
      * Infects a random player.
      *
-     * @param disease
-     *          the disease to infect a player with
+     * @param diseaseSpecs
+     *          the characteristics of the disease to infect a player with
      */
-    void infectRandomPlayer(Disease disease);
+    void infectRandomPlayer(DiseaseSpecs diseaseSpecs);
 
     /**
      * Toggles the infection of a specific player.
      *
      * @param playerId
      *          the player's id
-     * @param disease
-     *          the disease to infect the player with
+     * @param diseaseSpecs
+     *          the characteristics of the disease to infect the player with
      */
-    void toggleInfection(long playerId, Disease disease);
+    void toggleInfection(long playerId, DiseaseSpecs diseaseSpecs);
 
     /**
      * Sets whether the network is stable or not.

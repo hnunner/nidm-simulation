@@ -19,10 +19,6 @@ public class IRTC implements UtilityFunction {
     private final double beta;
     private final double c;
 
-    private final double delta;
-    private final double gamma;
-    private final double mu;
-
     /**
      * Constructor.
      *
@@ -32,20 +28,11 @@ public class IRTC implements UtilityFunction {
      *          the benefit of an indirect connection
      * @param c
      *          the maintenance costs for a direct connection
-     * @param delta
-     *          the severity of the disease
-     * @param gamma
-     *          the infection rate of the infectious disease
-     * @param mu
-     *          the care factor for an infected direct connection
      */
-    public IRTC(double alpha, double beta, double c, double delta, double gamma, double mu) {
+    public IRTC(double alpha, double beta, double c) {
         this.alpha = alpha;
         this.beta = beta;
         this.c= c;
-        this.delta = delta;
-        this.gamma = gamma;
-        this.mu = mu;
     }
 
 
@@ -106,7 +93,7 @@ public class IRTC implements UtilityFunction {
         utility += this.beta * m;
 
         // costs to maintain direct connection
-        utility -= (nSR + (nI * this.mu)) * this.c;
+        utility -= (nSR + (nI * player.getDiseaseSpecs().getMu())) * this.c;
 
         // effect of disease
         double p;
@@ -114,7 +101,7 @@ public class IRTC implements UtilityFunction {
         // depending own player's own risk group
         switch (player.getDiseaseGroup()) {
             case SUSCEPTIBLE:
-                p = 1 - Math.pow((1 - this.gamma), nI);
+                p = 1 - Math.pow((1 - player.getDiseaseSpecs().getGamma()), nI);
                 r = player.getRiskFactor();
                 break;
 
@@ -131,10 +118,10 @@ public class IRTC implements UtilityFunction {
             default:
                 throw new RuntimeException("Unknown disease group: " + player.getDiseaseGroup());
         }
-        utility -= p * Math.pow(this.delta, r);
+        utility -= p * Math.pow(player.getDiseaseSpecs().getDelta(), r);
         // end: effect of disease
 
-        logUtility(player, nSR, nI, m, utility);
+//        logUtility(player, nSR, nI, m, utility);
         return utility;
     }
 
@@ -145,6 +132,7 @@ public class IRTC implements UtilityFunction {
      * @param connections
      * @param utility
      */
+    @SuppressWarnings("unused")
     private void logUtility(Player player, int nSR, int nI, int m, double utility) {
         StringBuilder sb = new StringBuilder();
 
@@ -155,13 +143,48 @@ public class IRTC implements UtilityFunction {
                 append("alpha = ").append(this.alpha).append(",\n\t").
                 append("beta  = ").append(this.beta).append(",\n\t").
                 append("c     = ").append(this.c).append(",\n\t").
-                append("delta = ").append(this.delta).append(",\n\t").
-                append("gamma = ").append(this.gamma).append(",\n\t").
-                append("mu    = ").append(this.mu).append(",\n\t").
+                append("delta = ").append(player.getDiseaseSpecs().getDelta()).append(",\n\t").
+                append("gamma = ").append(player.getDiseaseSpecs().getGamma()).append(",\n\t").
+                append("mu    = ").append(player.getDiseaseSpecs().getMu()).append(",\n\t").
                 append("r     = ").append(player.getRiskFactor()).append(",\n").
                 append("): ").append(utility);
 
         logger.debug(sb.toString());
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.utilities.UtilityFunction#getStatsName()
+     */
+    @Override
+    public String getStatsName() {
+        return "IRTC";
+    }
+
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.utilities.UtilityFunction#getAlpha()
+     */
+    @Override
+    public double getAlpha() {
+        return this.alpha;
+    }
+
+
+    /*(non-Javadoc)
+     * @see nl.uu.socnetid.network_games.utilities.UtilityFunction#getBeta()
+     */
+    @Override
+    public double getBeta() {
+        return this.beta;
+    }
+
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.utilities.UtilityFunction#getC()
+     */
+    @Override
+    public double getC() {
+        return this.c;
     }
 
 }

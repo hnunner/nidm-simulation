@@ -10,6 +10,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import nl.uu.socnetid.network_games.disease.DiseaseSpecs;
+import nl.uu.socnetid.network_games.disease.types.DiseaseType;
 import nl.uu.socnetid.network_games.network.networks.Network;
 import nl.uu.socnetid.network_games.network.networks.SimpleNetwork;
 import nl.uu.socnetid.network_games.network.writer.AdjacencyMatrixWriter;
@@ -29,6 +31,13 @@ public class AdjacencyMatrixWriterTest {
     Player player2;
     Player player3;
     Player player4;
+
+    // disease related
+    DiseaseSpecs ds;
+    private static final int    tau   = 10;
+    private static final double delta = 8.4;
+    private static final double gamma = 0.1;
+    private static final double mu    = 2.5;
 
     // basic network
     private Network network;
@@ -50,11 +59,11 @@ public class AdjacencyMatrixWriterTest {
 
         // for "Run as Maven test"
         sb = new StringBuilder();
-        sb.append(",P31,P32,P33,P34").append(System.getProperty("line.separator"));
-        sb.append("P31,0,1,1,1").append(System.getProperty("line.separator"));
-        sb.append("P32,1,0,0,0").append(System.getProperty("line.separator"));
-        sb.append("P33,1,0,0,1").append(System.getProperty("line.separator"));
-        sb.append("P34,1,0,1,0").append(System.getProperty("line.separator"));
+        sb.append(",P39,P40,P41,P42").append(System.getProperty("line.separator"));
+        sb.append("P39,0,1,1,1").append(System.getProperty("line.separator"));
+        sb.append("P40,1,0,0,0").append(System.getProperty("line.separator"));
+        sb.append("P41,1,0,0,1").append(System.getProperty("line.separator"));
+        sb.append("P42,1,0,1,0").append(System.getProperty("line.separator"));
         expectedMatrices.add(sb.toString());
     }
 
@@ -64,23 +73,21 @@ public class AdjacencyMatrixWriterTest {
      */
     @Before
     public void initPlayer() {
-        UtilityFunction utilityFunction = new Cumulative();
+        UtilityFunction uf = new Cumulative();
+
+        ds = new DiseaseSpecs(DiseaseType.SIR, tau, delta, gamma, mu);
 
         List<Player> players = new ArrayList<Player>();
 
-        player1 = RationalPlayer.newInstance();
-        player2 = RationalPlayer.newInstance();
-        player3 = RationalPlayer.newInstance();
-        player4 = RationalPlayer.newInstance();
+        player1 = RationalPlayer.newInstance(uf, ds);
+        player2 = RationalPlayer.newInstance(uf, ds);
+        player3 = RationalPlayer.newInstance(uf, ds);
+        player4 = RationalPlayer.newInstance(uf, ds);
 
         players.add(player1);
-        player1.setUtilityFunction(utilityFunction);
         players.add(player2);
-        player2.setUtilityFunction(utilityFunction);
         players.add(player3);
-        player3.setUtilityFunction(utilityFunction);
         players.add(player4);
-        player4.setUtilityFunction(utilityFunction);
 
         this.network = new SimpleNetwork(players);
 

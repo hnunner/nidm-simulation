@@ -47,7 +47,7 @@ public class TruncatedConnections implements UtilityFunction {
             }
 
             if (directConnection.isInfected()) {
-                utility += this.directUtility - this.costs * directConnection.getMu();
+                utility += this.directUtility - this.costs * player.getDiseaseSpecs().getMu();
             } else {
                 utility += this.directUtility - this.costs;
             }
@@ -63,10 +63,6 @@ public class TruncatedConnections implements UtilityFunction {
                 Player indirectConnection = indirectIt.next();
 
                 if (indirectConnection.equals(player)
-
-
-
-
                         ////////// TODO: ??? DOUBLE BENEFITS FOR DIRECT + INDIRECT ??? //////////
                         || connections.contains(indirectConnection)) {
                     continue;
@@ -76,6 +72,41 @@ public class TruncatedConnections implements UtilityFunction {
         }
 
         return utility;
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.utilities.UtilityFunction#getStatsName()
+     */
+    @Override
+    public String getStatsName() {
+        return "TC";
+    }
+
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.utilities.UtilityFunction#getAlpha()
+     */
+    @Override
+    public double getAlpha() {
+        return this.directUtility;
+    }
+
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.utilities.UtilityFunction#getBeta()
+     */
+    @Override
+    public double getBeta() {
+        return this.indirectUtility;
+    }
+
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.utilities.UtilityFunction#getC()
+     */
+    @Override
+    public double getC() {
+        return this.costs;
     }
 
 }

@@ -9,6 +9,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import nl.uu.socnetid.network_games.disease.DiseaseSpecs;
+import nl.uu.socnetid.network_games.disease.types.DiseaseType;
 import nl.uu.socnetid.network_games.network.networks.Network;
 import nl.uu.socnetid.network_games.network.networks.SimpleNetwork;
 import nl.uu.socnetid.network_games.players.Player;
@@ -30,6 +32,13 @@ public class SimpleNetworkTest {
     Player player3;
     Player player4;
 
+    // disease related
+    DiseaseSpecs ds;
+    private static final int    tau   = 10;
+    private static final double delta = 8.4;
+    private static final double gamma = 0.1;
+    private static final double mu    = 2.5;
+
 	/** network */
 	private Network network;
 
@@ -39,23 +48,21 @@ public class SimpleNetworkTest {
 	 */
 	@Before
 	public void initPlayer() {
-	    UtilityFunction utilityFunction = new Cumulative();
+	    UtilityFunction uf = new Cumulative();
+
+        ds = new DiseaseSpecs(DiseaseType.SIR, tau, delta, gamma, mu);
 
 	    List<Player> players = new ArrayList<Player>();
 
-	    player1 = RationalPlayer.newInstance();
-	    player2 = RationalPlayer.newInstance();
-	    player3 = RationalPlayer.newInstance();
-	    player4 = RationalPlayer.newInstance();
+	    player1 = RationalPlayer.newInstance(uf, ds);
+	    player2 = RationalPlayer.newInstance(uf, ds);
+	    player3 = RationalPlayer.newInstance(uf, ds);
+	    player4 = RationalPlayer.newInstance(uf, ds);
 
         players.add(player1);
-        player1.setUtilityFunction(utilityFunction);
 		players.add(player2);
-        player2.setUtilityFunction(utilityFunction);
 		players.add(player3);
-        player3.setUtilityFunction(utilityFunction);
 		players.add(player4);
-        player4.setUtilityFunction(utilityFunction);
 
 		player1.initCoPlayers(players);
 		player2.initCoPlayers(players);

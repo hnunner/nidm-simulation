@@ -40,10 +40,14 @@ public final class Cumulative implements UtilityFunction {
 
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.utilities.UtilityFunction#getUtility()
+     * @see nl.uu.socnetid.network_games.utilities.UtilityFunction#getUtility(
+     * nl.uu.socnetid.network_games.players.Player, java.util.List, nl.uu.socnetid.network_games.disease.Disease)
      */
     @Override
     public double getUtility(Player player, List<Player> connections) {
+
+        // BEWARE: disease is being neglected in this function
+
         double utility = 0;
 
         Iterator<Player> directIt = connections.iterator();
@@ -75,6 +79,38 @@ public final class Cumulative implements UtilityFunction {
         }
 
         return utility;
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.utilities.UtilityFunction#getStatsName()
+     */
+    @Override
+    public String getStatsName() {
+        return "CUM";
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.utilities.UtilityFunction#getAlpha()
+     */
+    @Override
+    public double getAlpha() {
+        return this.utilityDirectConnections;
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.utilities.UtilityFunction#getBeta()
+     */
+    @Override
+    public double getBeta() {
+        return this.utilityIndirectConnections;
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.utilities.UtilityFunction#getC()
+     */
+    @Override
+    public double getC() {
+        return 0;
     }
 
 }

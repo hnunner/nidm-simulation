@@ -8,10 +8,10 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import nl.uu.socnetid.network_games.disease.DiseaseSpecs;
+import nl.uu.socnetid.network_games.disease.types.DiseaseType;
 import nl.uu.socnetid.network_games.players.Player;
 import nl.uu.socnetid.network_games.players.RationalPlayer;
-import nl.uu.socnetid.network_games.utilities.Cumulative;
-import nl.uu.socnetid.network_games.utilities.UtilityFunction;
 
 /**
  * Tests for {@link Cumulative} class.
@@ -28,22 +28,31 @@ public class CumulativeTest {
     Player player5;
 
     // utility function
-    UtilityFunction utilityFunction;
+    UtilityFunction uf;
+
+    // disease related
+    DiseaseSpecs ds;
+    private static final int    tau   = 10;
+    private static final double delta = 8.4;
+    private static final double gamma = 0.1;
+    private static final double mu    = 2.5;
 
     /**
      * Performed before each test: Initialization of the network.
      */
     @Before
     public void initPlayer() {
-        utilityFunction = new Cumulative();
+        uf = new Cumulative();
+
+        ds = new DiseaseSpecs(DiseaseType.SIR, tau, delta, gamma, mu);
 
         List<Player> players = new ArrayList<Player>();
 
-        player1 = RationalPlayer.newInstance();
-        player2 = RationalPlayer.newInstance();
-        player3 = RationalPlayer.newInstance();
-        player4 = RationalPlayer.newInstance();
-        player5 = RationalPlayer.newInstance();
+        player1 = RationalPlayer.newInstance(uf, ds);
+        player2 = RationalPlayer.newInstance(uf, ds);
+        player3 = RationalPlayer.newInstance(uf, ds);
+        player4 = RationalPlayer.newInstance(uf, ds);
+        player5 = RationalPlayer.newInstance(uf, ds);
 
         players.add(player1);
         players.add(player2);
@@ -52,15 +61,10 @@ public class CumulativeTest {
         players.add(player5);
 
         player1.initCoPlayers(players);
-        player1.setUtilityFunction(utilityFunction);
         player2.initCoPlayers(players);
-        player2.setUtilityFunction(utilityFunction);
         player3.initCoPlayers(players);
-        player3.setUtilityFunction(utilityFunction);
         player4.initCoPlayers(players);
-        player4.setUtilityFunction(utilityFunction);
         player5.initCoPlayers(players);
-        player5.setUtilityFunction(utilityFunction);
 
         // connections are always bidirectional
         player1.addConnection(player2);
