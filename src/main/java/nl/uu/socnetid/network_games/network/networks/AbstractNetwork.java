@@ -17,7 +17,6 @@ import nl.uu.socnetid.network_games.players.Player;
 public abstract class AbstractNetwork implements Network {
 
     // logger
-    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(AbstractNetwork.class);
 
     // set of players
