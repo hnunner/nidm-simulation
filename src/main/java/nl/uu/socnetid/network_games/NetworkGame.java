@@ -11,15 +11,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
@@ -34,6 +33,7 @@ import org.graphstream.ui.view.Viewer;
 import nl.uu.socnetid.network_games.disease.DiseaseSpecs;
 import nl.uu.socnetid.network_games.disease.types.DiseaseType;
 import nl.uu.socnetid.network_games.gui.CumulativePanel;
+import nl.uu.socnetid.network_games.gui.DeactivatablePanel;
 import nl.uu.socnetid.network_games.gui.IRTCPanel;
 import nl.uu.socnetid.network_games.gui.NodeClick;
 import nl.uu.socnetid.network_games.gui.NodeClickListener;
@@ -80,27 +80,35 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     private final StatsFrame statsFrame = new StatsFrame("Statistics");
     // utility function combo box and selection
     private JComboBox<String> utilityFunctionCBox;
-    private String[] utilityFunctions = {"IRTC", "Cumulative", "Truncated Connections"};
+    private final String[] utilityFunctions = {"IRTC", "Cumulative", "Truncated Connections"};
     // edge writer combo box and selection
     private JComboBox<String> edgeWriterCBox;
-    private String[] edgeWriters = {"Edge List", "Adjacency Matrix"};
+    private final String[] edgeWriters = {"Edge List", "Adjacency Matrix"};
     // spinner for simulation delay
     private JSpinner simulationDelay;
+
+    // panel for cumulative model settings
+    private CumulativePanel cumulativePanel = new CumulativePanel();
+    // panel for truncated connections model settings
+    private TruncatedConnectionsPanel truncatedConnectionsPanel = new TruncatedConnectionsPanel();
+    // panel for Infections Risk Truncated connections model settings
+    private IRTCPanel irtcPanel = new IRTCPanel();
+    // list of utility panels
+    private final DeactivatablePanel[] utilityPanels = {cumulativePanel, truncatedConnectionsPanel, irtcPanel};
+
     // disease selection combo box
     private JComboBox<String> diseaseCBox;
     private String[] diseases = {DiseaseType.SIR.toString()};
-    // panel for cumulative model settings
-    private CumulativePanel cumulativePanel;
-    // panel for truncated connections model settings
-    private TruncatedConnectionsPanel truncatedConnectionsPanel;
-    // panel for Infections Risk Truncated connections model settings
-    private IRTCPanel irtcPanel;
     // panel for generic SIR diseases
-    private SIRPanel sirPanel;
-    // radio button for showing agent info on node click
-    private JRadioButton rdbtnShowAgentInfo;
-    // radio button for toggling infection on node click
-    private JRadioButton rdbtnToggleInfection;
+    private SIRPanel sirPanel = new SIRPanel();
+    // list of disease panels
+    private final DeactivatablePanel[] diseasePanels = {sirPanel};
+
+    // button for showing agent info on node click
+    private JCheckBox chckbxShowAgentInfo;
+    // button for toggling infection on node click
+    private JCheckBox chckbxToggleInfection;
+
     // risk behavior of player
     private JLabel lblR;
     private JTextField txtR;
@@ -110,6 +118,9 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     private ExecutorService simulationExecutor = Executors.newSingleThreadExecutor();
     private Future<?> simulationTask;
     private JTextField textField;
+
+    // simulation
+    NetworkSimulation networkSimulation;
 
 
     /**
@@ -166,84 +177,79 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         tabbedPane.add("Utility", utilityPane);
         utilityPane.setLayout(null);
 
-                utilityFunctionCBox = new JComboBox<String>();
-                utilityFunctionCBox.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        switch (utilityFunctionCBox.getSelectedIndex()) {
-                            case 0:
-                                irtcPanel.setVisible(true);
-                                lblR.setVisible(true);
-                                txtR.setVisible(true);
-                                cumulativePanel.setVisible(false);
-                                truncatedConnectionsPanel.setVisible(false);
-                                break;
+        utilityFunctionCBox = new JComboBox<String>();
+        utilityFunctionCBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                switch (utilityFunctionCBox.getSelectedIndex()) {
+                    case 0:
+                        irtcPanel.setVisible(true);
+                        txtR.setEnabled(true);
+                        cumulativePanel.setVisible(false);
+                        truncatedConnectionsPanel.setVisible(false);
+                        break;
 
-                            case 1:
-                                irtcPanel.setVisible(false);
-                                lblR.setVisible(false);
-                                txtR.setVisible(false);
-                                cumulativePanel.setVisible(true);
-                                truncatedConnectionsPanel.setVisible(false);
-                                break;
+                    case 1:
+                        irtcPanel.setVisible(false);
+                        txtR.setEnabled(false);
+                        txtR.setText("1.00");
+                        cumulativePanel.setVisible(true);
+                        truncatedConnectionsPanel.setVisible(false);
+                        break;
 
-                            case 2:
-                                irtcPanel.setVisible(false);
-                                lblR.setVisible(false);
-                                txtR.setVisible(false);
-                                cumulativePanel.setVisible(false);
-                                truncatedConnectionsPanel.setVisible(true);
-                                break;
+                    case 2:
+                        irtcPanel.setVisible(false);
+                        txtR.setEnabled(false);
+                        txtR.setText("1.00");
+                        cumulativePanel.setVisible(false);
+                        truncatedConnectionsPanel.setVisible(true);
+                        break;
 
-                            default:
-                                throw new RuntimeException("Undefined utility function!");
-                        }
-                    }
-                });
-                utilityFunctionCBox.setBounds(8, 6, 215, 30);
-                utilityPane.add(utilityFunctionCBox);
+                    default:
+                        throw new RuntimeException("Undefined utility function!");
+                }
+            }
+        });
+        utilityFunctionCBox.setBounds(8, 6, 215, 30);
+        utilityPane.add(utilityFunctionCBox);
 
-                        irtcPanel = new IRTCPanel();
-                        irtcPanel.setBounds(6, 38, 217, 225);
-                        utilityPane.add(irtcPanel);
+        irtcPanel.setBounds(6, 38, 217, 225);
+        utilityPane.add(irtcPanel);
 
-                                cumulativePanel = new CumulativePanel();
-                                cumulativePanel.setBounds(6, 38, 217, 225);
-                                cumulativePanel.setVisible(false);
-                                utilityPane.add(cumulativePanel);
+        cumulativePanel.setBounds(6, 38, 217, 225);
+        cumulativePanel.setVisible(false);
+        utilityPane.add(cumulativePanel);
 
-                                        truncatedConnectionsPanel = new TruncatedConnectionsPanel();
-                                        truncatedConnectionsPanel.setBounds(6, 38, 217, 225);
-                                        truncatedConnectionsPanel.setVisible(false);
-                                        utilityPane.add(truncatedConnectionsPanel);
+        truncatedConnectionsPanel.setBounds(6, 38, 217, 225);
+        truncatedConnectionsPanel.setVisible(false);
+        utilityPane.add(truncatedConnectionsPanel);
         JPanel diseasePane = new JPanel();
         diseasePane.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
 
 
-                tabbedPane.add("Disease", diseasePane);
-                diseasePane.setLayout(null);
+        tabbedPane.add("Disease", diseasePane);
+        diseasePane.setLayout(null);
 
-                        diseaseCBox = new JComboBox<String>();
-                        diseaseCBox.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                switch (diseaseCBox.getSelectedIndex()) {
-                                    case 0:
-                                        sirPanel.setVisible(true);
-                                        break;
+        diseaseCBox = new JComboBox<String>();
+        diseaseCBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                switch (diseaseCBox.getSelectedIndex()) {
+                    case 0:
+                        sirPanel.setVisible(true);
+                        break;
 
-                                    default:
-                                        throw new RuntimeException("Undefined disease!");
-                                }
-                            }
-                        });
-                        diseaseCBox.setBounds(8, 6, 215, 30);
-                        diseasePane.add(diseaseCBox);
+                    default:
+                        throw new RuntimeException("Undefined disease!");
+                }
+            }
+        });
+        diseaseCBox.setBounds(8, 6, 215, 30);
+        diseasePane.add(diseaseCBox);
 
-                                        sirPanel = new SIRPanel();
-                                        sirPanel.setBounds(6, 38, 217, 225);
-                                        sirPanel.setVisible(true);
-                                        diseasePane.add(sirPanel);
+        sirPanel.setBounds(6, 38, 217, 225);
+        sirPanel.setVisible(true);
+        diseasePane.add(sirPanel);
         tabbedPane.addTab("Players", playerPane);
         playerPane.setLayout(null);
 
@@ -271,60 +277,56 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         lblR.setBounds(16, 61, 96, 16);
         playerPane.add(lblR);
 
-        ButtonGroup btnGroup = new ButtonGroup();
-
         JPanel pnlNodeClick = new JPanel();
         pnlNodeClick.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
         pnlNodeClick.setBounds(10, 179, 207, 81);
         playerPane.add(pnlNodeClick);
         pnlNodeClick.setLayout(null);
 
-                rdbtnToggleInfection = new JRadioButton("Toggle infection");
-                rdbtnToggleInfection.setBounds(6, 52, 141, 23);
-                pnlNodeClick.add(rdbtnToggleInfection);
-                rdbtnToggleInfection.setSelected(false);
-                btnGroup.add(rdbtnToggleInfection);
+        chckbxToggleInfection = new JCheckBox("Toggle infection");
+        chckbxToggleInfection.setBounds(6, 52, 141, 23);
+        pnlNodeClick.add(chckbxToggleInfection);
+        chckbxToggleInfection.setSelected(false);
 
-                        rdbtnShowAgentInfo = new JRadioButton("Show agent info");
-                        rdbtnShowAgentInfo.setBounds(6, 29, 141, 23);
-                        pnlNodeClick.add(rdbtnShowAgentInfo);
-                        rdbtnShowAgentInfo.setSelected(true);
-                        btnGroup.add(rdbtnShowAgentInfo);
+        chckbxShowAgentInfo = new JCheckBox("Show agent info");
+        chckbxShowAgentInfo.setBounds(6, 29, 141, 23);
+        pnlNodeClick.add(chckbxShowAgentInfo);
+        chckbxShowAgentInfo.setSelected(true);
 
-                        JLabel lblOnNodeClick = new JLabel("On node click:");
-                        lblOnNodeClick.setBounds(6, 6, 127, 16);
-                        pnlNodeClick.add(lblOnNodeClick);
+        JLabel lblOnNodeClick = new JLabel("On node click:");
+        lblOnNodeClick.setBounds(6, 6, 127, 16);
+        pnlNodeClick.add(lblOnNodeClick);
 
-                        JButton btnClearAll = new JButton("Clear All");
-                        btnClearAll.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                // TODO implement
-                            }
-                        });
-                        btnClearAll.setBounds(6, 136, 217, 30);
-                        playerPane.add(btnClearAll);
+        JButton btnClearAll = new JButton("Clear All");
+        btnClearAll.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                clearAll();
+            }
+        });
+        btnClearAll.setBounds(6, 136, 217, 30);
+        playerPane.add(btnClearAll);
 
-                        textField = new JTextField();
-                        textField.setText("1");
-                        textField.setHorizontalAlignment(SwingConstants.RIGHT);
-                        textField.setColumns(10);
-                        textField.setBounds(157, 36, 60, 20);
-                        playerPane.add(textField);
+        textField = new JTextField();
+        textField.setText("1");
+        textField.setHorizontalAlignment(SwingConstants.RIGHT);
+        textField.setColumns(10);
+        textField.setBounds(157, 36, 60, 20);
+        playerPane.add(textField);
 
-                        JLabel lblAmount = new JLabel("Amount:");
-                        lblAmount.setToolTipText("Risk behavior of the player - r<1: risk seeking, "
-                                + "r=1: risk neutral, r>1: risk averse");
-                        lblAmount.setBounds(16, 38, 103, 16);
-                        playerPane.add(lblAmount);
+        JLabel lblAmount = new JLabel("Amount:");
+        lblAmount.setToolTipText("Risk behavior of the player - r<1: risk seeking, "
+                + "r=1: risk neutral, r>1: risk averse");
+        lblAmount.setBounds(16, 38, 103, 16);
+        playerPane.add(lblAmount);
 
-                        JLabel lblr = new JLabel("(r):");
-                        lblr.setBounds(127, 61, 24, 16);
-                        playerPane.add(lblr);
+        JLabel lblr = new JLabel("(r):");
+        lblr.setBounds(127, 61, 24, 16);
+        playerPane.add(lblr);
 
-                        JLabel lbln = new JLabel("(N):");
-                        lbln.setBounds(127, 38, 24, 16);
-                        playerPane.add(lbln);
+        JLabel lbln = new JLabel("(N):");
+        lbln.setBounds(127, 38, 24, 16);
+        playerPane.add(lbln);
 
         btnClearEdges.addActionListener(new ActionListener() {
             @Override
@@ -404,7 +406,7 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         btnReset.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // TODO implement
+                resetSimulation();
             }
         });
         btnReset.setIcon(new ImageIcon(getClass().getResource("/reset.png")));
@@ -443,19 +445,37 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
      * Adds a player to the game.
      */
     private void addPlayer() {
+
+        // disable utility and disease panels
+        disableUtilityPanels();
+        disableDiseasePanels();
+
+        // get disease and utility specs
+        DiseaseSpecs ds = getDiseaseSpecs();
+        UtilityFunction uf = getUtilityFunction();
+
+        // add player with selected utility function and disease specs
         switch (utilityFunctionCBox.getSelectedIndex()) {
-            // IRTC -- player including risk behavior
+            // only for IRTC: player including risk behavior
             case 0:
                 this.network.addPlayer(
-                        RationalPlayerNode.newInstance(this.graph, getUtilityFunction(), getDiseaseSpecs(),
+                        RationalPlayerNode.newInstance(this.graph, uf, ds,
                                 Double.valueOf(this.txtR.getText())));
                 break;
 
             default:
                 this.network.addPlayer(
-                        RationalPlayerNode.newInstance(this.graph, getUtilityFunction(), getDiseaseSpecs()));
+                        RationalPlayerNode.newInstance(this.graph, uf, ds));
                 break;
         }
+
+        // update stats
+        if (this.network.getPlayers().isEmpty()) {
+            this.statsFrame.refreshGlobalUtilityStats(uf);
+            this.statsFrame.refreshGlobalDiseaseStats(ds);
+        }
+        this.statsFrame.refreshGlobalActorStats(this.network.getGlobalActorStats());
+        this.statsFrame.refreshGlobalNetworkStats(this.network.getGlobalNetworkStats());
     }
 
     /**
@@ -463,6 +483,17 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
      */
     private void removePlayer() {
         this.network.removePlayer();
+
+        // if there are no more players in the networks enable utility and disease panels
+        if (this.network.getPlayers().isEmpty()) {
+            this.statsFrame.resetActorGlobalStats();
+            enableUtilityPanels();
+            enableDiseasePanels();
+        }
+
+        // update stats
+        this.statsFrame.refreshGlobalActorStats(this.network.getGlobalActorStats());
+        this.statsFrame.refreshGlobalNetworkStats(this.network.getGlobalNetworkStats());
     }
 
     /**
@@ -475,22 +506,30 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     }
 
     /**
+     * Clears all edges and nodes within the game.
+     */
+    private void clearAll() {
+        clearEdges();
+        while (!this.network.getPlayers().isEmpty()) {
+            removePlayer();
+        }
+    }
+
+    /**
      * Runs the actual simulation of the network game.
      */
     private void startSimulation() {
         // initializations
-        NetworkSimulation networkSimulation = new NetworkSimulation(this.network);
-        networkSimulation.addListener(this);
-        networkSimulation.initSimulationDelay((Integer) this.simulationDelay.getValue());
-
-        // Deprecated: actor are initialized with utility function when they are added (see addPlayer())
-//        networkSimulation.initUtilityFunction(getUtilityFunction());
-
+        if (this.networkSimulation == null) {
+            this.networkSimulation = new NetworkSimulation(this.network);
+            this.networkSimulation.addListener(this);
+        }
+        this.networkSimulation.initSimulationDelay((Integer) this.simulationDelay.getValue());
 
         if (simulationTask != null) {
             simulationTask.cancel(true);
         }
-        simulationTask = simulationExecutor.submit(networkSimulation);
+        simulationTask = simulationExecutor.submit(this.networkSimulation);
     }
 
     /**
@@ -498,6 +537,13 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
      */
     private void pauseSimulation() {
         simulationTask.cancel(true);
+    }
+
+    /**
+     * Clears all edges and resets all actors to being susceptible.
+     */
+    private void resetSimulation() {
+        this.network.resetPlayers();
     }
 
     /**
@@ -566,15 +612,14 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
      */
     @Override
     public void notify(NodeClick nodeClick) {
-        // show agent info on node click
-        // TODO add NodeClickListener to StatsFrame
-        if (this.rdbtnShowAgentInfo.isSelected()) {
-            this.statsFrame.refreshActor(network.getPlayer(nodeClick.getClickedNodeId()));
+        // toggle infection on node click
+        if (this.chckbxToggleInfection.isSelected()) {
+            this.network.toggleInfection(nodeClick.getClickedNodeId(), getDiseaseSpecs());
         }
 
-        // toggle infection on node click
-        if (this.rdbtnToggleInfection.isSelected()) {
-            this.network.toggleInfection(nodeClick.getClickedNodeId(), getDiseaseSpecs());
+        // show agent info on node click
+        if (this.chckbxShowAgentInfo.isSelected()) {
+            this.statsFrame.refreshActorLocalStats(network.getPlayer(nodeClick.getClickedNodeId()));
         }
     }
 
@@ -596,6 +641,46 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         }
     }
 
+    /**
+     * Enables the disease panel and its subcomponents.
+     */
+    private void enableDiseasePanels() {
+        for (int i = 0; i < diseasePanels.length; i++) {
+            diseasePanels[i].enableComponents();
+        }
+        this.diseaseCBox.setEnabled(true);
+    }
+
+    /**
+     * Enables the utility panel and its subcomponents.
+     */
+    private void enableUtilityPanels() {
+        for (int i = 0; i < utilityPanels.length; i++) {
+            utilityPanels[i].enableComponents();
+        }
+        this.utilityFunctionCBox.setEnabled(true);
+    }
+
+    /**
+     * Disables the disease panel and its subcomponents.
+     */
+    private void disableDiseasePanels() {
+        for (int i = 0; i < diseasePanels.length; i++) {
+            diseasePanels[i].diseableComponents();
+        }
+        this.diseaseCBox.setEnabled(false);
+    }
+
+    /**
+     * Disables the utility panel and its subcomponents.
+     */
+    private void disableUtilityPanels() {
+        for (int i = 0; i < utilityPanels.length; i++) {
+            utilityPanels[i].diseableComponents();
+        }
+        this.utilityFunctionCBox.setEnabled(false);
+    }
+
     /* (non-Javadoc)
      * @see nl.uu.socnetid.network_games.network.simulation.SimulationCompleteListener#notify(
      * nl.uu.socnetid.network_games.network.simulation.Simulation)
@@ -609,11 +694,11 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
      */
     @Override
     public void notify(Network network) {
-// TODO move to StatsFrame
-//        if (network.isStable()) {
-//            this.lblStatStable.setText("yes");
-//        } else {
-//            this.lblStatStable.setText("no");
-//        }
+        // TODO move to StatsFrame
+        //        if (network.isStable()) {
+        //            this.lblStatStable.setText("yes");
+        //        } else {
+        //            this.lblStatStable.setText("no");
+        //        }
     }
 }

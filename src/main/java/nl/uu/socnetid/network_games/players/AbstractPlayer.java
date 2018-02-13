@@ -366,6 +366,15 @@ public abstract class AbstractPlayer implements Player {
     }
 
     /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.players.Player#makeSusceptible()
+     */
+    @Override
+    public void makeSusceptible() {
+        this.disease = null;
+        this.diseaseGroup = DiseaseGroup.SUSCEPTIBLE;
+    }
+
+    /* (non-Javadoc)
      * @see nl.uu.socnetid.network_games.players.Player#getDiseaseGroup()
      */
     @Override

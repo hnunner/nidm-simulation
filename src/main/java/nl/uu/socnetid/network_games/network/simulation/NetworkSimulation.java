@@ -64,7 +64,7 @@ public class NetworkSimulation implements Runnable, Simulation {
 
         try {
             // for !RE!-starting the simulation
-            this.network.clearConnections();
+//            this.network.clearConnections();
             // loop while network is not stable and maximum simulation rounds not yet reached
             //while (!this.networkStable) {
             while (true) {

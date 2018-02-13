@@ -189,6 +189,15 @@ public class RationalPlayerNode extends RationalPlayer implements Player {
         updateAppearance();
     }
 
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.players.AbstractPlayer#makeSusceptible()
+     */
+    @Override
+    public void makeSusceptible() {
+        super.makeSusceptible();
+        updateAppearance();
+    }
+
     /**
      * Updates the appearance of the displayed node.
      */

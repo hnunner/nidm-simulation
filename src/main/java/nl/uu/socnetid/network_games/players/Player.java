@@ -191,6 +191,11 @@ public interface Player extends Comparable<Player>, Runnable {
     boolean isSusceptible();
 
     /**
+     * Puts the player into the susceptible group.
+     */
+    void makeSusceptible();
+
+    /**
      * Checks whether a player is infected.
      *
      * @return true if player is infected, false otherwise

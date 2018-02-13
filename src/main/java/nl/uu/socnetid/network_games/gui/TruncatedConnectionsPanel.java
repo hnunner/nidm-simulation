@@ -1,14 +1,13 @@
 package nl.uu.socnetid.network_games.gui;
 
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 /**
  * @author Hendrik Nunner
  */
-public class TruncatedConnectionsPanel extends JPanel {
+public class TruncatedConnectionsPanel extends DeactivatablePanel {
 
     private static final long serialVersionUID = 9040001912667323447L;
 
@@ -70,6 +69,24 @@ public class TruncatedConnectionsPanel extends JPanel {
      */
     public double getCosts() {
         return Double.valueOf(this.txtCosts.getText());
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.gui.DeactivatablePanel#enableComponents()
+     */
+    @Override
+    public void enableComponents() {
+        this.txtDelta.setEnabled(true);
+        this.txtCosts.setEnabled(true);
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.gui.DeactivatablePanel#diseableComponents()
+     */
+    @Override
+    public void diseableComponents() {
+        this.txtDelta.setEnabled(false);
+        this.txtCosts.setEnabled(false);
     }
 
 }

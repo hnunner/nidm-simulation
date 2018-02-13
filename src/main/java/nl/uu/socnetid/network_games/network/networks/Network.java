@@ -4,6 +4,8 @@ import java.util.List;
 
 import nl.uu.socnetid.network_games.disease.DiseaseSpecs;
 import nl.uu.socnetid.network_games.players.Player;
+import nl.uu.socnetid.network_games.stats.GlobalActorStats;
+import nl.uu.socnetid.network_games.stats.GlobalNetworkStats;
 
 /**
  * @author Hendrik Nunner
@@ -54,6 +56,11 @@ public interface Network {
     void clearConnections();
 
     /**
+     * Removes all connections between players and resets the players to being susceptible.
+     */
+    void resetPlayers();
+
+    /**
      * Infects a random player.
      *
      * @param diseaseSpecs
@@ -83,6 +90,16 @@ public interface Network {
      * @return true if no player wants to add or remove connections, false otherwise
      */
     boolean isStable();
+
+    /**
+     * @return the global actor stats
+     */
+    GlobalActorStats getGlobalActorStats();
+
+    /**
+     * @return the global network stats
+     */
+    GlobalNetworkStats getGlobalNetworkStats();
 
     /**
      * Adds a listener to be notified when network stability changes.
