@@ -1,14 +1,13 @@
 package nl.uu.socnetid.network_games.gui;
 
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 /**
  * @author Hendrik Nunner
  */
-public class CumulativePanel extends JPanel {
+public class CumulativePanel extends DeactivatablePanel {
 
     private static final long serialVersionUID = -7455633523735790036L;
 
@@ -74,6 +73,24 @@ public class CumulativePanel extends JPanel {
      */
     public double getIndirectBenefit() {
         return Double.valueOf(this.txtIndirect.getText());
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.gui.DeactivatablePanel#enableComponents()
+     */
+    @Override
+    public void enableComponents() {
+        this.txtDirect.setEnabled(true);
+        this.txtIndirect.setEnabled(true);
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.gui.DeactivatablePanel#diseableComponents()
+     */
+    @Override
+    public void diseableComponents() {
+        this.txtDirect.setEnabled(false);
+        this.txtIndirect.setEnabled(false);
     }
 
 }

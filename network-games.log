@@ -236900,3 +236900,28 @@
 2018-02-09 14:25:12 DEBUG NetworkSimulation:185 - Simulation stopped in round 0. Network was not yet stable.
 2018-02-09 14:25:18 DEBUG NetworkSimulation:185 - Simulation stopped in round 0. Network was not yet stable.
 2018-02-09 14:25:21 DEBUG NetworkSimulation:185 - Simulation stopped in round 0. Network was not yet stable.
+2018-02-12 10:02:30 DEBUG NetworkSimulation:185 - Simulation stopped in round 20512. Network was stable.
+2018-02-12 10:02:42 DEBUG NetworkSimulation:185 - Simulation stopped in round 30646. Network was stable.
+2018-02-12 10:11:40 DEBUG NetworkSimulation:185 - Simulation stopped in round 0. Network was not yet stable.
+2018-02-12 10:11:54 DEBUG NetworkSimulation:185 - Simulation stopped in round 2. Network was not yet stable.
+2018-02-12 10:12:01 DEBUG NetworkSimulation:185 - Simulation stopped in round 1. Network was not yet stable.
+2018-02-12 10:12:51 DEBUG NetworkSimulation:185 - Simulation stopped in round 29483. Network was stable.
+2018-02-12 10:13:05 DEBUG NetworkSimulation:185 - Simulation stopped in round 2. Network was not yet stable.
+2018-02-12 10:14:40 DEBUG NetworkSimulation:185 - Simulation stopped in round 38004. Network was stable.
+2018-02-12 10:15:16 DEBUG NetworkSimulation:185 - Simulation stopped in round 16. Network was not yet stable.
+2018-02-12 10:18:54 DEBUG NetworkSimulation:185 - Simulation stopped in round 16. Network was not yet stable.
+2018-02-12 10:19:09 DEBUG NetworkSimulation:185 - Simulation stopped in round 4. Network was not yet stable.
+2018-02-12 10:19:18 DEBUG NetworkSimulation:185 - Simulation stopped in round 1. Network was not yet stable.
+2018-02-12 10:19:42 DEBUG NetworkSimulation:185 - Simulation stopped in round 0. Network was not yet stable.
+2018-02-12 10:19:52 DEBUG NetworkSimulation:185 - Simulation stopped in round 1. Network was not yet stable.
+2018-02-12 10:19:55 DEBUG NetworkSimulation:185 - Simulation stopped in round 0. Network was not yet stable.
+2018-02-12 10:19:56 DEBUG NetworkSimulation:185 - Simulation stopped in round 0. Network was not yet stable.
+2018-02-12 10:21:39 DEBUG NetworkSimulation:185 - Simulation stopped in round 0. Network was not yet stable.
+2018-02-12 10:21:47 DEBUG NetworkSimulation:185 - Simulation stopped in round 0. Network was not yet stable.
+2018-02-12 10:22:03 DEBUG NetworkSimulation:185 - Simulation stopped in round 2. Network was not yet stable.
+2018-02-12 10:22:07 DEBUG NetworkSimulation:185 - Simulation stopped in round 0. Network was not yet stable.
+2018-02-12 10:22:10 DEBUG NetworkSimulation:185 - Simulation stopped in round 0. Network was not yet stable.
+2018-02-12 10:22:16 DEBUG NetworkSimulation:185 - Simulation stopped in round 3. Network was stable.
+2018-02-12 10:22:20 DEBUG NetworkSimulation:185 - Simulation stopped in round 1. Network was not yet stable.
+2018-02-12 10:22:23 DEBUG NetworkSimulation:185 - Simulation stopped in round 1. Network was not yet stable.
+2018-02-13 09:16:35 DEBUG NetworkSimulation:185 - Simulation stopped in round 26551868. Network was stable.
