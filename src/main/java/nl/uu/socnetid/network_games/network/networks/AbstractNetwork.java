@@ -10,6 +10,8 @@ import org.apache.log4j.Logger;
 
 import nl.uu.socnetid.network_games.disease.DiseaseSpecs;
 import nl.uu.socnetid.network_games.players.Player;
+import nl.uu.socnetid.network_games.stats.GlobalActorStats;
+import nl.uu.socnetid.network_games.stats.GlobalNetworkStats;
 
 /**
  * @author Hendrik Nunner
@@ -21,8 +23,11 @@ public abstract class AbstractNetwork implements Network {
 
     // set of players
     private List<Player> players;
-    // flag indicating whether all players are happy with their current connections
-    private boolean stable = false;
+
+    // stats
+    private GlobalActorStats actorStats = new GlobalActorStats();
+    private GlobalNetworkStats networkStats = new GlobalNetworkStats();
+    private double cumulatedRisk = 0.0;
 
     // listener
     private final Set<NetworkStabilityListener> listeners = new CopyOnWriteArraySet<NetworkStabilityListener>();
@@ -36,6 +41,110 @@ public abstract class AbstractNetwork implements Network {
      */
     protected AbstractNetwork(List<Player> players) {
         this.players = players;
+
+        Iterator<Player> playersIt = players.iterator();
+        while (playersIt.hasNext()) {
+            Player player = playersIt.next();
+            updateActorStats(player, true);
+        }
+        updateNetworkStats();
+    }
+
+    /**
+     * Updates the actor stats.
+     *
+     * @param player
+     *          the player with the information to be updated
+     * @param add
+     *          true if a player is being added, false if a player is being removed
+     */
+    private void updateActorStats(Player player, boolean add) {
+
+        if (add) {
+            this.actorStats.incActorsOverall();
+            this.cumulatedRisk += player.getRiskFactor();
+        } else {
+            this.actorStats.decActorsOverall();
+            this.cumulatedRisk -= player.getRiskFactor();
+        }
+
+        // risk
+        this.actorStats.setAvRisk(this.players.size() > 0 ?
+                this.cumulatedRisk / this.players.size() :
+                    0.0);
+
+        if (player.getRiskFactor() == 1.0) {
+            if (add) {
+                this.actorStats.incRiskNeutrals();
+            } else {
+                this.actorStats.decRiskNeutrals();
+            }
+
+        } else if (player.getRiskFactor() > 1.0) {
+            if (add) {
+                this.actorStats.incRiskAverse();
+            } else {
+                this.actorStats.decRiskAverse();
+            }
+
+        } else if (player.getRiskFactor() < 1.0) {
+            if (add) {
+                this.actorStats.incRiskSeeking();
+            } else {
+                this.actorStats.decRiskSeeking();
+            }
+
+        } else {
+            logger.warn("Undefined risk behavior for player " + player.getId()
+            + ": " + player.getRiskFactor());
+        }
+
+        // disease
+        switch (player.getDiseaseGroup()) {
+            case SUSCEPTIBLE:
+                if (add) {
+                    this.actorStats.incSusceptibles();
+                } else {
+                    this.actorStats.decSusceptibles();
+                }
+                break;
+
+            case INFECTED:
+                if (add) {
+                    this.actorStats.incInfected();
+                } else {
+                    this.actorStats.decInfected();
+                }
+                break;
+
+            case RECOVERED:
+                if (add) {
+                    this.actorStats.incRecovered();
+                } else {
+                    this.actorStats.decRecovered();
+                }
+                break;
+
+            default:
+                logger.warn("Unknown disease group for player " + player.getId()
+                        + ": " + player.getDiseaseGroup());
+        }
+    }
+
+    /**
+     * Resets the actor stats to all actors being susceptible.
+     */
+    private void resetActorStats() {
+        this.actorStats.setSusceptibles(this.players.size());
+        this.actorStats.setInfected(0);
+        this.actorStats.setRecovered(0);
+    }
+
+    /**
+     * Updates the network stats.
+     */
+    private void updateNetworkStats() {
+
     }
 
 
@@ -51,6 +160,10 @@ public abstract class AbstractNetwork implements Network {
         while (playersIt.hasNext()) {
             playersIt.next().initCoPlayers(this.players);
         }
+
+        // update stats
+        updateActorStats(player, true);
+        updateNetworkStats();
     }
 
     /* (non-Javadoc)
@@ -62,14 +175,21 @@ public abstract class AbstractNetwork implements Network {
             return;
         }
         Player player = this.players.get(this.players.size() - 1);
+
+        // remove
         player.destroy();
         this.players.remove(player);
+
 
         // update co-players
         Iterator<Player> playersIt = this.players.iterator();
         while (playersIt.hasNext()) {
             playersIt.next().initCoPlayers(this.players);
         }
+
+        // update stats
+        updateActorStats(player, false);
+        updateNetworkStats();
     }
 
     /* (non-Javadoc)
@@ -116,6 +236,28 @@ public abstract class AbstractNetwork implements Network {
         while (playersIt.hasNext()) {
             playersIt.next().removeAllConnections();
         }
+
+        // update network stats
+        updateNetworkStats();
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.network.networks.Network#resetPlayers()
+     */
+    @Override
+    public void resetPlayers() {
+        clearConnections();
+        Iterator<Player> playersIt = this.players.iterator();
+        while (playersIt.hasNext()) {
+            Player player = playersIt.next();
+            player.makeSusceptible();
+
+            // reset actor stats
+            resetActorStats();
+        }
+
+        // update stats
+        updateNetworkStats();
     }
 
     /* (non-Javadoc)
@@ -137,7 +279,19 @@ public abstract class AbstractNetwork implements Network {
             if (player.isInfected()) {
                 continue;
             }
+
+            // update stats
+            if (player.isSusceptible()) {
+                this.actorStats.decSusceptibles();
+            } else if (player.isRecovered()) {
+                this.actorStats.decRecovered();
+            } else {
+                logger.warn("Unable to (force-) infect an actor that is either susceptible, nor recovered");
+                return;
+            }
             player.forceInfect(diseaseSpecs);
+            this.actorStats.incInfected();
+
             return;
         }
     }
@@ -152,10 +306,28 @@ public abstract class AbstractNetwork implements Network {
         while (playersIt.hasNext()) {
             Player player = playersIt.next();
             if (player.getId() == playerId) {
-                if (player.isInfected()) {
-                    player.cure();
-                } else {
-                    player.forceInfect(diseaseSpecs);
+
+                switch (player.getDiseaseGroup()) {
+                    case SUSCEPTIBLE:
+                        player.forceInfect(diseaseSpecs);
+                        this.actorStats.decSusceptibles();
+                        this.actorStats.incInfected();
+                        break;
+
+                    case INFECTED:
+                        player.cure();
+                        this.actorStats.decInfected();
+                        this.actorStats.incRecovered();
+                        break;
+
+                    case RECOVERED:
+                        player.makeSusceptible();
+                        this.actorStats.decRecovered();
+                        this.actorStats.incSusceptibles();
+                        break;
+
+                    default:
+                        break;
                 }
             }
         }
@@ -166,8 +338,8 @@ public abstract class AbstractNetwork implements Network {
      */
     @Override
     public void setStable(boolean stable) {
-        if (this.stable != stable) {
-            this.stable = stable;
+        if (this.networkStats.isStable() != stable) {
+            this.networkStats.setStable(stable);
             notifyListeners();
         }
     }
@@ -177,7 +349,23 @@ public abstract class AbstractNetwork implements Network {
      */
     @Override
     public boolean isStable() {
-        return this.stable;
+        return this.networkStats.isStable();
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.network.networks.Network#getGlobalActorStats()
+     */
+    @Override
+    public GlobalActorStats getGlobalActorStats() {
+        return this.actorStats;
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.network.networks.Network#getGlobalNetworkStats()
+     */
+    @Override
+    public GlobalNetworkStats getGlobalNetworkStats() {
+        return this.networkStats;
     }
 
     /* (non-Javadoc)

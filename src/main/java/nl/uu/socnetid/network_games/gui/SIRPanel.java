@@ -1,14 +1,13 @@
 package nl.uu.socnetid.network_games.gui;
 
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 /**
  * @author Hendrik Nunner
  */
-public class SIRPanel extends JPanel {
+public class SIRPanel extends DeactivatablePanel {
 
     private static final long serialVersionUID = 8094932631749545446L;
 
@@ -121,5 +120,27 @@ public class SIRPanel extends JPanel {
      */
     public double getMu() {
         return Double.valueOf(this.txtMu.getText());
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.gui.DeactivatablePanel#enableComponents()
+     */
+    @Override
+    public void enableComponents() {
+        this.txtTau.setEnabled(true);
+        this.txtDelta.setEnabled(true);
+        this.txtGamma.setEnabled(true);
+        this.txtMu.setEnabled(true);
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.gui.DeactivatablePanel#diseableComponents()
+     */
+    @Override
+    public void diseableComponents() {
+        this.txtTau.setEnabled(false);
+        this.txtDelta.setEnabled(false);
+        this.txtGamma.setEnabled(false);
+        this.txtMu.setEnabled(false);
     }
 }
