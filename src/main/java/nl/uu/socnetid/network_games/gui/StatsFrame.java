@@ -12,6 +12,7 @@ import nl.uu.socnetid.network_games.disease.DiseaseSpecs;
 import nl.uu.socnetid.network_games.players.Player;
 import nl.uu.socnetid.network_games.stats.GlobalActorStats;
 import nl.uu.socnetid.network_games.stats.GlobalNetworkStats;
+import nl.uu.socnetid.network_games.utilities.Utility;
 import nl.uu.socnetid.network_games.utilities.UtilityFunction;
 
 /**
@@ -54,6 +55,7 @@ public class StatsFrame extends JFrame {
 
     // labels actor stats
     private JLabel lblActorID;
+    private JLabel lblActorSatisfied;
     private JLabel lblActorUtility;
     // benefit
     private JLabel lblActorBenefit;
@@ -125,167 +127,167 @@ public class StatsFrame extends JFrame {
 
         lblActorDiseaseGroup = new JLabel(NA_STRING);
         lblActorDiseaseGroup.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorDiseaseGroup.setBounds(130, 165, 61, 16);
+        lblActorDiseaseGroup.setBounds(130, 180, 61, 16);
         panel.add(lblActorDiseaseGroup);
 
         JLabel label_14 = new JLabel("Group");
         label_14.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_14.setBounds(20, 165, 97, 16);
+        label_14.setBounds(20, 180, 97, 16);
         panel.add(label_14);
 
         JLabel label_19 = new JLabel("Time remaining");
         label_19.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_19.setBounds(20, 180, 97, 16);
+        label_19.setBounds(20, 195, 97, 16);
         panel.add(label_19);
 
         lblActorDiseaseTimeRemaining = new JLabel(NA_STRING);
         lblActorDiseaseTimeRemaining.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorDiseaseTimeRemaining.setBounds(130, 180, 61, 16);
+        lblActorDiseaseTimeRemaining.setBounds(130, 195, 61, 16);
         panel.add(lblActorDiseaseTimeRemaining);
 
         JLabel label_25 = new JLabel("Risk behavior");
         label_25.setFont(new Font("Lucida Grande", Font.BOLD, 9));
-        label_25.setBounds(10, 195, 97, 16);
+        label_25.setBounds(10, 210, 97, 16);
         panel.add(label_25);
 
         JLabel label_26 = new JLabel("Risk factor");
         label_26.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_26.setBounds(20, 210, 97, 16);
+        label_26.setBounds(20, 225, 97, 16);
         panel.add(label_26);
 
         lblActorR = new JLabel(NA_STRING);
         lblActorR.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorR.setBounds(130, 210, 61, 16);
+        lblActorR.setBounds(130, 225, 61, 16);
         panel.add(lblActorR);
 
         JLabel label_28 = new JLabel("Meaning");
         label_28.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_28.setBounds(20, 225, 97, 16);
+        label_28.setBounds(20, 240, 97, 16);
         panel.add(label_28);
 
         lblActorRMeaning = new JLabel(NA_STRING);
         lblActorRMeaning.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorRMeaning.setBounds(130, 225, 61, 16);
+        lblActorRMeaning.setBounds(130, 240, 61, 16);
         panel.add(lblActorRMeaning);
 
         JLabel label_32 = new JLabel("Degree");
         label_32.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_32.setBounds(20, 255, 97, 16);
+        label_32.setBounds(20, 270, 97, 16);
         panel.add(label_32);
 
         lblActorDegree = new JLabel(NA_STRING);
         lblActorDegree.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorDegree.setBounds(130, 255, 61, 16);
+        lblActorDegree.setBounds(130, 270, 61, 16);
         panel.add(lblActorDegree);
 
         lblActorCloseness = new JLabel(NA_STRING);
         lblActorCloseness.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorCloseness.setBounds(130, 270, 61, 16);
+        lblActorCloseness.setBounds(130, 285, 61, 16);
         panel.add(lblActorCloseness);
 
         JLabel label_35 = new JLabel("Closeness");
         label_35.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_35.setBounds(20, 270, 97, 16);
+        label_35.setBounds(20, 285, 97, 16);
         panel.add(label_35);
 
         JLabel label_36 = new JLabel("Network");
         label_36.setFont(new Font("Lucida Grande", Font.BOLD, 9));
-        label_36.setBounds(10, 240, 97, 16);
+        label_36.setBounds(10, 255, 97, 16);
         panel.add(label_36);
 
         JLabel label_37 = new JLabel("Betweenness");
         label_37.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_37.setBounds(20, 285, 97, 16);
+        label_37.setBounds(20, 300, 97, 16);
         panel.add(label_37);
 
         lblActorBetweenness = new JLabel(NA_STRING);
         lblActorBetweenness.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorBetweenness.setBounds(130, 285, 61, 16);
+        lblActorBetweenness.setBounds(130, 300, 61, 16);
         panel.add(lblActorBetweenness);
 
         JLabel label_2 = new JLabel("Disease");
         label_2.setFont(new Font("Lucida Grande", Font.BOLD, 9));
-        label_2.setBounds(10, 150, 97, 16);
+        label_2.setBounds(10, 165, 97, 16);
         panel.add(label_2);
 
         JLabel lblCurrentBenefit = new JLabel("Current benefit");
         lblCurrentBenefit.setFont(new Font("Lucida Grande", Font.BOLD, 9));
-        lblCurrentBenefit.setBounds(10, 60, 97, 16);
+        lblCurrentBenefit.setBounds(10, 75, 97, 16);
         panel.add(lblCurrentBenefit);
 
         JLabel lblDirectConnections_1 = new JLabel("Direct connections");
         lblDirectConnections_1.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblDirectConnections_1.setBounds(20, 75, 99, 16);
+        lblDirectConnections_1.setBounds(20, 90, 99, 16);
         panel.add(lblDirectConnections_1);
 
         JLabel label_33 = new JLabel(":");
         label_33.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_33.setBounds(117, 75, 10, 16);
+        label_33.setBounds(117, 90, 10, 16);
         panel.add(label_33);
 
         lblActorBenefitDirect = new JLabel(NA_STRING);
         lblActorBenefitDirect.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorBenefitDirect.setBounds(130, 75, 56, 16);
+        lblActorBenefitDirect.setBounds(130, 90, 56, 16);
         panel.add(lblActorBenefitDirect);
 
         JLabel lblIndirectConnections = new JLabel("Indirect connections");
         lblIndirectConnections.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblIndirectConnections.setBounds(20, 90, 99, 16);
+        lblIndirectConnections.setBounds(20, 105, 99, 16);
         panel.add(lblIndirectConnections);
 
         JLabel label_41 = new JLabel(":");
         label_41.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_41.setBounds(117, 90, 10, 16);
+        label_41.setBounds(117, 105, 10, 16);
         panel.add(label_41);
 
         lblActorBenefitIndirect = new JLabel(NA_STRING);
         lblActorBenefitIndirect.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorBenefitIndirect.setBounds(130, 90, 56, 16);
+        lblActorBenefitIndirect.setBounds(130, 105, 56, 16);
         panel.add(lblActorBenefitIndirect);
 
         JLabel lblCurrentCosts = new JLabel("Current costs");
         lblCurrentCosts.setFont(new Font("Lucida Grande", Font.BOLD, 9));
-        lblCurrentCosts.setBounds(10, 105, 97, 16);
+        lblCurrentCosts.setBounds(10, 120, 97, 16);
         panel.add(lblCurrentCosts);
 
         JLabel lblDirectConnections = new JLabel("Direct connections");
         lblDirectConnections.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblDirectConnections.setBounds(20, 120, 91, 16);
+        lblDirectConnections.setBounds(20, 135, 91, 16);
         panel.add(lblDirectConnections);
 
         JLabel label_45 = new JLabel(":");
         label_45.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_45.setBounds(117, 120, 10, 16);
+        label_45.setBounds(117, 135, 10, 16);
         panel.add(label_45);
 
         lblActorCostsDirect = new JLabel(NA_STRING);
         lblActorCostsDirect.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorCostsDirect.setBounds(130, 120, 56, 16);
+        lblActorCostsDirect.setBounds(130, 135, 56, 16);
         panel.add(lblActorCostsDirect);
 
         JLabel lblEffectOfDisease = new JLabel("Effect of disease");
         lblEffectOfDisease.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblEffectOfDisease.setBounds(20, 135, 99, 16);
+        lblEffectOfDisease.setBounds(20, 150, 99, 16);
         panel.add(lblEffectOfDisease);
 
         JLabel label_53 = new JLabel(":");
         label_53.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_53.setBounds(117, 135, 10, 16);
+        label_53.setBounds(117, 150, 10, 16);
         panel.add(label_53);
 
         lblActorCostsDisease = new JLabel(NA_STRING);
         lblActorCostsDisease.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorCostsDisease.setBounds(130, 135, 56, 16);
+        lblActorCostsDisease.setBounds(130, 150, 56, 16);
         panel.add(lblActorCostsDisease);
 
         JLabel label_4 = new JLabel(":");
         label_4.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_4.setBounds(117, 180, 10, 16);
+        label_4.setBounds(117, 195, 10, 16);
         panel.add(label_4);
 
         JLabel label_43 = new JLabel(":");
         label_43.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_43.setBounds(117, 165, 10, 16);
+        label_43.setBounds(117, 180, 10, 16);
         panel.add(label_43);
 
         JLabel label_56 = new JLabel(":");
@@ -295,63 +297,78 @@ public class StatsFrame extends JFrame {
 
         JLabel lblUtility = new JLabel("Utility");
         lblUtility.setFont(new Font("Lucida Grande", Font.BOLD, 9));
-        lblUtility.setBounds(10, 45, 61, 16);
+        lblUtility.setBounds(10, 60, 61, 16);
         panel.add(lblUtility);
 
         JLabel label_40 = new JLabel(":");
         label_40.setFont(new Font("Lucida Grande", Font.BOLD, 9));
-        label_40.setBounds(117, 45, 10, 16);
+        label_40.setBounds(117, 60, 10, 16);
         panel.add(label_40);
 
         lblActorUtility = new JLabel(NA_STRING);
         lblActorUtility.setFont(new Font("Lucida Grande", Font.BOLD, 9));
-        lblActorUtility.setBounds(130, 45, 61, 16);
+        lblActorUtility.setBounds(130, 60, 61, 16);
         panel.add(lblActorUtility);
 
         JLabel label_52 = new JLabel(":");
         label_52.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_52.setBounds(117, 225, 10, 16);
+        label_52.setBounds(117, 240, 10, 16);
         panel.add(label_52);
 
         JLabel label_57 = new JLabel(":");
         label_57.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_57.setBounds(117, 255, 10, 16);
+        label_57.setBounds(117, 270, 10, 16);
         panel.add(label_57);
 
         JLabel label_58 = new JLabel(":");
         label_58.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_58.setBounds(117, 270, 10, 16);
+        label_58.setBounds(117, 285, 10, 16);
         panel.add(label_58);
 
         JLabel label_59 = new JLabel(":");
         label_59.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_59.setBounds(117, 285, 10, 16);
+        label_59.setBounds(117, 300, 10, 16);
         panel.add(label_59);
 
         JLabel label_60 = new JLabel("(r):");
         label_60.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_60.setBounds(108, 210, 24, 16);
+        label_60.setBounds(108, 225, 24, 16);
         panel.add(label_60);
 
         JLabel label_24 = new JLabel(":");
         label_24.setFont(new Font("Lucida Grande", Font.BOLD, 9));
-        label_24.setBounds(117, 60, 10, 16);
+        label_24.setBounds(117, 75, 10, 16);
         panel.add(label_24);
 
         lblActorBenefit = new JLabel(NA_STRING);
         lblActorBenefit.setFont(new Font("Lucida Grande", Font.BOLD, 9));
-        lblActorBenefit.setBounds(130, 60, 61, 16);
+        lblActorBenefit.setBounds(130, 75, 61, 16);
         panel.add(lblActorBenefit);
 
         JLabel label_62 = new JLabel(":");
         label_62.setFont(new Font("Lucida Grande", Font.BOLD, 9));
-        label_62.setBounds(117, 105, 10, 16);
+        label_62.setBounds(117, 120, 10, 16);
         panel.add(label_62);
 
         lblActorCosts = new JLabel(NA_STRING);
         lblActorCosts.setFont(new Font("Lucida Grande", Font.BOLD, 9));
-        lblActorCosts.setBounds(130, 105, 61, 16);
+        lblActorCosts.setBounds(130, 120, 61, 16);
         panel.add(lblActorCosts);
+
+        lblActorSatisfied = new JLabel(NA_STRING);
+        lblActorSatisfied.setFont(new Font("Lucida Grande", Font.BOLD, 9));
+        lblActorSatisfied.setBounds(130, 45, 61, 16);
+        panel.add(lblActorSatisfied);
+
+        JLabel label_39 = new JLabel(":");
+        label_39.setFont(new Font("Lucida Grande", Font.BOLD, 9));
+        label_39.setBounds(117, 45, 10, 16);
+        panel.add(label_39);
+
+        JLabel lblSatisfied = new JLabel("Satisfied");
+        lblSatisfied.setFont(new Font("Lucida Grande", Font.BOLD, 9));
+        lblSatisfied.setBounds(10, 45, 61, 16);
+        panel.add(lblSatisfied);
 
         JPanel panel_1 = new JPanel();
         panel_1.setLayout(null);
@@ -682,32 +699,43 @@ public class StatsFrame extends JFrame {
         JLabel lblDiameter = new JLabel("Diameter");
         lblDiameter.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
         lblDiameter.setBounds(20, 390, 83, 16);
+        lblDiameter.setVisible(false);
         panel_1.add(lblDiameter);
 
         JLabel label_50 = new JLabel(":");
         label_50.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
         label_50.setBounds(117, 390, 10, 16);
+        label_50.setVisible(false);
         panel_1.add(label_50);
 
         lblGlobalDiameter = new JLabel(NA_STRING);
         lblGlobalDiameter.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
         lblGlobalDiameter.setBounds(130, 390, 56, 16);
+        lblGlobalDiameter.setVisible(false);
         panel_1.add(lblGlobalDiameter);
 
         JLabel lblDistance = new JLabel("∅ Distance");
         lblDistance.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
         lblDistance.setBounds(20, 405, 83, 16);
+        lblDistance.setVisible(false);
         panel_1.add(lblDistance);
 
         lblGlobalAvDistance = new JLabel(NA_STRING);
         lblGlobalAvDistance.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
         lblGlobalAvDistance.setBounds(130, 405, 56, 16);
+        lblGlobalAvDistance.setVisible(false);
         panel_1.add(lblGlobalAvDistance);
 
         JLabel label_27 = new JLabel(":");
         label_27.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
         label_27.setBounds(117, 405, 10, 16);
+        label_27.setVisible(false);
         panel_1.add(label_27);
+
+        JLabel label_31 = new JLabel(":");
+        label_31.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_31.setBounds(117, 120, 10, 16);
+        panel_1.add(label_31);
     }
 
     /**
@@ -796,7 +824,24 @@ public class StatsFrame extends JFrame {
         // identifier
         this.lblActorID.setText(Long.toString(player.getId()));
 
+        // satisfaction
+        this.lblActorSatisfied.setText(player.isSatisfied() ? "yes" : "no");
+
         // utility
+        Utility utility = player.getUtility();
+        this.lblActorUtility.setText(Double.toString(utility.getOverallUtility()));
+
+        // benefit
+        this.lblActorBenefit.setText(Double.toString(utility.getBenefitDirectConnections()
+                + utility.getBenefitIndirectConnections()));
+        this.lblActorBenefitDirect.setText(Double.toString(utility.getBenefitDirectConnections()));
+        this.lblActorBenefitIndirect.setText(Double.toString(utility.getBenefitIndirectConnections()));
+
+        // costs
+        this.lblActorCosts.setText(Double.toString(utility.getCostsDirectConnections()
+                - utility.getEffectOfDisease()));
+        this.lblActorCostsDirect.setText(Double.toString(utility.getCostsDirectConnections()));
+        this.lblActorCostsDisease.setText(Double.toString(utility.getEffectOfDisease()));
 
         // disease
         this.lblActorDiseaseGroup.setText(player.getDiseaseGroup().toString());
@@ -818,7 +863,7 @@ public class StatsFrame extends JFrame {
         }
 
         // network
-        this.lblActorDegree.setText(NA_STRING);
+        this.lblActorDegree.setText(Integer.toString(player.getConnections().size()));
         this.lblActorCloseness.setText(NA_STRING);
         this.lblActorBetweenness.setText(NA_STRING);
     }

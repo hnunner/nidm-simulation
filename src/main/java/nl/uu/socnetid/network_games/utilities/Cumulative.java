@@ -44,11 +44,12 @@ public final class Cumulative implements UtilityFunction {
      * nl.uu.socnetid.network_games.players.Player, java.util.List, nl.uu.socnetid.network_games.disease.Disease)
      */
     @Override
-    public double getUtility(Player player, List<Player> connections) {
+    public Utility getUtility(Player player, List<Player> connections) {
 
         // BEWARE: disease is being neglected in this function
 
-        double utility = 0;
+        double benefitDirectConnections = 0;
+        double benefitIndirectConnections = 0;
 
         Iterator<Player> directIt = connections.iterator();
 
@@ -58,7 +59,7 @@ public final class Cumulative implements UtilityFunction {
                 continue;
             }
 
-            utility += this.utilityDirectConnections;
+            benefitDirectConnections += this.utilityDirectConnections;
 
             // indirect connections at distance 2
             List<Player> indirectConnections = directConnection.getConnections();
@@ -74,11 +75,10 @@ public final class Cumulative implements UtilityFunction {
                         || connections.contains(indirectConnection)) {
                     continue;
                 }
-                utility += this.utilityIndirectConnections;
+                benefitIndirectConnections += this.utilityIndirectConnections;
             }
         }
-
-        return utility;
+        return new Utility(benefitDirectConnections, benefitIndirectConnections, 0, 0);
     }
 
     /* (non-Javadoc)

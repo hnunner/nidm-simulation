@@ -36,12 +36,13 @@ public class IRTC implements UtilityFunction {
     }
 
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see nl.uu.socnetid.network_games.utilities.UtilityFunction#getUtility(
      * nl.uu.socnetid.network_games.players.Player, java.util.List)
      */
     @Override
-    public double getUtility(Player player, List<Player> connections) {
+    public Utility getUtility(Player player, List<Player> connections) {
 
         // amount of direct connections according to disease groups
         int nSR = 0;
@@ -77,9 +78,13 @@ public class IRTC implements UtilityFunction {
             while (indirectIt.hasNext()) {
                 Player indirectConnection = indirectIt.next();
                 // no double benefit for indirect connections that is also a direct connection
+                // however, currently double benefits for an indirect connection that is
+                // connected to two different direct connections (i.e. in a ring of four actors,
+                // a an actor gets the indirect benefit twice from both direct connections)
                 if (indirectConnection.equals(player)
                         ////////// TODO: ??? ALLOW DOUBLE BENEFITS FOR DIRECT + INDIRECT ??? //////////
                         || connections.contains(indirectConnection)) {
+                    ////////// TODO: ??? FORBID DOUBLE BENEFITS FOR SAME INDIRECT OF TWO (OR MORE) DIRECT ??? //////////
                     continue;
                 }
                 m++;
@@ -87,13 +92,13 @@ public class IRTC implements UtilityFunction {
         }
 
         // benefit of direct connections
-        double utility = this.alpha * (nSR + nI);
+        double benefitDirectConnections = this.alpha * (nSR + nI);
 
         // benefit of indirect connections
-        utility += this.beta * m;
+        double benefitIndirectConnections = this.beta * m;
 
         // costs to maintain direct connection
-        utility -= (nSR + (nI * player.getDiseaseSpecs().getMu())) * this.c;
+        double costsDirectConnections = (nSR + (nI * player.getDiseaseSpecs().getMu())) * this.c;
 
         // effect of disease
         double p;
@@ -118,11 +123,15 @@ public class IRTC implements UtilityFunction {
             default:
                 throw new RuntimeException("Unknown disease group: " + player.getDiseaseGroup());
         }
-        utility -= p * Math.pow(player.getDiseaseSpecs().getDelta(), r);
+        double effectOfDisease = p * Math.pow(player.getDiseaseSpecs().getDelta(), r);
         // end: effect of disease
 
-//        logUtility(player, nSR, nI, m, utility);
-        return utility;
+        // logUtility(player, nSR, nI, m, utility);
+
+        return new Utility(benefitDirectConnections,
+                benefitIndirectConnections,
+                costsDirectConnections,
+                effectOfDisease);
     }
 
     /**

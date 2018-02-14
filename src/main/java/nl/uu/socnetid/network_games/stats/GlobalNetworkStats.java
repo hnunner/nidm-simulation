@@ -12,17 +12,33 @@ public class GlobalNetworkStats {
     private double avDistance = 0.0;
 
     /**
+     * Constructor
+     *
+     * @param stable
+     *          flag whether the network is stable
+     * @param connections
+     *          the amount of connections within the network
+     * @param avDegree
+     *          the average degree within the network
+     * @param diameter
+     *          the diameter of the network
+     * @param avDistance
+     *          the average distance of the network
+     */
+    public GlobalNetworkStats(boolean stable, int connections, double avDegree, int diameter, double avDistance) {
+        this.stable = stable;
+        this.connections = connections;
+        this.avDegree = avDegree;
+        this.diameter = diameter;
+        this.avDistance = avDistance;
+    }
+
+
+    /**
      * @return the stable
      */
     public boolean isStable() {
         return stable;
-    }
-
-    /**
-     * @param stable the stable to set
-     */
-    public void setStable(boolean stable) {
-        this.stable = stable;
     }
 
     /**
@@ -33,24 +49,10 @@ public class GlobalNetworkStats {
     }
 
     /**
-     * @param connections the connections to set
-     */
-    public void setConnections(int connections) {
-        this.connections = connections;
-    }
-
-    /**
      * @return the avDegree
      */
     public double getAvDegree() {
         return avDegree;
-    }
-
-    /**
-     * @param avDegree the avDegree to set
-     */
-    public void setAvDegree(double avDegree) {
-        this.avDegree = avDegree;
     }
 
     /**
@@ -61,24 +63,10 @@ public class GlobalNetworkStats {
     }
 
     /**
-     * @param diameter the diameter to set
-     */
-    public void setDiameter(int diameter) {
-        this.diameter = diameter;
-    }
-
-    /**
      * @return the avDistance
      */
     public double getAvDistance() {
         return avDistance;
-    }
-
-    /**
-     * @param avDistance the avDistance to set
-     */
-    public void setAvDistance(double avDistance) {
-        this.avDistance = avDistance;
     }
 
 }
