@@ -99,11 +99,11 @@ public class IRTCTest {
      */
     @Test
     public void testGetUtility() {
-        assertEquals(-2.6, Precision.round(player1.getUtility(), 1), 0);
-        assertEquals( 3.6, Precision.round(player2.getUtility(), 1), 0);
-        assertEquals(-3.6, Precision.round(player3.getUtility(), 1), 0);
-        assertEquals(-9.9, Precision.round(player4.getUtility(), 1), 0);
-        assertEquals(-4.8, Precision.round(player5.getUtility(), 1), 0);
+        assertEquals(-2.6, Precision.round(player1.getUtility().getOverallUtility(), 1), 0);
+        assertEquals( 3.6, Precision.round(player2.getUtility().getOverallUtility(), 1), 0);
+        assertEquals(-3.6, Precision.round(player3.getUtility().getOverallUtility(), 1), 0);
+        assertEquals(-9.9, Precision.round(player4.getUtility().getOverallUtility(), 1), 0);
+        assertEquals(-4.8, Precision.round(player5.getUtility().getOverallUtility(), 1), 0);
     }
 
 }

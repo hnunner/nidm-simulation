@@ -1,7 +1,6 @@
 package nl.uu.socnetid.network_games.network.networks;
 
 /**
- *
  * @author Hendrik Nunner
  */
 public interface NetworkStabilityListener {

@@ -50,6 +50,9 @@ import nl.uu.socnetid.network_games.network.simulation.SimulationCompleteListene
 import nl.uu.socnetid.network_games.network.writer.AdjacencyMatrixWriter;
 import nl.uu.socnetid.network_games.network.writer.EdgeListWriter;
 import nl.uu.socnetid.network_games.network.writer.NetworkWriter;
+import nl.uu.socnetid.network_games.players.ActionPerformedListener;
+import nl.uu.socnetid.network_games.players.DiseaseChangeListener;
+import nl.uu.socnetid.network_games.players.Player;
 import nl.uu.socnetid.network_games.players.RationalPlayerNode;
 import nl.uu.socnetid.network_games.utilities.Cumulative;
 import nl.uu.socnetid.network_games.utilities.IRTC;
@@ -59,7 +62,8 @@ import nl.uu.socnetid.network_games.utilities.UtilityFunction;
 /**
  * @author Hendrik Nunner
  */
-public class NetworkGame implements SimulationCompleteListener, NodeClickListener, NetworkStabilityListener {
+public class NetworkGame implements SimulationCompleteListener, NodeClickListener, NetworkStabilityListener,
+ActionPerformedListener, DiseaseChangeListener {
 
     // general export path
     @SuppressWarnings("unused")
@@ -112,6 +116,9 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
     // risk behavior of player
     private JLabel lblR;
     private JTextField txtR;
+
+    // identifier of actor to show stats for
+    private long statsActorId;
 
     // concurrency for simulation
     private ExecutorService nodeClickExecutor = Executors.newSingleThreadExecutor();
@@ -455,22 +462,25 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
         UtilityFunction uf = getUtilityFunction();
 
         // add player with selected utility function and disease specs
+        Player player;
         switch (utilityFunctionCBox.getSelectedIndex()) {
             // only for IRTC: player including risk behavior
             case 0:
-                this.network.addPlayer(
-                        RationalPlayerNode.newInstance(this.graph, uf, ds,
-                                Double.valueOf(this.txtR.getText())));
+                player = RationalPlayerNode.newInstance(this.graph, uf, ds,
+                        Double.valueOf(this.txtR.getText()));
+                this.network.addPlayer(player);
                 break;
 
             default:
-                this.network.addPlayer(
-                        RationalPlayerNode.newInstance(this.graph, uf, ds));
+                player = RationalPlayerNode.newInstance(this.graph, uf, ds);
+                this.network.addPlayer(player);
                 break;
         }
+        player.addActionPerformedListener(this);
+        player.addDiseaseChangeListener(this);
 
         // update stats
-        if (this.network.getPlayers().isEmpty()) {
+        if (this.network.getPlayers().size() <= 1) {
             this.statsFrame.refreshGlobalUtilityStats(uf);
             this.statsFrame.refreshGlobalDiseaseStats(ds);
         }
@@ -530,6 +540,9 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
             simulationTask.cancel(true);
         }
         simulationTask = simulationExecutor.submit(this.networkSimulation);
+
+        // update stats
+        this.statsFrame.refreshGlobalActorStats(this.network.getGlobalActorStats());
     }
 
     /**
@@ -612,15 +625,22 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
      */
     @Override
     public void notify(NodeClick nodeClick) {
+
+        long clickActorId = nodeClick.getClickedNodeId();
+
         // toggle infection on node click
         if (this.chckbxToggleInfection.isSelected()) {
-            this.network.toggleInfection(nodeClick.getClickedNodeId(), getDiseaseSpecs());
+            this.network.toggleInfection(clickActorId, getDiseaseSpecs());
         }
 
         // show agent info on node click
         if (this.chckbxShowAgentInfo.isSelected()) {
-            this.statsFrame.refreshActorLocalStats(network.getPlayer(nodeClick.getClickedNodeId()));
+            this.statsActorId = clickActorId;
+            this.statsFrame.refreshActorLocalStats(network.getPlayer(clickActorId));
         }
+
+        // update stats
+        this.statsFrame.refreshGlobalActorStats(this.network.getGlobalActorStats());
     }
 
     /**
@@ -693,12 +713,40 @@ public class NetworkGame implements SimulationCompleteListener, NodeClickListene
      * nl.uu.socnetid.network_games.network.networks.Network)
      */
     @Override
-    public void notify(Network network) {
-        // TODO move to StatsFrame
-        //        if (network.isStable()) {
-        //            this.lblStatStable.setText("yes");
-        //        } else {
-        //            this.lblStatStable.setText("no");
-        //        }
+    public void notify(Network network) { }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.players.ActionPerformedListener#notify(
+     * nl.uu.socnetid.network_games.players.Player)
+     */
+    @Override
+    public void notifyActionPerformed(Player player) {
+        // global stats
+        this.statsFrame.refreshGlobalNetworkStats(this.network.getGlobalNetworkStats());
+
+        // actor stats
+        if (this.statsActorId <= 0) {
+            return;
+        }
+        Player playerToRefresh = this.network.getPlayer(this.statsActorId);
+        if (playerToRefresh == null) {
+            return;
+        }
+        this.statsFrame.refreshActorLocalStats(playerToRefresh);
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.players.DiseaseChangeListener#notifyDiseaseChanged(
+     * nl.uu.socnetid.network_games.players.Player)
+     */
+    @Override
+    public void notifyDiseaseChanged(Player player) {
+        // global stats
+        this.statsFrame.refreshGlobalActorStats(this.network.getGlobalActorStats());
+
+        // local stats
+        if (player.getId() == this.statsActorId) {
+            this.statsFrame.refreshActorLocalStats(player);
+        }
     }
 }

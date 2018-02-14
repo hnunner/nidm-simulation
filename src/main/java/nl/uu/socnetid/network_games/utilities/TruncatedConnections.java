@@ -30,13 +30,17 @@ public class TruncatedConnections implements UtilityFunction {
     }
 
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see nl.uu.socnetid.network_games.utilities.UtilityFunction#getUtility(
      * nl.uu.socnetid.network_games.players.Player, java.util.List)
      */
     @Override
-    public double getUtility(Player player, List<Player> connections) {
-        double utility = 0;
+    public Utility getUtility(Player player, List<Player> connections) {
+        double benefitDirectConnections = 0.0;
+        double benefitIndirectConnections = 0.0;
+        double costsDirectConnections = 0.0;
+        double effectOfDisease = 0.0;
 
         Iterator<Player> directIt = connections.iterator();
 
@@ -46,10 +50,11 @@ public class TruncatedConnections implements UtilityFunction {
                 continue;
             }
 
+            benefitDirectConnections += this.directUtility;
             if (directConnection.isInfected()) {
-                utility += this.directUtility - this.costs * player.getDiseaseSpecs().getMu();
+                costsDirectConnections += this.costs * player.getDiseaseSpecs().getMu();
             } else {
-                utility += this.directUtility - this.costs;
+                costsDirectConnections += this.costs;
             }
 
             // indirect connections at distance 2
@@ -67,11 +72,14 @@ public class TruncatedConnections implements UtilityFunction {
                         || connections.contains(indirectConnection)) {
                     continue;
                 }
-                utility += this.indirectUtility;
+                benefitIndirectConnections += this.indirectUtility;
             }
         }
 
-        return utility;
+        return new Utility(benefitDirectConnections,
+                benefitIndirectConnections,
+                costsDirectConnections,
+                effectOfDisease);
     }
 
     /* (non-Javadoc)

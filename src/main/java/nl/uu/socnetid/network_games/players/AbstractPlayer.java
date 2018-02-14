@@ -3,6 +3,8 @@ package nl.uu.socnetid.network_games.players;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
@@ -13,6 +15,7 @@ import nl.uu.socnetid.network_games.disease.Disease;
 import nl.uu.socnetid.network_games.disease.DiseaseFactory;
 import nl.uu.socnetid.network_games.disease.DiseaseSpecs;
 import nl.uu.socnetid.network_games.disease.types.DiseaseGroup;
+import nl.uu.socnetid.network_games.utilities.Utility;
 import nl.uu.socnetid.network_games.utilities.UtilityFunction;
 
 /**
@@ -54,6 +57,12 @@ public abstract class AbstractPlayer implements Player {
 
     // concurrency lock
     private Lock lock;
+
+    // listener
+    private final Set<ActionPerformedListener> actionPerformedListeners =
+            new CopyOnWriteArraySet<ActionPerformedListener>();
+    private final Set<DiseaseChangeListener> diseaseChangeListeners =
+            new CopyOnWriteArraySet<DiseaseChangeListener>();
 
 
     /**
@@ -138,6 +147,7 @@ public abstract class AbstractPlayer implements Player {
                     }
                 }
             }
+            notifyActionPerformedListeners();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -191,7 +201,7 @@ public abstract class AbstractPlayer implements Player {
      * @see nl.uu.socnetid.network_games.Player#getUtility()
      */
     @Override
-    public double getUtility() {
+    public Utility getUtility() {
         return getUtility(this.connections);
     }
 
@@ -202,7 +212,7 @@ public abstract class AbstractPlayer implements Player {
      *          the connections to compute the utility for
      * @return the utility for a player based on a list of connections
      */
-    protected double getUtility(List<Player> connections) {
+    protected Utility getUtility(List<Player> connections) {
         return utilityFunction.getUtility(this, connections);
     }
 
@@ -278,7 +288,9 @@ public abstract class AbstractPlayer implements Player {
         if (connections.contains(newConnection)) {
             throw new RuntimeException("Unable to create more than one connection to the same player.");
         }
-        return this.connections.add(newConnection);
+        boolean connectionAdded = this.connections.add(newConnection);
+        notifyActionPerformedListeners();
+        return connectionAdded;
     }
 
     /* (non-Javadoc)
@@ -289,7 +301,9 @@ public abstract class AbstractPlayer implements Player {
         if (connection.equals(this)) {
             throw new RuntimeException("Unable to remove reflexive connections.");
         }
-        return this.connections.remove(connection);
+        boolean connectionRemoved = this.connections.remove(connection);
+        notifyActionPerformedListeners();
+        return connectionRemoved;
     }
 
     /* (non-Javadoc)
@@ -298,6 +312,7 @@ public abstract class AbstractPlayer implements Player {
     @Override
     public void removeAllConnections() {
         this.connections = new ArrayList<Player>();
+        notifyActionPerformedListeners();
     }
 
     /* (non-Javadoc)
@@ -314,6 +329,7 @@ public abstract class AbstractPlayer implements Player {
     public void cure() {
         this.disease = null;
         this.diseaseGroup = DiseaseGroup.RECOVERED;
+        notifyDiseaseChangeListeners();
     }
 
     /* (non-Javadoc)
@@ -338,6 +354,7 @@ public abstract class AbstractPlayer implements Player {
         }
         this.disease = DiseaseFactory.createInfection(diseaseSpecs);
         this.diseaseGroup = DiseaseGroup.INFECTED;
+        notifyDiseaseChangeListeners();
     }
 
     /* (non-Javadoc)
@@ -372,6 +389,7 @@ public abstract class AbstractPlayer implements Player {
     public void makeSusceptible() {
         this.disease = null;
         this.diseaseGroup = DiseaseGroup.SUSCEPTIBLE;
+        notifyDiseaseChangeListeners();
     }
 
     /* (non-Javadoc)
@@ -412,6 +430,7 @@ public abstract class AbstractPlayer implements Player {
             this.disease = null;
             this.diseaseGroup = DiseaseGroup.RECOVERED;
         }
+        notifyDiseaseChangeListeners();
     }
 
     /*
@@ -432,6 +451,60 @@ public abstract class AbstractPlayer implements Player {
             return this.disease.getTimeUntilRecovered();
         }
         return 0;
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.players.Player#addListener(
+     * nl.uu.socnetid.network_games.players.ActionPerformedListener)
+     */
+    @Override
+    public void addActionPerformedListener(ActionPerformedListener actionPerformedListener) {
+        this.actionPerformedListeners.add(actionPerformedListener);
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.players.Player#removeActionPerformedListener(
+     * nl.uu.socnetid.network_games.players.ActionPerformedListener)
+     */
+    @Override
+    public void removeActionPerformedListener(ActionPerformedListener actionPerformedListener) {
+        this.actionPerformedListeners.remove(actionPerformedListener);
+    }
+
+    /**
+     * Notifies the actionPerformedListeners of task completion.
+     */
+    private final void notifyActionPerformedListeners() {
+        Iterator<ActionPerformedListener> listenersIt = this.actionPerformedListeners.iterator();
+        while (listenersIt.hasNext()) {
+            listenersIt.next().notifyActionPerformed(this);
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.players.Player#addDiseaseChangeListener(nl.uu.socnetid.network_games.players.DiseaseChangeListener)
+     */
+    @Override
+    public void addDiseaseChangeListener(DiseaseChangeListener diseaseChangeListener) {
+        this.diseaseChangeListeners.add(diseaseChangeListener);
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.network_games.players.Player#removeDiseaseChangeListener(nl.uu.socnetid.network_games.players.DiseaseChangeListener)
+     */
+    @Override
+    public void removeDiseaseChangeListener(DiseaseChangeListener diseaseChangeListener) {
+        this.diseaseChangeListeners.remove(diseaseChangeListener);
+    }
+
+    /**
+     * Notifies the diseaseChangeListeners of task completion.
+     */
+    private final void notifyDiseaseChangeListeners() {
+        Iterator<DiseaseChangeListener> listenersIt = this.diseaseChangeListeners.iterator();
+        while (listenersIt.hasNext()) {
+            listenersIt.next().notifyDiseaseChanged(this);
+        }
     }
 
 }

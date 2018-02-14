@@ -70,7 +70,6 @@ public class NodeClick implements Runnable, ViewerListener {
      */
     @Override
     public void buttonReleased(String id) {
-        System.out.println("clicked on node: " + id);
         this.clickedNodeId = Long.valueOf(id);
         notifyListeners();
     }
