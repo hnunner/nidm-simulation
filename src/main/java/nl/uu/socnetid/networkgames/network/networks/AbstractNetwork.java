@@ -3,8 +3,6 @@ package nl.uu.socnetid.networkgames.network.networks;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.apache.log4j.Logger;
 
@@ -27,9 +25,6 @@ public abstract class AbstractNetwork implements Network {
     // stats
     private GlobalActorStats actorStats = new GlobalActorStats();
     private double cumulatedRisk = 0.0;
-
-    // listener
-    private final Set<NetworkStabilityListener> listeners = new CopyOnWriteArraySet<NetworkStabilityListener>();
 
 
     /**
@@ -347,34 +342,6 @@ public abstract class AbstractNetwork implements Network {
         connections /= 2;
 
         return new GlobalNetworkStats(stable, connections, avDegree, diameter, avDistance);
-    }
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.network.networks.Network#addListener(
-     * nl.uu.socnetid.networkgames.network.networks.NetworkStabilityListener)
-     */
-    @Override
-    public void addListener(NetworkStabilityListener listener) {
-        this.listeners.add(listener);
-    }
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.network.networks.Network#removeListener(
-     * nl.uu.socnetid.networkgames.network.networks.NetworkStabilityListener)
-     */
-    @Override
-    public void removeListener(NetworkStabilityListener listener) {
-        this.listeners.remove(listener);
-    }
-
-    /**
-     * Notifies the listeners of task completion.
-     */
-    private final void notifyListeners() {
-        Iterator<NetworkStabilityListener> listenersIt = this.listeners.iterator();
-        while (listenersIt.hasNext()) {
-            listenersIt.next().notify(this);
-        }
     }
 
 }

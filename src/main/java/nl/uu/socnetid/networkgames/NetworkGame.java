@@ -46,7 +46,6 @@ import nl.uu.socnetid.networkgames.gui.StatsFrame;
 import nl.uu.socnetid.networkgames.gui.TruncatedConnectionsPanel;
 import nl.uu.socnetid.networkgames.network.io.NetworkFileWriter;
 import nl.uu.socnetid.networkgames.network.networks.Network;
-import nl.uu.socnetid.networkgames.network.networks.NetworkStabilityListener;
 import nl.uu.socnetid.networkgames.network.networks.SimpleNetwork;
 import nl.uu.socnetid.networkgames.network.simulation.NetworkSimulation;
 import nl.uu.socnetid.networkgames.network.simulation.Simulation;
@@ -62,7 +61,7 @@ import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
 /**
  * @author Hendrik Nunner
  */
-public class NetworkGame implements SimulationCompleteListener, NodeClickListener, NetworkStabilityListener,
+public class NetworkGame implements SimulationCompleteListener, NodeClickListener,
 ActionPerformedListener, DiseaseChangeListener {
 
     // general export path
@@ -442,9 +441,6 @@ ActionPerformedListener, DiseaseChangeListener {
         NodeClick nodeClickListener = new NodeClick(graph, viewer);
         nodeClickListener.addListener(this);
         this.nodeClickExecutor.submit(nodeClickListener);
-
-        // init network stability listener
-        this.network.addListener(this);
     }
 
 
@@ -707,13 +703,6 @@ ActionPerformedListener, DiseaseChangeListener {
      */
     @Override
     public void notify(Simulation simulation) { }
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.network.networks.NetworkStabilityListener#notify(
-     * nl.uu.socnetid.networkgames.network.networks.Network)
-     */
-    @Override
-    public void notify(Network network) { }
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.networkgames.actors.ActionPerformedListener#notify(

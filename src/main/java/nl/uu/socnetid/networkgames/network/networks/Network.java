@@ -88,20 +88,4 @@ public interface Network {
      */
     GlobalNetworkStats getGlobalNetworkStats();
 
-    /**
-     * Adds a listener to be notified when network stability changes.
-     *
-     * @param listener
-     *          the listener to be notified
-     */
-    void addListener(final NetworkStabilityListener listener);
-
-    /**
-     * Removes a listener.
-     *
-     * @param listener
-     *          the listener to be removed
-     */
-    void removeListener(final NetworkStabilityListener listener);
-
 }

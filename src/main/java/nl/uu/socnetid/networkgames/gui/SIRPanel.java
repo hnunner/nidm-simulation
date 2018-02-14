@@ -9,7 +9,7 @@ import javax.swing.SwingConstants;
  */
 public class SIRPanel extends DeactivatablePanel {
 
-    private static final long serialVersionUID = 8094932631749545446L;
+    private static final long serialVersionUID = -6579761342558000359L;
 
     private JTextField txtTau;
     private JTextField txtDelta;
