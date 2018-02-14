@@ -53,6 +53,7 @@ import nl.uu.socnetid.networkgames.network.networks.SimpleNetwork;
 import nl.uu.socnetid.networkgames.network.simulation.NetworkSimulation;
 import nl.uu.socnetid.networkgames.network.simulation.Simulation;
 import nl.uu.socnetid.networkgames.network.simulation.SimulationCompleteListener;
+import nl.uu.socnetid.networkgames.stats.StatsComputer;
 import nl.uu.socnetid.networkgames.utilities.Cumulative;
 import nl.uu.socnetid.networkgames.utilities.IRTC;
 import nl.uu.socnetid.networkgames.utilities.TruncatedConnections;
@@ -123,7 +124,7 @@ ActionPerformedListener, DiseaseChangeListener {
     private ExecutorService nodeClickExecutor = Executors.newSingleThreadExecutor();
     private ExecutorService simulationExecutor = Executors.newSingleThreadExecutor();
     private Future<?> simulationTask;
-    private JTextField textField;
+    private JTextField txtAddAmount;
 
     // simulation
     NetworkSimulation networkSimulation;
@@ -313,12 +314,12 @@ ActionPerformedListener, DiseaseChangeListener {
         btnClearAll.setBounds(6, 136, 217, 30);
         actorPane.add(btnClearAll);
 
-        textField = new JTextField();
-        textField.setText("1");
-        textField.setHorizontalAlignment(SwingConstants.RIGHT);
-        textField.setColumns(10);
-        textField.setBounds(157, 36, 60, 20);
-        actorPane.add(textField);
+        txtAddAmount = new JTextField();
+        txtAddAmount.setText("1");
+        txtAddAmount.setHorizontalAlignment(SwingConstants.RIGHT);
+        txtAddAmount.setColumns(10);
+        txtAddAmount.setBounds(157, 36, 60, 20);
+        actorPane.add(txtAddAmount);
 
         JLabel lblAmount = new JLabel("Amount:");
         lblAmount.setToolTipText("Risk behavior of the actor - r<1: risk seeking, "
@@ -457,23 +458,25 @@ ActionPerformedListener, DiseaseChangeListener {
         DiseaseSpecs ds = getDiseaseSpecs();
         UtilityFunction uf = getUtilityFunction();
 
-        // add actor with selected utility function and disease specs
-        Actor actor;
-        switch (utilityFunctionCBox.getSelectedIndex()) {
-            // only for IRTC: actor including risk behavior
-            case 0:
-                actor = RationalActorNode.newInstance(this.graph, uf, ds,
-                        Double.valueOf(this.txtR.getText()));
-                this.network.addActor(actor);
-                break;
+        for (int i = 0; i < Integer.parseInt(txtAddAmount.getText()); i++) {
+            // add actor with selected utility function and disease specs
+            Actor actor;
+            switch (utilityFunctionCBox.getSelectedIndex()) {
+                // only for IRTC: actor including risk behavior
+                case 0:
+                    actor = RationalActorNode.newInstance(this.graph, uf, ds,
+                            Double.valueOf(this.txtR.getText()));
+                    this.network.addActor(actor);
+                    break;
 
-            default:
-                actor = RationalActorNode.newInstance(this.graph, uf, ds);
-                this.network.addActor(actor);
-                break;
+                default:
+                    actor = RationalActorNode.newInstance(this.graph, uf, ds);
+                    this.network.addActor(actor);
+                    break;
+            }
+            actor.addActionPerformedListener(this);
+            actor.addDiseaseChangeListener(this);
         }
-        actor.addActionPerformedListener(this);
-        actor.addDiseaseChangeListener(this);
 
         // update stats
         if (this.network.getActors().size() <= 1) {
@@ -481,7 +484,7 @@ ActionPerformedListener, DiseaseChangeListener {
             this.statsFrame.refreshGlobalDiseaseStats(ds);
         }
         this.statsFrame.refreshGlobalActorStats(this.network.getGlobalActorStats());
-        this.statsFrame.refreshGlobalNetworkStats(this.network.getGlobalNetworkStats());
+        this.statsFrame.refreshGlobalNetworkStats(StatsComputer.computeGlobalNetworkStats(this.network));
     }
 
     /**
@@ -499,7 +502,7 @@ ActionPerformedListener, DiseaseChangeListener {
 
         // update stats
         this.statsFrame.refreshGlobalActorStats(this.network.getGlobalActorStats());
-        this.statsFrame.refreshGlobalNetworkStats(this.network.getGlobalNetworkStats());
+        this.statsFrame.refreshGlobalNetworkStats(StatsComputer.computeGlobalNetworkStats(this.network));
     }
 
     /**
@@ -711,7 +714,7 @@ ActionPerformedListener, DiseaseChangeListener {
     @Override
     public void notifyActionPerformed(Actor actor) {
         // global stats
-        this.statsFrame.refreshGlobalNetworkStats(this.network.getGlobalNetworkStats());
+        this.statsFrame.refreshGlobalNetworkStats(StatsComputer.computeGlobalNetworkStats(this.network));
 
         // actor stats
         if (this.statsActorId <= 0) {
