@@ -426,7 +426,7 @@ public abstract class AbstractActor implements Actor {
         }
 
         this.disease.evolve();
-        if (this.disease.isDefeated()) {
+        if (this.disease.isCured()) {
             this.disease = null;
             this.diseaseGroup = DiseaseGroup.RECOVERED;
         }
@@ -448,7 +448,7 @@ public abstract class AbstractActor implements Actor {
     @Override
     public int getTimeUntilRecovered() {
         if (isInfected()) {
-            return this.disease.getTimeUntilRecovered();
+            return this.disease.getTimeUntilCured();
         }
         return 0;
     }

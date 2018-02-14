@@ -1,4 +1,4 @@
-package nl.uu.socnetid.networkgames.networks.writer;
+package nl.uu.socnetid.networkgames.networks.io;
 
 import static org.junit.Assert.assertTrue;
 
@@ -14,10 +14,10 @@ import nl.uu.socnetid.networkgames.actors.Actor;
 import nl.uu.socnetid.networkgames.actors.RationalActor;
 import nl.uu.socnetid.networkgames.disease.DiseaseSpecs;
 import nl.uu.socnetid.networkgames.disease.types.DiseaseType;
+import nl.uu.socnetid.networkgames.network.io.AdjacencyMatrixWriter;
+import nl.uu.socnetid.networkgames.network.io.NetworkWriter;
 import nl.uu.socnetid.networkgames.network.networks.Network;
 import nl.uu.socnetid.networkgames.network.networks.SimpleNetwork;
-import nl.uu.socnetid.networkgames.network.writer.AdjacencyMatrixWriter;
-import nl.uu.socnetid.networkgames.network.writer.NetworkWriter;
 import nl.uu.socnetid.networkgames.utilities.Cumulative;
 import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
 

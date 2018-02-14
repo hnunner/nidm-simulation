@@ -5,14 +5,45 @@ package nl.uu.socnetid.networkgames.disease;
  */
 public interface Disease {
 
+    /**
+     * Evolves the disease: increases the duration counter and
+     * checks whether the disease is being defeated already.
+     */
     void evolve();
 
+    /**
+     * Checks whether the disease is transmitted.
+     *
+     * @return true if the disease is being transmitted, false otherwise
+     */
     boolean isTransmitted();
+
+    /**
+     * Checks whether the disease is infectious.
+     *
+     * @return true if the disease is infectious, false otherwise
+     */
     boolean isInfectious();
-    boolean isDefeated();
 
-    int getTimeUntilRecovered();
+    /**
+     * Checks whether the disease is cured.
+     *
+     * @return true if the disease is cured, false otherwise
+     */
+    boolean isCured();
 
+    /**
+     * Gets the time remaining until the disease is cured.
+     *
+     * @return the time in round until the disease is cured
+     */
+    int getTimeUntilCured();
+
+    /**
+     * Gets the {@link DiseaseSpecs}.
+     *
+     * @return the {@link DiseaseSpecs}
+     */
     DiseaseSpecs getDiseaseSpecs();
 
 }
