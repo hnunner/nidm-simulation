@@ -8,7 +8,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import nl.uu.socnetid.networkgames.network.networks.Network;
-import nl.uu.socnetid.networkgames.network.writer.NetworkWriter;
 
 /**
  * @author Hendrik Nunner

@@ -63,7 +63,7 @@ public class SIRDisease implements Disease {
      * @see nl.uu.socnetid.networkgames.disease.Disease#isDefeated()
      */
     @Override
-    public boolean isDefeated() {
+    public boolean isCured() {
         return this.diseaseState == DiseaseState.DEFEATED;
     }
 
@@ -79,7 +79,7 @@ public class SIRDisease implements Disease {
      * @see nl.uu.socnetid.networkgames.disease.Disease#getTimeRemaining()
      */
     @Override
-    public int getTimeUntilRecovered() {
+    public int getTimeUntilCured() {
         return this.getDiseaseSpecs().getTau() - this.currDuration;
     }
 
