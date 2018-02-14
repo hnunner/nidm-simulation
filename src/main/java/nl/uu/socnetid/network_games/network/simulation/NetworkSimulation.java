@@ -63,10 +63,6 @@ public class NetworkSimulation implements Runnable, Simulation {
         boolean notified = false;
 
         try {
-            // for !RE!-starting the simulation
-//            this.network.clearConnections();
-            // loop while network is not stable and maximum simulation rounds not yet reached
-            //while (!this.networkStable) {
             while (true) {
 
                 // disease dynamics
@@ -126,7 +122,6 @@ public class NetworkSimulation implements Runnable, Simulation {
      */
     private void setNetworkStability(boolean stable) {
         this.networkStable = stable;
-        this.network.setStable(stable);
     }
 
     /* (non-Javadoc)
@@ -147,14 +142,6 @@ public class NetworkSimulation implements Runnable, Simulation {
         this.listeners.remove(listener);
     }
 
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.network.simulation.Simulation#getStatusMessage()
-     */
-    @Override
-    public String getStatusMessage() {
-        return this.networkStable ? "Network stable." : "Network instable.";
-    }
-
     /**
      * Routine to shuts down the simulation.
      *
@@ -165,24 +152,6 @@ public class NetworkSimulation implements Runnable, Simulation {
      */
     private void shutdown(ExecutorService service, int lastRound) {
         service.shutdownNow();
-        logStopMessage(lastRound);
-    }
-
-    /**
-     * Logs a message at the end of the simulation.
-     *
-     * @param lastRound
-     *          the round the simulation has stopped
-     */
-    private void logStopMessage(int lastRound) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Simulation stopped in round ").append(lastRound).append(". Network was ");
-        if (networkStable) {
-            sb.append("stable.");
-        } else {
-            sb.append("not yet stable.");
-        }
-        logger.debug(sb.toString());
     }
 
     /**

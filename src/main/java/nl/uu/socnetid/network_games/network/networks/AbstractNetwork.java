@@ -26,7 +26,6 @@ public abstract class AbstractNetwork implements Network {
 
     // stats
     private GlobalActorStats actorStats = new GlobalActorStats();
-    private GlobalNetworkStats networkStats = new GlobalNetworkStats();
     private double cumulatedRisk = 0.0;
 
     // listener
@@ -47,7 +46,6 @@ public abstract class AbstractNetwork implements Network {
             Player player = playersIt.next();
             updateActorStats(player, true);
         }
-        updateNetworkStats();
     }
 
     /**
@@ -140,14 +138,6 @@ public abstract class AbstractNetwork implements Network {
         this.actorStats.setRecovered(0);
     }
 
-    /**
-     * Updates the network stats.
-     */
-    private void updateNetworkStats() {
-
-    }
-
-
     /* (non-Javadoc)
      * @see nl.uu.socnetid.network_games.network.Network#addPlayer(nl.uu.socnetid.network_games.players.Player)
      */
@@ -163,7 +153,6 @@ public abstract class AbstractNetwork implements Network {
 
         // update stats
         updateActorStats(player, true);
-        updateNetworkStats();
     }
 
     /* (non-Javadoc)
@@ -189,7 +178,6 @@ public abstract class AbstractNetwork implements Network {
 
         // update stats
         updateActorStats(player, false);
-        updateNetworkStats();
     }
 
     /* (non-Javadoc)
@@ -236,9 +224,6 @@ public abstract class AbstractNetwork implements Network {
         while (playersIt.hasNext()) {
             playersIt.next().removeAllConnections();
         }
-
-        // update network stats
-        updateNetworkStats();
     }
 
     /* (non-Javadoc)
@@ -255,9 +240,6 @@ public abstract class AbstractNetwork implements Network {
             // reset actor stats
             resetActorStats();
         }
-
-        // update stats
-        updateNetworkStats();
     }
 
     /* (non-Javadoc)
@@ -334,25 +316,6 @@ public abstract class AbstractNetwork implements Network {
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.network.networks.Network#setStable(boolean)
-     */
-    @Override
-    public void setStable(boolean stable) {
-        if (this.networkStats.isStable() != stable) {
-            this.networkStats.setStable(stable);
-            notifyListeners();
-        }
-    }
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.network_games.network.networks.Network#isStable()
-     */
-    @Override
-    public boolean isStable() {
-        return this.networkStats.isStable();
-    }
-
-    /* (non-Javadoc)
      * @see nl.uu.socnetid.network_games.network.networks.Network#getGlobalActorStats()
      */
     @Override
@@ -365,7 +328,25 @@ public abstract class AbstractNetwork implements Network {
      */
     @Override
     public GlobalNetworkStats getGlobalNetworkStats() {
-        return this.networkStats;
+
+        boolean stable = true;
+        int connections = 0;
+        double avDegree = 0.0;
+
+        // TODO implement diameter and average distance (if it adds to understanding)
+        int diameter = 0;
+        double avDistance = 0.0;
+
+        Iterator<Player> playersIt = this.players.iterator();
+        while (playersIt.hasNext()) {
+            Player player = playersIt.next();
+            stable &= player.isSatisfied();
+            connections += player.getConnections().size();
+        }
+        avDegree = this.players.size() == 0 ? 0.0 : (double) connections / this.players.size();
+        connections /= 2;
+
+        return new GlobalNetworkStats(stable, connections, avDegree, diameter, avDistance);
     }
 
     /* (non-Javadoc)

@@ -79,19 +79,6 @@ public interface Network {
     void toggleInfection(long playerId, DiseaseSpecs diseaseSpecs);
 
     /**
-     * Sets whether the network is stable or not.
-     *
-     * @param stable
-     *          flag whether the network is stable or not
-     */
-    void setStable(boolean stable);
-
-    /**
-     * @return true if no player wants to add or remove connections, false otherwise
-     */
-    boolean isStable();
-
-    /**
      * @return the global actor stats
      */
     GlobalActorStats getGlobalActorStats();

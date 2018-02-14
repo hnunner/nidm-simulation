@@ -81,6 +81,8 @@ public class RationalPlayer extends AbstractPlayer implements Player {
      */
     @Override
     public Player seekNewConnection() {
+
+        // TODO should this consider non-infected first?
         Player potentialConnection = getRandomNotYetConnectedPlayer();
 
         List<Player> potentialConnections = new ArrayList<Player>(this.getConnections());
@@ -88,7 +90,7 @@ public class RationalPlayer extends AbstractPlayer implements Player {
 
         // connect if new connection creates higher or equal utility
         // TODO is higher OR EQUAL what we want, or only higher?
-        if (this.getUtility(potentialConnections) >= this.getUtility()) {
+        if (this.getUtility(potentialConnections).getOverallUtility() >= this.getUtility().getOverallUtility()) {
             return potentialConnection;
         }
 
@@ -100,13 +102,15 @@ public class RationalPlayer extends AbstractPlayer implements Player {
      */
     @Override
     public Player seekCostlyConnection() {
+
+        // TODO should this consider infected first?
         Player potentialRemoval = getRandomConnection();
 
         List<Player> potentialConnections = new ArrayList<Player>(this.getConnections());
         potentialConnections.remove(potentialRemoval);
 
         // disconnect only if removal creates higher utility
-        if (this.getUtility(potentialConnections) > this.getUtility()) {
+        if (this.getUtility(potentialConnections).getOverallUtility() > this.getUtility().getOverallUtility()) {
             return potentialRemoval;
         }
 
@@ -123,7 +127,7 @@ public class RationalPlayer extends AbstractPlayer implements Player {
 
         // accept connection if the new connection creates higher or equal utility
         // TODO is higher OR EQUAL what we want, or only higher?
-        return this.getUtility(prospectiveConnections) >= this.getUtility();
+        return this.getUtility(prospectiveConnections).getOverallUtility() >= this.getUtility().getOverallUtility();
     }
 
 }

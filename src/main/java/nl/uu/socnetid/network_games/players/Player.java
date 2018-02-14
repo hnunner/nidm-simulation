@@ -5,6 +5,7 @@ import java.util.concurrent.locks.Lock;
 
 import nl.uu.socnetid.network_games.disease.DiseaseSpecs;
 import nl.uu.socnetid.network_games.disease.types.DiseaseGroup;
+import nl.uu.socnetid.network_games.utilities.Utility;
 import nl.uu.socnetid.network_games.utilities.UtilityFunction;
 
 /**
@@ -41,7 +42,7 @@ public interface Player extends Comparable<Player>, Runnable {
      *
      * @return the player's current utility
      */
-    double getUtility();
+    Utility getUtility();
 
     /**
      * Gets the player's risk factor (r<1: risk seeking; r=1: risk neutral; r>1: risk averse).
@@ -219,5 +220,37 @@ public interface Player extends Comparable<Player>, Runnable {
      *          0 otherwise
      */
     int getTimeUntilRecovered();
+
+    /**
+     * Adds a listener to be notified when the player performed an action.
+     *
+     * @param actionPerfomedListener
+     *          the listener to be notified when the player has performed an action
+     */
+    void addActionPerformedListener(final ActionPerformedListener actionPerfomedListener);
+
+    /**
+     * Removes a listener.
+     *
+     * @param actionPerformedListener
+     *          the listener to be removed
+     */
+    void removeActionPerformedListener(final ActionPerformedListener actionPerformedListener);
+
+    /**
+     * Adds a listener to be notified when the player's disease has changed.
+     *
+     * @param diseaseChangeListener
+     *          the listener to be notified when the player's disease has changed
+     */
+    void addDiseaseChangeListener(final DiseaseChangeListener diseaseChangeListener);
+
+    /**
+     * Removes a listener.
+     *
+     * @param diseaseChangeListener
+     *          the listener to be removed
+     */
+    void removeDiseaseChangeListener(final DiseaseChangeListener diseaseChangeListener);
 
 }

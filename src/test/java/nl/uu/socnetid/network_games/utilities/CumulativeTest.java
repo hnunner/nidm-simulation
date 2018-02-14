@@ -89,11 +89,11 @@ public class CumulativeTest {
      */
     @Test
     public void testGetUtility() {
-        assertEquals(3.5, player1.getUtility(), 0);
-        assertEquals(2.0, player2.getUtility(), 0);
-        assertEquals(3.0, player3.getUtility(), 0);
-        assertEquals(3.5, player4.getUtility(), 0);
-        assertEquals(2.0, player5.getUtility(), 0);
+        assertEquals(3.5, player1.getUtility().getOverallUtility(), 0);
+        assertEquals(2.0, player2.getUtility().getOverallUtility(), 0);
+        assertEquals(3.0, player3.getUtility().getOverallUtility(), 0);
+        assertEquals(3.5, player4.getUtility().getOverallUtility(), 0);
+        assertEquals(2.0, player5.getUtility().getOverallUtility(), 0);
     }
 
 }
