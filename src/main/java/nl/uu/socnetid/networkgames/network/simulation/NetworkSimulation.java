@@ -20,6 +20,7 @@ import nl.uu.socnetid.networkgames.network.networks.Network;
 public class NetworkSimulation implements Runnable, Simulation {
 
     // logger
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(NetworkSimulation.class);
 
     // the network

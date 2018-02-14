@@ -9,7 +9,7 @@ import javax.swing.SwingConstants;
  */
 public class CumulativePanel extends DeactivatablePanel {
 
-    private static final long serialVersionUID = -7455633523735790036L;
+    private static final long serialVersionUID = 6948835283237582293L;
 
     private JTextField txtDirect;
     private JTextField txtIndirect;

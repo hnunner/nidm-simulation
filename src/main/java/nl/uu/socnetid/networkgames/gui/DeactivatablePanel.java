@@ -7,6 +7,8 @@ import javax.swing.JPanel;
  */
 public abstract class DeactivatablePanel extends JPanel {
 
+    private static final long serialVersionUID = 5167920276024578376L;
+
     /**
      * Enables all interactive components of the panel.
      */
