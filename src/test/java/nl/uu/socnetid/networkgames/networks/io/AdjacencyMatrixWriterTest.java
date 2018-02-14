@@ -1,9 +1,9 @@
 package nl.uu.socnetid.networkgames.networks.io;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
@@ -43,7 +43,7 @@ public class AdjacencyMatrixWriterTest {
     private Network network;
 
     // expected adjacency matrix
-    private static List<String> expectedMatrices = new LinkedList<String>();
+    private static String expectedMatrix;
 
 
     @BeforeClass
@@ -55,16 +55,7 @@ public class AdjacencyMatrixWriterTest {
         sb.append("P2,1,0,0,0").append(System.getProperty("line.separator"));
         sb.append("P3,1,0,0,1").append(System.getProperty("line.separator"));
         sb.append("P4,1,0,1,0").append(System.getProperty("line.separator"));
-        expectedMatrices.add(sb.toString());
-
-        // for "Run as Maven test"
-        sb = new StringBuilder();
-        sb.append(",P39,P40,P41,P42").append(System.getProperty("line.separator"));
-        sb.append("P39,0,1,1,1").append(System.getProperty("line.separator"));
-        sb.append("P40,1,0,0,0").append(System.getProperty("line.separator"));
-        sb.append("P41,1,0,0,1").append(System.getProperty("line.separator"));
-        sb.append("P42,1,0,1,0").append(System.getProperty("line.separator"));
-        expectedMatrices.add(sb.toString());
+        expectedMatrix = sb.toString();
     }
 
 
@@ -111,7 +102,25 @@ public class AdjacencyMatrixWriterTest {
     @Test
     public void testAddConnection() {
         NetworkWriter writer = new AdjacencyMatrixWriter();
-        assertTrue(expectedMatrices.contains(writer.write(network)));
+        String writerMatrix = writer.write(network);
+
+        List<String> writerList = new ArrayList<String>(Arrays.asList(writerMatrix.split(",|\\\n")));
+        List<String> expectedList = new ArrayList<String>(Arrays.asList(expectedMatrix.split(",|\\\n")));
+
+        assertEquals(expectedList.size(), writerList.size());
+
+        for (int i = 0; i < writerList.size(); i++) {
+            String actual = writerList.get(i);
+
+            // leave out the indices, as they might differ due to
+            // unknown order of actor generation in test cases
+            if (actual.contains("P")) {
+                continue;
+            }
+            String expected = expectedList.get(i);
+            assertEquals(expected, actual);
+        }
+
     }
 
 }

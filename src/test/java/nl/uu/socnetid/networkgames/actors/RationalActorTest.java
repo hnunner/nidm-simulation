@@ -2,6 +2,7 @@ package nl.uu.socnetid.networkgames.actors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -84,8 +85,12 @@ public class RationalActorTest {
 	 */
 	@Test
 	public void testIds() {
-		assertEquals(5, actor1.getId());
-        assertEquals(6, actor2.getId());
+		assertNotEquals(actor1.getId(), actor2.getId());
+		assertNotEquals(actor1.getId(), actor3.getId());
+		assertNotEquals(actor1.getId(), actor4.getId());
+		assertNotEquals(actor2.getId(), actor3.getId());
+		assertNotEquals(actor2.getId(), actor4.getId());
+		assertNotEquals(actor3.getId(), actor4.getId());
 	}
 
 	/**

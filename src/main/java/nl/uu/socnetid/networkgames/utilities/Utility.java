@@ -16,7 +16,6 @@ public class Utility {
     private double costsDirectConnections;
     private double effectOfDisease;
 
-
     /**
      * Constructor.
      *
@@ -42,7 +41,6 @@ public class Utility {
                 - costsDirectConnections
                 - effectOfDisease;
     }
-
 
     /**
      * @return the overallUtility
