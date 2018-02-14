@@ -20,7 +20,7 @@ import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
  */
 public class StatsFrame extends JFrame {
 
-    private static final long serialVersionUID = -336388312396369016L;
+    private static final long serialVersionUID = -5532614279437810025L;
 
     private static final String NA_STRING = "---";
 

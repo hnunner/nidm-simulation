@@ -9,7 +9,7 @@ import javax.swing.SwingConstants;
  */
 public class TruncatedConnectionsPanel extends DeactivatablePanel {
 
-    private static final long serialVersionUID = 9040001912667323447L;
+    private static final long serialVersionUID = -1496000693509866694L;
 
     private JTextField txtDelta;
     private JTextField txtCosts;
