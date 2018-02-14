@@ -9,7 +9,6 @@ import org.apache.log4j.Logger;
 import nl.uu.socnetid.networkgames.actors.Actor;
 import nl.uu.socnetid.networkgames.disease.DiseaseSpecs;
 import nl.uu.socnetid.networkgames.stats.GlobalActorStats;
-import nl.uu.socnetid.networkgames.stats.GlobalNetworkStats;
 
 /**
  * @author Hendrik Nunner
@@ -196,8 +195,6 @@ public abstract class AbstractNetwork implements Network {
                 return actor;
             }
         }
-
-        logger.warn("No actor found for ID " + id);
         return null;
     }
 
@@ -315,33 +312,9 @@ public abstract class AbstractNetwork implements Network {
      */
     @Override
     public GlobalActorStats getGlobalActorStats() {
+
+        // TODO move to StatsComputer.java
         return this.actorStats;
-    }
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.network.networks.Network#getGlobalNetworkStats()
-     */
-    @Override
-    public GlobalNetworkStats getGlobalNetworkStats() {
-
-        boolean stable = true;
-        int connections = 0;
-        double avDegree = 0.0;
-
-        // TODO implement diameter and average distance (if it adds to understanding)
-        int diameter = 0;
-        double avDistance = 0.0;
-
-        Iterator<Actor> actorsIt = this.actors.iterator();
-        while (actorsIt.hasNext()) {
-            Actor actor = actorsIt.next();
-            stable &= actor.isSatisfied();
-            connections += actor.getConnections().size();
-        }
-        avDegree = this.actors.size() == 0 ? 0.0 : (double) connections / this.actors.size();
-        connections /= 2;
-
-        return new GlobalNetworkStats(stable, connections, avDegree, diameter, avDistance);
     }
 
 }

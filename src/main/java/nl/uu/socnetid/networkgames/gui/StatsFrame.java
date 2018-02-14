@@ -12,6 +12,7 @@ import nl.uu.socnetid.networkgames.actors.Actor;
 import nl.uu.socnetid.networkgames.disease.DiseaseSpecs;
 import nl.uu.socnetid.networkgames.stats.GlobalActorStats;
 import nl.uu.socnetid.networkgames.stats.GlobalNetworkStats;
+import nl.uu.socnetid.networkgames.stats.StatsComputer;
 import nl.uu.socnetid.networkgames.utilities.Utility;
 import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
 
@@ -863,8 +864,8 @@ public class StatsFrame extends JFrame {
         }
 
         // network
-        this.lblActorDegree.setText(Integer.toString(actor.getConnections().size()));
-        this.lblActorCloseness.setText(NA_STRING);
-        this.lblActorBetweenness.setText(NA_STRING);
+        this.lblActorDegree.setText(Integer.toString(StatsComputer.computeDegree(actor)));
+        this.lblActorCloseness.setText(Double.toString(StatsComputer.computeCloseness(actor)));
+        this.lblActorBetweenness.setText(Double.toString(StatsComputer.computeBetweenness(actor)));
     }
 }

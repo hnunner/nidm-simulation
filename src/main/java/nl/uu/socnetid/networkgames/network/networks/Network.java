@@ -5,7 +5,6 @@ import java.util.List;
 import nl.uu.socnetid.networkgames.actors.Actor;
 import nl.uu.socnetid.networkgames.disease.DiseaseSpecs;
 import nl.uu.socnetid.networkgames.stats.GlobalActorStats;
-import nl.uu.socnetid.networkgames.stats.GlobalNetworkStats;
 
 /**
  * @author Hendrik Nunner
@@ -82,10 +81,5 @@ public interface Network {
      * @return the global actor stats
      */
     GlobalActorStats getGlobalActorStats();
-
-    /**
-     * @return the global network stats
-     */
-    GlobalNetworkStats getGlobalNetworkStats();
 
 }
