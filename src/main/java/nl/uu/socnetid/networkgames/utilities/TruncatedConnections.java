@@ -29,7 +29,6 @@ public class TruncatedConnections implements UtilityFunction {
         this.costs = costs;
     }
 
-
     /*
      * (non-Javadoc)
      * @see nl.uu.socnetid.networkgames.utilities.UtilityFunction#getUtility(
@@ -90,7 +89,6 @@ public class TruncatedConnections implements UtilityFunction {
         return "TC";
     }
 
-
     /* (non-Javadoc)
      * @see nl.uu.socnetid.networkgames.utilities.UtilityFunction#getAlpha()
      */
@@ -99,7 +97,6 @@ public class TruncatedConnections implements UtilityFunction {
         return this.directUtility;
     }
 
-
     /* (non-Javadoc)
      * @see nl.uu.socnetid.networkgames.utilities.UtilityFunction#getBeta()
      */
@@ -107,7 +104,6 @@ public class TruncatedConnections implements UtilityFunction {
     public double getBeta() {
         return this.indirectUtility;
     }
-
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.networkgames.utilities.UtilityFunction#getC()

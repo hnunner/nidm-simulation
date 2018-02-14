@@ -1,4 +1,4 @@
-package nl.uu.socnetid.networkgames.network.writer;
+package nl.uu.socnetid.networkgames.network.io;
 
 import nl.uu.socnetid.networkgames.network.networks.Network;
 

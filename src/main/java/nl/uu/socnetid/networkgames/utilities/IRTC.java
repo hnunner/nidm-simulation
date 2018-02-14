@@ -35,7 +35,6 @@ public class IRTC implements UtilityFunction {
         this.c= c;
     }
 
-
     /*
      * (non-Javadoc)
      * @see nl.uu.socnetid.networkgames.utilities.UtilityFunction#getUtility(
@@ -169,7 +168,6 @@ public class IRTC implements UtilityFunction {
         return "IRTC";
     }
 
-
     /* (non-Javadoc)
      * @see nl.uu.socnetid.networkgames.utilities.UtilityFunction#getAlpha()
      */
@@ -178,7 +176,6 @@ public class IRTC implements UtilityFunction {
         return this.alpha;
     }
 
-
     /*(non-Javadoc)
      * @see nl.uu.socnetid.networkgames.utilities.UtilityFunction#getBeta()
      */
@@ -186,7 +183,6 @@ public class IRTC implements UtilityFunction {
     public double getBeta() {
         return this.beta;
     }
-
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.networkgames.utilities.UtilityFunction#getC()

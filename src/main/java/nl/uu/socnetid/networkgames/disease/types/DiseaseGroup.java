@@ -4,9 +4,9 @@ package nl.uu.socnetid.networkgames.disease.types;
  * @author Hendrik Nunner
  */
 public enum DiseaseGroup {
-    SUSCEPTIBLE("SUS"),
-    INFECTED("INF"),
-    RECOVERED("REC");
+    SUSCEPTIBLE("susceptible"),
+    INFECTED("infected"),
+    RECOVERED("recovered");
 
     // the name
     private String name;

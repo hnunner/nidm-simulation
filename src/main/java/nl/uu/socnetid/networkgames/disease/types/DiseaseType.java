@@ -4,7 +4,7 @@ package nl.uu.socnetid.networkgames.disease.types;
  * @author Hendrik Nunner
  */
 public enum DiseaseType {
-    SIR("Generic SIR");
+    SIR("generic SIR");
 
     // the name
     private String name;
