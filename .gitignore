@@ -14,3 +14,10 @@
 # Maven
 log/
 target/
+
+# log files
+*.log
+*.log.*
+
+# network exports
+network-exports
