@@ -20,4 +20,4 @@ target/
 *.log.*
 
 # network exports
-network-exports
+network-exports/
