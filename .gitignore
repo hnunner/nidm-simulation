@@ -16,7 +16,7 @@ log/
 target/
 
 # log files
-*.log
+network-games.log
 *.log.*
 
 # network exports
