@@ -242,6 +242,14 @@ public abstract class AbstractActor implements Actor {
     }
 
     /* (non-Javadoc)
+     * @see nl.uu.socnetid.networkgames.actors.Actor#getCoActors()
+     */
+    @Override
+    public List<Actor> getCoActors() {
+        return this.coActors;
+    }
+
+    /* (non-Javadoc)
      * @see nl.uu.socnetid.networkgames.Actor#isSatisfied()
      */
     @Override

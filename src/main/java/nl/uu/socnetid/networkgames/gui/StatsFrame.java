@@ -864,8 +864,7 @@ public class StatsFrame extends JFrame {
         }
 
         // network
-        this.lblActorDegree.setText(Integer.toString(StatsComputer.computeDegree(actor)));
+        this.lblActorDegree.setText(Integer.toString(StatsComputer.computeFirstDegree(actor)));
         this.lblActorCloseness.setText(Double.toString(StatsComputer.computeCloseness(actor)));
-        this.lblActorBetweenness.setText(Double.toString(StatsComputer.computeBetweenness(actor)));
     }
 }

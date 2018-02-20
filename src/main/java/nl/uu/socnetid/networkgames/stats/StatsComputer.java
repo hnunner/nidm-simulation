@@ -16,44 +16,66 @@ public final class StatsComputer {
 
 
     /**
-     * Computes the degree of an actor.
+     * Computes the first degree of an actor.
      *
      * @param actor
-     *          the actor to compute the degree for
-     * @return the degree of the actor
+     *          the actor to compute the first degree for
+     * @return the first degree of the actor
      */
-    public static int computeDegree(Actor actor) {
+    public static int computeFirstDegree(Actor actor) {
         return actor.getConnections().size();
     }
 
     /**
-     * Computes the closeness of an actor.
+     * Computes the second degree of an actor.
+     *
+     * @param actor
+     *          the actor to compute the second degree for
+     * @return the second degree of the actor
+     */
+    public static int computeSecondDegree(Actor actor) {
+        // TODO implement
+        return 0;
+    }
+
+    /**
+     * Computes the closeness of an actor. Based on Buechel & Buskens (2013) formula (1), p.163.
      *
      * @param actor
      *          the actor to compute the closeness for
      * @return the closeness of the actor
      */
     public static double computeCloseness(Actor actor) {
-        double cs = 0.0;
 
-        // TODO implement
+        // Note: M = n, see Buechel & Buskens (2013), p. 162
+        double n = actor.getCoActors().size() + 1;              // all co-actors plus the actor himself
+        double M = n;
+        double cumulatedDistance = 0.0;
 
-        return cs;
-    }
+        // distances
+        // 1st calculate shortest paths for all co-actors
+        DijkstraShortestPath dsp = new DijkstraShortestPath();
+        dsp.executeShortestPaths(actor);
+        Iterator<Actor> coActorsIt = actor.getCoActors().iterator();
+        while (coActorsIt.hasNext()) {
+            Actor coActor = coActorsIt.next();
+            Integer shortestPathLength = dsp.getShortestPathLength(coActor);
+            // if path exists
+            if (shortestPathLength != null) {
+                // distance of connected nodes
+                cumulatedDistance += Double.valueOf(shortestPathLength);
+            } else {
+                // distance of not connected nodes = n
+                cumulatedDistance += n;
+            }
+        }
 
-    /**
-     * Computes the betweenness of an actor.
-     *
-     * @param actor
-     *          the actor to compute the betweenness for
-     * @return the betweenness of the actor
-     */
-    public static double computeBetweenness(Actor actor) {
-        double bs = 0.0;
-
-        // TODO implement
-
-        return bs;
+        // average distance including normalization
+        double first = M / (M - 1);
+        double under = (M - 1) * (n - 1);
+        double second = cumulatedDistance / under;
+        double closeness = first - second;
+        return closeness;
     }
 
     /**
@@ -71,7 +93,7 @@ public final class StatsComputer {
         int connections = 0;
         double avDegree = 0.0;
 
-        // TODO implement diameter and average distance (if it adds to understanding)
+        // implement diameter and average distance (if it adds to understanding)
         int diameter = 0;
         double avDistance = 0.0;
 
@@ -87,39 +109,6 @@ public final class StatsComputer {
         return new GlobalNetworkStats(stable, connections, avDegree, diameter, avDistance);
     }
 
-    /**
-     * Computes the network distance between two actors.
-     *
-     * @param actor1
-     *          the first actor
-     * @param actor2
-     *          the second actor
-     * @return the distance between actor 1 and actor 2
-     */
-    public static int computeDistance(Actor actor1, Actor actor2) {
 
-        // TODO implement
-
-/*        BFS(start_node, goal_node) {
-            for(all nodes i) visited[i] = false; // anfangs sind keine Knoten besucht
-            queue.push(start_node);              // mit Start-Knoten beginnen
-            visited[start_node] = true;
-            while(! queue.empty() ) {            // solange queue nicht leer ist
-             node = queue.pop();                 // erstes Element von der queue nehmen
-             if(node == goal_node) {
-              return true;                       // testen, ob Ziel-Knoten gefunden
-             }
-             foreach(child in expand(node)) {    // alle Nachfolge-Knoten, …
-              if(visited[child] == false) {      // … die noch nicht besucht wurden …
-               queue.push(child);                // … zur queue hinzufügen…
-               visited[child] = true;            // … und als bereits gesehen markieren
-              }
-             }
-            }
-            return false;                        // Knoten kann nicht erreicht werden
-           }
-*/
-        return 0;
-    }
 
 }
