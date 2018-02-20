@@ -18,10 +18,10 @@ public interface Actor extends Comparable<Actor>, Runnable {
     /**
      * Initializes the actor's list of co-actors.
      *
-     * @param allActors
-     *          all actor's engaged in the game
+     * @param actors
+     *          all actor's within the game
      */
-    void initCoActors(List<Actor> allActors);
+    void initCoActors(List<Actor> actors);
 
     /**
      * Getter for the actor's unique identifier.
@@ -79,6 +79,13 @@ public interface Actor extends Comparable<Actor>, Runnable {
      * @return the connections of the actor
      */
     List<Actor> getConnections();
+
+    /**
+     * Gets all co-actors (connections and non-connections).
+     *
+     * @return the actor's co-actors
+     */
+    List<Actor> getCoActors();
 
     /**
      * Gets a random connection of the actor.

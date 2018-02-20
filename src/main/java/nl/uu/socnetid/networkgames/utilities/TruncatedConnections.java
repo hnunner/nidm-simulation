@@ -67,8 +67,11 @@ public class TruncatedConnections implements UtilityFunction {
                 Actor indirectConnection = indirectIt.next();
 
                 if (indirectConnection.equals(actor)
-                        ////////// TODO: ??? DOUBLE BENEFITS FOR DIRECT + INDIRECT ??? //////////
                         || connections.contains(indirectConnection)) {
+
+                    //TODO: !!! FORBID DOUBLE BENEFITS FOR SAME INDIRECT OF TWO (OR MORE) DIRECT !!!
+
+
                     continue;
                 }
                 benefitIndirectConnections += this.indirectUtility;
