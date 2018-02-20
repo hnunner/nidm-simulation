@@ -81,9 +81,11 @@ public class IRTC implements UtilityFunction {
                 // connected to two different direct connections (i.e. in a ring of four actors,
                 // a an actor gets the indirect benefit twice from both direct connections)
                 if (indirectConnection.equals(actor)
-                        ////////// TODO: ??? ALLOW DOUBLE BENEFITS FOR DIRECT + INDIRECT ??? //////////
                         || connections.contains(indirectConnection)) {
-                    ////////// TODO: ??? FORBID DOUBLE BENEFITS FOR SAME INDIRECT OF TWO (OR MORE) DIRECT ??? //////////
+
+
+                    //TODO: !!! FORBID DOUBLE BENEFITS FOR SAME INDIRECT OF TWO (OR MORE) DIRECT !!!
+
                     continue;
                 }
                 m++;
@@ -105,7 +107,15 @@ public class IRTC implements UtilityFunction {
         // depending own actor's own risk group
         switch (actor.getDiseaseGroup()) {
             case SUSCEPTIBLE:
+
+
+                // TODO this formula should also be used for the disease transmission dynamics!!!
+                // consider putting it into a utility class!!!
                 p = 1 - Math.pow((1 - actor.getDiseaseSpecs().getGamma()), nI);
+
+
+
+
                 r = actor.getRiskFactor();
                 break;
 
