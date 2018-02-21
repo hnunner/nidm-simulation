@@ -5,11 +5,11 @@ package nl.uu.socnetid.networkgames.stats;
  */
 public class LocalActorConnectionsStats {
 
-    private int n;
-    private int nS;
-    private int nI;
-    private int nR;
-    private int m;
+    private final int n;
+    private final int nS;
+    private final int nI;
+    private final int nR;
+    private final int m;
 
     /**
      * Constructor.
@@ -39,24 +39,10 @@ public class LocalActorConnectionsStats {
     }
 
     /**
-     * @param n the n to set
-     */
-    public void setN(int n) {
-        this.n = n;
-    }
-
-    /**
      * @return the nS
      */
     public int getnS() {
         return nS;
-    }
-
-    /**
-     * @param nS the nS to set
-     */
-    public void setnS(int nS) {
-        this.nS = nS;
     }
 
     /**
@@ -67,13 +53,6 @@ public class LocalActorConnectionsStats {
     }
 
     /**
-     * @param nI the nI to set
-     */
-    public void setnI(int nI) {
-        this.nI = nI;
-    }
-
-    /**
      * @return the nR
      */
     public int getnR() {
@@ -81,24 +60,10 @@ public class LocalActorConnectionsStats {
     }
 
     /**
-     * @param nR the nR to set
-     */
-    public void setnR(int nR) {
-        this.nR = nR;
-    }
-
-    /**
      * @return the m
      */
     public int getM() {
         return m;
-    }
-
-    /**
-     * @param m the m to set
-     */
-    public void setM(int m) {
-        this.m = m;
     }
 
 }

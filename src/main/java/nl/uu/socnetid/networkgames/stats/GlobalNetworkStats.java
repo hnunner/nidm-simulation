@@ -5,11 +5,11 @@ package nl.uu.socnetid.networkgames.stats;
  */
 public class GlobalNetworkStats {
 
-    private boolean stable = false;
-    private int connections = 0;
-    private double avDegree = 0.0;
-    private int diameter = 0;
-    private double avDistance = 0.0;
+    private final boolean stable;
+    private final int connections;
+    private final double avDegree;
+    private final int diameter;
+    private final double avDistance;
 
     /**
      * Constructor
