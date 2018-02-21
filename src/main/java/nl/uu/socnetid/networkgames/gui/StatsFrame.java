@@ -773,13 +773,13 @@ public class StatsFrame extends JFrame {
      *          the global actor stats
      */
     public void refreshGlobalActorStats(GlobalActorStats globalActorStats) {
-        this.lblGlobalActorsOverall.setText(Integer.toString(globalActorStats.getActorsOverall()));
-        this.lblGlobalSusceptibles.setText(Integer.toString(globalActorStats.getSusceptibles()));
-        this.lblGlobalInfected.setText(Integer.toString(globalActorStats.getInfected()));
-        this.lblGlobalRecovered.setText(Integer.toString(globalActorStats.getRecovered()));
-        this.lblGlobalRiskAverse.setText(Integer.toString(globalActorStats.getRiskAverse()));
-        this.lblGlobalRiskNeutrals.setText(Integer.toString(globalActorStats.getRiskNeutrals()));
-        this.lblGlobalRiskSeeking.setText(Integer.toString(globalActorStats.getRiskSeeking()));
+        this.lblGlobalActorsOverall.setText(Integer.toString(globalActorStats.getN()));
+        this.lblGlobalSusceptibles.setText(Integer.toString(globalActorStats.getnS()));
+        this.lblGlobalInfected.setText(Integer.toString(globalActorStats.getnI()));
+        this.lblGlobalRecovered.setText(Integer.toString(globalActorStats.getnR()));
+        this.lblGlobalRiskAverse.setText(Integer.toString(globalActorStats.getnRiskAverse()));
+        this.lblGlobalRiskNeutrals.setText(Integer.toString(globalActorStats.getnRiskNeutral()));
+        this.lblGlobalRiskSeeking.setText(Integer.toString(globalActorStats.getnRiskSeeking()));
         this.lblGlobalAvRisk.setText(Double.toString(globalActorStats.getAvRisk()));
     }
 

@@ -4,7 +4,6 @@ import java.util.List;
 
 import nl.uu.socnetid.networkgames.actors.Actor;
 import nl.uu.socnetid.networkgames.disease.DiseaseSpecs;
-import nl.uu.socnetid.networkgames.stats.GlobalActorStats;
 
 /**
  * @author Hendrik Nunner
@@ -76,10 +75,5 @@ public interface Network {
      *          the characteristics of the disease to infect the actor with
      */
     void toggleInfection(long actorId, DiseaseSpecs diseaseSpecs);
-
-    /**
-     * @return the global actor stats
-     */
-    GlobalActorStats getGlobalActorStats();
 
 }

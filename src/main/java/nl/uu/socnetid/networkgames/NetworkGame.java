@@ -483,7 +483,7 @@ ActionPerformedListener, DiseaseChangeListener {
             this.statsFrame.refreshGlobalUtilityStats(uf);
             this.statsFrame.refreshGlobalDiseaseStats(ds);
         }
-        this.statsFrame.refreshGlobalActorStats(this.network.getGlobalActorStats());
+        this.statsFrame.refreshGlobalActorStats(StatsComputer.computeGlobalActorStats(this.network));
         this.statsFrame.refreshGlobalNetworkStats(StatsComputer.computeGlobalNetworkStats(this.network));
     }
 
@@ -501,7 +501,7 @@ ActionPerformedListener, DiseaseChangeListener {
         }
 
         // update stats
-        this.statsFrame.refreshGlobalActorStats(this.network.getGlobalActorStats());
+        this.statsFrame.refreshGlobalActorStats(StatsComputer.computeGlobalActorStats(this.network));
         this.statsFrame.refreshGlobalNetworkStats(StatsComputer.computeGlobalNetworkStats(this.network));
     }
 
@@ -541,7 +541,7 @@ ActionPerformedListener, DiseaseChangeListener {
         simulationTask = simulationExecutor.submit(this.networkSimulation);
 
         // update stats
-        this.statsFrame.refreshGlobalActorStats(this.network.getGlobalActorStats());
+        this.statsFrame.refreshGlobalActorStats(StatsComputer.computeGlobalActorStats(this.network));
     }
 
     /**
@@ -639,7 +639,7 @@ ActionPerformedListener, DiseaseChangeListener {
         }
 
         // update stats
-        this.statsFrame.refreshGlobalActorStats(this.network.getGlobalActorStats());
+        this.statsFrame.refreshGlobalActorStats(StatsComputer.computeGlobalActorStats(this.network));
     }
 
     /**
@@ -734,7 +734,7 @@ ActionPerformedListener, DiseaseChangeListener {
     @Override
     public void notifyDiseaseChanged(Actor actor) {
         // global stats
-        this.statsFrame.refreshGlobalActorStats(this.network.getGlobalActorStats());
+        this.statsFrame.refreshGlobalActorStats(StatsComputer.computeGlobalActorStats(this.network));
 
         // local stats
         if (actor.getId() == this.statsActorId) {
