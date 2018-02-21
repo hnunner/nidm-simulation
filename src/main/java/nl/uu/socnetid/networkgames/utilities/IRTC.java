@@ -1,12 +1,12 @@
 package nl.uu.socnetid.networkgames.utilities;
 
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import nl.uu.socnetid.networkgames.actors.Actor;
+import nl.uu.socnetid.networkgames.stats.LocalActorConnectionsStats;
+import nl.uu.socnetid.networkgames.stats.StatsComputer;
 
 /**
  * @author Hendrik Nunner
@@ -44,58 +44,11 @@ public class IRTC implements UtilityFunction {
     @Override
     public Utility getUtility(Actor actor, List<Actor> connections) {
 
-        // amount of direct connections according to disease groups
-        int nSR = 0;
-        int nI = 0;
-        // amount of indirect connections neglecting disease groups
-        int m = 0;
-
-        // indirect connections giving benefit only once
-        List<Actor> bookedIndirectBenefits = new LinkedList<Actor>();
-
-        // for every direct connection
-        Iterator<Actor> directIt = connections.iterator();
-        while (directIt.hasNext()) {
-
-            // no direct connection? do nothing
-            Actor directConnection = directIt.next();
-            if (directConnection == null) {
-                continue;
-            }
-
-            // keeping track of disease groups of direct connections
-            if (directConnection.isInfected()) {
-                nI++;
-            } else {
-                nSR++;
-            }
-
-            // no indirect connections --> go to next direct connection
-            List<Actor> indirectConnections = directConnection.getConnections();
-            if (indirectConnections == null) {
-                continue;
-            }
-
-            // for every indirect connection at distance 2
-            Iterator<Actor> indirectIt = indirectConnections.iterator();
-            while (indirectIt.hasNext()) {
-                Actor indirectConnection = indirectIt.next();
-                // no double benefit for indirect connections that is also a direct connection
-                // however, currently double benefits for an indirect connection that is
-                // connected to two different direct connections (i.e. in a ring of four actors,
-                // an actor gets the indirect benefit twice from both direct connections)
-                // no benefit from self
-                if (indirectConnection.equals(actor)
-                        // no double benefits for indirect connections being also direct connections
-                        || connections.contains(indirectConnection)
-                        // no double benefits for indirect connections that have been booked already
-                        || bookedIndirectBenefits.contains(indirectConnection)) {
-                    continue;
-                }
-                m++;
-                bookedIndirectBenefits.add(indirectConnection);
-            }
-        }
+        // amount of connections according to distance and disease group
+        LocalActorConnectionsStats lacs = StatsComputer.computeLocalActorConnectionsStats(actor, connections);
+        int nSR = lacs.getnS() + lacs.getnR();
+        int nI = lacs.getnI();
+        int m = lacs.getM();
 
         // benefit of direct connections
         double benefitDirectConnections = this.alpha * (nSR + nI);
@@ -112,15 +65,7 @@ public class IRTC implements UtilityFunction {
         // depending own actor's own risk group
         switch (actor.getDiseaseGroup()) {
             case SUSCEPTIBLE:
-
-
-                // TODO this formula should also be used for the disease transmission dynamics!!!
-                // consider putting it into a utility class!!!
-                p = 1 - Math.pow((1 - actor.getDiseaseSpecs().getGamma()), nI);
-
-
-
-
+                p = StatsComputer.computeProbabilityOfInfection(actor, nI);
                 r = actor.getRiskFactor();
                 break;
 
@@ -139,8 +84,6 @@ public class IRTC implements UtilityFunction {
         }
         double effectOfDisease = p * Math.pow(actor.getDiseaseSpecs().getDelta(), r);
         // end: effect of disease
-
-        // logUtility(actor, nSR, nI, m, utility);
 
         return new Utility(benefitDirectConnections,
                 benefitIndirectConnections,

@@ -182,14 +182,10 @@ public class NetworkSimulation implements Runnable, Simulation {
         Iterator<Actor> actorsIt = actors.iterator();
         while (actorsIt.hasNext()) {
             Actor currActor = actorsIt.next();
-
             if (currActor.isInfected()) {
                 currActor.fightDisease();
-
-                if (currActor.isInfected()) {
-                    currActor.computeTransmissions();
-                }
             }
+            currActor.computeDiseaseTransmission();
         }
     }
 

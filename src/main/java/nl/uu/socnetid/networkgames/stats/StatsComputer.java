@@ -1,7 +1,10 @@
 package nl.uu.socnetid.networkgames.stats;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+
+import org.apache.log4j.Logger;
 
 import nl.uu.socnetid.networkgames.actors.Actor;
 import nl.uu.socnetid.networkgames.network.networks.Network;
@@ -10,6 +13,8 @@ import nl.uu.socnetid.networkgames.network.networks.Network;
  * @author Hendrik Nunner
  */
 public final class StatsComputer {
+
+    private static final Logger logger = Logger.getLogger(StatsComputer.class);
 
     /** Private construtor. Inhibits unwanted instantiation of class. */
     private StatsComputer() { }
@@ -71,11 +76,7 @@ public final class StatsComputer {
         }
 
         // average distance including normalization
-        double first = M / (M - 1);
-        double under = (M - 1) * (n - 1);
-        double second = cumulatedDistance / under;
-        double closeness = first - second;
-        return closeness;
+        return (M / (M - 1)) - (cumulatedDistance / ((M - 1) * (n - 1)));
     }
 
     /**
@@ -109,6 +110,103 @@ public final class StatsComputer {
         return new GlobalNetworkStats(stable, connections, avDegree, diameter, avDistance);
     }
 
+    /**
+     * Computes the stats for a single actor's connections.
+     *
+     * @param actor
+     *          the actor
+     * @return the stats for a single actor's connections.
+     */
+    public static LocalActorConnectionsStats computeLocalActorConnectionsStats(Actor actor) {
+        return StatsComputer.computeLocalActorConnectionsStats(actor, actor.getConnections());
+    }
 
+    /**
+     * Computes the stats for a single actor's connections.
+     *
+     * @param actor
+     *          the actor
+     * @param connections
+     *          the connections - given explicitly and not used from the actor's existing connections,
+     *          because this might be used to compare the actor's current connections with potentially
+     *          altered connections
+     * @return the stats for a single actor's connections.
+     */
+    public static LocalActorConnectionsStats computeLocalActorConnectionsStats(Actor actor, List<Actor> connections) {
+
+        // number of connections
+        int nS = 0;
+        int nI = 0;
+        int nR = 0;
+        int  m = 0;
+
+        // indirect connections considered only once
+        List<Actor> consideredIndirectBenefits = new LinkedList<Actor>();
+
+        // for every direct connection
+        Iterator<Actor> directIt = connections.iterator();
+        while (directIt.hasNext()) {
+
+            // no direct connection? do nothing
+            Actor directConnection = directIt.next();
+            if (directConnection == null) {
+                continue;
+            }
+
+            // disease group of direct connection
+            switch (directConnection.getDiseaseGroup()) {
+                case SUSCEPTIBLE:
+                    nS++;
+                    break;
+
+                case INFECTED:
+                    nI++;
+                    break;
+
+                case RECOVERED:
+                    nR++;
+                    break;
+
+                default:
+                    logger.warn("Unhandled disease group: " + directConnection.getDiseaseGroup());
+            }
+
+            // no indirect connections --> go to next direct connection
+            List<Actor> indirectConnections = directConnection.getConnections();
+            if (indirectConnections == null) {
+                continue;
+            }
+
+            // for every indirect connection at distance 2
+            Iterator<Actor> indirectIt = indirectConnections.iterator();
+            while (indirectIt.hasNext()) {
+                Actor indirectConnection = indirectIt.next();
+                // no benefit from self
+                if (indirectConnection.equals(actor)
+                        // no double benefits for indirect connections being also direct connections
+                        || connections.contains(indirectConnection)
+                        // no double benefits for indirect connections that have been booked already
+                        || consideredIndirectBenefits.contains(indirectConnection)) {
+                    continue;
+                }
+                m++;
+                consideredIndirectBenefits.add(indirectConnection);
+            }
+        }
+        return new LocalActorConnectionsStats(nS, nI, nR, m);
+    }
+
+    /**
+     * Computes the actor's probability of getting infected.
+     *
+     * @param actor
+     *          the actor to compute the probability for
+     * @param nI
+     *          the number of infected direct connections
+     * @return the actor's probability of getting infected
+     */
+    public static double computeProbabilityOfInfection(Actor actor, int nI) {
+        return 1 - Math.pow((1 - actor.getDiseaseSpecs().getGamma()), nI);
+    }
 
 }
