@@ -21,26 +21,25 @@ public final class StatsComputer {
 
 
     /**
-     * Computes the first degree of an actor.
+     * Computes the first order degree of an actor.
      *
      * @param actor
      *          the actor to compute the first degree for
-     * @return the first degree of the actor
+     * @return the first order degree of the actor
      */
-    public static int computeFirstDegree(Actor actor) {
+    public static int computeFirstOrderDegree(Actor actor) {
         return actor.getConnections().size();
     }
 
     /**
-     * Computes the second degree of an actor.
+     * Computes the second order degree of an actor.
      *
      * @param actor
      *          the actor to compute the second degree for
-     * @return the second degree of the actor
+     * @return the second order degree of the actor
      */
-    public static int computeSecondDegree(Actor actor) {
-        // TODO implement
-        return 0;
+    public static int computeSecondOrderDegree(Actor actor) {
+        return StatsComputer.computeLocalActorConnectionsStats(actor).getM();
     }
 
     /**
