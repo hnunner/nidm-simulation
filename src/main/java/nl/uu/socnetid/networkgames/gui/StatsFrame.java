@@ -800,7 +800,7 @@ public class StatsFrame extends JFrame {
     /**
      * Resets the global stats for actors.
      */
-    public void resetActorGlobalStats() {
+    public void resetGlobalActorStats() {
         // utility
         this.lblGlobalUtilityFunction.setText(NA_STRING);
         this.lblGlobalAlpha.setText(NA_STRING);
@@ -821,7 +821,11 @@ public class StatsFrame extends JFrame {
      * @param actor
      *          the actor to refresh the stats for
      */
-    public void refreshActorLocalStats(Actor actor) {
+    public void refreshLocalActorStats(Actor actor) {
+
+        // TODO use StatsComputer and LocalActorStats bean to retrieve the stats
+
+
         // identifier
         this.lblActorID.setText(Long.toString(actor.getId()));
 

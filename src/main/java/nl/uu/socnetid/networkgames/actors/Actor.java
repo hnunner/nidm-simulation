@@ -179,10 +179,9 @@ public interface Actor extends Comparable<Actor>, Runnable {
     void cure();
 
 	/**
-	 * Computes the transmissions of the disease between the actor and
-	 * all of her non-infected connections.
+	 * Computes the transmission of the disease between the actor and its infected connections.
 	 */
-	void computeTransmissions();
+	void computeDiseaseTransmission();
 
 	/**
 	 * Gets the disease group (SIR) the actor is currently in.
