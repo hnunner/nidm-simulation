@@ -823,9 +823,6 @@ public class StatsFrame extends JFrame {
      */
     public void refreshLocalActorStats(Actor actor) {
 
-        // TODO use StatsComputer and LocalActorStats bean to retrieve the stats
-
-
         // identifier
         this.lblActorID.setText(Long.toString(actor.getId()));
 
