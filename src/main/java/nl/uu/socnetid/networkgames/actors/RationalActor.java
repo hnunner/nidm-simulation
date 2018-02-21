@@ -82,14 +82,15 @@ public class RationalActor extends AbstractActor implements Actor {
     @Override
     public Actor seekNewConnection() {
 
-        // TODO should this consider non-infected first?
+        // should this consider non-infected first?
+        // Q&A Feb 20th 2018: no, as even an infected might provide
+        // high utility through many indirect connections
         Actor potentialConnection = getRandomNotYetConnectedActor();
 
         List<Actor> potentialConnections = new ArrayList<Actor>(this.getConnections());
         potentialConnections.add(potentialConnection);
 
         // connect if new connection creates higher or equal utility
-        // TODO is higher OR EQUAL what we want, or only higher?
         if (this.getUtility(potentialConnections).getOverallUtility() >= this.getUtility().getOverallUtility()) {
             return potentialConnection;
         }
@@ -103,7 +104,9 @@ public class RationalActor extends AbstractActor implements Actor {
     @Override
     public Actor seekCostlyConnection() {
 
-        // TODO should this consider infected first?
+        // should this consider infected first?
+        // Q&A Feb 20th 2018: no, as even an infected might provide
+        // high utility through many indirect connections
         Actor potentialRemoval = getRandomConnection();
 
         List<Actor> potentialConnections = new ArrayList<Actor>(this.getConnections());
@@ -126,7 +129,6 @@ public class RationalActor extends AbstractActor implements Actor {
         prospectiveConnections.add(newConnection);
 
         // accept connection if the new connection creates higher or equal utility
-        // TODO is higher OR EQUAL what we want, or only higher?
         return this.getUtility(prospectiveConnections).getOverallUtility() >= this.getUtility().getOverallUtility();
     }
 

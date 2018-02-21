@@ -1,6 +1,7 @@
 package nl.uu.socnetid.networkgames.utilities;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import nl.uu.socnetid.networkgames.actors.Actor;
@@ -41,8 +42,11 @@ public class TruncatedConnections implements UtilityFunction {
         double costsDirectConnections = 0.0;
         double effectOfDisease = 0.0;
 
-        Iterator<Actor> directIt = connections.iterator();
+        // indirect connections giving benefit only once
+        List<Actor> bookedIndirectBenefits = new LinkedList<Actor>();
 
+        // for every direct connection
+        Iterator<Actor> directIt = connections.iterator();
         while (directIt.hasNext()) {
             Actor directConnection = directIt.next();
             if (directConnection == null) {
@@ -67,11 +71,12 @@ public class TruncatedConnections implements UtilityFunction {
                 Actor indirectConnection = indirectIt.next();
 
                 if (indirectConnection.equals(actor)
-                        ////////// TODO: ??? DOUBLE BENEFITS FOR DIRECT + INDIRECT ??? //////////
-                        || connections.contains(indirectConnection)) {
+                        || connections.contains(indirectConnection)
+                        || bookedIndirectBenefits.contains(indirectConnection)) {
                     continue;
                 }
                 benefitIndirectConnections += this.indirectUtility;
+                bookedIndirectBenefits.add(indirectConnection);
             }
         }
 
