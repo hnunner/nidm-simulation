@@ -48,7 +48,6 @@ public class CumulativeTest {
     @Before
     public void initActor() {
         uf = new Cumulative();
-
         ds = new DiseaseSpecs(DiseaseType.SIR, tau, delta, gamma, mu);
 
         List<Actor> actors = new ArrayList<Actor>();
