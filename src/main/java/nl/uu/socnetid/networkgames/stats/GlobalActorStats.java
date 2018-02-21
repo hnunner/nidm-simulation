@@ -5,210 +5,94 @@ package nl.uu.socnetid.networkgames.stats;
  */
 public class GlobalActorStats {
 
-    private int actorsOverall = 0;
-    private int susceptibles = 0;
-    private int infected = 0;
-    private int recovered = 0;
-    private int riskAverse = 0;
-    private int riskNeutrals = 0;
-    private int riskSeeking = 0;
-    private double avRisk = 0.0;
-
+    private final int n;
+    private final int nS;
+    private final int nI;
+    private final int nR;
+    private final int nRiskAverse;
+    private final int nRiskNeutral;
+    private final int nRiskSeeking;
+    private final double avRisk;
 
     /**
-     * @return the actorsOverall
+     * Constructor.
+     *
+     * @param n
+     *          the overall amount of actors
+     * @param nS
+     *          the amount of susceptibles
+     * @param nI
+     *          the amount of infected
+     * @param nR
+     *          the amount of recovered
+     * @param nRiskAverse
+     *          the amount of risk averse
+     * @param nRiskNeutral
+     *          the amount of risk neutral
+     * @param nRiskSeeking
+     *          the amount of risk seeking
+     * @param avRisk
+     *          the average risk factor
      */
-    public int getActorsOverall() {
-        return actorsOverall;
+    public GlobalActorStats(int n, int nS, int nI, int nR, int nRiskAverse, int nRiskNeutral, int nRiskSeeking,
+            double avRisk) {
+        this.n = n;
+        this.nS = nS;
+        this.nI = nI;
+        this.nR = nR;
+        this.nRiskAverse = nRiskAverse;
+        this.nRiskNeutral = nRiskNeutral;
+        this.nRiskSeeking = nRiskSeeking;
+        this.avRisk = avRisk;
     }
 
     /**
-     * @param actorsOverall the actorsOverall to set
+     * @return the n
      */
-    public void setActorsOverall(int actorsOverall) {
-        this.actorsOverall = actorsOverall;
+    public int getN() {
+        return n;
     }
 
     /**
-     * Increases the amount of overall actors by one.
+     * @return the nS
      */
-    public void incActorsOverall() {
-        this.actorsOverall++;
+    public int getnS() {
+        return nS;
     }
 
     /**
-     * Decreases the amount of overall actors by one.
+     * @return the nI
      */
-    public void decActorsOverall() {
-        this.actorsOverall--;
+    public int getnI() {
+        return nI;
     }
 
     /**
-     * @return the susceptibles
+     * @return the nR
      */
-    public int getSusceptibles() {
-        return susceptibles;
+    public int getnR() {
+        return nR;
     }
 
     /**
-     * @param susceptibles the susceptibles to set
+     * @return the nRiskAverse
      */
-    public void setSusceptibles(int susceptibles) {
-        this.susceptibles = susceptibles;
+    public int getnRiskAverse() {
+        return nRiskAverse;
     }
 
     /**
-     * Increases the amount of susceptibles by one.
+     * @return the nRiskNeutral
      */
-    public void incSusceptibles() {
-        this.susceptibles++;
+    public int getnRiskNeutral() {
+        return nRiskNeutral;
     }
 
     /**
-     * Decreases the amount of susceptibles by one.
+     * @return the nRiskSeeking
      */
-    public void decSusceptibles() {
-        this.susceptibles--;
-    }
-
-    /**
-     * @return the infected
-     */
-    public int getInfected() {
-        return infected;
-    }
-
-    /**
-     * @param infected the infected to set
-     */
-    public void setInfected(int infected) {
-        this.infected = infected;
-    }
-
-    /**
-     * Increases the amount of infected by one.
-     */
-    public void incInfected() {
-        this.infected++;
-    }
-
-    /**
-     * Decreases the amount of infected by one.
-     */
-    public void decInfected() {
-        this.infected--;
-    }
-
-    /**
-     * @return the recovered
-     */
-    public int getRecovered() {
-        return recovered;
-    }
-
-    /**
-     * @param recovered the recovered to set
-     */
-    public void setRecovered(int recovered) {
-        this.recovered = recovered;
-    }
-
-    /**
-     * Increases the amount of recovered by one.
-     */
-    public void incRecovered() {
-        this.recovered++;
-    }
-
-    /**
-     * Decreases the amount of recovered by one.
-     */
-    public void decRecovered() {
-        this.recovered--;
-    }
-
-    /**
-     * @return the riskAverse
-     */
-    public int getRiskAverse() {
-        return riskAverse;
-    }
-
-    /**
-     * @param riskAverse the riskAverse to set
-     */
-    public void setRiskAverse(int riskAverse) {
-        this.riskAverse = riskAverse;
-    }
-
-    /**
-     * Increases the amount of risk averse by one.
-     */
-    public void incRiskAverse() {
-        this.riskAverse++;
-    }
-
-    /**
-     * Decreases the amount of risk averse by one.
-     */
-    public void decRiskAverse() {
-        this.riskAverse--;
-    }
-
-    /**
-     * @return the riskNeutrals
-     */
-    public int getRiskNeutrals() {
-        return riskNeutrals;
-    }
-
-    /**
-     * @param riskNeutrals the riskNeutrals to set
-     */
-    public void setRiskNeutrals(int riskNeutrals) {
-        this.riskNeutrals = riskNeutrals;
-    }
-
-    /**
-     * Increases the amount of risk neutrals by one.
-     */
-    public void incRiskNeutrals() {
-        this.riskNeutrals++;
-    }
-
-    /**
-     * Decreases the amount of risk neutrals by one.
-     */
-    public void decRiskNeutrals() {
-        this.riskNeutrals--;
-    }
-
-    /**
-     * @return the riskSeeking
-     */
-    public int getRiskSeeking() {
-        return riskSeeking;
-    }
-
-    /**
-     * @param riskSeeking the riskSeeking to set
-     */
-    public void setRiskSeeking(int riskSeeking) {
-        this.riskSeeking = riskSeeking;
-    }
-
-    /**
-     * Increases the amount of risk seeking by one.
-     */
-    public void incRiskSeeking() {
-        this.riskSeeking++;
-    }
-
-    /**
-     * Decreases the amount of risk seeking by one.
-     */
-    public void decRiskSeeking() {
-        this.riskSeeking--;
+    public int getnRiskSeeking() {
+        return nRiskSeeking;
     }
 
     /**
@@ -216,13 +100,6 @@ public class GlobalActorStats {
      */
     public double getAvRisk() {
         return avRisk;
-    }
-
-    /**
-     * @param avRisk the avRisk to set
-     */
-    public void setAvRisk(double avRisk) {
-        this.avRisk = avRisk;
     }
 
 }

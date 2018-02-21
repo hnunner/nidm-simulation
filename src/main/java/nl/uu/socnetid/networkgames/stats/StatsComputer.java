@@ -110,6 +110,64 @@ public final class StatsComputer {
     }
 
     /**
+     * Computes the global actor stats for the given network.
+     *
+     * @param network
+     *          the network to compute the global network stats for
+     * @return the global actor stats for the given network
+     */
+    public static GlobalActorStats computeGlobalActorStats(Network network) {
+
+        // all actors
+        List<Actor> actors = network.getActors();
+        int n = actors.size();
+
+        // disease groups
+        int nS = 0;
+        int nI = 0;
+        int nR = 0;
+
+        // risk behavior
+        int nRiskAverse = 0;
+        int nRiskNeutral = 0;
+        int nRiskSeeking = 0;
+        double cumRisk = 0.0;
+
+        Iterator<Actor> actorsIt = actors.iterator();
+        while (actorsIt.hasNext()) {
+            Actor actor = actorsIt.next();
+
+            switch (actor.getDiseaseGroup()) {
+                case SUSCEPTIBLE:
+                    nS++;
+                    break;
+
+                case INFECTED:
+                    nI++;
+                    break;
+
+                case RECOVERED:
+                    nR++;
+                    break;
+
+                default:
+                    logger.warn("Unknown disease group: " + actor.getDiseaseGroup());
+            }
+
+            double riskFactor = actor.getRiskFactor();
+            if (riskFactor > 1) {
+                nRiskAverse++;
+            } else if (riskFactor < 1) {
+                nRiskSeeking++;
+            } else {
+                nRiskNeutral++;
+            }
+            cumRisk += riskFactor;
+        }
+        return new GlobalActorStats(n, nS, nI, nR, nRiskAverse, nRiskNeutral, nRiskSeeking, cumRisk / n);
+    }
+
+    /**
      * Computes the stats for a single actor's connections.
      *
      * @param actor
