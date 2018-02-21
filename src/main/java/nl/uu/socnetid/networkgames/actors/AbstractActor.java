@@ -15,6 +15,7 @@ import nl.uu.socnetid.networkgames.disease.Disease;
 import nl.uu.socnetid.networkgames.disease.DiseaseFactory;
 import nl.uu.socnetid.networkgames.disease.DiseaseSpecs;
 import nl.uu.socnetid.networkgames.disease.types.DiseaseGroup;
+import nl.uu.socnetid.networkgames.stats.StatsComputer;
 import nl.uu.socnetid.networkgames.utilities.Utility;
 import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
 
@@ -242,6 +243,14 @@ public abstract class AbstractActor implements Actor {
     }
 
     /* (non-Javadoc)
+     * @see nl.uu.socnetid.networkgames.actors.Actor#getCoActors()
+     */
+    @Override
+    public List<Actor> getCoActors() {
+        return this.coActors;
+    }
+
+    /* (non-Javadoc)
      * @see nl.uu.socnetid.networkgames.Actor#isSatisfied()
      */
     @Override
@@ -358,18 +367,15 @@ public abstract class AbstractActor implements Actor {
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.actors.Actor#computeTransmissions()
+     * @see nl.uu.socnetid.networkgames.actors.Actor#computeDiseaseTransmission()
      */
     @Override
-    public void computeTransmissions() {
-
-        Iterator<Actor> connectionsIt = this.connections.iterator();
-        while (connectionsIt.hasNext()) {
-            Actor currConnection = connectionsIt.next();
-
-            if (!currConnection.isInfected() && !currConnection.isRecovered()
-                    && this.disease.isTransmitted()) {
-                currConnection.infect(diseaseSpecs);
+    public void computeDiseaseTransmission() {
+        if (this.isSusceptible()) {
+            int nI = StatsComputer.computeLocalActorConnectionsStats(this).getnI();
+            if (ThreadLocalRandom.current().nextDouble() <=
+                    StatsComputer.computeProbabilityOfInfection(this, nI)) {
+                this.infect(this.diseaseSpecs);
             }
         }
     }
