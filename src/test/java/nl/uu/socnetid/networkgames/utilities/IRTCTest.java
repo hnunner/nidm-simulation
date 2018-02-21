@@ -37,6 +37,10 @@ public class IRTCTest {
     Actor actor3;
     Actor actor4;
     Actor actor5;
+    Actor actor6;
+    Actor actor7;
+    Actor actor8;
+    Actor actor9;
 
     // utility function
     UtilityFunction uf;
@@ -59,38 +63,81 @@ public class IRTCTest {
         actor3 = RationalActor.newInstance(uf, ds, r);
         actor4 = RationalActor.newInstance(uf, ds, r);
         actor5 = RationalActor.newInstance(uf, ds, r);
+        actor6 = RationalActor.newInstance(uf, ds, r);
+        actor7 = RationalActor.newInstance(uf, ds, r);
+        actor8 = RationalActor.newInstance(uf, ds, r);
+        actor9 = RationalActor.newInstance(uf, ds, r);
 
         // infections
-        actor3.infect(ds);
-        actor5.infect(ds);
+        actor4.infect(ds);
+        actor6.infect(ds);
+        actor8.infect(ds);
 
         actors.add(actor1);
         actors.add(actor2);
         actors.add(actor3);
         actors.add(actor4);
         actors.add(actor5);
+        actors.add(actor6);
+        actors.add(actor7);
+        actors.add(actor8);
+        actors.add(actor9);
 
         actor1.initCoActors(actors);
         actor2.initCoActors(actors);
         actor3.initCoActors(actors);
         actor4.initCoActors(actors);
         actor5.initCoActors(actors);
+        actor6.initCoActors(actors);
+        actor7.initCoActors(actors);
+        actor8.initCoActors(actors);
+        actor9.initCoActors(actors);
 
-        // connections are always bidirectional
+        // connections actor 1
         actor1.addConnection(actor2);
-        actor2.addConnection(actor1);
-
         actor1.addConnection(actor3);
-        actor3.addConnection(actor1);
-
         actor1.addConnection(actor4);
+
+        // connections actor 2
+        actor2.addConnection(actor1);
+        actor2.addConnection(actor6);
+
+        // connections actor 3
+        actor3.addConnection(actor1);
+        actor3.addConnection(actor5);
+
+        // connections actor 4
         actor4.addConnection(actor1);
-
-        actor3.addConnection(actor4);
+        actor4.addConnection(actor2);
         actor4.addConnection(actor3);
-
         actor4.addConnection(actor5);
+        actor4.addConnection(actor6);
+        actor4.addConnection(actor7);
+
+        // connections actor 5
+        actor5.addConnection(actor3);
         actor5.addConnection(actor4);
+        actor5.addConnection(actor7);
+        actor5.addConnection(actor8);
+
+        // connections actor 6
+        actor6.addConnection(actor2);
+        actor6.addConnection(actor4);
+        actor6.addConnection(actor7);
+
+        // connections actor 7
+        actor7.addConnection(actor4);
+        actor7.addConnection(actor5);
+        actor7.addConnection(actor6);
+        actor7.addConnection(actor8);
+
+        // connections actor 8
+        actor8.addConnection(actor5);
+        actor8.addConnection(actor7);
+        actor8.addConnection(actor9);
+
+        // connections actor 9
+        actor9.addConnection(actor8);
     }
 
 
@@ -99,11 +146,9 @@ public class IRTCTest {
      */
     @Test
     public void testGetUtility() {
-        assertEquals(-2.6, Precision.round(actor1.getUtility().getOverallUtility(), 1), 0);
-        assertEquals( 3.6, Precision.round(actor2.getUtility().getOverallUtility(), 1), 0);
-        assertEquals(-3.6, Precision.round(actor3.getUtility().getOverallUtility(), 1), 0);
-        assertEquals(-9.9, Precision.round(actor4.getUtility().getOverallUtility(), 1), 0);
-        assertEquals(-4.8, Precision.round(actor5.getUtility().getOverallUtility(), 1), 0);
+        assertEquals( -0.24, Precision.round(actor1.getUtility().getOverallUtility(), 2), 0);
+        assertEquals( -6.15, Precision.round(actor4.getUtility().getOverallUtility(), 2), 0);
+        assertEquals(-12.33, Precision.round(actor7.getUtility().getOverallUtility(), 2), 0);
     }
 
 }
