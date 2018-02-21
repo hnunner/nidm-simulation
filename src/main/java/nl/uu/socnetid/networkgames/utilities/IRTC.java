@@ -1,6 +1,7 @@
 package nl.uu.socnetid.networkgames.utilities;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -49,6 +50,9 @@ public class IRTC implements UtilityFunction {
         // amount of indirect connections neglecting disease groups
         int m = 0;
 
+        // indirect connections giving benefit only once
+        List<Actor> bookedIndirectBenefits = new LinkedList<Actor>();
+
         // for every direct connection
         Iterator<Actor> directIt = connections.iterator();
         while (directIt.hasNext()) {
@@ -79,16 +83,17 @@ public class IRTC implements UtilityFunction {
                 // no double benefit for indirect connections that is also a direct connection
                 // however, currently double benefits for an indirect connection that is
                 // connected to two different direct connections (i.e. in a ring of four actors,
-                // a an actor gets the indirect benefit twice from both direct connections)
+                // an actor gets the indirect benefit twice from both direct connections)
+                // no benefit from self
                 if (indirectConnection.equals(actor)
-                        || connections.contains(indirectConnection)) {
-
-
-                    //TODO: !!! FORBID DOUBLE BENEFITS FOR SAME INDIRECT OF TWO (OR MORE) DIRECT !!!
-
+                        // no double benefits for indirect connections being also direct connections
+                        || connections.contains(indirectConnection)
+                        // no double benefits for indirect connections that have been booked already
+                        || bookedIndirectBenefits.contains(indirectConnection)) {
                     continue;
                 }
                 m++;
+                bookedIndirectBenefits.add(indirectConnection);
             }
         }
 

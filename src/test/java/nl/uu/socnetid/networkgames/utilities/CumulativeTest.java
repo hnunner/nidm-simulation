@@ -20,6 +20,11 @@ import nl.uu.socnetid.networkgames.disease.types.DiseaseType;
  */
 public class CumulativeTest {
 
+
+    // TODO create more complex network, so that double indirect benefits would be possible
+    //      (e.g., take the network from IRTCTest.java)
+
+
     // actors
     Actor actor1;
     Actor actor2;
