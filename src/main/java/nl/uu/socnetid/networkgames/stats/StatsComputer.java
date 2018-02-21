@@ -133,10 +133,12 @@ public final class StatsComputer {
         int nRiskSeeking = 0;
         double cumRisk = 0.0;
 
+        // check all actors
         Iterator<Actor> actorsIt = actors.iterator();
         while (actorsIt.hasNext()) {
             Actor actor = actorsIt.next();
 
+            // disease group
             switch (actor.getDiseaseGroup()) {
                 case SUSCEPTIBLE:
                     nS++;
@@ -154,6 +156,7 @@ public final class StatsComputer {
                     logger.warn("Unknown disease group: " + actor.getDiseaseGroup());
             }
 
+            // risk behavior
             double riskFactor = actor.getRiskFactor();
             if (riskFactor > 1) {
                 nRiskAverse++;
@@ -164,6 +167,7 @@ public final class StatsComputer {
             }
             cumRisk += riskFactor;
         }
+
         return new GlobalActorStats(n, nS, nI, nR, nRiskAverse, nRiskNeutral, nRiskSeeking, cumRisk / n);
     }
 
