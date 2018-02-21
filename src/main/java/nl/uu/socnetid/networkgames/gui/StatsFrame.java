@@ -73,9 +73,9 @@ public class StatsFrame extends JFrame {
     private JLabel lblActorR;
     private JLabel lblActorRMeaning;
     // network
-    private JLabel lblActorDegree;
+    private JLabel lblActorFirstOrderDegree;
     private JLabel lblActorCloseness;
-    private JLabel lblActorBetweenness;
+    private JLabel lblActorSecondOrderDegree;
 
     /**
      * Constructor.
@@ -171,24 +171,24 @@ public class StatsFrame extends JFrame {
         lblActorRMeaning.setBounds(130, 240, 61, 16);
         panel.add(lblActorRMeaning);
 
-        JLabel label_32 = new JLabel("Degree");
-        label_32.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_32.setBounds(20, 270, 97, 16);
-        panel.add(label_32);
+        JLabel lblstOrderDegree = new JLabel("1st order degree");
+        lblstOrderDegree.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblstOrderDegree.setBounds(20, 270, 97, 16);
+        panel.add(lblstOrderDegree);
 
-        lblActorDegree = new JLabel(NA_STRING);
-        lblActorDegree.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorDegree.setBounds(130, 270, 61, 16);
-        panel.add(lblActorDegree);
+        lblActorFirstOrderDegree = new JLabel(NA_STRING);
+        lblActorFirstOrderDegree.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblActorFirstOrderDegree.setBounds(130, 270, 61, 16);
+        panel.add(lblActorFirstOrderDegree);
 
         lblActorCloseness = new JLabel(NA_STRING);
         lblActorCloseness.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorCloseness.setBounds(130, 285, 61, 16);
+        lblActorCloseness.setBounds(130, 300, 61, 16);
         panel.add(lblActorCloseness);
 
         JLabel label_35 = new JLabel("Closeness");
         label_35.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_35.setBounds(20, 285, 97, 16);
+        label_35.setBounds(20, 300, 97, 16);
         panel.add(label_35);
 
         JLabel label_36 = new JLabel("Network");
@@ -196,15 +196,15 @@ public class StatsFrame extends JFrame {
         label_36.setBounds(10, 255, 97, 16);
         panel.add(label_36);
 
-        JLabel label_37 = new JLabel("Betweenness");
-        label_37.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_37.setBounds(20, 300, 97, 16);
-        panel.add(label_37);
+        JLabel lblndOrderDegree = new JLabel("2nd order degree");
+        lblndOrderDegree.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblndOrderDegree.setBounds(20, 285, 97, 16);
+        panel.add(lblndOrderDegree);
 
-        lblActorBetweenness = new JLabel(NA_STRING);
-        lblActorBetweenness.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorBetweenness.setBounds(130, 300, 61, 16);
-        panel.add(lblActorBetweenness);
+        lblActorSecondOrderDegree = new JLabel(NA_STRING);
+        lblActorSecondOrderDegree.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblActorSecondOrderDegree.setBounds(130, 285, 61, 16);
+        panel.add(lblActorSecondOrderDegree);
 
         JLabel label_2 = new JLabel("Disease");
         label_2.setFont(new Font("Lucida Grande", Font.BOLD, 9));
@@ -323,12 +323,12 @@ public class StatsFrame extends JFrame {
 
         JLabel label_58 = new JLabel(":");
         label_58.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_58.setBounds(117, 285, 10, 16);
+        label_58.setBounds(117, 300, 10, 16);
         panel.add(label_58);
 
         JLabel label_59 = new JLabel(":");
         label_59.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_59.setBounds(117, 300, 10, 16);
+        label_59.setBounds(117, 285, 10, 16);
         panel.add(label_59);
 
         JLabel label_60 = new JLabel("(r):");
@@ -800,7 +800,7 @@ public class StatsFrame extends JFrame {
     /**
      * Resets the global stats for actors.
      */
-    public void resetActorGlobalStats() {
+    public void resetGlobalActorStats() {
         // utility
         this.lblGlobalUtilityFunction.setText(NA_STRING);
         this.lblGlobalAlpha.setText(NA_STRING);
@@ -821,7 +821,11 @@ public class StatsFrame extends JFrame {
      * @param actor
      *          the actor to refresh the stats for
      */
-    public void refreshActorLocalStats(Actor actor) {
+    public void refreshLocalActorStats(Actor actor) {
+
+        // TODO use StatsComputer and LocalActorStats bean to retrieve the stats
+
+
         // identifier
         this.lblActorID.setText(Long.toString(actor.getId()));
 
@@ -864,8 +868,8 @@ public class StatsFrame extends JFrame {
         }
 
         // network
-        this.lblActorDegree.setText(Integer.toString(StatsComputer.computeDegree(actor)));
+        this.lblActorFirstOrderDegree.setText(Integer.toString(StatsComputer.computeFirstOrderDegree(actor)));
+        this.lblActorSecondOrderDegree.setText(Integer.toString(StatsComputer.computeSecondOrderDegree(actor)));
         this.lblActorCloseness.setText(Double.toString(StatsComputer.computeCloseness(actor)));
-        this.lblActorBetweenness.setText(Double.toString(StatsComputer.computeBetweenness(actor)));
     }
 }

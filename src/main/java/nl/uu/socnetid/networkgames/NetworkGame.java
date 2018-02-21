@@ -495,7 +495,7 @@ ActionPerformedListener, DiseaseChangeListener {
 
         // if there are no more actors in the networks enable utility and disease panels
         if (this.network.getActors().isEmpty()) {
-            this.statsFrame.resetActorGlobalStats();
+            this.statsFrame.resetGlobalActorStats();
             enableUtilityPanels();
             enableDiseasePanels();
         }
@@ -635,7 +635,7 @@ ActionPerformedListener, DiseaseChangeListener {
         // show actor stats on node click
         if (this.chckbxShowActorStats.isSelected()) {
             this.statsActorId = clickActorId;
-            this.statsFrame.refreshActorLocalStats(network.getActor(clickActorId));
+            this.statsFrame.refreshLocalActorStats(network.getActor(clickActorId));
         }
 
         // update stats
@@ -724,7 +724,7 @@ ActionPerformedListener, DiseaseChangeListener {
         if (actorToRefresh == null) {
             return;
         }
-        this.statsFrame.refreshActorLocalStats(actorToRefresh);
+        this.statsFrame.refreshLocalActorStats(actorToRefresh);
     }
 
     /* (non-Javadoc)
@@ -738,7 +738,7 @@ ActionPerformedListener, DiseaseChangeListener {
 
         // local stats
         if (actor.getId() == this.statsActorId) {
-            this.statsFrame.refreshActorLocalStats(actor);
+            this.statsFrame.refreshLocalActorStats(actor);
         }
     }
 }

@@ -12,13 +12,6 @@ public interface Disease {
     void evolve();
 
     /**
-     * Checks whether the disease is transmitted.
-     *
-     * @return true if the disease is being transmitted, false otherwise
-     */
-    boolean isTransmitted();
-
-    /**
      * Checks whether the disease is infectious.
      *
      * @return true if the disease is infectious, false otherwise

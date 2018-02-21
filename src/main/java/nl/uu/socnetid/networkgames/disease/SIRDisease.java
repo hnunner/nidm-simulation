@@ -1,7 +1,5 @@
 package nl.uu.socnetid.networkgames.disease;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 import nl.uu.socnetid.networkgames.disease.types.DiseaseState;
 
 /**
@@ -65,14 +63,6 @@ public class SIRDisease implements Disease {
     @Override
     public boolean isCured() {
         return this.diseaseState == DiseaseState.DEFEATED;
-    }
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.disease.Disease#isTransmitted()
-     */
-    @Override
-    public boolean isTransmitted() {
-        return ThreadLocalRandom.current().nextDouble() <= this.diseaseSpecs.getGamma();
     }
 
     /* (non-Javadoc)
