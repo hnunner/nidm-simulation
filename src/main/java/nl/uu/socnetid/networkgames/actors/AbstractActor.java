@@ -291,15 +291,49 @@ public abstract class AbstractActor implements Actor {
      */
     @Override
     public boolean addConnection(Actor newConnection) {
-        if (newConnection.equals(this)) {
-            throw new RuntimeException("Unable to create reflexive connections.");
+
+        // check node consistency
+        if (!checkNewConnectionConsistency(newConnection)) {
+            logger.info("Request to add new connection aborted.");
+            return false;
         }
-        if (connections.contains(newConnection)) {
-            throw new RuntimeException("Unable to create more than one connection to the same actor.");
-        }
+
         boolean connectionAdded = this.connections.add(newConnection);
         notifyActionPerformedListeners();
+
         return connectionAdded;
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.networkgames.actors.Actor#connectToAll()
+     */
+    @Override
+    public void connectToAll() {
+        ArrayList<Actor> noConnections = new ArrayList<Actor>(coActors);
+        noConnections.removeAll(connections);
+
+        Iterator<Actor> noConnectionsIt = noConnections.iterator();
+        while (noConnectionsIt.hasNext()) {
+            Actor noConnection = noConnectionsIt.next();
+            addConnection(noConnection);
+        }
+    }
+
+    /**
+     * @param newConnection
+     *          the new connection to check for consistency
+     * @return true if new node can be added, false otherwise
+     */
+    protected boolean checkNewConnectionConsistency(Actor newConnection) {
+        if (newConnection.equals(this)) {
+            logger.info("Inconsistent new connection: reflexive");
+            return false;
+        }
+        if (connections.contains(newConnection)) {
+            logger.info("Inconsistent new connection: already existing");
+            return false;
+        }
+        return true;
     }
 
     /* (non-Javadoc)

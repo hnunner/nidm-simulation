@@ -125,6 +125,11 @@ public interface Actor extends Comparable<Actor>, Runnable {
     void removeAllConnections();
 
     /**
+     * Connects to all other actors available.
+     */
+    void connectToAll();
+
+    /**
      * Checks whether a new connection creates higher utility. If so,
      * the actor for a new desired connection is returned, null otherwise.
      *

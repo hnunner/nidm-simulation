@@ -68,6 +68,22 @@ public abstract class AbstractNetwork implements Network {
     }
 
     /* (non-Javadoc)
+     * @see nl.uu.socnetid.networkgames.network.networks.Network#createFullNetwork()
+     */
+    @Override
+    public void createFullNetwork() {
+        if (this.actors.size() == 0) {
+            return;
+        }
+
+        Iterator<Actor> actorsIt = this.actors.iterator();
+        while (actorsIt.hasNext()) {
+            Actor actor = actorsIt.next();
+            actor.connectToAll();
+        }
+    }
+
+    /* (non-Javadoc)
      * @see nl.uu.socnetid.networkgames.network.Network#getActors()
      */
     @Override
