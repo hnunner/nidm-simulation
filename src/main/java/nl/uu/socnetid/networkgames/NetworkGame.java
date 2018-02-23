@@ -336,6 +336,12 @@ ActionPerformedListener, DiseaseChangeListener {
         actorPane.add(lbln);
 
         JButton btnCreateFullNetwork = new JButton("Create Full Network");
+        btnCreateFullNetwork.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                createFullNetwork();
+            }
+        });
         btnCreateFullNetwork.setBounds(18, 122, 217, 29);
         actorPane.add(btnCreateFullNetwork);
 
@@ -529,6 +535,15 @@ ActionPerformedListener, DiseaseChangeListener {
     }
 
     /**
+     * Creates the full network based on the actors available.
+     */
+    private void createFullNetwork() {
+        if (this.network != null) {
+            this.network.createFullNetwork();
+        }
+    }
+
+    /**
      * Runs the actual simulation of the network game.
      */
     private void startSimulation() {
@@ -552,6 +567,9 @@ ActionPerformedListener, DiseaseChangeListener {
      * Pauses the simulation of the network game.
      */
     private void pauseSimulation() {
+        if (simulationTask == null) {
+            return;
+        }
         simulationTask.cancel(true);
     }
 
