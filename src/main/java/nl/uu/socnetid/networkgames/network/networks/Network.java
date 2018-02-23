@@ -54,6 +54,11 @@ public interface Network {
     void clearConnections();
 
     /**
+     * Creates the full network based on the actors available.
+     */
+    void createFullNetwork();
+
+    /**
      * Removes all connections between actors and resets the actors to being susceptible.
      */
     void resetActors();
