@@ -3,6 +3,7 @@ package nl.uu.socnetid.networkgames.actors;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import org.apache.log4j.Logger;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -14,6 +15,9 @@ import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
  * @author Hendrik Nunner
  */
 public class RationalActorNode extends RationalActor implements Actor {
+
+    // logger
+    private static final Logger logger = Logger.getLogger(RationalActorNode.class);
 
     // the graph the actor acts as node in
     private Graph graph;
@@ -92,6 +96,13 @@ public class RationalActorNode extends RationalActor implements Actor {
      */
     @Override
     public boolean addConnection(Actor newConnection) {
+
+        // check node consistency
+        if (!checkNewConnectionConsistency(newConnection)) {
+            logger.info("Request to add new connection aborted.");
+            return false;
+        }
+
         // edge id consistency
         ArrayList<Actor> actors = new ArrayList<Actor>();
         actors.add(this);
