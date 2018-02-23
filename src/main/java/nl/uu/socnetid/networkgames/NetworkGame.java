@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,6 +29,7 @@ import javax.swing.border.MatteBorder;
 import org.apache.log4j.Logger;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.stream.file.FileSinkGEXF;
 import org.graphstream.ui.view.Viewer;
 
 import nl.uu.socnetid.networkgames.actors.ActionPerformedListener;
@@ -46,7 +48,6 @@ import nl.uu.socnetid.networkgames.gui.StatsFrame;
 import nl.uu.socnetid.networkgames.gui.TruncatedConnectionsPanel;
 import nl.uu.socnetid.networkgames.network.io.AdjacencyMatrixWriter;
 import nl.uu.socnetid.networkgames.network.io.EdgeListWriter;
-import nl.uu.socnetid.networkgames.network.io.NetworkFileWriter;
 import nl.uu.socnetid.networkgames.network.io.NetworkWriter;
 import nl.uu.socnetid.networkgames.network.networks.Network;
 import nl.uu.socnetid.networkgames.network.networks.SimpleNetwork;
@@ -87,7 +88,7 @@ ActionPerformedListener, DiseaseChangeListener {
     private final String[] utilityFunctions = {"IRTC", "Cumulative", "Truncated Connections"};
     // edge writer combo box and selection
     private JComboBox<String> edgeWriterCBox;
-    private final String[] edgeWriters = {"Edge List", "Adjacency Matrix"};
+    private final String[] edgeWriters = {"GEXF"};  //, "Edge List", "Adjacency Matrix"};
     // spinner for simulation delay
     private JSpinner simulationDelay;
 
@@ -593,12 +594,23 @@ ActionPerformedListener, DiseaseChangeListener {
         if(popdownState == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             String file = fileChooser.getSelectedFile().getPath();
+
+
+            FileSinkGEXF fileSink = new FileSinkGEXF();
+            try {
+                fileSink.writeAll(this.graph, file);
+            } catch (IOException e) {
+                logger.error(e);
+            }
+
+
+
             String filePath = file.replace(selectedFile.getName(), "");
+            // TODO clean up
+//            NetworkWriter networkWriter = getSelectedNetworkWriter();
 
-            NetworkWriter networkWriter = getSelectedNetworkWriter();
-
-            NetworkFileWriter fileWriter = new NetworkFileWriter(filePath, file, networkWriter, network);
-            fileWriter.write();
+//            NetworkFileWriter fileWriter = new NetworkFileWriter(filePath, file, networkWriter, network);
+//            fileWriter.write();
         }
     }
 
@@ -608,9 +620,11 @@ ActionPerformedListener, DiseaseChangeListener {
     private NetworkWriter getSelectedNetworkWriter() {
         switch (edgeWriterCBox.getSelectedIndex()) {
             case 0:
-                return new EdgeListWriter();
 
             case 1:
+                return new EdgeListWriter();
+
+            case 2:
                 return new AdjacencyMatrixWriter();
 
             default:

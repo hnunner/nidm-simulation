@@ -13,7 +13,7 @@ import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
 /**
  * @author Hendrik Nunner
  */
-public class RationalActorNode extends RationalActor implements Actor {
+public class RationalActorNode extends RationalActor {
 
     // the graph the actor acts as node in
     private Graph graph;
@@ -29,10 +29,11 @@ public class RationalActorNode extends RationalActor implements Actor {
      * @param diseaseSpecs
      *          the disease that is or might become present in the network
      */
-    protected RationalActorNode(Graph graph, UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs) {
+    private RationalActorNode(Graph graph, UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs) {
         super(utilityFunction, diseaseSpecs);
         this.graph = graph;
         this.graph.addNode(String.valueOf(getId()));
+        updateAttributes();
     }
 
     /**
@@ -62,11 +63,12 @@ public class RationalActorNode extends RationalActor implements Actor {
      * @param riskFactor
      *          the risk factor of the new actor
      */
-    protected RationalActorNode(Graph graph, UtilityFunction utilityFunction,
+    private RationalActorNode(Graph graph, UtilityFunction utilityFunction,
             DiseaseSpecs diseaseSpecs, double riskFactor) {
         super(utilityFunction, diseaseSpecs, riskFactor);
         this.graph = graph;
         this.graph.addNode(String.valueOf(getId()));
+        updateAttributes();
     }
 
     /**
@@ -158,7 +160,7 @@ public class RationalActorNode extends RationalActor implements Actor {
     @Override
     public void fightDisease() {
         super.fightDisease();
-        updateAppearance();
+        updateAttributes();
     }
 
     /* (non-Javadoc)
@@ -167,7 +169,7 @@ public class RationalActorNode extends RationalActor implements Actor {
     @Override
     public void cure() {
         super.cure();
-        updateAppearance();
+        updateAttributes();
     }
 
     /* (non-Javadoc)
@@ -176,7 +178,7 @@ public class RationalActorNode extends RationalActor implements Actor {
     @Override
     public void infect(DiseaseSpecs diseaseSpecs) {
         super.infect(diseaseSpecs);
-        updateAppearance();
+        updateAttributes();
     }
 
     /* (non-Javadoc)
@@ -186,7 +188,7 @@ public class RationalActorNode extends RationalActor implements Actor {
     @Override
     public void forceInfect(DiseaseSpecs diseaseSpecs) {
         super.forceInfect(diseaseSpecs);
-        updateAppearance();
+        updateAttributes();
     }
 
     /* (non-Javadoc)
@@ -195,30 +197,40 @@ public class RationalActorNode extends RationalActor implements Actor {
     @Override
     public void makeSusceptible() {
         super.makeSusceptible();
-        updateAppearance();
+        updateAttributes();
     }
 
     /**
-     * Updates the appearance of the displayed node.
+     * Updates the attributes of the node.
      */
-    private void updateAppearance() {
+    private void updateAttributes() {
         Node node = this.graph.getNode(String.valueOf(getId()));
+
+        if (node.getAttribute("ui.label") == null) {
+            node.addAttribute("ui.label", node.getId());
+        }
 
         // susceptible
         if (this.isSusceptible()) {
             node.addAttribute("ui.class", "susceptible");
+            node.addAttribute("disease.group", "susceptible");
+            node.removeAttribute("disease.type");
             return;
         }
 
         // infected
         if (this.isInfected()) {
             node.addAttribute("ui.class", "infected");
+            node.addAttribute("disease.group", "infected");
+            node.addAttribute("disease.type", "SIR");
             return;
         }
 
         // recovered
         if (this.isRecovered()) {
             node.addAttribute("ui.class", "recovered");
+            node.addAttribute("disease.group", "recovered");
+            node.removeAttribute("disease.type");
             return;
         }
     }
