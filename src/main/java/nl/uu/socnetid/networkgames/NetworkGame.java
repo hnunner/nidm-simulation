@@ -165,7 +165,7 @@ ActionPerformedListener, DiseaseChangeListener {
     private void initialize() {
         // init settings frame
         settingsFrame = new JFrame();
-        settingsFrame.setBounds(100, 100, 360, 550);
+        settingsFrame.setBounds(100, 100, 375, 560);
         settingsFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         settingsFrame.getContentPane().setLayout(null);
 
