@@ -177,7 +177,7 @@ ActionPerformedListener, DiseaseChangeListener {
         // tabbed pane
         JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.LEFT, JTabbedPane.WRAP_TAB_LAYOUT);
         tabbedPane.setBorder(null);
-        tabbedPane.setBounds(25, 6, 304, 350);
+        tabbedPane.setBounds(25, 6, 315, 350);
         settingsFrame.getContentPane().add(tabbedPane);
         JPanel utilityPane = new JPanel();
         utilityPane.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
@@ -251,7 +251,7 @@ ActionPerformedListener, DiseaseChangeListener {
                 }
             }
         });
-        diseaseCBox.setBounds(22, 6, 215, 30);
+        diseaseCBox.setBounds(20, 6, 215, 30);
         diseasePane.add(diseaseCBox);
 
         sirPanel.setBounds(20, 38, 214, 225);
@@ -261,32 +261,32 @@ ActionPerformedListener, DiseaseChangeListener {
         actorPane.setLayout(null);
 
         JButton btnAddActor = new JButton("Add Actor");
-        btnAddActor.setBounds(20, 6, 217, 30);
+        btnAddActor.setBounds(18, 6, 217, 30);
         actorPane.add(btnAddActor);
 
         JButton btnRemoveActor = new JButton("Remove Actor");
-        btnRemoveActor.setBounds(20, 88, 217, 30);
+        btnRemoveActor.setBounds(18, 88, 217, 30);
         actorPane.add(btnRemoveActor);
 
         JButton btnClearEdges = new JButton("Clear Edges");
-        btnClearEdges.setBounds(20, 155, 217, 30);
+        btnClearEdges.setBounds(18, 155, 217, 30);
         actorPane.add(btnClearEdges);
 
         txtR = new JTextField();
         txtR.setText("1.00");
         txtR.setHorizontalAlignment(SwingConstants.RIGHT);
         txtR.setColumns(10);
-        txtR.setBounds(170, 63, 60, 20);
+        txtR.setBounds(168, 63, 60, 20);
         actorPane.add(txtR);
 
         lblR = new JLabel("Risk factor");
         lblR.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
-        lblR.setBounds(29, 65, 96, 16);
+        lblR.setBounds(27, 65, 96, 16);
         actorPane.add(lblR);
 
         JPanel pnlNodeClick = new JPanel();
         pnlNodeClick.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-        pnlNodeClick.setBounds(20, 230, 217, 81);
+        pnlNodeClick.setBounds(18, 230, 217, 81);
         actorPane.add(pnlNodeClick);
         pnlNodeClick.setLayout(null);
 
@@ -311,32 +311,32 @@ ActionPerformedListener, DiseaseChangeListener {
                 clearAll();
             }
         });
-        btnClearAll.setBounds(20, 188, 217, 30);
+        btnClearAll.setBounds(18, 188, 217, 30);
         actorPane.add(btnClearAll);
 
         txtAddAmount = new JTextField();
         txtAddAmount.setText("1");
         txtAddAmount.setHorizontalAlignment(SwingConstants.RIGHT);
         txtAddAmount.setColumns(10);
-        txtAddAmount.setBounds(170, 40, 60, 20);
+        txtAddAmount.setBounds(168, 40, 60, 20);
         actorPane.add(txtAddAmount);
 
         JLabel lblAmount = new JLabel("Amount:");
         lblAmount.setToolTipText("Risk behavior of the actor - r<1: risk seeking, "
                 + "r=1: risk neutral, r>1: risk averse");
-        lblAmount.setBounds(29, 42, 103, 16);
+        lblAmount.setBounds(27, 42, 103, 16);
         actorPane.add(lblAmount);
 
         JLabel lblr = new JLabel("(r):");
-        lblr.setBounds(140, 65, 24, 16);
+        lblr.setBounds(138, 65, 24, 16);
         actorPane.add(lblr);
 
         JLabel lbln = new JLabel("(N):");
-        lbln.setBounds(140, 42, 24, 16);
+        lbln.setBounds(138, 42, 24, 16);
         actorPane.add(lbln);
 
         JButton btnCreateFullNetwork = new JButton("Create Full Network");
-        btnCreateFullNetwork.setBounds(20, 122, 217, 29);
+        btnCreateFullNetwork.setBounds(18, 122, 217, 29);
         actorPane.add(btnCreateFullNetwork);
 
         btnClearEdges.addActionListener(new ActionListener() {
@@ -362,7 +362,7 @@ ActionPerformedListener, DiseaseChangeListener {
         exportPane.setLayout(null);
 
         edgeWriterCBox = new JComboBox<String>();
-        edgeWriterCBox.setBounds(22, 6, 215, 30);
+        edgeWriterCBox.setBounds(20, 6, 215, 30);
         exportPane.add(edgeWriterCBox);
 
         JButton btnExportNetwork = new JButton("Export");
