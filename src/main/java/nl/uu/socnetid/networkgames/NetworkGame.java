@@ -165,7 +165,7 @@ ActionPerformedListener, DiseaseChangeListener {
     private void initialize() {
         // init settings frame
         settingsFrame = new JFrame();
-        settingsFrame.setBounds(100, 100, 340, 500);
+        settingsFrame.setBounds(100, 100, 360, 550);
         settingsFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         settingsFrame.getContentPane().setLayout(null);
 
@@ -177,7 +177,7 @@ ActionPerformedListener, DiseaseChangeListener {
         // tabbed pane
         JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.LEFT, JTabbedPane.WRAP_TAB_LAYOUT);
         tabbedPane.setBorder(null);
-        tabbedPane.setBounds(6, 6, 305, 290);
+        tabbedPane.setBounds(25, 6, 304, 350);
         settingsFrame.getContentPane().add(tabbedPane);
         JPanel utilityPane = new JPanel();
         utilityPane.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
@@ -217,17 +217,17 @@ ActionPerformedListener, DiseaseChangeListener {
                 }
             }
         });
-        utilityFunctionCBox.setBounds(8, 6, 215, 30);
+        utilityFunctionCBox.setBounds(20, 6, 215, 30);
         utilityPane.add(utilityFunctionCBox);
 
-        irtcPanel.setBounds(6, 38, 214, 225);
+        irtcPanel.setBounds(20, 38, 214, 225);
         utilityPane.add(irtcPanel);
 
-        cumulativePanel.setBounds(6, 38, 217, 225);
+        cumulativePanel.setBounds(20, 38, 214, 225);
         cumulativePanel.setVisible(false);
         utilityPane.add(cumulativePanel);
 
-        truncatedConnectionsPanel.setBounds(6, 38, 217, 225);
+        truncatedConnectionsPanel.setBounds(20, 38, 214, 225);
         truncatedConnectionsPanel.setVisible(false);
         utilityPane.add(truncatedConnectionsPanel);
         JPanel diseasePane = new JPanel();
@@ -251,42 +251,42 @@ ActionPerformedListener, DiseaseChangeListener {
                 }
             }
         });
-        diseaseCBox.setBounds(8, 6, 215, 30);
+        diseaseCBox.setBounds(22, 6, 215, 30);
         diseasePane.add(diseaseCBox);
 
-        sirPanel.setBounds(6, 38, 214, 225);
+        sirPanel.setBounds(20, 38, 214, 225);
         sirPanel.setVisible(true);
         diseasePane.add(sirPanel);
         tabbedPane.addTab("Actors", actorPane);
         actorPane.setLayout(null);
 
         JButton btnAddActor = new JButton("Add Actor");
-        btnAddActor.setBounds(6, 6, 217, 30);
+        btnAddActor.setBounds(20, 6, 217, 30);
         actorPane.add(btnAddActor);
 
         JButton btnRemoveActor = new JButton("Remove Actor");
-        btnRemoveActor.setBounds(6, 88, 217, 30);
+        btnRemoveActor.setBounds(20, 88, 217, 30);
         actorPane.add(btnRemoveActor);
 
         JButton btnClearEdges = new JButton("Clear Edges");
-        btnClearEdges.setBounds(6, 122, 217, 30);
+        btnClearEdges.setBounds(20, 155, 217, 30);
         actorPane.add(btnClearEdges);
 
         txtR = new JTextField();
         txtR.setText("1.00");
         txtR.setHorizontalAlignment(SwingConstants.RIGHT);
         txtR.setColumns(10);
-        txtR.setBounds(156, 63, 60, 20);
+        txtR.setBounds(170, 63, 60, 20);
         actorPane.add(txtR);
 
         lblR = new JLabel("Risk factor");
         lblR.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
-        lblR.setBounds(15, 65, 96, 16);
+        lblR.setBounds(29, 65, 96, 16);
         actorPane.add(lblR);
 
         JPanel pnlNodeClick = new JPanel();
         pnlNodeClick.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-        pnlNodeClick.setBounds(6, 193, 217, 81);
+        pnlNodeClick.setBounds(20, 230, 217, 81);
         actorPane.add(pnlNodeClick);
         pnlNodeClick.setLayout(null);
 
@@ -311,29 +311,33 @@ ActionPerformedListener, DiseaseChangeListener {
                 clearAll();
             }
         });
-        btnClearAll.setBounds(6, 155, 217, 30);
+        btnClearAll.setBounds(20, 188, 217, 30);
         actorPane.add(btnClearAll);
 
         txtAddAmount = new JTextField();
         txtAddAmount.setText("1");
         txtAddAmount.setHorizontalAlignment(SwingConstants.RIGHT);
         txtAddAmount.setColumns(10);
-        txtAddAmount.setBounds(156, 40, 60, 20);
+        txtAddAmount.setBounds(170, 40, 60, 20);
         actorPane.add(txtAddAmount);
 
         JLabel lblAmount = new JLabel("Amount:");
         lblAmount.setToolTipText("Risk behavior of the actor - r<1: risk seeking, "
                 + "r=1: risk neutral, r>1: risk averse");
-        lblAmount.setBounds(15, 42, 103, 16);
+        lblAmount.setBounds(29, 42, 103, 16);
         actorPane.add(lblAmount);
 
         JLabel lblr = new JLabel("(r):");
-        lblr.setBounds(126, 65, 24, 16);
+        lblr.setBounds(140, 65, 24, 16);
         actorPane.add(lblr);
 
         JLabel lbln = new JLabel("(N):");
-        lbln.setBounds(126, 42, 24, 16);
+        lbln.setBounds(140, 42, 24, 16);
         actorPane.add(lbln);
+
+        JButton btnCreateFullNetwork = new JButton("Create Full Network");
+        btnCreateFullNetwork.setBounds(20, 122, 217, 29);
+        actorPane.add(btnCreateFullNetwork);
 
         btnClearEdges.addActionListener(new ActionListener() {
             @Override
@@ -358,11 +362,11 @@ ActionPerformedListener, DiseaseChangeListener {
         exportPane.setLayout(null);
 
         edgeWriterCBox = new JComboBox<String>();
-        edgeWriterCBox.setBounds(8, 6, 215, 30);
+        edgeWriterCBox.setBounds(22, 6, 215, 30);
         exportPane.add(edgeWriterCBox);
 
         JButton btnExportNetwork = new JButton("Export");
-        btnExportNetwork.setBounds(6, 42, 217, 30);
+        btnExportNetwork.setBounds(20, 42, 217, 30);
         exportPane.add(btnExportNetwork);
         btnExportNetwork.addActionListener(new ActionListener() {
             @Override
@@ -380,7 +384,7 @@ ActionPerformedListener, DiseaseChangeListener {
                 startSimulation();
             }
         });
-        btnStart.setBounds(9, 342, 302, 35);
+        btnStart.setBounds(29, 405, 302, 35);
         settingsFrame.getContentPane().add(btnStart);
         for (int i = 0; i < edgeWriters.length; i++) {
             edgeWriterCBox.addItem(edgeWriters[i]);
@@ -390,11 +394,11 @@ ActionPerformedListener, DiseaseChangeListener {
         }
 
         simulationDelay = new JSpinner();
-        simulationDelay.setBounds(241, 307, 70, 26);
+        simulationDelay.setBounds(261, 370, 70, 26);
         settingsFrame.getContentPane().add(simulationDelay);
 
         JLabel simulationDelayLabel = new JLabel("Simulation delay (100 ms):");
-        simulationDelayLabel.setBounds(16, 310, 170, 16);
+        simulationDelayLabel.setBounds(36, 373, 170, 16);
         settingsFrame.getContentPane().add(simulationDelayLabel);
 
         JButton btnPauseSimulation = new JButton(" Pause");
@@ -406,7 +410,7 @@ ActionPerformedListener, DiseaseChangeListener {
                 pauseSimulation();
             }
         });
-        btnPauseSimulation.setBounds(9, 379, 302, 35);
+        btnPauseSimulation.setBounds(29, 442, 302, 35);
         settingsFrame.getContentPane().add(btnPauseSimulation);
 
         JButton btnReset = new JButton(" Reset");
@@ -418,7 +422,7 @@ ActionPerformedListener, DiseaseChangeListener {
         });
         btnReset.setIcon(new ImageIcon(getClass().getResource("/reset.png")));
         btnReset.setFont(new Font("Lucida Grande", Font.PLAIN, 14));
-        btnReset.setBounds(9, 416, 302, 35);
+        btnReset.setBounds(29, 479, 302, 35);
         settingsFrame.getContentPane().add(btnReset);
 
 
