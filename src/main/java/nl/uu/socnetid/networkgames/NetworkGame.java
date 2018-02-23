@@ -165,7 +165,7 @@ ActionPerformedListener, DiseaseChangeListener {
     private void initialize() {
         // init settings frame
         settingsFrame = new JFrame();
-        settingsFrame.setBounds(100, 100, 375, 560);
+        settingsFrame.setBounds(100, 100, 370, 555);
         settingsFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         settingsFrame.getContentPane().setLayout(null);
 
@@ -384,7 +384,7 @@ ActionPerformedListener, DiseaseChangeListener {
                 startSimulation();
             }
         });
-        btnStart.setBounds(29, 405, 302, 35);
+        btnStart.setBounds(29, 405, 311, 35);
         settingsFrame.getContentPane().add(btnStart);
         for (int i = 0; i < edgeWriters.length; i++) {
             edgeWriterCBox.addItem(edgeWriters[i]);
@@ -410,7 +410,7 @@ ActionPerformedListener, DiseaseChangeListener {
                 pauseSimulation();
             }
         });
-        btnPauseSimulation.setBounds(29, 442, 302, 35);
+        btnPauseSimulation.setBounds(29, 442, 311, 35);
         settingsFrame.getContentPane().add(btnPauseSimulation);
 
         JButton btnReset = new JButton(" Reset");
@@ -422,7 +422,7 @@ ActionPerformedListener, DiseaseChangeListener {
         });
         btnReset.setIcon(new ImageIcon(getClass().getResource("/reset.png")));
         btnReset.setFont(new Font("Lucida Grande", Font.PLAIN, 14));
-        btnReset.setBounds(29, 479, 302, 35);
+        btnReset.setBounds(29, 479, 311, 35);
         settingsFrame.getContentPane().add(btnReset);
 
 
