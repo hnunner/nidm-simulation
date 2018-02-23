@@ -79,7 +79,6 @@ ActionPerformedListener, DiseaseChangeListener {
     private Graph graph;
 
     // logger
-    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(NetworkGame.class);
 
     // swing components
@@ -464,11 +463,13 @@ ActionPerformedListener, DiseaseChangeListener {
         // TODO remove and use GEXFWriter instead
         try {
             fileSink = new FileSinkGEXF();
-            fileSink.setTimeFormat(TimeFormat.INTEGER);
+            fileSink.setTimeFormat(TimeFormat.DATETIME);
             fileSink.begin(EXPORT_PATH + "export-"
                     + new SimpleDateFormat("yyyyMMdd-HH:mm:ss").format(new Date())
                     + ".gexf");
-            fileSink.stepBegins(this.graph.getId(), timeId, step);
+
+
+            fileSink.stepBegins(this.graph.getId(), timeId, new Date().getTime());
             try {
                 fileSink.flush();
             } catch (IOException e) {
@@ -524,7 +525,7 @@ ActionPerformedListener, DiseaseChangeListener {
 
 
             // TODO remove and use GEXFWriter instead
-            fileSink.stepBegins(this.graph.getId(), timeId, ++step);
+            fileSink.stepBegins(this.graph.getId(), timeId, new Date().getTime());
             fileSink.nodeAdded(this.graph.getId(), timeId, Long.toString(actor.getId()));
             try {
                 fileSink.flush();
@@ -569,7 +570,7 @@ ActionPerformedListener, DiseaseChangeListener {
 
 
         // TODO remove and use GEXFWriter instead
-        fileSink.stepBegins(this.graph.getId(), timeId, ++step);
+        fileSink.stepBegins(this.graph.getId(), timeId, new Date().getTime());
         fileSink.nodeRemoved(this.graph.getId(), timeId, String.valueOf(this.network.getActors().size()));
         try {
             fileSink.flush();
@@ -632,7 +633,7 @@ ActionPerformedListener, DiseaseChangeListener {
     private void pauseSimulation() {
         // TODO remove and use GEXFWriter instead
         try {
-            fileSink.stepBegins(this.graph.getId(), timeId, ++step);
+            fileSink.stepBegins(this.graph.getId(), timeId, new Date().getTime());
 
             // required to flush the last time step
             fileSink.graphCleared(this.graph.getId(), timeId);
