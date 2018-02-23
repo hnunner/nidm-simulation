@@ -8,6 +8,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -30,6 +32,7 @@ import org.apache.log4j.Logger;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.stream.file.FileSinkGEXF;
+import org.graphstream.stream.file.FileSinkGEXF.TimeFormat;
 import org.graphstream.ui.view.Viewer;
 
 import nl.uu.socnetid.networkgames.actors.ActionPerformedListener;
@@ -128,7 +131,14 @@ ActionPerformedListener, DiseaseChangeListener {
     private JTextField txtAddAmount;
 
     // simulation
-    NetworkSimulation networkSimulation;
+    private NetworkSimulation networkSimulation;
+
+
+    // TODO remove and use GEXFWriter instead
+    // export
+    private FileSinkGEXF fileSink;
+    private long timeId = 1;
+    private long step = 0;
 
 
     /**
@@ -449,6 +459,28 @@ ActionPerformedListener, DiseaseChangeListener {
         // show
         Viewer viewer = this.graph.display();
 
+
+        // init export
+        // TODO remove and use GEXFWriter instead
+        try {
+            fileSink = new FileSinkGEXF();
+            fileSink.setTimeFormat(TimeFormat.INTEGER);
+            fileSink.begin(EXPORT_PATH + "export-"
+                    + new SimpleDateFormat("yyyyMMdd-HH:mm:ss").format(new Date())
+                    + ".gexf");
+            fileSink.stepBegins(this.graph.getId(), timeId, step);
+            try {
+                fileSink.flush();
+            } catch (IOException e) {
+                logger.error(e);
+            }
+        } catch (IOException e) {
+            logger.error(e);
+        }
+
+
+
+
         // init click listener
         NodeClick nodeClickListener = new NodeClick(graph, viewer);
         nodeClickListener.addListener(this);
@@ -487,6 +519,18 @@ ActionPerformedListener, DiseaseChangeListener {
             }
             actor.addActionPerformedListener(this);
             actor.addDiseaseChangeListener(this);
+
+
+
+
+            // TODO remove and use GEXFWriter instead
+            fileSink.stepBegins(this.graph.getId(), timeId, ++step);
+            fileSink.nodeAdded(this.graph.getId(), timeId, Long.toString(actor.getId()));
+            try {
+                fileSink.flush();
+            } catch (IOException e) {
+                logger.error(e);
+            }
         }
 
         // update stats
@@ -496,6 +540,10 @@ ActionPerformedListener, DiseaseChangeListener {
         }
         this.statsFrame.refreshGlobalActorStats(StatsComputer.computeGlobalActorStats(this.network));
         this.statsFrame.refreshGlobalNetworkStats(StatsComputer.computeGlobalNetworkStats(this.network));
+
+
+
+
     }
 
     /**
@@ -514,6 +562,20 @@ ActionPerformedListener, DiseaseChangeListener {
         // update stats
         this.statsFrame.refreshGlobalActorStats(StatsComputer.computeGlobalActorStats(this.network));
         this.statsFrame.refreshGlobalNetworkStats(StatsComputer.computeGlobalNetworkStats(this.network));
+
+
+
+
+
+
+        // TODO remove and use GEXFWriter instead
+        fileSink.stepBegins(this.graph.getId(), timeId, ++step);
+        fileSink.nodeRemoved(this.graph.getId(), timeId, String.valueOf(this.network.getActors().size()));
+        try {
+            fileSink.flush();
+        } catch (IOException e) {
+            logger.error(e);
+        }
     }
 
     /**
@@ -568,6 +630,22 @@ ActionPerformedListener, DiseaseChangeListener {
      * Pauses the simulation of the network game.
      */
     private void pauseSimulation() {
+        // TODO remove and use GEXFWriter instead
+        try {
+            fileSink.stepBegins(this.graph.getId(), timeId, ++step);
+
+            // required to flush the last time step
+            fileSink.graphCleared(this.graph.getId(), timeId);
+
+            fileSink.flush();
+            fileSink.end();
+        } catch (IOException e) {
+            logger.error(e);
+        }
+
+
+
+
         if (simulationTask == null) {
             return;
         }
