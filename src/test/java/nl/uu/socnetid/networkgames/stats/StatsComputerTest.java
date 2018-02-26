@@ -6,11 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.math3.util.Precision;
+import org.graphstream.graph.Graph;
+import org.graphstream.graph.implementations.SingleGraph;
 import org.junit.Before;
 import org.junit.Test;
 
 import nl.uu.socnetid.networkgames.actors.Actor;
-import nl.uu.socnetid.networkgames.actors.RationalActor;
 import nl.uu.socnetid.networkgames.disease.DiseaseSpecs;
 import nl.uu.socnetid.networkgames.disease.types.DiseaseType;
 import nl.uu.socnetid.networkgames.utilities.Cumulative;
@@ -22,6 +23,9 @@ import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
  * @author Hendrik Nunner
  */
 public class StatsComputerTest {
+
+    // graph
+    private Graph graph;
 
     // constants
     private static final int    tau   = 10;
@@ -44,56 +48,58 @@ public class StatsComputerTest {
      */
     @Before
     public void initActor() {
+        this.graph = new SingleGraph("Stats Computer Test");
+
         UtilityFunction uf = new Cumulative();
         DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, tau, delta, gamma, mu);
 
 
         List<Actor> actors = new ArrayList<Actor>();
-        actor1 = RationalActor.newInstance(uf, ds);
-        actor2 = RationalActor.newInstance(uf, ds);
-        actor3 = RationalActor.newInstance(uf, ds);
-        actor4 = RationalActor.newInstance(uf, ds);
-        actor5 = RationalActor.newInstance(uf, ds);
-        actor6 = RationalActor.newInstance(uf, ds);
-        actor7 = RationalActor.newInstance(uf, ds);
+        this.actor1 = Actor.newInstance(uf, ds, this.graph);
+        this.actor2 = Actor.newInstance(uf, ds, this.graph);
+        this.actor3 = Actor.newInstance(uf, ds, this.graph);
+        this.actor4 = Actor.newInstance(uf, ds, this.graph);
+        this.actor5 = Actor.newInstance(uf, ds, this.graph);
+        this.actor6 = Actor.newInstance(uf, ds, this.graph);
+        this.actor7 = Actor.newInstance(uf, ds, this.graph);
 
-        actors.add(actor1);
-        actors.add(actor2);
-        actors.add(actor3);
-        actors.add(actor4);
-        actors.add(actor5);
-        actors.add(actor6);
-        actors.add(actor7);
+        actors.add(this.actor1);
+        actors.add(this.actor2);
+        actors.add(this.actor3);
+        actors.add(this.actor4);
+        actors.add(this.actor5);
+        actors.add(this.actor6);
+        actors.add(this.actor7);
 
-        actor1.initCoActors(actors);
-        actor2.initCoActors(actors);
-        actor3.initCoActors(actors);
-        actor4.initCoActors(actors);
-        actor5.initCoActors(actors);
-        actor6.initCoActors(actors);
-        actor7.initCoActors(actors);
+        this.actor1.initCoActors(actors);
+        this.actor2.initCoActors(actors);
+        this.actor3.initCoActors(actors);
+        this.actor4.initCoActors(actors);
+        this.actor5.initCoActors(actors);
+        this.actor6.initCoActors(actors);
+        this.actor7.initCoActors(actors);
 
         // connections actor 1
-        actor1.addConnection(actor2);
-        actor1.addConnection(actor3);
-        actor1.addConnection(actor4);
+        this.actor1.addConnection(this.actor2);
+        this.actor1.addConnection(this.actor3);
+        this.actor1.addConnection(this.actor4);
 
         // connections actor 2
-        actor2.addConnection(actor1);
-        actor2.addConnection(actor4);
+        this.actor2.addConnection(this.actor1);
+        this.actor2.addConnection(this.actor4);
 
         // connections actor 3
-        actor3.addConnection(actor1);
+        this.actor3.addConnection(this.actor1);
 
         // connections actor 4
-        actor4.addConnection(actor1);
-        actor4.addConnection(actor2);
+        this.actor4.addConnection(this.actor1);
+        this.actor4.addConnection(this.actor2);
 
         // connections actor 5
-        actor5.addConnection(actor6);
+        this.actor5.addConnection(this.actor6);
 
         // connections actor 6
-        actor6.addConnection(actor5);
+        this.actor6.addConnection(this.actor5);
 
         // connections actor 7
     }
@@ -104,10 +110,10 @@ public class StatsComputerTest {
      */
     @Test
     public void testComputeCloseness() {
-        assertEquals(0.5, Precision.round(StatsComputer.computeCloseness(actor1), 2), 0);
-        assertEquals(0.47, Precision.round(StatsComputer.computeCloseness(actor4), 2), 0);
-        assertEquals(0.17, Precision.round(StatsComputer.computeCloseness(actor5), 2), 0);
-        assertEquals(0, Precision.round(StatsComputer.computeCloseness(actor7), 2), 0);
+        assertEquals(0.5, Precision.round(StatsComputer.computeCloseness(this.actor1), 2), 0);
+        assertEquals(0.47, Precision.round(StatsComputer.computeCloseness(this.actor4), 2), 0);
+        assertEquals(0.17, Precision.round(StatsComputer.computeCloseness(this.actor5), 2), 0);
+        assertEquals(0, Precision.round(StatsComputer.computeCloseness(this.actor7), 2), 0);
     }
 
 }
