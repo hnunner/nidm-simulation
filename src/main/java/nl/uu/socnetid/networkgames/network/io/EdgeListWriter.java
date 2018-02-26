@@ -38,7 +38,7 @@ public class EdgeListWriter implements NetworkWriter {
         while (actorsIt.hasNext()) {
             Actor currActor = actorsIt.next();
 
-            List<Actor> connections = network.getConnectionsOfActor(currActor);
+            List<Actor> connections = currActor.getConnections();
             Iterator<Actor> connectionsIt = actors.iterator();
             while (connectionsIt.hasNext()) {
                 Actor currConnection = connectionsIt.next();

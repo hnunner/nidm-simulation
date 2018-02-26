@@ -18,7 +18,6 @@ import nl.uu.socnetid.networkgames.disease.types.DiseaseType;
 import nl.uu.socnetid.networkgames.network.io.AdjacencyMatrixWriter;
 import nl.uu.socnetid.networkgames.network.io.NetworkWriter;
 import nl.uu.socnetid.networkgames.network.networks.Network;
-import nl.uu.socnetid.networkgames.network.networks.SimpleNetwork;
 import nl.uu.socnetid.networkgames.utilities.Cumulative;
 import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
 
@@ -88,7 +87,7 @@ public class AdjacencyMatrixWriterTest {
         actors.add(this.actor3);
         actors.add(this.actor4);
 
-        this.network = new SimpleNetwork(actors);
+        this.network = new Network(actors);
 
         // connections are always bidirectional
         this.actor1.addConnection(this.actor2);

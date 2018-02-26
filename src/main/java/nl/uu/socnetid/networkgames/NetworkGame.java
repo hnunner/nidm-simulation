@@ -46,7 +46,6 @@ import nl.uu.socnetid.networkgames.gui.SIRPanel;
 import nl.uu.socnetid.networkgames.gui.StatsFrame;
 import nl.uu.socnetid.networkgames.gui.TruncatedConnectionsPanel;
 import nl.uu.socnetid.networkgames.network.networks.Network;
-import nl.uu.socnetid.networkgames.network.networks.SimpleNetwork;
 import nl.uu.socnetid.networkgames.network.simulation.Simulation;
 import nl.uu.socnetid.networkgames.stats.StatsComputer;
 import nl.uu.socnetid.networkgames.utilities.Cumulative;
@@ -65,7 +64,7 @@ ActorRoundFinishedListener  {
     private static final String EXPORT_PATH = "./network-exports/";
 
     // network
-    private final Network network = new SimpleNetwork();
+    private final Network network = new Network();
     // graph
     private Graph graph;
 
