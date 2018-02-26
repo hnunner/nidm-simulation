@@ -6,11 +6,12 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.graphstream.graph.Graph;
+import org.graphstream.graph.implementations.SingleGraph;
 import org.junit.Before;
 import org.junit.Test;
 
 import nl.uu.socnetid.networkgames.actors.Actor;
-import nl.uu.socnetid.networkgames.actors.RationalActor;
 import nl.uu.socnetid.networkgames.disease.DiseaseSpecs;
 import nl.uu.socnetid.networkgames.disease.types.DiseaseType;
 import nl.uu.socnetid.networkgames.network.networks.Network;
@@ -26,11 +27,14 @@ import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
  */
 public class SimpleNetworkTest {
 
+    // graph
+    private Graph graph;
+
     /** actors */
-    Actor actor1;
-    Actor actor2;
-    Actor actor3;
-    Actor actor4;
+    private Actor actor1;
+    private Actor actor2;
+    private Actor actor3;
+    private Actor actor4;
 
     // disease related
     DiseaseSpecs ds;
@@ -48,41 +52,43 @@ public class SimpleNetworkTest {
 	 */
 	@Before
 	public void initActor() {
+	    this.graph = new SingleGraph("Network Test");
+
 	    UtilityFunction uf = new Cumulative();
 
         ds = new DiseaseSpecs(DiseaseType.SIR, tau, delta, gamma, mu);
 
 	    List<Actor> actors = new ArrayList<Actor>();
 
-	    actor1 = RationalActor.newInstance(uf, ds);
-	    actor2 = RationalActor.newInstance(uf, ds);
-	    actor3 = RationalActor.newInstance(uf, ds);
-	    actor4 = RationalActor.newInstance(uf, ds);
+	    this.actor1 = Actor.newInstance(uf, ds, graph);
+	    this.actor2 = Actor.newInstance(uf, ds, graph);
+	    this.actor3 = Actor.newInstance(uf, ds, graph);
+	    this.actor4 = Actor.newInstance(uf, ds, graph);
 
-        actors.add(actor1);
-		actors.add(actor2);
-		actors.add(actor3);
-		actors.add(actor4);
+        actors.add(this.actor1);
+		actors.add(this.actor2);
+		actors.add(this.actor3);
+		actors.add(this.actor4);
 
-		actor1.initCoActors(actors);
-		actor2.initCoActors(actors);
-		actor3.initCoActors(actors);
-		actor4.initCoActors(actors);
+		this.actor1.initCoActors(actors);
+		this.actor2.initCoActors(actors);
+		this.actor3.initCoActors(actors);
+		this.actor4.initCoActors(actors);
 
 		this.network = new SimpleNetwork(actors);
 
         // connections are always bidirectional
-        actor1.addConnection(actor2);
-        actor2.addConnection(actor1);
+		this.actor1.addConnection(this.actor2);
+		this.actor2.addConnection(this.actor1);
 
-        actor1.addConnection(actor3);
-        actor3.addConnection(actor1);
+		this.actor1.addConnection(this.actor3);
+		this.actor3.addConnection(this.actor1);
 
-        actor1.addConnection(actor4);
-        actor4.addConnection(actor1);
+		this.actor1.addConnection(this.actor4);
+		this.actor4.addConnection(this.actor1);
 
-        actor3.addConnection(actor4);
-        actor4.addConnection(actor3);
+		this.actor3.addConnection(this.actor4);
+		this.actor4.addConnection(this.actor3);
 	}
 
     /**
@@ -91,17 +97,17 @@ public class SimpleNetworkTest {
     @Test
     public void testGetConnectionsOfActor() {
 
-        List<Actor> connectionsOfActor1 = this.network.getConnectionsOfActor(actor1);
-        assertFalse(connectionsOfActor1.contains(actor1));
-        assertTrue(connectionsOfActor1.contains(actor2));
-        assertTrue(connectionsOfActor1.contains(actor3));
-        assertTrue(connectionsOfActor1.contains(actor4));
+        List<Actor> connectionsOfActor1 = this.network.getConnectionsOfActor(this.actor1);
+        assertFalse(connectionsOfActor1.contains(this.actor1));
+        assertTrue(connectionsOfActor1.contains(this.actor2));
+        assertTrue(connectionsOfActor1.contains(this.actor3));
+        assertTrue(connectionsOfActor1.contains(this.actor4));
 
-        List<Actor> connectionsOfActor3 = this.network.getConnectionsOfActor(actor3);
-        assertTrue(connectionsOfActor3.contains(actor1));
-        assertFalse(connectionsOfActor3.contains(actor2));
-        assertFalse(connectionsOfActor3.contains(actor3));
-        assertTrue(connectionsOfActor3.contains(actor4));
+        List<Actor> connectionsOfActor3 = this.network.getConnectionsOfActor(this.actor3);
+        assertTrue(connectionsOfActor3.contains(this.actor1));
+        assertFalse(connectionsOfActor3.contains(this.actor2));
+        assertFalse(connectionsOfActor3.contains(this.actor3));
+        assertTrue(connectionsOfActor3.contains(this.actor4));
     }
 
 }

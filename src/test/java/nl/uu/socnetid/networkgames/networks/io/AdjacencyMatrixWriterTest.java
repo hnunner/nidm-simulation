@@ -6,12 +6,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.graphstream.graph.Graph;
+import org.graphstream.graph.implementations.SingleGraph;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import nl.uu.socnetid.networkgames.actors.Actor;
-import nl.uu.socnetid.networkgames.actors.RationalActor;
 import nl.uu.socnetid.networkgames.disease.DiseaseSpecs;
 import nl.uu.socnetid.networkgames.disease.types.DiseaseType;
 import nl.uu.socnetid.networkgames.network.io.AdjacencyMatrixWriter;
@@ -26,11 +27,14 @@ import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
  */
 public class AdjacencyMatrixWriterTest {
 
+    // graph
+    private Graph graph;
+
     //actors
-    Actor actor1;
-    Actor actor2;
-    Actor actor3;
-    Actor actor4;
+    private Actor actor1;
+    private Actor actor2;
+    private Actor actor3;
+    private Actor actor4;
 
     // disease related
     DiseaseSpecs ds;
@@ -64,36 +68,40 @@ public class AdjacencyMatrixWriterTest {
      */
     @Before
     public void initActor() {
+
+        // init graphstream
+        this.graph = new SingleGraph("Adjacency Matrix Writer Test");
+
         UtilityFunction uf = new Cumulative();
 
-        ds = new DiseaseSpecs(DiseaseType.SIR, tau, delta, gamma, mu);
+        this.ds = new DiseaseSpecs(DiseaseType.SIR, tau, delta, gamma, mu);
 
         List<Actor> actors = new ArrayList<Actor>();
 
-        actor1 = RationalActor.newInstance(uf, ds);
-        actor2 = RationalActor.newInstance(uf, ds);
-        actor3 = RationalActor.newInstance(uf, ds);
-        actor4 = RationalActor.newInstance(uf, ds);
+        this.actor1 = Actor.newInstance(uf, this.ds, this.graph);
+        this.actor2 = Actor.newInstance(uf, this.ds, this.graph);
+        this.actor3 = Actor.newInstance(uf, this.ds, this.graph);
+        this.actor4 = Actor.newInstance(uf, this.ds, this.graph);
 
-        actors.add(actor1);
-        actors.add(actor2);
-        actors.add(actor3);
-        actors.add(actor4);
+        actors.add(this.actor1);
+        actors.add(this.actor2);
+        actors.add(this.actor3);
+        actors.add(this.actor4);
 
         this.network = new SimpleNetwork(actors);
 
         // connections are always bidirectional
-        actor1.addConnection(actor2);
-        actor2.addConnection(actor1);
+        this.actor1.addConnection(this.actor2);
+        this.actor2.addConnection(this.actor1);
 
-        actor1.addConnection(actor3);
-        actor3.addConnection(actor1);
+        this.actor1.addConnection(this.actor3);
+        this.actor3.addConnection(this.actor1);
 
-        actor1.addConnection(actor4);
-        actor4.addConnection(actor1);
+        this.actor1.addConnection(this.actor4);
+        this.actor4.addConnection(this.actor1);
 
-        actor3.addConnection(actor4);
-        actor4.addConnection(actor3);
+        this.actor3.addConnection(this.actor4);
+        this.actor4.addConnection(this.actor3);
     }
 
     /**
@@ -102,7 +110,7 @@ public class AdjacencyMatrixWriterTest {
     @Test
     public void testAddConnection() {
         NetworkWriter writer = new AdjacencyMatrixWriter();
-        String writerMatrix = writer.write(network);
+        String writerMatrix = writer.write(this.network);
 
         List<String> writerList = new ArrayList<String>(Arrays.asList(writerMatrix.split(",|\\\n")));
         List<String> expectedList = new ArrayList<String>(Arrays.asList(expectedMatrix.split(",|\\\n")));

@@ -5,11 +5,7 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -21,6 +17,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
@@ -29,16 +26,15 @@ import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 
 import org.apache.log4j.Logger;
+import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.SingleGraph;
-import org.graphstream.stream.file.FileSinkGEXF;
-import org.graphstream.stream.file.FileSinkGEXF.TimeFormat;
 import org.graphstream.ui.view.Viewer;
 
-import nl.uu.socnetid.networkgames.actors.ActionPerformedListener;
 import nl.uu.socnetid.networkgames.actors.Actor;
-import nl.uu.socnetid.networkgames.actors.DiseaseChangeListener;
-import nl.uu.socnetid.networkgames.actors.RationalActorNode;
+import nl.uu.socnetid.networkgames.actors.listeners.ActorRoundFinishedListener;
+import nl.uu.socnetid.networkgames.actors.listeners.ConnectionChangeListener;
+import nl.uu.socnetid.networkgames.actors.listeners.DiseaseChangeListener;
 import nl.uu.socnetid.networkgames.disease.DiseaseSpecs;
 import nl.uu.socnetid.networkgames.disease.types.DiseaseType;
 import nl.uu.socnetid.networkgames.gui.CumulativePanel;
@@ -49,14 +45,9 @@ import nl.uu.socnetid.networkgames.gui.NodeClickListener;
 import nl.uu.socnetid.networkgames.gui.SIRPanel;
 import nl.uu.socnetid.networkgames.gui.StatsFrame;
 import nl.uu.socnetid.networkgames.gui.TruncatedConnectionsPanel;
-import nl.uu.socnetid.networkgames.network.io.AdjacencyMatrixWriter;
-import nl.uu.socnetid.networkgames.network.io.EdgeListWriter;
-import nl.uu.socnetid.networkgames.network.io.NetworkWriter;
 import nl.uu.socnetid.networkgames.network.networks.Network;
 import nl.uu.socnetid.networkgames.network.networks.SimpleNetwork;
-import nl.uu.socnetid.networkgames.network.simulation.NetworkSimulation;
 import nl.uu.socnetid.networkgames.network.simulation.Simulation;
-import nl.uu.socnetid.networkgames.network.simulation.SimulationCompleteListener;
 import nl.uu.socnetid.networkgames.stats.StatsComputer;
 import nl.uu.socnetid.networkgames.utilities.Cumulative;
 import nl.uu.socnetid.networkgames.utilities.IRTC;
@@ -66,8 +57,8 @@ import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
 /**
  * @author Hendrik Nunner
  */
-public class NetworkGame implements SimulationCompleteListener, NodeClickListener,
-ActionPerformedListener, DiseaseChangeListener {
+public class NetworkGame implements NodeClickListener, DiseaseChangeListener, ConnectionChangeListener,
+ActorRoundFinishedListener  {
 
     // general export path
     @SuppressWarnings("unused")
@@ -79,6 +70,7 @@ ActionPerformedListener, DiseaseChangeListener {
     private Graph graph;
 
     // logger
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(NetworkGame.class);
 
     // swing components
@@ -130,14 +122,10 @@ ActionPerformedListener, DiseaseChangeListener {
     private JTextField txtAddAmount;
 
     // simulation
-    private NetworkSimulation networkSimulation;
+    private Simulation simulation;
 
-
-    // TODO remove and use GEXFWriter instead
     // export
-    private FileSinkGEXF fileSink;
-    private long timeId = 1;
-    private long step = 0;
+    private String file;
 
 
     /**
@@ -459,29 +447,6 @@ ActionPerformedListener, DiseaseChangeListener {
         Viewer viewer = this.graph.display();
 
 
-        // init export
-        // TODO remove and use GEXFWriter instead
-        try {
-            fileSink = new FileSinkGEXF();
-            fileSink.setTimeFormat(TimeFormat.DATETIME);
-            fileSink.begin(EXPORT_PATH + "export-"
-                    + new SimpleDateFormat("yyyyMMdd-HH:mm:ss").format(new Date())
-                    + ".gexf");
-
-
-            fileSink.stepBegins(this.graph.getId(), timeId, new Date().getTime());
-            try {
-                fileSink.flush();
-            } catch (IOException e) {
-                logger.error(e);
-            }
-        } catch (IOException e) {
-            logger.error(e);
-        }
-
-
-
-
         // init click listener
         NodeClick nodeClickListener = new NodeClick(graph, viewer);
         nodeClickListener.addListener(this);
@@ -508,30 +473,18 @@ ActionPerformedListener, DiseaseChangeListener {
             switch (utilityFunctionCBox.getSelectedIndex()) {
                 // only for IRTC: actor including risk behavior
                 case 0:
-                    actor = RationalActorNode.newInstance(this.graph, uf, ds,
-                            Double.valueOf(this.txtR.getText()));
+                    actor = Actor.newInstance(uf, ds, Double.valueOf(this.txtR.getText()), this.graph);
                     this.network.addActor(actor);
                     break;
 
                 default:
-                    actor = RationalActorNode.newInstance(this.graph, uf, ds);
+                    actor = Actor.newInstance(uf, ds, this.graph);
                     this.network.addActor(actor);
                     break;
             }
-            actor.addActionPerformedListener(this);
+            actor.addActorRoundFinishedListener(this);
+            actor.addConnectionChangeListener(this);
             actor.addDiseaseChangeListener(this);
-
-
-
-
-            // TODO remove and use GEXFWriter instead
-            fileSink.stepBegins(this.graph.getId(), timeId, new Date().getTime());
-            fileSink.nodeAdded(this.graph.getId(), timeId, Long.toString(actor.getId()));
-            try {
-                fileSink.flush();
-            } catch (IOException e) {
-                logger.error(e);
-            }
         }
 
         // update stats
@@ -563,20 +516,6 @@ ActionPerformedListener, DiseaseChangeListener {
         // update stats
         this.statsFrame.refreshGlobalActorStats(StatsComputer.computeGlobalActorStats(this.network));
         this.statsFrame.refreshGlobalNetworkStats(StatsComputer.computeGlobalNetworkStats(this.network));
-
-
-
-
-
-
-        // TODO remove and use GEXFWriter instead
-        fileSink.stepBegins(this.graph.getId(), timeId, new Date().getTime());
-        fileSink.nodeRemoved(this.graph.getId(), timeId, String.valueOf(this.network.getActors().size()));
-        try {
-            fileSink.flush();
-        } catch (IOException e) {
-            logger.error(e);
-        }
     }
 
     /**
@@ -611,17 +550,27 @@ ActionPerformedListener, DiseaseChangeListener {
      * Runs the actual simulation of the network game.
      */
     private void startSimulation() {
-        // initializations
-        if (this.networkSimulation == null) {
-            this.networkSimulation = new NetworkSimulation(this.network);
-            this.networkSimulation.addListener(this);
+
+        if (this.file == null) {
+            //custom title, error icon
+            JOptionPane.showMessageDialog(settingsFrame,
+                    "Unable to start recording of simulation: no output file specified.\n"
+                            + "Please go to the 'Export' tab and choose a file for network exports first.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+            return;
         }
-        this.networkSimulation.initSimulationDelay((Integer) this.simulationDelay.getValue());
+
+        // initializations
+        if (this.simulation == null) {
+            this.simulation = new Simulation(this.network);
+        }
+        this.simulation.initSimulationDelay((Integer) this.simulationDelay.getValue());
 
         if (simulationTask != null) {
             simulationTask.cancel(true);
         }
-        simulationTask = simulationExecutor.submit(this.networkSimulation);
+        simulationTask = simulationExecutor.submit(this.simulation);
 
         // update stats
         this.statsFrame.refreshGlobalActorStats(StatsComputer.computeGlobalActorStats(this.network));
@@ -631,22 +580,6 @@ ActionPerformedListener, DiseaseChangeListener {
      * Pauses the simulation of the network game.
      */
     private void pauseSimulation() {
-        // TODO remove and use GEXFWriter instead
-        try {
-            fileSink.stepBegins(this.graph.getId(), timeId, new Date().getTime());
-
-            // required to flush the last time step
-            fileSink.graphCleared(this.graph.getId(), timeId);
-
-            fileSink.flush();
-            fileSink.end();
-        } catch (IOException e) {
-            logger.error(e);
-        }
-
-
-
-
         if (simulationTask == null) {
             return;
         }
@@ -693,45 +626,47 @@ ActionPerformedListener, DiseaseChangeListener {
         JFileChooser fileChooser = new JFileChooser();
         int popdownState = fileChooser.showSaveDialog(null);
         if(popdownState == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = fileChooser.getSelectedFile();
-            String file = fileChooser.getSelectedFile().getPath();
-
-
-            FileSinkGEXF fileSink = new FileSinkGEXF();
-            try {
-                fileSink.writeAll(this.graph, file);
-            } catch (IOException e) {
-                logger.error(e);
-            }
+//            File selectedFile = fileChooser.getSelectedFile();
+            this.file = fileChooser.getSelectedFile().getPath();
 
 
 
-            String filePath = file.replace(selectedFile.getName(), "");
+            // TODO do it properly
+//            FileSinkGEXF fileSink = new FileSinkGEXF();
+//            try {
+//                fileSink.writeAll(this.graph, file);
+//            } catch (IOException e) {
+//                logger.error(e);
+//            }
+
+
+
             // TODO clean up
 //            NetworkWriter networkWriter = getSelectedNetworkWriter();
 
+//            String filePath = file.replace(selectedFile.getName(), "");
 //            NetworkFileWriter fileWriter = new NetworkFileWriter(filePath, file, networkWriter, network);
 //            fileWriter.write();
         }
     }
 
-    /**
-     * @return the selected network writer
-     */
-    private NetworkWriter getSelectedNetworkWriter() {
-        switch (edgeWriterCBox.getSelectedIndex()) {
-            case 0:
-
-            case 1:
-                return new EdgeListWriter();
-
-            case 2:
-                return new AdjacencyMatrixWriter();
-
-            default:
-                throw new RuntimeException("Undefined network writer!");
-        }
-    }
+//    /**
+//     * @return the selected network writer
+//     */
+//    private NetworkWriter getSelectedNetworkWriter() {
+//        switch (edgeWriterCBox.getSelectedIndex()) {
+//            case 0:
+//
+//            case 1:
+//                return new EdgeListWriter();
+//
+//            case 2:
+//                return new AdjacencyMatrixWriter();
+//
+//            default:
+//                throw new RuntimeException("Undefined network writer!");
+//        }
+//    }
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.networkgames.gui.NodeClickListener#notify(
@@ -815,19 +750,12 @@ ActionPerformedListener, DiseaseChangeListener {
         this.utilityFunctionCBox.setEnabled(false);
     }
 
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.network.simulation.SimulationCompleteListener#notify(
-     * nl.uu.socnetid.networkgames.network.simulation.Simulation)
+    /**
+     * Updates the stats frame.
+     *
+     * @param actor
      */
-    @Override
-    public void notify(Simulation simulation) { }
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.actors.ActionPerformedListener#notify(
-     * nl.uu.socnetid.networkgames.actors.Actor)
-     */
-    @Override
-    public void notifyActionPerformed(Actor actor) {
+    private void updateStats(Actor actor) {
         // global stats
         this.statsFrame.refreshGlobalNetworkStats(StatsComputer.computeGlobalNetworkStats(this.network));
 
@@ -835,11 +763,9 @@ ActionPerformedListener, DiseaseChangeListener {
         if (this.statsActorId <= 0) {
             return;
         }
-        Actor actorToRefresh = this.network.getActor(this.statsActorId);
-        if (actorToRefresh == null) {
-            return;
+        if (actor.getId() == this.statsActorId) {
+            this.statsFrame.refreshLocalActorStats(actor);
         }
-        this.statsFrame.refreshLocalActorStats(actorToRefresh);
     }
 
     /* (non-Javadoc)
@@ -848,12 +774,46 @@ ActionPerformedListener, DiseaseChangeListener {
      */
     @Override
     public void notifyDiseaseChanged(Actor actor) {
-        // global stats
-        this.statsFrame.refreshGlobalActorStats(StatsComputer.computeGlobalActorStats(this.network));
+        updateStats(actor);
+    }
 
-        // local stats
-        if (actor.getId() == this.statsActorId) {
-            this.statsFrame.refreshLocalActorStats(actor);
-        }
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.networkgames.actors.listeners.ActorRoundFinishedListener#notifyRoundFinished(
+     * nl.uu.socnetid.networkgames.actors.Actor)
+     */
+    @Override
+    public void notifyRoundFinished(Actor actor) {
+        updateStats(actor);
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see nl.uu.socnetid.networkgames.actors.listeners.ConnectionChangeListener#notifyConnectionAdded(
+     * org.graphstream.graph.Edge, nl.uu.socnetid.networkgames.actors.Actor, nl.uu.socnetid.networkgames.actors.Actor)
+     */
+    @Override
+    public void notifyConnectionAdded(Edge edge, Actor actor1, Actor actor2) {
+        updateStats(actor1);
+        updateStats(actor2);
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see nl.uu.socnetid.networkgames.actors.listeners.ConnectionChangeListener#
+     * notifyEdgeRemoved(org.graphstream.graph.Edge)
+     */
+    @Override
+    public void notifyEdgeRemoved(Edge edge) {
+        // nothing to do
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see nl.uu.socnetid.networkgames.actors.listeners.ConnectionChangeListener#
+     * notifyConnectionRemoved(nl.uu.socnetid.networkgames.actors.Actor)
+     */
+    @Override
+    public void notifyConnectionRemoved(Actor actor) {
+        updateStats(actor);
     }
 }

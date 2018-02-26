@@ -1,4 +1,6 @@
-package nl.uu.socnetid.networkgames.actors;
+package nl.uu.socnetid.networkgames.actors.listeners;
+
+import nl.uu.socnetid.networkgames.actors.Actor;
 
 /**
  * @author Hendrik Nunner
