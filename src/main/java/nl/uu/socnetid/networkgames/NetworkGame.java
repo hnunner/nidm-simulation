@@ -59,18 +59,14 @@ import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
 public class NetworkGame implements NodeClickListener, DiseaseChangeListener, ConnectionChangeListener,
 ActorRoundFinishedListener  {
 
-    // general export path
+    // logger
     @SuppressWarnings("unused")
-    private static final String EXPORT_PATH = "./network-exports/";
+    private static final Logger logger = Logger.getLogger(NetworkGame.class);
 
     // network
     private final Network network = new Network();
     // graph
     private Graph graph;
-
-    // logger
-    @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(NetworkGame.class);
 
     // swing components
     // windows
