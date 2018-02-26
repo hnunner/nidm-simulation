@@ -152,6 +152,13 @@ public class Actor implements Comparable<Actor>, Runnable {
      * Updates the attributes of the node.
      */
     private void updateAttributes() {
+
+
+
+        // TODO this should call attribute listeners
+
+
+
         Node node = this.graph.getNode(String.valueOf(getId()));
 
         if (node.getAttribute("ui.label") == null) {
@@ -199,7 +206,7 @@ public class Actor implements Comparable<Actor>, Runnable {
 
 
 
-
+    // TODO clean up whole class
 
 
 
