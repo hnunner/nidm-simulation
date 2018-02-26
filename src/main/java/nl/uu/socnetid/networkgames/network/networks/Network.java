@@ -4,6 +4,7 @@ import java.util.List;
 
 import nl.uu.socnetid.networkgames.actors.Actor;
 import nl.uu.socnetid.networkgames.disease.DiseaseSpecs;
+import nl.uu.socnetid.networkgames.network.listeners.ActorAmountListener;
 
 /**
  * @author Hendrik Nunner
@@ -80,5 +81,21 @@ public interface Network {
      *          the characteristics of the disease to infect the actor with
      */
     void toggleInfection(long actorId, DiseaseSpecs diseaseSpecs);
+
+    /**
+     * Adds a listener to be notified when the amount of actors is being changed.
+     *
+     * @param actorAmountListener
+     *          the listener to be added
+     */
+    void addActorAmountListener(final ActorAmountListener actorAmountListener);
+
+    /**
+     * Removes a listener that is to be notified when the amount of actors is being changed.
+     *
+     * @param actorAmountListener
+     *          the listener to be removed
+     */
+    void removeActorAmountListener(final ActorAmountListener actorAmountListener);
 
 }

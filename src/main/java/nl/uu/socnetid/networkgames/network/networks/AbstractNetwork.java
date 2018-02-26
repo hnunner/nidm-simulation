@@ -3,11 +3,14 @@ package nl.uu.socnetid.networkgames.network.networks;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.apache.log4j.Logger;
 
 import nl.uu.socnetid.networkgames.actors.Actor;
 import nl.uu.socnetid.networkgames.disease.DiseaseSpecs;
+import nl.uu.socnetid.networkgames.network.listeners.ActorAmountListener;
 
 /**
  * @author Hendrik Nunner
@@ -19,6 +22,10 @@ public abstract class AbstractNetwork implements Network {
 
     // set of actors
     private List<Actor> actors;
+
+    // listener
+    private final Set<ActorAmountListener> actorAmountListeners =
+            new CopyOnWriteArraySet<ActorAmountListener>();
 
 
     /**
@@ -43,6 +50,9 @@ public abstract class AbstractNetwork implements Network {
         while (actorsIt.hasNext()) {
             actorsIt.next().initCoActors(this.actors);
         }
+
+        // notify listeners
+        notifyActorAdded(actor.getId());
     }
 
     /* (non-Javadoc)
@@ -54,17 +64,20 @@ public abstract class AbstractNetwork implements Network {
             return;
         }
         Actor actor = this.actors.get(this.actors.size() - 1);
+        long actorId = actor.getId();
 
         // remove
         actor.destroy();
         this.actors.remove(actor);
-
 
         // update co-actors
         Iterator<Actor> actorsIt = this.actors.iterator();
         while (actorsIt.hasNext()) {
             actorsIt.next().initCoActors(this.actors);
         }
+
+        // notify listeners
+        notifyActorRemoved(actorId);
     }
 
     /* (non-Javadoc)
@@ -198,6 +211,51 @@ public abstract class AbstractNetwork implements Network {
                         break;
                 }
             }
+        }
+    }
+
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.networkgames.network.networks.Network#addActorAmountListener(
+     * nl.uu.socnetid.networkgames.network.networks.ActorAmountListener)
+     */
+    @Override
+    public void addActorAmountListener(ActorAmountListener actorAmountListener) {
+        this.actorAmountListeners.add(actorAmountListener);
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.networkgames.network.networks.Network#removeActorAmountListener(
+     * nl.uu.socnetid.networkgames.network.networks.ActorAmountListener)
+     */
+    @Override
+    public void removeActorAmountListener(ActorAmountListener actorAmountListener) {
+        this.actorAmountListeners.remove(actorAmountListener);
+    }
+
+    /**
+     * Notifies the listeners of the added actor.
+     *
+     * @param actorId
+     *          the id of the actor being added
+     */
+    private final void notifyActorAdded(long actorId) {
+        Iterator<ActorAmountListener> listenersIt = this.actorAmountListeners.iterator();
+        while (listenersIt.hasNext()) {
+            listenersIt.next().notifyActorAdded(actorId);
+        }
+    }
+
+    /**
+     * Notifies the actorRemovedListeners of the added actor.
+     *
+     * @param actorId
+     *          the id of the actor being removed
+     */
+    private final void notifyActorRemoved(long actorId) {
+        Iterator<ActorAmountListener> listenersIt = this.actorAmountListeners.iterator();
+        while (listenersIt.hasNext()) {
+            listenersIt.next().notifyActorRemoved(actorId);
         }
     }
 
