@@ -36,7 +36,6 @@ public class Actor implements Comparable<Actor>, Runnable {
     // risk neutral risk factor
     protected static final double RISK_NEUTRAL = 1.0;
     // logger
-    @SuppressWarnings("unused")
     private final static Logger logger = Logger.getLogger(Actor.class);
 
     // unique identifier
@@ -805,24 +804,6 @@ public class Actor implements Comparable<Actor>, Runnable {
         while (listenersIt.hasNext()) {
             listenersIt.next().notifyConnectionAdded(edge, actor1, actor2);
         }
-    }
-
-    /**
-     * Gets an actor from the list of co-actors, based on the actor's id.
-     *
-     * @param actorId
-     *          the co-actor's id
-     * @return the co-actor
-     */
-    private Actor getFromCoActors(long actorId) {
-        Iterator<Actor> coActorsIt = this.coActors.iterator();
-        while (coActorsIt.hasNext()) {
-            Actor coActor = coActorsIt.next();
-            if (coActor.getId() == actorId) {
-                return coActor;
-            }
-        }
-        return null;
     }
 
     /**
