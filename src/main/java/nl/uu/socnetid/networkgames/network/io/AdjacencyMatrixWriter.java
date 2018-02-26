@@ -38,7 +38,7 @@ public class AdjacencyMatrixWriter implements NetworkWriter {
             Actor currActor = actorsIt.next();
             sb.append(PLAYER_PREFIX).append(currActor.getId());
 
-            List<Actor> connections = network.getConnectionsOfActor(currActor);
+            List<Actor> connections = currActor.getConnections();
 
             Iterator<Actor> connectionsIt = actors.iterator();
             while (connectionsIt.hasNext()) {
