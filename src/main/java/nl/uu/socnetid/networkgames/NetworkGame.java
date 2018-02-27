@@ -14,10 +14,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
@@ -37,6 +35,9 @@ import nl.uu.socnetid.networkgames.disease.DiseaseSpecs;
 import nl.uu.socnetid.networkgames.disease.types.DiseaseType;
 import nl.uu.socnetid.networkgames.gui.CumulativePanel;
 import nl.uu.socnetid.networkgames.gui.DeactivatablePanel;
+import nl.uu.socnetid.networkgames.gui.ExportAdjacencyMatrixPanel;
+import nl.uu.socnetid.networkgames.gui.ExportEdgeListPanel;
+import nl.uu.socnetid.networkgames.gui.ExportGEXFPanel;
 import nl.uu.socnetid.networkgames.gui.IRTCPanel;
 import nl.uu.socnetid.networkgames.gui.NodeClick;
 import nl.uu.socnetid.networkgames.gui.NodeClickListener;
@@ -72,9 +73,15 @@ public class NetworkGame implements NodeClickListener, ActorListener {
     // utility function combo box and selection
     private JComboBox<String> utilityFunctionCBox;
     private final String[] utilityFunctions = {"IRTC", "Cumulative", "Truncated Connections"};
+
     // edge writer combo box and selection
     private JComboBox<String> edgeWriterCBox;
-    private final String[] edgeWriters = {"GEXF"};  //, "Edge List", "Adjacency Matrix"};
+    private final String[] edgeWriters = {"GEXF", "Edge List", "Adjacency Matrix"};
+    private ExportGEXFPanel gexfPanel;
+    private ExportEdgeListPanel edgeListPanel;
+    private ExportAdjacencyMatrixPanel adjacencyMatrixPanel;
+
+
     // spinner for simulation delay
     private JSpinner simulationDelay;
 
@@ -115,9 +122,6 @@ public class NetworkGame implements NodeClickListener, ActorListener {
 
     // simulation
     private Simulation simulation;
-
-    // export
-    private String file;
 
 
     /**
@@ -162,8 +166,6 @@ public class NetworkGame implements NodeClickListener, ActorListener {
         // panes
         JPanel actorPane = new JPanel();
         actorPane.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-        JPanel exportPane = new JPanel();
-        exportPane.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
         // tabbed pane
         JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.LEFT, JTabbedPane.WRAP_TAB_LAYOUT);
         tabbedPane.setBorder(null);
@@ -247,6 +249,55 @@ public class NetworkGame implements NodeClickListener, ActorListener {
         sirPanel.setBounds(20, 38, 214, 225);
         sirPanel.setVisible(true);
         diseasePane.add(sirPanel);
+        JPanel exportPane = new JPanel();
+        exportPane.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
+
+        tabbedPane.add("Export", exportPane);
+        exportPane.setLayout(null);
+
+        gexfPanel = new ExportGEXFPanel();
+        gexfPanel.setBounds(20, 38, 214, 225);
+        exportPane.add(gexfPanel);
+
+        adjacencyMatrixPanel = new ExportAdjacencyMatrixPanel(this.network);
+        adjacencyMatrixPanel.setBounds(20, 38, 214, 225);
+        exportPane.add(adjacencyMatrixPanel);
+
+        edgeListPanel = new ExportEdgeListPanel(this.network);
+        edgeListPanel.setBounds(20, 38, 214, 225);
+        exportPane.add(edgeListPanel);
+
+        edgeWriterCBox = new JComboBox<String>();
+        edgeWriterCBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                switch (edgeWriterCBox.getSelectedIndex()) {
+                    case 0:
+                        gexfPanel.setVisible(true);
+                        edgeListPanel.setVisible(false);
+                        adjacencyMatrixPanel.setVisible(false);
+                        break;
+
+                    case 1:
+                        gexfPanel.setVisible(false);
+                        edgeListPanel.setVisible(true);
+                        adjacencyMatrixPanel.setVisible(false);
+                        break;
+
+                    case 2:
+                        gexfPanel.setVisible(false);
+                        edgeListPanel.setVisible(false);
+                        adjacencyMatrixPanel.setVisible(true);
+                        break;
+
+                    default:
+                        throw new RuntimeException("Undefined export type!");
+                }
+            }
+        });
+        edgeWriterCBox.setBounds(20, 6, 215, 30);
+        exportPane.add(edgeWriterCBox);
+
         tabbedPane.addTab("Actors", actorPane);
         actorPane.setLayout(null);
 
@@ -351,23 +402,6 @@ public class NetworkGame implements NodeClickListener, ActorListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 addActor();
-            }
-        });
-
-        tabbedPane.add("Export", exportPane);
-        exportPane.setLayout(null);
-
-        edgeWriterCBox = new JComboBox<String>();
-        edgeWriterCBox.setBounds(20, 6, 215, 30);
-        exportPane.add(edgeWriterCBox);
-
-        JButton btnExportNetwork = new JButton("Export");
-        btnExportNetwork.setBounds(20, 42, 217, 30);
-        exportPane.add(btnExportNetwork);
-        btnExportNetwork.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                exportNetwork();
             }
         });
 
@@ -541,15 +575,16 @@ public class NetworkGame implements NodeClickListener, ActorListener {
      */
     private void startSimulation() {
 
-        if (this.file == null) {
-            //custom title, error icon
-            JOptionPane.showMessageDialog(settingsFrame,
-                    "Unable to start recording of simulation: no output file specified.\n"
-                            + "Please go to the 'Export' tab and choose a file for network exports first.",
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+        // TODO clean up
+//        if (this.file == null) {
+//            //custom title, error icon
+//            JOptionPane.showMessageDialog(settingsFrame,
+//                    "Unable to start recording of simulation: no output file specified.\n"
+//                            + "Please go to the 'Export' tab and choose a file for network exports first.",
+//                            "Error",
+//                            JOptionPane.ERROR_MESSAGE);
+//            return;
+//        }
 
         // initializations
         if (this.simulation == null) {
@@ -607,56 +642,6 @@ public class NetworkGame implements NodeClickListener, ActorListener {
                 throw new RuntimeException("Undefined utility function!");
         }
     }
-
-    /**
-     * Exports the network into a csv file.
-     */
-    private void exportNetwork() {
-
-        JFileChooser fileChooser = new JFileChooser();
-        int popdownState = fileChooser.showSaveDialog(null);
-        if(popdownState == JFileChooser.APPROVE_OPTION) {
-//            File selectedFile = fileChooser.getSelectedFile();
-            this.file = fileChooser.getSelectedFile().getPath();
-
-
-
-            // TODO do it properly
-//            FileSinkGEXF fileSink = new FileSinkGEXF();
-//            try {
-//                fileSink.writeAll(this.graph, file);
-//            } catch (IOException e) {
-//                logger.error(e);
-//            }
-
-
-
-            // TODO clean up
-//            NetworkWriter networkWriter = getSelectedNetworkWriter();
-
-//            String filePath = file.replace(selectedFile.getName(), "");
-//            NetworkFileWriter fileWriter = new NetworkFileWriter(filePath, file, networkWriter, network);
-//            fileWriter.write();
-        }
-    }
-
-//    /**
-//     * @return the selected network writer
-//     */
-//    private NetworkWriter getSelectedNetworkWriter() {
-//        switch (edgeWriterCBox.getSelectedIndex()) {
-//            case 0:
-//
-//            case 1:
-//                return new EdgeListWriter();
-//
-//            case 2:
-//                return new AdjacencyMatrixWriter();
-//
-//            default:
-//                throw new RuntimeException("Undefined network writer!");
-//        }
-//    }
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.networkgames.gui.NodeClickListener#notify(
@@ -822,5 +807,4 @@ public class NetworkGame implements NodeClickListener, ActorListener {
     public void notifyConnectionRemoved(Actor actor) {
         updateStats();
     }
-
 }
