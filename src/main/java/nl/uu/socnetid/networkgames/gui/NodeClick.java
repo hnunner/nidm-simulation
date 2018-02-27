@@ -4,10 +4,10 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import org.graphstream.graph.Graph;
-import org.graphstream.ui.view.Viewer;
 import org.graphstream.ui.view.ViewerListener;
 import org.graphstream.ui.view.ViewerPipe;
+
+import nl.uu.socnetid.networkgames.network.networks.Network;
 
 /**
  * @author Hendrik Nunner
@@ -28,15 +28,13 @@ public class NodeClick implements Runnable, ViewerListener {
     /**
      * Constructor
      *
-     * @param graph
-     *          the graph to use as sink
-     * @param viewer
-     *          the viewer to listen to clicks on
+     * @param network
+     *          the network
      */
-    public NodeClick(Graph graph, Viewer viewer) {
-        this.fromViewer = viewer.newViewerPipe();
+    public NodeClick(Network network) {
+        this.fromViewer = network.getViewer().newViewerPipe();
         this.fromViewer.addViewerListener(this);
-        this.fromViewer.addSink(graph);
+        this.fromViewer.addSink(network.getGraph());
     }
 
 

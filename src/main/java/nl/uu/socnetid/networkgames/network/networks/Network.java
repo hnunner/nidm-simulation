@@ -1,5 +1,6 @@
 package nl.uu.socnetid.networkgames.network.networks;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -8,6 +9,10 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.apache.log4j.Logger;
+import org.graphstream.graph.Node;
+import org.graphstream.graph.implementations.AbstractGraph;
+import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.ui.view.Viewer;
 
 import nl.uu.socnetid.networkgames.actors.Actor;
 import nl.uu.socnetid.networkgames.disease.DiseaseSpecs;
@@ -16,10 +21,14 @@ import nl.uu.socnetid.networkgames.network.listeners.ActorAmountListener;
 /**
  * @author Hendrik Nunner
  */
-public class Network {
+public class Network extends SingleGraph {
 
     // logger
     private static final Logger logger = Logger.getLogger(Network.class);
+
+    // graphstream
+    private AbstractGraph graph = new SingleGraph("NetworkGames");
+    private Viewer viewer;
 
     // list of actors
     private List<Actor> actors;
@@ -37,6 +46,13 @@ public class Network {
      */
     public Network(List<Actor> actors) {
         this.actors = actors;
+
+        // init graphstream
+        this.graph.addAttribute("ui.quality");
+        this.graph.addAttribute("ui.antialias");
+        URL gsStyles = this.getClass().getClassLoader().getResource("graph-stream.css");
+        this.graph.addAttribute("ui.stylesheet", "url('file:" + gsStyles.getPath() + "')");
+        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
     }
 
     /**
@@ -48,6 +64,13 @@ public class Network {
 
 
     /**
+     * Creates a ui representation of the network.
+     */
+    public void show() {
+        this.viewer = graph.display();
+    }
+
+    /**
      * Adds a actor to the network.
      *
      * @param actor
@@ -55,6 +78,7 @@ public class Network {
      */
     public void addActor(Actor actor) {
         this.actors.add(actor);
+        this.graph.addNode(String.valueOf(actor.getId()));
 
         // update co-actors
         Iterator<Actor> actorsIt = this.actors.iterator();
@@ -77,7 +101,9 @@ public class Network {
         long actorId = actor.getId();
 
         // remove
-        actor.destroy();
+        this.graph.removeNode(String.valueOf(actorId));
+
+
         this.actors.remove(actor);
 
         // update co-actors
@@ -265,6 +291,35 @@ public class Network {
         while (listenersIt.hasNext()) {
             listenersIt.next().notifyActorRemoved(actorId);
         }
+    }
+
+    /**
+     * Gets the graphstream representation of the network.
+     *
+     * @return the graphstream representation of the network
+     */
+    public AbstractGraph getGraph() {
+        return this.graph;
+    }
+
+    /**
+     * Gets the graphstream representation of a node.
+     *
+     * @param actorId
+     *          the id of the actor to get the corresponding node for
+     * @return the graphstream representation of the network
+     */
+    public Node getNode(long actorId) {
+        return this.graph.getNode(String.valueOf(actorId));
+    }
+
+    /**
+     * Gets the graphstream viewer.
+     *
+     * @return the graphstream viewer
+     */
+    public Viewer getViewer() {
+        return this.viewer;
     }
 
 }

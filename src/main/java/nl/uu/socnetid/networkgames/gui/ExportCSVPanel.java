@@ -16,6 +16,8 @@ import nl.uu.socnetid.networkgames.network.networks.Network;
  */
 public abstract class ExportCSVPanel extends DeactivatablePanel {
 
+    private static final long serialVersionUID = -3157728592545400241L;
+
     // components
     private JButton btnExport;
 
@@ -51,7 +53,7 @@ public abstract class ExportCSVPanel extends DeactivatablePanel {
     private void exportStaticNetwork() {
         JFileChooser fileChooser = new JFileChooser();
         int popdownState = fileChooser.showSaveDialog(null);
-        if(popdownState == JFileChooser.APPROVE_OPTION) {
+        if (popdownState == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             String file = selectedFile.getPath();
             NetworkWriter networkWriter = getNetworkWriter();

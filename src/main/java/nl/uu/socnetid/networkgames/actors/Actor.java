@@ -12,13 +12,14 @@ import java.util.concurrent.locks.Lock;
 
 import org.apache.log4j.Logger;
 import org.graphstream.graph.Edge;
-import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
+import org.graphstream.graph.implementations.SingleNode;
 
 import nl.uu.socnetid.networkgames.disease.Disease;
 import nl.uu.socnetid.networkgames.disease.DiseaseFactory;
 import nl.uu.socnetid.networkgames.disease.DiseaseSpecs;
 import nl.uu.socnetid.networkgames.disease.types.DiseaseGroup;
+import nl.uu.socnetid.networkgames.network.networks.Network;
 import nl.uu.socnetid.networkgames.stats.StatsComputer;
 import nl.uu.socnetid.networkgames.utilities.Utility;
 import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
@@ -28,7 +29,7 @@ import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
  *
  * @author Hendrik Nunner
  */
-public class Actor implements Comparable<Actor>, Runnable {
+public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
 
     // risk neutral risk factor
     protected static final double RISK_NEUTRAL = 1.0;
@@ -45,8 +46,10 @@ public class Actor implements Comparable<Actor>, Runnable {
     // utility function
     private UtilityFunction utilityFunction;
 
-    // the graph the actor acts as node in
-    private Graph graph;
+    // the network the actor acts as node in
+    private Network network;
+    // the node as in the network
+    private Node node;
     // co-actors
     private List<Actor> coActors;
     // personal connections
@@ -77,18 +80,25 @@ public class Actor implements Comparable<Actor>, Runnable {
      *          the disease characteristics that is or might become present in the network
      * @param riskFactor
      *          the risk factor of a actor (<1: risk seeking, =1: risk neutral; >1: risk averse)
-     * @param graph
-     *          the graph the actor acts as node in
+     * @param network
+     *          the network the actor acts as node in
      */
-    private Actor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double riskFactor, Graph graph) {
+    private Actor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double riskFactor, Network network) {
+
+        // TODO make properly
+//        super(network.getGraph(), "ss");
+
+
         this.utilityFunction = utilityFunction;
         this.diseaseSpecs = diseaseSpecs;
         this.diseaseGroup = DiseaseGroup.SUSCEPTIBLE;
         this.riskFactor = riskFactor;
-        this.graph = graph;
-        this.graph.addNode(String.valueOf(getId()));
+        this.network = network;
+        this.node = network.getNode(this.id);
         initAttributes();
     }
+
+
 
     /**
      * Constructor.
@@ -97,11 +107,11 @@ public class Actor implements Comparable<Actor>, Runnable {
      *          the function the actor uses to compute his utility of the network
      * @param diseaseSpecs
      *          the disease that is or might become present in the network
-     * @param graph
-     *          the graph the actor acts as node in
+     * @param network
+     *          the network the actor acts as node in
      */
-    private Actor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, Graph graph) {
-        this(utilityFunction, diseaseSpecs, RISK_NEUTRAL, graph);
+    private Actor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, Network network) {
+        this(utilityFunction, diseaseSpecs, RISK_NEUTRAL, network);
     }
 
 
@@ -115,13 +125,13 @@ public class Actor implements Comparable<Actor>, Runnable {
      *          the disease that is or might become present in the network
      * @param riskFactor
      *          the custom risk factor
-     * @param graph
-     *          the graph the actor acts as node in
+     * @param network
+     *          the network the actor acts as node in
      * @return a new {@link Actor} instance with a custom risk factor
      */
     public static Actor newInstance(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double riskFactor,
-            Graph graph) {
-        return new Actor(utilityFunction, diseaseSpecs, riskFactor, graph);
+            Network network) {
+        return new Actor(utilityFunction, diseaseSpecs, riskFactor, network);
     }
 
     /**
@@ -131,12 +141,12 @@ public class Actor implements Comparable<Actor>, Runnable {
      *          the function the actor uses to compute his utility of the network
      * @param diseaseSpecs
      *          the disease that is or might become present in the network
-     * @param graph
-     *          the graph the actor acts as node in
+     * @param network
+     *          the network the actor acts as node in
      * @return a new {@link Actor} instance
      */
-    public static Actor newInstance(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, Graph graph) {
-        return new Actor(utilityFunction, diseaseSpecs, graph);
+    public static Actor newInstance(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, Network network) {
+        return new Actor(utilityFunction, diseaseSpecs, network);
     }
 
 
@@ -144,30 +154,26 @@ public class Actor implements Comparable<Actor>, Runnable {
      * Initializes the node attributes.
      */
     private void initAttributes() {
-        // TODO consider: Actor extending graphstream's Node and overriding addAttribute to accept ActorAttributes!
-
-        Node node = this.graph.getNode(String.valueOf(getId()));
-
         // disease group
         String diseaseGroupAttr = ActorAttributes.DISEASE_GROUP.toString();
         String diseaseGroup = this.getDiseaseGroup().toString();
-        node.addAttribute(diseaseGroupAttr, diseaseGroup);
+        this.node.addAttribute(diseaseGroupAttr, diseaseGroup);
         notifyAttributeAdded(diseaseGroupAttr, diseaseGroup);
         // ui-class required only for ui properties as defined in resources/graph-stream.css --> no notifications
         String uiClassAttr = ActorAttributes.UI_CLASS.toString();
-        node.addAttribute(uiClassAttr, diseaseGroup);
+        this.node.addAttribute(uiClassAttr, diseaseGroup);
 
         // satisfaction
         String satisfiedAttr = ActorAttributes.SATISFIED.toString();
         String satisfied = this.isSatisfied() ? "true" : "false";
-        node.addAttribute(satisfiedAttr, satisfied);
+        this.node.addAttribute(satisfiedAttr, satisfied);
         notifyAttributeAdded(satisfiedAttr, satisfied);
 
         // infected actors require also diseaseType
         if (this.isInfected()) {
             String diseaseTypeAttr = ActorAttributes.DISEASE_TYPE.toString();
             String diseaseType = this.getDiseaseSpecs().getDiseaseType().toString();
-            node.addAttribute(diseaseTypeAttr, diseaseType);
+            this.node.addAttribute(diseaseTypeAttr, diseaseType);
             notifyAttributeAdded(diseaseTypeAttr, diseaseType);
         }
     }
@@ -179,8 +185,6 @@ public class Actor implements Comparable<Actor>, Runnable {
      *          the disease group in the previous round
      */
     private void updateDiseaseAttributes(DiseaseGroup diseaseGroupPreviousRound) {
-        Node node = this.graph.getNode(String.valueOf(getId()));
-
         // change of disease group
         if (diseaseGroupPreviousRound != this.diseaseGroup) {
             String oldDiseaseGroup = diseaseGroupPreviousRound.toString();
@@ -188,34 +192,34 @@ public class Actor implements Comparable<Actor>, Runnable {
 
             // disease group
             String diseaseGroupAttr = ActorAttributes.DISEASE_GROUP.toString();
-            node.changeAttribute(diseaseGroupAttr, currentDiseaseGroup);
+            this.node.changeAttribute(diseaseGroupAttr, currentDiseaseGroup);
             notifyAttributeChanged(diseaseGroupAttr, oldDiseaseGroup, currentDiseaseGroup);
             // ui-class required only for ui properties as defined in resources/graph-stream.css --> no notifications
             String uiClassAttr = ActorAttributes.UI_CLASS.toString();
-            node.changeAttribute(uiClassAttr, currentDiseaseGroup);
+            this.node.changeAttribute(uiClassAttr, currentDiseaseGroup);
 
             // newly infected actors require also disease type and disease timer attributes
             if (this.isInfected()) {
                 // disease type
                 String diseaseTypeAttr = ActorAttributes.DISEASE_TYPE.toString();
                 String diseaseType = this.getDiseaseSpecs().getDiseaseType().toString();
-                node.addAttribute(diseaseTypeAttr, diseaseType);
+                this.node.addAttribute(diseaseTypeAttr, diseaseType);
                 notifyAttributeAdded(diseaseTypeAttr, diseaseType);
                 // disease timer
                 String diseaseTimeUntilCuredAttr = ActorAttributes.DISEASE_TIMEUNTILCURED.toString();
                 String diseaseTimeUntilCured = String.valueOf(this.disease.getTimeUntilCured());
-                node.addAttribute(diseaseTimeUntilCuredAttr, diseaseTimeUntilCured);
+                this.node.addAttribute(diseaseTimeUntilCuredAttr, diseaseTimeUntilCured);
                 notifyAttributeAdded(diseaseTimeUntilCuredAttr, diseaseTimeUntilCured);
             }
             // formerly infected actors remove disease type and disease timer attributes
             if (diseaseGroupPreviousRound == DiseaseGroup.INFECTED) {
                 // disease type
                 String diseaseTypeAttr = ActorAttributes.DISEASE_TYPE.toString();
-                node.removeAttribute(diseaseTypeAttr);
+                this.node.removeAttribute(diseaseTypeAttr);
                 notifyAttributeRemoved(diseaseTypeAttr);
                 // disease timer
                 String diseaseTimeUntilCuredAttr = ActorAttributes.DISEASE_TIMEUNTILCURED.toString();
-                node.removeAttribute(diseaseTimeUntilCuredAttr);
+                this.node.removeAttribute(diseaseTimeUntilCuredAttr);
                 notifyAttributeRemoved(diseaseTimeUntilCuredAttr);
             }
         }
@@ -234,13 +238,11 @@ public class Actor implements Comparable<Actor>, Runnable {
      * Update the node's satisfaction attribute.
      */
     private void updateSatisfactionAttribute() {
-        Node node = this.graph.getNode(String.valueOf(getId()));
-
         // satisfaction
         String satisfiedAttr = ActorAttributes.SATISFIED.toString();
         String newValue = this.isSatisfied() ? "true" : "false";
         String oldValue = this.isSatisfied() ? "false" : "true";
-        node.changeAttribute(satisfiedAttr, newValue);
+        this.node.changeAttribute(satisfiedAttr, newValue);
         notifyAttributeChanged(satisfiedAttr, oldValue, newValue);
     }
 
@@ -282,7 +284,7 @@ public class Actor implements Comparable<Actor>, Runnable {
      */
     @Override
     public int compareTo(Actor p) {
-        return (int) (this.getId() - p.getId());
+        return (int) (Long.valueOf(this.getId()) - Long.valueOf(p.getId()));
     }
 
     /* (non-Javadoc)
@@ -445,15 +447,6 @@ public class Actor implements Comparable<Actor>, Runnable {
 
 
     /**
-     * Gets the actor's unique identifier.
-     *
-     * @return the actor's unique identifier
-     */
-    public long getId() {
-        return id;
-    }
-
-    /**
      * Gets the actor's utility.
      *
      * @return the actor's utility
@@ -557,6 +550,13 @@ public class Actor implements Comparable<Actor>, Runnable {
      */
     public boolean addConnection(Actor newConnection) {
 
+
+
+        // TODO the edges part should be handled in the Network class
+        // TODO only lists of connected and all actors should be handled here
+
+
+
         // check node consistency
         if (!checkNewConnectionConsistency(newConnection)) {
             logger.info("Request to add new connection aborted.");
@@ -627,6 +627,12 @@ public class Actor implements Comparable<Actor>, Runnable {
      */
     public boolean removeConnection(Actor connection) {
 
+
+        // TODO the edges part should be handled in the Network class
+        // TODO only lists of connected and all actors should be handled here
+
+
+
         if (connection.equals(this)) {
             throw new RuntimeException("Unable to remove reflexive connections.");
         }
@@ -652,6 +658,11 @@ public class Actor implements Comparable<Actor>, Runnable {
      * Removes all connections to other actors.
      */
     public void removeAllConnections() {
+
+        // TODO the edges part should be handled in the Network class
+        // TODO only lists of connected and all actors should be handled here
+
+
         // remove all graph edges of the current actor
         Edge[] edges = this.graph.getNode(String.valueOf(getId())).getEdgeSet().toArray(new Edge[0]);
         for(int i = 0; i < edges.length; ++i){
@@ -662,14 +673,6 @@ public class Actor implements Comparable<Actor>, Runnable {
         notifyConnectionRemoved();
         this.connections = new ArrayList<Actor>();
     }
-
-    /**
-     * Destroy routine for an actor
-     */
-    public void destroy() {
-        this.graph.removeNode(String.valueOf(getId()));
-    }
-
 
     /**
      * Cures the actor from a disease.
