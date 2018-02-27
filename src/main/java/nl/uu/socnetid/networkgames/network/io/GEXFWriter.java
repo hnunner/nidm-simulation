@@ -6,13 +6,13 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.log4j.Logger;
 import org.graphstream.graph.Edge;
-import org.graphstream.graph.Graph;
 import org.graphstream.stream.file.FileSinkGEXF;
 import org.graphstream.stream.file.FileSinkGEXF.TimeFormat;
 
 import nl.uu.socnetid.networkgames.actors.Actor;
 import nl.uu.socnetid.networkgames.actors.ActorListener;
 import nl.uu.socnetid.networkgames.network.listeners.ActorAmountListener;
+import nl.uu.socnetid.networkgames.network.networks.Network;
 
 /**
  * @author Hendrik Nunner
@@ -22,40 +22,55 @@ public class GEXFWriter implements ActorListener, ActorAmountListener {
     // logger
     private static final Logger logger = Logger.getLogger(GEXFWriter.class);
 
-    // the graph to write
-    private Graph graph;
-    // the file and sink used to write to
-    private String file;
-    private FileSinkGEXF fileSink;
-
     // unique time identifier
     private static final AtomicLong TIME = new AtomicLong(1);
     private final long timeId = TIME.getAndIncrement();
 
+    // file sink
+    private FileSinkGEXF fileSink;
+    // graph identifier
+    private String graphId;
 
     /**
      * Constructor.
-     *
-     * @param graph
-     *          the graph to write
-     * @param file
-     *          the file to write to
      */
-    public GEXFWriter(Graph graph, String file) {
-        this.graph = graph;
-        this.file = file;
-        this.fileSink = new FileSinkGEXF();
-        this.fileSink.setTimeFormat(TimeFormat.DATETIME);
-    }
+    public GEXFWriter() { }
 
 
     /**
-     * Begins the recording of dynamic networks.
+     * Writes a static representation of the current graph to a file
+     *
+     * @param network
+     *          the network to write
+     * @param file
+     *          the file to write to
      */
-    public void startRecording() {
+    public void writeStaticNetwork(Network network, String file) {
+        try {
+            FileSinkGEXF fileSink = new FileSinkGEXF();
+            fileSink.writeAll(network.getGraph(), file);
+        } catch (IOException e) {
+            logger.error(e);
+        }
+    }
+
+    /**
+     * Begins the recording of dynamic networks.
+     *
+     * @param network
+     *          the network to write
+     * @param file
+     *          the file to write to
+     */
+    public void startRecording(Network network, String file) {
+        this.graphId = network.getGraph().getId();
+
+        this.fileSink = new FileSinkGEXF();
+        this.fileSink.setTimeFormat(TimeFormat.DATETIME);
+
         try {
             this.fileSink.begin(file);
-            this.fileSink.stepBegins(this.graph.getId(), timeId, new Date().getTime());
+            this.fileSink.stepBegins(this.graphId, timeId, new Date().getTime());
             this.fileSink.flush();
         } catch (IOException e) {
             logger.error(e);
@@ -68,8 +83,8 @@ public class GEXFWriter implements ActorListener, ActorAmountListener {
      */
     @Override
     public void notifyActorAdded(long actorId) {
-        fileSink.stepBegins(this.graph.getId(), timeId, new Date().getTime());
-        fileSink.nodeAdded(this.graph.getId(), timeId, Long.toString(actorId));
+        fileSink.stepBegins(this.graphId, timeId, new Date().getTime());
+        fileSink.nodeAdded(this.graphId, timeId, Long.toString(actorId));
         try {
             fileSink.flush();
         } catch (IOException e) {
@@ -83,8 +98,8 @@ public class GEXFWriter implements ActorListener, ActorAmountListener {
      */
     @Override
     public void notifyActorRemoved(long actorId) {
-        fileSink.stepBegins(this.graph.getId(), timeId, new Date().getTime());
-        fileSink.nodeRemoved(this.graph.getId(), timeId, Long.toString(actorId));
+        fileSink.stepBegins(this.graphId, timeId, new Date().getTime());
+        fileSink.nodeRemoved(this.graphId, timeId, Long.toString(actorId));
         try {
             fileSink.flush();
         } catch (IOException e) {
@@ -98,8 +113,8 @@ public class GEXFWriter implements ActorListener, ActorAmountListener {
      */
     @Override
     public void notifyAttributeAdded(Actor actor, String attribute, String value) {
-        fileSink.stepBegins(this.graph.getId(), timeId, new Date().getTime());
-        fileSink.nodeAttributeAdded(this.graph.getId(), timeId, String.valueOf(actor.getId()), attribute, value);
+        fileSink.stepBegins(this.graphId, timeId, new Date().getTime());
+        fileSink.nodeAttributeAdded(this.graphId, timeId, String.valueOf(actor.getId()), attribute, value);
         try {
             fileSink.flush();
         } catch (IOException e) {
@@ -113,8 +128,8 @@ public class GEXFWriter implements ActorListener, ActorAmountListener {
      */
     @Override
     public void notifyAttributeChanged(Actor actor, String attribute, String oldValue, String newValue) {
-        fileSink.stepBegins(this.graph.getId(), timeId, new Date().getTime());
-        fileSink.nodeAttributeChanged(this.graph.getId(), timeId, String.valueOf(actor.getId()),
+        fileSink.stepBegins(this.graphId, timeId, new Date().getTime());
+        fileSink.nodeAttributeChanged(this.graphId, timeId, String.valueOf(actor.getId()),
                 attribute, oldValue, newValue);
         try {
             fileSink.flush();
@@ -129,8 +144,8 @@ public class GEXFWriter implements ActorListener, ActorAmountListener {
      */
     @Override
     public void notifyAttributeRemoved(Actor actor, String attribute) {
-        fileSink.stepBegins(this.graph.getId(), timeId, new Date().getTime());
-        fileSink.nodeAttributeRemoved(this.graph.getId(), timeId, String.valueOf(actor.getId()), attribute);
+        fileSink.stepBegins(this.graphId, timeId, new Date().getTime());
+        fileSink.nodeAttributeRemoved(this.graphId, timeId, String.valueOf(actor.getId()), attribute);
         try {
             fileSink.flush();
         } catch (IOException e) {
@@ -145,8 +160,8 @@ public class GEXFWriter implements ActorListener, ActorAmountListener {
      */
     @Override
     public void notifyConnectionAdded(Edge edge, Actor actor1, Actor actor2) {
-        fileSink.stepBegins(this.graph.getId(), timeId, new Date().getTime());
-        fileSink.edgeAdded(this.graph.getId(), timeId, edge.getId(),
+        fileSink.stepBegins(this.graphId, timeId, new Date().getTime());
+        fileSink.edgeAdded(this.graphId, timeId, edge.getId(),
                 String.valueOf(actor1.getId()), String.valueOf(actor2.getId()), false);
         try {
             fileSink.flush();
@@ -163,8 +178,8 @@ public class GEXFWriter implements ActorListener, ActorAmountListener {
      */
     @Override
     public void notifyEdgeRemoved(Edge edge) {
-        fileSink.stepBegins(this.graph.getId(), timeId, new Date().getTime());
-        fileSink.edgeRemoved(this.graph.getId(), timeId, edge.getId());
+        fileSink.stepBegins(this.graphId, timeId, new Date().getTime());
+        fileSink.edgeRemoved(this.graphId, timeId, edge.getId());
         try {
             fileSink.flush();
         } catch (IOException e) {
@@ -186,11 +201,11 @@ public class GEXFWriter implements ActorListener, ActorAmountListener {
      */
     public void stopRecording() {
         try {
-            fileSink.stepBegins(this.graph.getId(), timeId, new Date().getTime());
+            fileSink.stepBegins(this.graphId, timeId, new Date().getTime());
 
             // TODO find a better way to do this
             // for now: required to flush the last time step - otherwise the last step is not being considered
-            fileSink.graphCleared(this.graph.getId(), timeId);
+            fileSink.graphCleared(this.graphId, timeId);
 
             fileSink.flush();
             fileSink.end();
