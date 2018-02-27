@@ -32,9 +32,7 @@ import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.view.Viewer;
 
 import nl.uu.socnetid.networkgames.actors.Actor;
-import nl.uu.socnetid.networkgames.actors.listeners.ActorRoundFinishedListener;
-import nl.uu.socnetid.networkgames.actors.listeners.ConnectionChangeListener;
-import nl.uu.socnetid.networkgames.actors.listeners.DiseaseChangeListener;
+import nl.uu.socnetid.networkgames.actors.ActorListener;
 import nl.uu.socnetid.networkgames.disease.DiseaseSpecs;
 import nl.uu.socnetid.networkgames.disease.types.DiseaseType;
 import nl.uu.socnetid.networkgames.gui.CumulativePanel;
@@ -56,8 +54,7 @@ import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
 /**
  * @author Hendrik Nunner
  */
-public class NetworkGame implements NodeClickListener, DiseaseChangeListener, ConnectionChangeListener,
-ActorRoundFinishedListener  {
+public class NetworkGame implements NodeClickListener, ActorListener {
 
     // logger
     @SuppressWarnings("unused")
@@ -107,8 +104,8 @@ ActorRoundFinishedListener  {
     private JLabel lblR;
     private JTextField txtR;
 
-    // identifier of actor to show stats for
-    private long statsActorId;
+    // actor to show stats for
+    private Actor statsActor;
 
     // concurrency for simulation
     private ExecutorService nodeClickExecutor = Executors.newSingleThreadExecutor();
@@ -477,9 +474,7 @@ ActorRoundFinishedListener  {
                     this.network.addActor(actor);
                     break;
             }
-            actor.addActorRoundFinishedListener(this);
-            actor.addConnectionChangeListener(this);
-            actor.addDiseaseChangeListener(this);
+            actor.addActorListener(this);
         }
 
         // update stats
@@ -679,7 +674,7 @@ ActorRoundFinishedListener  {
 
         // show actor stats on node click
         if (this.chckbxShowActorStats.isSelected()) {
-            this.statsActorId = clickActorId;
+            this.statsActor = this.network.getActor(clickActorId);
             this.statsFrame.refreshLocalActorStats(network.getActor(clickActorId));
         }
 
@@ -747,29 +742,46 @@ ActorRoundFinishedListener  {
 
     /**
      * Updates the stats frame.
-     *
-     * @param actor
      */
-    private void updateStats(Actor actor) {
+    private void updateStats() {
         // global stats
         this.statsFrame.refreshGlobalNetworkStats(StatsComputer.computeGlobalNetworkStats(this.network));
 
         // actor stats
-        if (this.statsActorId <= 0) {
+        if (this.statsActor == null) {
             return;
         }
-        if (actor.getId() == this.statsActorId) {
-            this.statsFrame.refreshLocalActorStats(actor);
-        }
+        this.statsFrame.refreshLocalActorStats(statsActor);
     }
 
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.actors.DiseaseChangeListener#notifyDiseaseChanged(
-     * nl.uu.socnetid.networkgames.actors.Actor)
+    /*
+     * (non-Javadoc)
+     * @see nl.uu.socnetid.networkgames.actors.listeners.ActorListener#notifyAttributeAdded(
+     * nl.uu.socnetid.networkgames.actors.Actor, java.lang.String, java.lang.String)
      */
     @Override
-    public void notifyDiseaseChanged(Actor actor) {
-        updateStats(actor);
+    public void notifyAttributeAdded(Actor actor, String attribute, String value) {
+        updateStats();
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see nl.uu.socnetid.networkgames.actors.listeners.ActorListener#notifyAttributeChanged(
+     * nl.uu.socnetid.networkgames.actors.Actor, java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public void notifyAttributeChanged(Actor actor, String attribute, String oldValue, String newValue) {
+        updateStats();
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see nl.uu.socnetid.networkgames.actors.listeners.ActorListener#notifyAttributeRemoved(
+     * nl.uu.socnetid.networkgames.actors.Actor, java.lang.String)
+     */
+    @Override
+    public void notifyAttributeRemoved(Actor actor, String attribute) {
+        updateStats();
     }
 
     /* (non-Javadoc)
@@ -778,23 +790,22 @@ ActorRoundFinishedListener  {
      */
     @Override
     public void notifyRoundFinished(Actor actor) {
-        updateStats(actor);
+        updateStats();
     }
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.actors.listeners.ConnectionChangeListener#notifyConnectionAdded(
+     * @see nl.uu.socnetid.networkgames.actors.listeners.ActorConnectionListener#notifyConnectionAdded(
      * org.graphstream.graph.Edge, nl.uu.socnetid.networkgames.actors.Actor, nl.uu.socnetid.networkgames.actors.Actor)
      */
     @Override
     public void notifyConnectionAdded(Edge edge, Actor actor1, Actor actor2) {
-        updateStats(actor1);
-        updateStats(actor2);
+        updateStats();
     }
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.actors.listeners.ConnectionChangeListener#
+     * @see nl.uu.socnetid.networkgames.actors.listeners.ActorConnectionListener#
      * notifyEdgeRemoved(org.graphstream.graph.Edge)
      */
     @Override
@@ -804,11 +815,12 @@ ActorRoundFinishedListener  {
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.actors.listeners.ConnectionChangeListener#
+     * @see nl.uu.socnetid.networkgames.actors.listeners.ActorConnectionListener#
      * notifyConnectionRemoved(nl.uu.socnetid.networkgames.actors.Actor)
      */
     @Override
     public void notifyConnectionRemoved(Actor actor) {
-        updateStats(actor);
+        updateStats();
     }
+
 }
