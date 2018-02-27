@@ -15,9 +15,6 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 
-import nl.uu.socnetid.networkgames.actors.listeners.ActorRoundFinishedListener;
-import nl.uu.socnetid.networkgames.actors.listeners.ConnectionChangeListener;
-import nl.uu.socnetid.networkgames.actors.listeners.DiseaseChangeListener;
 import nl.uu.socnetid.networkgames.disease.Disease;
 import nl.uu.socnetid.networkgames.disease.DiseaseFactory;
 import nl.uu.socnetid.networkgames.disease.DiseaseSpecs;
@@ -67,12 +64,8 @@ public class Actor implements Comparable<Actor>, Runnable {
     private Lock lock;
 
     // listener
-    private final Set<DiseaseChangeListener> diseaseChangeListeners =
-            new CopyOnWriteArraySet<DiseaseChangeListener>();
-    private final Set<ConnectionChangeListener> connectionChangeListeners =
-            new CopyOnWriteArraySet<ConnectionChangeListener>();
-    private final Set<ActorRoundFinishedListener> actorRoundFinishedListeners =
-            new CopyOnWriteArraySet<ActorRoundFinishedListener>();
+    private final Set<ActorListener> actorListeners =
+            new CopyOnWriteArraySet<ActorListener>();
 
 
     /**
@@ -94,7 +87,7 @@ public class Actor implements Comparable<Actor>, Runnable {
         this.riskFactor = riskFactor;
         this.graph = graph;
         this.graph.addNode(String.valueOf(getId()));
-        updateAttributes();
+        initAttributes();
     }
 
     /**
@@ -147,48 +140,111 @@ public class Actor implements Comparable<Actor>, Runnable {
     }
 
 
-
     /**
-     * Updates the attributes of the node.
+     * Initializes the node attributes.
      */
-    private void updateAttributes() {
-
-
-
-        // TODO this should call attribute listeners
-
-
+    private void initAttributes() {
+        // TODO consider: Actor extending graphstream's Node and overriding addAttribute to accept ActorAttributes!
 
         Node node = this.graph.getNode(String.valueOf(getId()));
 
-        if (node.getAttribute("ui.label") == null) {
-            node.addAttribute("ui.label", node.getId());
-        }
+        // disease group
+        String diseaseGroupAttr = ActorAttributes.DISEASE_GROUP.toString();
+        String diseaseGroup = this.getDiseaseGroup().toString();
+        node.addAttribute(diseaseGroupAttr, diseaseGroup);
+        notifyAttributeAdded(diseaseGroupAttr, diseaseGroup);
+        // ui-class required only for ui properties as defined in resources/graph-stream.css --> no notifications
+        String uiClassAttr = ActorAttributes.UI_CLASS.toString();
+        node.addAttribute(uiClassAttr, diseaseGroup);
 
-        // susceptible
-        if (this.isSusceptible()) {
-            node.addAttribute("ui.class", "susceptible");
-            node.addAttribute("disease.group", "susceptible");
-            node.removeAttribute("disease.type");
-            return;
-        }
+        // satisfaction
+        String satisfiedAttr = ActorAttributes.SATISFIED.toString();
+        String satisfied = this.isSatisfied() ? "true" : "false";
+        node.addAttribute(satisfiedAttr, satisfied);
+        notifyAttributeAdded(satisfiedAttr, satisfied);
 
-        // infected
+        // infected actors require also diseaseType
         if (this.isInfected()) {
-            node.addAttribute("ui.class", "infected");
-            node.addAttribute("disease.group", "infected");
-            node.addAttribute("disease.type", "SIR");
-            return;
-        }
-
-        // recovered
-        if (this.isRecovered()) {
-            node.addAttribute("ui.class", "recovered");
-            node.addAttribute("disease.group", "recovered");
-            node.removeAttribute("disease.type");
-            return;
+            String diseaseTypeAttr = ActorAttributes.DISEASE_TYPE.toString();
+            String diseaseType = this.getDiseaseSpecs().getDiseaseType().toString();
+            node.addAttribute(diseaseTypeAttr, diseaseType);
+            notifyAttributeAdded(diseaseTypeAttr, diseaseType);
         }
     }
+
+    /**
+     * Updates the node's disease attributes.
+     *
+     * @param diseaseGroupPreviousRound
+     *          the disease group in the previous round
+     */
+    private void updateDiseaseAttributes(DiseaseGroup diseaseGroupPreviousRound) {
+        Node node = this.graph.getNode(String.valueOf(getId()));
+
+        // change of disease group
+        if (diseaseGroupPreviousRound != this.diseaseGroup) {
+            String oldDiseaseGroup = diseaseGroupPreviousRound.toString();
+            String currentDiseaseGroup = this.diseaseGroup.toString();
+
+            // disease group
+            String diseaseGroupAttr = ActorAttributes.DISEASE_GROUP.toString();
+            node.changeAttribute(diseaseGroupAttr, currentDiseaseGroup);
+            notifyAttributeChanged(diseaseGroupAttr, oldDiseaseGroup, currentDiseaseGroup);
+            // ui-class required only for ui properties as defined in resources/graph-stream.css --> no notifications
+            String uiClassAttr = ActorAttributes.UI_CLASS.toString();
+            node.changeAttribute(uiClassAttr, currentDiseaseGroup);
+
+            // newly infected actors require also disease type and disease timer attributes
+            if (this.isInfected()) {
+                // disease type
+                String diseaseTypeAttr = ActorAttributes.DISEASE_TYPE.toString();
+                String diseaseType = this.getDiseaseSpecs().getDiseaseType().toString();
+                node.addAttribute(diseaseTypeAttr, diseaseType);
+                notifyAttributeAdded(diseaseTypeAttr, diseaseType);
+                // disease timer
+                String diseaseTimeUntilCuredAttr = ActorAttributes.DISEASE_TIMEUNTILCURED.toString();
+                String diseaseTimeUntilCured = String.valueOf(this.disease.getTimeUntilCured());
+                node.addAttribute(diseaseTimeUntilCuredAttr, diseaseTimeUntilCured);
+                notifyAttributeAdded(diseaseTimeUntilCuredAttr, diseaseTimeUntilCured);
+            }
+            // formerly infected actors remove disease type and disease timer attributes
+            if (diseaseGroupPreviousRound == DiseaseGroup.INFECTED) {
+                // disease type
+                String diseaseTypeAttr = ActorAttributes.DISEASE_TYPE.toString();
+                node.removeAttribute(diseaseTypeAttr);
+                notifyAttributeRemoved(diseaseTypeAttr);
+                // disease timer
+                String diseaseTimeUntilCuredAttr = ActorAttributes.DISEASE_TIMEUNTILCURED.toString();
+                node.removeAttribute(diseaseTimeUntilCuredAttr);
+                notifyAttributeRemoved(diseaseTimeUntilCuredAttr);
+            }
+        }
+
+        // actor still being infected: update disease timer
+        if (diseaseGroupPreviousRound == this.diseaseGroup && this.diseaseGroup == DiseaseGroup.INFECTED) {
+            String diseaseTimeUntilCuredAttr = ActorAttributes.DISEASE_TIMEUNTILCURED.toString();
+            String oldValue = String.valueOf(this.disease.getTimeUntilCured() + 1);
+            String newValue = String.valueOf(this.disease.getTimeUntilCured());
+            node.changeAttribute(diseaseTimeUntilCuredAttr, newValue);
+            notifyAttributeChanged(diseaseTimeUntilCuredAttr, oldValue, newValue);
+        }
+    }
+
+    /**
+     * Update the node's satisfaction attribute.
+     */
+    private void updateSatisfactionAttribute() {
+        Node node = this.graph.getNode(String.valueOf(getId()));
+
+        // satisfaction
+        String satisfiedAttr = ActorAttributes.SATISFIED.toString();
+        String newValue = this.isSatisfied() ? "true" : "false";
+        String oldValue = this.isSatisfied() ? "false" : "true";
+        node.changeAttribute(satisfiedAttr, newValue);
+        notifyAttributeChanged(satisfiedAttr, oldValue, newValue);
+    }
+
+
 
 
 
@@ -234,8 +290,8 @@ public class Actor implements Comparable<Actor>, Runnable {
      */
     @Override
     public void run() {
-        // assumption that current connections are not optimal
-        this.satisfied = false;
+        // starting assumption that current connections are not optimal
+        boolean tmpSatisfied = false;
         lock.lock();
 
         try {
@@ -253,7 +309,7 @@ public class Actor implements Comparable<Actor>, Runnable {
                 if (!tryToConnect()) {
                     // try to disconnect
                     if (!tryToDisconnect()) {
-                        this.satisfied = true;
+                        tmpSatisfied = true;
                     }
                 }
 
@@ -264,11 +320,17 @@ public class Actor implements Comparable<Actor>, Runnable {
                 if (!tryToDisconnect()) {
                     // try to connect
                     if (!tryToConnect()) {
-                        this.satisfied = true;
+                        tmpSatisfied = true;
                     }
                 }
             }
+
+            if (this.satisfied != tmpSatisfied) {
+                this.satisfied = tmpSatisfied;
+                updateSatisfactionAttribute();
+            }
             notifyRoundFinished();
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -613,10 +675,12 @@ public class Actor implements Comparable<Actor>, Runnable {
      * Cures the actor from a disease.
      */
     public void cure() {
+        DiseaseGroup diseaseGroupPreviousRound = this.diseaseGroup;
+
         this.disease = null;
         this.diseaseGroup = DiseaseGroup.RECOVERED;
-        updateAttributes();
-        notifyDiseaseChangeListeners();
+
+        updateDiseaseAttributes(diseaseGroupPreviousRound);
     }
 
     /**
@@ -639,13 +703,15 @@ public class Actor implements Comparable<Actor>, Runnable {
      *          the specificationso of the disease the actor is infected with
      */
     public void forceInfect(DiseaseSpecs diseaseSpecs) {
+        DiseaseGroup diseaseGroupPreviousRound = this.diseaseGroup;
+
         if (!this.diseaseSpecs.equals(diseaseSpecs)) {
             throw new RuntimeException("Known disease and caught disease mismatch!");
         }
         this.disease = DiseaseFactory.createInfection(diseaseSpecs);
         this.diseaseGroup = DiseaseGroup.INFECTED;
-        updateAttributes();
-        notifyDiseaseChangeListeners();
+
+        updateDiseaseAttributes(diseaseGroupPreviousRound);
     }
 
     /**
@@ -674,10 +740,12 @@ public class Actor implements Comparable<Actor>, Runnable {
      * Makes the actor susceptible.
      */
     public void makeSusceptible() {
+        DiseaseGroup diseaseGroupPreviousRound = this.diseaseGroup;
+
         this.disease = null;
         this.diseaseGroup = DiseaseGroup.SUSCEPTIBLE;
-        updateAttributes();
-        notifyDiseaseChangeListeners();
+
+        updateDiseaseAttributes(diseaseGroupPreviousRound);
     }
 
     /**
@@ -717,11 +785,10 @@ public class Actor implements Comparable<Actor>, Runnable {
 
         this.disease.evolve();
         if (this.disease.isCured()) {
-            this.disease = null;
-            this.diseaseGroup = DiseaseGroup.RECOVERED;
+            this.cure();
+        } else {
+            updateDiseaseAttributes(this.diseaseGroup);
         }
-        updateAttributes();
-        notifyDiseaseChangeListeners();
     }
 
     /**
@@ -747,53 +814,68 @@ public class Actor implements Comparable<Actor>, Runnable {
 
 
     /**
-     * Adds a listener to be notified when the actor's disease has changed.
+     * Adds a listener for actor notifications.
      *
-     * @param diseaseChangeListener
+     * @param actorListener
      *          the listener to be added
      */
-    public void addDiseaseChangeListener(DiseaseChangeListener diseaseChangeListener) {
-        this.diseaseChangeListeners.add(diseaseChangeListener);
+    public void addActorListener(ActorListener actorListener) {
+        this.actorListeners.add(actorListener);
     }
 
     /**
-     * Removes a listener to be notified when the actor's disease has changed.
+     * Removes a listener for actor notifications.
      *
-     * @param diseaseChangeListener
+     * @param actorListener
      *          the listener to be removed
      */
-    public void removeDiseaseChangeListener(DiseaseChangeListener diseaseChangeListener) {
-        this.diseaseChangeListeners.remove(diseaseChangeListener);
+    public void removeAttributeListener(ActorListener actorListener) {
+        this.actorListeners.remove(actorListener);
     }
 
     /**
-     * Notifies listeners of disease changes.
+     * Notifies listeners of added attributes.
+     *
+     * @param attribute
+     *          the attribute
+     * @param value
+     *          the attribute's value
      */
-    private final void notifyDiseaseChangeListeners() {
-        Iterator<DiseaseChangeListener> listenersIt = this.diseaseChangeListeners.iterator();
+    private final void notifyAttributeAdded(String attribute, String value) {
+        Iterator<ActorListener> listenersIt = this.actorListeners.iterator();
         while (listenersIt.hasNext()) {
-            listenersIt.next().notifyDiseaseChanged(this);
+            listenersIt.next().notifyAttributeAdded(this, attribute, value);
         }
     }
 
     /**
-     * Adds a listener to be notified when a connection is being changed between two actors.
+     * Notifies listeners of changed attributes.
      *
-     * @param connectionChangeListener
-     *          the listener to added
+     * @param attribute
+     *          the attribute
+     * @param oldValue
+     *          the attribute's old value
+     * @param newValue
+     *          the attribute's new value
      */
-    public void addConnectionChangeListener(ConnectionChangeListener connectionChangeListener) {
-        this.connectionChangeListeners.add(connectionChangeListener);
+    private final void notifyAttributeChanged(String attribute, String oldValue, String newValue) {
+        Iterator<ActorListener> listenersIt = this.actorListeners.iterator();
+        while (listenersIt.hasNext()) {
+            listenersIt.next().notifyAttributeChanged(this, attribute, oldValue, newValue);
+        }
     }
 
     /**
-     * Removes a listener to be notified when a connection is being changed between two actors.
+     * Notifies listeners of removed attributes.
      *
-     * @param connectionChangeListener
-     *          the listener to be removed
+     * @param attribute
+     *          the attribute
      */
-    public void removeConnectionChangeListener(ConnectionChangeListener connectionChangeListener) {
-        this.connectionChangeListeners.remove(connectionChangeListener);
+    private final void notifyAttributeRemoved(String attribute) {
+        Iterator<ActorListener> listenersIt = this.actorListeners.iterator();
+        while (listenersIt.hasNext()) {
+            listenersIt.next().notifyAttributeRemoved(this, attribute);
+        }
     }
 
     /**
@@ -807,7 +889,7 @@ public class Actor implements Comparable<Actor>, Runnable {
      *          the second actor the connection has been added to
      */
     private final void notifyConnectionAdded(Edge edge, Actor actor1, Actor actor2) {
-        Iterator<ConnectionChangeListener> listenersIt = this.connectionChangeListeners.iterator();
+        Iterator<ActorListener> listenersIt = this.actorListeners.iterator();
         while (listenersIt.hasNext()) {
             listenersIt.next().notifyConnectionAdded(edge, actor1, actor2);
         }
@@ -817,7 +899,7 @@ public class Actor implements Comparable<Actor>, Runnable {
      * Notifies the listeners of removed connections.
      */
     private final void notifyConnectionRemoved() {
-        Iterator<ConnectionChangeListener> listenersIt = this.connectionChangeListeners.iterator();
+        Iterator<ActorListener> listenersIt = this.actorListeners.iterator();
         while (listenersIt.hasNext()) {
             listenersIt.next().notifyConnectionRemoved(this);
         }
@@ -830,47 +912,20 @@ public class Actor implements Comparable<Actor>, Runnable {
      *          the removed edge
      */
     private final void notifyEdgeRemoved(Edge edge) {
-        Iterator<ConnectionChangeListener> listenersIt = this.connectionChangeListeners.iterator();
+        Iterator<ActorListener> listenersIt = this.actorListeners.iterator();
         while (listenersIt.hasNext()) {
             listenersIt.next().notifyEdgeRemoved(edge);
         }
     }
 
     /**
-     * Adds a listener to be notified when the actor has finished a round.
-     *
-     * @param actorRoundFinishedListener
-     *          the listener to added
+     * Notifies listeners of finished actor rounds.
      */
-    public void addActorRoundFinishedListener(ActorRoundFinishedListener actorRoundFinishedListener) {
-        this.actorRoundFinishedListeners.add(actorRoundFinishedListener);
+    private final void notifyRoundFinished() {
+        Iterator<ActorListener> listenersIt = this.actorListeners.iterator();
+        while (listenersIt.hasNext()) {
+            listenersIt.next().notifyRoundFinished(this);
+        }
     }
-
-   /**
-    * Removes a listener to be notified when the actor has finished a round.
-    *
-    * @param actorRoundFinishedListener
-    *          the listener to be removed
-    */
-   public void removeActorRoundFinishedListener(ActorRoundFinishedListener actorRoundFinishedListener) {
-       this.actorRoundFinishedListeners.remove(actorRoundFinishedListener);
-   }
-
-   /**
-    * Notifies listeners of added connections.
-    *
-    * @param edgeId
-    *          the id of the new connection
-    * @param idActor1
-    *          the id of one of the two actors the connection has been added to
-    * @param idActor2
-    *          the id of the second actor the connection has been added to
-    */
-   private final void notifyRoundFinished() {
-       Iterator<ActorRoundFinishedListener> listenersIt = this.actorRoundFinishedListeners.iterator();
-       while (listenersIt.hasNext()) {
-           listenersIt.next().notifyRoundFinished(this);
-       }
-   }
 
 }

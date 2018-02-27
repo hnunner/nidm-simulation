@@ -11,13 +11,13 @@ import org.graphstream.stream.file.FileSinkGEXF;
 import org.graphstream.stream.file.FileSinkGEXF.TimeFormat;
 
 import nl.uu.socnetid.networkgames.actors.Actor;
-import nl.uu.socnetid.networkgames.actors.listeners.ConnectionChangeListener;
+import nl.uu.socnetid.networkgames.actors.ActorListener;
 import nl.uu.socnetid.networkgames.network.listeners.ActorAmountListener;
 
 /**
  * @author Hendrik Nunner
  */
-public class GEXFWriter implements ActorAmountListener, ConnectionChangeListener {
+public class GEXFWriter implements ActorListener, ActorAmountListener {
 
     // logger
     private static final Logger logger = Logger.getLogger(GEXFWriter.class);
@@ -92,9 +92,55 @@ public class GEXFWriter implements ActorAmountListener, ConnectionChangeListener
         }
     }
 
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.networkgames.actors.listeners.ActorListener#notifyAttributeAdded(
+     * nl.uu.socnetid.networkgames.actors.Actor, java.lang.String, java.lang.String)
+     */
+    @Override
+    public void notifyAttributeAdded(Actor actor, String attribute, String value) {
+        fileSink.stepBegins(this.graph.getId(), timeId, new Date().getTime());
+        fileSink.nodeAttributeAdded(this.graph.getId(), timeId, String.valueOf(actor.getId()), attribute, value);
+        try {
+            fileSink.flush();
+        } catch (IOException e) {
+            logger.error(e);
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.networkgames.actors.listeners.ActorListener#notifyAttributeChanged(
+     * nl.uu.socnetid.networkgames.actors.Actor, java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public void notifyAttributeChanged(Actor actor, String attribute, String oldValue, String newValue) {
+        fileSink.stepBegins(this.graph.getId(), timeId, new Date().getTime());
+        fileSink.nodeAttributeChanged(this.graph.getId(), timeId, String.valueOf(actor.getId()),
+                attribute, oldValue, newValue);
+        try {
+            fileSink.flush();
+        } catch (IOException e) {
+            logger.error(e);
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.networkgames.actors.listeners.ActorListener#notifyAttributeRemoved(
+     * nl.uu.socnetid.networkgames.actors.Actor, java.lang.String)
+     */
+    @Override
+    public void notifyAttributeRemoved(Actor actor, String attribute) {
+        fileSink.stepBegins(this.graph.getId(), timeId, new Date().getTime());
+        fileSink.nodeAttributeRemoved(this.graph.getId(), timeId, String.valueOf(actor.getId()), attribute);
+        try {
+            fileSink.flush();
+        } catch (IOException e) {
+            logger.error(e);
+        }
+    }
+
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.actors.listeners.ConnectionChangeListener#notifyConnectionAdded(
+     * @see nl.uu.socnetid.networkgames.actors.listeners.ActorConnectionListener#notifyConnectionAdded(
      * org.graphstream.graph.Edge, nl.uu.socnetid.networkgames.actors.Actor, nl.uu.socnetid.networkgames.actors.Actor)
      */
     @Override
@@ -112,7 +158,7 @@ public class GEXFWriter implements ActorAmountListener, ConnectionChangeListener
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.actors.listeners.ConnectionChangeListener#
+     * @see nl.uu.socnetid.networkgames.actors.listeners.ActorConnectionListener#
      * notifyEdgeRemoved(org.graphstream.graph.Edge)
      */
     @Override
@@ -127,7 +173,7 @@ public class GEXFWriter implements ActorAmountListener, ConnectionChangeListener
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.actors.listeners.ConnectionChangeListener#
+     * @see nl.uu.socnetid.networkgames.actors.listeners.ActorConnectionListener#
      * notifyConnectionRemoved(nl.uu.socnetid.networkgames.actors.Actor)
      */
     @Override
@@ -151,6 +197,14 @@ public class GEXFWriter implements ActorAmountListener, ConnectionChangeListener
         } catch (IOException e) {
             logger.error(e);
         }
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.networkgames.actors.ActorListener#notifyRoundFinished(nl.uu.socnetid.networkgames.actors.Actor)
+     */
+    @Override
+    public void notifyRoundFinished(Actor actor) {
+        // nothing to do
     }
 
 }
