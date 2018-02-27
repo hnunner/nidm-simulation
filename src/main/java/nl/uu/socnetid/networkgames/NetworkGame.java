@@ -5,7 +5,6 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -25,9 +24,6 @@ import javax.swing.border.MatteBorder;
 
 import org.apache.log4j.Logger;
 import org.graphstream.graph.Edge;
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.implementations.SingleGraph;
-import org.graphstream.ui.view.Viewer;
 
 import nl.uu.socnetid.networkgames.actors.Actor;
 import nl.uu.socnetid.networkgames.actors.ActorListener;
@@ -63,8 +59,6 @@ public class NetworkGame implements NodeClickListener, ActorListener {
 
     // network
     private final Network network = new Network();
-    // graph
-    private Graph graph;
 
     // swing components
     // windows
@@ -255,7 +249,7 @@ public class NetworkGame implements NodeClickListener, ActorListener {
         tabbedPane.add("Export", exportPane);
         exportPane.setLayout(null);
 
-        gexfPanel = new ExportGEXFPanel();
+        gexfPanel = new ExportGEXFPanel(this.network);
         gexfPanel.setBounds(20, 38, 214, 225);
         exportPane.add(gexfPanel);
 
@@ -460,21 +454,10 @@ public class NetworkGame implements NodeClickListener, ActorListener {
             diseaseCBox.addItem(diseases[i]);
         }
 
-
-        // init graphstream
-        this.graph = new SingleGraph("NetworkGames");
-        // graph-stream CSS styles and rendering properties
-        this.graph.addAttribute("ui.quality");
-        this.graph.addAttribute("ui.antialias");
-        URL gsStyles = this.getClass().getClassLoader().getResource("graph-stream.css");
-        this.graph.addAttribute("ui.stylesheet", "url('file:" + gsStyles.getPath() + "')");
-        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
-        // show
-        Viewer viewer = this.graph.display();
-
-
+        // creates a ui representation of the network
+        this.network.show();
         // init click listener
-        NodeClick nodeClickListener = new NodeClick(graph, viewer);
+        NodeClick nodeClickListener = new NodeClick(network);
         nodeClickListener.addListener(this);
         this.nodeClickExecutor.submit(nodeClickListener);
     }
@@ -499,12 +482,12 @@ public class NetworkGame implements NodeClickListener, ActorListener {
             switch (utilityFunctionCBox.getSelectedIndex()) {
                 // only for IRTC: actor including risk behavior
                 case 0:
-                    actor = Actor.newInstance(uf, ds, Double.valueOf(this.txtR.getText()), this.graph);
+                    actor = Actor.newInstance(uf, ds, Double.valueOf(this.txtR.getText()), this.network);
                     this.network.addActor(actor);
                     break;
 
                 default:
-                    actor = Actor.newInstance(uf, ds, this.graph);
+                    actor = Actor.newInstance(uf, ds, this.network);
                     this.network.addActor(actor);
                     break;
             }

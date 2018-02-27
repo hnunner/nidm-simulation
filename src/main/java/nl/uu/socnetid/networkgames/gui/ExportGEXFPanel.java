@@ -3,13 +3,18 @@ package nl.uu.socnetid.networkgames.gui;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.MatteBorder;
+
+import nl.uu.socnetid.networkgames.network.io.GEXFWriter;
+import nl.uu.socnetid.networkgames.network.networks.Network;
 
 /**
  * @author Hendrik Nunner
@@ -17,20 +22,27 @@ import javax.swing.border.MatteBorder;
 public class ExportGEXFPanel extends DeactivatablePanel {
 
 
+
+    // graph
+    private Network network;
+
     // components
     private JButton btnExport;
     private JLabel lblNetworkType;
     private JRadioButton rdbtnDynamic;
     private JRadioButton rdbtnStatic;
-    private JButton btnSelectDynamicOutputFile;
     private JButton btnStartRecording;
     private JButton btnStopRecording;
 
-
     /**
      * Create the panel.
+     *
+     * @param network
+     *          the network to export
      */
-    public ExportGEXFPanel() {
+    public ExportGEXFPanel(Network network) {
+        this.network = network;
+
         setLayout(null);
 
         btnExport = new JButton("Export");
@@ -78,16 +90,6 @@ public class ExportGEXFPanel extends DeactivatablePanel {
         buttonGroup.add(rdbtnDynamic);
         rdbtnStatic.setSelected(true);
 
-        btnSelectDynamicOutputFile = new JButton("Select output file");
-        btnSelectDynamicOutputFile.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                selectDynamicOutputFile();
-            }
-        });
-        btnSelectDynamicOutputFile.setBounds(6, 95, 202, 30);
-        add(btnSelectDynamicOutputFile);
-
         btnStartRecording = new JButton("Start recording");
         btnStartRecording.addActionListener(new ActionListener() {
             @Override
@@ -95,7 +97,7 @@ public class ExportGEXFPanel extends DeactivatablePanel {
                 startRecording();
             }
         });
-        btnStartRecording.setBounds(6, 125, 202, 30);
+        btnStartRecording.setBounds(6, 95, 202, 30);
         add(btnStartRecording);
 
         btnStopRecording = new JButton("Stop recording");
@@ -105,7 +107,7 @@ public class ExportGEXFPanel extends DeactivatablePanel {
                 stopRecording();
             }
         });
-        btnStopRecording.setBounds(6, 155, 202, 30);
+        btnStopRecording.setBounds(6, 125, 202, 30);
         add(btnStopRecording);
 
         updateVisibility();
@@ -117,7 +119,6 @@ public class ExportGEXFPanel extends DeactivatablePanel {
      */
     private void updateVisibility() {
         btnExport.setVisible(rdbtnStatic.isSelected());
-        btnSelectDynamicOutputFile.setVisible(rdbtnDynamic.isSelected());
         btnStartRecording.setVisible(rdbtnDynamic.isSelected());
         btnStopRecording.setVisible(rdbtnDynamic.isSelected());
     }
@@ -126,21 +127,30 @@ public class ExportGEXFPanel extends DeactivatablePanel {
      * Exports the current network as static GEXF files.
      */
     private void exportStaticNetwork() {
-        // TODO implement
-    }
+        JFileChooser fileChooser = new JFileChooser();
+        int popdownState = fileChooser.showSaveDialog(null);
+        if (popdownState == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            String file = selectedFile.getPath();
 
-    /**
-     * Selects the output file for dynamic GEXF files.
-     */
-    private void selectDynamicOutputFile() {
-        // TODO implement
+            GEXFWriter gexfWriter = new GEXFWriter();
+            gexfWriter.writeStaticNetwork(this.network, file);
+        }
     }
 
     /**
      * Starts the recording of dynamic GEXF files.
      */
     private void startRecording() {
-        // TODO implement
+        JFileChooser fileChooser = new JFileChooser();
+        int popdownState = fileChooser.showSaveDialog(null);
+        if (popdownState == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            String file = selectedFile.getPath();
+
+            GEXFWriter gexfWriter = new GEXFWriter();
+            gexfWriter.startRecording(this.network, file);
+        }
     }
 
     /**
