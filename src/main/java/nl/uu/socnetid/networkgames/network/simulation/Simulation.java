@@ -1,5 +1,7 @@
 package nl.uu.socnetid.networkgames.network.simulation;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -23,7 +25,6 @@ public class Simulation implements Runnable {
 
     // the network
     private Network network;
-    private List<Actor> actors;
     // flag indicating whether all actors are happy with their current connections
     private boolean networkStable = false;
 
@@ -42,7 +43,6 @@ public class Simulation implements Runnable {
      */
     public Simulation(Network network) {
         this.network = network;
-        this.actors = this.network.getActors();
     }
 
 
@@ -61,15 +61,17 @@ public class Simulation implements Runnable {
         try {
             while (true) {
 
+                List<Actor> actors = new ArrayList<Actor>(this.network.getActors());
+
                 // disease dynamics
-                computeDiseaseDynamics();
+                computeDiseaseDynamics(actors);
 
                 // actor dynamics
                 // actors performing action in random order
-                Collections.shuffle(this.actors);
+                Collections.shuffle(actors);
 
                 // each actor
-                Iterator<Actor> actorsIt = this.actors.iterator();
+                Iterator<Actor> actorsIt = actors.iterator();
                 while (actorsIt.hasNext()) {
 
                     // some delay before each actor moves (e.g., for animation processes)
@@ -84,7 +86,7 @@ public class Simulation implements Runnable {
                     service.submit(currActor);
                 }
 
-                actorsIt = this.actors.iterator();
+                actorsIt = actors.iterator();
                 boolean allSatisfied = true;
                 while (actorsIt.hasNext()) {
                     Actor currActor = actorsIt.next();
@@ -143,8 +145,11 @@ public class Simulation implements Runnable {
 
     /**
      * Computes a single round of the disease dynamics of the network.
+     *
+     * @param actors
+     *          the actors to compute the disease dynamics for
      */
-    public void computeDiseaseDynamics() {
+    public void computeDiseaseDynamics(Collection<Actor> actors) {
         Iterator<Actor> actorsIt = actors.iterator();
         while (actorsIt.hasNext()) {
             Actor currActor = actorsIt.next();

@@ -1,6 +1,7 @@
 package nl.uu.socnetid.networkgames.network.io;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -38,7 +39,7 @@ public class AdjacencyMatrixWriter implements NetworkWriter {
             Actor currActor = actorsIt.next();
             sb.append(PLAYER_PREFIX).append(currActor.getId());
 
-            List<Actor> connections = currActor.getConnections();
+            Collection<Actor> connections = currActor.getConnections();
 
             Iterator<Actor> connectionsIt = actors.iterator();
             while (connectionsIt.hasNext()) {

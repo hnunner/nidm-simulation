@@ -1,6 +1,6 @@
 package nl.uu.socnetid.networkgames.utilities;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.apache.log4j.Logger;
 
@@ -39,10 +39,10 @@ public class IRTC implements UtilityFunction {
     /*
      * (non-Javadoc)
      * @see nl.uu.socnetid.networkgames.utilities.UtilityFunction#getUtility(
-     * nl.uu.socnetid.networkgames.actors.Actor, java.util.List)
+     * nl.uu.socnetid.networkgames.actors.Actor, java.util.Collection)
      */
     @Override
-    public Utility getUtility(Actor actor, List<Actor> connections) {
+    public Utility getUtility(Actor actor, Collection<Actor> connections) {
 
         // amount of connections according to distance and disease group
         LocalActorConnectionsStats lacs = StatsComputer.computeLocalActorConnectionsStats(actor, connections);

@@ -2,6 +2,7 @@ package nl.uu.socnetid.networkgames.network.networks;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -26,12 +27,17 @@ public class Network extends SingleGraph {
     // logger
     private static final Logger logger = Logger.getLogger(Network.class);
 
-    // graphstream
-    private AbstractGraph graph = new SingleGraph("NetworkGames");
-    private Viewer viewer;
 
-    // list of actors
-    private List<Actor> actors;
+    // TODO fix errors - the params below are not needed anymore since Network extends SingleGraph now!!!
+//    // graphstream
+//    private AbstractGraph graph = new SingleGraph("NetworkGames");
+//    private Viewer viewer;
+//
+//    // list of actors
+//    private List<Actor> actors;
+
+
+
 
     // listener
     private final Set<ActorAmountListener> actorAmountListeners =
@@ -136,8 +142,8 @@ public class Network extends SingleGraph {
      *
      * @return all actors within the network.
      */
-    public List<Actor> getActors() {
-        return this.actors;
+    public Collection<Actor> getActors() {
+        return this.getNodeSet();
     }
 
     /**

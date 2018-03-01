@@ -1,8 +1,10 @@
 package nl.uu.socnetid.networkgames.actors;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -209,7 +211,7 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      *          the connections to compute the utility for
      * @return the utility for a actor based on a list of connections
      */
-    protected Utility getUtility(List<Actor> connections) {
+    protected Utility getUtility(Collection<Actor> connections) {
         return this.getUtilityFunction().getUtility(this, connections);
     }
 
@@ -252,8 +254,13 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      *
      * @return the actor's connections
      */
-    public List<Actor> getConnections() {
-        return this.connections;
+    public Collection<Actor> getConnections() {
+        List<Actor> connections = new LinkedList<Actor>();
+        Iterator<Actor> neighborIt = getNeighborNodeIterator();
+        while (neighborIt.hasNext()) {
+            connections.add(neighborIt.next());
+        }
+        return connections;
     }
 
     /**
@@ -261,8 +268,10 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      *
      * @return the actor's co-actors
      */
-    public List<Actor> getCoActors() {
-        return this.coActors;
+    public Collection<Actor> getCoActors() {
+        Collection<Actor> coActors = getNetwork().getActors();
+        coActors.remove(this);
+        return coActors;
     }
 
     /**
@@ -441,12 +450,12 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      * @return a random connection
      */
     public Actor getRandomConnection() {
-        List<Actor> connections = this.getConnections();
+        Collection<Actor> connections = this.getConnections();
         if (connections.size() == 0) {
             return null;
         }
         int index = ThreadLocalRandom.current().nextInt(connections.size());
-        return connections.get(index);
+        return (Actor) connections.toArray()[index];
     }
 
     /**
@@ -590,7 +599,7 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      *
      * @return the disease group the actor is in
      */
-    private DiseaseGroup getDiseaseGroup() {
+    public DiseaseGroup getDiseaseGroup() {
         return (DiseaseGroup) this.getAttribute(ActorAttributes.DISEASE_GROUP);
     }
 
