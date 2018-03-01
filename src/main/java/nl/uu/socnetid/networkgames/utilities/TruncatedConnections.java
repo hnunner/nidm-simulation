@@ -1,5 +1,6 @@
 package nl.uu.socnetid.networkgames.utilities;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,10 +34,10 @@ public class TruncatedConnections implements UtilityFunction {
     /*
      * (non-Javadoc)
      * @see nl.uu.socnetid.networkgames.utilities.UtilityFunction#getUtility(
-     * nl.uu.socnetid.networkgames.actors.Actor, java.util.List)
+     * nl.uu.socnetid.networkgames.actors.Actor, java.util.Collection)
      */
     @Override
-    public Utility getUtility(Actor actor, List<Actor> connections) {
+    public Utility getUtility(Actor actor, Collection<Actor> connections) {
         double benefitDirectConnections = 0.0;
         double benefitIndirectConnections = 0.0;
         double costsDirectConnections = 0.0;
@@ -61,7 +62,7 @@ public class TruncatedConnections implements UtilityFunction {
             }
 
             // indirect connections at distance 2
-            List<Actor> indirectConnections = directConnection.getConnections();
+            Collection<Actor> indirectConnections = directConnection.getConnections();
             if (indirectConnections == null) {
                 continue;
             }

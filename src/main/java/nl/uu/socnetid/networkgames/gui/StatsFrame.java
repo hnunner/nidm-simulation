@@ -824,7 +824,7 @@ public class StatsFrame extends JFrame {
     public void refreshLocalActorStats(Actor actor) {
 
         // identifier
-        this.lblActorID.setText(Long.toString(actor.getId()));
+        this.lblActorID.setText(actor.getId());
 
         // satisfaction
         this.lblActorSatisfied.setText(actor.isSatisfied() ? "yes" : "no");

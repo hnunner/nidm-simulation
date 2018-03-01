@@ -1,5 +1,6 @@
 package nl.uu.socnetid.networkgames.stats;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -87,7 +88,7 @@ public final class StatsComputer {
      */
     public static GlobalNetworkStats computeGlobalNetworkStats(Network network) {
 
-        List<Actor> actors = network.getActors();
+        Collection<Actor> actors = network.getActors();
 
         boolean stable = true;
         int connections = 0;
@@ -119,7 +120,7 @@ public final class StatsComputer {
     public static GlobalActorStats computeGlobalActorStats(Network network) {
 
         // all actors
-        List<Actor> actors = network.getActors();
+        Collection<Actor> actors = network.getActors();
         int n = actors.size();
 
         // disease groups
@@ -193,7 +194,8 @@ public final class StatsComputer {
      *          altered connections
      * @return the stats for a single actor's connections.
      */
-    public static LocalActorConnectionsStats computeLocalActorConnectionsStats(Actor actor, List<Actor> connections) {
+    public static LocalActorConnectionsStats computeLocalActorConnectionsStats(Actor actor,
+            Collection<Actor> connections) {
 
         // number of connections
         int nS = 0;
@@ -233,7 +235,7 @@ public final class StatsComputer {
             }
 
             // no indirect connections --> go to next direct connection
-            List<Actor> indirectConnections = directConnection.getConnections();
+            Collection<Actor> indirectConnections = directConnection.getConnections();
             if (indirectConnections == null) {
                 continue;
             }
