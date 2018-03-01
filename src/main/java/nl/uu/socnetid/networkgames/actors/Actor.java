@@ -7,12 +7,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 
 import org.apache.log4j.Logger;
 import org.graphstream.graph.Edge;
-import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleNode;
 
 import nl.uu.socnetid.networkgames.disease.Disease;
@@ -31,42 +29,13 @@ import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
  */
 public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
 
-    // risk neutral risk factor
-    protected static final double RISK_NEUTRAL = 1.0;
     // logger
     private final static Logger logger = Logger.getLogger(Actor.class);
-
-    // unique identifier
-    private static final AtomicLong NEXT_ID = new AtomicLong(1);
-    private final long id = NEXT_ID.getAndIncrement();
-
-    // risk factor
-    private double riskFactor;
-
-    // utility function
-    private UtilityFunction utilityFunction;
-
-    // the network the actor acts as node in
-    private Network network;
-    // the node as in the network
-    private Node node;
-    // co-actors
-    private List<Actor> coActors;
-    // personal connections
-    private List<Actor> connections = new ArrayList<Actor>();
-
-    // disease
-    private DiseaseGroup diseaseGroup;
-    private DiseaseSpecs diseaseSpecs;
-    private Disease disease;
-
-    // flag indicating whether the actor is satisfied with her current connections
-    private boolean satisfied = false;
 
     // concurrency lock
     private Lock lock;
 
-    // listener
+    // listeners
     private final Set<ActorListener> actorListeners =
             new CopyOnWriteArraySet<ActorListener>();
 
@@ -74,209 +43,235 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
     /**
      * Constructor.
      *
+     * @param id
+     *          the unique identifier
+     * @param network
+     *          the network the actor is being a part of
      * @param utilityFunction
      *          the function the actor uses to compute his utility of the network
      * @param diseaseSpecs
      *          the disease characteristics that is or might become present in the network
      * @param riskFactor
      *          the risk factor of a actor (<1: risk seeking, =1: risk neutral; >1: risk averse)
-     * @param network
-     *          the network the actor acts as node in
      */
-    private Actor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double riskFactor, Network network) {
-
-        // TODO make properly
-//        super(network.getGraph(), "ss");
-
-
-        this.utilityFunction = utilityFunction;
-        this.diseaseSpecs = diseaseSpecs;
-        this.diseaseGroup = DiseaseGroup.SUSCEPTIBLE;
-        this.riskFactor = riskFactor;
-        this.network = network;
-        this.node = network.getNode(this.id);
-        initAttributes();
+    protected Actor(String id, Network network, UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs,
+            double riskFactor) {
+        super(network, id);
+        initAttributes(utilityFunction, diseaseSpecs, riskFactor);
     }
-
-
-
-    /**
-     * Constructor.
-     *
-     * @param utilityFunction
-     *          the function the actor uses to compute his utility of the network
-     * @param diseaseSpecs
-     *          the disease that is or might become present in the network
-     * @param network
-     *          the network the actor acts as node in
-     */
-    private Actor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, Network network) {
-        this(utilityFunction, diseaseSpecs, RISK_NEUTRAL, network);
-    }
-
-
-
-    /**
-     * Factory method returning a new {@link Actor} instance with a custom risk factor.
-     *
-     * @param utilityFunction
-     *          the function the actor uses to compute his utility of the network
-     * @param diseaseSpecs
-     *          the disease that is or might become present in the network
-     * @param riskFactor
-     *          the custom risk factor
-     * @param network
-     *          the network the actor acts as node in
-     * @return a new {@link Actor} instance with a custom risk factor
-     */
-    public static Actor newInstance(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double riskFactor,
-            Network network) {
-        return new Actor(utilityFunction, diseaseSpecs, riskFactor, network);
-    }
-
-    /**
-     * Factory method returning a new {@link Actor} instance.
-     *
-     * @param utilityFunction
-     *          the function the actor uses to compute his utility of the network
-     * @param diseaseSpecs
-     *          the disease that is or might become present in the network
-     * @param network
-     *          the network the actor acts as node in
-     * @return a new {@link Actor} instance
-     */
-    public static Actor newInstance(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, Network network) {
-        return new Actor(utilityFunction, diseaseSpecs, network);
-    }
-
 
     /**
      * Initializes the node attributes.
+     *
+     * @param utilityFunction
+     *          the function the actor uses to compute his utility of the network
+     * @param diseaseSpecs
+     *          the disease characteristics that is or might become present in the network
+     * @param riskFactor
+     *          the risk factor of a actor (<1: risk seeking, =1: risk neutral; >1: risk averse)
      */
-    private void initAttributes() {
-        // disease group
-        String diseaseGroupAttr = ActorAttributes.DISEASE_GROUP.toString();
-        String diseaseGroup = this.getDiseaseGroup().toString();
-        this.node.addAttribute(diseaseGroupAttr, diseaseGroup);
-        notifyAttributeAdded(diseaseGroupAttr, diseaseGroup);
-        // ui-class required only for ui properties as defined in resources/graph-stream.css --> no notifications
-        String uiClassAttr = ActorAttributes.UI_CLASS.toString();
-        this.node.addAttribute(uiClassAttr, diseaseGroup);
+    private void initAttributes(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, Double riskFactor) {
+        this.addAttribute(ActorAttributes.UTILITY_FUNCTION, utilityFunction);
+        this.addAttribute(ActorAttributes.DISEASE_SPECS, diseaseSpecs);
+        DiseaseGroup diseaseGroup = DiseaseGroup.SUSCEPTIBLE;
+        this.addAttribute(ActorAttributes.DISEASE_GROUP, diseaseGroup);
+        // ui-class required only for ui properties as defined in resources/graph-stream.css
+        // --> no listener notifications
+        this.addAttribute(ActorAttributes.UI_CLASS, diseaseGroup, false);
+        this.addAttribute(ActorAttributes.RISK_FACTOR, riskFactor);
+        this.addAttribute(ActorAttributes.RISK_MEANING, ActorFactory.getRiskMeaning(riskFactor));
+        this.addAttribute(ActorAttributes.SATISFIED, false);
+    }
 
-        // satisfaction
-        String satisfiedAttr = ActorAttributes.SATISFIED.toString();
-        String satisfied = this.isSatisfied() ? "true" : "false";
-        this.node.addAttribute(satisfiedAttr, satisfied);
-        notifyAttributeAdded(satisfiedAttr, satisfied);
 
-        // infected actors require also diseaseType
-        if (this.isInfected()) {
-            String diseaseTypeAttr = ActorAttributes.DISEASE_TYPE.toString();
-            String diseaseType = this.getDiseaseSpecs().getDiseaseType().toString();
-            this.node.addAttribute(diseaseTypeAttr, diseaseType);
-            notifyAttributeAdded(diseaseTypeAttr, diseaseType);
+    /**
+     * Gets the network the actor is being a part of.
+     *
+     * @return the network the actor is being a part of
+     */
+    public Network getNetwork() {
+        return (Network) super.getGraph();
+    }
+
+    /**
+     * Gets the value of an attribute.
+     *
+     * @param attribute
+     *          the attribute to get
+     * @return the value of the attribute
+     */
+    private Object getAttribute(ActorAttributes attribute) {
+        return super.getAttribute(attribute.toString());
+    }
+
+    /**
+     * Adds an attribute and notifies the listeners of the added attribute by default.
+     *
+     * @param attribute
+     *          the attribute
+     * @param value
+     *          the value
+     */
+    private void addAttribute(ActorAttributes attribute, Object value) {
+        this.addAttribute(attribute, value, true);
+    }
+
+    /**
+     * Adds an attribute.
+     *
+     * @param attribute
+     *          the attribute
+     * @param value
+     *          the value
+     * @param notify
+     *          flag whether actor listeners ought to be notified of the added attribute
+     */
+    private void addAttribute(ActorAttributes attribute, Object value, boolean notify) {
+        super.addAttribute(attribute.toString(), value);
+        if (notify) {
+            notifyAttributeAdded(attribute, value);
         }
     }
 
     /**
-     * Updates the node's disease attributes.
+     * Changes an attribute and notifies the listeners of the changed attribute by default.
      *
-     * @param diseaseGroupPreviousRound
-     *          the disease group in the previous round
+     * @param attribute
+     *          the attribute
+     * @param oldValue
+     *          the old value
+     * @param newValue
+     *          the new value
      */
-    private void updateDiseaseAttributes(DiseaseGroup diseaseGroupPreviousRound) {
-        // change of disease group
-        if (diseaseGroupPreviousRound != this.diseaseGroup) {
-            String oldDiseaseGroup = diseaseGroupPreviousRound.toString();
-            String currentDiseaseGroup = this.diseaseGroup.toString();
+    private void changeAttribute(ActorAttributes attribute, Object oldValue, Object newValue) {
+        this.changeAttribute(attribute, oldValue, newValue, true);
+    }
 
-            // disease group
-            String diseaseGroupAttr = ActorAttributes.DISEASE_GROUP.toString();
-            this.node.changeAttribute(diseaseGroupAttr, currentDiseaseGroup);
-            notifyAttributeChanged(diseaseGroupAttr, oldDiseaseGroup, currentDiseaseGroup);
-            // ui-class required only for ui properties as defined in resources/graph-stream.css --> no notifications
-            String uiClassAttr = ActorAttributes.UI_CLASS.toString();
-            this.node.changeAttribute(uiClassAttr, currentDiseaseGroup);
-
-            // newly infected actors require also disease type and disease timer attributes
-            if (this.isInfected()) {
-                // disease type
-                String diseaseTypeAttr = ActorAttributes.DISEASE_TYPE.toString();
-                String diseaseType = this.getDiseaseSpecs().getDiseaseType().toString();
-                this.node.addAttribute(diseaseTypeAttr, diseaseType);
-                notifyAttributeAdded(diseaseTypeAttr, diseaseType);
-                // disease timer
-                String diseaseTimeUntilCuredAttr = ActorAttributes.DISEASE_TIMEUNTILCURED.toString();
-                String diseaseTimeUntilCured = String.valueOf(this.disease.getTimeUntilCured());
-                this.node.addAttribute(diseaseTimeUntilCuredAttr, diseaseTimeUntilCured);
-                notifyAttributeAdded(diseaseTimeUntilCuredAttr, diseaseTimeUntilCured);
-            }
-            // formerly infected actors remove disease type and disease timer attributes
-            if (diseaseGroupPreviousRound == DiseaseGroup.INFECTED) {
-                // disease type
-                String diseaseTypeAttr = ActorAttributes.DISEASE_TYPE.toString();
-                this.node.removeAttribute(diseaseTypeAttr);
-                notifyAttributeRemoved(diseaseTypeAttr);
-                // disease timer
-                String diseaseTimeUntilCuredAttr = ActorAttributes.DISEASE_TIMEUNTILCURED.toString();
-                this.node.removeAttribute(diseaseTimeUntilCuredAttr);
-                notifyAttributeRemoved(diseaseTimeUntilCuredAttr);
-            }
+    /**
+     * Changes an attribute.
+     *
+     * @param attribute
+     *          the attribute
+     * @param oldValue
+     *          the old value
+     * @param newValue
+     *          the new value
+     * @param notify
+     *          flag whether actor listeners ought to be notified of the changed attribute
+     */
+    private void changeAttribute(ActorAttributes attribute, Object oldValue, Object newValue, boolean notify) {
+        super.changeAttribute(attribute.toString(), newValue);
+        if (notify) {
+            notifyAttributeChanged(attribute, oldValue, newValue);
         }
+    }
 
-        // actor still being infected: update disease timer
-        if (diseaseGroupPreviousRound == this.diseaseGroup && this.diseaseGroup == DiseaseGroup.INFECTED) {
-            String diseaseTimeUntilCuredAttr = ActorAttributes.DISEASE_TIMEUNTILCURED.toString();
-            String oldValue = String.valueOf(this.disease.getTimeUntilCured() + 1);
-            String newValue = String.valueOf(this.disease.getTimeUntilCured());
-            node.changeAttribute(diseaseTimeUntilCuredAttr, newValue);
-            notifyAttributeChanged(diseaseTimeUntilCuredAttr, oldValue, newValue);
+    /**
+     * Removes an attribute and notifies the listeners of the removed attribute by default.
+     *
+     * @param attribute
+     *          the attribute
+     */
+    private void removeAttribute(ActorAttributes attribute) {
+        this.removeAttribute(attribute, true);
+    }
+
+    /**
+     * Adds an attribute.
+     *
+     * @param attribute
+     *          the attribute
+     * @param value
+     *          the value
+     * @param notify
+     *          flag whether actor listeners ought to be notified of the added attribute
+     */
+    private void removeAttribute(ActorAttributes attribute, boolean notify) {
+        super.removeAttribute(attribute.toString());
+        if (notify) {
+            notifyAttributeRemoved(attribute);
         }
+    }
+
+    /**
+     * Gets the actor's utility.
+     *
+     * @return the actor's utility
+     */
+    public Utility getUtility() {
+        return this.getUtility(this.getConnections());
+    }
+
+    /**
+     * Gets the utility for a actor based on a list of connections.
+     *
+     * @param connections
+     *          the connections to compute the utility for
+     * @return the utility for a actor based on a list of connections
+     */
+    protected Utility getUtility(List<Actor> connections) {
+        return this.getUtilityFunction().getUtility(this, connections);
     }
 
     /**
      * Update the node's satisfaction attribute.
      */
-    private void updateSatisfactionAttribute() {
-        // satisfaction
-        String satisfiedAttr = ActorAttributes.SATISFIED.toString();
-        String newValue = this.isSatisfied() ? "true" : "false";
-        String oldValue = this.isSatisfied() ? "false" : "true";
-        this.node.changeAttribute(satisfiedAttr, newValue);
-        notifyAttributeChanged(satisfiedAttr, oldValue, newValue);
+    private void updateSatisfaction(boolean satisfied) {
+
+        Boolean oldValue = this.isSatisfied();
+        Boolean newValue = satisfied;
+
+        // no change - do nothing
+        if (oldValue == newValue) {
+            return;
+        }
+        // change - update
+        this.changeAttribute(ActorAttributes.SATISFIED, oldValue, newValue);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // TODO clean up whole class
-
-
+    /**
+     * Gets the actor's risk factor.
+     *
+     * @return the actor's risk factor
+     */
+    public double getRiskFactor() {
+        return (double) this.getAttribute(ActorAttributes.RISK_FACTOR);
+    }
 
     /**
-     * Initializes the actor's list of co-actors.
+     * Gets the actor's utility function.
      *
-     * @param allActors
-     *          all actor's within the game
+     * @return the actor's utility function
      */
-    public void initCoActors(List<Actor> allActors) {
-        coActors = new ArrayList<Actor>(allActors);
-        coActors.remove(this);
+    public UtilityFunction getUtilityFunction() {
+        return (UtilityFunction) this.getAttribute(ActorAttributes.UTILITY_FUNCTION);
+    }
+
+    /**
+     * Gets the actor's connections.
+     *
+     * @return the actor's connections
+     */
+    public List<Actor> getConnections() {
+        return this.connections;
+    }
+
+    /**
+     * Gets the actor's co-actors.
+     *
+     * @return the actor's co-actors
+     */
+    public List<Actor> getCoActors() {
+        return this.coActors;
+    }
+
+    /**
+     * Gets whether the actor is satisfied with the current connections.
+     *
+     * @return true if the actor is satisfied with the current connections, false otherwise
+     */
+    public boolean isSatisfied() {
+        return (boolean) this.getAttribute(ActorAttributes.SATISFIED);
     }
 
     /* (non-Javadoc)
@@ -287,20 +282,18 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
         return (int) (Long.valueOf(this.getId()) - Long.valueOf(p.getId()));
     }
 
+
+    /////////////////////////////////////////////////// CONNECTIONS ///////////////////////////////////////////////////
     /* (non-Javadoc)
      * @see java.lang.Runnable#run()
      */
     @Override
     public void run() {
         // starting assumption that current connections are not optimal
-        boolean tmpSatisfied = false;
+        boolean satisfied = false;
         lock.lock();
 
         try {
-
-            // some delay before each actor moves (e.g., for animation processes)
-            //Thread.sleep(this.delay * 100);
-
             // actors try to connect or disconnect first in random order
             boolean tryToConnectFirst = ThreadLocalRandom.current().nextBoolean();
 
@@ -311,26 +304,26 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
                 if (!tryToConnect()) {
                     // try to disconnect
                     if (!tryToDisconnect()) {
-                        tmpSatisfied = true;
+                        satisfied = true;
                     }
                 }
 
-                // 1st try to disconnect - 2nd try to connect if no disconnection desired
+            // 1st try to disconnect - 2nd try to connect if no disconnection desired
             } else {
 
                 // try to disconnect
                 if (!tryToDisconnect()) {
                     // try to connect
                     if (!tryToConnect()) {
-                        tmpSatisfied = true;
+                        satisfied = true;
                     }
                 }
             }
 
-            if (this.satisfied != tmpSatisfied) {
-                this.satisfied = tmpSatisfied;
-                updateSatisfactionAttribute();
-            }
+            // update satisfaction
+            updateSatisfaction(satisfied);
+
+            // round finished
             notifyRoundFinished();
 
         } catch (Exception e) {
@@ -349,7 +342,6 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
     public void setLock(Lock lock) {
         this.lock = lock;
     }
-
 
     /**
      * A actor tries to connect. That means she first seeks a connection that gives higher
@@ -390,7 +382,6 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      * @return the actor to create a desirable connection to, null if no such connection exists
      */
     public Actor seekNewConnection() {
-
         // should this consider non-infected first?
         // Q&A Feb 20th 2018: no, as even an infected might provide
         // high utility through many indirect connections
@@ -403,7 +394,6 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
         if (this.getUtility(potentialConnections).getOverallUtility() >= this.getUtility().getOverallUtility()) {
             return potentialConnection;
         }
-
         return null;
     }
 
@@ -445,78 +435,13 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
         return this.getUtility(prospectiveConnections).getOverallUtility() >= this.getUtility().getOverallUtility();
     }
 
-
-    /**
-     * Gets the actor's utility.
-     *
-     * @return the actor's utility
-     */
-    public Utility getUtility() {
-        return getUtility(this.connections);
-    }
-
-    /**
-     * Gets the utility for a actor based on a list of connections.
-     *
-     * @param connections
-     *          the connections to compute the utility for
-     * @return the utility for a actor based on a list of connections
-     */
-    protected Utility getUtility(List<Actor> connections) {
-        return utilityFunction.getUtility(this, connections);
-    }
-
-    /**
-     * Gets the actor's risk factor.
-     *
-     * @return the actor's risk factor
-     */
-    public double getRiskFactor() {
-        return this.riskFactor;
-    }
-
-    /**
-     * Gets the actor's utility function.
-     *
-     * @return the actor's utility function
-     */
-    public UtilityFunction getUtilityFunction() {
-        return this.utilityFunction;
-    }
-
-    /**
-     * Gets the actor's connections.
-     *
-     * @return the actor's connections
-     */
-    public List<Actor> getConnections() {
-        return this.connections;
-    }
-
-    /**
-     * Gets the actor's co-actors.
-     *
-     * @return the actor's co-actors
-     */
-    public List<Actor> getCoActors() {
-        return this.coActors;
-    }
-
-    /**
-     * Gets whether the actor is satisfied with the current connections.
-     *
-     * @return true if the actor is satisfied with the current connections, false otherwise
-     */
-    public boolean isSatisfied() {
-        return this.satisfied;
-    }
-
     /**
      * Gets a random connection.
      *
      * @return a random connection
      */
     public Actor getRandomConnection() {
+        List<Actor> connections = this.getConnections();
         if (connections.size() == 0) {
             return null;
         }
@@ -530,13 +455,11 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      * @return a random not yet connected co-actor
      */
     public Actor getRandomNotYetConnectedActor() {
-        ArrayList<Actor> noConnections = new ArrayList<Actor>(coActors);
-        noConnections.removeAll(connections);
-
+        ArrayList<Actor> noConnections = new ArrayList<Actor>(this.getCoActors());
+        noConnections.removeAll(this.getConnections());
         if (noConnections.size() == 0) {
             return null;
         }
-
         int index = ThreadLocalRandom.current().nextInt(noConnections.size());
         return noConnections.get(index);
     }
@@ -546,21 +469,13 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      *
      * @param newConnection
      *          the actor to connect to
-     * @return true if the connection is created successfully, false otherwise
      */
-    public boolean addConnection(Actor newConnection) {
-
-
-
-        // TODO the edges part should be handled in the Network class
-        // TODO only lists of connected and all actors should be handled here
-
-
+    public void addConnection(Actor newConnection) {
 
         // check node consistency
         if (!checkNewConnectionConsistency(newConnection)) {
-            logger.info("Request to add new connection aborted.");
-            return false;
+            logger.warn("Request to add new connection aborted.");
+            return;
         }
 
         // edge id consistency
@@ -576,23 +491,20 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
         String idActor1 = String.valueOf(actor1.getId());
         String idActor2 = String.valueOf(actor2.getId());
 
-        Edge edge = this.graph.getEdge(edgeId);
+        Network network = this.getNetwork();
+        Edge edge = network.getEdge(edgeId);
         if (edge == null) {
-            this.graph.addEdge(edgeId, idActor1, idActor2);
+            network.addEdge(edgeId, idActor1, idActor2);
         }
-
-        boolean connectionAdded = this.connections.add(newConnection);
         notifyConnectionAdded(edge, actor1, actor2);
-
-        return connectionAdded;
     }
 
     /**
      * Creates connections to all other co-actors.
      */
     public void connectToAll() {
-        ArrayList<Actor> noConnections = new ArrayList<Actor>(coActors);
-        noConnections.removeAll(connections);
+        ArrayList<Actor> noConnections = new ArrayList<Actor>(getCoActors());
+        noConnections.removeAll(getConnections());
 
         Iterator<Actor> noConnectionsIt = noConnections.iterator();
         while (noConnectionsIt.hasNext()) {
@@ -608,11 +520,11 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      */
     protected boolean checkNewConnectionConsistency(Actor newConnection) {
         if (newConnection.equals(this)) {
-            logger.info("Inconsistent new connection: reflexive");
+            logger.warn("Inconsistent new connection: reflexive");
             return false;
         }
-        if (connections.contains(newConnection)) {
-            logger.info("Inconsistent new connection: already existing");
+        if (this.getConnections().contains(newConnection)) {
+            logger.warn("Inconsistent new connection: already existing");
             return false;
         }
         return true;
@@ -623,18 +535,13 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      *
      * @param connection
      *          the actore to remove the connection from
-     * @return true if the connection was removed successfully, false otherwise
      */
-    public boolean removeConnection(Actor connection) {
+    public void removeConnection(Actor connection) {
 
-
-        // TODO the edges part should be handled in the Network class
-        // TODO only lists of connected and all actors should be handled here
-
-
-
+        // check node consistency
         if (connection.equals(this)) {
-            throw new RuntimeException("Unable to remove reflexive connections.");
+            logger.warn("Unable to remove reflexive connections.");
+            return;
         }
 
         // edge id consistency
@@ -643,47 +550,114 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
         tmpActors.add(connection);
         Collections.sort(tmpActors);
 
+        // remove
+        Network network = this.getNetwork();
         String edgeId = String.valueOf(tmpActors.get(0).getId()) + String.valueOf(tmpActors.get(1).getId());
-        Edge edge = this.graph.getEdge(edgeId);
+        Edge edge = network.getEdge(edgeId);
         if (edge != null) {
-            this.graph.removeEdge(edgeId);
-            notifyEdgeRemoved(edge);
+            network.removeEdge(edgeId);
+            notifyConnectionRemoved(edge);
         }
-
-        notifyConnectionRemoved();
-        return this.connections.remove(connection);
     }
 
     /**
      * Removes all connections to other actors.
      */
     public void removeAllConnections() {
-
-        // TODO the edges part should be handled in the Network class
-        // TODO only lists of connected and all actors should be handled here
-
-
+        Network network = this.getNetwork();
         // remove all graph edges of the current actor
-        Edge[] edges = this.graph.getNode(String.valueOf(getId())).getEdgeSet().toArray(new Edge[0]);
+        Edge[] edges = network.getNode(String.valueOf(getId())).getEdgeSet().toArray(new Edge[0]);
         for(int i = 0; i < edges.length; ++i){
             Edge edge = edges[i];
-            graph.removeEdge(edge);
-            notifyEdgeRemoved(edge);
+            network.removeEdge(edge);
+            notifyConnectionRemoved(edge);
         }
-        notifyConnectionRemoved();
-        this.connections = new ArrayList<Actor>();
+    }
+
+
+    ///////////////////////////////////////////////////// DISEASE /////////////////////////////////////////////////////
+    /**
+     * Gets the specifications of the disease the actor considers for decision making processes.
+     *
+     * @return the specifications of the disease the actor considers for decision making processes
+     */
+    public DiseaseSpecs getDiseaseSpecs() {
+        return (DiseaseSpecs) this.getAttribute(ActorAttributes.DISEASE_SPECS);
     }
 
     /**
-     * Cures the actor from a disease.
+     * Gets the disease group the actor is in.
+     *
+     * @return the disease group the actor is in
      */
-    public void cure() {
-        DiseaseGroup diseaseGroupPreviousRound = this.diseaseGroup;
+    private DiseaseGroup getDiseaseGroup() {
+        return (DiseaseGroup) this.getAttribute(ActorAttributes.DISEASE_GROUP);
+    }
 
-        this.disease = null;
-        this.diseaseGroup = DiseaseGroup.RECOVERED;
+    /**
+     * Checks whether the actor is susceptible.
+     *
+     * @return true if the actor is susceptible, false otherwise
+     */
+    public boolean isSusceptible() {
+        return this.getDiseaseGroup() == DiseaseGroup.SUSCEPTIBLE;
+    }
 
-        updateDiseaseAttributes(diseaseGroupPreviousRound);
+    /**
+     * Checks whether the actor is infected.
+     *
+     * @return true if the actor is infected, false otherwise
+     */
+    public boolean isInfected() {
+        return this.getDiseaseGroup() == DiseaseGroup.INFECTED;
+    }
+
+    /**
+     * Checks whether the actor is recovered.
+     *
+     * @return true if the actor is recovered, false otherwise
+     */
+    public boolean isRecovered() {
+        return this.getDiseaseGroup() == DiseaseGroup.RECOVERED;
+    }
+
+    /**
+     * Makes the actor susceptible.
+     */
+    public void makeSusceptible() {
+        DiseaseGroup prevDiseaseGroup = this.getDiseaseGroup();
+        if (this.isInfected()) {
+            this.removeAttribute(ActorAttributes.DISEASE_INFECTION);
+        }
+        this.changeAttribute(ActorAttributes.DISEASE_GROUP, prevDiseaseGroup, DiseaseGroup.SUSCEPTIBLE);
+        // ui-class required only for ui properties as defined in resources/graph-stream.css
+        // --> no listener notifications
+        this.changeAttribute(ActorAttributes.UI_CLASS, prevDiseaseGroup, DiseaseGroup.SUSCEPTIBLE, false);
+    }
+
+    /**
+     * Gets the disease the actor is infected with.
+     *
+     * @return the disease the actor is infected with
+     */
+    private Disease getDisease() {
+        if (this.isInfected()) {
+            return (Disease) this.getAttribute(ActorAttributes.DISEASE_INFECTION);
+        }
+        return null;
+    }
+
+    /**
+     * Computes whether the actor is being infected by one of his infected connections.
+     */
+    public void computeDiseaseTransmission() {
+        if (this.isSusceptible()) {
+            int nI = StatsComputer.computeLocalActorConnectionsStats(this).getnI();
+            if (ThreadLocalRandom.current().nextDouble() <=
+                    StatsComputer.computeProbabilityOfInfection(this, nI)) {
+                this.infect(this.getDiseaseSpecs());
+            }
+        }
     }
 
     /**
@@ -706,101 +680,33 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      *          the specificationso of the disease the actor is infected with
      */
     public void forceInfect(DiseaseSpecs diseaseSpecs) {
-        DiseaseGroup diseaseGroupPreviousRound = this.diseaseGroup;
 
-        if (!this.diseaseSpecs.equals(diseaseSpecs)) {
+        // coherence check
+        if (!this.getDiseaseSpecs().equals(diseaseSpecs)) {
             throw new RuntimeException("Known disease and caught disease mismatch!");
         }
-        this.disease = DiseaseFactory.createInfection(diseaseSpecs);
-        this.diseaseGroup = DiseaseGroup.INFECTED;
 
-        updateDiseaseAttributes(diseaseGroupPreviousRound);
-    }
-
-    /**
-     * Computes whether the actor is being infected by one of his infected connections.
-     */
-    public void computeDiseaseTransmission() {
-        if (this.isSusceptible()) {
-            int nI = StatsComputer.computeLocalActorConnectionsStats(this).getnI();
-            if (ThreadLocalRandom.current().nextDouble() <=
-                    StatsComputer.computeProbabilityOfInfection(this, nI)) {
-                this.infect(this.diseaseSpecs);
-            }
-        }
-    }
-
-    /**
-     * Checks whether the actor is susceptible.
-     *
-     * @return true if the actor is susceptible, false otherwise
-     */
-    public boolean isSusceptible() {
-        return this.diseaseGroup == DiseaseGroup.SUSCEPTIBLE;
-    }
-
-    /**
-     * Makes the actor susceptible.
-     */
-    public void makeSusceptible() {
-        DiseaseGroup diseaseGroupPreviousRound = this.diseaseGroup;
-
-        this.disease = null;
-        this.diseaseGroup = DiseaseGroup.SUSCEPTIBLE;
-
-        updateDiseaseAttributes(diseaseGroupPreviousRound);
-    }
-
-    /**
-     * Gets the disease group the actor is in.
-     *
-     * @return the disease group the actor is in
-     */
-    public DiseaseGroup getDiseaseGroup() {
-        return this.diseaseGroup;
-    }
-
-    /**
-     * Checks whether the actor is infected.
-     *
-     * @return true if the actor is infected, false otherwise
-     */
-    public boolean isInfected() {
-        return this.diseaseGroup == DiseaseGroup.INFECTED;
-    }
-
-    /**
-     * Checks whether the actor is recovered.
-     *
-     * @return true if the actor is recovered, false otherwise
-     */
-    public boolean isRecovered() {
-        return this.diseaseGroup == DiseaseGroup.RECOVERED;
+        // infect
+        DiseaseGroup prevDiseaseGroup = this.getDiseaseGroup();
+        this.addAttribute(ActorAttributes.DISEASE_INFECTION, DiseaseFactory.createInfection(diseaseSpecs));
+        this.changeAttribute(ActorAttributes.DISEASE_GROUP, prevDiseaseGroup, DiseaseGroup.INFECTED);
+        // ui-class required only for ui properties as defined in resources/graph-stream.css
+        // --> no listener notifications
+        this.changeAttribute(ActorAttributes.UI_CLASS, prevDiseaseGroup, DiseaseGroup.INFECTED, false);
     }
 
     /**
      * Triggers the actor to fight the disease.
      */
     public void fightDisease() {
-        if (this.disease == null) {
+        Disease disease = this.getDisease();
+        if (disease == null) {
             return;
         }
-
-        this.disease.evolve();
-        if (this.disease.isCured()) {
+        disease.evolve();
+        if (disease.isCured()) {
             this.cure();
-        } else {
-            updateDiseaseAttributes(this.diseaseGroup);
         }
-    }
-
-    /**
-     * Gets the specifications of the disease the actor considers for decision making processes.
-     *
-     * @return the specifications of the disease the actor considers for decision making processes
-     */
-    public DiseaseSpecs getDiseaseSpecs() {
-        return diseaseSpecs;
     }
 
     /**
@@ -810,12 +716,26 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      */
     public int getTimeUntilRecovered() {
         if (isInfected()) {
-            return this.disease.getTimeUntilCured();
+            return this.getDisease().getTimeUntilCured();
         }
         return 0;
     }
 
+    /**
+     * Cures the actor from a disease.
+     */
+    public void cure() {
+        // cure
+        DiseaseGroup prevDiseaseGroup = this.getDiseaseGroup();
+        this.removeAttribute(ActorAttributes.DISEASE_INFECTION);
+        this.changeAttribute(ActorAttributes.DISEASE_GROUP, prevDiseaseGroup, DiseaseGroup.RECOVERED);
+        // ui-class required only for ui properties as defined in resources/graph-stream.css
+        // --> no listener notifications
+        this.changeAttribute(ActorAttributes.UI_CLASS, prevDiseaseGroup, DiseaseGroup.RECOVERED, false);
+    }
 
+
+    //////////////////////////////////////////// LISTENERS / NOTIFICATIONS ////////////////////////////////////////////
     /**
      * Adds a listener for actor notifications.
      *
@@ -832,7 +752,7 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      * @param actorListener
      *          the listener to be removed
      */
-    public void removeAttributeListener(ActorListener actorListener) {
+    public void removeActorListener(ActorListener actorListener) {
         this.actorListeners.remove(actorListener);
     }
 
@@ -844,10 +764,10 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      * @param value
      *          the attribute's value
      */
-    private final void notifyAttributeAdded(String attribute, String value) {
+    private final void notifyAttributeAdded(ActorAttributes attribute, Object value) {
         Iterator<ActorListener> listenersIt = this.actorListeners.iterator();
         while (listenersIt.hasNext()) {
-            listenersIt.next().notifyAttributeAdded(this, attribute, value);
+            listenersIt.next().notifyAttributeAdded(this, attribute.toString(), value);
         }
     }
 
@@ -861,10 +781,10 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      * @param newValue
      *          the attribute's new value
      */
-    private final void notifyAttributeChanged(String attribute, String oldValue, String newValue) {
+    private final void notifyAttributeChanged(ActorAttributes attribute, Object oldValue, Object newValue) {
         Iterator<ActorListener> listenersIt = this.actorListeners.iterator();
         while (listenersIt.hasNext()) {
-            listenersIt.next().notifyAttributeChanged(this, attribute, oldValue, newValue);
+            listenersIt.next().notifyAttributeChanged(this, attribute.toString(), oldValue, newValue);
         }
     }
 
@@ -874,10 +794,10 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      * @param attribute
      *          the attribute
      */
-    private final void notifyAttributeRemoved(String attribute) {
+    private final void notifyAttributeRemoved(ActorAttributes attribute) {
         Iterator<ActorListener> listenersIt = this.actorListeners.iterator();
         while (listenersIt.hasNext()) {
-            listenersIt.next().notifyAttributeRemoved(this, attribute);
+            listenersIt.next().notifyAttributeRemoved(this, attribute.toString());
         }
     }
 
@@ -899,25 +819,15 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
     }
 
     /**
-     * Notifies the listeners of removed connections.
-     */
-    private final void notifyConnectionRemoved() {
-        Iterator<ActorListener> listenersIt = this.actorListeners.iterator();
-        while (listenersIt.hasNext()) {
-            listenersIt.next().notifyConnectionRemoved(this);
-        }
-    }
-
-    /**
      * Notifies the listeners of removed edges.
      *
      * @param edge
      *          the removed edge
      */
-    private final void notifyEdgeRemoved(Edge edge) {
+    private final void notifyConnectionRemoved(Edge edge) {
         Iterator<ActorListener> listenersIt = this.actorListeners.iterator();
         while (listenersIt.hasNext()) {
-            listenersIt.next().notifyEdgeRemoved(edge);
+            listenersIt.next().notifyConnectionRemoved(this, edge);
         }
     }
 

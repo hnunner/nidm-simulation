@@ -6,7 +6,7 @@ package nl.uu.socnetid.networkgames.disease;
 public final class DiseaseFactory {
 
     /**
-     * Factory method to create an infection
+     * Factory method to create an infection.
      *
      * @param diseaseSpecs
      *          the characteristics of the disease
