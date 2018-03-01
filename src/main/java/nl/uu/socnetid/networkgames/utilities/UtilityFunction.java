@@ -1,6 +1,6 @@
 package nl.uu.socnetid.networkgames.utilities;
 
-import java.util.List;
+import java.util.Collection;
 
 import nl.uu.socnetid.networkgames.actors.Actor;
 
@@ -18,7 +18,7 @@ public interface UtilityFunction {
      *          the actor's connections
      * @return the actor's utility based on the connections
      */
-    Utility getUtility(Actor actor, List<Actor> connections);
+    Utility getUtility(Actor actor, Collection<Actor> connections);
 
     /**
      * @return the name of the utility function to be used in the stats window

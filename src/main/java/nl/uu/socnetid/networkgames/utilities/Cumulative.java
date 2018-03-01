@@ -1,7 +1,7 @@
 package nl.uu.socnetid.networkgames.utilities;
 
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 import nl.uu.socnetid.networkgames.actors.Actor;
 
@@ -39,12 +39,13 @@ public final class Cumulative implements UtilityFunction {
     }
 
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see nl.uu.socnetid.networkgames.utilities.UtilityFunction#getUtility(
-     * nl.uu.socnetid.networkgames.actors.Actor, java.util.List, nl.uu.socnetid.networkgames.disease.Disease)
+     * nl.uu.socnetid.networkgames.actors.Actor, java.util.Collection)
      */
     @Override
-    public Utility getUtility(Actor actor, List<Actor> connections) {
+    public Utility getUtility(Actor actor, Collection<Actor> connections) {
 
         // BEWARE: disease is being neglected in this function
 
@@ -62,7 +63,7 @@ public final class Cumulative implements UtilityFunction {
             benefitDirectConnections += this.utilityDirectConnections;
 
             // indirect connections at distance 2
-            List<Actor> indirectConnections = directConnection.getConnections();
+            Collection<Actor> indirectConnections = directConnection.getConnections();
             if (indirectConnections == null) {
                 continue;
             }

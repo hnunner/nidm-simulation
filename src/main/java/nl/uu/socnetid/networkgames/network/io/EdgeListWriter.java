@@ -1,6 +1,7 @@
 package nl.uu.socnetid.networkgames.network.io;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -38,7 +39,7 @@ public class EdgeListWriter implements NetworkWriter {
         while (actorsIt.hasNext()) {
             Actor currActor = actorsIt.next();
 
-            List<Actor> connections = currActor.getConnections();
+            Collection<Actor> connections = currActor.getConnections();
             Iterator<Actor> connectionsIt = actors.iterator();
             while (connectionsIt.hasNext()) {
                 Actor currConnection = connectionsIt.next();
