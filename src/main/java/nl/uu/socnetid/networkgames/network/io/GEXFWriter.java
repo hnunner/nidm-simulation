@@ -107,14 +107,15 @@ public class GEXFWriter implements ActorListener, ActorAmountListener {
         }
     }
 
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.actors.listeners.ActorListener#notifyAttributeAdded(
-     * nl.uu.socnetid.networkgames.actors.Actor, java.lang.String, java.lang.String)
+    /*
+     * (non-Javadoc)
+     * @see nl.uu.socnetid.networkgames.actors.ActorListener#notifyAttributeAdded(
+     * nl.uu.socnetid.networkgames.actors.Actor, java.lang.String, java.lang.Object)
      */
     @Override
-    public void notifyAttributeAdded(Actor actor, String attribute, String value) {
+    public void notifyAttributeAdded(Actor actor, String attribute, Object value) {
         fileSink.stepBegins(this.graphId, timeId, new Date().getTime());
-        fileSink.nodeAttributeAdded(this.graphId, timeId, String.valueOf(actor.getId()), attribute, value);
+        fileSink.nodeAttributeAdded(this.graphId, timeId, String.valueOf(actor.getId()), attribute, value.toString());
         try {
             fileSink.flush();
         } catch (IOException e) {
@@ -122,15 +123,16 @@ public class GEXFWriter implements ActorListener, ActorAmountListener {
         }
     }
 
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.actors.listeners.ActorListener#notifyAttributeChanged(
-     * nl.uu.socnetid.networkgames.actors.Actor, java.lang.String, java.lang.String, java.lang.String)
+    /*
+     * (non-Javadoc)
+     * @see nl.uu.socnetid.networkgames.actors.ActorListener#notifyAttributeChanged(
+     * nl.uu.socnetid.networkgames.actors.Actor, java.lang.String, java.lang.Object, java.lang.Object)
      */
     @Override
-    public void notifyAttributeChanged(Actor actor, String attribute, String oldValue, String newValue) {
+    public void notifyAttributeChanged(Actor actor, String attribute, Object oldValue, Object newValue) {
         fileSink.stepBegins(this.graphId, timeId, new Date().getTime());
         fileSink.nodeAttributeChanged(this.graphId, timeId, String.valueOf(actor.getId()),
-                attribute, oldValue, newValue);
+                attribute, oldValue.toString(), newValue.toString());
         try {
             fileSink.flush();
         } catch (IOException e) {
@@ -173,11 +175,11 @@ public class GEXFWriter implements ActorListener, ActorAmountListener {
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.actors.listeners.ActorConnectionListener#
-     * notifyEdgeRemoved(org.graphstream.graph.Edge)
+     * @see nl.uu.socnetid.networkgames.actors.ActorListener#notifyEdgeRemoved(
+     * nl.uu.socnetid.networkgames.actors.Actor, org.graphstream.graph.Edge)
      */
     @Override
-    public void notifyEdgeRemoved(Edge edge) {
+    public void notifyConnectionRemoved(Actor actor, Edge edge) {
         fileSink.stepBegins(this.graphId, timeId, new Date().getTime());
         fileSink.edgeRemoved(this.graphId, timeId, edge.getId());
         try {
@@ -185,15 +187,6 @@ public class GEXFWriter implements ActorListener, ActorAmountListener {
         } catch (IOException e) {
             logger.error(e);
         }
-    }
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.actors.listeners.ActorConnectionListener#
-     * notifyConnectionRemoved(nl.uu.socnetid.networkgames.actors.Actor)
-     */
-    @Override
-    public void notifyConnectionRemoved(Actor actor) {
-        // nothing to do
     }
 
     /**

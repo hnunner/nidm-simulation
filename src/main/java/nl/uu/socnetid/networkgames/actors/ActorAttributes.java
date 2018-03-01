@@ -5,10 +5,13 @@ package nl.uu.socnetid.networkgames.actors;
  */
 public enum ActorAttributes {
 
-    UI_CLASS("ui.class"),
+    UTILITY_FUNCTION("utility.function"),
+    DISEASE_SPECS("disease.specs"),
     DISEASE_GROUP("disease.group"),
-    DISEASE_TYPE("disease.type"),
-    DISEASE_TIMEUNTILCURED("disease.timeuntilcured"),
+    DISEASE_INFECTION("disease.infection"),
+    UI_CLASS("ui.class"),
+    RISK_FACTOR("risk.factor"),
+    RISK_MEANING("risk.meaning"),
     SATISFIED("satisfied");
 
     // the name
@@ -32,7 +35,5 @@ public enum ActorAttributes {
     public String toString() {
         return name;
     }
-
-
 
 }

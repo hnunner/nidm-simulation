@@ -17,7 +17,7 @@ public interface ActorListener {
      * @param value
      *          the attribute's value
      */
-    void notifyAttributeAdded(final Actor actor, final String attribute, final String value);
+    void notifyAttributeAdded(final Actor actor, final String attribute, final Object value);
 
     /**
      * Entry point for actor attributes being changed notifications.
@@ -31,8 +31,8 @@ public interface ActorListener {
      * @param newValue
      *          the attribute's new value
      */
-    void notifyAttributeChanged(final Actor actor, final String attribute, final String oldValue,
-            final String newValue);
+    void notifyAttributeChanged(final Actor actor, final String attribute, final Object oldValue,
+            final Object newValue);
 
     /**
      * Entry point for actor attributes being removed notifications.
@@ -57,20 +57,14 @@ public interface ActorListener {
     void notifyConnectionAdded(final Edge edge, final Actor actor1, final Actor actor2);
 
     /**
-     * Entry point for connections removed by an actor.
+     * Entry point for edge removed between two actors notifications.
      *
      * @param actor
      *          the actor removing a connection
-     */
-    void notifyConnectionRemoved(final Actor actor);
-
-    /**
-     * Entry point for edge removed between two actors notifications.
-     *
      * @param edge
      *          the edge
      */
-    void notifyEdgeRemoved(final Edge edge);
+    void notifyConnectionRemoved(final Actor actor, final Edge edge);
 
     /**
      * Entry point for rounds being finished notifications.
