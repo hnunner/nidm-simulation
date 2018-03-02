@@ -40,7 +40,7 @@ import nl.uu.socnetid.networkgames.gui.NodeClickListener;
 import nl.uu.socnetid.networkgames.gui.SIRPanel;
 import nl.uu.socnetid.networkgames.gui.StatsFrame;
 import nl.uu.socnetid.networkgames.gui.TruncatedConnectionsPanel;
-import nl.uu.socnetid.networkgames.network.networks.Network;
+import nl.uu.socnetid.networkgames.network.networks.DisplayableNetwork;
 import nl.uu.socnetid.networkgames.network.simulation.Simulation;
 import nl.uu.socnetid.networkgames.stats.StatsComputer;
 import nl.uu.socnetid.networkgames.utilities.Cumulative;
@@ -58,7 +58,7 @@ public class NetworkGame implements NodeClickListener, ActorListener {
     private static final Logger logger = Logger.getLogger(NetworkGame.class);
 
     // network
-    private final Network network = new Network();
+    private final DisplayableNetwork network = new DisplayableNetwork();
 
     // swing components
     // windows
@@ -476,21 +476,9 @@ public class NetworkGame implements NodeClickListener, ActorListener {
         DiseaseSpecs ds = getDiseaseSpecs();
         UtilityFunction uf = getUtilityFunction();
 
+        // add each actor with selected utility function and disease specs
         for (int i = 0; i < Integer.parseInt(txtAddAmount.getText()); i++) {
-            // add actor with selected utility function and disease specs
-            Actor actor;
-            switch (utilityFunctionCBox.getSelectedIndex()) {
-                // only for IRTC: actor including risk behavior
-                case 0:
-                    actor = Actor.newInstance(uf, ds, Double.valueOf(this.txtR.getText()), this.network);
-                    this.network.addActor(actor);
-                    break;
-
-                default:
-                    actor = Actor.newInstance(uf, ds, this.network);
-                    this.network.addActor(actor);
-                    break;
-            }
+            Actor actor = this.network.addActor(uf, ds, Double.valueOf(this.txtR.getText()));
             actor.addActorListener(this);
         }
 
@@ -501,10 +489,6 @@ public class NetworkGame implements NodeClickListener, ActorListener {
         }
         this.statsFrame.refreshGlobalActorStats(StatsComputer.computeGlobalActorStats(this.network));
         this.statsFrame.refreshGlobalNetworkStats(StatsComputer.computeGlobalNetworkStats(this.network));
-
-
-
-
     }
 
     /**
@@ -633,7 +617,7 @@ public class NetworkGame implements NodeClickListener, ActorListener {
     @Override
     public void notify(NodeClick nodeClick) {
 
-        long clickActorId = nodeClick.getClickedNodeId();
+        String clickActorId = nodeClick.getClickedNodeId();
 
         // toggle infection on node click
         if (this.chckbxToggleInfection.isSelected()) {
@@ -641,9 +625,10 @@ public class NetworkGame implements NodeClickListener, ActorListener {
         }
 
         // show actor stats on node click
+        // TODO WHAT THE FUCK?!?!
         if (this.chckbxShowActorStats.isSelected()) {
             this.statsActor = this.network.getActor(clickActorId);
-            this.statsFrame.refreshLocalActorStats(network.getActor(clickActorId));
+            this.statsFrame.refreshLocalActorStats(statsActor);
         }
 
         // update stats
@@ -724,21 +709,21 @@ public class NetworkGame implements NodeClickListener, ActorListener {
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.actors.listeners.ActorListener#notifyAttributeAdded(
-     * nl.uu.socnetid.networkgames.actors.Actor, java.lang.String, java.lang.String)
+     * @see nl.uu.socnetid.networkgames.actors.ActorListener#notifyAttributeAdded(
+     * nl.uu.socnetid.networkgames.actors.Actor, java.lang.String, java.lang.Object)
      */
     @Override
-    public void notifyAttributeAdded(Actor actor, String attribute, String value) {
+    public void notifyAttributeAdded(Actor actor, String attribute, Object value) {
         updateStats();
     }
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.actors.listeners.ActorListener#notifyAttributeChanged(
-     * nl.uu.socnetid.networkgames.actors.Actor, java.lang.String, java.lang.String, java.lang.String)
+     * @see nl.uu.socnetid.networkgames.actors.ActorListener#notifyAttributeChanged(
+     * nl.uu.socnetid.networkgames.actors.Actor, java.lang.String, java.lang.Object, java.lang.Object)
      */
     @Override
-    public void notifyAttributeChanged(Actor actor, String attribute, String oldValue, String newValue) {
+    public void notifyAttributeChanged(Actor actor, String attribute, Object oldValue, Object newValue) {
         updateStats();
     }
 
@@ -777,17 +762,8 @@ public class NetworkGame implements NodeClickListener, ActorListener {
      * notifyEdgeRemoved(org.graphstream.graph.Edge)
      */
     @Override
-    public void notifyEdgeRemoved(Edge edge) {
-        // nothing to do
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.actors.listeners.ActorConnectionListener#
-     * notifyConnectionRemoved(nl.uu.socnetid.networkgames.actors.Actor)
-     */
-    @Override
-    public void notifyConnectionRemoved(Actor actor) {
+    public void notifyConnectionRemoved(Actor actor, Edge edge) {
         updateStats();
     }
+
 }

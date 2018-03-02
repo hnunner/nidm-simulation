@@ -1,6 +1,5 @@
 package nl.uu.socnetid.networkgames.network.networks;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -8,16 +7,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.log4j.Logger;
-import org.graphstream.graph.Node;
-import org.graphstream.graph.implementations.AbstractGraph;
 import org.graphstream.graph.implementations.SingleGraph;
-import org.graphstream.ui.view.Viewer;
 
 import nl.uu.socnetid.networkgames.actors.Actor;
+import nl.uu.socnetid.networkgames.actors.ActorFactory;
 import nl.uu.socnetid.networkgames.disease.DiseaseSpecs;
 import nl.uu.socnetid.networkgames.network.listeners.ActorAmountListener;
+import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
 
 /**
  * @author Hendrik Nunner
@@ -27,17 +26,11 @@ public class Network extends SingleGraph {
     // logger
     private static final Logger logger = Logger.getLogger(Network.class);
 
+    // counter for unique identifiers
+    private static final AtomicLong NEXT_ID = new AtomicLong(1);
 
-    // TODO fix errors - the params below are not needed anymore since Network extends SingleGraph now!!!
-//    // graphstream
-//    private AbstractGraph graph = new SingleGraph("NetworkGames");
-//    private Viewer viewer;
-//
-//    // list of actors
-//    private List<Actor> actors;
-
-
-
+    // risk factor for risk neutral actors
+    private static final double RISK_FACTOR_NEUTRAL = 1.0;
 
     // listener
     private final Set<ActorAmountListener> actorAmountListeners =
@@ -46,79 +39,65 @@ public class Network extends SingleGraph {
 
     /**
      * Constructor.
-     *
-     * @param actors
-     *          list of actors in the network
      */
-    public Network(List<Actor> actors) {
-        this.actors = actors;
-
-        // init graphstream
-        this.graph.addAttribute("ui.quality");
-        this.graph.addAttribute("ui.antialias");
-        URL gsStyles = this.getClass().getClassLoader().getResource("graph-stream.css");
-        this.graph.addAttribute("ui.stylesheet", "url('file:" + gsStyles.getPath() + "')");
-        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
+    public Network() {
+        this("Networks of the Infectious Kind");
     }
 
     /**
      * Constructor.
-     */
-    public Network() {
-        this(new ArrayList<Actor>());
-    }
-
-
-    /**
-     * Creates a ui representation of the network.
-     */
-    public void show() {
-        this.viewer = graph.display();
-    }
-
-    /**
-     * Adds a actor to the network.
      *
-     * @param actor
-     *          the actor to be added
+     * @param id
+     *          the network's unique identifier
      */
-    public void addActor(Actor actor) {
-        this.actors.add(actor);
-        this.graph.addNode(String.valueOf(actor.getId()));
-
-        // update co-actors
-        Iterator<Actor> actorsIt = this.actors.iterator();
-        while (actorsIt.hasNext()) {
-            actorsIt.next().initCoActors(this.actors);
-        }
-
-        // notify listeners
-        notifyActorAdded(actor.getId());
+    public Network(String id) {
+        super(id);
+        this.setNodeFactory(new ActorFactory());
     }
+
+
+    /**
+     * Creates and adds an actor to the network.
+     *
+     * @param utilityFunction
+     *          the actor's utility function
+     * @param diseaseSpecs
+     *          the disease specs
+     * @return the newly added actor.
+     */
+    public Actor addActor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs) {
+        return this.addActor(utilityFunction, diseaseSpecs, RISK_FACTOR_NEUTRAL);
+    }
+
+    /**
+     * Creates and adds an actor to the network.
+     *
+     * @param utilityFunction
+     *          the actor's utility function
+     * @param diseaseSpecs
+     *          the disease specs
+     * @param riskFactor
+     *          the factor describing how the actor perceives the risk of an infection:
+     *          <1: risk seeking, =1: risk neutral; >1: risk averse
+     * @return the newly added actor.
+     */
+    public Actor addActor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double riskFactor) {
+        Actor actor = this.addNode(String.valueOf(NEXT_ID.incrementAndGet()));
+        actor.initActor(utilityFunction, diseaseSpecs, riskFactor);
+        notifyActorAdded(actor.getId());
+        return actor;
+    }
+
 
     /**
      * Removes a actor from the network.
      */
     public void removeActor() {
-        if (this.actors.size() == 0) {
+        if (this.getActors().size() == 0) {
             return;
         }
-        Actor actor = this.actors.get(this.actors.size() - 1);
-        long actorId = actor.getId();
-
-        // remove
-        this.graph.removeNode(String.valueOf(actorId));
-
-
-        this.actors.remove(actor);
-
-        // update co-actors
-        Iterator<Actor> actorsIt = this.actors.iterator();
-        while (actorsIt.hasNext()) {
-            actorsIt.next().initCoActors(this.actors);
-        }
-
-        // notify listeners
+        String actorId = this.getLastActor().getId();
+        this.removeNode(String.valueOf(actorId));
         notifyActorRemoved(actorId);
     }
 
@@ -126,15 +105,35 @@ public class Network extends SingleGraph {
      * Creates the full network based on the actors available.
      */
     public void createFullNetwork() {
-        if (this.actors.size() == 0) {
+        if (this.getActors().size() == 0) {
             return;
         }
 
-        Iterator<Actor> actorsIt = this.actors.iterator();
+        Iterator<Actor> actorsIt = this.getActors().iterator();
         while (actorsIt.hasNext()) {
             Actor actor = actorsIt.next();
             actor.connectToAll();
         }
+    }
+
+    /**
+     * Get the actor with the corresponding identifier.
+     *
+     * @param id
+     *          the identifier of the actor to get
+     * @return the actor with the corresponding identifier
+     */
+    public Actor getActor(String id) {
+        return (Actor) this.getNode(id);
+    }
+
+    /**
+     * Gets the actor with the highest index.
+     *
+     * @return the actor with the highest index
+     */
+    public Actor getLastActor() {
+        return this.getNode(this.getNodeSet().size() - 1);
     }
 
     /**
@@ -147,29 +146,19 @@ public class Network extends SingleGraph {
     }
 
     /**
-     * Get the actor with the corresponding identifier.
+     * Gets an iterator over all actors in an undefined order.
      *
-     * @param id
-     *          the identifier of the actor to get
-     * @return the actor with the corresponding identifier
+     * @return an iterator over all actors in an undefined order
      */
-    public Actor getActor(long id) {
-        // dirty but okay for now
-        Iterator<Actor> it = this.actors.iterator();
-        while (it.hasNext()) {
-            Actor actor = it.next();
-            if (actor.getId() == id) {
-                return actor;
-            }
-        }
-        return null;
+    public Iterator<Actor> getActorIterator() {
+        return this.getNodeIterator();
     }
 
     /**
      * Clears all connections between the actors.
      */
     public void clearConnections() {
-        Iterator<Actor> actorsIt = this.actors.iterator();
+        Iterator<Actor> actorsIt = this.getActors().iterator();
         while (actorsIt.hasNext()) {
             actorsIt.next().removeAllConnections();
         }
@@ -180,7 +169,7 @@ public class Network extends SingleGraph {
      */
     public void resetActors() {
         clearConnections();
-        Iterator<Actor> actorsIt = this.actors.iterator();
+        Iterator<Actor> actorsIt = this.getActors().iterator();
         while (actorsIt.hasNext()) {
             Actor actor = actorsIt.next();
             actor.makeSusceptible();
@@ -194,13 +183,13 @@ public class Network extends SingleGraph {
      *          the characteristics of the disease to infect a actor with
      */
     public void infectRandomActor(DiseaseSpecs diseaseSpecs) {
-        if (this.actors == null || this.actors.isEmpty()) {
+        if (this.getActors() == null || this.getActors().isEmpty()) {
             return;
         }
 
         // actors performing action in random order
-        Collections.shuffle(this.actors);
-
+        List<Actor> actors = new ArrayList<Actor>(this.getActors());
+        Collections.shuffle(actors);
         Iterator<Actor> actorsIt = actors.iterator();
         while (actorsIt.hasNext()) {
             Actor actor = actorsIt.next();
@@ -226,8 +215,8 @@ public class Network extends SingleGraph {
      * @param diseaseSpecs
      *          the characteristics of the disease to infect the actor with
      */
-    public void toggleInfection(long actorId, DiseaseSpecs diseaseSpecs) {
-        Iterator<Actor> actorsIt = this.actors.iterator();
+    public void toggleInfection(String actorId, DiseaseSpecs diseaseSpecs) {
+        Iterator<Actor> actorsIt = this.getActorIterator();
         while (actorsIt.hasNext()) {
             Actor actor = actorsIt.next();
             if (actor.getId() == actorId) {
@@ -279,7 +268,7 @@ public class Network extends SingleGraph {
      * @param actorId
      *          the id of the actor being added
      */
-    private final void notifyActorAdded(long actorId) {
+    private final void notifyActorAdded(String actorId) {
         Iterator<ActorAmountListener> listenersIt = this.actorAmountListeners.iterator();
         while (listenersIt.hasNext()) {
             listenersIt.next().notifyActorAdded(actorId);
@@ -292,40 +281,11 @@ public class Network extends SingleGraph {
      * @param actorId
      *          the id of the actor being removed
      */
-    private final void notifyActorRemoved(long actorId) {
+    private final void notifyActorRemoved(String actorId) {
         Iterator<ActorAmountListener> listenersIt = this.actorAmountListeners.iterator();
         while (listenersIt.hasNext()) {
             listenersIt.next().notifyActorRemoved(actorId);
         }
-    }
-
-    /**
-     * Gets the graphstream representation of the network.
-     *
-     * @return the graphstream representation of the network
-     */
-    public AbstractGraph getGraph() {
-        return this.graph;
-    }
-
-    /**
-     * Gets the graphstream representation of a node.
-     *
-     * @param actorId
-     *          the id of the actor to get the corresponding node for
-     * @return the graphstream representation of the network
-     */
-    public Node getNode(long actorId) {
-        return this.graph.getNode(String.valueOf(actorId));
-    }
-
-    /**
-     * Gets the graphstream viewer.
-     *
-     * @return the graphstream viewer
-     */
-    public Viewer getViewer() {
-        return this.viewer;
     }
 
 }
