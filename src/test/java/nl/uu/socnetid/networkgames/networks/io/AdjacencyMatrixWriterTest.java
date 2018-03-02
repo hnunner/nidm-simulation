@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.implementations.SingleGraph;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,17 +24,7 @@ import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
  */
 public class AdjacencyMatrixWriterTest {
 
-    // graph
-    private Graph graph;
-
-    //actors
-    private Actor actor1;
-    private Actor actor2;
-    private Actor actor3;
-    private Actor actor4;
-
     // disease related
-    DiseaseSpecs ds;
     private static final int    tau   = 10;
     private static final double delta = 8.4;
     private static final double gamma = 0.1;
@@ -66,41 +54,23 @@ public class AdjacencyMatrixWriterTest {
      * Performed before each test: Initialization of the network.
      */
     @Before
-    public void initActor() {
+    public void initNetwork() {
 
-        // init graphstream
-        this.graph = new SingleGraph("Adjacency Matrix Writer Test");
+        // network
+        this.network = new Network("AdjacencyMatrixWriter Test");
 
         UtilityFunction uf = new Cumulative();
+        DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, tau, delta, gamma, mu);
 
-        this.ds = new DiseaseSpecs(DiseaseType.SIR, tau, delta, gamma, mu);
+        Actor actor1 = this.network.addActor(uf, ds);
+        Actor actor2 = this.network.addActor(uf, ds);
+        Actor actor3 = this.network.addActor(uf, ds);
+        Actor actor4 = this.network.addActor(uf, ds);
 
-        List<Actor> actors = new ArrayList<Actor>();
-
-        this.actor1 = Actor.newInstance(uf, this.ds, this.graph);
-        this.actor2 = Actor.newInstance(uf, this.ds, this.graph);
-        this.actor3 = Actor.newInstance(uf, this.ds, this.graph);
-        this.actor4 = Actor.newInstance(uf, this.ds, this.graph);
-
-        actors.add(this.actor1);
-        actors.add(this.actor2);
-        actors.add(this.actor3);
-        actors.add(this.actor4);
-
-        this.network = new Network(actors);
-
-        // connections are always bidirectional
-        this.actor1.addConnection(this.actor2);
-        this.actor2.addConnection(this.actor1);
-
-        this.actor1.addConnection(this.actor3);
-        this.actor3.addConnection(this.actor1);
-
-        this.actor1.addConnection(this.actor4);
-        this.actor4.addConnection(this.actor1);
-
-        this.actor3.addConnection(this.actor4);
-        this.actor4.addConnection(this.actor3);
+        actor1.addConnection(actor2);
+        actor1.addConnection(actor3);
+        actor1.addConnection(actor4);
+        actor3.addConnection(actor4);
     }
 
     /**

@@ -7,7 +7,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import org.graphstream.ui.view.ViewerListener;
 import org.graphstream.ui.view.ViewerPipe;
 
-import nl.uu.socnetid.networkgames.network.networks.Network;
+import nl.uu.socnetid.networkgames.network.networks.DisplayableNetwork;
 
 /**
  * @author Hendrik Nunner
@@ -19,7 +19,7 @@ public class NodeClick implements Runnable, ViewerListener {
     private boolean loop = true;
 
     // id of clicked node
-    private long clickedNodeId;
+    private String clickedNodeId;
 
     // listener
     private final Set<NodeClickListener> listeners = new CopyOnWriteArraySet<NodeClickListener>();
@@ -31,10 +31,10 @@ public class NodeClick implements Runnable, ViewerListener {
      * @param network
      *          the network
      */
-    public NodeClick(Network network) {
+    public NodeClick(DisplayableNetwork network) {
         this.fromViewer = network.getViewer().newViewerPipe();
         this.fromViewer.addViewerListener(this);
-        this.fromViewer.addSink(network.getGraph());
+        this.fromViewer.addSink(network);
     }
 
 
@@ -68,7 +68,7 @@ public class NodeClick implements Runnable, ViewerListener {
      */
     @Override
     public void buttonReleased(String id) {
-        this.clickedNodeId = Long.valueOf(id);
+        this.clickedNodeId = id;
         notifyListeners();
     }
 
@@ -105,7 +105,7 @@ public class NodeClick implements Runnable, ViewerListener {
     /**
      * @return the clickedNodeId
      */
-    public long getClickedNodeId() {
+    public String getClickedNodeId() {
         return clickedNodeId;
     }
 
