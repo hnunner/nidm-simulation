@@ -11,7 +11,7 @@ public interface ActorAmountListener {
      * @param actorId
      *          the id of the actor being added
      */
-    void notifyActorAdded(final long actorId);
+    void notifyActorAdded(final String actorId);
 
     /**
      * Entry point for actors being removed notifications.
@@ -19,6 +19,6 @@ public interface ActorAmountListener {
      * @param actorId
      *          the id of the actor being removed
      */
-    void notifyActorRemoved(final long actorId);
+    void notifyActorRemoved(final String actorId);
 
 }

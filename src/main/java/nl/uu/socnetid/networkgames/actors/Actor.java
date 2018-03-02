@@ -49,17 +49,9 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      *          the unique identifier
      * @param network
      *          the network the actor is being a part of
-     * @param utilityFunction
-     *          the function the actor uses to compute his utility of the network
-     * @param diseaseSpecs
-     *          the disease characteristics that is or might become present in the network
-     * @param riskFactor
-     *          the risk factor of a actor (<1: risk seeking, =1: risk neutral; >1: risk averse)
      */
-    protected Actor(String id, Network network, UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs,
-            double riskFactor) {
+    protected Actor(String id, Network network) {
         super(network, id);
-        initAttributes(utilityFunction, diseaseSpecs, riskFactor);
     }
 
     /**
@@ -72,19 +64,34 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      * @param riskFactor
      *          the risk factor of a actor (<1: risk seeking, =1: risk neutral; >1: risk averse)
      */
-    private void initAttributes(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, Double riskFactor) {
+    public void initActor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, Double riskFactor) {
         this.addAttribute(ActorAttributes.UTILITY_FUNCTION, utilityFunction);
         this.addAttribute(ActorAttributes.DISEASE_SPECS, diseaseSpecs);
         DiseaseGroup diseaseGroup = DiseaseGroup.SUSCEPTIBLE;
         this.addAttribute(ActorAttributes.DISEASE_GROUP, diseaseGroup);
         // ui-class required only for ui properties as defined in resources/graph-stream.css
         // --> no listener notifications
-        this.addAttribute(ActorAttributes.UI_CLASS, diseaseGroup, false);
+        this.addAttribute(ActorAttributes.UI_CLASS, diseaseGroup.toString(), false);
         this.addAttribute(ActorAttributes.RISK_FACTOR, riskFactor);
-        this.addAttribute(ActorAttributes.RISK_MEANING, ActorFactory.getRiskMeaning(riskFactor));
+        this.addAttribute(ActorAttributes.RISK_MEANING, getRiskMeaning(riskFactor));
         this.addAttribute(ActorAttributes.SATISFIED, false);
     }
 
+    /**
+     * Translates the risk factor into interpretable format.
+     *
+     * @param riskFactor
+     *          the risk factor
+     * @return interpretable format of risk factor (<1: risk seeking, =1: risk neutral; >1: risk averse)
+     */
+    private String getRiskMeaning(double riskFactor) {
+        if (riskFactor < 1.0) {
+            return "risk seeking";
+        } else if (riskFactor > 1.0) {
+            return "risk averse";
+        }
+        return "risk neutral";
+    }
 
     /**
      * Gets the network the actor is being a part of.
@@ -363,7 +370,6 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
             // other actor accepting connection?
             if (potentialNewConnection.acceptConnection(this)) {
                 addConnection(potentialNewConnection);
-                potentialNewConnection.addConnection(this);
             }
         }
         // the desire to create new connection counts as a move
@@ -378,7 +384,6 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
         Actor costlyConnection = seekCostlyConnection();
         if (costlyConnection != null) {
             this.removeConnection(costlyConnection);
-            costlyConnection.removeConnection(this);
         }
         // the desire to remove a connection counts as a move
         return (costlyConnection != null);
@@ -641,7 +646,8 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
         this.changeAttribute(ActorAttributes.DISEASE_GROUP, prevDiseaseGroup, DiseaseGroup.SUSCEPTIBLE);
         // ui-class required only for ui properties as defined in resources/graph-stream.css
         // --> no listener notifications
-        this.changeAttribute(ActorAttributes.UI_CLASS, prevDiseaseGroup, DiseaseGroup.SUSCEPTIBLE, false);
+        this.changeAttribute(ActorAttributes.UI_CLASS,
+                prevDiseaseGroup.toString(), DiseaseGroup.SUSCEPTIBLE.toString(), false);
     }
 
     /**
@@ -701,7 +707,8 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
         this.changeAttribute(ActorAttributes.DISEASE_GROUP, prevDiseaseGroup, DiseaseGroup.INFECTED);
         // ui-class required only for ui properties as defined in resources/graph-stream.css
         // --> no listener notifications
-        this.changeAttribute(ActorAttributes.UI_CLASS, prevDiseaseGroup, DiseaseGroup.INFECTED, false);
+        this.changeAttribute(ActorAttributes.UI_CLASS,
+                prevDiseaseGroup.toString(), DiseaseGroup.INFECTED.toString(), false);
     }
 
     /**
@@ -740,7 +747,8 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
         this.changeAttribute(ActorAttributes.DISEASE_GROUP, prevDiseaseGroup, DiseaseGroup.RECOVERED);
         // ui-class required only for ui properties as defined in resources/graph-stream.css
         // --> no listener notifications
-        this.changeAttribute(ActorAttributes.UI_CLASS, prevDiseaseGroup, DiseaseGroup.RECOVERED, false);
+        this.changeAttribute(ActorAttributes.UI_CLASS,
+                prevDiseaseGroup.toString(), DiseaseGroup.RECOVERED.toString(), false);
     }
 
 

@@ -2,18 +2,14 @@ package nl.uu.socnetid.networkgames.utilities;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.math3.util.Precision;
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.implementations.SingleGraph;
 import org.junit.Before;
 import org.junit.Test;
 
 import nl.uu.socnetid.networkgames.actors.Actor;
 import nl.uu.socnetid.networkgames.disease.DiseaseSpecs;
 import nl.uu.socnetid.networkgames.disease.types.DiseaseType;
+import nl.uu.socnetid.networkgames.network.networks.Network;
 
 /**
  * Tests for {@link Cumulative} class.
@@ -21,6 +17,9 @@ import nl.uu.socnetid.networkgames.disease.types.DiseaseType;
  * @author Hendrik Nunner
  */
 public class IRTCTest {
+
+    // network
+    private Network network;
 
     // constants
     private static final double alpha = 5.3;
@@ -31,13 +30,6 @@ public class IRTCTest {
     private static final double mu    = 2.5;
     private static final double r     = 1.2;
     private static final int    tau   = 10;
-
-    // graph
-    private Graph graph;
-    // utility function
-    private UtilityFunction uf;
-    // disease specs
-    private DiseaseSpecs ds;
 
     // actors
     private Actor actor1;
@@ -55,92 +47,40 @@ public class IRTCTest {
      */
     @Before
     public void initActor() {
-        this.graph = new SingleGraph("IRTC Test");
-        this.uf = new IRTC(alpha, beta, c);
-        this.ds = new DiseaseSpecs(DiseaseType.SIR, tau, delta, gamma, mu);
+        this.network = new Network("IRTC Test");
 
+        UtilityFunction uf = new IRTC(alpha, beta, c);
+        DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, tau, delta, gamma, mu);
 
-        List<Actor> actors = new ArrayList<Actor>();
-        this.actor1 = Actor.newInstance(this.uf, this.ds, r, this.graph);
-        this.actor2 = Actor.newInstance(this.uf, this.ds, r, this.graph);
-        this.actor3 = Actor.newInstance(this.uf, this.ds, r, this.graph);
-        this.actor4 = Actor.newInstance(this.uf, this.ds, r, this.graph);
-        this.actor5 = Actor.newInstance(this.uf, this.ds, r, this.graph);
-        this.actor6 = Actor.newInstance(this.uf, this.ds, r, this.graph);
-        this.actor7 = Actor.newInstance(this.uf, this.ds, r, this.graph);
-        this.actor8 = Actor.newInstance(this.uf, this.ds, r, this.graph);
-        this.actor9 = Actor.newInstance(this.uf, this.ds, r, this.graph);
+        this.actor1 = this.network.addActor(uf, ds, r);
+        this.actor2 = this.network.addActor(uf, ds, r);
+        this.actor3 = this.network.addActor(uf, ds, r);
+        this.actor4 = this.network.addActor(uf, ds, r);
+        this.actor5 = this.network.addActor(uf, ds, r);
+        this.actor6 = this.network.addActor(uf, ds, r);
+        this.actor7 = this.network.addActor(uf, ds, r);
+        this.actor8 = this.network.addActor(uf, ds, r);
+        this.actor9 = this.network.addActor(uf, ds, r);
 
         // infections
-        this.actor4.infect(this.ds);
-        this.actor6.infect(this.ds);
-        this.actor8.infect(this.ds);
+        this.actor4.infect(ds);
+        this.actor6.infect(ds);
+        this.actor8.infect(ds);
 
-        actors.add(this.actor1);
-        actors.add(this.actor2);
-        actors.add(this.actor3);
-        actors.add(this.actor4);
-        actors.add(this.actor5);
-        actors.add(this.actor6);
-        actors.add(this.actor7);
-        actors.add(this.actor8);
-        actors.add(this.actor9);
-
-        this.actor1.initCoActors(actors);
-        this.actor2.initCoActors(actors);
-        this.actor3.initCoActors(actors);
-        this.actor4.initCoActors(actors);
-        this.actor5.initCoActors(actors);
-        this.actor6.initCoActors(actors);
-        this.actor7.initCoActors(actors);
-        this.actor8.initCoActors(actors);
-        this.actor9.initCoActors(actors);
-
-        // connections actor 1
+        // connections
         this.actor1.addConnection(this.actor2);
         this.actor1.addConnection(this.actor3);
         this.actor1.addConnection(this.actor4);
-
-        // connections actor 2
-        this.actor2.addConnection(this.actor1);
         this.actor2.addConnection(this.actor6);
-
-        // connections actor 3
-        this.actor3.addConnection(this.actor1);
         this.actor3.addConnection(this.actor5);
-
-        // connections actor 4
-        this.actor4.addConnection(this.actor1);
-        this.actor4.addConnection(this.actor2);
-        this.actor4.addConnection(this.actor3);
         this.actor4.addConnection(this.actor5);
         this.actor4.addConnection(this.actor6);
         this.actor4.addConnection(this.actor7);
-
-        // connections actor 5
-        this.actor5.addConnection(this.actor3);
-        this.actor5.addConnection(this.actor4);
         this.actor5.addConnection(this.actor7);
         this.actor5.addConnection(this.actor8);
-
-        // connections actor 6
-        this.actor6.addConnection(this.actor2);
-        this.actor6.addConnection(this.actor4);
         this.actor6.addConnection(this.actor7);
-
-        // connections actor 7
-        this.actor7.addConnection(this.actor4);
-        this.actor7.addConnection(this.actor5);
-        this.actor7.addConnection(this.actor6);
         this.actor7.addConnection(this.actor8);
-
-        // connections actor 8
-        this.actor8.addConnection(this.actor5);
-        this.actor8.addConnection(this.actor7);
         this.actor8.addConnection(this.actor9);
-
-        // connections actor 9
-        this.actor9.addConnection(this.actor8);
     }
 
 

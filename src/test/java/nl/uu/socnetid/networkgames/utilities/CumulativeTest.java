@@ -2,17 +2,13 @@ package nl.uu.socnetid.networkgames.utilities;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.implementations.SingleGraph;
 import org.junit.Before;
 import org.junit.Test;
 
 import nl.uu.socnetid.networkgames.actors.Actor;
 import nl.uu.socnetid.networkgames.disease.DiseaseSpecs;
 import nl.uu.socnetid.networkgames.disease.types.DiseaseType;
+import nl.uu.socnetid.networkgames.network.networks.Network;
 
 /**
  * Tests for {@link Cumulative} class.
@@ -25,8 +21,8 @@ public class CumulativeTest {
     //      (e.g., take the network from IRTCTest.java)
     // TODO implement TestCase for truncated connections utility function
 
-    // graph
-    private Graph graph;
+    // network
+    private Network network;
 
     // actors
     private Actor actor1;
@@ -35,11 +31,7 @@ public class CumulativeTest {
     private Actor actor4;
     private Actor actor5;
 
-    // utility function
-    private UtilityFunction uf;
-
     // disease related
-    private DiseaseSpecs ds;
     private static final int    tau   = 10;
     private static final double delta = 8.4;
     private static final double gamma = 0.1;
@@ -50,45 +42,22 @@ public class CumulativeTest {
      */
     @Before
     public void initActor() {
-        this.graph = new SingleGraph("Cumulative Test");
-        this.uf = new Cumulative();
-        this.ds = new DiseaseSpecs(DiseaseType.SIR, tau, delta, gamma, mu);
+        this.network = new Network("Cumulative Test");
+        UtilityFunction uf = new Cumulative();
+        DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, tau, delta, gamma, mu);
 
-        List<Actor> actors = new ArrayList<Actor>();
+        this.actor1 = this.network.addActor(uf, ds);
+        this.actor2 = this.network.addActor(uf, ds);
+        this.actor3 = this.network.addActor(uf, ds);
+        this.actor4 = this.network.addActor(uf, ds);
+        this.actor5 = this.network.addActor(uf, ds);
 
-        this.actor1 = Actor.newInstance(uf, ds, this.graph);
-        this.actor2 = Actor.newInstance(uf, ds, this.graph);
-        this.actor3 = Actor.newInstance(uf, ds, this.graph);
-        this.actor4 = Actor.newInstance(uf, ds, this.graph);
-        this.actor5 = Actor.newInstance(uf, ds, this.graph);
-
-        actors.add(this.actor1);
-        actors.add(this.actor2);
-        actors.add(this.actor3);
-        actors.add(this.actor4);
-        actors.add(this.actor5);
-
-        this.actor1.initCoActors(actors);
-        this.actor2.initCoActors(actors);
-        this.actor3.initCoActors(actors);
-        this.actor4.initCoActors(actors);
-        this.actor5.initCoActors(actors);
-
-        // connections are always bidirectional
+        // connections
         this.actor1.addConnection(this.actor2);
-        this.actor2.addConnection(this.actor1);
-
         this.actor1.addConnection(this.actor3);
-        this.actor3.addConnection(this.actor1);
-
         this.actor1.addConnection(this.actor4);
-        this.actor4.addConnection(this.actor1);
-
         this.actor3.addConnection(this.actor4);
-        this.actor4.addConnection(this.actor3);
-
         this.actor4.addConnection(this.actor5);
-        this.actor5.addConnection(this.actor4);
     }
 
 
