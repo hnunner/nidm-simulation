@@ -12,14 +12,14 @@ import nl.uu.socnetid.networkgames.network.networks.Network;
 /**
  * @author Hendrik Nunner
  */
-public class ThreadedSimulation extends Simulation implements Runnable {
+public class ThreadedSimulation extends Simulation {
 
     // logger
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(ThreadedSimulation.class);
 
-    // the executor service used for the actor threads
-    private ExecutorService service;
+    // the executor actorExecutor used for the actor threads
+    private ExecutorService actorExecutor;
     // actor concurrency
     private final ReentrantLock lock = new ReentrantLock();
 
@@ -34,16 +34,7 @@ public class ThreadedSimulation extends Simulation implements Runnable {
      */
     public ThreadedSimulation(Network network, int delay) {
         super(network, delay);
-        this.service = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-    }
-
-
-    /* (non-Javadoc)
-     * @see java.lang.Runnable#run()
-     */
-    @Override
-    public void run() {
-        start();
+        this.actorExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     }
 
     /*
@@ -53,10 +44,8 @@ public class ThreadedSimulation extends Simulation implements Runnable {
      */
     @Override
     protected void computeActorRound(Actor actor) {
-
         actor.setLock(this.lock);
-        service.submit(actor);
-
+        actorExecutor.submit(actor);
         // stop simulaiton if thread is interrupted
         if (Thread.currentThread().isInterrupted()) {
             this.pause();

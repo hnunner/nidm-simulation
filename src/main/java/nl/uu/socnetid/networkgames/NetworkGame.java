@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -40,7 +41,7 @@ import nl.uu.socnetid.networkgames.gui.SIRPanel;
 import nl.uu.socnetid.networkgames.gui.StatsFrame;
 import nl.uu.socnetid.networkgames.gui.TruncatedConnectionsPanel;
 import nl.uu.socnetid.networkgames.network.networks.DisplayableNetwork;
-import nl.uu.socnetid.networkgames.network.simulation.Simulation;
+import nl.uu.socnetid.networkgames.network.simulation.ThreadedSimulation;
 import nl.uu.socnetid.networkgames.stats.StatsComputer;
 import nl.uu.socnetid.networkgames.utilities.Cumulative;
 import nl.uu.socnetid.networkgames.utilities.IRTC;
@@ -107,12 +108,19 @@ public class NetworkGame implements NodeClickListener, ActorListener {
     // actor to show stats for
     private Actor statsActor;
 
-    // concurrency for simulation
-    private ExecutorService nodeClickExecutor = Executors.newSingleThreadExecutor();
     private JTextField txtAddAmount;
 
     // simulation
-    private Simulation simulation;
+    private ThreadedSimulation simulation;
+
+
+
+
+
+    private ExecutorService nodeClickExecutor = Executors.newSingleThreadExecutor();
+    private ExecutorService simulationExecutor = Executors.newSingleThreadExecutor();
+    private Future<?> simulationTask;
+
 
 
     /**
@@ -453,10 +461,13 @@ public class NetworkGame implements NodeClickListener, ActorListener {
 
         // creates a ui representation of the network
         this.network.show();
+
+
         // init click listener
-        NodeClick nodeClickListener = new NodeClick(network);
+        NodeClick nodeClickListener = new NodeClick(this.network);
         nodeClickListener.addListener(this);
         this.nodeClickExecutor.submit(nodeClickListener);
+
     }
 
 
@@ -552,9 +563,13 @@ public class NetworkGame implements NodeClickListener, ActorListener {
 
         // initializations
         if (this.simulation == null) {
-            this.simulation = new Simulation(this.network, (Integer) this.simulationDelay.getValue());
+            this.simulation = new ThreadedSimulation(this.network, (Integer) this.simulationDelay.getValue());
         }
-        this.simulation.start();
+
+        if (this.simulationTask != null) {
+            this.simulationTask.cancel(true);
+        }
+        this.simulationTask = this.simulationExecutor.submit(this.simulation);
     }
 
     /**
@@ -596,9 +611,11 @@ public class NetworkGame implements NodeClickListener, ActorListener {
         }
     }
 
+
+
+
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.gui.NodeClickListener#notify(
-     * nl.uu.socnetid.networkgames.gui.NodeClick)
+     * @see nl.uu.socnetid.networkgames.gui.NodeClickListener#notify(nl.uu.socnetid.networkgames.gui.NodeClick)
      */
     @Override
     public void notify(NodeClick nodeClick) {
@@ -611,15 +628,23 @@ public class NetworkGame implements NodeClickListener, ActorListener {
         }
 
         // show actor stats on node click
-        // TODO WHAT THE FUCK?!?!
         if (this.chckbxShowActorStats.isSelected()) {
             this.statsActor = this.network.getActor(clickActorId);
-            this.statsFrame.refreshLocalActorStats(statsActor);
+            this.statsFrame.refreshLocalActorStats(network.getActor(clickActorId));
         }
 
         // update stats
         this.statsFrame.refreshGlobalActorStats(StatsComputer.computeGlobalActorStats(this.network));
+
+
     }
+
+
+
+
+
+
+
 
     /**
      * @return the selected disease

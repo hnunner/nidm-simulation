@@ -8,7 +8,7 @@ import nl.uu.socnetid.networkgames.actors.Actor;
 /**
  * @author Hendrik Nunner
  */
-public final class Cumulative implements UtilityFunction {
+public final class Cumulative extends UtilityFunction {
 
     // default values
     private static final double DEFAULT_DIRECT = 1.0;
