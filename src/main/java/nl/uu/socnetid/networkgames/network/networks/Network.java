@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.log4j.Logger;
 import org.graphstream.graph.implementations.SingleGraph;
@@ -26,9 +25,6 @@ public class Network extends SingleGraph {
 
     // logger
     private static final Logger logger = Logger.getLogger(Network.class);
-
-    // counter for unique identifiers
-    private static final AtomicLong NEXT_ID = new AtomicLong(1);
 
     // risk factor for risk neutral actors
     private static final double RISK_FACTOR_NEUTRAL = 1.0;
@@ -83,7 +79,7 @@ public class Network extends SingleGraph {
      * @return the newly added actor.
      */
     public Actor addActor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double riskFactor) {
-        Actor actor = this.addNode(String.valueOf(NEXT_ID.incrementAndGet()));
+        Actor actor = this.addNode(String.valueOf(this.getNodeCount() + 1));
         actor.initActor(utilityFunction, diseaseSpecs, riskFactor);
         notifyActorAdded(actor.getId());
         return actor;

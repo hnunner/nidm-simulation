@@ -3,6 +3,7 @@ package nl.uu.socnetid.networkgames.disease;
 import java.util.Arrays;
 
 import nl.uu.socnetid.networkgames.disease.types.DiseaseType;
+import scala.collection.mutable.StringBuilder;
 
 /**
  * @author Hendrik Nunner
@@ -127,6 +128,22 @@ public class DiseaseSpecs {
                 this.gamma,
                 this.mu
          });
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("disease type:").append(this.diseaseType.toString());
+        sb.append(" | tau:").append(this.tau);
+        sb.append(" | delta:").append(this.delta);
+        sb.append(" | gamma:").append(this.gamma);
+        sb.append(" | mu:").append(this.mu);
+
+        return sb.toString();
     }
 
 }

@@ -10,7 +10,7 @@ import nl.uu.socnetid.networkgames.actors.Actor;
 /**
  * @author Hendrik Nunner
  */
-public class TruncatedConnections implements UtilityFunction {
+public class TruncatedConnections extends UtilityFunction {
 
     // how much is a connection worth
     private final double directUtility;

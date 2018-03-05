@@ -11,7 +11,7 @@ import nl.uu.socnetid.networkgames.stats.StatsComputer;
 /**
  * @author Hendrik Nunner
  */
-public class IRTC implements UtilityFunction {
+public class IRTC extends UtilityFunction {
 
     // logger
     private static final Logger logger = Logger.getLogger(IRTC.class);
