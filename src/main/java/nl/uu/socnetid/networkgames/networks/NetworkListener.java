@@ -1,9 +1,9 @@
-package nl.uu.socnetid.networkgames.network.listeners;
+package nl.uu.socnetid.networkgames.networks;
 
 /**
  * @author Hendrik Nunner
  */
-public interface ActorAmountListener {
+public interface NetworkListener {
 
     /**
      * Entry point for actors being added notifications.

@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.border.MatteBorder;
 
 import nl.uu.socnetid.networkgames.actors.Actor;
-import nl.uu.socnetid.networkgames.disease.DiseaseSpecs;
+import nl.uu.socnetid.networkgames.diseases.DiseaseSpecs;
 import nl.uu.socnetid.networkgames.stats.GlobalActorStats;
 import nl.uu.socnetid.networkgames.stats.GlobalNetworkStats;
 import nl.uu.socnetid.networkgames.stats.GlobalSimulationStats;

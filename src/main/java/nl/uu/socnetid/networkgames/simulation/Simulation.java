@@ -1,4 +1,4 @@
-package nl.uu.socnetid.networkgames.network.simulation;
+package nl.uu.socnetid.networkgames.simulation;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,7 +10,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import org.apache.log4j.Logger;
 
 import nl.uu.socnetid.networkgames.actors.Actor;
-import nl.uu.socnetid.networkgames.network.networks.Network;
+import nl.uu.socnetid.networkgames.networks.Network;
 
 /**
  * @author Hendrik Nunner

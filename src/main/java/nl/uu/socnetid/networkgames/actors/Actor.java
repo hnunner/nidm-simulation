@@ -15,11 +15,11 @@ import org.apache.log4j.Logger;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.implementations.SingleNode;
 
-import nl.uu.socnetid.networkgames.disease.Disease;
-import nl.uu.socnetid.networkgames.disease.DiseaseFactory;
-import nl.uu.socnetid.networkgames.disease.DiseaseSpecs;
-import nl.uu.socnetid.networkgames.disease.types.DiseaseGroup;
-import nl.uu.socnetid.networkgames.network.networks.Network;
+import nl.uu.socnetid.networkgames.diseases.Disease;
+import nl.uu.socnetid.networkgames.diseases.DiseaseFactory;
+import nl.uu.socnetid.networkgames.diseases.DiseaseSpecs;
+import nl.uu.socnetid.networkgames.diseases.types.DiseaseGroup;
+import nl.uu.socnetid.networkgames.networks.Network;
 import nl.uu.socnetid.networkgames.stats.StatsComputer;
 import nl.uu.socnetid.networkgames.utilities.Utility;
 import nl.uu.socnetid.networkgames.utilities.UtilityFunction;

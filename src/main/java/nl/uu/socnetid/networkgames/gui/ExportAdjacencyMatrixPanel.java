@@ -1,8 +1,8 @@
 package nl.uu.socnetid.networkgames.gui;
 
-import nl.uu.socnetid.networkgames.network.io.AdjacencyMatrixWriter;
-import nl.uu.socnetid.networkgames.network.io.NetworkWriter;
-import nl.uu.socnetid.networkgames.network.networks.Network;
+import nl.uu.socnetid.networkgames.io.AdjacencyMatrixWriter;
+import nl.uu.socnetid.networkgames.io.NetworkWriter;
+import nl.uu.socnetid.networkgames.networks.Network;
 
 /**
  * @author Hendrik Nunner

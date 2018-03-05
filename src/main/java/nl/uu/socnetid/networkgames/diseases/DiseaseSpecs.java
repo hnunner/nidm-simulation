@@ -1,8 +1,8 @@
-package nl.uu.socnetid.networkgames.disease;
+package nl.uu.socnetid.networkgames.diseases;
 
 import java.util.Arrays;
 
-import nl.uu.socnetid.networkgames.disease.types.DiseaseType;
+import nl.uu.socnetid.networkgames.diseases.types.DiseaseType;
 import scala.collection.mutable.StringBuilder;
 
 /**
