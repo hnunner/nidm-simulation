@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -110,8 +109,6 @@ public class NetworkGame implements NodeClickListener, ActorListener {
 
     // concurrency for simulation
     private ExecutorService nodeClickExecutor = Executors.newSingleThreadExecutor();
-    private ExecutorService simulationExecutor = Executors.newSingleThreadExecutor();
-    private Future<?> simulationTask;
     private JTextField txtAddAmount;
 
     // simulation
@@ -555,27 +552,16 @@ public class NetworkGame implements NodeClickListener, ActorListener {
 
         // initializations
         if (this.simulation == null) {
-            this.simulation = new Simulation(this.network);
+            this.simulation = new Simulation(this.network, (Integer) this.simulationDelay.getValue());
         }
-        this.simulation.initSimulationDelay((Integer) this.simulationDelay.getValue());
-
-        if (simulationTask != null) {
-            simulationTask.cancel(true);
-        }
-        simulationTask = simulationExecutor.submit(this.simulation);
-
-        // update stats
-        this.statsFrame.refreshGlobalActorStats(StatsComputer.computeGlobalActorStats(this.network));
+        this.simulation.start();
     }
 
     /**
      * Pauses the simulation of the network game.
      */
     private void pauseSimulation() {
-        if (simulationTask == null) {
-            return;
-        }
-        simulationTask.cancel(true);
+        this.simulation.pause();
     }
 
     /**

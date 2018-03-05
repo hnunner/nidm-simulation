@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.log4j.Logger;
@@ -117,7 +118,7 @@ public class Network extends SingleGraph {
     }
 
     /**
-     * Get the actor with the corresponding identifier.
+     * Gets the actor with the corresponding identifier.
      *
      * @param id
      *          the identifier of the actor to get
@@ -125,6 +126,17 @@ public class Network extends SingleGraph {
      */
     public Actor getActor(String id) {
         return (Actor) this.getNode(id);
+    }
+
+    /**
+     * Gets a random actor.
+     *
+     * @return a random actor
+     */
+    public Actor getRandomActor() {
+        // TODO test if reliable
+        int randomIndex = ThreadLocalRandom.current().nextInt(0, getActors().size());
+        return (Actor) this.getNode(randomIndex);
     }
 
     /**
