@@ -27,8 +27,8 @@ import org.graphstream.graph.Edge;
 
 import nl.uu.socnetid.networkgames.actors.Actor;
 import nl.uu.socnetid.networkgames.actors.ActorListener;
-import nl.uu.socnetid.networkgames.disease.DiseaseSpecs;
-import nl.uu.socnetid.networkgames.disease.types.DiseaseType;
+import nl.uu.socnetid.networkgames.diseases.DiseaseSpecs;
+import nl.uu.socnetid.networkgames.diseases.types.DiseaseType;
 import nl.uu.socnetid.networkgames.gui.CumulativePanel;
 import nl.uu.socnetid.networkgames.gui.DeactivatablePanel;
 import nl.uu.socnetid.networkgames.gui.ExportAdjacencyMatrixPanel;
@@ -40,10 +40,10 @@ import nl.uu.socnetid.networkgames.gui.NodeClickListener;
 import nl.uu.socnetid.networkgames.gui.SIRPanel;
 import nl.uu.socnetid.networkgames.gui.StatsFrame;
 import nl.uu.socnetid.networkgames.gui.TruncatedConnectionsPanel;
-import nl.uu.socnetid.networkgames.network.networks.DisplayableNetwork;
-import nl.uu.socnetid.networkgames.network.simulation.Simulation;
-import nl.uu.socnetid.networkgames.network.simulation.SimulationListener;
-import nl.uu.socnetid.networkgames.network.simulation.ThreadedSimulation;
+import nl.uu.socnetid.networkgames.networks.DisplayableNetwork;
+import nl.uu.socnetid.networkgames.simulation.Simulation;
+import nl.uu.socnetid.networkgames.simulation.SimulationListener;
+import nl.uu.socnetid.networkgames.simulation.ThreadedSimulation;
 import nl.uu.socnetid.networkgames.stats.StatsComputer;
 import nl.uu.socnetid.networkgames.utilities.Cumulative;
 import nl.uu.socnetid.networkgames.utilities.IRTC;
@@ -723,7 +723,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.network.simulation.SimulationListener#notifyRoundFinished(nl.uu.socnetid.networkgames.network.simulation.Simulation)
+     * @see nl.uu.socnetid.networkgames.simulation.SimulationListener#notifyRoundFinished(nl.uu.socnetid.networkgames.simulation.Simulation)
      */
     @Override
     public void notifyRoundFinished(Simulation simulation) {

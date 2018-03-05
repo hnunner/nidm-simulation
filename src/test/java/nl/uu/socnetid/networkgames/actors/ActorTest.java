@@ -7,9 +7,9 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import nl.uu.socnetid.networkgames.disease.DiseaseSpecs;
-import nl.uu.socnetid.networkgames.disease.types.DiseaseType;
-import nl.uu.socnetid.networkgames.network.networks.Network;
+import nl.uu.socnetid.networkgames.diseases.DiseaseSpecs;
+import nl.uu.socnetid.networkgames.diseases.types.DiseaseType;
+import nl.uu.socnetid.networkgames.networks.Network;
 import nl.uu.socnetid.networkgames.utilities.Cumulative;
 import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
 

@@ -1,4 +1,4 @@
-package nl.uu.socnetid.networkgames.network.networks;
+package nl.uu.socnetid.networkgames.networks;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,8 +14,7 @@ import org.graphstream.graph.implementations.SingleGraph;
 
 import nl.uu.socnetid.networkgames.actors.Actor;
 import nl.uu.socnetid.networkgames.actors.ActorFactory;
-import nl.uu.socnetid.networkgames.disease.DiseaseSpecs;
-import nl.uu.socnetid.networkgames.network.listeners.ActorAmountListener;
+import nl.uu.socnetid.networkgames.diseases.DiseaseSpecs;
 import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
 
 /**
@@ -30,8 +29,8 @@ public class Network extends SingleGraph {
     private static final double RISK_FACTOR_NEUTRAL = 1.0;
 
     // listener
-    private final Set<ActorAmountListener> actorAmountListeners =
-            new CopyOnWriteArraySet<ActorAmountListener>();
+    private final Set<NetworkListener> networkListeners =
+            new CopyOnWriteArraySet<NetworkListener>();
 
 
     /**
@@ -251,23 +250,23 @@ public class Network extends SingleGraph {
 
 
     /**
-     * Adds a listener to be notified when the amount of actors is being changed.
+     * Adds a listener to be notified when the network changes.
      *
-     * @param actorAmountListener
+     * @param networkListener
      *          the listener to be added
      */
-    public void addActorAmountListener(ActorAmountListener actorAmountListener) {
-        this.actorAmountListeners.add(actorAmountListener);
+    public void addNetworkListener(NetworkListener networkListener) {
+        this.networkListeners.add(networkListener);
     }
 
     /**
-     * Removes a listener that is to be notified when the amount of actors is being changed.
+     * Removes a listener to be notified when the network changes.
      *
-     * @param actorAmountListener
+     * @param networkListener
      *          the listener to be removed
      */
-    public void removeActorAmountListener(ActorAmountListener actorAmountListener) {
-        this.actorAmountListeners.remove(actorAmountListener);
+    public void removeNetworkListener(NetworkListener networkListener) {
+        this.networkListeners.remove(networkListener);
     }
 
     /**
@@ -277,7 +276,7 @@ public class Network extends SingleGraph {
      *          the id of the actor being added
      */
     private final void notifyActorAdded(String actorId) {
-        Iterator<ActorAmountListener> listenersIt = this.actorAmountListeners.iterator();
+        Iterator<NetworkListener> listenersIt = this.networkListeners.iterator();
         while (listenersIt.hasNext()) {
             listenersIt.next().notifyActorAdded(actorId);
         }
@@ -290,7 +289,7 @@ public class Network extends SingleGraph {
      *          the id of the actor being removed
      */
     private final void notifyActorRemoved(String actorId) {
-        Iterator<ActorAmountListener> listenersIt = this.actorAmountListeners.iterator();
+        Iterator<NetworkListener> listenersIt = this.networkListeners.iterator();
         while (listenersIt.hasNext()) {
             listenersIt.next().notifyActorRemoved(actorId);
         }

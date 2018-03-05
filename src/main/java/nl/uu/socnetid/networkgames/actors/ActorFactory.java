@@ -3,7 +3,7 @@ package nl.uu.socnetid.networkgames.actors;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.NodeFactory;
 
-import nl.uu.socnetid.networkgames.network.networks.Network;
+import nl.uu.socnetid.networkgames.networks.Network;
 
 /**
  * @author Hendrik Nunner

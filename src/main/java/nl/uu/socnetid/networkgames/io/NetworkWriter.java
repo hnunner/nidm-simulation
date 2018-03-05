@@ -1,6 +1,6 @@
-package nl.uu.socnetid.networkgames.network.io;
+package nl.uu.socnetid.networkgames.io;
 
-import nl.uu.socnetid.networkgames.network.networks.Network;
+import nl.uu.socnetid.networkgames.networks.Network;
 
 /**
  *

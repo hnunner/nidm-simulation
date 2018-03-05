@@ -7,7 +7,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import org.graphstream.ui.view.ViewerListener;
 import org.graphstream.ui.view.ViewerPipe;
 
-import nl.uu.socnetid.networkgames.network.networks.DisplayableNetwork;
+import nl.uu.socnetid.networkgames.networks.DisplayableNetwork;
 
 /**
  * @author Hendrik Nunner
