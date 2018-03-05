@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 
 import nl.uu.socnetid.networkgames.actors.Actor;
 import nl.uu.socnetid.networkgames.network.networks.Network;
+import nl.uu.socnetid.networkgames.network.simulation.Simulation;
 
 /**
  * @author Hendrik Nunner
@@ -29,7 +30,7 @@ public final class StatsComputer {
      * @return the first order degree of the actor
      */
     public static int computeFirstOrderDegree(Actor actor) {
-        return actor.getConnections().size();
+        return actor.getDegree();
     }
 
     /**
@@ -170,6 +171,13 @@ public final class StatsComputer {
         }
 
         return new GlobalActorStats(n, nS, nI, nR, nRiskAverse, nRiskNeutral, nRiskSeeking, cumRisk / n);
+    }
+
+    public static GlobalSimulationStats computeGlobalSimulationStats(Simulation simulation) {
+        if (simulation == null) {
+            return new GlobalSimulationStats(false, 0);
+        }
+        return new GlobalSimulationStats(simulation.isRunning(), simulation.getRounds());
     }
 
     /**

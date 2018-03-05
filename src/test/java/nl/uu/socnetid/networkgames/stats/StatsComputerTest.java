@@ -49,7 +49,6 @@ public class StatsComputerTest {
         UtilityFunction uf = new Cumulative();
         DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, tau, delta, gamma, mu);
 
-
         this.actor1 = this.network.addActor(uf, ds);
         this.actor2 = this.network.addActor(uf, ds);
         this.actor3 = this.network.addActor(uf, ds);
