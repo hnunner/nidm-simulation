@@ -1,4 +1,4 @@
-package nl.uu.socnetid.networkgames.network.io;
+package nl.uu.socnetid.networkgames.io;
 
 import java.io.IOException;
 import java.util.Date;
@@ -11,13 +11,13 @@ import org.graphstream.stream.file.FileSinkGEXF.TimeFormat;
 
 import nl.uu.socnetid.networkgames.actors.Actor;
 import nl.uu.socnetid.networkgames.actors.ActorListener;
-import nl.uu.socnetid.networkgames.network.listeners.ActorAmountListener;
-import nl.uu.socnetid.networkgames.network.networks.Network;
+import nl.uu.socnetid.networkgames.networks.Network;
+import nl.uu.socnetid.networkgames.networks.NetworkListener;
 
 /**
  * @author Hendrik Nunner
  */
-public class GEXFWriter implements ActorListener, ActorAmountListener {
+public class GEXFWriter implements ActorListener, NetworkListener {
 
     // logger
     private static final Logger logger = Logger.getLogger(GEXFWriter.class);
@@ -79,7 +79,7 @@ public class GEXFWriter implements ActorListener, ActorAmountListener {
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.network.listeners.ActorAmountListener#notifyActorAdded(java.lang.String)
+     * @see nl.uu.socnetid.networkgames.networks.listeners.NetworkListener#notifyActorAdded(java.lang.String)
      */
     @Override
     public void notifyActorAdded(String actorId) {
@@ -94,7 +94,7 @@ public class GEXFWriter implements ActorListener, ActorAmountListener {
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.network.listeners.ActorAmountListener#notifyActorRemoved(java.lang.String)
+     * @see nl.uu.socnetid.networkgames.networks.listeners.NetworkListener#notifyActorRemoved(java.lang.String)
      */
     @Override
     public void notifyActorRemoved(String actorId) {

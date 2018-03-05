@@ -8,8 +8,8 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import nl.uu.socnetid.networkgames.actors.Actor;
-import nl.uu.socnetid.networkgames.network.networks.Network;
-import nl.uu.socnetid.networkgames.network.simulation.Simulation;
+import nl.uu.socnetid.networkgames.networks.Network;
+import nl.uu.socnetid.networkgames.simulation.Simulation;
 
 /**
  * @author Hendrik Nunner

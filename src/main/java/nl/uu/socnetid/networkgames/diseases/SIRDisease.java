@@ -1,6 +1,6 @@
-package nl.uu.socnetid.networkgames.disease;
+package nl.uu.socnetid.networkgames.diseases;
 
-import nl.uu.socnetid.networkgames.disease.types.DiseaseState;
+import nl.uu.socnetid.networkgames.diseases.types.DiseaseState;
 
 /**
  * @author Hendrik Nunner
@@ -30,7 +30,7 @@ public class SIRDisease implements Disease {
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.disease.Disease#evolve()
+     * @see nl.uu.socnetid.networkgames.diseases.Disease#evolve()
      */
     @Override
     public void evolve() {
@@ -42,7 +42,7 @@ public class SIRDisease implements Disease {
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.disease.Disease#getDiseaseSpecs()
+     * @see nl.uu.socnetid.networkgames.diseases.Disease#getDiseaseSpecs()
      */
     @Override
     public DiseaseSpecs getDiseaseSpecs() {
@@ -50,7 +50,7 @@ public class SIRDisease implements Disease {
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.disease.Disease#isInfectious()
+     * @see nl.uu.socnetid.networkgames.diseases.Disease#isInfectious()
      */
     @Override
     public boolean isInfectious() {
@@ -58,7 +58,7 @@ public class SIRDisease implements Disease {
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.disease.Disease#isDefeated()
+     * @see nl.uu.socnetid.networkgames.diseases.Disease#isDefeated()
      */
     @Override
     public boolean isCured() {
@@ -66,7 +66,7 @@ public class SIRDisease implements Disease {
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.disease.Disease#getTimeRemaining()
+     * @see nl.uu.socnetid.networkgames.diseases.Disease#getTimeRemaining()
      */
     @Override
     public int getTimeUntilCured() {

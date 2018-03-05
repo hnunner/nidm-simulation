@@ -1,4 +1,4 @@
-package nl.uu.socnetid.networkgames.network.networks;
+package nl.uu.socnetid.networkgames.networks;
 
 import java.net.URL;
 
@@ -16,7 +16,6 @@ public class DisplayableNetwork extends Network {
 
     // graphstream
     private Viewer viewer;
-
 
 
     /**
@@ -48,9 +47,5 @@ public class DisplayableNetwork extends Network {
     public Viewer getViewer() {
         return viewer;
     }
-
-
-
-
 
 }

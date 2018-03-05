@@ -7,9 +7,9 @@ import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
-import nl.uu.socnetid.networkgames.network.io.NetworkFileWriter;
-import nl.uu.socnetid.networkgames.network.io.NetworkWriter;
-import nl.uu.socnetid.networkgames.network.networks.Network;
+import nl.uu.socnetid.networkgames.io.NetworkFileWriter;
+import nl.uu.socnetid.networkgames.io.NetworkWriter;
+import nl.uu.socnetid.networkgames.networks.Network;
 
 /**
  * @author Hendrik Nunner

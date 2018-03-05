@@ -1,4 +1,4 @@
-package nl.uu.socnetid.networkgames.network.simulation;
+package nl.uu.socnetid.networkgames.simulation;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -7,7 +7,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.log4j.Logger;
 
 import nl.uu.socnetid.networkgames.actors.Actor;
-import nl.uu.socnetid.networkgames.network.networks.Network;
+import nl.uu.socnetid.networkgames.networks.Network;
 
 /**
  * @author Hendrik Nunner
@@ -39,7 +39,7 @@ public class ThreadedSimulation extends Simulation {
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.network.simulation.Simulation#computeActorRound(
+     * @see nl.uu.socnetid.networkgames.simulation.Simulation#computeActorRound(
      * nl.uu.socnetid.networkgames.actors.Actor)
      */
     @Override

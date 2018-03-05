@@ -1,4 +1,4 @@
-package nl.uu.socnetid.networkgames.network.simulation;
+package nl.uu.socnetid.networkgames.simulation;
 
 /**
  * @author Hendrik Nunner

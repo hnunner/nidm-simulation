@@ -13,8 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.MatteBorder;
 
-import nl.uu.socnetid.networkgames.network.io.GEXFWriter;
-import nl.uu.socnetid.networkgames.network.networks.Network;
+import nl.uu.socnetid.networkgames.io.GEXFWriter;
+import nl.uu.socnetid.networkgames.networks.Network;
 
 /**
  * @author Hendrik Nunner
