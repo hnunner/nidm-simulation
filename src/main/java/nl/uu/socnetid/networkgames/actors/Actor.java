@@ -276,7 +276,7 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      * @return the actor's co-actors
      */
     public Collection<Actor> getCoActors() {
-        Collection<Actor> coActors = getNetwork().getActors();
+        Collection<Actor> coActors = new ArrayList<Actor>(getNetwork().getActors());
         coActors.remove(this);
         return coActors;
     }
@@ -300,63 +300,44 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
 
 
     /////////////////////////////////////////////////// CONNECTIONS ///////////////////////////////////////////////////
-    /* (non-Javadoc)
-     * @see java.lang.Runnable#run()
+    /**
+     * Computes a single round for an actor. That is, an {@link Actor} tries to connect to
+     * or disconnects from another {@link Actor} if it produces higher utility.
      */
-    @Override
-    public void run() {
+    public void computeRound() {
         // starting assumption that current connections are not optimal
         boolean satisfied = false;
-        lock.lock();
 
-        try {
-            // actors try to connect or disconnect first in random order
-            boolean tryToConnectFirst = ThreadLocalRandom.current().nextBoolean();
+        // actors try to connect or disconnect first in random order
+        boolean tryToConnectFirst = ThreadLocalRandom.current().nextBoolean();
 
-            // 1st try to connect - 2nd try to disconnect if no new connection desired
-            if (tryToConnectFirst) {
+        // 1st try to connect - 2nd try to disconnect if no new connection desired
+        if (tryToConnectFirst) {
 
-                // try to connect
-                if (!tryToConnect()) {
-                    // try to disconnect
-                    if (!tryToDisconnect()) {
-                        satisfied = true;
-                    }
-                }
-
-            // 1st try to disconnect - 2nd try to connect if no disconnection desired
-            } else {
-
+            // try to connect
+            if (!tryToConnect()) {
                 // try to disconnect
                 if (!tryToDisconnect()) {
-                    // try to connect
-                    if (!tryToConnect()) {
-                        satisfied = true;
-                    }
+                    satisfied = true;
                 }
             }
 
-            // update satisfaction
-            updateSatisfaction(satisfied);
+        // 1st try to disconnect - 2nd try to connect if no disconnection desired
+        } else {
 
-            // round finished
-            notifyRoundFinished();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            lock.unlock();
+            // try to disconnect
+            if (!tryToDisconnect()) {
+                // try to connect
+                if (!tryToConnect()) {
+                    satisfied = true;
+                }
+            }
         }
-    }
 
-    /**
-     * Sets the lock required to synchronize threaded actors.
-     *
-     * @param lock
-     *          the lock used to synchronize threaded actors.
-     */
-    public void setLock(Lock lock) {
-        this.lock = lock;
+        // update satisfaction
+        updateSatisfaction(satisfied);
+        // round finished
+        notifyRoundFinished();
     }
 
     /**
@@ -586,6 +567,31 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
             network.removeEdge(edge);
             notifyConnectionRemoved(edge);
         }
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Runnable#run()
+     */
+    @Override
+    public void run() {
+        lock.lock();
+        try {
+            computeRound();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * Sets the lock required to synchronize threaded actors.
+     *
+     * @param lock
+     *          the lock used to synchronize threaded actors.
+     */
+    public void setLock(Lock lock) {
+        this.lock = lock;
     }
 
 
