@@ -12,6 +12,7 @@ import nl.uu.socnetid.networkgames.actors.Actor;
 import nl.uu.socnetid.networkgames.disease.DiseaseSpecs;
 import nl.uu.socnetid.networkgames.stats.GlobalActorStats;
 import nl.uu.socnetid.networkgames.stats.GlobalNetworkStats;
+import nl.uu.socnetid.networkgames.stats.GlobalSimulationStats;
 import nl.uu.socnetid.networkgames.utilities.Utility;
 import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
 
@@ -51,7 +52,9 @@ public class StatsFrame extends JFrame {
     private JLabel lblGlobalAvDegree;
     private JLabel lblGlobalDiameter;
     private JLabel lblGlobalAvDistance;
-
+    // simulation
+    private JLabel lblGlobalSimulationRunning;
+    private JLabel lblGlobalSimulationRound;
 
     // labels actor stats
     private JLabel lblActorID;
@@ -736,6 +739,41 @@ public class StatsFrame extends JFrame {
         label_31.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
         label_31.setBounds(117, 120, 10, 16);
         panel_1.add(label_31);
+
+        JLabel lblSimulation = new JLabel("Simulation");
+        lblSimulation.setFont(new Font("Lucida Grande", Font.BOLD, 9));
+        lblSimulation.setBounds(10, 420, 97, 16);
+        panel_1.add(lblSimulation);
+
+        JLabel lblRound = new JLabel("Running");
+        lblRound.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblRound.setBounds(20, 435, 83, 16);
+        panel_1.add(lblRound);
+
+        JLabel label_38 = new JLabel(":");
+        label_38.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_38.setBounds(117, 435, 10, 16);
+        panel_1.add(label_38);
+
+        lblGlobalSimulationRunning = new JLabel("---");
+        lblGlobalSimulationRunning.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblGlobalSimulationRunning.setBounds(130, 435, 56, 16);
+        panel_1.add(lblGlobalSimulationRunning);
+
+        JLabel label_32 = new JLabel("Round");
+        label_32.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_32.setBounds(20, 450, 83, 16);
+        panel_1.add(label_32);
+
+        JLabel label_37 = new JLabel(":");
+        label_37.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_37.setBounds(117, 450, 10, 16);
+        panel_1.add(label_37);
+
+        lblGlobalSimulationRound = new JLabel("---");
+        lblGlobalSimulationRound.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblGlobalSimulationRound.setBounds(130, 450, 56, 16);
+        panel_1.add(lblGlobalSimulationRound);
     }
 
     /**
@@ -794,6 +832,17 @@ public class StatsFrame extends JFrame {
         this.lblGlobalAvDegree.setText(Double.toString(globalNetworkStats.getAvDegree()));
         this.lblGlobalDiameter.setText(Integer.toString(globalNetworkStats.getDiameter()));
         this.lblGlobalAvDistance.setText(Double.toString(globalNetworkStats.getAvDistance()));
+    }
+
+    /**
+     * Refreshes the global simulation stats.
+     *
+     * @param globalSimulationStats
+     *          the global simulation stats
+     */
+    public void refreshGlobalSimulationStats(GlobalSimulationStats globalSimulationStats) {
+        this.lblGlobalSimulationRunning.setText(globalSimulationStats.isRunning() ? "yes" : "no");
+        this.lblGlobalSimulationRound.setText(Integer.toString(globalSimulationStats.getRound()));
     }
 
     /**

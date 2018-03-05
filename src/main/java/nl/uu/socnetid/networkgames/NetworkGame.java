@@ -41,6 +41,8 @@ import nl.uu.socnetid.networkgames.gui.SIRPanel;
 import nl.uu.socnetid.networkgames.gui.StatsFrame;
 import nl.uu.socnetid.networkgames.gui.TruncatedConnectionsPanel;
 import nl.uu.socnetid.networkgames.network.networks.DisplayableNetwork;
+import nl.uu.socnetid.networkgames.network.simulation.Simulation;
+import nl.uu.socnetid.networkgames.network.simulation.SimulationListener;
 import nl.uu.socnetid.networkgames.network.simulation.ThreadedSimulation;
 import nl.uu.socnetid.networkgames.stats.StatsComputer;
 import nl.uu.socnetid.networkgames.utilities.Cumulative;
@@ -51,7 +53,7 @@ import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
 /**
  * @author Hendrik Nunner
  */
-public class NetworkGame implements NodeClickListener, ActorListener {
+public class NetworkGame implements NodeClickListener, SimulationListener, ActorListener {
 
     // logger
     @SuppressWarnings("unused")
@@ -497,6 +499,7 @@ public class NetworkGame implements NodeClickListener, ActorListener {
         }
         this.statsFrame.refreshGlobalActorStats(StatsComputer.computeGlobalActorStats(this.network));
         this.statsFrame.refreshGlobalNetworkStats(StatsComputer.computeGlobalNetworkStats(this.network));
+        this.statsFrame.refreshGlobalSimulationStats(StatsComputer.computeGlobalSimulationStats(this.simulation));
     }
 
     /**
@@ -710,12 +713,21 @@ public class NetworkGame implements NodeClickListener, ActorListener {
     private void updateStats() {
         // global stats
         this.statsFrame.refreshGlobalNetworkStats(StatsComputer.computeGlobalNetworkStats(this.network));
+        this.statsFrame.refreshGlobalSimulationStats(StatsComputer.computeGlobalSimulationStats(this.simulation));
 
         // actor stats
         if (this.statsActor == null) {
             return;
         }
         this.statsFrame.refreshLocalActorStats(statsActor);
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.networkgames.network.simulation.SimulationListener#notifyRoundFinished(nl.uu.socnetid.networkgames.network.simulation.Simulation)
+     */
+    @Override
+    public void notifyRoundFinished(Simulation simulation) {
+        updateStats();
     }
 
     /*
