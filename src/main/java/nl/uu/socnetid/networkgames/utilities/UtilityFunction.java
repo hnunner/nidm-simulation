@@ -7,7 +7,7 @@ import nl.uu.socnetid.networkgames.actors.Actor;
 /**
  * @author Hendrik Nunner
  */
-public interface UtilityFunction {
+public abstract class UtilityFunction {
 
     /**
      * Computes the utility for a actor based on the social connections.
@@ -18,26 +18,43 @@ public interface UtilityFunction {
      *          the actor's connections
      * @return the actor's utility based on the connections
      */
-    Utility getUtility(Actor actor, Collection<Actor> connections);
+    public abstract Utility getUtility(Actor actor, Collection<Actor> connections);
 
     /**
      * @return the name of the utility function to be used in the stats window
      */
-    String getStatsName();
+    public abstract String getStatsName();
 
     /**
      * @return the utility for direct connections
      */
-    double getAlpha();
+    public abstract double getAlpha();
 
     /**
      * @return the utility for indirect connections
      */
-    double getBeta();
+    public abstract double getBeta();
 
     /**
      * @return the costs to maintain direct connections
      */
-    double getC();
+    public abstract double getC();
+
+
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("type:").append(getStatsName());
+        sb.append(" | alpha:").append(this.getAlpha());
+        sb.append(" | beta:").append(this.getBeta());
+        sb.append(" | c:").append(this.getC());
+
+        return sb.toString();
+    }
 
 }

@@ -65,6 +65,7 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      *          the risk factor of a actor (<1: risk seeking, =1: risk neutral; >1: risk averse)
      */
     public void initActor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, Double riskFactor) {
+        this.addAttribute("ui.label", this.getId());
         this.addAttribute(ActorAttributes.UTILITY_FUNCTION, utilityFunction);
         this.addAttribute(ActorAttributes.DISEASE_SPECS, diseaseSpecs);
         DiseaseGroup diseaseGroup = DiseaseGroup.SUSCEPTIBLE;
@@ -749,12 +750,12 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
     public void cure() {
         // cure
         DiseaseGroup prevDiseaseGroup = this.getDiseaseGroup();
-        this.removeAttribute(ActorAttributes.DISEASE_INFECTION);
         this.changeAttribute(ActorAttributes.DISEASE_GROUP, prevDiseaseGroup, DiseaseGroup.RECOVERED);
         // ui-class required only for ui properties as defined in resources/graph-stream.css
         // --> no listener notifications
         this.changeAttribute(ActorAttributes.UI_CLASS,
                 prevDiseaseGroup.toString(), DiseaseGroup.RECOVERED.toString(), false);
+        this.removeAttribute(ActorAttributes.DISEASE_INFECTION);
     }
 
 

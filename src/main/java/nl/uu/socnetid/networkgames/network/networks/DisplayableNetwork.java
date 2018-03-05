@@ -18,6 +18,7 @@ public class DisplayableNetwork extends Network {
     private Viewer viewer;
 
 
+
     /**
      * Constructor.
      */
@@ -38,6 +39,7 @@ public class DisplayableNetwork extends Network {
      */
     public void show() {
         this.viewer = this.display();
+        this.viewer.enableAutoLayout();
     }
 
     /**
@@ -46,5 +48,9 @@ public class DisplayableNetwork extends Network {
     public Viewer getViewer() {
         return viewer;
     }
+
+
+
+
 
 }

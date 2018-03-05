@@ -73,4 +73,17 @@ public class SIRDisease implements Disease {
         return this.getDiseaseSpecs().getTau() - this.currDuration;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("specs:[").append(this.diseaseSpecs.toString()).append("]");
+        sb.append(" | duration:").append(this.currDuration);
+        sb.append(" | state:").append(this.diseaseState.toString());
+
+        return sb.toString();
+    }
 }

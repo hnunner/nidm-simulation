@@ -13,7 +13,7 @@ import nl.uu.socnetid.networkgames.network.networks.Network;
 /**
  * @author Hendrik Nunner
  */
-public class Simulation {
+public class Simulation implements Runnable {
 
     // logger
     @SuppressWarnings("unused")
@@ -41,10 +41,11 @@ public class Simulation {
     }
 
 
-    /**
-     * Starts the simulation.
+    /* (non-Javadoc)
+     * @see java.lang.Runnable#run()
      */
-    public void start() {
+    @Override
+    public void run() {
         this.paused = false;
         while (!this.paused) {
             computeDiseaseDynamics();
@@ -84,10 +85,10 @@ public class Simulation {
     private void computeActorDynamics() {
 
         // random order
-//        List<Actor> actors = new ArrayList<Actor>(this.network.getActors());
-//        Collections.shuffle(actors);
+        List<Actor> actors = new ArrayList<Actor>(this.network.getActors());
+        Collections.shuffle(actors);
 
-        Iterator<Actor> actorsIt = this.network.getActorIterator();
+        Iterator<Actor> actorsIt = actors.iterator();
         while (actorsIt.hasNext()) {
             // some delay before each actor moves (e.g., for animation processes)
             try {
