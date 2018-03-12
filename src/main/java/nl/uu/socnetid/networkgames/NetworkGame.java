@@ -31,9 +31,7 @@ import nl.uu.socnetid.networkgames.diseases.DiseaseSpecs;
 import nl.uu.socnetid.networkgames.diseases.types.DiseaseType;
 import nl.uu.socnetid.networkgames.gui.CumulativePanel;
 import nl.uu.socnetid.networkgames.gui.DeactivatablePanel;
-import nl.uu.socnetid.networkgames.gui.ExportAdjacencyMatrixPanel;
-import nl.uu.socnetid.networkgames.gui.ExportEdgeListPanel;
-import nl.uu.socnetid.networkgames.gui.ExportGEXFPanel;
+import nl.uu.socnetid.networkgames.gui.ExportFrame;
 import nl.uu.socnetid.networkgames.gui.ExportListener;
 import nl.uu.socnetid.networkgames.gui.IRTCPanel;
 import nl.uu.socnetid.networkgames.gui.NodeClick;
@@ -44,7 +42,6 @@ import nl.uu.socnetid.networkgames.gui.TruncatedConnectionsPanel;
 import nl.uu.socnetid.networkgames.networks.DisplayableNetwork;
 import nl.uu.socnetid.networkgames.simulation.Simulation;
 import nl.uu.socnetid.networkgames.simulation.SimulationListener;
-import nl.uu.socnetid.networkgames.simulation.ThreadedSimulation;
 import nl.uu.socnetid.networkgames.stats.StatsComputer;
 import nl.uu.socnetid.networkgames.utilities.Cumulative;
 import nl.uu.socnetid.networkgames.utilities.IRTC;
@@ -64,8 +61,10 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     private final DisplayableNetwork network = new DisplayableNetwork();
 
     // WINDOWS
-    private JFrame settingsFrame;
+    private JFrame settingsFrame = new JFrame("Settings");
     private final StatsFrame statsFrame = new StatsFrame("Statistics");
+    private final ExportFrame exportFrame = new ExportFrame("Export", this.network);
+
 
     // UTILITY
     // selection
@@ -98,20 +97,10 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     private JCheckBox chckbxToggleInfection;
 
     // SIMULATION
-    private ThreadedSimulation simulation;
+    private Simulation simulation;
     private ExecutorService simulationExecutor = Executors.newSingleThreadExecutor();
     private Future<?> simulationTask;
     private JSpinner simulationDelay;
-
-    // EXPORT
-    // selection
-    private JComboBox<String> exportCBox;
-    private final String[] networkWriters = {"GEXF", "Edge List", "Adjacency Matrix"};
-    // panels
-    private ExportGEXFPanel gexfPanel;
-    private ExportEdgeListPanel edgeListPanel;
-    private ExportAdjacencyMatrixPanel adjacencyMatrixPanel;
-    private final DeactivatablePanel[] exportPanels = {gexfPanel, edgeListPanel, adjacencyMatrixPanel};
 
 
     /**
@@ -126,8 +115,9 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
             public void run() {
                 try {
                     NetworkGame window = new NetworkGame();
-                    window.settingsFrame.setVisible(true);
+                    window.exportFrame.setVisible(true);
                     window.statsFrame.setVisible(true);
+                    window.settingsFrame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -147,8 +137,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
      */
     private void initialize() {
         // init settings frame
-        settingsFrame = new JFrame();
-        settingsFrame.setBounds(100, 100, 370, 800);
+        settingsFrame.setBounds(10, 10, 370, 575);
         settingsFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         settingsFrame.getContentPane().setLayout(null);
 
@@ -413,77 +402,15 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         settingsFrame.getContentPane().add(btnReset);
 
 
-        //////////// EXPORT ////////////
-        JPanel exportPanel = new JPanel();
-        exportPanel.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-        exportPanel.setBounds(25, 542, 315, 230);
-        settingsFrame.getContentPane().add(exportPanel);
-        exportPanel.setLayout(null);
-
-        JLabel lblExport = new JLabel("Export:");
-        lblExport.setBounds(15, 10, 45, 16);
-        exportPanel.add(lblExport);
-
-        exportCBox = new JComboBox<String>();
-        exportCBox.setBounds(85, 6, 215, 30);
-        for (int i = 0; i < networkWriters.length; i++) {
-            exportCBox.addItem(networkWriters[i]);
-        }
-        exportPanel.add(exportCBox);
-
-        gexfPanel = new ExportGEXFPanel(this.network);
-        gexfPanel.setBounds(85, 34, 214, 192);
-        gexfPanel.setVisible(true);
-        exportPanel.add(gexfPanel);
-
-        gexfPanel.addExportListener(this);
-        exportCBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                switch (exportCBox.getSelectedIndex()) {
-                    case 0:
-                        gexfPanel.setVisible(true);
-                        edgeListPanel.setVisible(false);
-                        adjacencyMatrixPanel.setVisible(false);
-                        break;
-
-                    case 1:
-                        gexfPanel.setVisible(false);
-                        edgeListPanel.setVisible(true);
-                        adjacencyMatrixPanel.setVisible(false);
-                        break;
-
-                    case 2:
-                        gexfPanel.setVisible(false);
-                        edgeListPanel.setVisible(false);
-                        adjacencyMatrixPanel.setVisible(true);
-                        break;
-
-                    default:
-                        throw new RuntimeException("Undefined export type!");
-                }
-            }
-        });
-
-        adjacencyMatrixPanel = new ExportAdjacencyMatrixPanel(this.network);
-        adjacencyMatrixPanel.setBounds(85, 34, 214, 192);
-        exportPanel.add(adjacencyMatrixPanel);
-        adjacencyMatrixPanel.setVisible(false);
-
-        edgeListPanel = new ExportEdgeListPanel(this.network);
-        edgeListPanel.setBounds(85, 34, 214, 192);
-        exportPanel.add(edgeListPanel);
-        edgeListPanel.setVisible(false);
-
-
         //////////// CREATE A UI REPRESENATION OF THE NETWORK ////////////
         this.network.show();
 
 
-        //////////// CLICK LISTENER ////////////
+        //////////// LISTENER ////////////
         NodeClick nodeClickListener = new NodeClick(this.network);
         nodeClickListener.addListener(this);
         this.nodeClickExecutor.submit(nodeClickListener);
+        this.exportFrame.addExportListener(this);
     }
 
 
@@ -627,7 +554,8 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
 
         // initializations
         if (this.simulation == null) {
-            this.simulation = new ThreadedSimulation(this.network);
+            // this.simulation = new ThreadedSimulation(this.network);
+            this.simulation = new Simulation(this.network);
         }
         this.simulation.setDelay((Integer) this.simulationDelay.getValue());
 
@@ -674,17 +602,6 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     }
 
     /**
-     * Enables the export panel and its subcomponents.
-     */
-    @SuppressWarnings("unused")
-    private void enableExportPanels() {
-        for (int i = 0; i < exportPanels.length; i++) {
-            exportPanels[i].enableComponents();
-        }
-        this.exportCBox.setEnabled(true);
-    }
-
-    /**
      * Disables the disease panel and its subcomponents.
      */
     private void disableDiseasePanels() {
@@ -702,17 +619,6 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
             utilityPanels[i].diseableComponents();
         }
         this.utilityFunctionCBox.setEnabled(false);
-    }
-
-    /**
-     * Disables the export panel and its subcomponents.
-     */
-    @SuppressWarnings("unused")
-    private void disableExportPanels() {
-        for (int i = 0; i < exportPanels.length; i++) {
-            exportPanels[i].diseableComponents();
-        }
-        this.exportCBox.setEnabled(false);
     }
 
 
@@ -826,7 +732,6 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
      */
     @Override
     public void notifyRecordingStarted() {
-        this.exportCBox.setEnabled(false);
         this.statsFrame.refreshSimulationRecording(true);
     }
 
@@ -835,7 +740,6 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
      */
     @Override
     public void notifyRecordingStopped() {
-        this.exportCBox.setEnabled(true);
         this.statsFrame.refreshSimulationRecording(false);
     }
 }
