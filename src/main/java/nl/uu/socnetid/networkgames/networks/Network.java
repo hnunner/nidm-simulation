@@ -80,7 +80,7 @@ public class Network extends SingleGraph {
     public Actor addActor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double riskFactor) {
         Actor actor = this.addNode(String.valueOf(this.getNodeCount() + 1));
         actor.initActor(utilityFunction, diseaseSpecs, riskFactor);
-        notifyActorAdded(actor.getId());
+        notifyActorAdded(actor);
         return actor;
     }
 
@@ -272,13 +272,13 @@ public class Network extends SingleGraph {
     /**
      * Notifies the listeners of the added actor.
      *
-     * @param actorId
-     *          the id of the actor being added
+     * @param actor
+     *          the actor being added
      */
-    private final void notifyActorAdded(String actorId) {
+    private final void notifyActorAdded(Actor actor) {
         Iterator<NetworkListener> listenersIt = this.networkListeners.iterator();
         while (listenersIt.hasNext()) {
-            listenersIt.next().notifyActorAdded(actorId);
+            listenersIt.next().notifyActorAdded(actor);
         }
     }
 

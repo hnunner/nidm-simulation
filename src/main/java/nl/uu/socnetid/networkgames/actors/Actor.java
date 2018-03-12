@@ -496,11 +496,10 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
         String idActor2 = String.valueOf(actor2.getId());
 
         Network network = this.getNetwork();
-        Edge edge = network.getEdge(edgeId);
-        if (edge == null) {
+        if (network.getEdge(edgeId) == null) {
             network.addEdge(edgeId, idActor1, idActor2);
         }
-        notifyConnectionAdded(edge, actor1, actor2);
+        notifyConnectionAdded(network.getEdge(edgeId), actor1, actor2);
     }
 
     /**
