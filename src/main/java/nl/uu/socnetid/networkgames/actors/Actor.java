@@ -65,7 +65,6 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      *          the risk factor of a actor (<1: risk seeking, =1: risk neutral; >1: risk averse)
      */
     public void initActor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, Double riskFactor) {
-        this.addAttribute("ui.label", this.getId());
         this.addAttribute(ActorAttributes.UTILITY_FUNCTION, utilityFunction);
         this.addAttribute(ActorAttributes.DISEASE_SPECS, diseaseSpecs);
         DiseaseGroup diseaseGroup = DiseaseGroup.SUSCEPTIBLE;
@@ -76,6 +75,15 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
         this.addAttribute(ActorAttributes.RISK_FACTOR, riskFactor);
         this.addAttribute(ActorAttributes.RISK_MEANING, getRiskMeaning(riskFactor));
         this.addAttribute(ActorAttributes.SATISFIED, false);
+        this.addAttribute("ui.label", this.getLabel());
+    }
+
+    private String getLabel() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(this.getId()).append(" [").append(this.getRiskMeaning(this.getRiskFactor())).append("]");
+
+        return sb.toString();
     }
 
     /**
