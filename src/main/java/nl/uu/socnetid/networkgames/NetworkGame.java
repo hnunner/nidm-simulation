@@ -67,7 +67,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     private final StatsFrame statsFrame = new StatsFrame("Statistics");
 
     // UTILITY
-    // seleciton
+    // selection
     private JComboBox<String> utilityFunctionCBox;
     private final String[] utilityFunctions = {"IRTC", "Cumulative", "Truncated Connections"};
     // panels
@@ -86,12 +86,13 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
 
     // EXPORT
     // selection
-    private JComboBox<String> networkWriterCBox;
+    private JComboBox<String> exportCBox;
     private final String[] networkWriters = {"GEXF", "Edge List", "Adjacency Matrix"};
     // panels
     private ExportGEXFPanel gexfPanel;
     private ExportEdgeListPanel edgeListPanel;
     private ExportAdjacencyMatrixPanel adjacencyMatrixPanel;
+    private final DeactivatablePanel[] exportPanels = {gexfPanel, edgeListPanel, adjacencyMatrixPanel};
 
     // ACTOR
     // amount to add
@@ -106,7 +107,6 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     private JCheckBox chckbxToggleInfection;
 
     // SIMULATION
-    // delay
     private ThreadedSimulation simulation;
     private ExecutorService simulationExecutor = Executors.newSingleThreadExecutor();
     private Future<?> simulationTask;
@@ -151,14 +151,14 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         settingsFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         settingsFrame.getContentPane().setLayout(null);
 
-        // panes
-        JPanel actorPane = new JPanel();
-        actorPane.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-        // tabbed pane
+        //////////// TABBED PANE (UTILITY, DISEASE, EXPORT, ACTORS) ////////////
         JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.LEFT, JTabbedPane.WRAP_TAB_LAYOUT);
         tabbedPane.setBorder(null);
         tabbedPane.setBounds(25, 6, 315, 350);
         settingsFrame.getContentPane().add(tabbedPane);
+
+
+        //////////// UTILITY ////////////
         JPanel utilityPane = new JPanel();
         utilityPane.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
         tabbedPane.add("Utility", utilityPane);
@@ -210,10 +210,11 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         truncatedConnectionsPanel.setBounds(20, 38, 214, 225);
         truncatedConnectionsPanel.setVisible(false);
         utilityPane.add(truncatedConnectionsPanel);
+
+
+        //////////// DISEASE ////////////
         JPanel diseasePane = new JPanel();
         diseasePane.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-
-
         tabbedPane.add("Disease", diseasePane);
         diseasePane.setLayout(null);
 
@@ -231,15 +232,20 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
                 }
             }
         });
+        for (int i = 0; i < diseases.length; i ++) {
+            diseaseCBox.addItem(diseases[i]);
+        }
         diseaseCBox.setBounds(20, 6, 215, 30);
         diseasePane.add(diseaseCBox);
 
         sirPanel.setBounds(20, 38, 214, 225);
         sirPanel.setVisible(true);
         diseasePane.add(sirPanel);
+
+
+        //////////// EXPORT ////////////
         JPanel exportPane = new JPanel();
         exportPane.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-
         tabbedPane.add("Export", exportPane);
         exportPane.setLayout(null);
 
@@ -255,11 +261,11 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         edgeListPanel.setBounds(20, 38, 214, 225);
         exportPane.add(edgeListPanel);
 
-        networkWriterCBox = new JComboBox<String>();
-        networkWriterCBox.addActionListener(new ActionListener() {
+        exportCBox = new JComboBox<String>();
+        exportCBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                switch (networkWriterCBox.getSelectedIndex()) {
+                switch (exportCBox.getSelectedIndex()) {
                     case 0:
                         gexfPanel.setVisible(true);
                         edgeListPanel.setVisible(false);
@@ -283,9 +289,13 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
                 }
             }
         });
-        networkWriterCBox.setBounds(20, 6, 215, 30);
-        exportPane.add(networkWriterCBox);
+        exportCBox.setBounds(20, 6, 215, 30);
+        exportPane.add(exportCBox);
 
+
+        //////////// ACTORS ////////////
+        JPanel actorPane = new JPanel();
+        actorPane.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
         tabbedPane.addTab("Actors", actorPane);
         actorPane.setLayout(null);
 
@@ -393,6 +403,8 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
             }
         });
 
+
+        //////////// SIMULATION ////////////
         JButton btnStart = new JButton("   Start");
         btnStart.setFont(new Font("Lucida Grande", Font.PLAIN, 14));
         btnStart.setIcon(new ImageIcon(getClass().getResource("/start.png")));
@@ -405,7 +417,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         btnStart.setBounds(29, 405, 311, 35);
         settingsFrame.getContentPane().add(btnStart);
         for (int i = 0; i < networkWriters.length; i++) {
-            networkWriterCBox.addItem(networkWriters[i]);
+            exportCBox.addItem(networkWriters[i]);
         }
         for (int i = 0; i < utilityFunctions.length; i++) {
             utilityFunctionCBox.addItem(utilityFunctions[i]);
@@ -444,22 +456,18 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         settingsFrame.getContentPane().add(btnReset);
 
 
-        for (int i = 0; i < diseases.length; i ++) {
-            diseaseCBox.addItem(diseases[i]);
-        }
-
-        // creates a ui representation of the network
-        this.network.show();
-
-
-        // init click listener
+        //////////// CLICK LISTENER ////////////
         NodeClick nodeClickListener = new NodeClick(this.network);
         nodeClickListener.addListener(this);
         this.nodeClickExecutor.submit(nodeClickListener);
 
+
+        //////////// CREATE A UI REPRESENATION OF THE NETWORK ////////////
+        this.network.show();
     }
 
 
+    //////////// USER ALTERABLE NETWORK PROPERTIES ////////////
     /**
      * Adds a actor to the game.
      */
@@ -535,37 +543,8 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         }
     }
 
-    /**
-     * Runs the actual simulation of the network game.
-     */
-    private void startSimulation() {
 
-        // initializations
-        if (this.simulation == null) {
-            this.simulation = new ThreadedSimulation(this.network);
-        }
-        this.simulation.setDelay((Integer) this.simulationDelay.getValue());
-
-        if (this.simulationTask != null) {
-            this.simulationTask.cancel(true);
-        }
-        this.simulationTask = this.simulationExecutor.submit(this.simulation);
-    }
-
-    /**
-     * Pauses the simulation of the network game.
-     */
-    private void pauseSimulation() {
-        this.simulation.pause();
-    }
-
-    /**
-     * Clears all edges and resets all actors to being susceptible.
-     */
-    private void resetSimulation() {
-        this.network.resetActors();
-    }
-
+    //////////// UI GETTER ////////////
     /**
      * Gets the utility function as selected in the GUI.
      *
@@ -609,6 +588,41 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         }
     }
 
+
+    //////////// SIMULATION ////////////
+    /**
+     * Runs the actual simulation of the network game.
+     */
+    private void startSimulation() {
+
+        // initializations
+        if (this.simulation == null) {
+            this.simulation = new ThreadedSimulation(this.network);
+        }
+        this.simulation.setDelay((Integer) this.simulationDelay.getValue());
+
+        if (this.simulationTask != null) {
+            this.simulationTask.cancel(true);
+        }
+        this.simulationTask = this.simulationExecutor.submit(this.simulation);
+    }
+
+    /**
+     * Pauses the simulation of the network game.
+     */
+    private void pauseSimulation() {
+        this.simulation.pause();
+    }
+
+    /**
+     * Clears all edges and resets all actors to being susceptible.
+     */
+    private void resetSimulation() {
+        this.network.resetActors();
+    }
+
+
+    //////////// UI ALTERATIONS ////////////
     /**
      * Enables the disease panel and its subcomponents.
      */
@@ -627,6 +641,17 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
             utilityPanels[i].enableComponents();
         }
         this.utilityFunctionCBox.setEnabled(true);
+    }
+
+    /**
+     * Enables the export panel and its subcomponents.
+     */
+    @SuppressWarnings("unused")
+    private void enableExportPanels() {
+        for (int i = 0; i < exportPanels.length; i++) {
+            exportPanels[i].enableComponents();
+        }
+        this.exportCBox.setEnabled(true);
     }
 
     /**
@@ -649,6 +674,19 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         this.utilityFunctionCBox.setEnabled(false);
     }
 
+    /**
+     * Disables the export panel and its subcomponents.
+     */
+    @SuppressWarnings("unused")
+    private void disableExportPanels() {
+        for (int i = 0; i < exportPanels.length; i++) {
+            exportPanels[i].diseableComponents();
+        }
+        this.exportCBox.setEnabled(false);
+    }
+
+
+    //////////// LISTENER CALLBACKS ////////////
     /* (non-Javadoc)
      * @see nl.uu.socnetid.networkgames.gui.NodeClickListener#notify(nl.uu.socnetid.networkgames.gui.NodeClick)
      */
