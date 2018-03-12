@@ -56,6 +56,7 @@ public class StatsFrame extends JFrame {
     // simulation
     private JLabel lblGlobalSimulationRunning;
     private JLabel lblGlobalSimulationRound;
+    private JLabel lblGlobalSimulationRecording;
 
     // labels actor stats
     private JLabel lblActorID;
@@ -756,7 +757,7 @@ public class StatsFrame extends JFrame {
         label_38.setBounds(117, 435, 10, 16);
         panel_1.add(label_38);
 
-        lblGlobalSimulationRunning = new JLabel("---");
+        lblGlobalSimulationRunning = new JLabel("no");
         lblGlobalSimulationRunning.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
         lblGlobalSimulationRunning.setBounds(130, 435, 56, 16);
         panel_1.add(lblGlobalSimulationRunning);
@@ -775,6 +776,21 @@ public class StatsFrame extends JFrame {
         lblGlobalSimulationRound.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
         lblGlobalSimulationRound.setBounds(130, 450, 56, 16);
         panel_1.add(lblGlobalSimulationRound);
+
+        lblGlobalSimulationRecording = new JLabel("no");
+        lblGlobalSimulationRecording.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblGlobalSimulationRecording.setBounds(130, 465, 56, 16);
+        panel_1.add(lblGlobalSimulationRecording);
+
+        JLabel label_44 = new JLabel(":");
+        label_44.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_44.setBounds(117, 465, 10, 16);
+        panel_1.add(label_44);
+
+        JLabel lblRecording = new JLabel("Recording");
+        lblRecording.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblRecording.setBounds(20, 465, 83, 16);
+        panel_1.add(lblRecording);
     }
 
     /**
@@ -844,6 +860,10 @@ public class StatsFrame extends JFrame {
     public void refreshGlobalSimulationStats(GlobalSimulationStats globalSimulationStats) {
         this.lblGlobalSimulationRunning.setText(globalSimulationStats.isRunning() ? "yes" : "no");
         this.lblGlobalSimulationRound.setText(Integer.toString(globalSimulationStats.getRound()));
+    }
+
+    public void refreshSimulationRecording(boolean recording) {
+        this.lblGlobalSimulationRecording.setText(recording ? "yes" : "no");
     }
 
     /**

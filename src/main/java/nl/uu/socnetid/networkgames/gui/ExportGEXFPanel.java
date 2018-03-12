@@ -4,6 +4,11 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -23,6 +28,10 @@ public class ExportGEXFPanel extends DeactivatablePanel {
 
     private static final long serialVersionUID = -8501382512331293601L;
 
+    // default export directory
+    private static final String DEFAULT_EXPORT_DIR = new StringBuilder().append(System.getProperty("user.dir"))
+            .append("/network-exports/").toString();
+
     // graph
     private Network network;
 
@@ -30,11 +39,23 @@ public class ExportGEXFPanel extends DeactivatablePanel {
     private JButton btnExport;
     private JRadioButton rdbtnDynamic;
     private JRadioButton rdbtnStatic;
+    private JButton btnChooseExportFile;
     private JButton btnStartRecording;
     private JButton btnStopRecording;
 
     /// writer
-    GEXFWriter gexfWriter;
+    private GEXFWriter gexfWriter;
+
+    // file
+    private String file;
+
+    // recording or not recording
+    private boolean recording;
+
+    // listeners
+    private final Set<ExportListener> exportListeners =
+            new CopyOnWriteArraySet<ExportListener>();
+
 
     /**
      * Create the panel.
@@ -74,7 +95,7 @@ public class ExportGEXFPanel extends DeactivatablePanel {
                 updateVisibility();
             }
         });
-        rdbtnDynamic.setBounds(6, 52, 141, 23);
+        rdbtnDynamic.setBounds(6, 27, 141, 23);
         panel.add(rdbtnDynamic);
 
         rdbtnStatic = new JRadioButton("Static");
@@ -84,13 +105,13 @@ public class ExportGEXFPanel extends DeactivatablePanel {
                 updateVisibility();
             }
         });
-        rdbtnStatic.setBounds(6, 27, 141, 23);
+        rdbtnStatic.setBounds(6, 52, 141, 23);
         panel.add(rdbtnStatic);
 
         ButtonGroup buttonGroup = new ButtonGroup();
         buttonGroup.add(rdbtnStatic);
         buttonGroup.add(rdbtnDynamic);
-        rdbtnStatic.setSelected(true);
+        rdbtnDynamic.setSelected(true);
 
         btnStartRecording = new JButton("Start recording");
         btnStartRecording.addActionListener(new ActionListener() {
@@ -100,6 +121,9 @@ public class ExportGEXFPanel extends DeactivatablePanel {
             }
         });
         btnStartRecording.setBounds(6, 95, 202, 30);
+        btnStartRecording.setToolTipText("If no explicit output file is selected, "
+                + "a default file will be generated in folder: "
+                + DEFAULT_EXPORT_DIR);
         add(btnStartRecording);
 
         btnStopRecording = new JButton("Stop recording");
@@ -111,6 +135,16 @@ public class ExportGEXFPanel extends DeactivatablePanel {
         });
         btnStopRecording.setBounds(6, 125, 202, 30);
         add(btnStopRecording);
+
+        btnChooseExportFile = new JButton("Choose explicit export file");
+        btnChooseExportFile.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                chooseExportFile();
+            }
+        });
+        btnChooseExportFile.setBounds(6, 155, 202, 30);
+        add(btnChooseExportFile);
 
         updateVisibility();
     }
@@ -141,18 +175,40 @@ public class ExportGEXFPanel extends DeactivatablePanel {
     }
 
     /**
-     * Starts the recording of dynamic GEXF files.
+     * Creates a file chooser to allow user to choose a custom export file.
      */
-    private void startRecording() {
+    private void chooseExportFile() {
         JFileChooser fileChooser = new JFileChooser();
         int popdownState = fileChooser.showSaveDialog(null);
         if (popdownState == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            String file = selectedFile.getPath();
-
-            this.gexfWriter = new GEXFWriter();
-            this.gexfWriter.startRecording(this.network, file);
+            this.file = selectedFile.getPath();
         }
+    }
+
+    /**
+     * Starts the recording of dynamic GEXF files.
+     */
+    private void startRecording() {
+        this.gexfWriter = new GEXFWriter();
+
+        if (this.file != null) {
+            this.gexfWriter.startRecording(this.network, this.file);
+            this.file = null;
+
+        } else {
+            StringBuilder sb = new StringBuilder(DEFAULT_EXPORT_DIR);
+            SimpleDateFormat sdfDate = new SimpleDateFormat("yyyyMMdd-HHmmss");
+            sb.append("sim-").
+            append(sdfDate.format(new Date())).
+            append(".gexf").toString();
+            this.gexfWriter.startRecording(this.network, sb.toString());
+        }
+
+        this.recording = true;
+        updateElementsRecording();
+
+        notifyRecordingStarted();
     }
 
     /**
@@ -160,6 +216,24 @@ public class ExportGEXFPanel extends DeactivatablePanel {
      */
     private void stopRecording() {
         this.gexfWriter.stopRecording();
+
+        this.recording = false;
+        updateElementsRecording();
+
+        notifyRecordingStopped();
+    }
+
+    /**
+     * Updates the interactive elements according to recording status.
+     */
+    private void updateElementsRecording() {
+        // only stop recording button is enabled
+        this.btnStopRecording.setEnabled(this.recording);
+
+        this.rdbtnDynamic.setEnabled(!this.recording);
+        this.rdbtnStatic.setEnabled(!this.recording);
+        this.btnStartRecording.setEnabled(!this.recording);
+        this.btnChooseExportFile.setEnabled(!this.recording);
     }
 
     /* (non-Javadoc)
@@ -185,5 +259,45 @@ public class ExportGEXFPanel extends DeactivatablePanel {
         this.rdbtnStatic.setEnabled(false);
         this.btnStartRecording.setEnabled(false);
         this.btnStopRecording.setEnabled(false);
+    }
+
+    /**
+     * Adds a listener for export notifications.
+     *
+     * @param exportListener
+     *          the listener to be added
+     */
+    public void addExportListener(ExportListener exportListener) {
+        this.exportListeners.add(exportListener);
+    }
+
+    /**
+     * Removes a listener for export notifications.
+     *
+     * @param exportListener
+     *          the listener to be removed
+     */
+    public void removeExportListener(ExportListener exportListener) {
+        this.exportListeners.remove(exportListener);
+    }
+
+    /**
+     * Notifies listeners of finished actor rounds.
+     */
+    private final void notifyRecordingStarted() {
+        Iterator<ExportListener> listenersIt = this.exportListeners.iterator();
+        while (listenersIt.hasNext()) {
+            listenersIt.next().notifyRecordingStarted();
+        }
+    }
+
+    /**
+     * Notifies listeners of finished actor rounds.
+     */
+    private final void notifyRecordingStopped() {
+        Iterator<ExportListener> listenersIt = this.exportListeners.iterator();
+        while (listenersIt.hasNext()) {
+            listenersIt.next().notifyRecordingStopped();
+        }
     }
 }

@@ -34,6 +34,7 @@ import nl.uu.socnetid.networkgames.gui.DeactivatablePanel;
 import nl.uu.socnetid.networkgames.gui.ExportAdjacencyMatrixPanel;
 import nl.uu.socnetid.networkgames.gui.ExportEdgeListPanel;
 import nl.uu.socnetid.networkgames.gui.ExportGEXFPanel;
+import nl.uu.socnetid.networkgames.gui.ExportListener;
 import nl.uu.socnetid.networkgames.gui.IRTCPanel;
 import nl.uu.socnetid.networkgames.gui.NodeClick;
 import nl.uu.socnetid.networkgames.gui.NodeClickListener;
@@ -53,7 +54,7 @@ import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
 /**
  * @author Hendrik Nunner
  */
-public class NetworkGame implements NodeClickListener, SimulationListener, ActorListener {
+public class NetworkGame implements NodeClickListener, SimulationListener, ActorListener, ExportListener {
 
     // logger
     @SuppressWarnings("unused")
@@ -242,6 +243,16 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         sirPanel.setVisible(true);
         diseasePane.add(sirPanel);
 
+        JButton btnInfectRandomActor = new JButton("Infect Random Actor");
+        btnInfectRandomActor.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                infectRandomActor();
+            }
+        });
+        btnInfectRandomActor.setBounds(18, 275, 217, 30);
+        diseasePane.add(btnInfectRandomActor);
+
 
         //////////// EXPORT ////////////
         JPanel exportPane = new JPanel();
@@ -251,6 +262,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
 
         gexfPanel = new ExportGEXFPanel(this.network);
         gexfPanel.setBounds(20, 38, 214, 225);
+        gexfPanel.addExportListener(this);
         exportPane.add(gexfPanel);
 
         adjacencyMatrixPanel = new ExportAdjacencyMatrixPanel(this.network);
@@ -456,14 +468,14 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         settingsFrame.getContentPane().add(btnReset);
 
 
+        //////////// CREATE A UI REPRESENATION OF THE NETWORK ////////////
+        this.network.show();
+
+
         //////////// CLICK LISTENER ////////////
         NodeClick nodeClickListener = new NodeClick(this.network);
         nodeClickListener.addListener(this);
         this.nodeClickExecutor.submit(nodeClickListener);
-
-
-        //////////// CREATE A UI REPRESENATION OF THE NETWORK ////////////
-        this.network.show();
     }
 
 
@@ -540,6 +552,16 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     private void createFullNetwork() {
         if (this.network != null) {
             this.network.createFullNetwork();
+        }
+    }
+
+    /**
+     * Infects a random actor.
+     */
+    private void infectRandomActor() {
+        Actor actor = this.network.getRandomNotInfectedActor();
+        if (actor != null) {
+            actor.infect(getDiseaseSpecs());
         }
     }
 
@@ -789,6 +811,24 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
             return;
         }
         this.statsFrame.refreshLocalActorStats(statsActor);
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.networkgames.gui.ExportListener#notifyRecordingStarted()
+     */
+    @Override
+    public void notifyRecordingStarted() {
+        this.exportCBox.setEnabled(false);
+        this.statsFrame.refreshSimulationRecording(true);
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.networkgames.gui.ExportListener#notifyRecordingStopped()
+     */
+    @Override
+    public void notifyRecordingStopped() {
+        this.exportCBox.setEnabled(true);
+        this.statsFrame.refreshSimulationRecording(false);
     }
 
 }
