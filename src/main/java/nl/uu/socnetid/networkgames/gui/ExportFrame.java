@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.MatteBorder;
 
@@ -51,22 +50,18 @@ public class ExportFrame extends JFrame implements ExportListener {
      */
     private void initialize() {
 
-        this.setBounds(10, 590, 370, 300);
+        this.setBounds(10, 590, 280, 300);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getContentPane().setLayout(null);
 
         JPanel panel = new JPanel();
         panel.setLayout(null);
         panel.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-        panel.setBounds(25, 10, 315, 240);
+        panel.setBounds(25, 10, 231, 240);
         getContentPane().add(panel);
 
-        JLabel lblExport = new JLabel("Export:");
-        lblExport.setBounds(15, 10, 45, 16);
-        panel.add(lblExport);
-
         exportCBox = new JComboBox<String>();
-        exportCBox.setBounds(85, 6, 215, 30);
+        exportCBox.setBounds(6, 6, 215, 30);
         for (int i = 0; i < networkWriters.length; i++) {
             exportCBox.addItem(networkWriters[i]);
         }
@@ -100,18 +95,18 @@ public class ExportFrame extends JFrame implements ExportListener {
         panel.add(exportCBox);
 
         gexfPanel = new ExportGEXFPanel(this.network);
-        gexfPanel.setBounds(85, 34, 214, 192);
+        gexfPanel.setBounds(6, 34, 214, 192);
         gexfPanel.setVisible(true);
         gexfPanel.addExportListener(this);
         panel.add(gexfPanel);
 
         adjacencyMatrixPanel = new ExportAdjacencyMatrixPanel(this.network);
-        adjacencyMatrixPanel.setBounds(85, 34, 214, 192);
+        adjacencyMatrixPanel.setBounds(6, 34, 214, 192);
         adjacencyMatrixPanel.setVisible(false);
         panel.add(adjacencyMatrixPanel);
 
         edgeListPanel = new ExportEdgeListPanel(this.network);
-        edgeListPanel.setBounds(85, 34, 214, 192);
+        edgeListPanel.setBounds(6, 34, 214, 192);
         edgeListPanel.setVisible(false);
         panel.add(edgeListPanel);
     }
