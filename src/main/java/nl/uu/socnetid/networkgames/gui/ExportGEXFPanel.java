@@ -21,8 +21,6 @@ import nl.uu.socnetid.networkgames.networks.Network;
  */
 public class ExportGEXFPanel extends DeactivatablePanel {
 
-
-
     // graph
     private Network network;
 
@@ -33,6 +31,9 @@ public class ExportGEXFPanel extends DeactivatablePanel {
     private JRadioButton rdbtnStatic;
     private JButton btnStartRecording;
     private JButton btnStopRecording;
+
+    /// writer
+    GEXFWriter gexfWriter;
 
     /**
      * Create the panel.
@@ -133,8 +134,8 @@ public class ExportGEXFPanel extends DeactivatablePanel {
             File selectedFile = fileChooser.getSelectedFile();
             String file = selectedFile.getPath();
 
-            GEXFWriter gexfWriter = new GEXFWriter();
-            gexfWriter.writeStaticNetwork(this.network, file);
+            this.gexfWriter = new GEXFWriter();
+            this.gexfWriter.writeStaticNetwork(this.network, file);
         }
     }
 
@@ -148,8 +149,8 @@ public class ExportGEXFPanel extends DeactivatablePanel {
             File selectedFile = fileChooser.getSelectedFile();
             String file = selectedFile.getPath();
 
-            GEXFWriter gexfWriter = new GEXFWriter();
-            gexfWriter.startRecording(this.network, file);
+            this.gexfWriter = new GEXFWriter();
+            this.gexfWriter.startRecording(this.network, file);
         }
     }
 
@@ -157,7 +158,7 @@ public class ExportGEXFPanel extends DeactivatablePanel {
      * Stops the recording of dynamic GEXF files.
      */
     private void stopRecording() {
-        // TODO implement
+        this.gexfWriter.stopRecording();
     }
 
 
