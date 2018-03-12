@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -69,6 +70,7 @@ public class ExportGEXFPanel extends DeactivatablePanel {
         setLayout(null);
 
         btnExport = new JButton("Export");
+        btnExport.setIcon(new ImageIcon(getClass().getResource("/save.png")));
         btnExport.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -114,6 +116,7 @@ public class ExportGEXFPanel extends DeactivatablePanel {
         rdbtnDynamic.setSelected(true);
 
         btnStartRecording = new JButton("Start recording");
+        btnStartRecording.setIcon(new ImageIcon(getClass().getResource("/record.png")));
         btnStartRecording.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -127,6 +130,7 @@ public class ExportGEXFPanel extends DeactivatablePanel {
         add(btnStartRecording);
 
         btnStopRecording = new JButton("Stop recording");
+        btnStopRecording.setIcon(new ImageIcon(getClass().getResource("/stop.png")));
         btnStopRecording.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -136,7 +140,8 @@ public class ExportGEXFPanel extends DeactivatablePanel {
         btnStopRecording.setBounds(6, 125, 202, 30);
         add(btnStopRecording);
 
-        btnChooseExportFile = new JButton("Choose explicit export file");
+        btnChooseExportFile = new JButton("Choose export file");
+        btnChooseExportFile.setIcon(new ImageIcon(getClass().getResource("/open.png")));
         btnChooseExportFile.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
