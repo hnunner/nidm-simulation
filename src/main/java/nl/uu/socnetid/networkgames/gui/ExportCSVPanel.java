@@ -16,7 +16,7 @@ import nl.uu.socnetid.networkgames.networks.Network;
  */
 public abstract class ExportCSVPanel extends DeactivatablePanel {
 
-    private static final long serialVersionUID = -3157728592545400241L;
+    private static final long serialVersionUID = -6424805545966403618L;
 
     // components
     private JButton btnExport;
@@ -70,49 +70,12 @@ public abstract class ExportCSVPanel extends DeactivatablePanel {
      */
     protected abstract NetworkWriter getNetworkWriter();
 
-
-//    /**
-//     * @return the duration a disease requires to recover from in rounds (tau)
-//     */
-//    public int getTau() {
-//        return Integer.valueOf(this.txtTau.getText());
-//    }
-//
-//    /**
-//     * @return the severity of the disease represented by the amount of punishment for having a disease (delta)
-//     */
-//    public double getDelta() {
-//        return Double.valueOf(this.txtDelta.getText());
-//    }
-//
-//    /**
-//     * @return transmission rate (gamma) - the probability a disease is spread between
-//     *          an infected and a non-infected agent per round
-//     */
-//    public double getGamma() {
-//        return Double.valueOf(this.txtGamma.getText());
-//    }
-//
-//    /**
-//     * @return the factor that increases maintenance costs for infected connections (mu)
-//     */
-//    public double getMu() {
-//        return Double.valueOf(this.txtMu.getText());
-//    }
-
     /* (non-Javadoc)
      * @see nl.uu.socnetid.networkgames.gui.DeactivatablePanel#enableComponents()
      */
     @Override
     public void enableComponents() {
-
-        // TODO implement
-
-
-//        this.txtTau.setEnabled(true);
-//        this.txtDelta.setEnabled(true);
-//        this.txtGamma.setEnabled(true);
-//        this.txtMu.setEnabled(true);
+        this.btnExport.setEnabled(true);
     }
 
     /* (non-Javadoc)
@@ -120,13 +83,6 @@ public abstract class ExportCSVPanel extends DeactivatablePanel {
      */
     @Override
     public void diseableComponents() {
-
-        // TODO implement
-
-
-//        this.txtTau.setEnabled(false);
-//        this.txtDelta.setEnabled(false);
-//        this.txtGamma.setEnabled(false);
-//        this.txtMu.setEnabled(false);
+        this.btnExport.setEnabled(false);
     }
 }

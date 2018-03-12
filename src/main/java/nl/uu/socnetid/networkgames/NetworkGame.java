@@ -540,17 +540,6 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
      */
     private void startSimulation() {
 
-        // TODO clean up
-//        if (this.file == null) {
-//            //custom title, error icon
-//            JOptionPane.showMessageDialog(settingsFrame,
-//                    "Unable to start recording of simulation: no output file specified.\n"
-//                            + "Please go to the 'Export' tab and choose a file for network exports first.",
-//                            "Error",
-//                            JOptionPane.ERROR_MESSAGE);
-//            return;
-//        }
-
         // initializations
         if (this.simulation == null) {
             this.simulation = new ThreadedSimulation(this.network);

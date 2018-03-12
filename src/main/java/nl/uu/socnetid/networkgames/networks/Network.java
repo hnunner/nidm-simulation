@@ -129,7 +129,6 @@ public class Network extends SingleGraph {
      * @return a random actor
      */
     public Actor getRandomActor() {
-        // TODO test if reliable
         int randomIndex = ThreadLocalRandom.current().nextInt(0, getActors().size());
         return (Actor) this.getNode(randomIndex);
     }
