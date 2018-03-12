@@ -29,11 +29,9 @@ public class ThreadedSimulation extends Simulation {
      *
      * @param network
      *          the network as basis for the simulation
-     * @param delay
-     *          the delay in between actor moves
      */
-    public ThreadedSimulation(Network network, int delay) {
-        super(network, delay);
+    public ThreadedSimulation(Network network) {
+        super(network);
         this.actorExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     }
 

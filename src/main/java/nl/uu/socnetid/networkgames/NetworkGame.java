@@ -59,70 +59,58 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(NetworkGame.class);
 
-    // network
+    // NETWORK
     private final DisplayableNetwork network = new DisplayableNetwork();
 
-    // swing components
-    // windows
+    // WINDOWS
     private JFrame settingsFrame;
     private final StatsFrame statsFrame = new StatsFrame("Statistics");
-    // utility function combo box and selection
+
+    // UTILITY
+    // seleciton
     private JComboBox<String> utilityFunctionCBox;
     private final String[] utilityFunctions = {"IRTC", "Cumulative", "Truncated Connections"};
+    // panels
+    private CumulativePanel cumulativePanel = new CumulativePanel();
+    private TruncatedConnectionsPanel truncatedConnectionsPanel = new TruncatedConnectionsPanel();
+    private IRTCPanel irtcPanel = new IRTCPanel();
+    private final DeactivatablePanel[] utilityPanels = {cumulativePanel, truncatedConnectionsPanel, irtcPanel};
 
-    // edge writer combo box and selection
-    private JComboBox<String> edgeWriterCBox;
-    private final String[] edgeWriters = {"GEXF", "Edge List", "Adjacency Matrix"};
+    // DISEASE
+    // selection
+    private JComboBox<String> diseaseCBox;
+    private String[] diseases = {DiseaseType.SIR.toString()};
+    // panels
+    private SIRPanel sirPanel = new SIRPanel();
+    private final DeactivatablePanel[] diseasePanels = {sirPanel};
+
+    // EXPORT
+    // selection
+    private JComboBox<String> networkWriterCBox;
+    private final String[] networkWriters = {"GEXF", "Edge List", "Adjacency Matrix"};
+    // panels
     private ExportGEXFPanel gexfPanel;
     private ExportEdgeListPanel edgeListPanel;
     private ExportAdjacencyMatrixPanel adjacencyMatrixPanel;
 
-
-    // spinner for simulation delay
-    private JSpinner simulationDelay;
-
-    // panel for cumulative model settings
-    private CumulativePanel cumulativePanel = new CumulativePanel();
-    // panel for truncated connections model settings
-    private TruncatedConnectionsPanel truncatedConnectionsPanel = new TruncatedConnectionsPanel();
-    // panel for Infections Risk Truncated connections model settings
-    private IRTCPanel irtcPanel = new IRTCPanel();
-    // list of utility panels
-    private final DeactivatablePanel[] utilityPanels = {cumulativePanel, truncatedConnectionsPanel, irtcPanel};
-
-    // disease selection combo box
-    private JComboBox<String> diseaseCBox;
-    private String[] diseases = {DiseaseType.SIR.toString()};
-    // panel for generic SIR diseases
-    private SIRPanel sirPanel = new SIRPanel();
-    // list of disease panels
-    private final DeactivatablePanel[] diseasePanels = {sirPanel};
-
-    // button for showing actor stats on node click
-    private JCheckBox chckbxShowActorStats;
-    // button for toggling infection on node click
-    private JCheckBox chckbxToggleInfection;
-
-    // risk behavior of actor
+    // ACTOR
+    // amount to add
+    private JTextField txtAddAmount;
+    // risk behavior
     private JLabel lblR;
     private JTextField txtR;
-
-    // actor to show stats for
+    // on node click
     private Actor statsActor;
-
-    private JTextField txtAddAmount;
-
-    // simulation
-    private ThreadedSimulation simulation;
-
-
-
-
-
     private ExecutorService nodeClickExecutor = Executors.newSingleThreadExecutor();
+    private JCheckBox chckbxShowActorStats;
+    private JCheckBox chckbxToggleInfection;
+
+    // SIMULATION
+    // delay
+    private ThreadedSimulation simulation;
     private ExecutorService simulationExecutor = Executors.newSingleThreadExecutor();
     private Future<?> simulationTask;
-
+    private JSpinner simulationDelay;
 
 
     /**
@@ -133,7 +121,6 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
      */
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
-
             @Override
             public void run() {
                 try {
@@ -268,11 +255,11 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         edgeListPanel.setBounds(20, 38, 214, 225);
         exportPane.add(edgeListPanel);
 
-        edgeWriterCBox = new JComboBox<String>();
-        edgeWriterCBox.addActionListener(new ActionListener() {
+        networkWriterCBox = new JComboBox<String>();
+        networkWriterCBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                switch (edgeWriterCBox.getSelectedIndex()) {
+                switch (networkWriterCBox.getSelectedIndex()) {
                     case 0:
                         gexfPanel.setVisible(true);
                         edgeListPanel.setVisible(false);
@@ -296,8 +283,8 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
                 }
             }
         });
-        edgeWriterCBox.setBounds(20, 6, 215, 30);
-        exportPane.add(edgeWriterCBox);
+        networkWriterCBox.setBounds(20, 6, 215, 30);
+        exportPane.add(networkWriterCBox);
 
         tabbedPane.addTab("Actors", actorPane);
         actorPane.setLayout(null);
@@ -417,8 +404,8 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         });
         btnStart.setBounds(29, 405, 311, 35);
         settingsFrame.getContentPane().add(btnStart);
-        for (int i = 0; i < edgeWriters.length; i++) {
-            edgeWriterCBox.addItem(edgeWriters[i]);
+        for (int i = 0; i < networkWriters.length; i++) {
+            networkWriterCBox.addItem(networkWriters[i]);
         }
         for (int i = 0; i < utilityFunctions.length; i++) {
             utilityFunctionCBox.addItem(utilityFunctions[i]);
@@ -566,8 +553,9 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
 
         // initializations
         if (this.simulation == null) {
-            this.simulation = new ThreadedSimulation(this.network, (Integer) this.simulationDelay.getValue());
+            this.simulation = new ThreadedSimulation(this.network);
         }
+        this.simulation.setDelay((Integer) this.simulationDelay.getValue());
 
         if (this.simulationTask != null) {
             this.simulationTask.cancel(true);
@@ -613,41 +601,6 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
                 throw new RuntimeException("Undefined utility function!");
         }
     }
-
-
-
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.gui.NodeClickListener#notify(nl.uu.socnetid.networkgames.gui.NodeClick)
-     */
-    @Override
-    public void notify(NodeClick nodeClick) {
-
-        String clickActorId = nodeClick.getClickedNodeId();
-
-        // toggle infection on node click
-        if (this.chckbxToggleInfection.isSelected()) {
-            this.network.toggleInfection(clickActorId, getDiseaseSpecs());
-        }
-
-        // show actor stats on node click
-        if (this.chckbxShowActorStats.isSelected()) {
-            this.statsActor = this.network.getActor(clickActorId);
-            this.statsFrame.refreshLocalActorStats(network.getActor(clickActorId));
-        }
-
-        // update stats
-        this.statsFrame.refreshGlobalActorStats(StatsComputer.computeGlobalActorStats(this.network));
-
-
-    }
-
-
-
-
-
-
-
 
     /**
      * @return the selected disease
@@ -707,19 +660,26 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         this.utilityFunctionCBox.setEnabled(false);
     }
 
-    /**
-     * Updates the stats frame.
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.networkgames.gui.NodeClickListener#notify(nl.uu.socnetid.networkgames.gui.NodeClick)
      */
-    private void updateStats() {
-        // global stats
-        this.statsFrame.refreshGlobalNetworkStats(StatsComputer.computeGlobalNetworkStats(this.network));
-        this.statsFrame.refreshGlobalSimulationStats(StatsComputer.computeGlobalSimulationStats(this.simulation));
+    @Override
+    public void notify(NodeClick nodeClick) {
+        String clickActorId = nodeClick.getClickedNodeId();
 
-        // actor stats
-        if (this.statsActor == null) {
-            return;
+        // toggle infection on node click
+        if (this.chckbxToggleInfection.isSelected()) {
+            this.network.toggleInfection(clickActorId, getDiseaseSpecs());
         }
-        this.statsFrame.refreshLocalActorStats(statsActor);
+
+        // show actor stats on node click
+        if (this.chckbxShowActorStats.isSelected()) {
+            this.statsActor = this.network.getActor(clickActorId);
+            this.statsFrame.refreshLocalActorStats(network.getActor(clickActorId));
+        }
+
+        // update stats
+        this.statsFrame.refreshGlobalActorStats(StatsComputer.computeGlobalActorStats(this.network));
     }
 
     /* (non-Javadoc)
@@ -787,6 +747,21 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     @Override
     public void notifyConnectionRemoved(Actor actor, Edge edge) {
         updateStats();
+    }
+
+    /**
+     * Updates the stats frame.
+     */
+    private void updateStats() {
+        // global stats
+        this.statsFrame.refreshGlobalNetworkStats(StatsComputer.computeGlobalNetworkStats(this.network));
+        this.statsFrame.refreshGlobalSimulationStats(StatsComputer.computeGlobalSimulationStats(this.simulation));
+
+        // actor stats
+        if (this.statsActor == null) {
+            return;
+        }
+        this.statsFrame.refreshLocalActorStats(statsActor);
     }
 
 }

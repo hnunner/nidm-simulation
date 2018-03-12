@@ -40,11 +40,19 @@ public class Simulation implements Runnable {
      *
      * @param network
      *          the network as basis for the simulation
-     * @param delay
-     *          the delay in between actor moves
      */
-    public Simulation(Network network, int delay) {
+    public Simulation(Network network) {
         this.network = network;
+        this.delay = delay;
+    }
+
+    /**
+     * Sets the delay between actor moves.
+     *
+     * @param delay
+     *          the delay between actor moves
+     */
+    public void setDelay(int delay) {
         this.delay = delay;
     }
 
