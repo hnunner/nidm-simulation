@@ -85,22 +85,12 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     private SIRPanel sirPanel = new SIRPanel();
     private final DeactivatablePanel[] diseasePanels = {sirPanel};
 
-    // EXPORT
-    // selection
-    private JComboBox<String> exportCBox;
-    private final String[] networkWriters = {"GEXF", "Edge List", "Adjacency Matrix"};
-    // panels
-    private ExportGEXFPanel gexfPanel;
-    private ExportEdgeListPanel edgeListPanel;
-    private ExportAdjacencyMatrixPanel adjacencyMatrixPanel;
-    private final DeactivatablePanel[] exportPanels = {gexfPanel, edgeListPanel, adjacencyMatrixPanel};
-
     // ACTOR
     // amount to add
     private JTextField txtAddAmount;
     // risk behavior
     private JLabel lblR;
-    private JTextField txtR;
+    private JTextField txtR = new JTextField();
     // on node click
     private Actor statsActor;
     private ExecutorService nodeClickExecutor = Executors.newSingleThreadExecutor();
@@ -112,6 +102,16 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     private ExecutorService simulationExecutor = Executors.newSingleThreadExecutor();
     private Future<?> simulationTask;
     private JSpinner simulationDelay;
+
+    // EXPORT
+    // selection
+    private JComboBox<String> exportCBox;
+    private final String[] networkWriters = {"GEXF", "Edge List", "Adjacency Matrix"};
+    // panels
+    private ExportGEXFPanel gexfPanel;
+    private ExportEdgeListPanel edgeListPanel;
+    private ExportAdjacencyMatrixPanel adjacencyMatrixPanel;
+    private final DeactivatablePanel[] exportPanels = {gexfPanel, edgeListPanel, adjacencyMatrixPanel};
 
 
     /**
@@ -148,20 +148,20 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     private void initialize() {
         // init settings frame
         settingsFrame = new JFrame();
-        settingsFrame.setBounds(100, 100, 370, 555);
+        settingsFrame.setBounds(100, 100, 370, 800);
         settingsFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         settingsFrame.getContentPane().setLayout(null);
 
         //////////// TABBED PANE (UTILITY, DISEASE, EXPORT, ACTORS) ////////////
         JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.LEFT, JTabbedPane.WRAP_TAB_LAYOUT);
         tabbedPane.setBorder(null);
-        tabbedPane.setBounds(25, 6, 315, 350);
+        tabbedPane.setBounds(25, 6, 315, 374);
         settingsFrame.getContentPane().add(tabbedPane);
 
 
         //////////// UTILITY ////////////
         JPanel utilityPane = new JPanel();
-        utilityPane.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
+        utilityPane.setBorder(new MatteBorder(1, 1, 1, 1, new Color(192, 192, 192)));
         tabbedPane.add("Utility", utilityPane);
         utilityPane.setLayout(null);
 
@@ -199,6 +199,9 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
             }
         });
         utilityFunctionCBox.setBounds(20, 6, 215, 30);
+        for (int i = 0; i < utilityFunctions.length; i++) {
+            utilityFunctionCBox.addItem(utilityFunctions[i]);
+        }
         utilityPane.add(utilityFunctionCBox);
 
         irtcPanel.setBounds(20, 38, 214, 225);
@@ -243,102 +246,40 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         sirPanel.setVisible(true);
         diseasePane.add(sirPanel);
 
-        JButton btnInfectRandomActor = new JButton("Infect Random Actor");
-        btnInfectRandomActor.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                infectRandomActor();
-            }
-        });
-        btnInfectRandomActor.setBounds(18, 275, 217, 30);
-        diseasePane.add(btnInfectRandomActor);
 
-
-        //////////// EXPORT ////////////
-        JPanel exportPane = new JPanel();
-        exportPane.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-        tabbedPane.add("Export", exportPane);
-        exportPane.setLayout(null);
-
-        gexfPanel = new ExportGEXFPanel(this.network);
-        gexfPanel.setBounds(20, 38, 214, 225);
-        gexfPanel.addExportListener(this);
-        exportPane.add(gexfPanel);
-
-        adjacencyMatrixPanel = new ExportAdjacencyMatrixPanel(this.network);
-        adjacencyMatrixPanel.setBounds(20, 38, 214, 225);
-        exportPane.add(adjacencyMatrixPanel);
-
-        edgeListPanel = new ExportEdgeListPanel(this.network);
-        edgeListPanel.setBounds(20, 38, 214, 225);
-        exportPane.add(edgeListPanel);
-
-        exportCBox = new JComboBox<String>();
-        exportCBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                switch (exportCBox.getSelectedIndex()) {
-                    case 0:
-                        gexfPanel.setVisible(true);
-                        edgeListPanel.setVisible(false);
-                        adjacencyMatrixPanel.setVisible(false);
-                        break;
-
-                    case 1:
-                        gexfPanel.setVisible(false);
-                        edgeListPanel.setVisible(true);
-                        adjacencyMatrixPanel.setVisible(false);
-                        break;
-
-                    case 2:
-                        gexfPanel.setVisible(false);
-                        edgeListPanel.setVisible(false);
-                        adjacencyMatrixPanel.setVisible(true);
-                        break;
-
-                    default:
-                        throw new RuntimeException("Undefined export type!");
-                }
-            }
-        });
-        exportCBox.setBounds(20, 6, 215, 30);
-        exportPane.add(exportCBox);
-
-
-        //////////// ACTORS ////////////
-        JPanel actorPane = new JPanel();
-        actorPane.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-        tabbedPane.addTab("Actors", actorPane);
-        actorPane.setLayout(null);
+        //////////// NETWORK ////////////
+        JPanel networkPane = new JPanel();
+        networkPane.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
+        tabbedPane.addTab("Network", networkPane);
+        networkPane.setLayout(null);
 
         JButton btnAddActor = new JButton("Add Actor");
         btnAddActor.setBounds(18, 6, 217, 30);
-        actorPane.add(btnAddActor);
+        networkPane.add(btnAddActor);
 
         JButton btnRemoveActor = new JButton("Remove Actor");
         btnRemoveActor.setBounds(18, 88, 217, 30);
-        actorPane.add(btnRemoveActor);
+        networkPane.add(btnRemoveActor);
 
         JButton btnClearEdges = new JButton("Clear Edges");
-        btnClearEdges.setBounds(18, 155, 217, 30);
-        actorPane.add(btnClearEdges);
+        btnClearEdges.setBounds(18, 184, 217, 30);
+        networkPane.add(btnClearEdges);
 
-        txtR = new JTextField();
         txtR.setText("1.00");
         txtR.setHorizontalAlignment(SwingConstants.RIGHT);
         txtR.setColumns(10);
         txtR.setBounds(168, 63, 60, 20);
-        actorPane.add(txtR);
+        networkPane.add(txtR);
 
         lblR = new JLabel("Risk factor");
         lblR.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
         lblR.setBounds(27, 65, 96, 16);
-        actorPane.add(lblR);
+        networkPane.add(lblR);
 
         JPanel pnlNodeClick = new JPanel();
         pnlNodeClick.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-        pnlNodeClick.setBounds(18, 230, 217, 81);
-        actorPane.add(pnlNodeClick);
+        pnlNodeClick.setBounds(18, 255, 217, 81);
+        networkPane.add(pnlNodeClick);
         pnlNodeClick.setLayout(null);
 
         chckbxToggleInfection = new JCheckBox("Toggle infection");
@@ -362,29 +303,29 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
                 clearAll();
             }
         });
-        btnClearAll.setBounds(18, 188, 217, 30);
-        actorPane.add(btnClearAll);
+        btnClearAll.setBounds(18, 216, 217, 30);
+        networkPane.add(btnClearAll);
 
         txtAddAmount = new JTextField();
         txtAddAmount.setText("1");
         txtAddAmount.setHorizontalAlignment(SwingConstants.RIGHT);
         txtAddAmount.setColumns(10);
         txtAddAmount.setBounds(168, 40, 60, 20);
-        actorPane.add(txtAddAmount);
+        networkPane.add(txtAddAmount);
 
         JLabel lblAmount = new JLabel("Amount:");
         lblAmount.setToolTipText("Risk behavior of the actor - r<1: risk seeking, "
                 + "r=1: risk neutral, r>1: risk averse");
         lblAmount.setBounds(27, 42, 103, 16);
-        actorPane.add(lblAmount);
+        networkPane.add(lblAmount);
 
         JLabel lblr = new JLabel("(r):");
         lblr.setBounds(138, 65, 24, 16);
-        actorPane.add(lblr);
+        networkPane.add(lblr);
 
         JLabel lbln = new JLabel("(N):");
         lbln.setBounds(138, 42, 24, 16);
-        actorPane.add(lbln);
+        networkPane.add(lbln);
 
         JButton btnCreateFullNetwork = new JButton("Create Full Network");
         btnCreateFullNetwork.addActionListener(new ActionListener() {
@@ -393,8 +334,18 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
                 createFullNetwork();
             }
         });
-        btnCreateFullNetwork.setBounds(18, 122, 217, 29);
-        actorPane.add(btnCreateFullNetwork);
+        btnCreateFullNetwork.setBounds(18, 152, 217, 29);
+        networkPane.add(btnCreateFullNetwork);
+
+        JButton btnInfectRandomActor_1 = new JButton("Infect Random Actor");
+        btnInfectRandomActor_1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                infectRandomActor();
+            }
+        });
+        btnInfectRandomActor_1.setBounds(18, 120, 217, 30);
+        networkPane.add(btnInfectRandomActor_1);
 
         btnClearEdges.addActionListener(new ActionListener() {
             @Override
@@ -426,21 +377,15 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
                 startSimulation();
             }
         });
-        btnStart.setBounds(29, 405, 311, 35);
+        btnStart.setBounds(29, 422, 311, 35);
         settingsFrame.getContentPane().add(btnStart);
-        for (int i = 0; i < networkWriters.length; i++) {
-            exportCBox.addItem(networkWriters[i]);
-        }
-        for (int i = 0; i < utilityFunctions.length; i++) {
-            utilityFunctionCBox.addItem(utilityFunctions[i]);
-        }
 
         simulationDelay = new JSpinner();
-        simulationDelay.setBounds(261, 370, 70, 26);
+        simulationDelay.setBounds(261, 387, 70, 26);
         settingsFrame.getContentPane().add(simulationDelay);
 
         JLabel simulationDelayLabel = new JLabel("Simulation delay (100 ms):");
-        simulationDelayLabel.setBounds(36, 373, 170, 16);
+        simulationDelayLabel.setBounds(35, 392, 170, 16);
         settingsFrame.getContentPane().add(simulationDelayLabel);
 
         JButton btnPauseSimulation = new JButton(" Pause");
@@ -452,7 +397,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
                 pauseSimulation();
             }
         });
-        btnPauseSimulation.setBounds(29, 442, 311, 35);
+        btnPauseSimulation.setBounds(29, 459, 311, 35);
         settingsFrame.getContentPane().add(btnPauseSimulation);
 
         JButton btnReset = new JButton(" Reset");
@@ -464,8 +409,71 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         });
         btnReset.setIcon(new ImageIcon(getClass().getResource("/reset.png")));
         btnReset.setFont(new Font("Lucida Grande", Font.PLAIN, 14));
-        btnReset.setBounds(29, 479, 311, 35);
+        btnReset.setBounds(29, 496, 311, 35);
         settingsFrame.getContentPane().add(btnReset);
+
+
+        //////////// EXPORT ////////////
+        JPanel exportPanel = new JPanel();
+        exportPanel.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
+        exportPanel.setBounds(25, 542, 315, 230);
+        settingsFrame.getContentPane().add(exportPanel);
+        exportPanel.setLayout(null);
+
+        JLabel lblExport = new JLabel("Export:");
+        lblExport.setBounds(15, 10, 45, 16);
+        exportPanel.add(lblExport);
+
+        exportCBox = new JComboBox<String>();
+        exportCBox.setBounds(85, 6, 215, 30);
+        for (int i = 0; i < networkWriters.length; i++) {
+            exportCBox.addItem(networkWriters[i]);
+        }
+        exportPanel.add(exportCBox);
+
+        gexfPanel = new ExportGEXFPanel(this.network);
+        gexfPanel.setBounds(85, 34, 214, 192);
+        gexfPanel.setVisible(true);
+        exportPanel.add(gexfPanel);
+
+        gexfPanel.addExportListener(this);
+        exportCBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                switch (exportCBox.getSelectedIndex()) {
+                    case 0:
+                        gexfPanel.setVisible(true);
+                        edgeListPanel.setVisible(false);
+                        adjacencyMatrixPanel.setVisible(false);
+                        break;
+
+                    case 1:
+                        gexfPanel.setVisible(false);
+                        edgeListPanel.setVisible(true);
+                        adjacencyMatrixPanel.setVisible(false);
+                        break;
+
+                    case 2:
+                        gexfPanel.setVisible(false);
+                        edgeListPanel.setVisible(false);
+                        adjacencyMatrixPanel.setVisible(true);
+                        break;
+
+                    default:
+                        throw new RuntimeException("Undefined export type!");
+                }
+            }
+        });
+
+        adjacencyMatrixPanel = new ExportAdjacencyMatrixPanel(this.network);
+        adjacencyMatrixPanel.setBounds(85, 34, 214, 192);
+        exportPanel.add(adjacencyMatrixPanel);
+        adjacencyMatrixPanel.setVisible(false);
+
+        edgeListPanel = new ExportEdgeListPanel(this.network);
+        edgeListPanel.setBounds(85, 34, 214, 192);
+        exportPanel.add(edgeListPanel);
+        edgeListPanel.setVisible(false);
 
 
         //////////// CREATE A UI REPRESENATION OF THE NETWORK ////////////
@@ -830,5 +838,4 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         this.exportCBox.setEnabled(true);
         this.statsFrame.refreshSimulationRecording(false);
     }
-
 }
