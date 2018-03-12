@@ -105,7 +105,7 @@ public class StatsFrame extends JFrame {
      */
     private void initialize() {
 
-        this.setBounds(400, 100, 400, 600);
+        this.setBounds(1200, 10, 400, 600);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.getContentPane().setLayout(null);
 
