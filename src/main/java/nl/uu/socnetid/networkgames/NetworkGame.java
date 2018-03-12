@@ -243,14 +243,28 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         networkPane.setLayout(null);
 
         JButton btnAddActor = new JButton("Add Actor");
+        btnAddActor.setIcon(new ImageIcon(getClass().getResource("/add.png")));
         btnAddActor.setBounds(18, 6, 217, 30);
         networkPane.add(btnAddActor);
 
         JButton btnRemoveActor = new JButton("Remove Actor");
+        btnRemoveActor.setIcon(new ImageIcon(getClass().getResource("/remove.png")));
         btnRemoveActor.setBounds(18, 88, 217, 30);
         networkPane.add(btnRemoveActor);
 
+        JButton btnInfectRandomActor = new JButton("Infect Random Actor");
+        btnInfectRandomActor.setIcon(new ImageIcon(getClass().getResource("/infect.png")));
+        btnInfectRandomActor.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                infectRandomActor();
+            }
+        });
+        btnInfectRandomActor.setBounds(18, 120, 217, 30);
+        networkPane.add(btnInfectRandomActor);
+
         JButton btnClearEdges = new JButton("Clear Edges");
+        btnClearEdges.setIcon(new ImageIcon(getClass().getResource("/clear.png")));
         btnClearEdges.setBounds(18, 184, 217, 30);
         networkPane.add(btnClearEdges);
 
@@ -286,6 +300,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         pnlNodeClick.add(lblOnNodeClick);
 
         JButton btnClearAll = new JButton("Clear All");
+        btnClearAll.setIcon(new ImageIcon(getClass().getResource("/clearall.png")));
         btnClearAll.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -317,6 +332,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         networkPane.add(lbln);
 
         JButton btnCreateFullNetwork = new JButton("Create Full Network");
+        btnCreateFullNetwork.setIcon(new ImageIcon(getClass().getResource("/full.png")));
         btnCreateFullNetwork.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -325,16 +341,6 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         });
         btnCreateFullNetwork.setBounds(18, 152, 217, 29);
         networkPane.add(btnCreateFullNetwork);
-
-        JButton btnInfectRandomActor_1 = new JButton("Infect Random Actor");
-        btnInfectRandomActor_1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                infectRandomActor();
-            }
-        });
-        btnInfectRandomActor_1.setBounds(18, 120, 217, 30);
-        networkPane.add(btnInfectRandomActor_1);
 
         btnClearEdges.addActionListener(new ActionListener() {
             @Override
