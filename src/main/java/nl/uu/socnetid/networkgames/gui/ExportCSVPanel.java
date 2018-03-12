@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
@@ -37,6 +38,7 @@ public abstract class ExportCSVPanel extends DeactivatablePanel {
         setLayout(null);
 
         btnExport = new JButton("Export");
+        btnExport.setIcon(new ImageIcon(getClass().getResource("/save.png")));
         btnExport.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
