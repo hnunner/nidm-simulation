@@ -154,9 +154,10 @@ public class ExportGEXFPanel extends DeactivatablePanel {
      * Updates the visisbility of components according to which type of network export is selected.
      */
     private void updateVisibility() {
-        btnExport.setVisible(rdbtnStatic.isSelected());
-        btnStartRecording.setVisible(rdbtnDynamic.isSelected());
-        btnStopRecording.setVisible(rdbtnDynamic.isSelected());
+        this.btnExport.setVisible(this.rdbtnStatic.isSelected());
+        this.btnStartRecording.setVisible(this.rdbtnDynamic.isSelected());
+        this.btnStopRecording.setVisible(this.rdbtnDynamic.isSelected());
+        this.btnChooseExportFile.setVisible(this.rdbtnDynamic.isSelected());
     }
 
     /**
@@ -246,6 +247,7 @@ public class ExportGEXFPanel extends DeactivatablePanel {
         this.rdbtnStatic.setEnabled(true);
         this.btnStartRecording.setEnabled(true);
         this.btnStopRecording.setEnabled(true);
+        this.btnChooseExportFile.setEnabled(true);
 
     }
 
@@ -259,6 +261,7 @@ public class ExportGEXFPanel extends DeactivatablePanel {
         this.rdbtnStatic.setEnabled(false);
         this.btnStartRecording.setEnabled(false);
         this.btnStopRecording.setEnabled(false);
+        this.btnChooseExportFile.setEnabled(false);
     }
 
     /**
