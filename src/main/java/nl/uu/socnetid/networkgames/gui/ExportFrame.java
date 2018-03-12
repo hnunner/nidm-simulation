@@ -105,12 +105,12 @@ public class ExportFrame extends JFrame implements ExportListener {
         gexfPanel.addExportListener(this);
         panel.add(gexfPanel);
 
-        adjacencyMatrixPanel = new ExportAdjacencyMatrixPanel((Network) null);
+        adjacencyMatrixPanel = new ExportAdjacencyMatrixPanel(this.network);
         adjacencyMatrixPanel.setBounds(85, 34, 214, 192);
         adjacencyMatrixPanel.setVisible(false);
         panel.add(adjacencyMatrixPanel);
 
-        edgeListPanel = new ExportEdgeListPanel((Network) null);
+        edgeListPanel = new ExportEdgeListPanel(this.network);
         edgeListPanel.setBounds(85, 34, 214, 192);
         edgeListPanel.setVisible(false);
         panel.add(edgeListPanel);
