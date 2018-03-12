@@ -1,6 +1,11 @@
 package nl.uu.socnetid.networkgames.networks;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -86,6 +91,20 @@ public class NetworkTest {
         this.actor1.removeConnection(this.actor2);
         assertEquals(2, this.actor1.getConnections().size());
         assertEquals(0, this.actor2.getConnections().size());
+    }
+
+    /**
+     * Test of removing a connection.
+     */
+    @Test
+    public void testGetRandomActor() {
+        List<Actor> actors = new LinkedList<Actor>(this.network.getActors());
+        for (int i = 0; i < 100; i++) {
+            Actor randomActor = this.network.getRandomActor();
+            assertNotNull(randomActor);
+            actors.remove(randomActor);
+        }
+        assertTrue(actors.isEmpty());
     }
 
 }

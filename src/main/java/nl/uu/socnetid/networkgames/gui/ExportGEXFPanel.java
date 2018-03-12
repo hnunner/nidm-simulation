@@ -21,12 +21,13 @@ import nl.uu.socnetid.networkgames.networks.Network;
  */
 public class ExportGEXFPanel extends DeactivatablePanel {
 
+    private static final long serialVersionUID = -8501382512331293601L;
+
     // graph
     private Network network;
 
     // components
     private JButton btnExport;
-    private JLabel lblNetworkType;
     private JRadioButton rdbtnDynamic;
     private JRadioButton rdbtnStatic;
     private JButton btnStartRecording;
@@ -62,7 +63,7 @@ public class ExportGEXFPanel extends DeactivatablePanel {
         panel.setBounds(6, 6, 202, 81);
         add(panel);
 
-        lblNetworkType = new JLabel("Network type:");
+        JLabel lblNetworkType = new JLabel("Network type:");
         lblNetworkType.setBounds(6, 6, 127, 16);
         panel.add(lblNetworkType);
 
@@ -161,50 +162,17 @@ public class ExportGEXFPanel extends DeactivatablePanel {
         this.gexfWriter.stopRecording();
     }
 
-
-
-//    /**
-//     * @return the duration a disease requires to recover from in rounds (tau)
-//     */
-//    public int getTau() {
-//        return Integer.valueOf(this.txtTau.getText());
-//    }
-//
-//    /**
-//     * @return the severity of the disease represented by the amount of punishment for having a disease (delta)
-//     */
-//    public double getDelta() {
-//        return Double.valueOf(this.txtDelta.getText());
-//    }
-//
-//    /**
-//     * @return transmission rate (gamma) - the probability a disease is spread between
-//     *          an infected and a non-infected agent per round
-//     */
-//    public double getGamma() {
-//        return Double.valueOf(this.txtGamma.getText());
-//    }
-//
-//    /**
-//     * @return the factor that increases maintenance costs for infected connections (mu)
-//     */
-//    public double getMu() {
-//        return Double.valueOf(this.txtMu.getText());
-//    }
-
     /* (non-Javadoc)
      * @see nl.uu.socnetid.networkgames.gui.DeactivatablePanel#enableComponents()
      */
     @Override
     public void enableComponents() {
+        this.btnExport.setEnabled(true);
+        this.rdbtnDynamic.setEnabled(true);
+        this.rdbtnStatic.setEnabled(true);
+        this.btnStartRecording.setEnabled(true);
+        this.btnStopRecording.setEnabled(true);
 
-        // TODO implement
-
-
-//        this.txtTau.setEnabled(true);
-//        this.txtDelta.setEnabled(true);
-//        this.txtGamma.setEnabled(true);
-//        this.txtMu.setEnabled(true);
     }
 
     /* (non-Javadoc)
@@ -212,13 +180,10 @@ public class ExportGEXFPanel extends DeactivatablePanel {
      */
     @Override
     public void diseableComponents() {
-
-        // TODO implement
-
-
-//        this.txtTau.setEnabled(false);
-//        this.txtDelta.setEnabled(false);
-//        this.txtGamma.setEnabled(false);
-//        this.txtMu.setEnabled(false);
+        this.btnExport.setEnabled(false);
+        this.rdbtnDynamic.setEnabled(false);
+        this.rdbtnStatic.setEnabled(false);
+        this.btnStartRecording.setEnabled(false);
+        this.btnStopRecording.setEnabled(false);
     }
 }

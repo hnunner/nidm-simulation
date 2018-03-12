@@ -237,36 +237,51 @@ public class GEXFWriter implements ActorListener, NetworkListener {
         try {
             this.fileSink.stepBegins(this.networkId, this.timeId, RECORD_STEP.getAndIncrement());
 
-            // XXX find a better way to do this
-            // for now: required to flush the last time step - otherwise the last step is not being considered
+            // XXX check whether there is a better way to make sure that the last simulation step is still recorded.
+            // for now: required to clear the graph and flush the last time step
+            // -- otherwise the last step is not being considered
             this.fileSink.graphCleared(this.networkId, this.timeId);
 
             this.fileSink.flush();
             this.fileSink.end();
 
-            this.isRecording = false;
+            // XXX this is quite dodgy, as graphstream should add the 'mode="dynamic"' attribute to the node attributes.
+            // However, this seems not to work out of the box and I don't know how to trigger this explicitly.
+            makeNodeAttributesDynamic();
 
-        } catch (IOException e) {
+            this.isRecording = false;
+        } catch (Exception e) {
             logger.error(e);
         }
+    }
 
-        // XXX this is quite dodgy, as graphstream should do this. However, I don't know how to trigger this.
+
+    /**
+     * Reads the GEXF file, adds the 'mode="dynamic"' attribute to graph nodes, and writes it back to the file.
+     * This is a workaround, as I don't know how to trigger this using the GEXF file sink as provided by graphstream.
+     *
+     * This method is partly taken from / strongly inspired by:
+     * https://www.mkyong.com/java/how-to-modify-xml-file-in-java-dom-parser/
+     */
+    private void makeNodeAttributesDynamic() {
         try {
-
+            // read the file
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
             Document doc = docBuilder.parse(this.file);
 
+            // get the "attributes" node
             Node graph = doc.getElementsByTagName("graph").item(0);
             NodeList childNodes = graph.getChildNodes();
             for (int i = 0; i < childNodes.getLength(); i++) {
                 Node node = childNodes.item(i);
                if (node.getNodeName().equals("attributes")) {
+                   // add the
                    ((Element) node).setAttribute("mode", "dynamic");
                }
             }
 
-            // write the content into xml file
+            // write back into GEXF file
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(doc);
@@ -284,7 +299,6 @@ public class GEXFWriter implements ActorListener, NetworkListener {
         } catch (TransformerException e) {
             logger.error(e);
         }
-
     }
 
     /* (non-Javadoc)
