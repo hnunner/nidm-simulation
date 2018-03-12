@@ -2,6 +2,7 @@ package nl.uu.socnetid.networkgames.io;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.log4j.Logger;
@@ -30,6 +31,9 @@ public class GEXFWriter implements ActorListener, NetworkListener {
     private FileSinkGEXF fileSink;
     // graph identifier
     private String networkId;
+
+    // status of dynamic writer
+    private boolean isRecording = false;
 
     /**
      * Constructor.
@@ -65,12 +69,20 @@ public class GEXFWriter implements ActorListener, NetworkListener {
     public void startRecording(Network network, String file) {
         this.networkId = network.getId();
 
+        // listeners
+        network.addNetworkListener(this);
+        Iterator<Actor> actorIt = network.getActorIterator();
+        while (actorIt.hasNext()) {
+            actorIt.next().addActorListener(this);
+        }
+
         this.fileSink = new FileSinkGEXF();
         this.fileSink.setTimeFormat(TimeFormat.DATETIME);
 
         try {
             this.fileSink.begin(file);
-            this.fileSink.stepBegins(this.networkId, timeId, new Date().getTime());
+            this.isRecording = true;
+            this.fileSink.stepBegins(this.networkId, this.timeId, new Date().getTime());
             this.fileSink.flush();
         } catch (IOException e) {
             logger.error(e);
@@ -79,12 +91,14 @@ public class GEXFWriter implements ActorListener, NetworkListener {
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.networks.listeners.NetworkListener#notifyActorAdded(java.lang.String)
+     * @see nl.uu.socnetid.networkgames.networks.NetworkListener#notifyActorAdded(
+     * nl.uu.socnetid.networkgames.actors.Actor)
      */
     @Override
-    public void notifyActorAdded(String actorId) {
-        fileSink.stepBegins(this.networkId, timeId, new Date().getTime());
-        fileSink.nodeAdded(this.networkId, timeId, actorId);
+    public void notifyActorAdded(Actor actor) {
+        actor.addActorListener(this);
+        this.fileSink.stepBegins(this.networkId, this.timeId, new Date().getTime());
+        this.fileSink.nodeAdded(this.networkId, this.timeId, actor.getId());
         try {
             fileSink.flush();
         } catch (IOException e) {
@@ -98,10 +112,10 @@ public class GEXFWriter implements ActorListener, NetworkListener {
      */
     @Override
     public void notifyActorRemoved(String actorId) {
-        fileSink.stepBegins(this.networkId, timeId, new Date().getTime());
-        fileSink.nodeRemoved(this.networkId, timeId, actorId);
+        this.fileSink.stepBegins(this.networkId, this.timeId, new Date().getTime());
+        this.fileSink.nodeRemoved(this.networkId, this.timeId, actorId);
         try {
-            fileSink.flush();
+            this.fileSink.flush();
         } catch (IOException e) {
             logger.error(e);
         }
@@ -114,10 +128,11 @@ public class GEXFWriter implements ActorListener, NetworkListener {
      */
     @Override
     public void notifyAttributeAdded(Actor actor, String attribute, Object value) {
-        fileSink.stepBegins(this.networkId, timeId, new Date().getTime());
-        fileSink.nodeAttributeAdded(this.networkId, timeId, String.valueOf(actor.getId()), attribute, value.toString());
+        this.fileSink.stepBegins(this.networkId, this.timeId, new Date().getTime());
+        this.fileSink.nodeAttributeAdded(this.networkId, this.timeId,
+                String.valueOf(actor.getId()), attribute, value.toString());
         try {
-            fileSink.flush();
+            this.fileSink.flush();
         } catch (IOException e) {
             logger.error(e);
         }
@@ -130,11 +145,11 @@ public class GEXFWriter implements ActorListener, NetworkListener {
      */
     @Override
     public void notifyAttributeChanged(Actor actor, String attribute, Object oldValue, Object newValue) {
-        fileSink.stepBegins(this.networkId, timeId, new Date().getTime());
-        fileSink.nodeAttributeChanged(this.networkId, timeId, String.valueOf(actor.getId()),
-                attribute, oldValue.toString(), newValue.toString());
+        this.fileSink.stepBegins(this.networkId, this.timeId, new Date().getTime());
+        this.fileSink.nodeAttributeChanged(this.networkId, this.timeId,
+                String.valueOf(actor.getId()), attribute, oldValue.toString(), newValue.toString());
         try {
-            fileSink.flush();
+            this.fileSink.flush();
         } catch (IOException e) {
             logger.error(e);
         }
@@ -146,10 +161,11 @@ public class GEXFWriter implements ActorListener, NetworkListener {
      */
     @Override
     public void notifyAttributeRemoved(Actor actor, String attribute) {
-        fileSink.stepBegins(this.networkId, timeId, new Date().getTime());
-        fileSink.nodeAttributeRemoved(this.networkId, timeId, String.valueOf(actor.getId()), attribute);
+        this.fileSink.stepBegins(this.networkId, this.timeId, new Date().getTime());
+        this.fileSink.nodeAttributeRemoved(this.networkId, this.timeId,
+                String.valueOf(actor.getId()), attribute);
         try {
-            fileSink.flush();
+            this.fileSink.flush();
         } catch (IOException e) {
             logger.error(e);
         }
@@ -162,8 +178,8 @@ public class GEXFWriter implements ActorListener, NetworkListener {
      */
     @Override
     public void notifyConnectionAdded(Edge edge, Actor actor1, Actor actor2) {
-        fileSink.stepBegins(this.networkId, timeId, new Date().getTime());
-        fileSink.edgeAdded(this.networkId, timeId, edge.getId(),
+        this.fileSink.stepBegins(this.networkId, this.timeId, new Date().getTime());
+        this.fileSink.edgeAdded(this.networkId, this.timeId, edge.getId(),
                 String.valueOf(actor1.getId()), String.valueOf(actor2.getId()), false);
         try {
             fileSink.flush();
@@ -180,10 +196,10 @@ public class GEXFWriter implements ActorListener, NetworkListener {
      */
     @Override
     public void notifyConnectionRemoved(Actor actor, Edge edge) {
-        fileSink.stepBegins(this.networkId, timeId, new Date().getTime());
-        fileSink.edgeRemoved(this.networkId, timeId, edge.getId());
+        this.fileSink.stepBegins(this.networkId, this.timeId, new Date().getTime());
+        this.fileSink.edgeRemoved(this.networkId, this.timeId, edge.getId());
         try {
-            fileSink.flush();
+            this.fileSink.flush();
         } catch (IOException e) {
             logger.error(e);
         }
@@ -193,22 +209,30 @@ public class GEXFWriter implements ActorListener, NetworkListener {
      * Stops the recording of dynamic networks.
      */
     public void stopRecording() {
+        if (!this.isRecording) {
+            return;
+        }
+
         try {
-            fileSink.stepBegins(this.networkId, timeId, new Date().getTime());
+            this.fileSink.stepBegins(this.networkId, this.timeId, new Date().getTime());
 
             // TODO find a better way to do this
             // for now: required to flush the last time step - otherwise the last step is not being considered
-            fileSink.graphCleared(this.networkId, timeId);
+            this.fileSink.graphCleared(this.networkId, this.timeId);
 
-            fileSink.flush();
-            fileSink.end();
+            this.fileSink.flush();
+            this.fileSink.end();
+
+            this.isRecording = false;
+
         } catch (IOException e) {
             logger.error(e);
         }
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.actors.ActorListener#notifyRoundFinished(nl.uu.socnetid.networkgames.actors.Actor)
+     * @see nl.uu.socnetid.networkgames.actors.ActorListener#notifyRoundFinished(
+     * nl.uu.socnetid.networkgames.actors.Actor)
      */
     @Override
     public void notifyRoundFinished(Actor actor) {
