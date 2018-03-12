@@ -63,6 +63,8 @@ public class NetworkTest {
         this.actor1.addConnection(this.actor3);
         this.actor1.addConnection(this.actor4);
         this.actor3.addConnection(this.actor4);
+
+        this.actor6.infect(ds);
 	}
 
 
@@ -105,6 +107,20 @@ public class NetworkTest {
             actors.remove(randomActor);
         }
         assertTrue(actors.isEmpty());
+    }
+
+    /**
+     * Test of removing a connection.
+     */
+    @Test
+    public void testGetRandomNotInfectedActor() {
+        List<Actor> actors = new LinkedList<Actor>(this.network.getActors());
+        for (int i = 0; i < 100; i++) {
+            Actor randomActor = this.network.getRandomNotInfectedActor();
+            actors.remove(randomActor);
+        }
+        assertTrue(actors.size() == 1);
+        assertEquals(this.actor6, actors.get(0));
     }
 
 }

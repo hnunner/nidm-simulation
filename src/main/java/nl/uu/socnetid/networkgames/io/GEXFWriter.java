@@ -98,8 +98,6 @@ public class GEXFWriter implements ActorListener, NetworkListener {
         }
 
         this.fileSink = new FileSinkGEXF2();
-//        this.fileSink.setTimeFormat(TimeFormat.INTEGER);
-
         try {
             this.fileSink.begin(this.file);
             this.isRecording = true;

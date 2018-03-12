@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -131,6 +132,24 @@ public class Network extends SingleGraph {
     public Actor getRandomActor() {
         int randomIndex = ThreadLocalRandom.current().nextInt(0, getActors().size());
         return (Actor) this.getNode(randomIndex);
+    }
+
+    /**
+     * Gets a random actor that is not infected.
+     *
+     * @return a random not infected actor
+     */
+    public Actor getRandomNotInfectedActor() {
+        List<Actor> tmpActors = new LinkedList<Actor>(this.getActors());
+        while (!tmpActors.isEmpty()) {
+            int randomIndex = ThreadLocalRandom.current().nextInt(0, tmpActors.size());
+            Actor actor = tmpActors.get(randomIndex);
+            if (!actor.isInfected()) {
+                return actor;
+            }
+            tmpActors.remove(actor);
+        }
+        return null;
     }
 
     /**
