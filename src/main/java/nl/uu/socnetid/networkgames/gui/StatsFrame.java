@@ -13,6 +13,7 @@ import nl.uu.socnetid.networkgames.diseases.DiseaseSpecs;
 import nl.uu.socnetid.networkgames.stats.GlobalActorStats;
 import nl.uu.socnetid.networkgames.stats.GlobalNetworkStats;
 import nl.uu.socnetid.networkgames.stats.GlobalSimulationStats;
+import nl.uu.socnetid.networkgames.stats.StatsComputer;
 import nl.uu.socnetid.networkgames.utilities.Utility;
 import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
 
@@ -912,12 +913,9 @@ public class StatsFrame extends JFrame {
             this.lblActorRMeaning.setText("neutral");
         }
 
-
-        // TODO THIS IS SOMEHOW CORRUPTED AS IT CAUSES ACTORS TO BE REMOVED
-        // -- CONSIDER PUTTING THIS INTO ACTOR OR NETWORK!!!
         // network
-//        this.lblActorFirstOrderDegree.setText(Integer.toString(StatsComputer.computeFirstOrderDegree(actor)));
-//        this.lblActorSecondOrderDegree.setText(Integer.toString(StatsComputer.computeSecondOrderDegree(actor)));
-//        this.lblActorCloseness.setText(Double.toString(StatsComputer.computeCloseness(actor)));
+        this.lblActorFirstOrderDegree.setText(Integer.toString(StatsComputer.computeFirstOrderDegree(actor)));
+        this.lblActorSecondOrderDegree.setText(Integer.toString(StatsComputer.computeSecondOrderDegree(actor)));
+        this.lblActorCloseness.setText(Double.toString(StatsComputer.computeCloseness(actor)));
     }
 }
