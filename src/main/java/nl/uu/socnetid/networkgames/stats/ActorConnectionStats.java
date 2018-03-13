@@ -11,96 +11,96 @@ public class ActorConnectionStats implements Cloneable {
     private static final Logger logger = Logger.getLogger(ActorConnectionStats.class);
 
     // stats
-    private int activelyBrokenTies = 0;
-    private int passivelyBrokenTies = 0;
-    private int acceptedOutgoingRequests = 0;
-    private int declinedOutgoingRequests = 0;
-    private int acceptedIncomingRequests = 0;
-    private int declinedIncomingRequests = 0;
+    private int brokenTiesActive = 0;
+    private int brokenTiesPassive = 0;
+    private int acceptedRequestsOut = 0;
+    private int declinedRequestsOut = 0;
+    private int acceptedRequestsIn = 0;
+    private int declinedRequestsIn = 0;
 
 
     /**
      * @return the actively broken ties
      */
-    public int getActivelyBrokenTies() {
-        return activelyBrokenTies;
+    public int getBrokenTiesActive() {
+        return brokenTiesActive;
     }
 
     /**
      * Increases the amount of actively broken ties.
      */
-    public void incActivelyBrokenTies() {
-        this.activelyBrokenTies++;
+    public void incBrokenTiesActive() {
+        this.brokenTiesActive++;
     }
 
     /**
      * @return the passively broken ties
      */
-    public int getPassivelyBrokenTies() {
-        return passivelyBrokenTies;
+    public int getBrokenTiesPassive() {
+        return brokenTiesPassive;
     }
 
     /**
      * Increases the amount of passively broken ties.
      */
-    public void incPassivelyBrokenTies() {
-        this.passivelyBrokenTies++;
+    public void incBrokenTiesPassive() {
+        this.brokenTiesPassive++;
     }
 
     /**
-     * @return the acceptedOutgoingRequests
+     * @return the acceptedRequestsOut
      */
-    public int getAcceptedOutgoingRequests() {
-        return acceptedOutgoingRequests;
+    public int getAcceptedRequestsOut() {
+        return acceptedRequestsOut;
     }
 
     /**
      * Increases the amount of accepted outgoing requests.
      */
-    public void incAcceptedOutgoingRequests() {
-        this.acceptedOutgoingRequests++;
+    public void incAcceptedRequestsOut() {
+        this.acceptedRequestsOut++;
     }
 
     /**
-     * @return the declinedOutgoingRequests
+     * @return the declinedRequestsOut
      */
-    public int getDeclinedOutgoingRequests() {
-        return declinedOutgoingRequests;
+    public int getDeclinedRequestsOut() {
+        return declinedRequestsOut;
     }
 
     /**
      * Increases the amount of declined outgoing requests.
      */
-    public void incDeclinedOutgoingRequests() {
-        this.declinedOutgoingRequests++;
+    public void incDeclinedRequestsOut() {
+        this.declinedRequestsOut++;
     }
 
     /**
-     * @return the acceptedIncomingRequests
+     * @return the acceptedRequestsIn
      */
-    public int getAcceptedIncomingRequests() {
-        return acceptedIncomingRequests;
+    public int getAcceptedRequestsIn() {
+        return acceptedRequestsIn;
     }
 
     /**
      * Increases the amount of accepted incoming requests.
      */
-    public void incAcceptedIncomingRequests() {
-        this.acceptedIncomingRequests++;
+    public void incAcceptedRequestsIn() {
+        this.acceptedRequestsIn++;
     }
 
     /**
-     * @return the declinedIncomingRequests
+     * @return the declinedRequestsIn
      */
-    public int getDeclinedIncomingRequests() {
-        return declinedIncomingRequests;
+    public int getDeclinedRequestsIn() {
+        return declinedRequestsIn;
     }
 
     /**
      * Increases the amount of declined incoming requests.
      */
-    public void incDeclinedIncomingRequests() {
-        this.declinedIncomingRequests++;
+    public void incDeclinedRequestsIn() {
+        this.declinedRequestsIn++;
     }
 
 
@@ -126,12 +126,12 @@ public class ActorConnectionStats implements Cloneable {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("broken ties (active):").append(this.getActivelyBrokenTies());
-        sb.append(" | broken ties (passive):").append(this.getPassivelyBrokenTies());
-        sb.append(" | accepted requests (out):").append(this.getAcceptedOutgoingRequests());
-        sb.append(" | declined requests (out):").append(this.getDeclinedOutgoingRequests());
-        sb.append(" | accepted requests (in):").append(this.getAcceptedIncomingRequests());
-        sb.append(" | declined requests (in):").append(this.getDeclinedIncomingRequests());
+        sb.append("broken ties (active):").append(this.getBrokenTiesActive());
+        sb.append(" | broken ties (passive):").append(this.getBrokenTiesPassive());
+        sb.append(" | accepted requests (out):").append(this.getAcceptedRequestsOut());
+        sb.append(" | declined requests (out):").append(this.getDeclinedRequestsOut());
+        sb.append(" | accepted requests (in):").append(this.getAcceptedRequestsIn());
+        sb.append(" | declined requests (in):").append(this.getDeclinedRequestsIn());
 
         return sb.toString();
     }
