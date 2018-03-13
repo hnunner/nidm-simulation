@@ -2,10 +2,6 @@ package nl.uu.socnetid.networkgames.io;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -20,7 +16,7 @@ import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
 /**
  * @author Hendrik Nunner
  */
-public class AdjacencyMatrixWriterTest {
+public class EdgeListWriterTest {
 
     // disease related
     private static final int    tau   = 10;
@@ -32,19 +28,23 @@ public class AdjacencyMatrixWriterTest {
     private Network network;
 
     // expected adjacency matrix
-    private static String expectedMatrix;
+    private static String expectedEdgeList;
 
 
     @BeforeClass
     public static void initSuite() {
         // for "Run as Junit Test"
         StringBuilder sb = new StringBuilder();
-        sb.append(",P1,P2,P3,P4").append(System.getProperty("line.separator"));
-        sb.append("P1,0,1,1,1").append(System.getProperty("line.separator"));
-        sb.append("P2,1,0,0,0").append(System.getProperty("line.separator"));
-        sb.append("P3,1,0,0,1").append(System.getProperty("line.separator"));
-        sb.append("P4,1,0,1,0").append(System.getProperty("line.separator"));
-        expectedMatrix = sb.toString();
+        sb.append("Source,Target").append(System.getProperty("line.separator"));
+        sb.append("1,2").append(System.getProperty("line.separator"));
+        sb.append("1,3").append(System.getProperty("line.separator"));
+        sb.append("1,4").append(System.getProperty("line.separator"));
+        sb.append("2,1").append(System.getProperty("line.separator"));
+        sb.append("3,1").append(System.getProperty("line.separator"));
+        sb.append("3,4").append(System.getProperty("line.separator"));
+        sb.append("4,1").append(System.getProperty("line.separator"));
+        sb.append("4,3").append(System.getProperty("line.separator"));
+        expectedEdgeList = sb.toString();
     }
 
 
@@ -55,7 +55,7 @@ public class AdjacencyMatrixWriterTest {
     public void initNetwork() {
 
         // network
-        this.network = new Network("AdjacencyMatrixWriter Test");
+        this.network = new Network("EdgeListWriter Test");
 
         UtilityFunction uf = new Cumulative();
         DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, tau, delta, gamma, mu);
@@ -72,30 +72,13 @@ public class AdjacencyMatrixWriterTest {
     }
 
     /**
-     * Test of writing an adjacency matrix representation of the network.
+     * Test of writing an edge list representation of the network.
      */
     @Test
     public void testWrite() {
-        NetworkWriter writer = new AdjacencyMatrixWriter();
-        String writerMatrix = writer.write(this.network);
-
-        List<String> writerList = new ArrayList<String>(Arrays.asList(writerMatrix.split(",|\\\n")));
-        List<String> expectedList = new ArrayList<String>(Arrays.asList(expectedMatrix.split(",|\\\n")));
-
-        assertEquals(expectedList.size(), writerList.size());
-
-        for (int i = 0; i < writerList.size(); i++) {
-            String actual = writerList.get(i);
-
-            // leave out the indices, as they might differ due to
-            // unknown order of actor generation in test cases
-            if (actual.contains("P")) {
-                continue;
-            }
-            String expected = expectedList.get(i);
-            assertEquals(expected, actual);
-        }
-
+        NetworkWriter writer = new EdgeListWriter();
+        String actualEdgeList = writer.write(this.network);
+        assertEquals(expectedEdgeList, actualEdgeList);
     }
 
 }

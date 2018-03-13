@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,11 +36,15 @@ public class NetworkTest {
     private Actor actor5;
     private Actor actor6;
 
+    // utility
+    private UtilityFunction uf;
+
     // disease related
     private static final int    tau   = 10;
     private static final double delta = 8.4;
     private static final double gamma = 0.1;
     private static final double mu    = 2.5;
+    private DiseaseSpecs ds;
 
 
 	/**
@@ -49,8 +54,8 @@ public class NetworkTest {
 	public void initNetwork() {
         this.network = new Network("Network Test");
 
-        UtilityFunction uf = new Cumulative();
-        DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, tau, delta, gamma, mu);
+        this.uf = new Cumulative();
+        this.ds = new DiseaseSpecs(DiseaseType.SIR, tau, delta, gamma, mu);
 
         this.actor1 = this.network.addActor(uf, ds);
         this.actor2 = this.network.addActor(uf, ds);
@@ -69,33 +74,105 @@ public class NetworkTest {
 
 
     /**
-     * Test of adding a connection.
+     * Test of adding an actor.
      */
     @Test
-    public void testAddConnection() {
-        assertEquals(3, this.actor1.getConnections().size());
-        this.actor1.addConnection(actor5);
-        assertEquals(4, this.actor1.getConnections().size());
-
-        assertEquals(0, this.actor6.getConnections().size());
-        this.actor6.addConnection(actor1);
-        assertEquals(5, this.actor1.getConnections().size());
-        assertEquals(1, this.actor6.getConnections().size());
+    public void testAddActor() {
+        assertEquals(6, this.network.getActors().size());
+        this.network.addActor(this.uf, this.ds);
+        assertEquals(7, this.network.getActors().size());
     }
 
     /**
-     * Test of removing a connection.
+     * Test of removing an actor.
      */
     @Test
-    public void testRemoveConnection() {
-        assertEquals(3, this.actor1.getConnections().size());
-        assertEquals(1, this.actor2.getConnections().size());
-        this.actor1.removeConnection(this.actor2);
-        assertEquals(2, this.actor1.getConnections().size());
-        assertEquals(0, this.actor2.getConnections().size());
+    public void testRemoveActor() {
+        assertEquals(6, this.network.getActors().size());
+        this.network.removeActor();
+        assertEquals(5, this.network.getActors().size());
     }
 
     /**
+     * Test of removing all connections.
+     */
+    @Test
+    public void testClearConnections() {
+        assertEquals(4, this.network.getEdgeCount());
+        this.network.clearConnections();
+        assertEquals(0, this.network.getEdgeCount());
+    }
+
+    /**
+     * Test of creating a full network with connection between all actors.
+     */
+    @Test
+    public void testCreateFullNetwork() {
+        assertEquals(4, this.network.getEdgeCount());
+        this.network.createFullNetwork();
+        assertEquals(15, this.network.getEdgeCount());
+    }
+
+    /**
+     * Test of getting all actors.
+     */
+    @Test
+    public void testGetActors() {
+        assertEquals(6, this.network.getActors().size());
+    }
+
+    /**
+     * Test of infecting a random actor.
+     */
+    @Test
+    public void testInfectRandomActor() {
+        Iterator<Actor> actorIt = this.network.getActorIterator();
+        while (actorIt.hasNext()) {
+            Actor actor = actorIt.next();
+            assertTrue(!actor.isInfected() || actor.equals(this.actor6));
+        }
+        this.network.infectRandomActor(this.ds);
+
+        actorIt = this.network.getActorIterator();
+        int infected = 0;
+        while (actorIt.hasNext()) {
+            Actor actor = actorIt.next();
+            if (actor.isInfected()) {
+                infected++;
+            }
+        }
+        assertEquals(2, infected);
+    }
+
+    /**
+     * Test of resetting all actors.
+     */
+    @Test
+    public void testResetActors() {
+        assertEquals(4, this.network.getEdgeCount());
+        assertTrue(this.actor1.isSusceptible());
+        assertTrue(this.actor6.isInfected());
+        this.network.resetActors();
+        assertEquals(0, this.network.getEdgeCount());
+        assertTrue(this.actor1.isSusceptible());
+        assertTrue(this.actor6.isSusceptible());
+    }
+
+    /**
+     * Test of toggling infections.
+     */
+    @Test
+    public void testToggleInfection() {
+        assertTrue(this.actor5.isSusceptible());
+        this.network.toggleInfection(this.actor5.getId(), this.ds);
+        assertTrue(this.actor5.isInfected());
+        this.network.toggleInfection(this.actor5.getId(), this.ds);
+        assertTrue(this.actor5.isRecovered());
+        this.network.toggleInfection(this.actor5.getId(), this.ds);
+        assertTrue(this.actor5.isSusceptible());
+    }
+
+	/**
      * Test of removing a connection.
      */
     @Test

@@ -1,91 +1,25 @@
 package nl.uu.socnetid.networkgames.utilities;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
 import nl.uu.socnetid.networkgames.actors.Actor;
+import nl.uu.socnetid.networkgames.stats.LocalActorConnectionsStats;
 
 /**
  * @author Hendrik Nunner
  */
 public class TruncatedConnections extends UtilityFunction {
 
-    // how much is a connection worth
-    private final double directUtility;
-    private final double indirectUtility;
-    private final double costs;
-
     /**
      * Constructor.
      *
-     * @param delta
+     * @param alpha
      *          the benefit for connections, deteriorating over distance
-     * @param costs
-     *          the costs to maintain direct connections
+     * @param c
+     *          the c to maintain direct connections
      */
-    public TruncatedConnections(double delta, double costs) {
-        this.directUtility = delta;
-        this.indirectUtility = delta * delta;
-        this.costs = costs;
+    public TruncatedConnections(double alpha, double c) {
+        super(alpha, alpha * alpha, c);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.utilities.UtilityFunction#getUtility(
-     * nl.uu.socnetid.networkgames.actors.Actor, java.util.Collection)
-     */
-    @Override
-    public Utility getUtility(Actor actor, Collection<Actor> connections) {
-        double benefitDirectConnections = 0.0;
-        double benefitIndirectConnections = 0.0;
-        double costsDirectConnections = 0.0;
-        double effectOfDisease = 0.0;
-
-        // indirect connections giving benefit only once
-        List<Actor> bookedIndirectBenefits = new LinkedList<Actor>();
-
-        // for every direct connection
-        Iterator<Actor> directIt = connections.iterator();
-        while (directIt.hasNext()) {
-            Actor directConnection = directIt.next();
-            if (directConnection == null) {
-                continue;
-            }
-
-            benefitDirectConnections += this.directUtility;
-            if (directConnection.isInfected()) {
-                costsDirectConnections += this.costs * actor.getDiseaseSpecs().getMu();
-            } else {
-                costsDirectConnections += this.costs;
-            }
-
-            // indirect connections at distance 2
-            Collection<Actor> indirectConnections = directConnection.getConnections();
-            if (indirectConnections == null) {
-                continue;
-            }
-
-            Iterator<Actor> indirectIt = indirectConnections.iterator();
-            while (indirectIt.hasNext()) {
-                Actor indirectConnection = indirectIt.next();
-
-                if (indirectConnection.equals(actor)
-                        || connections.contains(indirectConnection)
-                        || bookedIndirectBenefits.contains(indirectConnection)) {
-                    continue;
-                }
-                benefitIndirectConnections += this.indirectUtility;
-                bookedIndirectBenefits.add(indirectConnection);
-            }
-        }
-
-        return new Utility(benefitDirectConnections,
-                benefitIndirectConnections,
-                costsDirectConnections,
-                effectOfDisease);
-    }
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.networkgames.utilities.UtilityFunction#getStatsName()
@@ -96,27 +30,44 @@ public class TruncatedConnections extends UtilityFunction {
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.utilities.UtilityFunction#getAlpha()
+     * @see nl.uu.socnetid.networkgames.utilities.UtilityFunction#getBenefitOfDirectConnections(
+     * nl.uu.socnetid.networkgames.stats.LocalActorConnectionsStats)
      */
     @Override
-    public double getAlpha() {
-        return this.directUtility;
+    protected double getBenefitOfDirectConnections(LocalActorConnectionsStats lacs) {
+        return this.getAlpha() * lacs.getN();
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.utilities.UtilityFunction#getBeta()
+     * @see nl.uu.socnetid.networkgames.utilities.UtilityFunction#getBenefitOfIndirectConnections(
+     * nl.uu.socnetid.networkgames.stats.LocalActorConnectionsStats)
      */
     @Override
-    public double getBeta() {
-        return this.indirectUtility;
+    protected double getBenefitOfIndirectConnections(LocalActorConnectionsStats lacs) {
+        return this.getBeta() * lacs.getM();
     }
 
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.networkgames.utilities.UtilityFunction#getC()
+    /*
+     * (non-Javadoc)
+     * @see nl.uu.socnetid.networkgames.utilities.UtilityFunction#getCostsOfDirectConnections(
+     * nl.uu.socnetid.networkgames.stats.LocalActorConnectionsStats, nl.uu.socnetid.networkgames.actors.Actor)
      */
     @Override
-    public double getC() {
-        return this.costs;
+    protected double getCostsOfDirectConnections(LocalActorConnectionsStats lacs, Actor actor) {
+        int nSR = lacs.getnS() + lacs.getnR();
+        int nI = lacs.getnI();
+        return (nSR + (nI * actor.getDiseaseSpecs().getMu())) * this.getC();
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see nl.uu.socnetid.networkgames.utilities.UtilityFunction#getEffectOfDisease(
+     * nl.uu.socnetid.networkgames.stats.LocalActorConnectionsStats, nl.uu.socnetid.networkgames.actors.Actor)
+     */
+    @Override
+    protected double getEffectOfDisease(LocalActorConnectionsStats lacs, Actor actor) {
+        // no effect
+        return 0.0;
     }
 
 }
