@@ -773,7 +773,7 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      *
      * @return the disease the actor is infected with
      */
-    private Disease getDisease() {
+    public Disease getDisease() {
         if (this.isInfected()) {
             return (Disease) this.getAttribute(ActorAttributes.DISEASE_INFECTION);
         }
