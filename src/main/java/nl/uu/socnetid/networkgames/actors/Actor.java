@@ -306,73 +306,73 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      *
      * @return the actor's connection stats
      */
-    private ActorConnectionStats getConnectionStats() {
+    public ActorConnectionStats getConnectionStats() {
         return (ActorConnectionStats) this.getAttribute(ActorAttributes.CONNECTION_STATS);
     }
 
     /**
      * Keeps track of actively broken ties.
      */
-    private void trackActivelyBrokenTie() {
+    private void trackBrokenTieActive() {
         // stats
         ActorConnectionStats oldConnectionStats = getConnectionStats().clone();
         ActorConnectionStats newConnectionStats = getConnectionStats();
-        newConnectionStats.incActivelyBrokenTies();
+        newConnectionStats.incBrokenTiesActive();
         changeAttribute(ActorAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
     }
 
     /**
      * Keeps track of passively broken ties.
      */
-    private void trackPassivelyBrokenTie() {
+    private void trackBrokenTiePassive() {
         // stats
         ActorConnectionStats oldConnectionStats = getConnectionStats().clone();
         ActorConnectionStats newConnectionStats = getConnectionStats();
-        newConnectionStats.incPassivelyBrokenTies();
+        newConnectionStats.incBrokenTiesPassive();
         changeAttribute(ActorAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
     }
 
     /**
      * Keeps track of accepted outgoing requests.
      */
-    private void trackAcceptedOutgoingRequest() {
+    private void trackAcceptedRequestOut() {
         // stats
         ActorConnectionStats oldConnectionStats = getConnectionStats().clone();
         ActorConnectionStats newConnectionStats = getConnectionStats();
-        newConnectionStats.incAcceptedOutgoingRequests();
+        newConnectionStats.incAcceptedRequestsOut();
         changeAttribute(ActorAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
     }
 
     /**
      * Keeps track of declined outgoing requests.
      */
-    private void trackDeclinedOutgoingRequest() {
+    private void trackDeclinedRequestOut() {
         // stats
         ActorConnectionStats oldConnectionStats = getConnectionStats().clone();
         ActorConnectionStats newConnectionStats = getConnectionStats();
-        newConnectionStats.incDeclinedOutgoingRequests();
+        newConnectionStats.incDeclinedRequestsOut();
         changeAttribute(ActorAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
     }
 
     /**
      * Keeps track of accepted incoming requests.
      */
-    private void trackAcceptedIncomingRequest() {
+    private void trackAcceptedRequestIn() {
         // stats
         ActorConnectionStats oldConnectionStats = getConnectionStats().clone();
         ActorConnectionStats newConnectionStats = getConnectionStats();
-        newConnectionStats.incAcceptedIncomingRequests();
+        newConnectionStats.incAcceptedRequestsIn();
         changeAttribute(ActorAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
     }
 
     /**
-     * Keeps track of an accepted outgoing request.
+     * Keeps track of an declined incoming request.
      */
-    private void trackDeclinedIncomingRequest() {
+    private void trackDeclinedRequestIn() {
         // stats
         ActorConnectionStats oldConnectionStats = getConnectionStats().clone();
         ActorConnectionStats newConnectionStats = getConnectionStats();
-        newConnectionStats.incDeclinedIncomingRequests();
+        newConnectionStats.incDeclinedRequestsIn();
         changeAttribute(ActorAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
     }
 
@@ -437,9 +437,9 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
             // other actor accepting connection?
             if (potentialNewConnection.acceptConnection(this)) {
                 addConnection(potentialNewConnection);
-                trackAcceptedOutgoingRequest();
+                trackAcceptedRequestOut();
             } else {
-                trackDeclinedOutgoingRequest();
+                trackDeclinedRequestOut();
             }
         }
         // the desire to create new connection counts as a move
@@ -454,7 +454,7 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
         Actor costlyConnection = seekCostlyConnection();
         if (costlyConnection != null) {
             this.removeConnection(costlyConnection);
-            this.trackActivelyBrokenTie();
+            this.trackBrokenTieActive();
             costlyConnection.notifyBrokenTie(this);
         }
         // the desire to remove a connection counts as a move
@@ -525,9 +525,9 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
 
         // stats
         if (accept) {
-            trackAcceptedIncomingRequest();
+            trackAcceptedRequestIn();
         } else {
-            trackDeclinedIncomingRequest();
+            trackDeclinedRequestIn();
         }
 
         return accept;
@@ -540,7 +540,7 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      *          the initiatior who broke the tie
      */
     public void notifyBrokenTie(Actor initiator) {
-        trackPassivelyBrokenTie();
+        trackBrokenTiePassive();
     }
 
     /**

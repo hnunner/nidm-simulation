@@ -80,6 +80,13 @@ public class StatsFrame extends JFrame {
     private JLabel lblActorFirstOrderDegree;
     private JLabel lblActorCloseness;
     private JLabel lblActorSecondOrderDegree;
+    // connections
+    private JLabel lblActorTiesBrokenActive;
+    private JLabel lblActorTiesBrokenPassive;
+    private JLabel lblActorAcceptedTiesOut;
+    private JLabel lblActorDeclinedTiesOut;
+    private JLabel lblActorAcceptedTiesIn;
+    private JLabel lblActorDeclinedTiesIn;
 
     /**
      * Constructor.
@@ -791,6 +798,101 @@ public class StatsFrame extends JFrame {
         lblRecording.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
         lblRecording.setBounds(20, 465, 83, 16);
         panel_1.add(lblRecording);
+
+        JLabel label_42 = new JLabel("Connections");
+        label_42.setFont(new Font("Lucida Grande", Font.BOLD, 9));
+        label_42.setBounds(10, 315, 97, 16);
+        panel.add(label_42);
+
+        JLabel label_48 = new JLabel("Broken (active)");
+        label_48.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_48.setBounds(20, 330, 97, 16);
+        panel.add(label_48);
+
+        JLabel label_63 = new JLabel(":");
+        label_63.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_63.setBounds(117, 330, 10, 16);
+        panel.add(label_63);
+
+        lblActorTiesBrokenActive = new JLabel("---");
+        lblActorTiesBrokenActive.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblActorTiesBrokenActive.setBounds(130, 330, 61, 16);
+        panel.add(lblActorTiesBrokenActive);
+
+        JLabel label_49 = new JLabel("Broken (passive)");
+        label_49.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_49.setBounds(20, 345, 97, 16);
+        panel.add(label_49);
+
+        JLabel label_64 = new JLabel(":");
+        label_64.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_64.setBounds(117, 345, 10, 16);
+        panel.add(label_64);
+
+        lblActorTiesBrokenPassive = new JLabel("---");
+        lblActorTiesBrokenPassive.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblActorTiesBrokenPassive.setBounds(130, 345, 61, 16);
+        panel.add(lblActorTiesBrokenPassive);
+
+        JLabel label_51 = new JLabel("Accepted (out)");
+        label_51.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_51.setBounds(20, 360, 97, 16);
+        panel.add(label_51);
+
+        JLabel label_65 = new JLabel(":");
+        label_65.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_65.setBounds(117, 360, 10, 16);
+        panel.add(label_65);
+
+        lblActorAcceptedTiesOut = new JLabel("---");
+        lblActorAcceptedTiesOut.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblActorAcceptedTiesOut.setBounds(130, 360, 61, 16);
+        panel.add(lblActorAcceptedTiesOut);
+
+        JLabel label_66 = new JLabel("Declined (out)");
+        label_66.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_66.setBounds(20, 375, 97, 16);
+        panel.add(label_66);
+
+        JLabel label_67 = new JLabel(":");
+        label_67.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_67.setBounds(117, 375, 10, 16);
+        panel.add(label_67);
+
+        lblActorDeclinedTiesOut = new JLabel("---");
+        lblActorDeclinedTiesOut.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblActorDeclinedTiesOut.setBounds(130, 375, 61, 16);
+        panel.add(lblActorDeclinedTiesOut);
+
+        JLabel label_69 = new JLabel("Accepted (in)");
+        label_69.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_69.setBounds(20, 390, 97, 16);
+        panel.add(label_69);
+
+        JLabel label_70 = new JLabel(":");
+        label_70.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_70.setBounds(117, 390, 10, 16);
+        panel.add(label_70);
+
+        lblActorAcceptedTiesIn = new JLabel("---");
+        lblActorAcceptedTiesIn.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblActorAcceptedTiesIn.setBounds(130, 390, 61, 16);
+        panel.add(lblActorAcceptedTiesIn);
+
+        JLabel label_72 = new JLabel("Declined (in)");
+        label_72.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_72.setBounds(20, 405, 97, 16);
+        panel.add(label_72);
+
+        JLabel label_73 = new JLabel(":");
+        label_73.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_73.setBounds(117, 405, 10, 16);
+        panel.add(label_73);
+
+        lblActorDeclinedTiesIn = new JLabel("---");
+        lblActorDeclinedTiesIn.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblActorDeclinedTiesIn.setBounds(130, 405, 61, 16);
+        panel.add(lblActorDeclinedTiesIn);
     }
 
     /**
@@ -937,5 +1039,13 @@ public class StatsFrame extends JFrame {
         this.lblActorFirstOrderDegree.setText(Integer.toString(StatsComputer.computeFirstOrderDegree(actor)));
         this.lblActorSecondOrderDegree.setText(Integer.toString(StatsComputer.computeSecondOrderDegree(actor)));
         this.lblActorCloseness.setText(Double.toString(StatsComputer.computeCloseness(actor)));
+
+        // connections
+        this.lblActorTiesBrokenActive.setText(Integer.toString(actor.getConnectionStats().getBrokenTiesActive()));
+        this.lblActorTiesBrokenPassive.setText(Integer.toString(actor.getConnectionStats().getBrokenTiesPassive()));
+        this.lblActorAcceptedTiesOut.setText(Integer.toString(actor.getConnectionStats().getAcceptedRequestsOut()));
+        this.lblActorDeclinedTiesOut.setText(Integer.toString(actor.getConnectionStats().getDeclinedRequestsOut()));
+        this.lblActorAcceptedTiesIn.setText(Integer.toString(actor.getConnectionStats().getAcceptedRequestsIn()));
+        this.lblActorDeclinedTiesIn.setText(Integer.toString(actor.getConnectionStats().getDeclinedRequestsIn()));
     }
 }
