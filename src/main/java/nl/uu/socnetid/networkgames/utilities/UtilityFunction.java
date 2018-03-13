@@ -41,7 +41,6 @@ public abstract class UtilityFunction {
     public abstract double getC();
 
 
-
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
