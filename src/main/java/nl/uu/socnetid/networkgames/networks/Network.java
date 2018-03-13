@@ -12,9 +12,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.log4j.Logger;
 import org.graphstream.graph.implementations.SingleGraph;
-import org.graphstream.ui.graphicGraph.stylesheet.StyleConstants.Units;
-import org.graphstream.ui.spriteManager.Sprite;
-import org.graphstream.ui.spriteManager.SpriteManager;
 
 import nl.uu.socnetid.networkgames.actors.Actor;
 import nl.uu.socnetid.networkgames.actors.ActorFactory;
@@ -36,16 +33,12 @@ public class Network extends SingleGraph {
     private final Set<NetworkListener> networkListeners =
             new CopyOnWriteArraySet<NetworkListener>();
 
-    // sprite manager
-    SpriteManager spriteManager;
-
 
     /**
      * Constructor.
      */
     public Network() {
         this("Networks of the Infectious Kind");
-        this.spriteManager = new SpriteManager(this);
     }
 
     /**
@@ -88,13 +81,6 @@ public class Network extends SingleGraph {
     public Actor addActor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double riskFactor) {
         Actor actor = this.addNode(String.valueOf(this.getNodeCount() + 1));
         actor.initActor(utilityFunction, diseaseSpecs, riskFactor);
-
-        // sprite
-        Sprite sprite = this.spriteManager.addSprite(actor.getId());
-        sprite.setPosition(Units.PX, 15, 0, -90);
-        sprite.attachToNode(actor.getId());
-        sprite.setAttribute("label", actor.getLabel());
-
         notifyActorAdded(actor);
         return actor;
     }
@@ -102,18 +88,17 @@ public class Network extends SingleGraph {
 
     /**
      * Removes a actor from the network.
+     *
+     * @return the id of the removed actor
      */
-    public void removeActor() {
+    public String removeActor() {
         if (this.getActors().size() == 0) {
-            return;
+            return null;
         }
         String actorId = this.getLastActor().getId();
         this.removeNode(String.valueOf(actorId));
-
-        // sprite
-        this.spriteManager.removeSprite(actorId);
-
         notifyActorRemoved(actorId);
+        return actorId;
     }
 
     /**
