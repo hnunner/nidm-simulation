@@ -15,7 +15,7 @@ import nl.uu.socnetid.networkgames.networks.Network;
  *
  * @author Hendrik Nunner
  */
-public class CumulativeTest {
+public class TruncatedConnectionsTest {
 
     // network
     private Network network;
@@ -31,19 +31,24 @@ public class CumulativeTest {
     private Actor actor8;
     private Actor actor9;
 
+    // utility
+    private static final double alpha = 0.9;
+    private static final double c = 0.85;
+
     // disease related
     private static final int    tau   = 10;
     private static final double delta = 8.4;
     private static final double gamma = 0.1;
     private static final double mu    = 2.5;
 
+
     /**
      * Performed before each test: Initialization of the network.
      */
     @Before
     public void initActor() {
-        this.network = new Network("Cumulative Test");
-        UtilityFunction uf = new Cumulative();
+        this.network = new Network("Truncated Connections Test");
+        UtilityFunction uf = new TruncatedConnections(alpha, c);
         DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, tau, delta, gamma, mu);
 
         this.actor1 = this.network.addActor(uf, ds);
@@ -78,15 +83,9 @@ public class CumulativeTest {
      */
     @Test
     public void testGetUtility() {
-        assertEquals(4.5, this.actor1.getUtility().getOverallUtility(), 0);
-        assertEquals(3.5, this.actor2.getUtility().getOverallUtility(), 0);
-        assertEquals(4, this.actor3.getUtility().getOverallUtility(), 0);
-        assertEquals(5.5, this.actor4.getUtility().getOverallUtility(), 0);
-        assertEquals(5.5, this.actor5.getUtility().getOverallUtility(), 0);
-        assertEquals(4.5, this.actor6.getUtility().getOverallUtility(), 0);
-        assertEquals(6, this.actor7.getUtility().getOverallUtility(), 0);
-        assertEquals(4.5, this.actor8.getUtility().getOverallUtility(), 0);
-        assertEquals(2, this.actor9.getUtility().getOverallUtility(), 0);
+        assertEquals(2.58, this.actor1.getUtility().getOverallUtility(), 0.001);
+        assertEquals(2.63, this.actor4.getUtility().getOverallUtility(), 0.001);
+        assertEquals(3.44, this.actor7.getUtility().getOverallUtility(), 0.001);
     }
 
 }
