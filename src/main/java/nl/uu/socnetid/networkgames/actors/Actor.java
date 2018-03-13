@@ -20,6 +20,7 @@ import nl.uu.socnetid.networkgames.diseases.DiseaseFactory;
 import nl.uu.socnetid.networkgames.diseases.DiseaseSpecs;
 import nl.uu.socnetid.networkgames.diseases.types.DiseaseGroup;
 import nl.uu.socnetid.networkgames.networks.Network;
+import nl.uu.socnetid.networkgames.stats.ActorConnectionStats;
 import nl.uu.socnetid.networkgames.stats.StatsComputer;
 import nl.uu.socnetid.networkgames.utilities.Utility;
 import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
@@ -75,6 +76,7 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
         this.addAttribute(ActorAttributes.RISK_FACTOR, riskFactor);
         this.addAttribute(ActorAttributes.RISK_MEANING, getRiskMeaning(riskFactor));
         this.addAttribute(ActorAttributes.SATISFIED, false);
+        this.addAttribute(ActorAttributes.CONNECTION_STATS, new ActorConnectionStats());
         this.addAttribute("ui.label", this.getLabel());
     }
 
@@ -299,6 +301,81 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
         return (boolean) this.getAttribute(ActorAttributes.SATISFIED);
     }
 
+    /**
+     * Gets the actor's connection stats.
+     *
+     * @return the actor's connection stats
+     */
+    private ActorConnectionStats getConnectionStats() {
+        return (ActorConnectionStats) this.getAttribute(ActorAttributes.CONNECTION_STATS);
+    }
+
+    /**
+     * Keeps track of actively broken ties.
+     */
+    private void trackActivelyBrokenTie() {
+        // stats
+        ActorConnectionStats oldConnectionStats = getConnectionStats().clone();
+        ActorConnectionStats newConnectionStats = getConnectionStats();
+        newConnectionStats.incActivelyBrokenTies();
+        changeAttribute(ActorAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
+    }
+
+    /**
+     * Keeps track of passively broken ties.
+     */
+    private void trackPassivelyBrokenTie() {
+        // stats
+        ActorConnectionStats oldConnectionStats = getConnectionStats().clone();
+        ActorConnectionStats newConnectionStats = getConnectionStats();
+        newConnectionStats.incPassivelyBrokenTies();
+        changeAttribute(ActorAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
+    }
+
+    /**
+     * Keeps track of accepted outgoing requests.
+     */
+    private void trackAcceptedOutgoingRequest() {
+        // stats
+        ActorConnectionStats oldConnectionStats = getConnectionStats().clone();
+        ActorConnectionStats newConnectionStats = getConnectionStats();
+        newConnectionStats.incAcceptedOutgoingRequests();
+        changeAttribute(ActorAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
+    }
+
+    /**
+     * Keeps track of declined outgoing requests.
+     */
+    private void trackDeclinedOutgoingRequest() {
+        // stats
+        ActorConnectionStats oldConnectionStats = getConnectionStats().clone();
+        ActorConnectionStats newConnectionStats = getConnectionStats();
+        newConnectionStats.incDeclinedOutgoingRequests();
+        changeAttribute(ActorAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
+    }
+
+    /**
+     * Keeps track of accepted incoming requests.
+     */
+    private void trackAcceptedIncomingRequest() {
+        // stats
+        ActorConnectionStats oldConnectionStats = getConnectionStats().clone();
+        ActorConnectionStats newConnectionStats = getConnectionStats();
+        newConnectionStats.incAcceptedIncomingRequests();
+        changeAttribute(ActorAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
+    }
+
+    /**
+     * Keeps track of an accepted outgoing request.
+     */
+    private void trackDeclinedIncomingRequest() {
+        // stats
+        ActorConnectionStats oldConnectionStats = getConnectionStats().clone();
+        ActorConnectionStats newConnectionStats = getConnectionStats();
+        newConnectionStats.incDeclinedIncomingRequests();
+        changeAttribute(ActorAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
+    }
+
     /* (non-Javadoc)
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
@@ -360,6 +437,9 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
             // other actor accepting connection?
             if (potentialNewConnection.acceptConnection(this)) {
                 addConnection(potentialNewConnection);
+                trackAcceptedOutgoingRequest();
+            } else {
+                trackDeclinedOutgoingRequest();
             }
         }
         // the desire to create new connection counts as a move
@@ -374,10 +454,14 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
         Actor costlyConnection = seekCostlyConnection();
         if (costlyConnection != null) {
             this.removeConnection(costlyConnection);
+            this.trackActivelyBrokenTie();
+            costlyConnection.notifyBrokenTie(this);
         }
         // the desire to remove a connection counts as a move
         return (costlyConnection != null);
     }
+
+
 
     /**
      * Tries to find a new desirable connection. That is, a connection that creates heigher utility than
@@ -425,7 +509,7 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
     }
 
     /**
-     * Entry point for new connection requests.
+     * Entry point for incoming connection requests.
      *
      * @param newConnection
      *          the actor requesting to establish a connection
@@ -436,7 +520,27 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
         prospectiveConnections.add(newConnection);
 
         // accept connection if the new connection creates higher or equal utility
-        return this.getUtility(prospectiveConnections).getOverallUtility() >= this.getUtility().getOverallUtility();
+        boolean accept = this.getUtility(prospectiveConnections).getOverallUtility()
+                >= this.getUtility().getOverallUtility();
+
+        // stats
+        if (accept) {
+            trackAcceptedIncomingRequest();
+        } else {
+            trackDeclinedIncomingRequest();
+        }
+
+        return accept;
+    }
+
+    /**
+     * Entry point for broken tie notifications.
+     *
+     * @param initiator
+     *          the initiatior who broke the tie
+     */
+    public void notifyBrokenTie(Actor initiator) {
+        trackPassivelyBrokenTie();
     }
 
     /**
