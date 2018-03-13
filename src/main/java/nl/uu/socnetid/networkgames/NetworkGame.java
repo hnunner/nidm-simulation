@@ -379,7 +379,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         simulationDelay.setBounds(261, 387, 70, 26);
         settingsFrame.getContentPane().add(simulationDelay);
 
-        JLabel simulationDelayLabel = new JLabel("Simulation delay (100 ms):");
+        JLabel simulationDelayLabel = new JLabel("Simulation delay (10 ms):");
         simulationDelayLabel.setBounds(35, 392, 170, 16);
         settingsFrame.getContentPane().add(simulationDelayLabel);
 

@@ -31,3 +31,11 @@ node:clicked {
 	shape:circle;
 	size: 30px;
 }
+
+
+sprite {
+	shape: box;
+	size: 0px, 0px;
+	/*fill-mode: image-scaled;*/
+	/*fill-image: url('stop.png');*/
+}
