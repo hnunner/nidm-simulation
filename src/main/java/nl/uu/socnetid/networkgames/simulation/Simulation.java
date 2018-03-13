@@ -117,7 +117,7 @@ public class Simulation implements Runnable {
             }
             // some delay before each actor moves (e.g., for animation processes)
             try {
-                Thread.sleep(this.delay * 100);
+                Thread.sleep(this.delay * 10);
             } catch (InterruptedException e) {
                 return;
             }
