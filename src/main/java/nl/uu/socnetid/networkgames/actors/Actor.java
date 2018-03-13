@@ -77,14 +77,13 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
         this.addAttribute(ActorAttributes.RISK_MEANING, getRiskMeaning(riskFactor));
         this.addAttribute(ActorAttributes.SATISFIED, false);
         this.addAttribute(ActorAttributes.CONNECTION_STATS, new ActorConnectionStats());
-        this.addAttribute("ui.label", this.getLabel());
+        this.addAttribute("ui.label", this.getId());
     }
 
-    private String getLabel() {
+    public String getLabel() {
         StringBuilder sb = new StringBuilder();
-
-        sb.append(this.getId()).append(" [").append(this.getRiskMeaning(this.getRiskFactor())).append("]");
-
+        sb.append("[r=").append(this.getRiskFactor()).append("; ")
+        .append(this.getRiskMeaning(this.getRiskFactor())).append("]");
         return sb.toString();
     }
 
