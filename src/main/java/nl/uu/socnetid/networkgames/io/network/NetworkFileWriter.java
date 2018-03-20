@@ -1,4 +1,4 @@
-package nl.uu.socnetid.networkgames.io;
+package nl.uu.socnetid.networkgames.io.network;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;

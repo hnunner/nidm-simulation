@@ -1,7 +1,7 @@
 package nl.uu.socnetid.networkgames.gui;
 
-import nl.uu.socnetid.networkgames.io.EdgeListWriter;
-import nl.uu.socnetid.networkgames.io.NetworkWriter;
+import nl.uu.socnetid.networkgames.io.network.EdgeListWriter;
+import nl.uu.socnetid.networkgames.io.network.NetworkWriter;
 import nl.uu.socnetid.networkgames.networks.Network;
 
 /**

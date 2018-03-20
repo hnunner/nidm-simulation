@@ -38,7 +38,7 @@ public class Network extends SingleGraph {
      * Constructor.
      */
     public Network() {
-        this("Networks of the Infectious Kind");
+        this("Network of the Infectious Kind");
     }
 
     /**
@@ -174,6 +174,63 @@ public class Network extends SingleGraph {
     }
 
     /**
+     * Gets all susceptible actors within the network.
+     *
+     * @return all susceptible actors within the network.
+     */
+    public Collection<Actor> getSusceptibles() {
+        List<Actor> susceptibles = new LinkedList<Actor>();
+
+        Iterator<Actor> actorIt = getActorIterator();
+        while (actorIt.hasNext()) {
+            Actor actor = actorIt.next();
+            if (actor.isSusceptible()) {
+                susceptibles.add(actor);
+            }
+        }
+
+        return susceptibles;
+    }
+
+    /**
+     * Gets all infected actors within the network.
+     *
+     * @return all infected actors within the network.
+     */
+    public Collection<Actor> getInfected() {
+        List<Actor> infected = new LinkedList<Actor>();
+
+        Iterator<Actor> actorIt = getActorIterator();
+        while (actorIt.hasNext()) {
+            Actor actor = actorIt.next();
+            if (actor.isInfected()) {
+                infected.add(actor);
+            }
+        }
+
+        return infected;
+    }
+
+    /**
+     * Gets all recovered actors within the network.
+     *
+     * @return all recovered actors within the network.
+     */
+    public Collection<Actor> getRecovered() {
+        List<Actor> recovered = new LinkedList<Actor>();
+
+        Iterator<Actor> actorIt = getActorIterator();
+        while (actorIt.hasNext()) {
+            Actor actor = actorIt.next();
+            if (actor.isRecovered()) {
+                recovered.add(actor);
+            }
+        }
+
+        return recovered;
+    }
+
+    /**
      * Gets an iterator over all actors in an undefined order.
      *
      * @return an iterator over all actors in an undefined order
@@ -267,6 +324,117 @@ public class Network extends SingleGraph {
                 }
             }
         }
+    }
+
+    /**
+     * Gets the network type.
+     *
+     * @return the network type
+     */
+    public NetworkTypes getType() {
+
+        if (this.isEmpty()) {
+            return NetworkTypes.EMPTY;
+        }
+
+        if (this.isFull()) {
+            return NetworkTypes.FULL;
+        }
+
+        if (this.isRing()) {
+            return NetworkTypes.RING;
+        }
+
+        if (this.isStar()) {
+            return NetworkTypes.STAR;
+        }
+
+        // TODO implement missing network types, such as bipartite
+
+        return NetworkTypes.UNDEFINED;
+    }
+
+
+    /**
+     * Checks whether the network is empty. That is, whether there are no connections between any actors whatsoever.
+     *
+     * @return true if the network is empty, false otherwise
+     */
+    private boolean isEmpty() {
+        return (this.getEdgeCount() == 0);
+    }
+
+    /**
+     * Checks whether the network is full. That is, whether every actor is connected to every other actor.
+     *
+     * @return true if the network is full, false otherwise
+     */
+    private boolean isFull() {
+        Iterator<Actor> actorIt = getActorIterator();
+        // every actor needs to have connections to every other actor
+        while (actorIt.hasNext()) {
+            if (actorIt.next().getDegree() != (this.getActors().size() - 1)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks whether the network is a ring. That is, whether all actors are connected to two other actors,
+     * forming a ring that connects all actors within the network.
+     *
+     * @return true if the network is a ring, false otherwise
+     */
+    private boolean isRing() {
+
+        boolean ring = true;
+
+        Iterator<Actor> actorIt = getActorIterator();
+        Actor firstActor = null;
+        while (actorIt.hasNext()) {
+            Actor actor = actorIt.next();
+
+            // ring - 1st condition: every actor needs to be connected to exactly two other actors
+            ring = ring && (actor.getDegree() == 2);
+
+            // ring - 2nd condition: make sure it's a single ring,
+            // meaning a node can reach every other node
+            if (firstActor == null) {
+                firstActor = actor;
+            } else {
+                ring = ring && firstActor.isConnectedTo(actor);
+            }
+        }
+
+        return ring;
+    }
+
+    /**
+     * Checks whether the network is a star. That is, whether there is a single center node that is connected to
+     * all other nodes, while the other nodes are solely connected to the center node.
+     *
+     * @return true if the network is a star, false otherwise
+     */
+    private boolean isStar() {
+
+        int centers = 0;
+        int peripheries = 0;
+
+        Iterator<Actor> actorIt = getActorIterator();
+        while (actorIt.hasNext()) {
+            Actor actor = actorIt.next();
+
+            if (actor.getDegree() == 1) {
+                peripheries++;
+            } else if (actor.getDegree() == (this.getActors().size() - 1)) {
+                centers++;
+            } else {
+                return false;
+            }
+        }
+
+        return ((centers == 1) && (peripheries == this.getActors().size() - 1));
     }
 
 

@@ -63,13 +63,33 @@ public class Simulation implements Runnable {
     public void run() {
         this.paused = false;
         while (!this.paused) {
-            computeDiseaseDynamics();
-            computeActorDynamics();
-            notifyRoundFinished();
+            computeSingleRound();
             if (!this.paused) {
                 this.rounds++;
             }
         }
+    }
+
+    /**
+     * Simulates a given number of rounds.
+     *
+     * @param rounds
+     *          the number of rounds to simulate
+     */
+    public void simulate(int rounds) {
+        for (int i = 0; i < rounds; i++) {
+            computeSingleRound();
+        }
+    }
+
+    /**
+     * Computes a single round,
+     * composed of disease and actor dynamics.
+     */
+    private void computeSingleRound() {
+        computeDiseaseDynamics();
+        computeActorDynamics();
+        notifyRoundFinished();
     }
 
     /**
@@ -115,11 +135,13 @@ public class Simulation implements Runnable {
             if (this.paused) {
                 return;
             }
-            // some delay before each actor moves (e.g., for animation processes)
-            try {
-                Thread.sleep(this.delay * 10);
-            } catch (InterruptedException e) {
-                return;
+            if (this.delay > 0) {
+                // some delay before each actor moves (e.g., for animation processes)
+                try {
+                    Thread.sleep(this.delay * 10);
+                } catch (InterruptedException e) {
+                    return;
+                }
             }
             computeActorRound(actorsIt.next());
         }
