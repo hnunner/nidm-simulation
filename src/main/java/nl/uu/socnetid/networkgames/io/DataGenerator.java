@@ -57,25 +57,25 @@ public class DataGenerator implements ActorListener {
     public void generateData() {
 
         // network size
-        int[] Ns = new int[] {4, 5, 6, 7, 8, 9, 10};
+        int[] Ns = new int[] {1000};  //4, 5, 6, 7, 8, 9, 10};
 
         // utility
         double[] alphas = new double[] {10.0};
-        double[] betas  = new double[] {2.0, 8.0};
+        double[] betas  = new double[] {8.0}; //2.0, 8.0};
         double[] cs     = new double[] {9.0};
 
         // disease
         DiseaseType diseaseType = DiseaseType.SIR;
         int[]    taus   = new int[] {10};
-        double[] deltas = new double[] {2.0, 10.0, 50.0};
+        double[] deltas = new double[] {50.0}; //2.0, 10.0, 50.0};
         double[] gammas = new double[] {0.1};
-        double[] mus    = new double[] {1.0, 1.5};
+        double[] mus    = new double[] {1.5}; //1.0, 1.5};
 
         // risk behavior
         double[] rs = new double[] {0.5, 1.0, 1.5};
 
         // initial network
-        boolean[] startWithEmptyNetworks = new boolean[] {true, false};
+        boolean[] startWithEmptyNetworks = new boolean[] {true}; //, false};
 
         // unique parameter combinations
         int uniqueParameterCombinations = Ns.length * alphas.length * betas.length * cs.length * taus.length
@@ -83,10 +83,10 @@ public class DataGenerator implements ActorListener {
         int currParameterCombination = 1;
 
         // simulations per unique parameter combination
-        int sims = 100;
+        int sims = 1;
 
-        // rounds to simulate
-        int rounds = 500;
+        // maximum rounds to simulate
+        int maxRounds = 500;
 
 
         // initialize overview CSV
@@ -158,7 +158,7 @@ public class DataGenerator implements ActorListener {
                                                         }
 
                                                         // create full network if required
-                                                        if (startWithEmptyNetwork) {
+                                                        if (!startWithEmptyNetwork) {
                                                             network.createFullNetwork();
                                                         }
 
@@ -166,7 +166,7 @@ public class DataGenerator implements ActorListener {
                                                         this.infectionPresent = false;
                                                         this.tiesBrokenWithInfectionPresent = false;
                                                         Simulation simulation = new Simulation(network);
-                                                        simulation.simulate(rounds);
+                                                        simulation.simulate(maxRounds);
                                                         NetworkTypes networkTypeBeforeInfection = network.getType();
 
                                                         // infect random actor
@@ -174,7 +174,7 @@ public class DataGenerator implements ActorListener {
                                                         this.infectionPresent = true;
 
                                                         // simulate with disease present
-                                                        simulation.simulate(rounds);
+                                                        simulation.simulate(maxRounds);
                                                         NetworkTypes networkTypeAfterInfection = network.getType();
 
                                                         // stop recording GEXF file

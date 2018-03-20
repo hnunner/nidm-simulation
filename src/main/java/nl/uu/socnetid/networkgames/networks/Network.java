@@ -327,6 +327,41 @@ public class Network extends SingleGraph {
     }
 
     /**
+     * Checks whether the network is stable. That is, all actors are satisfied.
+     * An actor is satisfied if (s)he does not prefer to add a non-existing tie,
+     * or remove an existing tie.
+     *
+     * @return true if the network is stable, false otherwise
+     */
+    public boolean isStable() {
+        Iterator<Actor> actorIt = this.getActorIterator();
+        while (actorIt.hasNext()) {
+            Actor actor = actorIt.next();
+            if (!actor.isSatisfied()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks whether the network has an active infection. That is, whether at least one actor
+     * is infected and therefore is infectious to others.
+     *
+     * @return true if the network has an active infection, false otherwise
+     */
+    public boolean hasActiveInfection() {
+        Iterator<Actor> actorIt = this.getActorIterator();
+        while (actorIt.hasNext()) {
+            Actor actor = actorIt.next();
+            if (actor.isInfected()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Gets the network type.
      *
      * @return the network type
