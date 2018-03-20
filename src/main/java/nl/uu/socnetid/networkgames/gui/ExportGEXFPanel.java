@@ -19,7 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.MatteBorder;
 
-import nl.uu.socnetid.networkgames.io.GEXFWriter;
+import nl.uu.socnetid.networkgames.io.network.GEXFWriter;
 import nl.uu.socnetid.networkgames.networks.Network;
 
 /**
@@ -28,10 +28,6 @@ import nl.uu.socnetid.networkgames.networks.Network;
 public class ExportGEXFPanel extends DeactivatablePanel {
 
     private static final long serialVersionUID = -8501382512331293601L;
-
-    // default export directory
-    private static final String DEFAULT_EXPORT_DIR = new StringBuilder().append(System.getProperty("user.dir"))
-            .append("/network-exports/").toString();
 
     // graph
     private Network network;
@@ -126,7 +122,7 @@ public class ExportGEXFPanel extends DeactivatablePanel {
         btnStartRecording.setBounds(6, 95, 202, 30);
         btnStartRecording.setToolTipText("If no explicit output file is selected, "
                 + "a default file will be generated in folder: "
-                + DEFAULT_EXPORT_DIR);
+                + GEXFWriter.DEFAULT_EXPORT_DIR);
         add(btnStartRecording);
 
         btnStopRecording = new JButton("Stop recording");
@@ -203,7 +199,7 @@ public class ExportGEXFPanel extends DeactivatablePanel {
             this.file = null;
 
         } else {
-            StringBuilder sb = new StringBuilder(DEFAULT_EXPORT_DIR);
+            StringBuilder sb = new StringBuilder(GEXFWriter.DEFAULT_EXPORT_DIR);
             SimpleDateFormat sdfDate = new SimpleDateFormat("yyyyMMdd-HHmmss");
             sb.append("sim-").
             append(sdfDate.format(new Date())).
