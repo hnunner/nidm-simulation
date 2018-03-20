@@ -57,19 +57,19 @@ public class DataGenerator implements ActorListener {
     public void generateData() {
 
         // network size
-        int[] Ns = new int[] {4, 5, 6}; // 4, 5, 6, 7, 8, 9, 10};
+        int[] Ns = new int[] {4, 5, 6, 7, 8, 9, 10};
 
         // utility
-        double[] alphas = new double[] {5.3};
-        double[] betas  = new double[] {1.2};
-        double[] cs     = new double[] {4.1};
+        double[] alphas = new double[] {10.0};
+        double[] betas  = new double[] {2.0, 8.0};
+        double[] cs     = new double[] {9.0};
 
         // disease
         DiseaseType diseaseType = DiseaseType.SIR;
         int[]    taus   = new int[] {10};
-        double[] deltas = new double[] {8.4};
+        double[] deltas = new double[] {2.0, 10.0, 50.0};
         double[] gammas = new double[] {0.1};
-        double[] mus    = new double[] {2.5};
+        double[] mus    = new double[] {1.0, 1.5};
 
         // risk behavior
         double[] rs = new double[] {0.5, 1.0, 1.5};
@@ -83,7 +83,7 @@ public class DataGenerator implements ActorListener {
         int currParameterCombination = 1;
 
         // simulations per unique parameter combination
-        int sims = 10;
+        int sims = 100;
 
         // rounds to simulate
         int rounds = 500;
