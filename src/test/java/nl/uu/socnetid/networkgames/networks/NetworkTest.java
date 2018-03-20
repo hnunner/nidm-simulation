@@ -200,4 +200,102 @@ public class NetworkTest {
         assertEquals(this.actor6, actors.get(0));
     }
 
+    /**
+     * Test of getting the network type.
+     */
+    @Test
+    public void testGetType() {
+
+        Network empty = new Network("Empty Network");
+        Actor actor1 = empty.addActor(uf, ds);
+        Actor actor2 = empty.addActor(uf, ds);
+        Actor actor3 = empty.addActor(uf, ds);
+        Actor actor4 = empty.addActor(uf, ds);
+        Actor actor5 = empty.addActor(uf, ds);
+        Actor actor6 = empty.addActor(uf, ds);
+        assertEquals(NetworkTypes.EMPTY, empty.getType());
+
+        Network full = new Network("Full Network");
+        actor1 = full.addActor(uf, ds);
+        actor2 = full.addActor(uf, ds);
+        actor3 = full.addActor(uf, ds);
+        actor4 = full.addActor(uf, ds);
+        actor5 = full.addActor(uf, ds);
+        actor6 = full.addActor(uf, ds);
+        actor1.addConnection(this.actor2);
+        actor1.addConnection(this.actor3);
+        actor1.addConnection(this.actor4);
+        actor1.addConnection(this.actor5);
+        actor1.addConnection(this.actor6);
+        actor2.addConnection(this.actor3);
+        actor2.addConnection(this.actor4);
+        actor2.addConnection(this.actor5);
+        actor2.addConnection(this.actor6);
+        actor3.addConnection(this.actor4);
+        actor3.addConnection(this.actor5);
+        actor3.addConnection(this.actor6);
+        actor4.addConnection(this.actor5);
+        actor4.addConnection(this.actor6);
+        actor5.addConnection(this.actor6);
+        assertEquals(NetworkTypes.FULL, full.getType());
+
+        Network ring = new Network("Ring Network");
+        actor1 = ring.addActor(uf, ds);
+        actor2 = ring.addActor(uf, ds);
+        actor3 = ring.addActor(uf, ds);
+        actor4 = ring.addActor(uf, ds);
+        actor5 = ring.addActor(uf, ds);
+        actor6 = ring.addActor(uf, ds);
+        actor1.addConnection(this.actor2);
+        actor2.addConnection(this.actor3);
+        actor3.addConnection(this.actor4);
+        actor4.addConnection(this.actor5);
+        actor5.addConnection(this.actor6);
+        actor6.addConnection(this.actor1);
+        assertEquals(NetworkTypes.RING, ring.getType());
+
+        Network twoRings = new Network("Two Rings Network");
+        actor1 = twoRings.addActor(uf, ds);
+        actor2 = twoRings.addActor(uf, ds);
+        actor3 = twoRings.addActor(uf, ds);
+        actor4 = twoRings.addActor(uf, ds);
+        actor5 = twoRings.addActor(uf, ds);
+        actor6 = twoRings.addActor(uf, ds);
+        actor1.addConnection(this.actor2);
+        actor2.addConnection(this.actor3);
+        actor3.addConnection(this.actor1);
+        actor4.addConnection(this.actor5);
+        actor5.addConnection(this.actor6);
+        actor6.addConnection(this.actor4);
+        assertEquals(NetworkTypes.UNDEFINED, twoRings.getType());
+
+        Network star = new Network("Star Network");
+        actor1 = star.addActor(uf, ds);
+        actor2 = star.addActor(uf, ds);
+        actor3 = star.addActor(uf, ds);
+        actor4 = star.addActor(uf, ds);
+        actor5 = star.addActor(uf, ds);
+        actor6 = star.addActor(uf, ds);
+        actor1.addConnection(this.actor2);
+        actor1.addConnection(this.actor3);
+        actor1.addConnection(this.actor4);
+        actor1.addConnection(this.actor5);
+        actor1.addConnection(this.actor6);
+        assertEquals(NetworkTypes.STAR, star.getType());
+
+        Network incompleteStar = new Network("Incomplete Star Network");
+        actor1 = incompleteStar.addActor(uf, ds);
+        actor2 = incompleteStar.addActor(uf, ds);
+        actor3 = incompleteStar.addActor(uf, ds);
+        actor4 = incompleteStar.addActor(uf, ds);
+        actor5 = incompleteStar.addActor(uf, ds);
+        actor6 = incompleteStar.addActor(uf, ds);
+        actor1.addConnection(this.actor2);
+        actor1.addConnection(this.actor3);
+        actor1.addConnection(this.actor4);
+        actor1.addConnection(this.actor5);
+        assertEquals(NetworkTypes.UNDEFINED, incompleteStar.getType());
+
+    }
+
 }

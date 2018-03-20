@@ -13,6 +13,7 @@ import java.util.concurrent.locks.Lock;
 
 import org.apache.log4j.Logger;
 import org.graphstream.graph.Edge;
+import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleNode;
 
 import nl.uu.socnetid.networkgames.diseases.Disease;
@@ -289,6 +290,24 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
         Collection<Actor> coActors = new ArrayList<Actor>(getNetwork().getActors());
         coActors.remove(this);
         return coActors;
+    }
+
+    /**
+     * Checks whether the actor is connected somehow to another actor.
+     *
+     * @param actor
+     *          the actor to check for an existing connection
+     * @return true if the actors are somehow connected, false otherwise
+     */
+    public boolean isConnectedTo(Actor actor) {
+        Iterator<Node> bfIt = this.getBreadthFirstIterator();
+        while (bfIt.hasNext()) {
+            Node node = bfIt.next();
+            if (node.getId() == actor.getId()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

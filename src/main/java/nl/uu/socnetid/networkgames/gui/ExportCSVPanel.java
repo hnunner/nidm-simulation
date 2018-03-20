@@ -8,8 +8,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
-import nl.uu.socnetid.networkgames.io.NetworkFileWriter;
-import nl.uu.socnetid.networkgames.io.NetworkWriter;
+import nl.uu.socnetid.networkgames.io.network.NetworkFileWriter;
+import nl.uu.socnetid.networkgames.io.network.NetworkWriter;
 import nl.uu.socnetid.networkgames.networks.Network;
 
 /**

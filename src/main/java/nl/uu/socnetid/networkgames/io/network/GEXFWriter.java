@@ -1,4 +1,4 @@
-package nl.uu.socnetid.networkgames.io;
+package nl.uu.socnetid.networkgames.io.network;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,6 +37,10 @@ public class GEXFWriter implements ActorListener, NetworkListener {
 
     // logger
     private static final Logger logger = Logger.getLogger(GEXFWriter.class);
+
+    // default export directory
+    public static final String DEFAULT_EXPORT_DIR = new StringBuilder().append(System.getProperty("user.dir"))
+            .append("/network-exports/").toString();
 
     // unique time identifier
     private static final AtomicLong TIME = new AtomicLong(1);
