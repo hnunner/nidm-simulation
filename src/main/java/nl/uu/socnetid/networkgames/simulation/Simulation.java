@@ -71,14 +71,52 @@ public class Simulation implements Runnable {
     }
 
     /**
-     * Simulates a given number of rounds.
+     * Simulates the network dynamics (disease and actors) until either:
+     * the network is stable and a possible disease is eradicated,
+     * or until a maximum number of rounds has been simulated.
      *
-     * @param rounds
-     *          the number of rounds to simulate
+     * @param maxRounds
+     *          the maximum number of rounds
      */
-    public void simulate(int rounds) {
-        for (int i = 0; i < rounds; i++) {
+    public void simulate(int maxRounds) {
+        int safetyMargin = 3;
+
+        int stableRounds = 0;
+        for (int i = 0; i < maxRounds; i++) {
+            logger.info("Starting to compute round " + i + ".");
             computeSingleRound();
+
+            if (network.isStable()) {
+                stableRounds++;
+                // to be on the safe side: network needs to be stable for three consecutive rounds
+                if (stableRounds >= safetyMargin) {
+                    if (!this.network.hasActiveInfection()) {
+                        logger.info("Network is stable and disease free. "
+                                + "Network simulation finished after " + (i-safetyMargin) + " rounds.");
+                        return;
+                    }
+                }
+            } else {
+                stableRounds = 0;
+            }
+        }
+
+        // status message
+        StringBuilder sb = new StringBuilder();
+        sb.append("Simulation finished after maximum number of rounds (" + maxRounds + ").");
+        boolean unfinished = false;
+        if (!this.network.isStable()) {
+            sb.append(" Network was unstable.");
+            unfinished = true;
+        }
+        if (this.network.hasActiveInfection()) {
+            sb.append(" Network had active infection.");
+            unfinished = true;
+        }
+        if (unfinished) {
+            logger.warn(sb.toString());
+        } else {
+            logger.info(sb.toString());
         }
     }
 
