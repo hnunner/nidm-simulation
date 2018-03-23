@@ -18,7 +18,6 @@ import nl.uu.socnetid.networkgames.networks.Network;
 public class Simulation implements Runnable {
 
     // logger
-    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(Simulation.class);
 
     // the network
@@ -29,6 +28,8 @@ public class Simulation implements Runnable {
     private int delay = 0;
     // rounds
     private int rounds = 0;
+    // flag whether network has active infection or not
+    private boolean activeInfection;
 
     // listeners
     private final Set<SimulationListener> simulationListeners =
@@ -62,11 +63,9 @@ public class Simulation implements Runnable {
     @Override
     public void run() {
         this.paused = false;
+        this.activeInfection = false;
         while (!this.paused) {
             computeSingleRound();
-            if (!this.paused) {
-                this.rounds++;
-            }
         }
     }
 
@@ -80,8 +79,9 @@ public class Simulation implements Runnable {
      */
     public void simulate(int maxRounds) {
         int safetyMargin = 3;
-
         int stableRounds = 0;
+        this.activeInfection = false;
+
         for (int i = 0; i < maxRounds; i++) {
             logger.info("Starting to compute round " + i + ".");
             computeSingleRound();
@@ -91,8 +91,6 @@ public class Simulation implements Runnable {
                 // to be on the safe side: network needs to be stable for three consecutive rounds
                 if (stableRounds >= safetyMargin) {
                     if (!this.network.hasActiveInfection()) {
-                        logger.info("Network is stable and disease free. "
-                                + "Network simulation finished after " + (i-safetyMargin) + " rounds.");
                         return;
                     }
                 }
@@ -125,9 +123,25 @@ public class Simulation implements Runnable {
      * composed of disease and actor dynamics.
      */
     private void computeSingleRound() {
+
         computeDiseaseDynamics();
         computeActorDynamics();
+
+        this.rounds++;
+
+        // notifications
         notifyRoundFinished();
+
+        // first round with active infection
+        if (this.network.hasActiveInfection() && !this.activeInfection) {
+            this.activeInfection = true;
+        }
+
+        // first round of defeated infection
+        if (this.activeInfection && !this.network.hasActiveInfection()) {
+            this.activeInfection = false;
+            notifyInfectionDefeated();
+        }
     }
 
     /**
@@ -240,6 +254,16 @@ public class Simulation implements Runnable {
         Iterator<SimulationListener> listenersIt = this.simulationListeners.iterator();
         while (listenersIt.hasNext()) {
             listenersIt.next().notifyRoundFinished(this);
+        }
+    }
+
+    /**
+     * Notifies listeners of defated infections.
+     */
+    private final void notifyInfectionDefeated() {
+        Iterator<SimulationListener> listenersIt = this.simulationListeners.iterator();
+        while (listenersIt.hasNext()) {
+            listenersIt.next().notifyInfectionDefeated(this);
         }
     }
 

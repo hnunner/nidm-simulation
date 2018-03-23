@@ -15,6 +15,7 @@ import nl.uu.socnetid.networkgames.io.network.GEXFWriter;
 import nl.uu.socnetid.networkgames.networks.Network;
 import nl.uu.socnetid.networkgames.networks.NetworkTypes;
 import nl.uu.socnetid.networkgames.simulation.Simulation;
+import nl.uu.socnetid.networkgames.simulation.SimulationListener;
 import nl.uu.socnetid.networkgames.utilities.IRTC;
 import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
 
@@ -22,7 +23,7 @@ import nl.uu.socnetid.networkgames.utilities.UtilityFunction;
  *
  * @author Hendrik Nunner
  */
-public class DataGenerator implements ActorListener {
+public class DataGenerator implements ActorListener, SimulationListener {
 
     // logger
     private static final Logger logger = Logger.getLogger(DataGenerator.class);
@@ -30,6 +31,10 @@ public class DataGenerator implements ActorListener {
     // flag whether simulation has infection present
     private boolean infectionPresent;
     private boolean tiesBrokenWithInfectionPresent;
+
+    // duration of last wave of infection
+    private int roundStartInfection;
+    private int roundsLastInfection;
 
 
     /**
@@ -57,25 +62,25 @@ public class DataGenerator implements ActorListener {
     public void generateData() {
 
         // network size
-        int[] Ns = new int[] {1000};  //4, 5, 6, 7, 8, 9, 10};
+        int[] Ns = new int[] {4};     //, 5, 6, 7, 8, 9, 10};
 
         // utility
         double[] alphas = new double[] {10.0};
-        double[] betas  = new double[] {8.0}; //2.0, 8.0};
+        double[] betas  = new double[] {2.0, 8.0};
         double[] cs     = new double[] {9.0};
 
         // disease
         DiseaseType diseaseType = DiseaseType.SIR;
         int[]    taus   = new int[] {10};
-        double[] deltas = new double[] {50.0}; //2.0, 10.0, 50.0};
+        double[] deltas = new double[] {2.0, 10.0, 50.0};
         double[] gammas = new double[] {0.1};
-        double[] mus    = new double[] {1.5}; //1.0, 1.5};
+        double[] mus    = new double[] {1.0, 1.5};
 
         // risk behavior
         double[] rs = new double[] {0.5, 1.0, 1.5};
 
         // initial network
-        boolean[] startWithEmptyNetworks = new boolean[] {true}; //, false};
+        boolean[] startWithEmptyNetworks = new boolean[] {true, false};
 
         // unique parameter combinations
         int uniqueParameterCombinations = Ns.length * alphas.length * betas.length * cs.length * taus.length
@@ -83,7 +88,7 @@ public class DataGenerator implements ActorListener {
         int currParameterCombination = 1;
 
         // simulations per unique parameter combination
-        int sims = 1;
+        int sims = 10;
 
         // maximum rounds to simulate
         int maxRounds = 500;
@@ -102,6 +107,7 @@ public class DataGenerator implements ActorListener {
                     "sim",
                     "susceptibles (last round)", "infected (last round)", "recovered (last round)",
                     "ties broken with infection present",
+                    "duration of infection",
                     "network type before infection present", "network type after infection present",
                     "filename"
                     ));
@@ -166,14 +172,20 @@ public class DataGenerator implements ActorListener {
                                                         this.infectionPresent = false;
                                                         this.tiesBrokenWithInfectionPresent = false;
                                                         Simulation simulation = new Simulation(network);
+                                                        simulation.addSimulationListener(this);
+                                                        logger.info("Starting to compute disease-free network for "
+                                                                + "simulation " + sim + ".");
                                                         simulation.simulate(maxRounds);
                                                         NetworkTypes networkTypeBeforeInfection = network.getType();
 
                                                         // infect random actor
                                                         network.infectRandomActor(ds);
                                                         this.infectionPresent = true;
+                                                        this.roundStartInfection = simulation.getRounds();
 
                                                         // simulate with disease present
+                                                        logger.info("Starting to compute infected network for "
+                                                                + "simulation " + sim + ".");
                                                         simulation.simulate(maxRounds);
                                                         NetworkTypes networkTypeAfterInfection = network.getType();
 
@@ -196,7 +208,8 @@ public class DataGenerator implements ActorListener {
                                                                 Integer.toString(network.getSusceptibles().size()),
                                                                 Integer.toString(network.getInfected().size()),
                                                                 Integer.toString(network.getRecovered().size()),
-                                                                tiesBrokenWithInfectionPresent ? "yes" : "no",
+                                                                this.tiesBrokenWithInfectionPresent ? "yes" : "no",
+                                                                Integer.toString(this.roundsLastInfection),
                                                                 networkTypeBeforeInfection.toString(),
                                                                 networkTypeAfterInfection.toString(),
                                                                 filename
@@ -268,4 +281,22 @@ public class DataGenerator implements ActorListener {
      */
     @Override
     public void notifyRoundFinished(Actor actor) { }
+
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.networkgames.simulation.SimulationListener#notifyRoundFinished(
+     * nl.uu.socnetid.networkgames.simulation.Simulation)
+     */
+    @Override
+    public void notifyRoundFinished(Simulation simulation) { }
+
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.networkgames.simulation.SimulationListener#notifyInfectionDefeated(
+     * nl.uu.socnetid.networkgames.simulation.Simulation)
+     */
+    @Override
+    public void notifyInfectionDefeated(Simulation simulation) {
+        this.roundsLastInfection = simulation.getRounds() - this.roundStartInfection;
+    }
 }
