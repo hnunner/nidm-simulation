@@ -269,6 +269,7 @@ public class Network extends SingleGraph {
      */
     public void infectRandomActor(DiseaseSpecs diseaseSpecs) {
         if (this.getActors() == null || this.getActors().isEmpty()) {
+            logger.info("Unable to infect a random actor. No actor available.");
             return;
         }
 
@@ -278,18 +279,12 @@ public class Network extends SingleGraph {
         Iterator<Actor> actorsIt = actors.iterator();
         while (actorsIt.hasNext()) {
             Actor actor = actorsIt.next();
-            if (actor.isInfected()) {
-                continue;
-            }
-
-            if (actor.isInfected()) {
-                logger.warn("Unable to (force-) infect an actor that is already infected");
+            if (actor.isSusceptible()) {
+                actor.forceInfect(diseaseSpecs);
                 return;
             }
-            actor.forceInfect(diseaseSpecs);
-
-            return;
         }
+        logger.info("Unable to infect a random actor. No susceptible actor available.");
     }
 
     /**
