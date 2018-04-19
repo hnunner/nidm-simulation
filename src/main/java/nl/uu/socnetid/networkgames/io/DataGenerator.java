@@ -95,7 +95,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
 
 
         // initialize overview CSV
-        String csvFile = GEXFWriter.DEFAULT_EXPORT_DIR + "overview.csv";
+        String csvFile = GEXFWriter.DEFAULT_EXPORT_DIR + "summary.csv";
         try {
             FileWriter csvWriter = new FileWriter(csvFile);
             CSVUtils.writeLine(csvWriter, Arrays.asList(
