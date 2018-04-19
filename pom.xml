@@ -57,7 +57,7 @@
 							<descriptorRefs>
 								<descriptorRef>jar-with-dependencies</descriptorRef>
 							</descriptorRefs>
-							<!--  finalName>foobar_a.jar</finalName -->
+							<finalName>netgame-cline-${version}.jar</finalName>
 						</configuration>
 					</execution>
 					<execution>
@@ -71,7 +71,7 @@
 							<descriptorRefs>
 								<descriptorRef>jar-with-dependencies</descriptorRef>
 							</descriptorRefs>
-							<!-- finalName>foobar_b.jar</finalName -->
+							<finalName>netgame-gui-${version}.jar</finalName>
 						</configuration>
 					</execution>
 				</executions>
