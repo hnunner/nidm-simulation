@@ -10,9 +10,6 @@ import nl.uu.socnetid.netgame.actors.Actor;
 import nl.uu.socnetid.netgame.diseases.DiseaseSpecs;
 import nl.uu.socnetid.netgame.diseases.types.DiseaseType;
 import nl.uu.socnetid.netgame.networks.Network;
-import nl.uu.socnetid.netgame.utilities.Cumulative;
-import nl.uu.socnetid.netgame.utilities.IRTC;
-import nl.uu.socnetid.netgame.utilities.UtilityFunction;
 
 /**
  * Tests for {@link Cumulative} class.
@@ -28,7 +25,7 @@ public class IRTCTest {
     private static final double alpha = 5.3;
     private static final double beta  = 1.2;
     private static final double c     = 4.1;
-    private static final double delta = 8.4;
+    private static final double s     = 8.4;
     private static final double gamma = 0.1;
     private static final double mu    = 2.5;
     private static final double r     = 1.2;
@@ -53,7 +50,7 @@ public class IRTCTest {
         this.network = new Network("IRTC Test");
 
         UtilityFunction uf = new IRTC(alpha, beta, c);
-        DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, tau, delta, gamma, mu);
+        DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
 
         this.actor1 = this.network.addActor(uf, ds, r);
         this.actor2 = this.network.addActor(uf, ds, r);

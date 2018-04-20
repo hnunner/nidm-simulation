@@ -83,7 +83,6 @@ public class Simulation implements Runnable {
         this.activeInfection = false;
 
         for (int i = 0; i < maxRounds; i++) {
-            logger.info("Starting to compute round " + i + ".");
             computeSingleRound();
 
             if (network.isStable()) {
@@ -91,6 +90,7 @@ public class Simulation implements Runnable {
                 // to be on the safe side: network needs to be stable for three consecutive rounds
                 if (stableRounds >= safetyMargin) {
                     if (!this.network.hasActiveInfection()) {
+                        logger.debug("Simulation finished after" + i + " rounds.");
                         return;
                     }
                 }
