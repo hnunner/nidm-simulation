@@ -24,7 +24,7 @@ public class CumulativePanel extends DeactivatablePanel {
 
         JLabel lblBenefitdelta = new JLabel("Direct benefit");
         lblBenefitdelta.setBounds(10, 5, 100, 16);
-        lblBenefitdelta.setToolTipText("The benefit a actor gets from direct connections.");
+        lblBenefitdelta.setToolTipText("The benefit an actor gets from direct connections.");
         add(lblBenefitdelta);
 
         txtDirect = new JTextField();

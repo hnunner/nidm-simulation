@@ -35,7 +35,7 @@ public class StatsFrame extends JFrame {
     // disease
     private JLabel lblGlobalDiseaseType;
     private JLabel lblGlobalTau;
-    private JLabel lblGlobalDelta;
+    private JLabel lblGlobalS;
     private JLabel lblGlobalGamma;
     private JLabel lblGlobalMu;
     // actors
@@ -468,10 +468,10 @@ public class StatsFrame extends JFrame {
         panel_1.add(label_21);
         label_21.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
 
-        lblGlobalDelta = new JLabel(NA_STRING);
-        lblGlobalDelta.setBounds(130, 150, 56, 16);
-        panel_1.add(lblGlobalDelta);
-        lblGlobalDelta.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblGlobalS = new JLabel(NA_STRING);
+        lblGlobalS.setBounds(130, 150, 56, 16);
+        panel_1.add(lblGlobalS);
+        lblGlobalS.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
 
         JLabel lblTransmissionRate = new JLabel("Transmission rate");
         lblTransmissionRate.setBounds(20, 165, 83, 16);
@@ -917,7 +917,7 @@ public class StatsFrame extends JFrame {
     public void refreshGlobalDiseaseStats(DiseaseSpecs ds) {
         this.lblGlobalDiseaseType.setText(ds.getStatsName());
         this.lblGlobalTau.setText(Integer.toString(ds.getTau()));
-        this.lblGlobalDelta.setText(Double.toString(ds.getDelta()));
+        this.lblGlobalS.setText(Double.toString(ds.getS()));
         this.lblGlobalGamma.setText(Double.toString(ds.getGamma()));
         this.lblGlobalMu.setText(Double.toString(ds.getMu()));
     }
@@ -981,7 +981,7 @@ public class StatsFrame extends JFrame {
         // disease
         this.lblGlobalDiseaseType.setText(NA_STRING);
         this.lblGlobalTau.setText(NA_STRING);
-        this.lblGlobalDelta.setText(NA_STRING);
+        this.lblGlobalS.setText(NA_STRING);
         this.lblGlobalGamma.setText(NA_STRING);
         this.lblGlobalMu.setText(NA_STRING);
     }

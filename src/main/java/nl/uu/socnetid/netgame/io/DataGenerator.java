@@ -16,7 +16,6 @@ import nl.uu.socnetid.netgame.diseases.DiseaseSpecs;
 import nl.uu.socnetid.netgame.diseases.types.DiseaseType;
 import nl.uu.socnetid.netgame.io.network.GEXFWriter;
 import nl.uu.socnetid.netgame.networks.Network;
-import nl.uu.socnetid.netgame.networks.NetworkTypes;
 import nl.uu.socnetid.netgame.simulation.Simulation;
 import nl.uu.socnetid.netgame.simulation.SimulationListener;
 import nl.uu.socnetid.netgame.utilities.IRTC;
@@ -65,17 +64,17 @@ public class DataGenerator implements ActorListener, SimulationListener {
     public void generateData() {
 
         // network size
-        int[] Ns = new int[] {4};     //, 5, 6, 7, 8, 9, 10};
+        int[] Ns = new int[] {5, 10};     //, 15, 20};     //, 25, 50, 75, 100};
 
         // utility
         double[] alphas = new double[] {10.0};
         double[] betas  = new double[] {2.0, 8.0};
-        double[] cs     = new double[] {9.0};
+        double[] cs     = new double[] {9.0};     //, 11.0};
 
         // disease
         DiseaseType diseaseType = DiseaseType.SIR;
         int[]    taus   = new int[] {10};
-        double[] deltas = new double[] {2.0, 10.0, 50.0};
+        double[] ss     = new double[] {2.0, 10.0, 50.0};
         double[] gammas = new double[] {0.1};
         double[] mus    = new double[] {1.0, 1.5};
 
@@ -86,23 +85,27 @@ public class DataGenerator implements ActorListener, SimulationListener {
         boolean[] startWithEmptyNetworks = new boolean[] {true, false};
 
         // unique parameter combinations
-        int uniqueParameterCombinations = Ns.length * alphas.length * betas.length * cs.length * taus.length
-                * deltas.length * gammas.length * mus.length * rs.length * startWithEmptyNetworks.length;
-        int currParameterCombination = 1;
+        int upcs = Ns.length * alphas.length * betas.length * cs.length * taus.length
+                * ss.length * gammas.length * mus.length * rs.length * startWithEmptyNetworks.length;
 
         // simulations per unique parameter combination
-        int sims = 10;
+        int simsPerUpc = 10;
 
         // maximum rounds to simulate
         int maxRounds = 500;
 
+        // COUNTERS
+        // simulation in total
+        int sim = 0;
+        // unique parameter combination
+        int upc = 0;
 
         // initialize overview CSV
         String outputDir = GEXFWriter.DEFAULT_EXPORT_DIR
                         + (new SimpleDateFormat("yyyyMMdd-HHmmss")).format(new Date()) + "/";
         String csvFile = outputDir + "summary.csv";
         try {
-            // create export directory if not existent
+            // create export directory if it does not exist
             File directory = new File(outputDir);
             if (!directory.exists()){
                 directory.mkdirs();
@@ -110,16 +113,22 @@ public class DataGenerator implements ActorListener, SimulationListener {
 
             FileWriter csvWriter = new FileWriter(csvFile);
             CSVUtils.writeLine(csvWriter, Arrays.asList(
+                    "sim",
                     "N",
                     "alpha", "beta", "c",
-                    "tau", "delta", "gamma", "mu",
+                    "tau", "s", "gamma", "mu",
                     "r",
                     "network at start",
-                    "sim",
+                    "unique parameter combination (upc)",
+                    "sim per upc",
                     "susceptibles (last round)", "infected (last round)", "recovered (last round)",
                     "ties broken with infection present",
                     "duration of infection",
-                    "network type before infection present", "network type after infection present",
+                    //"network type before infection present", "network type after infection present",
+                    "1st order density (pre-infection)", "2nd order density (pre-infection)",
+                    "1st order density (post-infection)", "2nd order density (post-infection)",
+                    "clustering (pre-infection)",
+                    "clustering (post-infection)",
                     "filename"
                     ));
 
@@ -128,36 +137,38 @@ public class DataGenerator implements ActorListener, SimulationListener {
                     for (double beta : betas) {
                         for (double c : cs) {
                             for (int tau : taus) {
-                                for (double delta : deltas) {
+                                for (double s : ss) {
                                     for (double gamma : gammas) {
                                         for (double mu : mus) {
                                             for (double r : rs) {
                                                 for (boolean startWithEmptyNetwork : startWithEmptyNetworks) {
 
                                                     logger.info("Starting to compute "
-                                                            + sims + " simulations for parameter combination: "
-                                                            + currParameterCombination++ + " / "
-                                                            + uniqueParameterCombinations);
+                                                            + simsPerUpc + " simulations for parameter combination: "
+                                                            + ++upc + " / "
+                                                            + upcs);
 
-                                                    for (int sim = 1; sim <= sims; sim++) {
+                                                    for (int simPerUpc = 1; simPerUpc <= simsPerUpc; simPerUpc++) {
                                                         // create network
                                                         Network network = new Network();
 
                                                         // start recording GEXF file
                                                         GEXFWriter gexfWriter = new GEXFWriter();
                                                         StringBuilder sb = new StringBuilder(outputDir);
+                                                        sb.append("sim-").append(++sim).append("_");
                                                         sb.append("N-").append(N).append("_");
                                                         sb.append("alpha-").append(alpha).append("_");
                                                         sb.append("beta-").append(beta).append("_");
                                                         sb.append("c-").append(c).append("_");
                                                         sb.append("tau-").append(tau).append("_");
-                                                        sb.append("delta-").append(delta).append("_");
+                                                        sb.append("s-").append(s).append("_");
                                                         sb.append("gamma-").append(gamma).append("_");
                                                         sb.append("mu-").append(mu).append("_");
                                                         sb.append("r-").append(r).append("_");
                                                         sb.append("emptyNetwork-").append(
                                                                 startWithEmptyNetwork ? "yes" : "no").append("_");
-                                                        sb.append("sim-").append(sim);
+                                                        sb.append("upc-").append(upc).append("_");
+                                                        sb.append("simUpc-").append(simPerUpc);
                                                         sb.append(".gexf").toString();
                                                         String filename = sb.toString();
                                                         gexfWriter.startRecording(network, filename);
@@ -165,7 +176,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                         // create utility and disease specs
                                                         UtilityFunction uf = new IRTC(alpha, beta, c);
                                                         DiseaseSpecs ds = new DiseaseSpecs(
-                                                                diseaseType, tau, delta, gamma, mu);
+                                                                diseaseType, tau, s, gamma, mu);
 
                                                         // add actors
                                                         for (int i = 0; i < N; i++) {
@@ -183,10 +194,12 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                         this.tiesBrokenWithInfectionPresent = false;
                                                         Simulation simulation = new Simulation(network);
                                                         simulation.addSimulationListener(this);
-                                                        logger.info("Starting to compute disease-free network for "
-                                                                + "simulation " + sim + ".");
                                                         simulation.simulate(maxRounds);
-                                                        NetworkTypes networkTypeBeforeInfection = network.getType();
+                                                        //NetworkTypes networkTypeBeforeInfection = network.getType();
+                                                        // TODO implement
+                                                        double firstOrderDensityPre = 0.0;
+                                                        double secondOrderDensityPre = 0.0;
+                                                        double clusteringPre = 0.0;
 
                                                         // infect random actor
                                                         network.infectRandomActor(ds);
@@ -194,34 +207,44 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                         this.roundStartInfection = simulation.getRounds();
 
                                                         // simulate with disease present
-                                                        logger.info("Starting to compute infected network for "
-                                                                + "simulation " + sim + ".");
                                                         simulation.simulate(maxRounds);
-                                                        NetworkTypes networkTypeAfterInfection = network.getType();
+                                                        //NetworkTypes networkTypeAfterInfection = network.getType();
+                                                        // TODO implement
+                                                        double firstOrderDensityPost = 0.0;
+                                                        double secondOrderDensityPost = 0.0;
+                                                        double clusteringPost = 0.0;
 
                                                         // stop recording GEXF file
                                                         gexfWriter.stopRecording();
 
                                                         // add result to overview CSV
                                                         CSVUtils.writeLine(csvWriter, Arrays.asList(
+                                                                Integer.toString(sim),
                                                                 Integer.toString(N),
                                                                 Double.toString(alpha),
                                                                 Double.toString(beta),
                                                                 Double.toString(c),
                                                                 Integer.toString(tau),
-                                                                Double.toString(delta),
+                                                                Double.toString(s),
                                                                 Double.toString(gamma),
                                                                 Double.toString(mu),
                                                                 Double.toString(r),
                                                                 startWithEmptyNetwork ? "empty" : "full",
-                                                                Integer.toString(sim),
+                                                                Integer.toString(upc),
+                                                                Integer.toString(simPerUpc),
                                                                 Integer.toString(network.getSusceptibles().size()),
                                                                 Integer.toString(network.getInfected().size()),
                                                                 Integer.toString(network.getRecovered().size()),
                                                                 this.tiesBrokenWithInfectionPresent ? "yes" : "no",
                                                                 Integer.toString(this.roundsLastInfection),
-                                                                networkTypeBeforeInfection.toString(),
-                                                                networkTypeAfterInfection.toString(),
+                                                                //networkTypeBeforeInfection.toString(),
+                                                                //networkTypeAfterInfection.toString(),
+                                                                Double.toString(firstOrderDensityPre),
+                                                                Double.toString(firstOrderDensityPost),
+                                                                Double.toString(secondOrderDensityPre),
+                                                                Double.toString(secondOrderDensityPost),
+                                                                Double.toString(clusteringPre),
+                                                                Double.toString(clusteringPost),
                                                                 filename
                                                         ));
                                                     }

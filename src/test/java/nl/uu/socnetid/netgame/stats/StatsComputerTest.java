@@ -10,10 +10,6 @@ import nl.uu.socnetid.netgame.actors.Actor;
 import nl.uu.socnetid.netgame.diseases.DiseaseSpecs;
 import nl.uu.socnetid.netgame.diseases.types.DiseaseType;
 import nl.uu.socnetid.netgame.networks.Network;
-import nl.uu.socnetid.netgame.stats.GlobalActorStats;
-import nl.uu.socnetid.netgame.stats.GlobalNetworkStats;
-import nl.uu.socnetid.netgame.stats.LocalActorConnectionsStats;
-import nl.uu.socnetid.netgame.stats.StatsComputer;
 import nl.uu.socnetid.netgame.utilities.Cumulative;
 import nl.uu.socnetid.netgame.utilities.UtilityFunction;
 
@@ -38,7 +34,7 @@ public class StatsComputerTest {
 
     // disease
     private static final int    tau   = 10;
-    private static final double delta = 8.4;
+    private static final double s     = 8.4;
     private static final double gamma = 0.1;
     private static final double mu    = 2.5;
     private DiseaseSpecs ds;
@@ -52,7 +48,7 @@ public class StatsComputerTest {
         this.network = new Network("StatsComputer Test");
 
         UtilityFunction uf = new Cumulative();
-        this.ds = new DiseaseSpecs(DiseaseType.SIR, tau, delta, gamma, mu);
+        this.ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
 
         // risk neutral
         this.actor1 = this.network.addActor(uf, ds, 1.0);

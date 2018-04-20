@@ -38,7 +38,7 @@
 				<version>${maven-shade-plugin.version}</version>
 				<executions>
 					<execution>
-						<id>netgame-cline</id>
+						<id>netgame-cli</id>
 						<phase>package</phase>
 						<goals>
 							<goal>shade</goal>
@@ -50,7 +50,17 @@
 									<mainClass>nl.uu.socnetid.netgame.io.DataGenerator</mainClass>
 								</transformer>
 							</transformers>
-							<finalName>netgame-cline</finalName>
+							<finalName>netgame-cli-${project.version}</finalName>
+							<filters>
+								<filter>
+									<artifact>*:*</artifact>
+									<excludes>
+										<exclude>META-INF/*.SF</exclude>
+										<exclude>META-INF/*.DSA</exclude>
+										<exclude>META-INF/*.RSA</exclude>
+									</excludes>
+								</filter>
+							</filters>
 						</configuration>
 					</execution>
 					<execution>
@@ -66,7 +76,17 @@
 									<mainClass>nl.uu.socnetid.netgame.NetworkGame</mainClass>
 								</transformer>
 							</transformers>
-							<finalName>netgame-gui</finalName>
+							<finalName>netgame-gui-${project.version}</finalName>
+							<filters>
+								<filter>
+									<artifact>*:*</artifact>
+									<excludes>
+										<exclude>META-INF/*.SF</exclude>
+										<exclude>META-INF/*.DSA</exclude>
+										<exclude>META-INF/*.RSA</exclude>
+									</excludes>
+								</filter>
+							</filters>
 						</configuration>
 					</execution>
 				</executions>

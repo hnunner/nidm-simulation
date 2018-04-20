@@ -29,7 +29,7 @@ public class SIRDiseaseTest {
 
     // disease related
     private static final int    tau   = 10;
-    private static final double delta = 8.4;
+    private static final double s     = 8.4;
     private static final double gamma = 0.1;
     private static final double mu    = 2.5;
     private DiseaseSpecs ds;
@@ -42,7 +42,7 @@ public class SIRDiseaseTest {
     public void initNetwork() {
         this.network = new Network("Actor Test");
         UtilityFunction uf = new Cumulative();
-        this.ds = new DiseaseSpecs(DiseaseType.SIR, tau, delta, gamma, mu);
+        this.ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
         this.actor1 = this.network.addActor(uf, this.ds);
         this.actor1.infect(ds);
     }

@@ -95,7 +95,7 @@ public class IRTC extends UtilityFunction {
                 throw new RuntimeException("Unknown disease group: " + actor.getDiseaseGroup());
         }
 
-        return p * Math.pow(actor.getDiseaseSpecs().getDelta(), r);
+        return p * Math.pow(actor.getDiseaseSpecs().getS(), r);
     }
 
 }
