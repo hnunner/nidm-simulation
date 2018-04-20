@@ -376,6 +376,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         settingsFrame.getContentPane().add(btnStart);
 
         simulationDelay = new JSpinner();
+        simulationDelay.setValue(10);
         simulationDelay.setBounds(261, 387, 70, 26);
         settingsFrame.getContentPane().add(simulationDelay);
 
@@ -542,7 +543,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
                 return new DiseaseSpecs(
                         DiseaseType.SIR,
                         this.sirPanel.getTau(),
-                        this.sirPanel.getDelta(),
+                        this.sirPanel.getS(),
                         this.sirPanel.getGamma(),
                         this.sirPanel.getMu());
 

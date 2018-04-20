@@ -26,7 +26,7 @@ public class AdjacencyMatrixWriterTest {
 
     // disease related
     private static final int    tau   = 10;
-    private static final double delta = 8.4;
+    private static final double s     = 8.4;
     private static final double gamma = 0.1;
     private static final double mu    = 2.5;
 
@@ -60,7 +60,7 @@ public class AdjacencyMatrixWriterTest {
         this.network = new Network("AdjacencyMatrixWriter Test");
 
         UtilityFunction uf = new Cumulative();
-        DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, tau, delta, gamma, mu);
+        DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
 
         Actor actor1 = this.network.addActor(uf, ds);
         Actor actor2 = this.network.addActor(uf, ds);

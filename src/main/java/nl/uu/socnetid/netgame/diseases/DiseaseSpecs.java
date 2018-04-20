@@ -12,7 +12,7 @@ public class DiseaseSpecs {
 
     private final DiseaseType diseaseType;
     private final int tau;
-    private final double delta;
+    private final double s;
     private final double gamma;
     private final double mu;
 
@@ -23,7 +23,7 @@ public class DiseaseSpecs {
      *          the type of disease
      * @param tau
      *          the duration a disease requires to recover from in rounds
-     * @param delta
+     * @param s
      *          the severity of the disease represented by the amount of punishment for having a disease
      * @param gamma
      *          the transmission rate - the probability a disease is spread between an infected and a non-infected
@@ -31,10 +31,10 @@ public class DiseaseSpecs {
      * @param mu
      *          the factor that increases maintenance costs for infected connections
      */
-    public DiseaseSpecs(DiseaseType diseaseType, int tau, double delta, double gamma, double mu) {
+    public DiseaseSpecs(DiseaseType diseaseType, int tau, double s, double gamma, double mu) {
         this.diseaseType = diseaseType;
         this.tau = tau;
-        this.delta = delta;
+        this.s = s;
         this.gamma = gamma;
         this.mu = mu;
     }
@@ -49,8 +49,8 @@ public class DiseaseSpecs {
     /**
      * @return the severity of the disease represented by the amount of punishment for having a disease
      */
-    public double getDelta() {
-        return this.delta;
+    public double getS() {
+        return this.s;
     }
 
     /**
@@ -104,7 +104,7 @@ public class DiseaseSpecs {
         if (specs2.getTau() != this.tau) {
             return false;
         }
-        if (specs2.getDelta() != this.delta) {
+        if (specs2.getS() != this.s) {
             return false;
         }
         if (specs2.getGamma() != this.gamma) {
@@ -124,7 +124,7 @@ public class DiseaseSpecs {
         return Arrays.hashCode(new Object[] {
                 this.diseaseType,
                 this.tau,
-                this.delta,
+                this.s,
                 this.gamma,
                 this.mu
          });
@@ -139,7 +139,7 @@ public class DiseaseSpecs {
 
         sb.append("disease type:").append(this.diseaseType.toString());
         sb.append(" | tau:").append(this.tau);
-        sb.append(" | delta:").append(this.delta);
+        sb.append(" | s:").append(this.s);
         sb.append(" | gamma:").append(this.gamma);
         sb.append(" | mu:").append(this.mu);
 

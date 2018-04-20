@@ -9,9 +9,6 @@ import nl.uu.socnetid.netgame.actors.Actor;
 import nl.uu.socnetid.netgame.diseases.DiseaseSpecs;
 import nl.uu.socnetid.netgame.diseases.types.DiseaseType;
 import nl.uu.socnetid.netgame.networks.Network;
-import nl.uu.socnetid.netgame.utilities.Cumulative;
-import nl.uu.socnetid.netgame.utilities.TruncatedConnections;
-import nl.uu.socnetid.netgame.utilities.UtilityFunction;
 
 /**
  * Tests for {@link Cumulative} class.
@@ -40,7 +37,7 @@ public class TruncatedConnectionsTest {
 
     // disease related
     private static final int    tau   = 10;
-    private static final double delta = 8.4;
+    private static final double s     = 8.4;
     private static final double gamma = 0.1;
     private static final double mu    = 2.5;
 
@@ -52,7 +49,7 @@ public class TruncatedConnectionsTest {
     public void initActor() {
         this.network = new Network("Truncated Connections Test");
         UtilityFunction uf = new TruncatedConnections(alpha, c);
-        DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, tau, delta, gamma, mu);
+        DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
 
         this.actor1 = this.network.addActor(uf, ds);
         this.actor2 = this.network.addActor(uf, ds);

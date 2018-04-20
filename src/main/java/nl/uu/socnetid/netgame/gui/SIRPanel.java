@@ -12,7 +12,7 @@ public class SIRPanel extends DeactivatablePanel {
     private static final long serialVersionUID = -6579761342558000359L;
 
     private JTextField txtTau;
-    private JTextField txtDelta;
+    private JTextField txtS;
     private JTextField txtGamma;
     private JTextField txtMu;
 
@@ -35,18 +35,18 @@ public class SIRPanel extends DeactivatablePanel {
         add(txtTau);
         txtTau.setColumns(10);
 
-        JLabel lblDelta = new JLabel("Severity");
-        lblDelta.setToolTipText("The punishment for an agent to be infected.");
-        lblDelta.setBounds(10, 28, 65, 16);
-        add(lblDelta);
+        JLabel lblS = new JLabel("Severity");
+        lblS.setToolTipText("The punishment for an agent to be infected.");
+        lblS.setBounds(10, 28, 65, 16);
+        add(lblS);
 
-        txtDelta = new JTextField();
-        txtDelta.setHorizontalAlignment(SwingConstants.RIGHT);
-        txtDelta.setToolTipText("The punishment for an agent to be infected.");
-        txtDelta.setText("5");
-        txtDelta.setBounds(151, 26, 60, 20);
-        add(txtDelta);
-        txtDelta.setColumns(10);
+        txtS = new JTextField();
+        txtS.setHorizontalAlignment(SwingConstants.RIGHT);
+        txtS.setToolTipText("The punishment for an agent to be infected.");
+        txtS.setText("5");
+        txtS.setBounds(151, 26, 60, 20);
+        add(txtS);
+        txtS.setColumns(10);
 
         JLabel lblGamma = new JLabel("Transmission rate");
         lblGamma.setToolTipText("The probability a disease is spread between an infected "
@@ -78,7 +78,7 @@ public class SIRPanel extends DeactivatablePanel {
         lblTau2.setBounds(127, 5, 24, 16);
         add(lblTau2);
 
-        JLabel label = new JLabel("(δ):");
+        JLabel label = new JLabel("(s):");
         label.setBounds(127, 28, 24, 16);
         add(label);
 
@@ -101,10 +101,10 @@ public class SIRPanel extends DeactivatablePanel {
     }
 
     /**
-     * @return the severity of the disease represented by the amount of punishment for having a disease (delta)
+     * @return the severity of the disease represented by the amount of punishment for having a disease (s)
      */
-    public double getDelta() {
-        return Double.valueOf(this.txtDelta.getText());
+    public double getS() {
+        return Double.valueOf(this.txtS.getText());
     }
 
     /**
@@ -128,7 +128,7 @@ public class SIRPanel extends DeactivatablePanel {
     @Override
     public void enableComponents() {
         this.txtTau.setEnabled(true);
-        this.txtDelta.setEnabled(true);
+        this.txtS.setEnabled(true);
         this.txtGamma.setEnabled(true);
         this.txtMu.setEnabled(true);
     }
@@ -139,7 +139,7 @@ public class SIRPanel extends DeactivatablePanel {
     @Override
     public void diseableComponents() {
         this.txtTau.setEnabled(false);
-        this.txtDelta.setEnabled(false);
+        this.txtS.setEnabled(false);
         this.txtGamma.setEnabled(false);
         this.txtMu.setEnabled(false);
     }

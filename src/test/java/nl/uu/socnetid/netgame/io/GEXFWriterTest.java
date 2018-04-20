@@ -36,7 +36,7 @@ public class GEXFWriterTest {
     private UtilityFunction uf;
 
     // disease
-    private static final double delta = 8.4;
+    private static final double s     = 8.4;
     private static final double gamma = 0.1;
     private static final double mu    = 2.5;
     private static final int    tau   = 10;
@@ -66,7 +66,7 @@ public class GEXFWriterTest {
         this.network = new Network("GEXFWriter Test");
 
         this.uf = new IRTC(alpha, beta, c);
-        this.ds = new DiseaseSpecs(DiseaseType.SIR, tau, delta, gamma, mu);
+        this.ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
 
         this.actor1 = this.network.addActor(uf, ds, r);
         this.actor2 = this.network.addActor(uf, ds, r);

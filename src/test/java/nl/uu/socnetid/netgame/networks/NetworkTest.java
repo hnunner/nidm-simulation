@@ -14,8 +14,6 @@ import org.junit.Test;
 import nl.uu.socnetid.netgame.actors.Actor;
 import nl.uu.socnetid.netgame.diseases.DiseaseSpecs;
 import nl.uu.socnetid.netgame.diseases.types.DiseaseType;
-import nl.uu.socnetid.netgame.networks.Network;
-import nl.uu.socnetid.netgame.networks.NetworkTypes;
 import nl.uu.socnetid.netgame.utilities.Cumulative;
 import nl.uu.socnetid.netgame.utilities.UtilityFunction;
 
@@ -43,7 +41,7 @@ public class NetworkTest {
 
     // disease related
     private static final int    tau   = 10;
-    private static final double delta = 8.4;
+    private static final double s     = 8.4;
     private static final double gamma = 0.1;
     private static final double mu    = 2.5;
     private DiseaseSpecs ds;
@@ -57,7 +55,7 @@ public class NetworkTest {
         this.network = new Network("Network Test");
 
         this.uf = new Cumulative();
-        this.ds = new DiseaseSpecs(DiseaseType.SIR, tau, delta, gamma, mu);
+        this.ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
 
         this.actor1 = this.network.addActor(uf, ds);
         this.actor2 = this.network.addActor(uf, ds);

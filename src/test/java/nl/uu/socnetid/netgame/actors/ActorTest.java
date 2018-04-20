@@ -9,7 +9,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import nl.uu.socnetid.netgame.actors.Actor;
 import nl.uu.socnetid.netgame.diseases.DiseaseSpecs;
 import nl.uu.socnetid.netgame.diseases.types.DiseaseGroup;
 import nl.uu.socnetid.netgame.diseases.types.DiseaseType;
@@ -38,7 +37,7 @@ public class ActorTest {
 
     // disease related
     private static final int    tau   = 10;
-    private static final double delta = 8.4;
+    private static final double s     = 8.4;
     private static final double gamma = 0.1;
     private static final double mu    = 2.5;
     private DiseaseSpecs ds;
@@ -53,7 +52,7 @@ public class ActorTest {
         this.network = new Network("Actor Test");
 
         UtilityFunction uf = new Cumulative();
-        this.ds = new DiseaseSpecs(DiseaseType.SIR, tau, delta, gamma, mu);
+        this.ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
 
         this.actor1 = this.network.addActor(uf, this.ds);
         this.actor2 = this.network.addActor(uf, this.ds);
@@ -178,7 +177,7 @@ public class ActorTest {
     @Test
     public void testGetDiseaseSpecs() {
         assertNotNull(this.actor1.getDiseaseSpecs());
-        assertEquals(delta, this.actor1.getDiseaseSpecs().getDelta(), 0.0);
+        assertEquals(s, this.actor1.getDiseaseSpecs().getS(), 0.0);
         assertNotNull(this.actor2.getDiseaseSpecs());
         assertEquals(mu, this.actor2.getDiseaseSpecs().getMu(), 0.0);
         assertNotNull(this.actor5.getDiseaseSpecs());
@@ -298,7 +297,7 @@ public class ActorTest {
     @Test
     public void testValidInfect() {
         assertTrue(this.actor1.isSusceptible());
-        DiseaseSpecs dsValid = new DiseaseSpecs(DiseaseType.SIR, tau, delta, gamma, mu);
+        DiseaseSpecs dsValid = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
         this.actor1.infect(dsValid);
         assertTrue(this.actor1.isInfected());
     }
@@ -308,7 +307,7 @@ public class ActorTest {
      */
     @Test(expected = RuntimeException.class)
     public void testInvalidInfect() {
-        DiseaseSpecs dsInvalid = new DiseaseSpecs(DiseaseType.SIR, tau+1, delta, gamma, mu);
+        DiseaseSpecs dsInvalid = new DiseaseSpecs(DiseaseType.SIR, tau+1, s, gamma, mu);
         this.actor1.infect(dsInvalid);
     }
 
