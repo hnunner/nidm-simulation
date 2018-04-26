@@ -11,6 +11,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.log4j.Logger;
+import org.graphstream.algorithm.Toolkit;
 import org.graphstream.graph.implementations.SingleGraph;
 
 import nl.uu.socnetid.netgame.actors.Actor;
@@ -512,6 +513,33 @@ public class Network extends SingleGraph {
         while (listenersIt.hasNext()) {
             listenersIt.next().notifyActorRemoved(actorId);
         }
+    }
+
+    /**
+     * Gets the average degree of the network.
+     *
+     * @return the average degree of the network
+     */
+    public double getAvDegree() {
+        return Toolkit.averageDegree(this);
+    }
+
+    /**
+     * Gets the density of the network.
+     *
+     * @return the density of the network
+     */
+    public double getDensity() {
+        return Toolkit.density(this);
+    }
+
+    /**
+     * Gets the average clustering coefficient of the network.
+     *
+     * @return the average clustering coefficient of the network
+     */
+    public double getAvClustering() {
+        return Toolkit.averageClusteringCoefficient(this);
     }
 
 }

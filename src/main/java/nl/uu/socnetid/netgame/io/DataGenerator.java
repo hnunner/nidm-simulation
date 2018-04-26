@@ -125,10 +125,14 @@ public class DataGenerator implements ActorListener, SimulationListener {
                     "ties broken with infection present",
                     "duration of infection",
                     //"network type before infection present", "network type after infection present",
-                    "1st order density (pre-infection)", "2nd order density (pre-infection)",
-                    "1st order density (post-infection)", "2nd order density (post-infection)",
-                    "clustering (pre-infection)",
-                    "clustering (post-infection)",
+                    //"1st order density (pre-infection)", "2nd order density (pre-infection)",
+                    //"1st order density (post-infection)", "2nd order density (post-infection)",
+                    "density (pre-infection)",
+                    "average degree (pre-infection)",
+                    "average clustering (pre-infection)",
+                    "density (post-infection)",
+                    "average degree (post-infection)",
+                    "average clustering (post-infection)",
                     "filename"
                     ));
 
@@ -197,9 +201,9 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                         simulation.simulate(maxRounds);
                                                         //NetworkTypes networkTypeBeforeInfection = network.getType();
                                                         // TODO implement
-                                                        double firstOrderDensityPre = 0.0;
-                                                        double secondOrderDensityPre = 0.0;
-                                                        double clusteringPre = 0.0;
+                                                        double densityPre = network.getDensity();
+                                                        double avDegreePre = network.getAvDegree();
+                                                        double avClusteringPre = network.getAvClustering();
 
                                                         // infect random actor
                                                         network.infectRandomActor(ds);
@@ -210,9 +214,9 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                         simulation.simulate(maxRounds);
                                                         //NetworkTypes networkTypeAfterInfection = network.getType();
                                                         // TODO implement
-                                                        double firstOrderDensityPost = 0.0;
-                                                        double secondOrderDensityPost = 0.0;
-                                                        double clusteringPost = 0.0;
+                                                        double densityPost = network.getDensity();
+                                                        double avDegreePost = network.getAvDegree();
+                                                        double avClusteringPost = network.getAvClustering();
 
                                                         // stop recording GEXF file
                                                         gexfWriter.stopRecording();
@@ -239,12 +243,12 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                                 Integer.toString(this.roundsLastInfection),
                                                                 //networkTypeBeforeInfection.toString(),
                                                                 //networkTypeAfterInfection.toString(),
-                                                                Double.toString(firstOrderDensityPre),
-                                                                Double.toString(firstOrderDensityPost),
-                                                                Double.toString(secondOrderDensityPre),
-                                                                Double.toString(secondOrderDensityPost),
-                                                                Double.toString(clusteringPre),
-                                                                Double.toString(clusteringPost),
+                                                                Double.toString(densityPre),
+                                                                Double.toString(avDegreePre),
+                                                                Double.toString(avClusteringPre),
+                                                                Double.toString(densityPost),
+                                                                Double.toString(avDegreePost),
+                                                                Double.toString(avClusteringPost),
                                                                 filename
                                                         ));
                                                     }
