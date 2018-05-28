@@ -63,13 +63,14 @@ public class DataGenerator implements ActorListener, SimulationListener {
      */
     public void generateData() {
 
+        // ---------- INITIALIZATIONS ---------- //
         // network size
-        int[] Ns = new int[] {5, 10};     //, 15, 20};     //, 25, 50, 75, 100};
+        int[] Ns = new int[] {5, 10, 15, 20, 25, 50, 75, 100};
 
         // utility
         double[] alphas = new double[] {10.0};
         double[] betas  = new double[] {2.0, 8.0};
-        double[] cs     = new double[] {9.0};     //, 11.0};
+        double[] cs     = new double[] {9.0, 11.0};
 
         // disease
         DiseaseType diseaseType = DiseaseType.SIR;
@@ -79,7 +80,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
         double[] mus    = new double[] {1.0, 1.5};
 
         // risk behavior
-        double[] rs = new double[] {0.5, 1.0, 1.5};
+        double[] rs = new double[] {0.0, 1.0, 2.0};
 
         // initial network
         boolean[] startWithEmptyNetworks = new boolean[] {true, false};
@@ -89,10 +90,10 @@ public class DataGenerator implements ActorListener, SimulationListener {
                 * ss.length * gammas.length * mus.length * rs.length * startWithEmptyNetworks.length;
 
         // simulations per unique parameter combination
-        int simsPerUpc = 10;
+        int simsPerUpc = 100;
 
         // maximum rounds to simulate
-        int maxRounds = 500;
+        int maxRounds = 2000;
 
         // COUNTERS
         // simulation in total
@@ -104,6 +105,13 @@ public class DataGenerator implements ActorListener, SimulationListener {
         String outputDir = GEXFWriter.DEFAULT_EXPORT_DIR
                         + (new SimpleDateFormat("yyyyMMdd-HHmmss")).format(new Date()) + "/";
         String csvFile = outputDir + "summary.csv";
+
+        // GEXF file generation?
+        boolean gexfOutput = false;
+
+
+        // ---------- SIMULATION ---------- //
+
         try {
             // create export directory if it does not exist
             File directory = new File(outputDir);
@@ -156,26 +164,41 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                         // create network
                                                         Network network = new Network();
 
-                                                        // start recording GEXF file
+
+                                                        // add noise to risk factor
+                                                        double min = rs[0];
+                                                        double max = rs[2];
+                                                        if (r < rs[1]) {
+                                                            max = rs[1];
+                                                        } else if (r > rs[1]) {
+                                                            min = rs[1];
+                                                        }
+                                                        double randR = min + Math.random() * (max - min);
+
+
                                                         GEXFWriter gexfWriter = new GEXFWriter();
-                                                        StringBuilder sb = new StringBuilder(outputDir);
-                                                        sb.append("sim-").append(++sim).append("_");
-                                                        sb.append("N-").append(N).append("_");
-                                                        sb.append("alpha-").append(alpha).append("_");
-                                                        sb.append("beta-").append(beta).append("_");
-                                                        sb.append("c-").append(c).append("_");
-                                                        sb.append("tau-").append(tau).append("_");
-                                                        sb.append("s-").append(s).append("_");
-                                                        sb.append("gamma-").append(gamma).append("_");
-                                                        sb.append("mu-").append(mu).append("_");
-                                                        sb.append("r-").append(r).append("_");
-                                                        sb.append("emptyNetwork-").append(
-                                                                startWithEmptyNetwork ? "yes" : "no").append("_");
-                                                        sb.append("upc-").append(upc).append("_");
-                                                        sb.append("simUpc-").append(simPerUpc);
-                                                        sb.append(".gexf").toString();
-                                                        String filename = sb.toString();
-                                                        gexfWriter.startRecording(network, filename);
+                                                        String gexfFilename = "NA";
+                                                        if (gexfOutput) {
+                                                            // start recording GEXF file
+                                                            StringBuilder sb = new StringBuilder(outputDir);
+                                                            sb.append("sim-").append(++sim).append("_");
+                                                            sb.append("N-").append(N).append("_");
+                                                            sb.append("alpha-").append(alpha).append("_");
+                                                            sb.append("beta-").append(beta).append("_");
+                                                            sb.append("c-").append(c).append("_");
+                                                            sb.append("tau-").append(tau).append("_");
+                                                            sb.append("s-").append(s).append("_");
+                                                            sb.append("gamma-").append(gamma).append("_");
+                                                            sb.append("mu-").append(mu).append("_");
+                                                            sb.append("r-").append(randR).append("_");
+                                                            sb.append("emptyNetwork-").append(
+                                                                    startWithEmptyNetwork ? "yes" : "no").append("_");
+                                                            sb.append("upc-").append(upc).append("_");
+                                                            sb.append("simUpc-").append(simPerUpc);
+                                                            sb.append(".gexf").toString();
+                                                            gexfFilename = sb.toString();
+                                                            gexfWriter.startRecording(network, gexfFilename);
+                                                        }
 
                                                         // create utility and disease specs
                                                         UtilityFunction uf = new IRTC(alpha, beta, c);
@@ -184,7 +207,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
 
                                                         // add actors
                                                         for (int i = 0; i < N; i++) {
-                                                            Actor actor = network.addActor(uf, ds, r);
+                                                            Actor actor = network.addActor(uf, ds, randR);
                                                             actor.addActorListener(this);
                                                         }
 
@@ -200,7 +223,6 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                         simulation.addSimulationListener(this);
                                                         simulation.simulate(maxRounds);
                                                         //NetworkTypes networkTypeBeforeInfection = network.getType();
-                                                        // TODO implement
                                                         double densityPre = network.getDensity();
                                                         double avDegreePre = network.getAvDegree();
                                                         double avClusteringPre = network.getAvClustering();
@@ -213,13 +235,14 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                         // simulate with disease present
                                                         simulation.simulate(maxRounds);
                                                         //NetworkTypes networkTypeAfterInfection = network.getType();
-                                                        // TODO implement
                                                         double densityPost = network.getDensity();
                                                         double avDegreePost = network.getAvDegree();
                                                         double avClusteringPost = network.getAvClustering();
 
                                                         // stop recording GEXF file
-                                                        gexfWriter.stopRecording();
+                                                        if (gexfOutput) {
+                                                            gexfWriter.stopRecording();
+                                                        }
 
                                                         // add result to overview CSV
                                                         CSVUtils.writeLine(csvWriter, Arrays.asList(
@@ -232,7 +255,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                                 Double.toString(s),
                                                                 Double.toString(gamma),
                                                                 Double.toString(mu),
-                                                                Double.toString(r),
+                                                                Double.toString(randR),
                                                                 startWithEmptyNetwork ? "empty" : "full",
                                                                 Integer.toString(upc),
                                                                 Integer.toString(simPerUpc),
@@ -249,7 +272,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                                 Double.toString(densityPost),
                                                                 Double.toString(avDegreePost),
                                                                 Double.toString(avClusteringPost),
-                                                                filename
+                                                                gexfFilename
                                                         ));
                                                     }
                                                     // after each unique parameter combination: flush overview CSV
