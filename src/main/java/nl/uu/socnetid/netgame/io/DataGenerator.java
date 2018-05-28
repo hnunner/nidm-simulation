@@ -70,7 +70,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
         // utility
         double[] alphas = new double[] {10.0};
         double[] betas  = new double[] {2.0, 8.0};
-        double[] cs     = new double[] {9.0, 11.0};
+        double[] cs     = new double[] {9.0}; //, 11.0};
 
         // disease
         DiseaseType diseaseType = DiseaseType.SIR;
