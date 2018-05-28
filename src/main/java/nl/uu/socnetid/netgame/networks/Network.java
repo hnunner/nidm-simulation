@@ -175,6 +175,15 @@ public class Network extends SingleGraph {
     }
 
     /**
+     * Gets the number of actors in the network.
+     *
+     * @return the number of actor in the network.
+     */
+    public int getN() {
+        return this.getActors().size();
+    }
+
+    /**
      * Gets all susceptible actors within the network.
      *
      * @return all susceptible actors within the network.

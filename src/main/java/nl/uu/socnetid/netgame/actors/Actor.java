@@ -54,6 +54,7 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      */
     protected Actor(String id, Network network) {
         super(network, id);
+
     }
 
     /**
@@ -111,6 +112,22 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      */
     public Network getNetwork() {
         return (Network) super.getGraph();
+    }
+
+    /**
+     * Gets the number of network decisions an actor is allowed to make in a single round.
+     *
+     * @return the number of network decisions
+     */
+    private int getNumberOfNetworkDecisions() {
+
+        // TODO put constants (also Datagenerator) at one central place
+        int decisionEveryXActors = 5;
+
+        int N = getNetwork().getN();
+        int ndecs = N / decisionEveryXActors;
+        ndecs += N % decisionEveryXActors > 0 ? 1 : 0;
+        return ndecs;
     }
 
     /**
@@ -415,25 +432,29 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
         // actors try to connect or disconnect first in random order
         boolean tryToConnectFirst = ThreadLocalRandom.current().nextBoolean();
 
-        // 1st try to connect - 2nd try to disconnect if no new connection desired
-        if (tryToConnectFirst) {
+        int numberOfNetworkDecisions = getNumberOfNetworkDecisions();
+        for (int i = 0; i < numberOfNetworkDecisions; i++) {
 
-            // try to connect
-            if (!tryToConnect()) {
-                // try to disconnect
-                if (!tryToDisconnect()) {
-                    satisfied = true;
-                }
-            }
+            // 1st try to connect - 2nd try to disconnect if no new connection desired
+            if (tryToConnectFirst) {
 
-        // 1st try to disconnect - 2nd try to connect if no disconnection desired
-        } else {
-
-            // try to disconnect
-            if (!tryToDisconnect()) {
                 // try to connect
                 if (!tryToConnect()) {
-                    satisfied = true;
+                    // try to disconnect
+                    if (!tryToDisconnect()) {
+                        satisfied = true;
+                    }
+                }
+
+            // 1st try to disconnect - 2nd try to connect if no disconnection desired
+            } else {
+
+                // try to disconnect
+                if (!tryToDisconnect()) {
+                    // try to connect
+                    if (!tryToConnect()) {
+                        satisfied = true;
+                    }
                 }
             }
         }
