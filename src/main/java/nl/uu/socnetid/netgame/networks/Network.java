@@ -184,6 +184,16 @@ public class Network extends SingleGraph {
     }
 
     /**
+     * The formula was fitted using the average degree per actor,
+     * dependent on the network size.
+     *
+     * @return the average degree dependent on network size
+     */
+    public double getAverageDegree() {
+        return 0.9185 * Math.pow(this.getN(), 0.5934);
+    }
+
+    /**
      * Gets all susceptible actors within the network.
      *
      * @return all susceptible actors within the network.

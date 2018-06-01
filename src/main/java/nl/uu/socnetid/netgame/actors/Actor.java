@@ -116,18 +116,12 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
 
     /**
      * Gets the number of network decisions an actor is allowed to make in a single round.
+     * This depends on the average number of connections an actor has.
      *
      * @return the number of network decisions
      */
-    private int getNumberOfNetworkDecisions() {
-
-        // TODO put constants (also Datagenerator) at one central place
-        int decisionEveryXActors = 5;
-
-        int N = getNetwork().getN();
-        int ndecs = N / decisionEveryXActors;
-        ndecs += N % decisionEveryXActors > 0 ? 1 : 0;
-        return ndecs;
+    public int getNumberOfNetworkDecisions() {
+        return (int) Math.round(this.getNetwork().getAverageDegree());
     }
 
     /**
