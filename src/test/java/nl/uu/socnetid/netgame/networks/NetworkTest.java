@@ -298,4 +298,68 @@ public class NetworkTest {
 
     }
 
+    /**
+     * Test whether the average degree is computed correctly.
+     */
+    @Test
+    public void testGetAverageDegree() {
+        Network network = new Network("Network Average Degree Test");
+
+        // f(5) = 2.28
+        for (int i = 0; i < 5; i++) {
+            network.addActor(uf, ds);
+        }
+        assertEquals(5, network.getN());
+        assertEquals(2.28, network.getAverageDegree(), 0.2);
+
+        // f(10) = 3.58
+        for (int i = 0; i < 5; i++) {
+            network.addActor(uf, ds);
+        }
+        assertEquals(10, network.getN());
+        assertEquals(3.58, network.getAverageDegree(), 0.2);
+
+        // f(15) = 4.62
+        for (int i = 0; i < 5; i++) {
+            network.addActor(uf, ds);
+        }
+        assertEquals(15, network.getN());
+        assertEquals(4.62, network.getAverageDegree(), 0.2);
+
+        // f(20) = 5.49
+        for (int i = 0; i < 5; i++) {
+            network.addActor(uf, ds);
+        }
+        assertEquals(20, network.getN());
+        assertEquals(5.49, network.getAverageDegree(), 0.2);
+
+        // f(25) = 6.25
+        for (int i = 0; i < 5; i++) {
+            network.addActor(uf, ds);
+        }
+        assertEquals(25, network.getN());
+        assertEquals(6.25, network.getAverageDegree(), 0.2);
+
+        // f(50) = 9.33
+        for (int i = 0; i < 25; i++) {
+            network.addActor(uf, ds);
+        }
+        assertEquals(50, network.getN());
+        assertEquals(9.33, network.getAverageDegree(), 0.2);
+
+        // f(75) = 11.89
+        for (int i = 0; i < 25; i++) {
+            network.addActor(uf, ds);
+        }
+        assertEquals(75, network.getN());
+        assertEquals(11.89, network.getAverageDegree(), 0.2);
+
+        // f(100) = 14.13
+        for (int i = 0; i < 25; i++) {
+            network.addActor(uf, ds);
+        }
+        assertEquals(100, network.getN());
+        assertEquals(14.13, network.getAverageDegree(), 0.2);
+    }
+
 }

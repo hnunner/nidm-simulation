@@ -85,15 +85,15 @@ public class DataGenerator implements ActorListener, SimulationListener {
         // initial network
         boolean[] startWithEmptyNetworks = new boolean[] {true, false};
 
-        // unique parameter combinations
-        int upcs = Ns.length * alphas.length * betas.length * cs.length * taus.length
-                * ss.length * gammas.length * mus.length * rs.length * startWithEmptyNetworks.length;
-
         // simulations per unique parameter combination
-        int simsPerUpc = 100;
+        int simsPerUpc = 10;
 
         // maximum rounds to simulate
         int maxRounds = 2000;
+
+        // unique parameter combinations
+        int upcs = Ns.length * alphas.length * betas.length * cs.length * taus.length
+                * ss.length * gammas.length * mus.length * rs.length * startWithEmptyNetworks.length;
 
         // COUNTERS
         // simulation in total
@@ -161,6 +161,8 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                             + upcs);
 
                                                     for (int simPerUpc = 1; simPerUpc <= simsPerUpc; simPerUpc++) {
+                                                        sim++;
+
                                                         // create network
                                                         Network network = new Network();
 
@@ -181,7 +183,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                         if (gexfOutput) {
                                                             // start recording GEXF file
                                                             StringBuilder sb = new StringBuilder(outputDir);
-                                                            sb.append("sim-").append(++sim).append("_");
+                                                            sb.append("sim-").append(sim).append("_");
                                                             sb.append("N-").append(N).append("_");
                                                             sb.append("alpha-").append(alpha).append("_");
                                                             sb.append("beta-").append(beta).append("_");
