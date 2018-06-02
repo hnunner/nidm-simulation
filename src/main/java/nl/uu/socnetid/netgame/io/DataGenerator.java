@@ -86,7 +86,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
         boolean[] startWithEmptyNetworks = new boolean[] {true, false};
 
         // simulations per unique parameter combination
-        int simsPerUpc = 10;
+        int simsPerUpc = 100;
 
         // maximum rounds to simulate
         int maxRounds = 2000;
