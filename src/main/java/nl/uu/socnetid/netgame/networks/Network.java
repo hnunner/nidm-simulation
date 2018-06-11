@@ -453,7 +453,7 @@ public class Network extends SingleGraph {
             if (firstActor == null) {
                 firstActor = actor;
             } else {
-                ring = ring && firstActor.isConnectedTo(actor);
+                ring = ring && firstActor.hasConnectionTo(actor);
             }
         }
 
