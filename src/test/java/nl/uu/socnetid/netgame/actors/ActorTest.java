@@ -1,10 +1,14 @@
 package nl.uu.socnetid.netgame.actors;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -202,97 +206,6 @@ public class ActorTest {
     }
 
     /**
-     * Test of seeking costly connections.
-     */
-    @Test
-    public void testSeekCostlyConnections() {
-        // NOTE: test whether actors are capable of (not) finding costly connections,
-        // more elaborated tests regarding utilities can be found within the tests of specific utility functions
-        assertNull(this.actor1.seekCostlyConnection());
-        assertNull(this.actor2.seekCostlyConnection());
-        assertNull(this.actor3.seekCostlyConnection());
-        assertNull(this.actor4.seekCostlyConnection());
-        assertNull(this.actor5.seekCostlyConnection());
-        assertNull(this.actor6.seekCostlyConnection());
-    }
-
-    /**
-     * Test of seeking new connections.
-     */
-    @Test
-    public void testSeekNewConnections() {
-        // NOTE: test whether actors are capable of (not) finding costly connections,
-        // more elaborated tests regarding utilities can be found within the tests of specific utility functions
-        Actor newConnectionActor1 = this.actor1.seekNewConnection();
-        assertNotNull(newConnectionActor1);
-        assertTrue(newConnectionActor1.equals(this.actor5)
-                || newConnectionActor1.equals(this.actor6)
-                && !newConnectionActor1.equals(this.actor2)
-                && !newConnectionActor1.equals(this.actor3)
-                && !newConnectionActor1.equals(this.actor4));
-        assertNotNull(this.actor2.seekNewConnection());
-        assertNotNull(this.actor3.seekNewConnection());
-        assertNotNull(this.actor4.seekNewConnection());
-        assertNotNull(this.actor5.seekNewConnection());
-        Actor newConnectionActor6 = this.actor6.seekNewConnection();
-        assertNotNull(newConnectionActor6);
-        assertTrue(newConnectionActor6.equals(this.actor1)
-                || newConnectionActor6.equals(this.actor2)
-                || newConnectionActor6.equals(this.actor3)
-                || newConnectionActor6.equals(this.actor4)
-                || newConnectionActor6.equals(this.actor5));
-    }
-
-    /**
-     * Test of getting a random connection of a specific actor.
-     */
-    @Test
-    public void testGetRandomConnection() {
-        Actor randomConnectionOfActor1 = this.actor1.getRandomConnection();
-        assertTrue(randomConnectionOfActor1.equals(this.actor2)
-                || randomConnectionOfActor1.equals(this.actor3)
-                || randomConnectionOfActor1.equals(this.actor4));
-        assertTrue(!randomConnectionOfActor1.equals(this.actor5)
-                && !randomConnectionOfActor1.equals(this.actor6));
-
-        Actor randomConnectionOfActor2 = this.actor2.getRandomConnection();
-        assertTrue(randomConnectionOfActor2.equals(this.actor1));
-        assertTrue(!randomConnectionOfActor2.equals(this.actor3)
-                && !randomConnectionOfActor2.equals(this.actor4)
-                && !randomConnectionOfActor2.equals(this.actor5)
-                && !randomConnectionOfActor2.equals(this.actor6));
-
-
-        Actor randomConnectionOfActor5 = this.actor5.getRandomConnection();
-        assertNull(randomConnectionOfActor5);
-
-        Actor randomConnectionOfActor6 = this.actor6.getRandomConnection();
-        assertNull(randomConnectionOfActor6);
-    }
-
-    /**
-     * Test of getting a random not yet connected actor for a specific actor.
-     */
-    @Test
-    public void testGetRandomNotYetConnectedActorForActor() {
-        Actor randomNotYetConnectedActorForActor1 = this.actor1.getRandomNotYetConnectedActor();
-        assertTrue(randomNotYetConnectedActorForActor1.equals(this.actor5)
-                || randomNotYetConnectedActorForActor1.equals(this.actor6));
-        assertTrue(!randomNotYetConnectedActorForActor1.equals(this.actor2)
-                && !randomNotYetConnectedActorForActor1.equals(this.actor3)
-                && !randomNotYetConnectedActorForActor1.equals(this.actor4));
-
-
-
-        Actor randomNotYetConnectedActorForActor6 = this.actor6.getRandomNotYetConnectedActor();
-        assertTrue(randomNotYetConnectedActorForActor6.equals(this.actor1)
-                || randomNotYetConnectedActorForActor6.equals(this.actor2)
-                || randomNotYetConnectedActorForActor6.equals(this.actor3)
-                || randomNotYetConnectedActorForActor6.equals(this.actor4)
-                || randomNotYetConnectedActorForActor6.equals(this.actor5));
-    }
-
-    /**
      * Test whether a actor is being successfully infected with a valid disease.
      */
     @Test
@@ -375,6 +288,110 @@ public class ActorTest {
         }
         assertEquals(100, network.getN());
         assertEquals(14, actor.getNumberOfNetworkDecisions());
+    }
+
+    /**
+     * Test whether a new connection is considered valuable.
+     */
+    @Test
+    public void testNewConnectionValuable() {
+        assertTrue(this.actor1.newConnectionValuable(this.actor6));
+
+        Network networkCostly = new Network("Costly Connections Test");
+        UtilityFunction ufCostly = new Cumulative(-1.0, 2.0);
+        Actor actorCostly1 = networkCostly.addActor(ufCostly, this.ds);
+        Actor actorCostly2 = networkCostly.addActor(ufCostly, this.ds);
+        assertFalse(actorCostly1.newConnectionValuable(actorCostly2));
+    }
+
+    /**
+     * Test whether an existing connection is considered too costly.
+     */
+    @Test
+    public void testExistingConnectionTooCostly() {
+        assertFalse(this.actor1.existingConnectionTooCostly(this.actor2));
+
+        Network networkCostly = new Network("Costly Connections Test");
+        UtilityFunction ufCostly = new Cumulative(-1.0, 2.0);
+        Actor actorCostly1 = networkCostly.addActor(ufCostly, this.ds);
+        Actor actorCostly2 = networkCostly.addActor(ufCostly, this.ds);
+        actorCostly1.addConnection(actorCostly2);
+        assertTrue(actorCostly1.existingConnectionTooCostly(actorCostly2));
+    }
+
+    /**
+     * Test whether the correct amount of random co-actors is retrieved.
+     */
+    @Test
+    public void testGetRandomCoActors() {
+        for (int i = 1; i < this.network.getActors().size(); i++) {
+            Collection<Actor> randomCoActors = this.actor1.getRandomCoActors(i);
+            assertEquals(i, randomCoActors.size());
+            Set<Actor> randomCoActorsSet = new HashSet<Actor>(randomCoActors);
+            assertEquals(randomCoActors.size(), randomCoActorsSet.size());
+        }
+    }
+
+    /**
+     * Test whether the correct amount of random co-actors is retrieved.
+     */
+    @Test(expected = RuntimeException.class)
+    public void testGetRandomCoActorsInvalidAmount() {
+        this.actor1.getRandomCoActors(this.network.getActors().size());
+    }
+
+    /**
+     * Test whether connections exist between actors.
+     */
+    @Test
+    public void testHasDirectConnectionTo() {
+        assertTrue(this.actor1.hasDirectConnectionTo(this.actor2));
+        assertTrue(this.actor1.hasDirectConnectionTo(this.actor3));
+        assertTrue(this.actor1.hasDirectConnectionTo(this.actor4));
+        assertFalse(this.actor1.hasDirectConnectionTo(this.actor5));
+        assertFalse(this.actor1.hasDirectConnectionTo(this.actor6));
+
+        assertTrue(this.actor2.hasDirectConnectionTo(this.actor1));
+        assertFalse(this.actor2.hasDirectConnectionTo(this.actor3));
+        assertFalse(this.actor2.hasDirectConnectionTo(this.actor4));
+        assertFalse(this.actor2.hasDirectConnectionTo(this.actor5));
+        assertFalse(this.actor2.hasDirectConnectionTo(this.actor6));
+
+        assertTrue(this.actor3.hasDirectConnectionTo(this.actor1));
+        assertFalse(this.actor3.hasDirectConnectionTo(this.actor2));
+        assertTrue(this.actor3.hasDirectConnectionTo(this.actor4));
+        assertFalse(this.actor3.hasDirectConnectionTo(this.actor5));
+        assertFalse(this.actor3.hasDirectConnectionTo(this.actor6));
+
+        assertTrue(this.actor4.hasDirectConnectionTo(this.actor1));
+        assertFalse(this.actor4.hasDirectConnectionTo(this.actor2));
+        assertTrue(this.actor4.hasDirectConnectionTo(this.actor3));
+        assertFalse(this.actor4.hasDirectConnectionTo(this.actor5));
+        assertFalse(this.actor4.hasDirectConnectionTo(this.actor6));
+
+        assertFalse(this.actor5.hasDirectConnectionTo(this.actor1));
+        assertFalse(this.actor5.hasDirectConnectionTo(this.actor2));
+        assertFalse(this.actor5.hasDirectConnectionTo(this.actor3));
+        assertFalse(this.actor5.hasDirectConnectionTo(this.actor4));
+        assertFalse(this.actor5.hasDirectConnectionTo(this.actor6));
+
+        assertFalse(this.actor6.hasDirectConnectionTo(this.actor1));
+        assertFalse(this.actor6.hasDirectConnectionTo(this.actor2));
+        assertFalse(this.actor6.hasDirectConnectionTo(this.actor3));
+        assertFalse(this.actor6.hasDirectConnectionTo(this.actor4));
+        assertFalse(this.actor6.hasDirectConnectionTo(this.actor5));
+    }
+
+    /**
+     * Test whether connections exist between actors.
+     */
+    @Test
+    public void testHasConnectionTo() {
+        assertTrue(this.actor2.hasConnectionTo(this.actor1));
+        assertTrue(this.actor2.hasConnectionTo(this.actor3));
+        assertTrue(this.actor2.hasConnectionTo(this.actor4));
+        assertFalse(this.actor2.hasConnectionTo(this.actor5));
+        assertFalse(this.actor2.hasConnectionTo(this.actor6));
     }
 
 }

@@ -3,6 +3,7 @@ package nl.uu.socnetid.netgame.actors;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -304,24 +305,6 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
     }
 
     /**
-     * Checks whether the actor is connected somehow to another actor.
-     *
-     * @param actor
-     *          the actor to check for an existing connection
-     * @return true if the actors are somehow connected, false otherwise
-     */
-    public boolean isConnectedTo(Actor actor) {
-        Iterator<Node> bfIt = this.getBreadthFirstIterator();
-        while (bfIt.hasNext()) {
-            Node node = bfIt.next();
-            if (node.getId() == actor.getId()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Gets whether the actor is satisfied with the current connections.
      *
      * @return true if the actor is satisfied with the current connections, false otherwise
@@ -420,35 +403,24 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      * or disconnects from another {@link Actor} if it produces higher utility.
      */
     public void computeRound() {
-        // starting assumption that current connections are not optimal
-        boolean satisfied = false;
+        // starting assumption: current connections are not satisfactory
+        boolean satisfied = true;
 
-        // actors try to connect or disconnect first in random order
-        boolean tryToConnectFirst = ThreadLocalRandom.current().nextBoolean();
+        // get random collection of co-actors
+        Collection<Actor> randomCoActors = getRandomCoActors(getNumberOfNetworkDecisions());
 
-        int numberOfNetworkDecisions = getNumberOfNetworkDecisions();
-        for (int i = 0; i < numberOfNetworkDecisions; i++) {
-
-            // 1st try to connect - 2nd try to disconnect if no new connection desired
-            if (tryToConnectFirst) {
-
-                // try to connect
-                if (!tryToConnect()) {
-                    // try to disconnect
-                    if (!tryToDisconnect()) {
-                        satisfied = true;
-                    }
+        Iterator<Actor> it = randomCoActors.iterator();
+        while (it.hasNext()) {
+            Actor randomCoActor = it.next();
+            if (this.hasDirectConnectionTo(randomCoActor)) {
+                if (existingConnectionTooCostly(randomCoActor)) {
+                    disconnectFrom(randomCoActor);
+                    satisfied = false;
                 }
-
-            // 1st try to disconnect - 2nd try to connect if no disconnection desired
             } else {
-
-                // try to disconnect
-                if (!tryToDisconnect()) {
-                    // try to connect
-                    if (!tryToConnect()) {
-                        satisfied = true;
-                    }
+                if (newConnectionValuable(randomCoActor)) {
+                    connectTo(randomCoActor);
+                    satisfied = false;
                 }
             }
         }
@@ -460,85 +432,59 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
     }
 
     /**
-     * A actor tries to connect. That means she first seeks a connection that gives higher
-     * utility as the current utility; and then requests the corresponding actor to establish
-     * the new connection.
-     */
-    private boolean tryToConnect() {
-        Actor potentialNewConnection = seekNewConnection();
-        if (potentialNewConnection != null) {
-            // other actor accepting connection?
-            if (potentialNewConnection.acceptConnection(this)) {
-                addConnection(potentialNewConnection);
-                trackAcceptedRequestOut();
-            } else {
-                trackDeclinedRequestOut();
-            }
-        }
-        // the desire to create new connection counts as a move
-        return (potentialNewConnection != null);
-    }
-
-    /**
-     * A actor tries to disconnect. That means she seeks a connection that creates more costs
-     * than benefits. In case she finds such a connection, she removes the costly connection.
-     */
-    private boolean tryToDisconnect() {
-        Actor costlyConnection = seekCostlyConnection();
-        if (costlyConnection != null) {
-            this.removeConnection(costlyConnection);
-            this.trackBrokenTieActive();
-            costlyConnection.notifyBrokenTie(this);
-        }
-        // the desire to remove a connection counts as a move
-        return (costlyConnection != null);
-    }
-
-
-
-    /**
-     * Tries to find a new desirable connection. That is, a connection that creates heigher utility than
-     * the utility the actor currently receives.
+     * Checks whether a new connection adds value to the overall utility of an actor.
      *
-     * @return the actor to create a desirable connection to, null if no such connection exists
+     * @param newConnection
+     *          the actor on the other side of the new connection
+     * @return true if the new connection adds value to the overall utility of an actor
      */
-    public Actor seekNewConnection() {
-        // should this consider non-infected first?
-        // Q&A Feb 20th 2018: no, as even an infected might provide
-        // high utility through many indirect connections
-        Actor potentialConnection = getRandomNotYetConnectedActor();
-
+    public boolean newConnectionValuable(Actor newConnection) {
         List<Actor> potentialConnections = new ArrayList<Actor>(this.getConnections());
-        potentialConnections.add(potentialConnection);
-
-        // connect if new connection creates higher or equal utility
-        if (this.getUtility(potentialConnections).getOverallUtility() >= this.getUtility().getOverallUtility()) {
-            return potentialConnection;
-        }
-        return null;
+        potentialConnections.add(newConnection);
+        return this.getUtility(potentialConnections).getOverallUtility() >= this.getUtility().getOverallUtility();
     }
 
     /**
-     * Tries to find a connection that creates higher costs than benefits.
+     * Creates a connection between this actor and another actor.
      *
-     * @return the actor whose connection to creates higher costs than benefits, null if no such connection exists
+     * @param actor
+     *          the actor to connect to
+     * @return true if connection was accepted and created, false otherwise
      */
-    public Actor seekCostlyConnection() {
-
-        // should this consider infected first?
-        // Q&A Feb 20th 2018: no, as even an infected might provide
-        // high utility through many indirect connections
-        Actor potentialRemoval = getRandomConnection();
-
-        List<Actor> potentialConnections = new ArrayList<Actor>(this.getConnections());
-        potentialConnections.remove(potentialRemoval);
-
-        // disconnect only if removal creates higher utility
-        if (this.getUtility(potentialConnections).getOverallUtility() > this.getUtility().getOverallUtility()) {
-            return potentialRemoval;
+    public boolean connectTo(Actor actor) {
+        // other actor accepting connection?
+        if (actor.acceptConnection(this)) {
+            addConnection(actor);
+            trackAcceptedRequestOut();
+            return true;
         }
+        trackDeclinedRequestOut();
+        return false;
+    }
 
-        return null;
+    /**
+     * Checks whether an existing connection creates more costs than it provides benefits.
+     *
+     * @param existingConnection
+     *          the actor on the other side of the existing connection
+     * @return true if the existing connection create more costs than it provides benefits
+     */
+    public boolean existingConnectionTooCostly(Actor existingConnection) {
+        List<Actor> potentialConnections = new ArrayList<Actor>(this.getConnections());
+        potentialConnections.remove(existingConnection);
+        return this.getUtility(potentialConnections).getOverallUtility() > this.getUtility().getOverallUtility();
+    }
+
+    /**
+     * Disconnects this actor from another actor.
+     *
+     * @param actor
+     *          the actor to disconnect from
+     */
+    public void disconnectFrom(Actor actor) {
+        this.removeConnection(actor);
+        this.trackBrokenTieActive();
+        actor.notifyBrokenTie(this);
     }
 
     /**
@@ -549,20 +495,12 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      * @return true if the connection is being accepted, false otherwise
      */
     public boolean acceptConnection(Actor newConnection) {
-        List<Actor> prospectiveConnections = new ArrayList<Actor>(this.getConnections());
-        prospectiveConnections.add(newConnection);
-
-        // accept connection if the new connection creates higher or equal utility
-        boolean accept = this.getUtility(prospectiveConnections).getOverallUtility()
-                >= this.getUtility().getOverallUtility();
-
-        // stats
+        boolean accept = newConnectionValuable(newConnection);
         if (accept) {
             trackAcceptedRequestIn();
         } else {
             trackDeclinedRequestIn();
         }
-
         return accept;
     }
 
@@ -577,32 +515,89 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
     }
 
     /**
-     * Gets a random connection.
+     * Gets a random collection of co-actors (no duplicates).
      *
-     * @return a random connection
+     * @param amount
+     *          the amount of co-actors
+     * @return a random collection of co-actors
      */
-    public Actor getRandomConnection() {
-        Collection<Actor> connections = this.getConnections();
-        if (connections.size() == 0) {
-            return null;
+    public Collection<Actor> getRandomCoActors(int amount) {
+        Collection<Actor> coActors = getCoActors();
+        if (amount > coActors.size()) {
+            throw new RuntimeException("Requested amount is larger than total number of co-actors!");
         }
-        int index = ThreadLocalRandom.current().nextInt(connections.size());
-        return (Actor) connections.toArray()[index];
+
+        Set<Actor> randomActors = new HashSet<Actor>();
+        while (randomActors.size() < amount) {
+            int index = ThreadLocalRandom.current().nextInt(coActors.size());
+            randomActors.add((Actor) coActors.toArray()[index]);
+        }
+
+        return randomActors;
     }
 
     /**
-     * Gets a random not yet connected co-actor.
+     * Helper class to ensure edge consistency: lower index comes first.
      *
-     * @return a random not yet connected co-actor
+     * @author Hendrik Nunner
      */
-    public Actor getRandomNotYetConnectedActor() {
-        ArrayList<Actor> noConnections = new ArrayList<Actor>(this.getCoActors());
-        noConnections.removeAll(this.getConnections());
-        if (noConnections.size() == 0) {
-            return null;
+    private class Connector {
+        private String edgeId;
+        private String idActor1;
+        private String idActor2;
+
+        private Actor actor1;
+        private Actor actor2;
+
+        protected Connector(Actor actor1, Actor actor2) {
+            // edge id consistency: lower index comes always first
+            ArrayList<Actor> actors = new ArrayList<Actor>();
+            actors.add(actor1);
+            actors.add(actor2);
+            Collections.sort(actors);
+
+            this.actor1 = actors.get(0);
+            this.actor2 = actors.get(1);
+
+            this.edgeId = String.valueOf(this.actor1.getId()) + String.valueOf(this.actor2.getId());
+            this.idActor1 = String.valueOf(this.actor1.getId());
+            this.idActor2 = String.valueOf(this.actor2.getId());
         }
-        int index = ThreadLocalRandom.current().nextInt(noConnections.size());
-        return noConnections.get(index);
+
+        /**
+         * @return the edgeId
+         */
+        protected String getEdgeId() {
+            return edgeId;
+        }
+
+        /**
+         * @return the idActor1
+         */
+        protected String getIdActor1() {
+            return idActor1;
+        }
+
+        /**
+         * @return the idActor2
+         */
+        protected String getIdActor2() {
+            return idActor2;
+        }
+
+        /**
+         * @return the actor1
+         */
+        public Actor getActor1() {
+            return actor1;
+        }
+
+        /**
+         * @return the actor2
+         */
+        public Actor getActor2() {
+            return actor2;
+        }
     }
 
     /**
@@ -619,24 +614,44 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
             return;
         }
 
-        // edge id consistency
-        ArrayList<Actor> actors = new ArrayList<Actor>();
-        actors.add(this);
-        actors.add(newConnection);
-        Collections.sort(actors);
-
-        Actor actor1 = actors.get(0);
-        Actor actor2 = actors.get(1);
-
-        String edgeId = String.valueOf(actor1.getId()) + String.valueOf(actor2.getId());
-        String idActor1 = String.valueOf(actor1.getId());
-        String idActor2 = String.valueOf(actor2.getId());
+        Connector connector = new Connector(this, newConnection);
+        String edgeId = connector.getEdgeId();
 
         Network network = this.getNetwork();
         if (network.getEdge(edgeId) == null) {
-            network.addEdge(edgeId, idActor1, idActor2);
+            network.addEdge(edgeId, connector.getIdActor1(), connector.getIdActor2());
         }
-        notifyConnectionAdded(network.getEdge(edgeId), actor1, actor2);
+        notifyConnectionAdded(network.getEdge(edgeId), connector.getActor1(), connector.getActor2());
+    }
+
+    /**
+     * Checks whether the actor has a direct connection to another actor
+     *
+     * @param actor
+     *          the other actor to check the connection to
+     * @return true if there is a connection, false otherwise
+     */
+    public boolean hasDirectConnectionTo(Actor actor) {
+        Connector connector = new Connector(this, actor);
+        return this.getNetwork().getEdge(connector.getEdgeId()) != null;
+    }
+
+    /**
+     * Checks whether the actor has a connection somehow to another actor.
+     *
+     * @param actor
+     *          the actor to check for an existing connection
+     * @return true if the actors are somehow connected, false otherwise
+     */
+    public boolean hasConnectionTo(Actor actor) {
+        Iterator<Node> bfIt = this.getBreadthFirstIterator();
+        while (bfIt.hasNext()) {
+            Node node = bfIt.next();
+            if (node.getId() == actor.getId()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
