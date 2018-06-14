@@ -7,8 +7,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -325,19 +323,9 @@ public class ActorTest {
     @Test
     public void testGetRandomCoActors() {
         for (int i = 1; i < this.network.getActors().size(); i++) {
-            Collection<Actor> randomCoActors = this.actor1.getRandomCoActors(i);
-            assertEquals(i, randomCoActors.size());
-            Set<Actor> randomCoActorsSet = new HashSet<Actor>(randomCoActors);
-            assertEquals(randomCoActors.size(), randomCoActorsSet.size());
+            Collection<Actor> randomListOfCoActors = this.actor1.getRandomListOfCoActors(i);
+            assertEquals(i, randomListOfCoActors.size());
         }
-    }
-
-    /**
-     * Test whether the correct amount of random co-actors is retrieved.
-     */
-    @Test(expected = RuntimeException.class)
-    public void testGetRandomCoActorsInvalidAmount() {
-        this.actor1.getRandomCoActors(this.network.getActors().size());
     }
 
     /**
