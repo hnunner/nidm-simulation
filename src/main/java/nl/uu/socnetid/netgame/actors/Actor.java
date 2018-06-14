@@ -3,7 +3,6 @@ package nl.uu.socnetid.netgame.actors;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -55,7 +54,6 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      */
     protected Actor(String id, Network network) {
         super(network, id);
-
     }
 
     /**
@@ -407,7 +405,8 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
         boolean satisfied = true;
 
         // get random collection of co-actors
-        Collection<Actor> randomCoActors = getRandomCoActors(getNumberOfNetworkDecisions());
+        List<Actor> randomCoActors = getRandomListOfCoActors(getNumberOfNetworkDecisions());
+        Collections.shuffle(randomCoActors);
 
         Iterator<Actor> it = randomCoActors.iterator();
         while (it.hasNext()) {
@@ -515,25 +514,20 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
     }
 
     /**
-     * Gets a random collection of co-actors (no duplicates).
+     * Creates a collection of randomly selected co-actors.
      *
      * @param amount
-     *          the amount of co-actors
+     *          the amount of co-actors to add
      * @return a random collection of co-actors
      */
-    public Collection<Actor> getRandomCoActors(int amount) {
+    public List<Actor> getRandomListOfCoActors(int amount) {
+        List<Actor> collect = new ArrayList<Actor>(amount);
         Collection<Actor> coActors = getCoActors();
-        if (amount > coActors.size()) {
-            throw new RuntimeException("Requested amount is larger than total number of co-actors!");
-        }
-
-        Set<Actor> randomActors = new HashSet<Actor>();
-        while (randomActors.size() < amount) {
+        while (collect.size() < amount) {
             int index = ThreadLocalRandom.current().nextInt(coActors.size());
-            randomActors.add((Actor) coActors.toArray()[index]);
+            collect.add((Actor) coActors.toArray()[index]);
         }
-
-        return randomActors;
+        return collect;
     }
 
     /**
