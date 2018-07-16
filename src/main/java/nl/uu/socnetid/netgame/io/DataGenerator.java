@@ -5,7 +5,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.graphstream.graph.Edge;
@@ -13,11 +16,14 @@ import org.graphstream.graph.Edge;
 import nl.uu.socnetid.netgame.actors.Actor;
 import nl.uu.socnetid.netgame.actors.ActorListener;
 import nl.uu.socnetid.netgame.diseases.DiseaseSpecs;
+import nl.uu.socnetid.netgame.diseases.types.DiseaseGroup;
 import nl.uu.socnetid.netgame.diseases.types.DiseaseType;
 import nl.uu.socnetid.netgame.io.network.GEXFWriter;
 import nl.uu.socnetid.netgame.networks.Network;
 import nl.uu.socnetid.netgame.simulation.Simulation;
 import nl.uu.socnetid.netgame.simulation.SimulationListener;
+import nl.uu.socnetid.netgame.simulation.SimulationStage;
+import nl.uu.socnetid.netgame.stats.StatsComputer;
 import nl.uu.socnetid.netgame.utilities.IRTC;
 import nl.uu.socnetid.netgame.utilities.UtilityFunction;
 
@@ -30,13 +36,21 @@ public class DataGenerator implements ActorListener, SimulationListener {
     // logger
     private static final Logger logger = Logger.getLogger(DataGenerator.class);
 
-    // flag whether simulation has infection present
-    private boolean infectionPresent;
+    // simulation stage
+    private SimulationStage simStage;
     private boolean tiesBrokenWithInfectionPresent;
 
     // duration of last wave of infection
     private int roundStartInfection;
     private int roundsLastInfection;
+
+    // micro CSV writer
+    private FileWriter microCSVWriter;
+
+    // unique parameter combination
+    private int upc = 0;
+    private int simPerUpc;
+    private boolean startWithEmptyNetwork;
 
 
     /**
@@ -65,7 +79,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
 
         // ---------- INITIALIZATIONS ---------- //
         // network size
-        int[] Ns = new int[] {5, 10, 15, 20, 25, 50, 75, 100};
+        int[] Ns = new int[] {5};             //, 10, 15};   //, 20, 25, 50, 75, 100};
 
         // utility
         double[] alphas = new double[] {10.0};
@@ -98,13 +112,11 @@ public class DataGenerator implements ActorListener, SimulationListener {
         // COUNTERS
         // simulation in total
         int sim = 0;
-        // unique parameter combination
-        int upc = 0;
 
         // initialize overview CSV
         String outputDir = GEXFWriter.DEFAULT_EXPORT_DIR
                         + (new SimpleDateFormat("yyyyMMdd-HHmmss")).format(new Date()) + "/";
-        String csvFile = outputDir + "summary.csv";
+        String overviewCSVPath = outputDir + "summary.csv";
 
         // GEXF file generation?
         boolean gexfOutput = false;
@@ -119,12 +131,12 @@ public class DataGenerator implements ActorListener, SimulationListener {
                 directory.mkdirs();
             }
 
-            FileWriter csvWriter = new FileWriter(csvFile);
-            CSVUtils.writeLine(csvWriter, Arrays.asList(
+            FileWriter overviewCSVWriter = new FileWriter(overviewCSVPath);
+            CSVUtils.writeLine(overviewCSVWriter, Arrays.asList(
                     "sim",
                     "N",
                     "alpha", "beta", "c",
-                    "tau", "s", "gamma", "mu",
+                    "tau", "severity", "gamma", "mu",
                     "r",
                     "network at start",
                     "unique parameter combination (upc)",
@@ -145,6 +157,58 @@ public class DataGenerator implements ActorListener, SimulationListener {
                     ));
 
             for (int N : Ns) {
+                String microCSVPath = outputDir + "micro-" + N + ".csv";
+                this.microCSVWriter = new FileWriter(microCSVPath);
+                List<String> microCSVCols = new LinkedList<String>();
+                microCSVCols.add("upc");
+                microCSVCols.add("sim");
+                microCSVCols.add("round");
+                microCSVCols.add("sim-stage");
+                microCSVCols.add("network-stable");
+                microCSVCols.add("network-density");
+                microCSVCols.add("network-average-degree");
+                microCSVCols.add("network-average-clustering");
+
+                for (int microN = 1; microN <= N; microN++) {
+                    microCSVCols.add("id-i" + microN);
+                    // risk factor
+                    microCSVCols.add("r-i" + microN);
+                    // network properties
+                    microCSVCols.add("alpha-i" + microN);
+                    microCSVCols.add("beta-i" + microN);
+                    microCSVCols.add("c-i" + microN);
+                    // disease properties
+                    microCSVCols.add("tau-i" + microN);
+                    microCSVCols.add("severity-i" + microN);
+                    microCSVCols.add("gamma-i" + microN);
+                    microCSVCols.add("mu-i" + microN);
+                    // disease
+                    microCSVCols.add("susceptible-i" + microN);
+                    microCSVCols.add("infected-i" + microN);
+                    microCSVCols.add("recovered-i" + microN);
+                    microCSVCols.add("infected-time-remaining-i" + microN);
+                    // satisfaction
+                    microCSVCols.add("satisfied-i" + microN);
+                    // utility
+                    microCSVCols.add("utility-i" + microN);
+                    microCSVCols.add("benefit-distance-1-i" + microN);
+                    microCSVCols.add("benefit-distance-2-i" + microN);
+                    microCSVCols.add("costs-distance-1-i" + microN);
+                    microCSVCols.add("costs-disease-i" + microN);
+                    // network properties
+                    microCSVCols.add("1st-order-degree-i" + microN);
+                    microCSVCols.add("2nd-order-degree-i" + microN);
+                    microCSVCols.add("closeness-" + microN);
+                    // connections
+                    microCSVCols.add("broken-active-i" + microN);
+                    microCSVCols.add("broken-passive-i" + microN);
+                    microCSVCols.add("accepted-out-i" + microN);
+                    microCSVCols.add("declined-out-i" + microN);
+                    microCSVCols.add("accepted-in-i" + microN);
+                    microCSVCols.add("declined-in-i" + microN);
+                }
+                CSVUtils.writeLine(microCSVWriter, microCSVCols);
+
                 for (double alpha : alphas) {
                     for (double beta : betas) {
                         for (double c : cs) {
@@ -153,19 +217,20 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                     for (double gamma : gammas) {
                                         for (double mu : mus) {
                                             for (double r : rs) {
-                                                for (boolean startWithEmptyNetwork : startWithEmptyNetworks) {
+                                                for (boolean empty : startWithEmptyNetworks) {
+                                                    this.startWithEmptyNetwork = empty;
 
                                                     logger.info("Starting to compute "
                                                             + simsPerUpc + " simulations for parameter combination: "
-                                                            + ++upc + " / "
+                                                            + ++this.upc + " / "
                                                             + upcs);
 
-                                                    for (int simPerUpc = 1; simPerUpc <= simsPerUpc; simPerUpc++) {
+                                                    for (this.simPerUpc = 1; this.simPerUpc <= simsPerUpc;
+                                                            this.simPerUpc++) {
                                                         sim++;
 
                                                         // create network
                                                         Network network = new Network();
-
 
                                                         // add noise to risk factor
                                                         double min = rs[0];
@@ -194,9 +259,10 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                             sb.append("mu-").append(mu).append("_");
                                                             sb.append("r-").append(randR).append("_");
                                                             sb.append("emptyNetwork-").append(
-                                                                    startWithEmptyNetwork ? "yes" : "no").append("_");
-                                                            sb.append("upc-").append(upc).append("_");
-                                                            sb.append("simUpc-").append(simPerUpc);
+                                                                    this.startWithEmptyNetwork
+                                                                    ? "yes" : "no").append("_");
+                                                            sb.append("upc-").append(this.upc).append("_");
+                                                            sb.append("simUpc-").append(this.simPerUpc);
                                                             sb.append(".gexf").toString();
                                                             gexfFilename = sb.toString();
                                                             gexfWriter.startRecording(network, gexfFilename);
@@ -214,12 +280,12 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                         }
 
                                                         // create full network if required
-                                                        if (!startWithEmptyNetwork) {
+                                                        if (!this.startWithEmptyNetwork) {
                                                             network.createFullNetwork();
                                                         }
 
                                                         // simulate with no disease present
-                                                        this.infectionPresent = false;
+                                                        this.simStage = SimulationStage.PRE_EPIDEMIC;
                                                         this.tiesBrokenWithInfectionPresent = false;
                                                         Simulation simulation = new Simulation(network);
                                                         simulation.addSimulationListener(this);
@@ -231,7 +297,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
 
                                                         // infect random actor
                                                         network.infectRandomActor(ds);
-                                                        this.infectionPresent = true;
+                                                        this.simStage = SimulationStage.ACTIVE_EPIDEMIC;
                                                         this.roundStartInfection = simulation.getRounds();
 
                                                         // simulate with disease present
@@ -247,7 +313,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                         }
 
                                                         // add result to overview CSV
-                                                        CSVUtils.writeLine(csvWriter, Arrays.asList(
+                                                        CSVUtils.writeLine(overviewCSVWriter, Arrays.asList(
                                                                 Integer.toString(sim),
                                                                 Integer.toString(N),
                                                                 Double.toString(alpha),
@@ -258,9 +324,9 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                                 Double.toString(gamma),
                                                                 Double.toString(mu),
                                                                 Double.toString(randR),
-                                                                startWithEmptyNetwork ? "empty" : "full",
-                                                                Integer.toString(upc),
-                                                                Integer.toString(simPerUpc),
+                                                                this.startWithEmptyNetwork ? "empty" : "full",
+                                                                Integer.toString(this.upc),
+                                                                Integer.toString(this.simPerUpc),
                                                                 Integer.toString(network.getSusceptibles().size()),
                                                                 Integer.toString(network.getInfected().size()),
                                                                 Integer.toString(network.getRecovered().size()),
@@ -277,8 +343,11 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                                 gexfFilename
                                                         ));
                                                     }
-                                                    // after each unique parameter combination: flush overview CSV
-                                                    csvWriter.flush();
+
+
+                                                    // after each unique parameter combination: flush CSVs
+                                                    this.microCSVWriter.flush();
+                                                    overviewCSVWriter.flush();
                                                 }
                                             }
                                         }
@@ -288,10 +357,12 @@ public class DataGenerator implements ActorListener, SimulationListener {
                         }
                     }
                 }
+                this.microCSVWriter.flush();
+                this.microCSVWriter.close();
             }
             // at last: finalize overview CSV
-            csvWriter.flush();
-            csvWriter.close();
+            overviewCSVWriter.flush();
+            overviewCSVWriter.close();
         } catch (IOException e) {
             logger.error(e);
         }
@@ -332,7 +403,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
      */
     @Override
     public void notifyConnectionRemoved(Actor actor, Edge edge) {
-        if (this.infectionPresent) {
+        if (this.simStage == SimulationStage.ACTIVE_EPIDEMIC) {
             this.tiesBrokenWithInfectionPresent = true;
         }
     }
@@ -350,7 +421,71 @@ public class DataGenerator implements ActorListener, SimulationListener {
      * nl.uu.socnetid.netgame.simulation.Simulation)
      */
     @Override
-    public void notifyRoundFinished(Simulation simulation) { }
+    public void notifyRoundFinished(Simulation simulation) {
+        List<String> microCSVCols = new LinkedList<String>();
+        microCSVCols.add(String.valueOf(this.upc));
+        microCSVCols.add(String.valueOf(this.simPerUpc));
+        microCSVCols.add(String.valueOf(simulation.getRounds()));
+        microCSVCols.add(String.valueOf(this.simStage));
+
+        Network network = simulation.getNetwork();
+        microCSVCols.add(String.valueOf(network.isStable()));
+        microCSVCols.add(String.valueOf(network.getDensity()));
+        microCSVCols.add(String.valueOf(network.getAvDegree()));
+        microCSVCols.add(String.valueOf(network.getAvClustering()));
+
+        List<Actor> actors = new LinkedList<Actor>(network.getActors());
+        Collections.sort(actors);
+
+        for (Actor actor : actors) {
+            microCSVCols.add(actor.getId());
+            // risk factor
+            microCSVCols.add(String.valueOf(actor.getRiskFactor()));
+            // network properties
+            microCSVCols.add(String.valueOf(actor.getUtilityFunction().getAlpha()));
+            microCSVCols.add(String.valueOf(actor.getUtilityFunction().getBeta()));
+            microCSVCols.add(String.valueOf(actor.getUtilityFunction().getC()));
+            // disease properties
+            microCSVCols.add(String.valueOf(actor.getDiseaseSpecs().getTau()));
+            microCSVCols.add(String.valueOf(actor.getDiseaseSpecs().getS()));
+            microCSVCols.add(String.valueOf(actor.getDiseaseSpecs().getGamma()));
+            microCSVCols.add(String.valueOf(actor.getDiseaseSpecs().getMu()));
+            // disease
+            microCSVCols.add(String.valueOf(actor.getDiseaseGroup() == DiseaseGroup.SUSCEPTIBLE));
+            microCSVCols.add(String.valueOf(actor.getDiseaseGroup() == DiseaseGroup.INFECTED));
+            microCSVCols.add(String.valueOf(actor.getDiseaseGroup() == DiseaseGroup.RECOVERED));
+            if (actor.isInfected()) {
+                microCSVCols.add(String.valueOf(actor.getTimeUntilRecovered()));
+            } else {
+                microCSVCols.add("NA");
+            }
+            // satisfaction
+            microCSVCols.add(String.valueOf(actor.isSatisfied()));
+            // utility
+            microCSVCols.add(String.valueOf(actor.getUtility().getOverallUtility()));
+            microCSVCols.add(String.valueOf(actor.getUtility().getBenefitDirectConnections()));
+            microCSVCols.add(String.valueOf(actor.getUtility().getBenefitIndirectConnections()));
+            microCSVCols.add(String.valueOf(actor.getUtility().getCostsDirectConnections()));
+            microCSVCols.add(String.valueOf(actor.getUtility().getEffectOfDisease()));
+            // network properties
+            microCSVCols.add(String.valueOf(StatsComputer.computeFirstOrderDegree(actor)));
+            microCSVCols.add(String.valueOf(StatsComputer.computeSecondOrderDegree(actor)));
+            microCSVCols.add(String.valueOf(StatsComputer.computeCloseness(actor)));
+            // connections
+            microCSVCols.add(String.valueOf(actor.getConnectionStats().getBrokenTiesActive()));
+            microCSVCols.add(String.valueOf(actor.getConnectionStats().getBrokenTiesPassive()));
+            microCSVCols.add(String.valueOf(actor.getConnectionStats().getAcceptedRequestsOut()));
+            microCSVCols.add(String.valueOf(actor.getConnectionStats().getDeclinedRequestsOut()));
+            microCSVCols.add(String.valueOf(actor.getConnectionStats().getAcceptedRequestsIn()));
+            microCSVCols.add(String.valueOf(actor.getConnectionStats().getDeclinedRequestsIn()));
+        }
+        try {
+            CSVUtils.writeLine(this.microCSVWriter, microCSVCols);
+            this.microCSVWriter.flush();
+        } catch (IOException e) {
+            logger.error(e);
+        }
+    }
 
 
     /* (non-Javadoc)
@@ -360,5 +495,6 @@ public class DataGenerator implements ActorListener, SimulationListener {
     @Override
     public void notifyInfectionDefeated(Simulation simulation) {
         this.roundsLastInfection = simulation.getRounds() - this.roundStartInfection;
+        this.simStage = SimulationStage.POST_EPIDEMIC;
     }
 }
