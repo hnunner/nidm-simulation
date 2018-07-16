@@ -561,4 +561,19 @@ public class Network extends SingleGraph {
         return Toolkit.averageClusteringCoefficient(this);
     }
 
+    /**
+     * Gets the average risk factor of all actors in the network.
+     *
+     * @return the average risk factor of all actors in the network
+     */
+    public double getAvRiskFactor() {
+        double avRiskFactor = 0;
+        Iterator<Actor> actorIt = this.getActorIterator();
+        while (actorIt.hasNext()) {
+            Actor actor = actorIt.next();
+            avRiskFactor += actor.getRiskFactor();
+        }
+        return (avRiskFactor / this.getActors().size());
+    }
+
 }
