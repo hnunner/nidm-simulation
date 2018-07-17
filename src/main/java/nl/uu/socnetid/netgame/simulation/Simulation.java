@@ -129,6 +129,9 @@ public class Simulation implements Runnable {
 
         this.rounds++;
 
+        // notifications
+        notifyRoundFinished();
+
         // first round with active infection
         if (this.network.hasActiveInfection() && !this.activeInfection) {
             this.activeInfection = true;
@@ -139,9 +142,6 @@ public class Simulation implements Runnable {
             this.activeInfection = false;
             notifyInfectionDefeated();
         }
-
-        // notifications
-        notifyRoundFinished();
     }
 
     /**
