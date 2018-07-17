@@ -79,7 +79,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
 
         // ---------- INITIALIZATIONS ---------- //
         // network size
-        int[] Ns = new int[] {5};             //, 10, 15};   //, 20, 25, 50, 75, 100};
+        int[] Ns = new int[] {5, 10};             //, 15};   //, 20, 25, 50, 75, 100};
 
         // utility
         double[] alphas = new double[] {10.0};
@@ -136,7 +136,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
                     "sim",
                     "N",
                     "alpha", "beta", "c",
-                    "tau", "severity", "gamma", "mu",
+                    "tau", "s", "gamma", "mu",
                     "r",
                     "network at start",
                     "unique parameter combination (upc)",
@@ -163,49 +163,49 @@ public class DataGenerator implements ActorListener, SimulationListener {
                 microCSVCols.add("upc");
                 microCSVCols.add("sim");
                 microCSVCols.add("round");
-                microCSVCols.add("sim-stage");
-                microCSVCols.add("network-stable");
-                microCSVCols.add("network-density");
-                microCSVCols.add("network-average-degree");
-                microCSVCols.add("network-average-clustering");
+                microCSVCols.add("sim.stage");
+                microCSVCols.add("network.stable");
+                microCSVCols.add("network.density");
+                microCSVCols.add("network.average.degree");
+                microCSVCols.add("network.average.clustering");
 
                 for (int microN = 1; microN <= N; microN++) {
-                    microCSVCols.add("id-i" + microN);
+                    microCSVCols.add("id.actor.i." + microN);
                     // risk factor
-                    microCSVCols.add("r-i" + microN);
+                    microCSVCols.add("r.actor.i." + microN);
                     // network properties
-                    microCSVCols.add("alpha-i" + microN);
-                    microCSVCols.add("beta-i" + microN);
-                    microCSVCols.add("c-i" + microN);
+                    microCSVCols.add("alpha.actor.i." + microN);
+                    microCSVCols.add("beta.actor.i." + microN);
+                    microCSVCols.add("c.actor.i." + microN);
                     // disease properties
-                    microCSVCols.add("tau-i" + microN);
-                    microCSVCols.add("severity-i" + microN);
-                    microCSVCols.add("gamma-i" + microN);
-                    microCSVCols.add("mu-i" + microN);
+                    microCSVCols.add("tau.actor.i." + microN);
+                    microCSVCols.add("severity.actor.i." + microN);
+                    microCSVCols.add("gamma.actor.i." + microN);
+                    microCSVCols.add("mu.actor.i." + microN);
                     // disease
-                    microCSVCols.add("susceptible-i" + microN);
-                    microCSVCols.add("infected-i" + microN);
-                    microCSVCols.add("recovered-i" + microN);
-                    microCSVCols.add("infected-time-remaining-i" + microN);
+                    microCSVCols.add("susceptible.actor.i." + microN);
+                    microCSVCols.add("infected.actor.i." + microN);
+                    microCSVCols.add("recovered.actor.i." + microN);
+                    microCSVCols.add("infected.time.remaining.actor.i." + microN);
                     // satisfaction
-                    microCSVCols.add("satisfied-i" + microN);
+                    microCSVCols.add("satisfied.actor.i." + microN);
                     // utility
-                    microCSVCols.add("utility-i" + microN);
-                    microCSVCols.add("benefit-distance-1-i" + microN);
-                    microCSVCols.add("benefit-distance-2-i" + microN);
-                    microCSVCols.add("costs-distance-1-i" + microN);
-                    microCSVCols.add("costs-disease-i" + microN);
+                    microCSVCols.add("utility.actor.i." + microN);
+                    microCSVCols.add("benefit.distance.1.actor.i." + microN);
+                    microCSVCols.add("benefit.distance.2.actor.i." + microN);
+                    microCSVCols.add("costs.distance.1.actor.i." + microN);
+                    microCSVCols.add("costs.disease.actor.i." + microN);
                     // network properties
-                    microCSVCols.add("1st-order-degree-i" + microN);
-                    microCSVCols.add("2nd-order-degree-i" + microN);
-                    microCSVCols.add("closeness-" + microN);
+                    microCSVCols.add("1st.order.degree.actor.i." + microN);
+                    microCSVCols.add("2nd.order.degree.actor.i." + microN);
+                    microCSVCols.add("closeness.actor.i." + microN);
                     // connections
-                    microCSVCols.add("broken-active-i" + microN);
-                    microCSVCols.add("broken-passive-i" + microN);
-                    microCSVCols.add("accepted-out-i" + microN);
-                    microCSVCols.add("declined-out-i" + microN);
-                    microCSVCols.add("accepted-in-i" + microN);
-                    microCSVCols.add("declined-in-i" + microN);
+                    microCSVCols.add("broken.active.actor.i." + microN);
+                    microCSVCols.add("broken.passive.actor.i." + microN);
+                    microCSVCols.add("accepted.out.actor.i." + microN);
+                    microCSVCols.add("declined.out.actor.i." + microN);
+                    microCSVCols.add("accepted.in.actor.i." + microN);
+                    microCSVCols.add("declined.in.actor.i." + microN);
                 }
                 CSVUtils.writeLine(microCSVWriter, microCSVCols);
 
@@ -302,6 +302,10 @@ public class DataGenerator implements ActorListener, SimulationListener {
 
                                                         // simulate with disease present
                                                         simulation.simulate(maxRounds);
+
+                                                        // post-epidemic stage
+                                                        simulation.simulate(maxRounds);
+
                                                         //NetworkTypes networkTypeAfterInfection = network.getType();
                                                         double densityPost = network.getDensity();
                                                         double avDegreePost = network.getAvDegree();
