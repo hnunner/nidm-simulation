@@ -21,4 +21,12 @@ public interface SimulationListener {
      */
     void notifyInfectionDefeated(final Simulation simulation);
 
+    /**
+     * Entry point for simulation being finished notifications.
+     *
+     * @param simulation
+     *          the simulation that has finished
+     */
+    void notifySimulationFinished(final Simulation simulation);
+
 }

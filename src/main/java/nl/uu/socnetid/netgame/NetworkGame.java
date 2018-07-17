@@ -668,6 +668,13 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     @Override
     public void notifyInfectionDefeated(Simulation simulation) { }
 
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.netgame.simulation.SimulationListener#notifySimulationFinished(
+     * nl.uu.socnetid.netgame.simulation.Simulation)
+     */
+    @Override
+    public void notifySimulationFinished(Simulation simulation) { }
+
     /*
      * (non-Javadoc)
      * @see nl.uu.socnetid.netgame.actors.ActorListener#notifyAttributeAdded(

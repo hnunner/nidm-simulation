@@ -78,7 +78,7 @@ public class Simulation implements Runnable {
      *          the maximum number of rounds
      */
     public void simulate(int maxRounds) {
-        int safetyMargin = 3;
+        int safetyMargin = 1;
         int stableRounds = 0;
         this.activeInfection = false;
 
@@ -91,6 +91,7 @@ public class Simulation implements Runnable {
                 if (stableRounds >= safetyMargin) {
                     if (!this.network.hasActiveInfection()) {
                         logger.debug("Simulation finished after" + i + " rounds.");
+                        this.notifySimulationFinished();
                         return;
                     }
                 }
@@ -116,6 +117,9 @@ public class Simulation implements Runnable {
         } else {
             logger.info(sb.toString());
         }
+
+        // notify simulation finished
+        this.notifySimulationFinished();
     }
 
     /**
@@ -271,6 +275,16 @@ public class Simulation implements Runnable {
         Iterator<SimulationListener> listenersIt = this.simulationListeners.iterator();
         while (listenersIt.hasNext()) {
             listenersIt.next().notifyInfectionDefeated(this);
+        }
+    }
+
+    /**
+     * Notifies listeners of finished simulation.
+     */
+    private final void notifySimulationFinished() {
+        Iterator<SimulationListener> listenersIt = this.simulationListeners.iterator();
+        while (listenersIt.hasNext()) {
+            listenersIt.next().notifySimulationFinished(this);
         }
     }
 
