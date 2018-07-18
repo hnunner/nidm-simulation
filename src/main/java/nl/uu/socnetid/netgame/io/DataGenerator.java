@@ -78,7 +78,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
 
         // ---------- INITIALIZATIONS ---------- //
         // network size
-        int[] Ns = new int[] {5, 10};             //, 15};   //, 20, 25, 50, 75, 100};
+        int[] Ns = new int[] {10};             //5, 10, 15};   //, 20, 25, 50, 75, 100};
 
         // utility
         double[] alphas = new double[] {10.0};
@@ -99,10 +99,10 @@ public class DataGenerator implements ActorListener, SimulationListener {
         boolean[] startWithEmptyNetworks = new boolean[] {true, false};
 
         // simulations per unique parameter combination
-        int simsPerUpc = 100;
+        int simsPerUpc = 20;
 
         // maximum rounds to simulate
-        int maxRounds = 2000;
+        int maxRounds = 25;
 
         // unique parameter combinations
         int upcs = Ns.length * alphas.length * betas.length * cs.length * taus.length
@@ -159,6 +159,8 @@ public class DataGenerator implements ActorListener, SimulationListener {
                 String microCSVPath = outputDir + "micro-" + N + ".csv";
                 this.microCSVWriter = new FileWriter(microCSVPath);
                 List<String> microCSVCols = new LinkedList<String>();
+                // unique simulation id
+                microCSVCols.add("uid");
                 // unique parameter combination
                 microCSVCols.add("upc.id");
                 // simulation data
@@ -288,7 +290,9 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                         this.tiesBrokenWithInfectionPresent = false;
                                                         Simulation simulation = new Simulation(network);
                                                         simulation.addSimulationListener(this);
-                                                        simulation.simulate(maxRounds);
+
+                                                        // TODO think of a better way to make this more general (10)
+                                                        simulation.simulate(25);
                                                         //NetworkTypes networkTypeBeforeInfection = network.getType();
                                                         double densityPre = network.getDensity();
                                                         double avDegreePre = network.getAvDegree();
@@ -300,7 +304,8 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                         this.roundStartInfection = simulation.getRounds();
 
                                                         // simulate with disease present
-                                                        simulation.simulate(maxRounds);
+                                                        // TODO think of a better way to make this more general (40)
+                                                        simulation.simulate(50);
 
                                                         //NetworkTypes networkTypeAfterInfection = network.getType();
                                                         double densityPost = network.getDensity();
@@ -382,6 +387,9 @@ public class DataGenerator implements ActorListener, SimulationListener {
 
             // a single CSV row
             List<String> microCSVCols = new LinkedList<String>();
+
+            // unique id
+            microCSVCols.add(String.valueOf(this.upc) + "-" + String.valueOf(this.simPerUpc));
 
             // unique parameter combination
             microCSVCols.add(String.valueOf(this.upc));
