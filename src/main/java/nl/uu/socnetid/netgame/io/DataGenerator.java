@@ -173,6 +173,10 @@ public class DataGenerator implements ActorListener, SimulationListener {
                 microCSVCols.add("net.stats.density");
                 microCSVCols.add("net.stats.av.degree");
                 microCSVCols.add("net.stats.av.clustering");
+                // disease data - statistics
+                microCSVCols.add("dis.stats.cnt.sus");
+                microCSVCols.add("dis.stats.cnt.inf");
+                microCSVCols.add("dis.stats.cnt.rec");
                 // actor data
                 microCSVCols.add("act.id");
                 // actor - parameter risk factor
@@ -406,6 +410,11 @@ public class DataGenerator implements ActorListener, SimulationListener {
             microCSVCols.add(String.valueOf(network.getDensity()));
             microCSVCols.add(String.valueOf(network.getAvDegree()));
             microCSVCols.add(String.valueOf(network.getAvClustering()));
+
+            // disease data - statistics
+            microCSVCols.add(String.valueOf(network.getSusceptibles().size()));
+            microCSVCols.add(String.valueOf(network.getInfected().size()));
+            microCSVCols.add(String.valueOf(network.getRecovered().size()));
 
             // actor data
             microCSVCols.add(actor.getId());
