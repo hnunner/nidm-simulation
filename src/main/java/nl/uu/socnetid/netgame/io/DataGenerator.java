@@ -78,7 +78,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
 
         // ---------- INITIALIZATIONS ---------- //
         // network size
-        int[] Ns = new int[] {10};             //5, 10, 15};   //, 20, 25, 50, 75, 100};
+        int[] Ns = new int[] {5, 10, 15};             //5, 10, 15};   //, 20, 25, 50, 75, 100};
 
         // utility
         double[] alphas = new double[] {10.0};
@@ -99,10 +99,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
         boolean[] startWithEmptyNetworks = new boolean[] {true, false};
 
         // simulations per unique parameter combination
-        int simsPerUpc = 20;
-
-        // maximum rounds to simulate
-        int maxRounds = 25;
+        int simsPerUpc = 10;
 
         // unique parameter combinations
         int upcs = Ns.length * alphas.length * betas.length * cs.length * taus.length
@@ -155,65 +152,67 @@ public class DataGenerator implements ActorListener, SimulationListener {
                     "filename"
                     ));
 
-            for (int N : Ns) {
-                String microCSVPath = outputDir + "micro-" + N + ".csv";
-                this.microCSVWriter = new FileWriter(microCSVPath);
-                List<String> microCSVCols = new LinkedList<String>();
-                // unique simulation id
-                microCSVCols.add("uid");
-                // unique parameter combination
-                microCSVCols.add("upc.id");
-                // simulation data
-                microCSVCols.add("sim.id");
-                microCSVCols.add("sim.round");
-                microCSVCols.add("sim.stage");
-                // network data - stability
-                microCSVCols.add("net.stable");
-                // network data - statistics
-                microCSVCols.add("net.stats.density");
-                microCSVCols.add("net.stats.av.degree");
-                microCSVCols.add("net.stats.av.clustering");
-                // disease data - statistics
-                microCSVCols.add("dis.stats.cnt.sus");
-                microCSVCols.add("dis.stats.cnt.inf");
-                microCSVCols.add("dis.stats.cnt.rec");
-                // actor data
-                microCSVCols.add("act.id");
-                // actor - parameter risk factor
-                microCSVCols.add("act.param.risk.factor");
-                // actor - parameters network
-                microCSVCols.add("act.param.net.alpha");
-                microCSVCols.add("act.param.net.beta");
-                microCSVCols.add("act.param.net.c");
-                // actor - parameters disease
-                microCSVCols.add("act.param.dis.tau");
-                microCSVCols.add("act.param.dis.s");
-                microCSVCols.add("act.param.dis.gamma");
-                microCSVCols.add("act.param.dis.mu");
-                // actor - properties satisfaction
-                microCSVCols.add("act.prop.satisfied");
-                // actor - properties utility
-                microCSVCols.add("act.prop.util.overall");
-                microCSVCols.add("act.prop.util.benefit.distance.1");
-                microCSVCols.add("act.prop.util.benefit.distance.2");
-                microCSVCols.add("act.prop.util.costs.distance.1");
-                microCSVCols.add("act.prop.util.costs.disease");
-                // actor - properties disease
-                microCSVCols.add("act.prop.dis.state");
-                microCSVCols.add("act.prop.dis.rounds.until.recovered");
-                // actor - stats network
-                microCSVCols.add("act.stats.net.degree.order.1");
-                microCSVCols.add("act.stats.net.degree.order.2");
-                microCSVCols.add("act.stats.net.closeness");
-                // actor - stats connections
-                microCSVCols.add("act.stats.cons.broken.active");
-                microCSVCols.add("act.stats.cons.broken.passive");
-                microCSVCols.add("act.stats.cons.out.accepted");
-                microCSVCols.add("act.stats.cons.out.declined");
-                microCSVCols.add("act.stats.cons.in.accepted");
-                microCSVCols.add("act.stats.cons.in.declined");
-                CSVUtils.writeLine(microCSVWriter, microCSVCols);
+            String microCSVPath = outputDir + "micro-data.csv";
+            this.microCSVWriter = new FileWriter(microCSVPath);
+            List<String> microCSVCols = new LinkedList<String>();
+            // unique simulation id
+            microCSVCols.add("uid");
+            // unique parameter combination
+            microCSVCols.add("upc.id");
+            // simulation data
+            microCSVCols.add("sim.id");
+            microCSVCols.add("sim.round");
+            microCSVCols.add("sim.stage");
+            // network data - parameters
+            microCSVCols.add("net.param.size");
+            // network data - stats
+            // network data - stability
+            microCSVCols.add("net.stats.stable");
+            microCSVCols.add("net.stats.density");
+            microCSVCols.add("net.stats.av.degree");
+            microCSVCols.add("net.stats.av.clustering");
+            // disease data - statistics
+            microCSVCols.add("dis.stats.pct.sus");
+            microCSVCols.add("dis.stats.pct.inf");
+            microCSVCols.add("dis.stats.pct.rec");
+            // actor data
+            microCSVCols.add("act.id");
+            // actor - parameter risk factor
+            microCSVCols.add("act.param.risk.factor");
+            // actor - parameters network
+            microCSVCols.add("act.param.net.alpha");
+            microCSVCols.add("act.param.net.beta");
+            microCSVCols.add("act.param.net.c");
+            // actor - parameters disease
+            microCSVCols.add("act.param.dis.tau");
+            microCSVCols.add("act.param.dis.s");
+            microCSVCols.add("act.param.dis.gamma");
+            microCSVCols.add("act.param.dis.mu");
+            // actor - properties satisfaction
+            microCSVCols.add("act.prop.satisfied");
+            // actor - properties utility
+            microCSVCols.add("act.prop.util.overall");
+            microCSVCols.add("act.prop.util.benefit.distance.1");
+            microCSVCols.add("act.prop.util.benefit.distance.2");
+            microCSVCols.add("act.prop.util.costs.distance.1");
+            microCSVCols.add("act.prop.util.costs.disease");
+            // actor - properties disease
+            microCSVCols.add("act.prop.dis.state");
+            microCSVCols.add("act.prop.dis.rounds.until.recovered");
+            // actor - stats network
+            microCSVCols.add("act.stats.net.degree.order.1");
+            microCSVCols.add("act.stats.net.degree.order.2");
+            microCSVCols.add("act.stats.net.closeness");
+            // actor - stats connections
+            microCSVCols.add("act.stats.cons.broken.active");
+            microCSVCols.add("act.stats.cons.broken.passive");
+            microCSVCols.add("act.stats.cons.out.accepted");
+            microCSVCols.add("act.stats.cons.out.declined");
+            microCSVCols.add("act.stats.cons.in.accepted");
+            microCSVCols.add("act.stats.cons.in.declined");
+            CSVUtils.writeLine(microCSVWriter, microCSVCols);
 
+            for (int N : Ns) {
                 for (double alpha : alphas) {
                     for (double beta : betas) {
                         for (double c : cs) {
@@ -334,23 +333,23 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                                 Double.toString(mu),
                                                                 Double.toString(randR),
                                                                 this.startWithEmptyNetwork ? "empty" : "full",
-                                                                Integer.toString(this.upc),
-                                                                Integer.toString(this.simPerUpc),
-                                                                Integer.toString(network.getSusceptibles().size()),
-                                                                Integer.toString(network.getInfected().size()),
-                                                                Integer.toString(network.getRecovered().size()),
-                                                                this.tiesBrokenWithInfectionPresent ? "yes" : "no",
-                                                                Integer.toString(this.roundsLastInfection),
-                                                                //networkTypeBeforeInfection.toString(),
-                                                                //networkTypeAfterInfection.toString(),
-                                                                Double.toString(densityPre),
-                                                                Double.toString(avDegreePre),
-                                                                Double.toString(avClusteringPre),
-                                                                Double.toString(densityPost),
-                                                                Double.toString(avDegreePost),
-                                                                Double.toString(avClusteringPost),
-                                                                gexfFilename
-                                                        ));
+                                                                        Integer.toString(this.upc),
+                                                                        Integer.toString(this.simPerUpc),
+                                                                        Integer.toString(network.getSusceptibles().size()),
+                                                                        Integer.toString(network.getInfected().size()),
+                                                                        Integer.toString(network.getRecovered().size()),
+                                                                        this.tiesBrokenWithInfectionPresent ? "yes" : "no",
+                                                                                Integer.toString(this.roundsLastInfection),
+                                                                                //networkTypeBeforeInfection.toString(),
+                                                                                //networkTypeAfterInfection.toString(),
+                                                                                Double.toString(densityPre),
+                                                                                Double.toString(avDegreePre),
+                                                                                Double.toString(avClusteringPre),
+                                                                                Double.toString(densityPost),
+                                                                                Double.toString(avDegreePost),
+                                                                                Double.toString(avClusteringPost),
+                                                                                gexfFilename
+                                                                ));
                                                     }
 
 
@@ -366,10 +365,11 @@ public class DataGenerator implements ActorListener, SimulationListener {
                         }
                     }
                 }
-                this.microCSVWriter.flush();
-                this.microCSVWriter.close();
             }
-            // at last: finalize overview CSV
+
+            // at last: finalize CSVs
+            this.microCSVWriter.flush();
+            this.microCSVWriter.close();
             overviewCSVWriter.flush();
             overviewCSVWriter.close();
         } catch (IOException e) {
@@ -404,17 +404,19 @@ public class DataGenerator implements ActorListener, SimulationListener {
             microCSVCols.add(String.valueOf(this.simStage));
 
             // network data
-            // network data - stability
+            // network data - parameters
+            microCSVCols.add(String.valueOf(network.getN()));
+            // network data - stats
             microCSVCols.add(String.valueOf(network.isStable()));
-            // network data - statistics
             microCSVCols.add(String.valueOf(network.getDensity()));
             microCSVCols.add(String.valueOf(network.getAvDegree()));
             microCSVCols.add(String.valueOf(network.getAvClustering()));
 
             // disease data - statistics
-            microCSVCols.add(String.valueOf(network.getSusceptibles().size()));
-            microCSVCols.add(String.valueOf(network.getInfected().size()));
-            microCSVCols.add(String.valueOf(network.getRecovered().size()));
+            double pct = 100D / network.getN();
+            microCSVCols.add(String.valueOf(pct * network.getSusceptibles().size()));
+            microCSVCols.add(String.valueOf(pct * network.getInfected().size()));
+            microCSVCols.add(String.valueOf(pct * network.getRecovered().size()));
 
             // actor data
             microCSVCols.add(actor.getId());
