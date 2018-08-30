@@ -70,19 +70,18 @@ public class Simulation implements Runnable {
     }
 
     /**
-     * Simulates the network dynamics (disease and actors) until either:
-     * the network is stable and a possible disease is eradicated,
-     * or until a maximum number of rounds has been simulated.
+     * Simulates the network dynamics (disease and actors)
+     * for a number of rounds
      *
-     * @param maxRounds
-     *          the maximum number of rounds
+     * @param rounds
+     *          the number of rounds
      */
-    public void simulate(int maxRounds) {
+    public void simulate(int rounds) {
 //        int safetyMargin = 1;
 //        int stableRounds = 0;
         this.activeInfection = false;
 
-        for (int i = 0; i < maxRounds; i++) {
+        for (int i = 0; i < rounds; i++) {
             computeSingleRound();
 
 //            if (this.network.isStable()) {
@@ -102,7 +101,7 @@ public class Simulation implements Runnable {
 
         // status message
         StringBuilder sb = new StringBuilder();
-        sb.append("Simulation finished after maximum number of rounds (" + maxRounds + ").");
+        sb.append("Simulation finished after " + rounds + " rounds .");
         boolean unfinished = false;
         if (!this.network.isStable()) {
             sb.append(" Network was unstable.");
