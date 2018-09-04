@@ -45,8 +45,8 @@ public class DataGenerator implements ActorListener, SimulationListener {
     // what files to generate
     private static final boolean GENERATE_SUMMARY = true;
     private static final boolean GENERATE_ROUND_SUMMARY = true;
-    private static final boolean GENERATE_AGENT_DETAILS_LAST_ROUND_ONLY = true;
     private static final boolean GENERATE_AGENT_DETAILS = false;
+    private static final boolean GENERATE_AGENT_DETAILS_LAST_ROUND_ONLY = true;
     private static final boolean GENERATE_GEXF = false;
 
     // simulation stage
