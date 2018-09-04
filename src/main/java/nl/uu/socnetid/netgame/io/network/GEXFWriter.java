@@ -39,6 +39,7 @@ public class GEXFWriter implements ActorListener, NetworkListener {
     private static final Logger logger = Logger.getLogger(GEXFWriter.class);
 
     // default export directory
+    // TODO: move this to a more general location (e.g., super class for all writers)
     public static final String DEFAULT_EXPORT_DIR = new StringBuilder().append(System.getProperty("user.dir"))
             .append("/network-exports/").toString();
 
