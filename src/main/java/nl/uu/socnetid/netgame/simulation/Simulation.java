@@ -20,6 +20,9 @@ public class Simulation implements Runnable {
     // logger
     private static final Logger logger = Logger.getLogger(Simulation.class);
 
+    // maximum number of rounds
+    private static final int MAX_ROUNDS = 1000;
+
     // the network
     private Network network;
     // switch used to stop the simulation
@@ -69,27 +72,55 @@ public class Simulation implements Runnable {
         }
     }
 
+
     /**
      * Simulates the network dynamics (disease and actors)
-     * for a number of rounds
-     *
-     * @param rounds
-     *          the number of rounds
+     * for at least one round.
      */
-    public void simulate(int rounds) {
-//        int safetyMargin = 1;
-//        int stableRounds = 0;
+    public void simulate() {
+        this.simulate(1);
+    }
+
+    /**
+     * Simulates the network dynamics (disease and actors)
+     * for a minimum number of rounds
+     *
+     * @param minRounds
+     *          the minimum number of rounds
+     */
+    public void simulate(int minRounds) {
+        int safetyMargin = 1;
+        int stableRounds = 0;
+        int currRound = 0;
         this.activeInfection = false;
 
-        for (int i = 0; i < rounds; i++) {
+        while (currRound++ < MAX_ROUNDS) {
             computeSingleRound();
+            if (this.network.isStable()) {
+                stableRounds++;
+                // to be on the safe side: network needs to be stable for three consecutive rounds
+                if (currRound >= minRounds && stableRounds >= safetyMargin) {
+                    if (!this.network.hasActiveInfection()) {
+                        logger.debug("Simulation finished after" + currRound + " rounds.");
+                        this.notifySimulationFinished();
+                        return;
+                    }
+                }
+            } else {
+                stableRounds = 0;
+            }
+        }
 
+
+//        for (int i = 0; i < rounds; i++) {
+//            computeSingleRound();
+//
 //            if (this.network.isStable()) {
 //                stableRounds++;
 //                // to be on the safe side: network needs to be stable for three consecutive rounds
 //                if (stableRounds >= safetyMargin) {
 //                    if (!this.network.hasActiveInfection()) {
-//                        logger.debug("Simulation finished after" + i + " rounds.");
+//                        logger.info("Simulation finished after" + i + " rounds.");
 //                        this.notifySimulationFinished();
 //                        return;
 //                    }
@@ -97,7 +128,8 @@ public class Simulation implements Runnable {
 //            } else {
 //                stableRounds = 0;
 //            }
-        }
+//        }
+
 
         // status message
         StringBuilder sb = new StringBuilder();

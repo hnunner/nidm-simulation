@@ -36,11 +36,11 @@ public class DataGenerator implements ActorListener, SimulationListener {
     private static final Logger logger = Logger.getLogger(DataGenerator.class);
 
     // simulations per unique parameter combination
-    private static final int SIMS_PRE_UPC = 10;
+    private static final int SIMS_PRE_UPC = 5;
 
     // amount of rounds per simulation
-    private static final int ROUNDS_PRE_EPIDEMIC = 40;
-    private static final int ROUNDS_EPIDEMIC = 60;
+    private static final int ROUNDS_PRE_EPIDEMIC = 250;
+    private static final int ROUNDS_EPIDEMIC = 500;
 
     // what files to generate
     private static final boolean GENERATE_SUMMARY = true;
@@ -98,7 +98,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
         // ---------- INITIALIZATIONS ---------- //
 
         // network size
-        int[] Ns = new int[] {5, 10, 15};             //5, 10, 15};   //, 20, 25, 50, 75, 100};
+        int[] Ns = new int[] {5, 10, 15, 20, 25, 50, 75, 100};
 
         // utility
         double[] alphas = new double[] {10.0};
