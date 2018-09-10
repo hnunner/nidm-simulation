@@ -36,11 +36,32 @@ public class DataGenerator implements ActorListener, SimulationListener {
     private static final Logger logger = Logger.getLogger(DataGenerator.class);
 
     // simulations per unique parameter combination
-    private static final int SIMS_PRE_UPC = 10;
+    private static final int SIMS_PER_UPC = 10;
+
+    // network size
+    private static final int[] NS = new int[] {5, 10, 15, 20, 25, 50};      //{5, 10, 15, 20, 25, 50, 75, 100};
+
+    // utility
+    private static final double[] ALPHAS = new double[] {10.0};
+    private static final double[] BETAS  = new double[] {2.0, 8.0};
+    private static final double[] CS     = new double[] {9.0}; //, 11.0};
+
+    // disease
+    private static final DiseaseType DISEASE_TYPE = DiseaseType.SIR;
+    private static final int[]    TAUS   = new int[] {10};
+    private static final double[] SS     = new double[] {2.0, 10.0, 50.0};
+    private static final double[] GAMMAS = new double[] {0.1};
+    private static final double[] MUS    = new double[] {1.0, 1.5};
+
+    // risk behavior
+    private static final double[] RS = new double[] {0.0, 1.0, 2.0};
+
+    // initial network
+    private static final boolean[] START_WITH_EMPTY_NETWORKS = new boolean[] {true, false};
 
     // amount of rounds per simulation
-    private static final int ROUNDS_PRE_EPIDEMIC = 40;
-    private static final int ROUNDS_EPIDEMIC = 60;
+    private static final int ROUNDS_PRE_EPIDEMIC = 100;
+    private static final int ROUNDS_EPIDEMIC = 200;
 
     // what files to generate
     private static final boolean GENERATE_SUMMARY = true;
@@ -95,39 +116,13 @@ public class DataGenerator implements ActorListener, SimulationListener {
      */
     public void generateData() {
 
-        // ---------- INITIALIZATIONS ---------- //
-
-        // network size
-        int[] Ns = new int[] {5, 10, 15};             //5, 10, 15};   //, 20, 25, 50, 75, 100};
-
-        // utility
-        double[] alphas = new double[] {10.0};
-        double[] betas  = new double[] {2.0, 8.0};
-        double[] cs     = new double[] {9.0}; //, 11.0};
-
-        // disease
-        DiseaseType diseaseType = DiseaseType.SIR;
-        int[]    taus   = new int[] {10};
-        double[] ss     = new double[] {2.0, 10.0, 50.0};
-        double[] gammas = new double[] {0.1};
-        double[] mus    = new double[] {1.0, 1.5};
-
-        // risk behavior
-        double[] rs = new double[] {0.0, 1.0, 2.0};
-
-        // initial network
-        boolean[] startWithEmptyNetworks = new boolean[] {true, false};
-
         // unique parameter combinations
-        int upcs = Ns.length * alphas.length * betas.length * cs.length * taus.length
-                * ss.length * gammas.length * mus.length * rs.length * startWithEmptyNetworks.length;
+        int upcs = NS.length * ALPHAS.length * BETAS.length * CS.length * TAUS.length
+                * SS.length * GAMMAS.length * MUS.length * RS.length * START_WITH_EMPTY_NETWORKS.length;
 
-        // COUNTERS
-        // simulation in total
+        // simulations in total
         int sim = 0;
 
-
-        // ---------- SIMULATION ---------- //
         try {
             // initialize export directory
             String exportDir = GEXFWriter.DEFAULT_EXPORT_DIR
@@ -182,11 +177,11 @@ public class DataGenerator implements ActorListener, SimulationListener {
                 roundSummaryCSVCols.add("sim.stage");
                 // network data - parameters
                 roundSummaryCSVCols.add("net.param.size");
+                roundSummaryCSVCols.add("net.param.av.beta");
                 roundSummaryCSVCols.add("net.param.av.risk.factor");
                 // disease data - parameters
                 roundSummaryCSVCols.add("disease.param.s");
                 // network data - stats
-                // network data - stability
                 roundSummaryCSVCols.add("net.stats.stable");
                 roundSummaryCSVCols.add("net.stats.density");
                 roundSummaryCSVCols.add("net.stats.av.degree");
@@ -212,6 +207,11 @@ public class DataGenerator implements ActorListener, SimulationListener {
                 agentsDetailsCSVCols.add("sim.stage");
                 // network data - parameters
                 agentsDetailsCSVCols.add("net.param.size");
+                // network data - stats
+                agentsDetailsCSVCols.add("net.stats.stable");
+                agentsDetailsCSVCols.add("net.stats.density");
+                agentsDetailsCSVCols.add("net.stats.av.degree");
+                agentsDetailsCSVCols.add("net.stats.av.clustering");
                 // actor data
                 agentsDetailsCSVCols.add("act.id");
                 // actor - parameter risk factor
@@ -250,24 +250,24 @@ public class DataGenerator implements ActorListener, SimulationListener {
                 CSVUtils.writeLine(this.agentsDetailsCSVWriter, agentsDetailsCSVCols);
             }
 
-            for (int N : Ns) {
-                for (double alpha : alphas) {
-                    for (double beta : betas) {
-                        for (double c : cs) {
-                            for (int tau : taus) {
-                                for (double s : ss) {
-                                    for (double gamma : gammas) {
-                                        for (double mu : mus) {
-                                            for (double r : rs) {
-                                                for (boolean empty : startWithEmptyNetworks) {
+            for (int N : NS) {
+                for (double alpha : ALPHAS) {
+                    for (double beta : BETAS) {
+                        for (double c : CS) {
+                            for (int tau : TAUS) {
+                                for (double s : SS) {
+                                    for (double gamma : GAMMAS) {
+                                        for (double mu : MUS) {
+                                            for (double r : RS) {
+                                                for (boolean empty : START_WITH_EMPTY_NETWORKS) {
                                                     this.startWithEmptyNetwork = empty;
 
                                                     logger.info("Starting to compute "
-                                                            + SIMS_PRE_UPC + " simulations for parameter combination: "
+                                                            + SIMS_PER_UPC + " simulations for parameter combination: "
                                                             + ++this.upc + " / "
                                                             + upcs);
 
-                                                    for (this.simPerUpc = 1; this.simPerUpc <= SIMS_PRE_UPC;
+                                                    for (this.simPerUpc = 1; this.simPerUpc <= SIMS_PER_UPC;
                                                             this.simPerUpc++) {
                                                         sim++;
 
@@ -275,12 +275,12 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                         Network network = new Network();
 
                                                         // add noise to risk factor
-                                                        double min = rs[0];
-                                                        double max = rs[2];
-                                                        if (r < rs[1]) {
-                                                            max = rs[1];
-                                                        } else if (r > rs[1]) {
-                                                            min = rs[1];
+                                                        double min = RS[0];
+                                                        double max = RS[2];
+                                                        if (r < RS[1]) {
+                                                            max = RS[1];
+                                                        } else if (r > RS[1]) {
+                                                            min = RS[1];
                                                         }
                                                         double randR = min + Math.random() * (max - min);
 
@@ -313,7 +313,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                         // create utility and disease specs
                                                         UtilityFunction uf = new IRTC(alpha, beta, c);
                                                         this.ds = new DiseaseSpecs(
-                                                                diseaseType, tau, s, gamma, mu);
+                                                                DISEASE_TYPE, tau, s, gamma, mu);
 
                                                         // add actors
                                                         for (int i = 0; i < N; i++) {
@@ -445,6 +445,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
 
         // network data - parameters
         roundSummaryCSVCols.add(String.valueOf(network.getN()));
+        roundSummaryCSVCols.add(String.valueOf(network.getAvBeta()));
         roundSummaryCSVCols.add(String.valueOf(network.getAvRiskFactor()));
         // disease data - parameters
         roundSummaryCSVCols.add(String.valueOf(this.ds.getS()));
@@ -497,9 +498,13 @@ public class DataGenerator implements ActorListener, SimulationListener {
             agentsDetailsCSVCols.add(String.valueOf(simulation.getRounds()));
             agentsDetailsCSVCols.add(String.valueOf(this.simStage));
 
-            // network data
             // network data - parameters
             agentsDetailsCSVCols.add(String.valueOf(network.getN()));
+            // network data - stats
+            agentsDetailsCSVCols.add(String.valueOf(network.isStable()));
+            agentsDetailsCSVCols.add(String.valueOf(network.getDensity()));
+            agentsDetailsCSVCols.add(String.valueOf(network.getAvDegree()));
+            agentsDetailsCSVCols.add(String.valueOf(network.getAvClustering()));
 
             // actor data
             agentsDetailsCSVCols.add(actor.getId());

@@ -562,6 +562,21 @@ public class Network extends SingleGraph {
     }
 
     /**
+     * Gets the average risk beta of all actors in the network.
+     *
+     * @return the average beta of all actors in the network
+     */
+    public double getAvBeta() {
+        double avBeta = 0;
+        Iterator<Actor> actorIt = this.getActorIterator();
+        while (actorIt.hasNext()) {
+            Actor actor = actorIt.next();
+            avBeta += actor.getUtilityFunction().getBeta();
+        }
+        return (avBeta / this.getActors().size());
+    }
+
+    /**
      * Gets the average risk factor of all actors in the network.
      *
      * @return the average risk factor of all actors in the network
