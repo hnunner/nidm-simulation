@@ -36,7 +36,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
     private static final Logger logger = Logger.getLogger(DataGenerator.class);
 
     // simulations per unique parameter combination
-    private static final int SIMS_PER_UPC = 10;
+    private static final int SIMS_PER_UPC = 5;
 
     // network size
     private static final int[] NS = new int[] {5, 10, 15, 20, 25, 50};      //{5, 10, 15, 20, 25, 50, 75, 100};
@@ -67,7 +67,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
     private static final boolean GENERATE_SUMMARY = true;
     private static final boolean GENERATE_ROUND_SUMMARY = true;
     private static final boolean GENERATE_AGENT_DETAILS = false;
-    private static final boolean GENERATE_AGENT_DETAILS_LAST_ROUND_ONLY = true;
+    private static final boolean GENERATE_AGENT_DETAILS_REDUCED = true;
     private static final boolean GENERATE_GEXF = false;
 
     // simulation stage
@@ -193,7 +193,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
                 CSVUtils.writeLine(this.roundSummaryCSVWriter, roundSummaryCSVCols);
             }
 
-            if (GENERATE_AGENT_DETAILS || GENERATE_AGENT_DETAILS_LAST_ROUND_ONLY) {
+            if (GENERATE_AGENT_DETAILS || GENERATE_AGENT_DETAILS_REDUCED) {
                 String agentsDetailsCSVPath = exportDir + "agents-details.csv";
                 this.agentsDetailsCSVWriter = new FileWriter(agentsDetailsCSVPath);
                 List<String> agentsDetailsCSVCols = new LinkedList<String>();
@@ -338,6 +338,11 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                         double densityPre = network.getDensity();
                                                         double avDegreePre = network.getAvDegree();
                                                         double avClusteringPre = network.getAvClustering();
+
+                                                        // TODO make this better
+                                                        if (!GENERATE_AGENT_DETAILS && GENERATE_AGENT_DETAILS_REDUCED) {
+                                                            logAgentsDetails(simulation);
+                                                        }
 
                                                         // infect random actor
                                                         network.infectRandomActor(ds);
@@ -607,7 +612,6 @@ public class DataGenerator implements ActorListener, SimulationListener {
      * @see nl.uu.socnetid.netgame.simulation.SimulationListener#notifyRoundFinished(
      * nl.uu.socnetid.netgame.simulation.Simulation)
      */
-    @SuppressWarnings("unused")
     @Override
     public void notifyRoundFinished(Simulation simulation) {
         if (GENERATE_ROUND_SUMMARY) {
@@ -626,6 +630,10 @@ public class DataGenerator implements ActorListener, SimulationListener {
     public void notifyInfectionDefeated(Simulation simulation) {
         this.roundsLastInfection = simulation.getRounds() - this.roundStartInfection;
         this.simStage = SimulationStage.POST_EPIDEMIC;
+        // TODO make this better
+        if (!GENERATE_AGENT_DETAILS && GENERATE_AGENT_DETAILS_REDUCED) {
+            logAgentsDetails(simulation);
+        }
     }
 
     /* (non-Javadoc)
@@ -639,7 +647,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
             if (GENERATE_ROUND_SUMMARY) {
                 logRoundSummary(simulation);
             }
-            if (GENERATE_AGENT_DETAILS || GENERATE_AGENT_DETAILS_LAST_ROUND_ONLY) {
+            if (GENERATE_AGENT_DETAILS || GENERATE_AGENT_DETAILS_REDUCED) {
                 logAgentsDetails(simulation);
             }
         }
