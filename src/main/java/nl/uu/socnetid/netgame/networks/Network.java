@@ -190,7 +190,7 @@ public class Network extends SingleGraph {
      * @return the average degree dependent on network size
      */
     public double getAverageDegree() {
-        return 0.9185 * Math.pow(this.getN(), 0.5934);
+        return 0.8628 * Math.pow(this.getN(), 0.6246);
     }
 
     /**
