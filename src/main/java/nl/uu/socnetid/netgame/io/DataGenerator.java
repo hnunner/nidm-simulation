@@ -54,7 +54,8 @@ public class DataGenerator implements ActorListener, SimulationListener {
     private static final double[] MUS    = new double[] {1.0, 1.5};
 
     // risk behavior
-    private static final double[] RS = new double[] {0.0, 1.0, 2.0};
+//    private static final double[] RS = new double[] {0.0, 1.0, 2.0};
+    private static final double[] R_BOUNDS = new double[] {0.25, 1.75};
 
     // initial network
     private static final boolean[] START_WITH_EMPTY_NETWORKS = new boolean[] {true, false};
@@ -118,7 +119,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
 
         // unique parameter combinations
         int upcs = NS.length * ALPHAS.length * BETAS.length * CS.length * TAUS.length
-                * SS.length * GAMMAS.length * MUS.length * RS.length * START_WITH_EMPTY_NETWORKS.length;
+                * SS.length * GAMMAS.length * MUS.length * START_WITH_EMPTY_NETWORKS.length;
 
         // simulations in total
         int sim = 0;
@@ -258,7 +259,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                 for (double s : SS) {
                                     for (double gamma : GAMMAS) {
                                         for (double mu : MUS) {
-                                            for (double r : RS) {
+//                                            for (double r : RS) {
                                                 for (boolean empty : START_WITH_EMPTY_NETWORKS) {
                                                     this.startWithEmptyNetwork = empty;
 
@@ -275,13 +276,15 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                         Network network = new Network();
 
                                                         // add noise to risk factor
-                                                        double min = RS[0];
-                                                        double max = RS[2];
-                                                        if (r < RS[1]) {
-                                                            max = RS[1];
-                                                        } else if (r > RS[1]) {
-                                                            min = RS[1];
-                                                        }
+//                                                        double min = RS[0];
+//                                                        double max = RS[2];
+//                                                        if (r < RS[1]) {
+//                                                            max = RS[1];
+//                                                        } else if (r > RS[1]) {
+//                                                            min = RS[1];
+//                                                        }
+                                                        double min = R_BOUNDS[0];
+                                                        double max = R_BOUNDS[1];
                                                         double randR = min + Math.random() * (max - min);
 
                                                         // TODO: refactor into own log method
@@ -396,7 +399,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                                     ));
                                                             this.summaryCSVWriter.flush();
                                                         }
-                                                    }
+//                                                    }
                                                 }
                                             }
                                         }
