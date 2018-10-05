@@ -36,7 +36,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
     private static final Logger logger = Logger.getLogger(DataGenerator.class);
 
     // simulations per unique parameter combination
-    private static final int SIMS_PER_UPC = 100;
+    private static final int SIMS_PER_UPC = 5;
 
     // network size
     private static final int[] NS = new int[] {5, 10, 15, 20, 25, 50};      //{5, 10, 15, 20, 25, 50, 75, 100};
@@ -140,14 +140,14 @@ public class DataGenerator implements ActorListener, SimulationListener {
                 String summaryCSVPath = exportDir + "summary.csv";
                 this.summaryCSVWriter = new FileWriter(summaryCSVPath);
                 CSVUtils.writeLine(summaryCSVWriter, Arrays.asList(
-                        "sim",
+                        "uid",
+                        "upc.id",
+                        "sim.id",
                         "N",
                         "alpha", "beta", "c",
                         "tau", "s", "gamma", "mu",
                         "r",
                         "network at start",
-                        "unique parameter combination (upc)",
-                        "sim per upc",
                         "susceptibles (last round)", "infected (last round)", "recovered (last round)",
                         "ties broken with infection present",
                         "duration of infection",
@@ -369,7 +369,10 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                         if (GENERATE_SUMMARY) {
                                                             // add result to overview CSV
                                                             CSVUtils.writeLine(this.summaryCSVWriter, Arrays.asList(
-                                                                    Integer.toString(sim),
+                                                                    Integer.toString(this.upc)
+                                                                        + "-" + String.valueOf(this.simPerUpc),
+                                                                    Integer.toString(this.upc),
+                                                                    Integer.toString(this.simPerUpc),
                                                                     Integer.toString(N),
                                                                     Double.toString(alpha),
                                                                     Double.toString(beta),
@@ -380,23 +383,21 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                                     Double.toString(mu),
                                                                     Double.toString(randR),
                                                                     this.startWithEmptyNetwork ? "empty" : "full",
-                                                                            Integer.toString(this.upc),
-                                                                            Integer.toString(this.simPerUpc),
-                                                                            Integer.toString(network.getSusceptibles().size()),
-                                                                            Integer.toString(network.getInfected().size()),
-                                                                            Integer.toString(network.getRecovered().size()),
-                                                                            this.tiesBrokenWithInfectionPresent ? "yes" : "no",
-                                                                                    Integer.toString(this.roundsLastInfection),
-                                                                                    //networkTypeBeforeInfection.toString(),
-                                                                                    //networkTypeAfterInfection.toString(),
-                                                                                    Double.toString(densityPre),
-                                                                                    Double.toString(avDegreePre),
-                                                                                    Double.toString(avClusteringPre),
-                                                                                    Double.toString(densityPost),
-                                                                                    Double.toString(avDegreePost),
-                                                                                    Double.toString(avClusteringPost),
-                                                                                    gexfFilename
-                                                                    ));
+                                                                    Integer.toString(network.getSusceptibles().size()),
+                                                                    Integer.toString(network.getInfected().size()),
+                                                                    Integer.toString(network.getRecovered().size()),
+                                                                    this.tiesBrokenWithInfectionPresent ? "yes" : "no",
+                                                                    Integer.toString(this.roundsLastInfection),
+                                                                    //networkTypeBeforeInfection.toString(),
+                                                                    //networkTypeAfterInfection.toString(),
+                                                                    Double.toString(densityPre),
+                                                                    Double.toString(avDegreePre),
+                                                                    Double.toString(avClusteringPre),
+                                                                    Double.toString(densityPost),
+                                                                    Double.toString(avDegreePost),
+                                                                    Double.toString(avClusteringPost),
+                                                                    gexfFilename
+                                                                ));
                                                             this.summaryCSVWriter.flush();
                                                         }
 //                                                    }
