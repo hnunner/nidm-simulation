@@ -120,7 +120,8 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      * @return the number of network decisions
      */
     public int getNumberOfNetworkDecisions() {
-        return (int) Math.round(this.getNetwork().getAverageDegree());
+//        return (int) Math.round(this.getNetwork().getAverageDegree());
+        return (Math.round(this.getNetwork().getNodeCount() / 5) * 2);
     }
 
     /**
