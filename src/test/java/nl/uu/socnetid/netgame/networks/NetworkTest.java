@@ -340,26 +340,26 @@ public class NetworkTest {
         assertEquals(25, network.getN());
         assertEquals(6.25, network.getAverageDegree(), 0.2);
 
-        // f(50) = 9.33
+        // f(50) = 9.93
         for (int i = 0; i < 25; i++) {
             network.addActor(uf, ds);
         }
         assertEquals(50, network.getN());
-        assertEquals(9.33, network.getAverageDegree(), 0.2);
+        assertEquals(9.93, network.getAverageDegree(), 0.2);
 
-        // f(75) = 11.89
+        // f(75) = 12.8
         for (int i = 0; i < 25; i++) {
             network.addActor(uf, ds);
         }
         assertEquals(75, network.getN());
-        assertEquals(11.89, network.getAverageDegree(), 0.2);
+        assertEquals(12.8, network.getAverageDegree(), 0.2);
 
-        // f(100) = 14.13
+        // f(100) = 15.31
         for (int i = 0; i < 25; i++) {
             network.addActor(uf, ds);
         }
         assertEquals(100, network.getN());
-        assertEquals(14.13, network.getAverageDegree(), 0.2);
+        assertEquals(15.31, network.getAverageDegree(), 0.2);
     }
 
 }
