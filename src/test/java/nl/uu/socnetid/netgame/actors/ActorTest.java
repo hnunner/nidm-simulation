@@ -230,62 +230,120 @@ public class ActorTest {
     public void testGetNumberOfNetworkDecisions() {
         Network network = new Network("Network Network Decisions Test");
 
-        // f(5) = 2.28
+//        // f(5) = 2.28
+//        Actor actor = network.addActor(uf, ds);
+//        for (int i = 0; i < 4; i++) {
+//            network.addActor(uf, ds);
+//        }
+//        assertEquals(5, network.getN());
+//        assertEquals(2, actor.getNumberOfNetworkDecisions());
+//
+//        // f(10) = 3.58
+//        for (int i = 0; i < 5; i++) {
+//            network.addActor(uf, ds);
+//        }
+//        assertEquals(10, network.getN());
+//        assertEquals(4, actor.getNumberOfNetworkDecisions());
+//
+//        // f(15) = 4.62
+//        for (int i = 0; i < 5; i++) {
+//            network.addActor(uf, ds);
+//        }
+//        assertEquals(15, network.getN());
+//        assertEquals(5, actor.getNumberOfNetworkDecisions());
+//
+//        // f(20) = 5.49
+//        for (int i = 0; i < 5; i++) {
+//            network.addActor(uf, ds);
+//        }
+//        assertEquals(20, network.getN());
+//        assertEquals(5, actor.getNumberOfNetworkDecisions());
+//
+//        // f(25) = 6.25
+//        for (int i = 0; i < 5; i++) {
+//            network.addActor(uf, ds);
+//        }
+//        assertEquals(25, network.getN());
+//        assertEquals(6, actor.getNumberOfNetworkDecisions());
+//
+//        // f(50) = 9.33
+//        for (int i = 0; i < 25; i++) {
+//            network.addActor(uf, ds);
+//        }
+//        assertEquals(50, network.getN());
+//        assertEquals(9, actor.getNumberOfNetworkDecisions());
+//
+//        // f(75) = 11.89
+//        for (int i = 0; i < 25; i++) {
+//            network.addActor(uf, ds);
+//        }
+//        assertEquals(75, network.getN());
+//        assertEquals(12, actor.getNumberOfNetworkDecisions());
+//
+//        // f(100) = 14.13
+//        for (int i = 0; i < 25; i++) {
+//            network.addActor(uf, ds);
+//        }
+//        assertEquals(100, network.getN());
+//        assertEquals(14, actor.getNumberOfNetworkDecisions());
+
+        // f(5) = 1
         Actor actor = network.addActor(uf, ds);
         for (int i = 0; i < 4; i++) {
             network.addActor(uf, ds);
         }
         assertEquals(5, network.getN());
-        assertEquals(2, actor.getNumberOfNetworkDecisions());
+        assertEquals(1, actor.getNumberOfNetworkDecisions());
 
-        // f(10) = 3.58
+        // f(10) = 2
         for (int i = 0; i < 5; i++) {
             network.addActor(uf, ds);
         }
         assertEquals(10, network.getN());
-        assertEquals(4, actor.getNumberOfNetworkDecisions());
+        assertEquals(2, actor.getNumberOfNetworkDecisions());
 
-        // f(15) = 4.62
+        // f(15) = 3
         for (int i = 0; i < 5; i++) {
             network.addActor(uf, ds);
         }
         assertEquals(15, network.getN());
-        assertEquals(5, actor.getNumberOfNetworkDecisions());
+        assertEquals(3, actor.getNumberOfNetworkDecisions());
 
-        // f(20) = 5.49
+        // f(20) = 4
         for (int i = 0; i < 5; i++) {
             network.addActor(uf, ds);
         }
         assertEquals(20, network.getN());
-        assertEquals(5, actor.getNumberOfNetworkDecisions());
+        assertEquals(4, actor.getNumberOfNetworkDecisions());
 
-        // f(25) = 6.25
+        // f(25) = 5
         for (int i = 0; i < 5; i++) {
             network.addActor(uf, ds);
         }
         assertEquals(25, network.getN());
-        assertEquals(6, actor.getNumberOfNetworkDecisions());
+        assertEquals(5, actor.getNumberOfNetworkDecisions());
 
-        // f(50) = 9.33
+        // f(50) = 10
         for (int i = 0; i < 25; i++) {
             network.addActor(uf, ds);
         }
         assertEquals(50, network.getN());
-        assertEquals(9, actor.getNumberOfNetworkDecisions());
+        assertEquals(10, actor.getNumberOfNetworkDecisions());
 
-        // f(75) = 11.89
+        // f(75) = 15
         for (int i = 0; i < 25; i++) {
             network.addActor(uf, ds);
         }
         assertEquals(75, network.getN());
-        assertEquals(12, actor.getNumberOfNetworkDecisions());
+        assertEquals(15, actor.getNumberOfNetworkDecisions());
 
-        // f(100) = 14.13
+        // f(100) = 20
         for (int i = 0; i < 25; i++) {
             network.addActor(uf, ds);
         }
         assertEquals(100, network.getN());
-        assertEquals(14, actor.getNumberOfNetworkDecisions());
+        assertEquals(20, actor.getNumberOfNetworkDecisions());
+
     }
 
     /**
