@@ -64,6 +64,9 @@ public class DataGenerator implements ActorListener, SimulationListener {
     private static final int ROUNDS_PRE_EPIDEMIC = 150;
     private static final int ROUNDS_EPIDEMIC = 200;
 
+    // share of peers an actor evaluates per round
+    private static final double PHI = 0.4;
+
     // what files to generate
     private static final boolean GENERATE_SUMMARY = true;
     private static final boolean GENERATE_ROUND_SUMMARY = true;
@@ -320,7 +323,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
 
                                                         // add actors
                                                         for (int i = 0; i < N; i++) {
-                                                            Actor actor = network.addActor(uf, ds, randR);
+                                                            Actor actor = network.addActor(uf, this.ds, randR, PHI);
                                                             actor.addActorListener(this);
                                                         }
 
