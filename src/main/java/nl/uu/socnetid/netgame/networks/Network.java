@@ -30,6 +30,9 @@ public class Network extends SingleGraph {
     // risk factor for risk neutral actors
     private static final double RISK_FACTOR_NEUTRAL = 1.0;
 
+    // standard share to evaluate per actor
+    private static final double STANDARD_PHI = 0.4;
+
     // listener
     private final Set<NetworkListener> networkListeners =
             new CopyOnWriteArraySet<NetworkListener>();
@@ -64,7 +67,7 @@ public class Network extends SingleGraph {
      * @return the newly added actor.
      */
     public Actor addActor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs) {
-        return this.addActor(utilityFunction, diseaseSpecs, RISK_FACTOR_NEUTRAL);
+        return this.addActor(utilityFunction, diseaseSpecs, RISK_FACTOR_NEUTRAL, STANDARD_PHI);
     }
 
     /**
@@ -80,8 +83,26 @@ public class Network extends SingleGraph {
      * @return the newly added actor.
      */
     public Actor addActor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double riskFactor) {
+        return this.addActor(utilityFunction, diseaseSpecs, riskFactor, STANDARD_PHI);
+    }
+
+    /**
+     * Creates and adds an actor to the network.
+     *
+     * @param utilityFunction
+     *          the actor's utility function
+     * @param diseaseSpecs
+     *          the disease specs
+     * @param riskFactor
+     *          the factor describing how the actor perceives the risk of an infection:
+     *          <1: risk seeking, =1: risk neutral; >1: risk averse
+     * @param phi
+     *          the share of peers an actor evaluates per round
+     * @return the newly added actor.
+     */
+    public Actor addActor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double riskFactor, double phi) {
         Actor actor = this.addNode(String.valueOf(this.getNodeCount() + 1));
-        actor.initActor(utilityFunction, diseaseSpecs, riskFactor);
+        actor.initActor(utilityFunction, diseaseSpecs, riskFactor, phi);
         notifyActorAdded(actor);
         return actor;
     }

@@ -12,6 +12,7 @@ public enum ActorAttributes {
     UI_CLASS("ui.class"),
     RISK_FACTOR("risk.factor"),
     RISK_MEANING("risk.meaning"),
+    PHI("phi"),
     SATISFIED("satisfied"),
     CONNECTION_STATS("connection.stats");
 

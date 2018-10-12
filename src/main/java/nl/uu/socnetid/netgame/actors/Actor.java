@@ -65,8 +65,10 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      *          the disease characteristics that is or might become present in the network
      * @param riskFactor
      *          the risk factor of a actor (<1: risk seeking, =1: risk neutral; >1: risk averse)
+     * @param phi
+     *          the share of peers to evaluate per round
      */
-    public void initActor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, Double riskFactor) {
+    public void initActor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, Double riskFactor, Double phi) {
         this.addAttribute(ActorAttributes.UTILITY_FUNCTION, utilityFunction);
         this.addAttribute(ActorAttributes.DISEASE_SPECS, diseaseSpecs);
         DiseaseGroup diseaseGroup = DiseaseGroup.SUSCEPTIBLE;
@@ -76,6 +78,7 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
         this.addAttribute(ActorAttributes.UI_CLASS, diseaseGroup.toString(), false);
         this.addAttribute(ActorAttributes.RISK_FACTOR, riskFactor);
         this.addAttribute(ActorAttributes.RISK_MEANING, getRiskMeaning(riskFactor));
+        this.addAttribute(ActorAttributes.PHI, phi);
         this.addAttribute(ActorAttributes.SATISFIED, false);
         this.addAttribute(ActorAttributes.CONNECTION_STATS, new ActorConnectionStats());
         this.addAttribute("ui.label", this.getId());
@@ -121,7 +124,7 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      */
     public int getNumberOfNetworkDecisions() {
 //        return (int) Math.round(this.getNetwork().getAverageDegree());
-        return (Math.round(this.getNetwork().getNodeCount() / 5) * 2);
+        return (int) (Math.round((this.getNetwork().getNodeCount() - 1) * this.getPhi()));
     }
 
     /**
@@ -267,6 +270,15 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      */
     public double getRiskFactor() {
         return (double) this.getAttribute(ActorAttributes.RISK_FACTOR);
+    }
+
+    /**
+     * Gets the actor's share of peers to evaluate per round.
+     *
+     * @return the actor's share of peers to evaluate per round
+     */
+    public double getPhi() {
+        return (double) this.getAttribute(ActorAttributes.PHI);
     }
 
     /**
