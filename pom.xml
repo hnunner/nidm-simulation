@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.uu.socnetid</groupId>
 	<artifactId>netgame</artifactId>
-	<version>1.0.3</version>
+	<version>2.0.0</version>
 	<url>http://maven.apache.org</url>
 
 	<properties>
