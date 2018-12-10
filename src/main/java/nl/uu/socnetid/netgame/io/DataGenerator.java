@@ -44,7 +44,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
     private static final Logger logger = Logger.getLogger(DataGenerator.class);
 
     // simulations per unique parameter combination
-    private static final int SIMS_PER_UPC = 100;
+    private static final int SIMS_PER_UPC = 5;
 
     // network size
     private static final int[] NS = new int[] {5, 10, 15, 20, 25, 50};      //{5, 10, 15, 20, 25, 50, 75, 100};
@@ -331,7 +331,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
         simulationSummaryCSVCols.add(this.uid);
         simulationSummaryCSVCols.add(String.valueOf(this.upc));
         simulationSummaryCSVCols.add(String.valueOf(this.simPerUpc));
-        simulationSummaryCSVCols.add(this.startWithEmptyNetwork ? "empty" : "full");
+        simulationSummaryCSVCols.add(String.valueOf(this.startWithEmptyNetwork ? 1 : 0));
         simulationSummaryCSVCols.add(gexfExportFile);
         // network
         simulationSummaryCSVCols.add(String.valueOf(network.getN()));
@@ -353,7 +353,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
         simulationSummaryCSVCols.add(String.valueOf(pct * network.getRecovered().size()));
         simulationSummaryCSVCols.add(Integer.toString(this.roundsLastInfection));
         // network
-        simulationSummaryCSVCols.add(this.tiesBrokenWithInfectionPresent ? "yes" : "no");
+        simulationSummaryCSVCols.add(String.valueOf(this.tiesBrokenWithInfectionPresent ? 1 : 0));
         simulationSummaryCSVCols.add(Double.toString(this.densityPre));
         simulationSummaryCSVCols.add(Double.toString(network.getDensity()));
         simulationSummaryCSVCols.add(Double.toString(this.avDegreePre));
