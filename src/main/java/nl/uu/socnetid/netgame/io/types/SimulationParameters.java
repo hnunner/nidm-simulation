@@ -15,7 +15,7 @@ public enum SimulationParameters {
     UID("sim.param.uid"),
     UPC("sim.param.upc"),
     SIM("sim.param.sim"),
-    NETWORK_STRUCTURE("net.param.net.struct"),
+    NETWORK_STRUCTURE("net.param.net.empty"),
     GEXF_EXPORT_FILE("sim.param.gexf.export.file");
 
     // the name
