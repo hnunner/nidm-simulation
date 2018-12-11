@@ -44,14 +44,14 @@ public class DataGenerator implements ActorListener, SimulationListener {
     private static final Logger logger = Logger.getLogger(DataGenerator.class);
 
     // simulations per unique parameter combination
-    private static final int SIMS_PER_UPC = 5;
+    private static final int SIMS_PER_UPC = 100;
 
     // network size
     private static final int[] NS = new int[] {5, 10, 15, 20, 25, 50};      //{5, 10, 15, 20, 25, 50, 75, 100};
 
     // utility
     private static final double[] ALPHAS = new double[] {10.0};
-    private static final double[] BETAS  = new double[] {2.0, 8.0};
+    private static final double[] BETAS  = new double[] {2.0, 5.0, 8.0};
     private static final double[] CS     = new double[] {9.0}; //, 11.0};
 
     // disease
@@ -59,7 +59,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
     private static final int[]    TAUS   = new int[] {10};
     private static final double[] SS     = new double[] {2.0, 10.0, 50.0};
     private static final double[] GAMMAS = new double[] {0.1};
-    private static final double[] MUS    = new double[] {1.0, 1.5};
+    private static final double[] MUS    = new double[] {0.5, 1.0, 1.5};
 
     // risk behavior
     private static final double[] R_BOUNDS = new double[] {0.25, 1.75};
