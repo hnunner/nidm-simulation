@@ -242,9 +242,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         tabbedPane.addTab("Network", networkPane);
         networkPane.setLayout(null);
 
-
-
-        /// NEW COMMENT ///
+        /// NEW COMMENTs ///
 
         JButton btnAddActor = new JButton("Add Actor");
         btnAddActor.setIcon(new ImageIcon(getClass().getResource("/add.png")));
