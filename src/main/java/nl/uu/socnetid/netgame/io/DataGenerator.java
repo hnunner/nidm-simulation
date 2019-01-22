@@ -44,7 +44,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
     private static final Logger logger = Logger.getLogger(DataGenerator.class);
 
     // simulations per unique parameter combination
-    private static final int SIMS_PER_UPC = 100;
+    private static final int SIMS_PER_UPC = 1000;
 
     // network size
     private static final int[] NS = new int[] {5, 10, 15, 20, 25, 50};   //{5, 10, 15, 20, 25, 50, 75, 100};
@@ -216,7 +216,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                 this.densityPre = network.getDensity();
                                                 this.avDegreePre = network.getAvDegree();
                                                 this.avClusteringPre = network.getAvClustering();
-                                                // TODO make this better
+                                                // TODO improve:
                                                 if (!EXPORT_ACTOR_DETAIL_DATA && EXPORT_ACTOR_DETAIL_REDUCED_DATA) {
                                                     logActorDetails(simulation);
                                                 }
@@ -388,6 +388,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
         roundSummaryCSVCols.add(NetworkParameters.R.toString());
         // disease
         roundSummaryCSVCols.add(DiseaseParameters.S.toString());
+        roundSummaryCSVCols.add(DiseaseParameters.MU.toString());
 
         // PROPERTIES
         // simulation
@@ -434,6 +435,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
         roundSummaryCSVCols.add(String.valueOf(network.getAvR()));
         // disease
         roundSummaryCSVCols.add(String.valueOf(this.ds.getS()));
+        roundSummaryCSVCols.add(String.valueOf(this.ds.getMu()));
 
         // PROPERTIES
         // simulation
@@ -686,7 +688,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
     public void notifyInfectionDefeated(Simulation simulation) {
         this.roundsLastInfection = simulation.getRounds() - this.roundStartInfection;
         this.simStage = SimulationStage.POST_EPIDEMIC;
-        // TODO make this better
+        // TODO improve
         if (!EXPORT_ACTOR_DETAIL_DATA && EXPORT_ACTOR_DETAIL_REDUCED_DATA) {
             logActorDetails(simulation);
         }
