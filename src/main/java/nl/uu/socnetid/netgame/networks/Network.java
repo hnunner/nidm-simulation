@@ -307,11 +307,12 @@ public class Network extends SingleGraph {
      *
      * @param diseaseSpecs
      *          the characteristics of the disease to infect a actor with
+     * @return the infected actor, null if no actor was infected
      */
-    public void infectRandomActor(DiseaseSpecs diseaseSpecs) {
+    public Actor infectRandomActor(DiseaseSpecs diseaseSpecs) {
         if (this.getActors() == null || this.getActors().isEmpty()) {
             logger.info("Unable to infect a random actor. No actor available.");
-            return;
+            return null;
         }
 
         // actors performing action in random order
@@ -322,10 +323,11 @@ public class Network extends SingleGraph {
             Actor actor = actorsIt.next();
             if (actor.isSusceptible()) {
                 actor.forceInfect(diseaseSpecs);
-                return;
+                return actor;
             }
         }
         logger.info("Unable to infect a random actor. No susceptible actor available.");
+        return null;
     }
 
     /**
@@ -565,6 +567,36 @@ public class Network extends SingleGraph {
     }
 
     /**
+     * Gets the average degree at distance 2 of the network.
+     *
+     * @return the average degree at distance 2 of the network
+     */
+    public double getAvDegree2() {
+        double avDegree2 = 0;
+        Iterator<Actor> actorsIt = this.getActors().iterator();
+        while (actorsIt.hasNext()) {
+            Actor actor = actorsIt.next();
+            avDegree2 += actor.getSecondOrderDegree();
+        }
+        return avDegree2/this.getActors().size();
+    }
+
+    /**
+     * Gets the average closeness of the network.
+     *
+     * @return the average closeness of the network
+     */
+    public double getAvCloseness() {
+        double avCloseness = 0;
+        Iterator<Actor> actorsIt = this.getActors().iterator();
+        while (actorsIt.hasNext()) {
+            Actor actor = actorsIt.next();
+            avCloseness += actor.getCloseness();
+        }
+        return avCloseness/this.getActors().size();
+    }
+
+    /**
      * Gets the density of the network.
      *
      * @return the density of the network
@@ -642,5 +674,81 @@ public class Network extends SingleGraph {
         }
         return (avRiskFactor / this.getActors().size());
     }
+
+    /**
+     * Gets the average utility of all actors in the network.
+     *
+     * @return the average utility of all actors in the network
+     */
+    public double getAvUtility() {
+        double avUtility = 0;
+        Iterator<Actor> actorIt = this.getActorIterator();
+        while (actorIt.hasNext()) {
+            Actor actor = actorIt.next();
+            avUtility += actor.getUtility().getOverallUtility();
+        }
+        return (avUtility / this.getActors().size());
+    }
+
+    /**
+     * Gets the average benefit at distance 1 of all actors in the network.
+     *
+     * @return the average benefit at distance 1 of all actors in the network
+     */
+    public double getAvBenefitDistance1() {
+        double avBenefit1 = 0;
+        Iterator<Actor> actorIt = this.getActorIterator();
+        while (actorIt.hasNext()) {
+            Actor actor = actorIt.next();
+            avBenefit1 += actor.getUtility().getBenefitDirectConnections();
+        }
+        return (avBenefit1 / this.getActors().size());
+    }
+
+    /**
+     * Gets the average benefit at distance 2 of all actors in the network.
+     *
+     * @return the average benefit at distance 2 of all actors in the network
+     */
+    public double getAvBenefitDistance2() {
+        double avBenefit2 = 0;
+        Iterator<Actor> actorIt = this.getActorIterator();
+        while (actorIt.hasNext()) {
+            Actor actor = actorIt.next();
+            avBenefit2 += actor.getUtility().getBenefitIndirectConnections();
+        }
+        return (avBenefit2 / this.getActors().size());
+    }
+
+    /**
+     * Gets the average costs for actors at distance 1 of all actors in the network.
+     *
+     * @return the average costs for actors at distance 1 of all actors in the network
+     */
+    public double getAvCostsDistance1() {
+        double avCosts1 = 0;
+        Iterator<Actor> actorIt = this.getActorIterator();
+        while (actorIt.hasNext()) {
+            Actor actor = actorIt.next();
+            avCosts1 += actor.getUtility().getCostsDirectConnections();
+        }
+        return (avCosts1 / this.getActors().size());
+    }
+
+    /**
+     * Gets the average disease costs of all actors in the network.
+     *
+     * @return the average disease costs of all actors in the network
+     */
+    public double getAvCostsDisease() {
+        double avCostsDisease = 0;
+        Iterator<Actor> actorIt = this.getActorIterator();
+        while (actorIt.hasNext()) {
+            Actor actor = actorIt.next();
+            avCostsDisease += actor.getUtility().getEffectOfDisease();
+        }
+        return (avCostsDisease / this.getActors().size());
+    }
+
 
 }
