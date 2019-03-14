@@ -34,6 +34,7 @@ public enum ActorProperties {
     DEGREE1("act.prop.net.degree.order.1"),
     DEGREE2("act.prop.net.degree.order.2"),
     CLOSENESS("act.prop.net.closeness"),
+    CLUSTERING("act.prop.net.clustering"),
     CONS_BROKEN_ACTIVE("act.prop.cons.broken.active"),
     CONS_BROKEN_PASSIVE("act.prop.cons.broken.passive"),
     CONS_OUT_ACCEPTED("act.prop.cons.out.accepted"),

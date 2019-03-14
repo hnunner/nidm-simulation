@@ -12,6 +12,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.locks.Lock;
 
 import org.apache.log4j.Logger;
+import org.graphstream.algorithm.Toolkit;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleNode;
@@ -332,6 +333,34 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
     public ActorConnectionStats getConnectionStats() {
         return (ActorConnectionStats) this.getAttribute(ActorAttributes.CONNECTION_STATS);
     }
+
+    /**
+     * Gets the second order degree.
+     *
+     * @return the second order degree
+     */
+    public double getSecondOrderDegree() {
+        return StatsComputer.computeSecondOrderDegree(this);
+    }
+
+    /**
+     * Gets the closeness.
+     *
+     * @return the closeness
+     */
+    public double getCloseness() {
+        return StatsComputer.computeCloseness(this);
+    }
+
+    /**
+     * Gets the clustering.
+     *
+     * @return the clustering
+     */
+    public double getClustering() {
+        return Toolkit.clusteringCoefficient(this);
+    }
+
 
     /**
      * Keeps track of actively broken ties.
