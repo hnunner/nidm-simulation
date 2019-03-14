@@ -437,8 +437,6 @@ public class DataGenerator implements ActorListener, SimulationListener {
         simulationSummaryCSVCols.add(Double.toString(network.getAvCostsDistance1()));
         simulationSummaryCSVCols.add(Double.toString(this.avCostsDisease));
         simulationSummaryCSVCols.add(Double.toString(network.getAvCostsDisease()));
-        simulationSummaryCSVCols.add(NetworkProperties.DENSITY_PRE.toString());
-        simulationSummaryCSVCols.add(NetworkProperties.DENSITY_POST.toString());
         simulationSummaryCSVCols.add(Double.toString(this.densityPre));
         simulationSummaryCSVCols.add(Double.toString(network.getDensity()));
         // index case
