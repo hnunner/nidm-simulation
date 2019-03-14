@@ -44,7 +44,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
     private static final Logger logger = Logger.getLogger(DataGenerator.class);
 
     // simulations per unique parameter combination
-    private static final int SIMS_PER_UPC = 1000;
+    private static final int SIMS_PER_UPC = 100;
 
     // network size
     private static final int[] NS = new int[] {5, 10, 15, 20, 25, 50};   //{5, 10, 15, 20, 25, 50, 75, 100};
@@ -62,7 +62,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
     private static final double[] MUS    = new double[] {1.0, 1.5};
 
     // risk behavior
-    private static final double[] R_BOUNDS = new double[] {0.25, 1.75};
+//    private static final double[] R_BOUNDS = new double[] {0.25, 1.75};
     private static final double[] RS    = new double[] {0.5, 1.0, 1.5};
 
     // initial network
@@ -181,95 +181,98 @@ public class DataGenerator implements ActorListener, SimulationListener {
             for (double alpha : ALPHAS) {
                 for (double beta : BETAS) {
                     for (double c : CS) {
-                        for (int tau : TAUS) {
-                            for (double s : SS) {
-                                for (double gamma : GAMMAS) {
-                                    for (double mu : MUS) {
-                                        for (boolean empty : START_WITH_EMPTY_NETWORKS) {
-                                            this.startWithEmptyNetwork = empty;
+                        for (double r : RS) {
+                            for (int tau : TAUS) {
+                                for (double s : SS) {
+                                    for (double gamma : GAMMAS) {
+                                        for (double mu : MUS) {
+                                            for (boolean empty : START_WITH_EMPTY_NETWORKS) {
+                                                this.startWithEmptyNetwork = empty;
 
-                                            logger.info("Starting to compute "
-                                                    + SIMS_PER_UPC + " simulations for parameter combination: "
-                                                    + ++this.upc + " / "
-                                                    + upcs);
+                                                logger.info("Starting to compute "
+                                                        + SIMS_PER_UPC + " simulations for parameter combination: "
+                                                        + ++this.upc + " / "
+                                                        + upcs);
 
-                                            for (this.simPerUpc = 1; this.simPerUpc <= SIMS_PER_UPC; this.simPerUpc++) {
+                                                for (this.simPerUpc = 1; this.simPerUpc <= SIMS_PER_UPC; this.simPerUpc++) {
 
-                                                // INITIALIZATIONS
-                                                // uid = "upc-sim"
-                                                this.uid = String.valueOf(this.upc) + "-" + String.valueOf(this.simPerUpc);
-                                                // create network
-                                                Network network = new Network();
-                                                // begin: GEXF export
-                                                if (EXPORT_GEXF_DATA) {
-                                                    this.gexfWriter = new GEXFWriter();
-                                                    this.gexfExportFile = this.exportDir + this.uid + ".gexf";
-                                                    gexfWriter.startRecording(network, this.gexfExportFile);
-                                                }
-                                                // random risk factor
-                                                double minR = R_BOUNDS[0];
-                                                double maxR = R_BOUNDS[1];
-                                                double randR = minR + Math.random() * (maxR - minR);
-                                                // create utility and disease specs
-                                                UtilityFunction uf = new IRTC(alpha, beta, c);
-                                                this.ds = new DiseaseSpecs(
-                                                        DISEASE_TYPE, tau, s, gamma, mu);
-                                                // add actors
-                                                for (int i = 0; i < N; i++) {
-                                                    Actor actor = network.addActor(uf, this.ds, randR, PHI);
-                                                    actor.addActorListener(this);
-                                                }
-                                                // create full network if required
-                                                if (!this.startWithEmptyNetwork) {
-                                                    network.createFullNetwork();
-                                                }
+                                                    // INITIALIZATIONS
+                                                    // uid = "upc-sim"
+                                                    this.uid = String.valueOf(this.upc) + "-" + String.valueOf(this.simPerUpc);
+                                                    // create network
+                                                    Network network = new Network();
+                                                    // begin: GEXF export
+                                                    if (EXPORT_GEXF_DATA) {
+                                                        this.gexfWriter = new GEXFWriter();
+                                                        this.gexfExportFile = this.exportDir + this.uid + ".gexf";
+                                                        gexfWriter.startRecording(network, this.gexfExportFile);
+                                                    }
+    //                                                // random risk factor
+    //                                                double minR = R_BOUNDS[0];
+    //                                                double maxR = R_BOUNDS[1];
+    //                                                double randR = minR + Math.random() * (maxR - minR);
+                                                    // create utility and disease specs
+                                                    UtilityFunction uf = new IRTC(alpha, beta, c);
+                                                    this.ds = new DiseaseSpecs(
+                                                            DISEASE_TYPE, tau, s, gamma, mu);
+                                                    // add actors
+                                                    for (int i = 0; i < N; i++) {
+//                                                        Actor actor = network.addActor(uf, this.ds, randR, PHI);
+                                                        Actor actor = network.addActor(uf, this.ds, r, PHI);
+                                                        actor.addActorListener(this);
+                                                    }
+                                                    // create full network if required
+                                                    if (!this.startWithEmptyNetwork) {
+                                                        network.createFullNetwork();
+                                                    }
 
-                                                // SIMULATION
-                                                // PRE_EPIDEMIC STAGE
-                                                this.simStage = SimulationStage.PRE_EPIDEMIC;
-                                                this.tiesBrokenWithInfectionPresent = false;
-                                                Simulation simulation = new Simulation(network);
-                                                simulation.addSimulationListener(this);
-                                                simulation.simulate(ROUNDS_PRE_EPIDEMIC);
-                                                // save network properties of pre-epidemic stage
-                                                this.densityPre = network.getDensity();
-                                                this.avDegreePre = network.getAvDegree();
-                                                this.avDegree2Pre = network.getAvDegree2();
-                                                this.avClosenessPre = network.getAvCloseness();
-                                                this.avClusteringPre = network.getAvClustering();
-                                                this.avUtility = network.getAvUtility();
-                                                this.avBenefitDistance1 = network.getAvBenefitDistance1();
-                                                this.avBenefitDistance2 = network.getAvBenefitDistance2();
-                                                this.avCostsDistance1 = network.getAvCostsDistance1();
-                                                this.avCostsDisease = network.getAvCostsDisease();
-                                                // TODO improve:
-                                                if (!EXPORT_ACTOR_DETAIL_DATA && EXPORT_ACTOR_DETAIL_REDUCED_DATA) {
-                                                    logActorDetails(simulation);
-                                                }
-                                                // EPIDEMIC AND POST-EPIDEMIC STAGES
-                                                Actor indexCase = network.infectRandomActor(ds);
-                                                this.simStage = SimulationStage.ACTIVE_EPIDEMIC;
+                                                    // SIMULATION
+                                                    // PRE_EPIDEMIC STAGE
+                                                    this.simStage = SimulationStage.PRE_EPIDEMIC;
+                                                    this.tiesBrokenWithInfectionPresent = false;
+                                                    Simulation simulation = new Simulation(network);
+                                                    simulation.addSimulationListener(this);
+                                                    simulation.simulate(ROUNDS_PRE_EPIDEMIC);
+                                                    // save network properties of pre-epidemic stage
+                                                    this.densityPre = network.getDensity();
+                                                    this.avDegreePre = network.getAvDegree();
+                                                    this.avDegree2Pre = network.getAvDegree2();
+                                                    this.avClosenessPre = network.getAvCloseness();
+                                                    this.avClusteringPre = network.getAvClustering();
+                                                    this.avUtility = network.getAvUtility();
+                                                    this.avBenefitDistance1 = network.getAvBenefitDistance1();
+                                                    this.avBenefitDistance2 = network.getAvBenefitDistance2();
+                                                    this.avCostsDistance1 = network.getAvCostsDistance1();
+                                                    this.avCostsDisease = network.getAvCostsDisease();
+                                                    // TODO improve:
+                                                    if (!EXPORT_ACTOR_DETAIL_DATA && EXPORT_ACTOR_DETAIL_REDUCED_DATA) {
+                                                        logActorDetails(simulation);
+                                                    }
+                                                    // EPIDEMIC AND POST-EPIDEMIC STAGES
+                                                    Actor indexCase = network.infectRandomActor(ds);
+                                                    this.simStage = SimulationStage.ACTIVE_EPIDEMIC;
 
-                                                // save index case properties of pre-epidemic stage
-                                                this.indexDegree1 = indexCase.getDegree();
-                                                this.indexDegree2 = indexCase.getSecondOrderDegree();
-                                                this.indexCloseness = indexCase.getCloseness();
-                                                this.indexClustering = indexCase.getClustering();
-                                                this.indexUtility = indexCase.getUtility().getOverallUtility();
-                                                this.indexBenefit1 = indexCase.getUtility().getBenefitDirectConnections();
-                                                this.indexBenefit2 = indexCase.getUtility().getBenefitIndirectConnections();
-                                                this.indexCosts1 = indexCase.getUtility().getCostsDirectConnections();
-                                                this.indexCostsDisease = indexCase.getUtility().getEffectOfDisease();
+                                                    // save index case properties of pre-epidemic stage
+                                                    this.indexDegree1 = indexCase.getDegree();
+                                                    this.indexDegree2 = indexCase.getSecondOrderDegree();
+                                                    this.indexCloseness = indexCase.getCloseness();
+                                                    this.indexClustering = indexCase.getClustering();
+                                                    this.indexUtility = indexCase.getUtility().getOverallUtility();
+                                                    this.indexBenefit1 = indexCase.getUtility().getBenefitDirectConnections();
+                                                    this.indexBenefit2 = indexCase.getUtility().getBenefitIndirectConnections();
+                                                    this.indexCosts1 = indexCase.getUtility().getCostsDirectConnections();
+                                                    this.indexCostsDisease = indexCase.getUtility().getEffectOfDisease();
 
-                                                this.roundStartInfection = simulation.getRounds();
-                                                simulation.simulate(ROUNDS_EPIDEMIC);
-                                                // end: GEXF export
-                                                if (EXPORT_GEXF_DATA) {
-                                                    this.gexfWriter.stopRecording();
-                                                }
-                                                // log simulation summary
-                                                if (EXPORT_SUMMARY_DATA) {
-                                                    logSimulationSummaryCSV(simulation);
+                                                    this.roundStartInfection = simulation.getRounds();
+                                                    simulation.simulate(ROUNDS_EPIDEMIC);
+                                                    // end: GEXF export
+                                                    if (EXPORT_GEXF_DATA) {
+                                                        this.gexfWriter.stopRecording();
+                                                    }
+                                                    // log simulation summary
+                                                    if (EXPORT_SUMMARY_DATA) {
+                                                        logSimulationSummaryCSV(simulation);
+                                                    }
                                                 }
                                             }
                                         }
