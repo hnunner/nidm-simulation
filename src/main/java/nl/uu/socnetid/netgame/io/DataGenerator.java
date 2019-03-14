@@ -63,6 +63,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
 
     // risk behavior
     private static final double[] R_BOUNDS = new double[] {0.25, 1.75};
+    private static final double[] RS    = new double[] {0.5, 1.0, 1.5};
 
     // initial network
     private static final boolean[] START_WITH_EMPTY_NETWORKS = new boolean[] {true, false};
@@ -93,9 +94,27 @@ public class DataGenerator implements ActorListener, SimulationListener {
     private int roundsLastInfection;
 
     // pre-epidemic properties
+    // network
     private double densityPre;
     private double avDegreePre;
+    private double avDegree2Pre;
+    private double avClosenessPre;
     private double avClusteringPre;
+    private double avUtility;
+    private double avBenefitDistance1;
+    private double avBenefitDistance2;
+    private double avCostsDistance1;
+    private double avCostsDisease;
+    // index case
+    private double indexDegree1;
+    private double indexDegree2;
+    private double indexCloseness;
+    private double indexClustering;
+    private double indexUtility;
+    private double indexBenefit1;
+    private double indexBenefit2;
+    private double indexCosts1;
+    private double indexCostsDisease;
 
     // export directory
     private final String exportDir;
@@ -215,14 +234,33 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                 // save network properties of pre-epidemic stage
                                                 this.densityPre = network.getDensity();
                                                 this.avDegreePre = network.getAvDegree();
+                                                this.avDegree2Pre = network.getAvDegree2();
+                                                this.avClosenessPre = network.getAvCloseness();
                                                 this.avClusteringPre = network.getAvClustering();
+                                                this.avUtility = network.getAvUtility();
+                                                this.avBenefitDistance1 = network.getAvBenefitDistance1();
+                                                this.avBenefitDistance2 = network.getAvBenefitDistance2();
+                                                this.avCostsDistance1 = network.getAvCostsDistance1();
+                                                this.avCostsDisease = network.getAvCostsDisease();
                                                 // TODO improve:
                                                 if (!EXPORT_ACTOR_DETAIL_DATA && EXPORT_ACTOR_DETAIL_REDUCED_DATA) {
                                                     logActorDetails(simulation);
                                                 }
                                                 // EPIDEMIC AND POST-EPIDEMIC STAGES
-                                                network.infectRandomActor(ds);
+                                                Actor indexCase = network.infectRandomActor(ds);
                                                 this.simStage = SimulationStage.ACTIVE_EPIDEMIC;
+
+                                                // save index case properties of pre-epidemic stage
+                                                this.indexDegree1 = indexCase.getDegree();
+                                                this.indexDegree2 = indexCase.getSecondOrderDegree();
+                                                this.indexCloseness = indexCase.getCloseness();
+                                                this.indexClustering = indexCase.getClustering();
+                                                this.indexUtility = indexCase.getUtility().getOverallUtility();
+                                                this.indexBenefit1 = indexCase.getUtility().getBenefitDirectConnections();
+                                                this.indexBenefit2 = indexCase.getUtility().getBenefitIndirectConnections();
+                                                this.indexCosts1 = indexCase.getUtility().getCostsDirectConnections();
+                                                this.indexCostsDisease = indexCase.getUtility().getEffectOfDisease();
+
                                                 this.roundStartInfection = simulation.getRounds();
                                                 simulation.simulate(ROUNDS_EPIDEMIC);
                                                 // end: GEXF export
@@ -299,12 +337,36 @@ public class DataGenerator implements ActorListener, SimulationListener {
         simulationSummaryCSVCols.add(DiseaseProperties.DURATION.toString());
         // network
         simulationSummaryCSVCols.add(NetworkProperties.TIES_BROKEN_EPIDEMIC.toString());
-        simulationSummaryCSVCols.add(NetworkProperties.DENSITY_PRE.toString());
-        simulationSummaryCSVCols.add(NetworkProperties.DENSITY_POST.toString());
         simulationSummaryCSVCols.add(NetworkProperties.AV_DEGREE_PRE.toString());
         simulationSummaryCSVCols.add(NetworkProperties.AV_DEGREE_POST.toString());
+        simulationSummaryCSVCols.add(NetworkProperties.AV_DEGREE2_PRE.toString());
+        simulationSummaryCSVCols.add(NetworkProperties.AV_DEGREE2_POST.toString());
+        simulationSummaryCSVCols.add(NetworkProperties.AV_CLOSENESS_PRE.toString());
+        simulationSummaryCSVCols.add(NetworkProperties.AV_CLOSENESS_POST.toString());
         simulationSummaryCSVCols.add(NetworkProperties.AV_CLUSTERING_PRE.toString());
         simulationSummaryCSVCols.add(NetworkProperties.AV_CLUSTERING_POST.toString());
+        simulationSummaryCSVCols.add(NetworkProperties.AV_UTIL_PRE.toString());
+        simulationSummaryCSVCols.add(NetworkProperties.AV_UTIL_POST.toString());
+        simulationSummaryCSVCols.add(NetworkProperties.AV_BENEFIT_DIST1_PRE.toString());
+        simulationSummaryCSVCols.add(NetworkProperties.AV_BENEFIT_DIST1_POST.toString());
+        simulationSummaryCSVCols.add(NetworkProperties.AV_BENEFIT_DIST2_PRE.toString());
+        simulationSummaryCSVCols.add(NetworkProperties.AV_BENEFIT_DIST2_POST.toString());
+        simulationSummaryCSVCols.add(NetworkProperties.AV_COSTS_DIST1_PRE.toString());
+        simulationSummaryCSVCols.add(NetworkProperties.AV_COSTS_DIST1_POST.toString());
+        simulationSummaryCSVCols.add(NetworkProperties.AV_COSTS_DISEASE_PRE.toString());
+        simulationSummaryCSVCols.add(NetworkProperties.AV_COSTS_DISEASE_POST.toString());
+        simulationSummaryCSVCols.add(NetworkProperties.DENSITY_PRE.toString());
+        simulationSummaryCSVCols.add(NetworkProperties.DENSITY_POST.toString());
+        // index case
+        simulationSummaryCSVCols.add(ActorProperties.DEGREE1.toString());
+        simulationSummaryCSVCols.add(ActorProperties.DEGREE2.toString());
+        simulationSummaryCSVCols.add(ActorProperties.CLOSENESS.toString());
+        simulationSummaryCSVCols.add(ActorProperties.CLUSTERING.toString());
+        simulationSummaryCSVCols.add(ActorProperties.UTIL.toString());
+        simulationSummaryCSVCols.add(ActorProperties.BENEFIT_DIST1.toString());
+        simulationSummaryCSVCols.add(ActorProperties.BENEFIT_DIST2.toString());
+        simulationSummaryCSVCols.add(ActorProperties.COSTS_DIST1.toString());
+        simulationSummaryCSVCols.add(ActorProperties.COSTS_DISEASE.toString());
 
         // FILE SYSTEM
         try {
@@ -354,12 +416,38 @@ public class DataGenerator implements ActorListener, SimulationListener {
         simulationSummaryCSVCols.add(Integer.toString(this.roundsLastInfection));
         // network
         simulationSummaryCSVCols.add(String.valueOf(this.tiesBrokenWithInfectionPresent ? 1 : 0));
-        simulationSummaryCSVCols.add(Double.toString(this.densityPre));
-        simulationSummaryCSVCols.add(Double.toString(network.getDensity()));
         simulationSummaryCSVCols.add(Double.toString(this.avDegreePre));
         simulationSummaryCSVCols.add(Double.toString(network.getAvDegree()));
+        simulationSummaryCSVCols.add(Double.toString(this.avDegree2Pre));
+        simulationSummaryCSVCols.add(Double.toString(network.getAvDegree2()));
+        simulationSummaryCSVCols.add(Double.toString(this.avClosenessPre));
+        simulationSummaryCSVCols.add(Double.toString(network.getAvCloseness()));
         simulationSummaryCSVCols.add(Double.toString(this.avClusteringPre));
         simulationSummaryCSVCols.add(Double.toString(network.getAvClustering()));
+        simulationSummaryCSVCols.add(Double.toString(this.avUtility));
+        simulationSummaryCSVCols.add(Double.toString(network.getAvUtility()));
+        simulationSummaryCSVCols.add(Double.toString(this.avBenefitDistance1));
+        simulationSummaryCSVCols.add(Double.toString(network.getAvBenefitDistance1()));
+        simulationSummaryCSVCols.add(Double.toString(this.avBenefitDistance2));
+        simulationSummaryCSVCols.add(Double.toString(network.getAvBenefitDistance2()));
+        simulationSummaryCSVCols.add(Double.toString(this.avCostsDistance1));
+        simulationSummaryCSVCols.add(Double.toString(network.getAvCostsDistance1()));
+        simulationSummaryCSVCols.add(Double.toString(this.avCostsDisease));
+        simulationSummaryCSVCols.add(Double.toString(network.getAvCostsDisease()));
+        simulationSummaryCSVCols.add(NetworkProperties.DENSITY_PRE.toString());
+        simulationSummaryCSVCols.add(NetworkProperties.DENSITY_POST.toString());
+        simulationSummaryCSVCols.add(Double.toString(this.densityPre));
+        simulationSummaryCSVCols.add(Double.toString(network.getDensity()));
+        // index case
+        simulationSummaryCSVCols.add(Double.toString(this.indexDegree1));
+        simulationSummaryCSVCols.add(Double.toString(this.indexDegree2));
+        simulationSummaryCSVCols.add(Double.toString(this.indexCloseness));
+        simulationSummaryCSVCols.add(Double.toString(this.indexClustering));
+        simulationSummaryCSVCols.add(Double.toString(this.indexUtility));
+        simulationSummaryCSVCols.add(Double.toString(this.indexBenefit1));
+        simulationSummaryCSVCols.add(Double.toString(this.indexBenefit2));
+        simulationSummaryCSVCols.add(Double.toString(this.indexCosts1));
+        simulationSummaryCSVCols.add(Double.toString(this.indexCostsDisease));
 
         // FILE SYSTEM
         try {

@@ -476,4 +476,17 @@ public class ActorTest {
         assertFalse(this.actor2.hasConnectionTo(this.actor6));
     }
 
+    /**
+     * Test whether closeness is computed correctly.
+     */
+    @Test
+    public void testGetCloseness() {
+        assertEquals(0.6, this.actor1.getCloseness(), 0.01);
+        assertEquals(0.52, this.actor2.getCloseness(), 0.01);
+        assertEquals(0.56, this.actor3.getCloseness(), 0.01);
+        assertEquals(0.56, this.actor4.getCloseness(), 0.01);
+        assertEquals(0, this.actor5.getCloseness(), 0.01);
+        assertEquals(0, this.actor6.getCloseness(), 0.01);
+    }
+
 }

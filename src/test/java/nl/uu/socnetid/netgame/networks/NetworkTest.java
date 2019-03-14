@@ -362,4 +362,31 @@ public class NetworkTest {
         assertEquals(15.31, network.getAverageDegree(), 0.2);
     }
 
+    /**
+     * Test whether the average degree is computed correctly.
+     */
+    @Test
+    public void testGetAvDegree() {
+        assertEquals(6, this.network.getN());
+        assertEquals(1.33, this.network.getAvDegree(), 0.01);
+    }
+
+    /**
+     * Test whether the average degree at distance 2 is computed correctly.
+     */
+    @Test
+    public void testGetAvDegree2() {
+        assertEquals(6, this.network.getN());
+        assertEquals(0.66, this.network.getAvDegree2(), 0.01);
+    }
+
+    /**
+     * Test whether the average closeness is computed correctly.
+     */
+    @Test
+    public void testGetAvCloseness() {
+        assertEquals(6, this.network.getN());
+        assertEquals(0.37, this.network.getAvCloseness(), 0.01);
+    }
+
 }
