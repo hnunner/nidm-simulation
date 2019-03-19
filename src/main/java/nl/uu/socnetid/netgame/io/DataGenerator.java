@@ -44,10 +44,10 @@ public class DataGenerator implements ActorListener, SimulationListener {
     private static final Logger logger = Logger.getLogger(DataGenerator.class);
 
     // simulations per unique parameter combination
-    private static final int SIMS_PER_UPC = 10;
+    private static final int SIMS_PER_UPC = 100;
 
     // network size
-    private static final int[] NS = new int[] {5, 10, 15, 20, 25}; //, 50};   //{5, 10, 15, 20, 25, 50, 75, 100};
+    private static final int[] NS = new int[] {5, 10, 15, 20, 25, 50};   //{5, 10, 15, 20, 25, 50, 75, 100};
 
     // utility
     private static final double[] ALPHAS = new double[] {10.0};
