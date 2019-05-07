@@ -213,6 +213,18 @@ public class Simulation implements Runnable {
     }
 
     /**
+     * Computes a single round of play for a given {@link Actor}.
+     *
+     * @param actor
+     *          the {@link Actor} to compute the single round of play for
+     * @param delay
+     *          the delay between each network decision
+     */
+    protected void computeActorRound(Actor actor, int delay) {
+        actor.computeRound(delay);
+    }
+
+    /**
      * Checks whether the simulation is running.
      *
      * @return true if the simulation is running, false otherwise

@@ -441,8 +441,11 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
     /**
      * Computes a single round for an actor. That is, an {@link Actor} tries to connect to
      * or disconnects from another {@link Actor} if it produces higher utility.
+     *
+     * @param delay
+     *          the delay in ms to wait in between network decisions
      */
-    public void computeRound() {
+    public void computeRound(int delay) {
         // starting assumption: current connections are not satisfactory
         boolean satisfied = true;
 
@@ -464,12 +467,29 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
                     satisfied = false;
                 }
             }
+
+            if (it.hasNext() && delay > 0) {
+                // some delay before each actor moves (e.g., for animation processes)
+                try {
+                    Thread.sleep(delay * 10);
+                } catch (InterruptedException e) {
+                    return;
+                }
+            }
         }
 
         // update satisfaction
         updateSatisfaction(satisfied);
         // round finished
         notifyRoundFinished();
+    }
+
+    /**
+     * Computes a single round for an actor. That is, an {@link Actor} tries to connect to
+     * or disconnects from another {@link Actor} if it produces higher utility.
+     */
+    public void computeRound() {
+        this.computeRound(0);
     }
 
     /**
