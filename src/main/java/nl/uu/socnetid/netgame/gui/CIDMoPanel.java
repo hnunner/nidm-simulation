@@ -7,7 +7,7 @@ import javax.swing.SwingConstants;
 /**
  * @author Hendrik Nunner
  */
-public class IRTCPanel extends DeactivatablePanel {
+public class CIDMoPanel extends DeactivatablePanel {
 
     private static final long serialVersionUID = -6334519672487731007L;
 
@@ -21,7 +21,7 @@ public class IRTCPanel extends DeactivatablePanel {
     /**
      * Create the panel.
      */
-    public IRTCPanel() {
+    public CIDMoPanel() {
         setLayout(null);
 
         JLabel lblAlpha = new JLabel("Direct benefit");
