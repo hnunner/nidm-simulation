@@ -29,23 +29,22 @@ import nl.uu.socnetid.netgame.actors.Actor;
 import nl.uu.socnetid.netgame.actors.ActorListener;
 import nl.uu.socnetid.netgame.diseases.DiseaseSpecs;
 import nl.uu.socnetid.netgame.diseases.types.DiseaseType;
+import nl.uu.socnetid.netgame.gui.CIDMoPanel;
 import nl.uu.socnetid.netgame.gui.CumulativePanel;
 import nl.uu.socnetid.netgame.gui.DeactivatablePanel;
 import nl.uu.socnetid.netgame.gui.ExportFrame;
 import nl.uu.socnetid.netgame.gui.ExportListener;
-import nl.uu.socnetid.netgame.gui.IRTCPanel;
 import nl.uu.socnetid.netgame.gui.NodeClick;
 import nl.uu.socnetid.netgame.gui.NodeClickListener;
+import nl.uu.socnetid.netgame.gui.OsType;
 import nl.uu.socnetid.netgame.gui.SIRPanel;
 import nl.uu.socnetid.netgame.gui.StatsFrame;
-import nl.uu.socnetid.netgame.gui.TruncatedConnectionsPanel;
 import nl.uu.socnetid.netgame.networks.DisplayableNetwork;
 import nl.uu.socnetid.netgame.simulation.Simulation;
 import nl.uu.socnetid.netgame.simulation.SimulationListener;
 import nl.uu.socnetid.netgame.stats.StatsComputer;
 import nl.uu.socnetid.netgame.utilities.Cumulative;
 import nl.uu.socnetid.netgame.utilities.IRTC;
-import nl.uu.socnetid.netgame.utilities.TruncatedConnections;
 import nl.uu.socnetid.netgame.utilities.UtilityFunction;
 
 /**
@@ -56,6 +55,9 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     // logger
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(NetworkGame.class);
+
+    // OS TYPE
+    public static OsType osType = OsType.OTHER;
 
     // NETWORK
     private final DisplayableNetwork network = new DisplayableNetwork();
@@ -69,12 +71,11 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     // UTILITY
     // selection
     private JComboBox<String> utilityFunctionCBox;
-    private final String[] utilityFunctions = {"IRTC", "Cumulative", "Truncated Connections"};
+    private final String[] utilityFunctions = {"CIDMo", "Cumulative"};
     // panels
     private CumulativePanel cumulativePanel = new CumulativePanel();
-    private TruncatedConnectionsPanel truncatedConnectionsPanel = new TruncatedConnectionsPanel();
-    private IRTCPanel irtcPanel = new IRTCPanel();
-    private final DeactivatablePanel[] utilityPanels = {cumulativePanel, truncatedConnectionsPanel, irtcPanel};
+    private CIDMoPanel cidmoPanel = new CIDMoPanel();
+    private final DeactivatablePanel[] utilityPanels = {cumulativePanel, cidmoPanel};
 
     // DISEASE
     // selection
@@ -136,10 +137,35 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
      * Initialize the contents of the frame.
      */
     private void initialize() {
+
+        // os type
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.indexOf("win") >= 0) {
+            osType = OsType.WIN;
+        } else if (os.indexOf("mac") >= 0) {
+            osType = OsType.MAC;
+        } else if (os.indexOf("nix") >= 0
+                || os.indexOf("nux") >= 0
+                || os.indexOf("aix") >= 0) {
+            osType = OsType.UNIX;
+        }
+
         // init settings frame
-        settingsFrame.setBounds(10, 10, 370, 575);
-        settingsFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         settingsFrame.getContentPane().setLayout(null);
+        settingsFrame.setBounds(10, 10, 400, 600);
+        switch (osType) {
+            case WIN:
+                break;
+            case MAC:
+                settingsFrame.setBounds(10, 10, 370, 575);
+                break;
+            case OTHER:
+            case UNIX:
+            default:
+                break;
+        }
+        settingsFrame.setResizable(false);
+        settingsFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //////////// TABBED PANE (UTILITY, DISEASE, EXPORT, ACTORS) ////////////
         JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.LEFT, JTabbedPane.WRAP_TAB_LAYOUT);
@@ -160,26 +186,23 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
             public void actionPerformed(ActionEvent e) {
                 switch (utilityFunctionCBox.getSelectedIndex()) {
                     case 0:
-                        irtcPanel.setVisible(true);
+                        cidmoPanel.setVisible(true);
                         txtR.setEnabled(true);
                         cumulativePanel.setVisible(false);
-                        truncatedConnectionsPanel.setVisible(false);
                         break;
 
                     case 1:
-                        irtcPanel.setVisible(false);
+                        cidmoPanel.setVisible(false);
                         txtR.setEnabled(false);
                         txtR.setText("1.00");
                         cumulativePanel.setVisible(true);
-                        truncatedConnectionsPanel.setVisible(false);
                         break;
 
                     case 2:
-                        irtcPanel.setVisible(false);
+                        cidmoPanel.setVisible(false);
                         txtR.setEnabled(false);
                         txtR.setText("1.00");
                         cumulativePanel.setVisible(false);
-                        truncatedConnectionsPanel.setVisible(true);
                         break;
 
                     default:
@@ -193,17 +216,12 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         }
         utilityPane.add(utilityFunctionCBox);
 
-        irtcPanel.setBounds(20, 38, 214, 225);
-        utilityPane.add(irtcPanel);
+        cidmoPanel.setBounds(20, 38, 214, 225);
+        utilityPane.add(cidmoPanel);
 
         cumulativePanel.setBounds(20, 38, 214, 225);
         cumulativePanel.setVisible(false);
         utilityPane.add(cumulativePanel);
-
-        truncatedConnectionsPanel.setBounds(20, 38, 214, 225);
-        truncatedConnectionsPanel.setVisible(false);
-        utilityPane.add(truncatedConnectionsPanel);
-
 
         //////////// DISEASE ////////////
         JPanel diseasePane = new JPanel();
@@ -363,7 +381,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
 
 
         //////////// SIMULATION ////////////
-        JButton btnStart = new JButton("   Start");
+        JButton btnStart = new JButton(" Start");
         btnStart.setFont(new Font("Lucida Grande", Font.PLAIN, 14));
         btnStart.setIcon(new ImageIcon(getClass().getResource("/start.png")));
         btnStart.addActionListener(new ActionListener() {
@@ -517,17 +535,13 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     private UtilityFunction getUtilityFunction() {
         switch (utilityFunctionCBox.getSelectedIndex()) {
             case 0:
-                return new IRTC(this.irtcPanel.getAlpha(),
-                        this.irtcPanel.getBeta(),
-                        this.irtcPanel.getC());
+                return new IRTC(this.cidmoPanel.getAlpha(),
+                        this.cidmoPanel.getBeta(),
+                        this.cidmoPanel.getC());
 
             case 1:
                 return new Cumulative(this.cumulativePanel.getDirectBenefit(),
                         this.cumulativePanel.getIndirectBenefit());
-
-            case 2:
-                return new TruncatedConnections(this.truncatedConnectionsPanel.getDelta(),
-                        this.truncatedConnectionsPanel.getCosts());
 
             default:
                 throw new RuntimeException("Undefined utility function!");
