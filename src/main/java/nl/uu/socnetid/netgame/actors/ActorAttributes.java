@@ -10,8 +10,10 @@ public enum ActorAttributes {
     DISEASE_GROUP("disease.group"),
     DISEASE_INFECTION("disease.infection"),
     UI_CLASS("ui.class"),
-    RISK_FACTOR("risk.factor"),
-    RISK_MEANING("risk.meaning"),
+    RISK_FACTOR_SIGMA("risk.factor.sigma"),
+    RISK_FACTOR_PI("risk.factor.pi"),
+    RISK_MEANING_SIGMA("risk.meaning.sigma"),
+    RISK_MEANING_PI("risk.meaning.pi"),
     PHI("phi"),
     SATISFIED("satisfied"),
     CONNECTION_STATS("connection.stats");
