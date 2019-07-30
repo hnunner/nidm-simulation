@@ -67,7 +67,7 @@ public class Network extends SingleGraph {
      * @return the newly added actor.
      */
     public Actor addActor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs) {
-        return this.addActor(utilityFunction, diseaseSpecs, RISK_FACTOR_NEUTRAL, STANDARD_PHI);
+        return this.addActor(utilityFunction, diseaseSpecs, RISK_FACTOR_NEUTRAL, RISK_FACTOR_NEUTRAL, STANDARD_PHI);
     }
 
     /**
@@ -77,13 +77,16 @@ public class Network extends SingleGraph {
      *          the actor's utility function
      * @param diseaseSpecs
      *          the disease specs
-     * @param riskFactor
+     * @param rSigma
+     *          the factor describing how the actor perceives severity of diseases:
+     *          <1: risk seeking, =1: risk neutral; >1: risk averse
+     * @param rPi
      *          the factor describing how the actor perceives the risk of an infection:
      *          <1: risk seeking, =1: risk neutral; >1: risk averse
      * @return the newly added actor.
      */
-    public Actor addActor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double riskFactor) {
-        return this.addActor(utilityFunction, diseaseSpecs, riskFactor, STANDARD_PHI);
+    public Actor addActor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi) {
+        return this.addActor(utilityFunction, diseaseSpecs, rSigma, rPi, STANDARD_PHI);
     }
 
     /**
@@ -93,16 +96,19 @@ public class Network extends SingleGraph {
      *          the actor's utility function
      * @param diseaseSpecs
      *          the disease specs
-     * @param riskFactor
+     * @param rSigma
+     *          the factor describing how the actor perceives severity of diseases:
+     *          <1: risk seeking, =1: risk neutral; >1: risk averse
+     * @param rPi
      *          the factor describing how the actor perceives the risk of an infection:
      *          <1: risk seeking, =1: risk neutral; >1: risk averse
      * @param phi
      *          the share of peers an actor evaluates per round
      * @return the newly added actor.
      */
-    public Actor addActor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double riskFactor, double phi) {
+    public Actor addActor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi) {
         Actor actor = this.addNode(String.valueOf(this.getNodeCount() + 1));
-        actor.initActor(utilityFunction, diseaseSpecs, riskFactor, phi);
+        actor.initActor(utilityFunction, diseaseSpecs, rSigma, rPi, phi);
         notifyActorAdded(actor);
         return actor;
     }
@@ -661,18 +667,33 @@ public class Network extends SingleGraph {
     }
 
     /**
-     * Gets the average risk factor of all actors in the network.
+     * Gets the average risk factor for disease severity of all actors in the network.
      *
-     * @return the average risk factor of all actors in the network
+     * @return the average risk factor for disease severity of all actors in the network
      */
-    public double getAvR() {
-        double avRiskFactor = 0;
+    public double getAvRSigma() {
+        double avRSigma = 0;
         Iterator<Actor> actorIt = this.getActorIterator();
         while (actorIt.hasNext()) {
             Actor actor = actorIt.next();
-            avRiskFactor += actor.getRiskFactor();
+            avRSigma += actor.getRSigma();
         }
-        return (avRiskFactor / this.getActors().size());
+        return (avRSigma / this.getActors().size());
+    }
+
+    /**
+     * Gets the average risk factor for probability of infections of all actors in the network.
+     *
+     * @return the average risk factor for probability of infections of all actors in the network
+     */
+    public double getAvRPi() {
+        double avRPi = 0;
+        Iterator<Actor> actorIt = this.getActorIterator();
+        while (actorIt.hasNext()) {
+            Actor actor = actorIt.next();
+            avRPi += actor.getRPi();
+        }
+        return (avRPi / this.getActors().size());
     }
 
     /**

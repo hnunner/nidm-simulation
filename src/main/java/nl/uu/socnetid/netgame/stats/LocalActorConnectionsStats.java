@@ -10,6 +10,9 @@ public class LocalActorConnectionsStats {
     private final int nI;
     private final int nR;
     private final int m;
+    private final int mS;
+    private final int mI;
+    private final int mR;
 
     /**
      * Constructor.
@@ -20,15 +23,22 @@ public class LocalActorConnectionsStats {
      *          the amount of infected direct connections
      * @param nR
      *          the amount of recovered direct connections
-     * @param m
-     *          the amount of indirect direct connections
+     * @param mS
+     *          the amount of susceptible indirect connections
+     * @param mI
+     *          the amount of infected indirect connections
+     * @param mR
+     *          the amount of recovered indirect connections
      */
-    public LocalActorConnectionsStats(int nS, int nI, int nR, int m) {
+    public LocalActorConnectionsStats(int nS, int nI, int nR, int mS, int mI, int mR) {
         this.n = nS + nI + nR;
         this.nS = nS;
         this.nI = nI;
         this.nR = nR;
-        this.m = m;
+        this.m = mS + mI + mR;
+        this.mS = mS;
+        this.mI = mI;
+        this.mR = mR;
     }
 
     /**
@@ -64,6 +74,27 @@ public class LocalActorConnectionsStats {
      */
     public int getM() {
         return m;
+    }
+
+    /**
+     * @return the mS
+     */
+    public int getmS() {
+        return mS;
+    }
+
+    /**
+     * @return the mI
+     */
+    public int getmI() {
+        return mI;
+    }
+
+    /**
+     * @return the mR
+     */
+    public int getmR() {
+        return mR;
     }
 
 }
