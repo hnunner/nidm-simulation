@@ -17,6 +17,7 @@ public class CIDMoPanel extends DeactivatablePanel {
     private JLabel label;
     private JLabel label_1;
     private JLabel lblc;
+    private JTextField txtKappa;
 
     /**
      * Create the panel.
@@ -25,49 +26,64 @@ public class CIDMoPanel extends DeactivatablePanel {
         setLayout(null);
 
         JLabel lblAlpha = new JLabel("Direct benefit");
-        lblAlpha.setBounds(10, 5, 100, 16);
+        lblAlpha.setBounds(6, 8, 100, 16);
         add(lblAlpha);
 
         txtAlpha = new JTextField();
         txtAlpha.setHorizontalAlignment(SwingConstants.RIGHT);
         txtAlpha.setText("5");
-        txtAlpha.setBounds(151, 3, 60, 20);
+        txtAlpha.setBounds(147, 6, 60, 20);
         add(txtAlpha);
         txtAlpha.setColumns(10);
 
         JLabel lblBeta = new JLabel("Indirect benefit");
-        lblBeta.setBounds(10, 28, 109, 16);
+        lblBeta.setBounds(9, 85, 109, 16);
         add(lblBeta);
 
         txtBeta = new JTextField();
         txtBeta.setHorizontalAlignment(SwingConstants.RIGHT);
         txtBeta.setText("1");
-        txtBeta.setBounds(151, 26, 60, 20);
+        txtBeta.setBounds(150, 83, 60, 20);
         add(txtBeta);
         txtBeta.setColumns(10);
 
         JLabel lblC = new JLabel("costs");
-        lblC.setBounds(10, 51, 100, 16);
+        lblC.setBounds(9, 108, 100, 16);
         add(lblC);
 
         txtC = new JTextField();
         txtC.setText("4");
         txtC.setHorizontalAlignment(SwingConstants.RIGHT);
         txtC.setColumns(10);
-        txtC.setBounds(151, 49, 60, 20);
+        txtC.setBounds(150, 106, 60, 20);
         add(txtC);
 
         label = new JLabel("(α):");
-        label.setBounds(127, 5, 24, 16);
+        label.setBounds(123, 8, 24, 16);
         add(label);
 
         label_1 = new JLabel("(β):");
-        label_1.setBounds(127, 28, 24, 16);
+        label_1.setBounds(126, 85, 24, 16);
         add(label_1);
 
         lblc = new JLabel("(c):");
-        lblc.setBounds(127, 51, 24, 16);
+        lblc.setBounds(126, 108, 24, 16);
         add(lblc);
+
+        JLabel lblDiscountOfInfected = new JLabel("Discount of infected dist. 1");
+        lblDiscountOfInfected.setBounds(6, 31, 201, 16);
+        add(lblDiscountOfInfected);
+
+        JLabel label_3 = new JLabel("(κ):");
+        label_3.setBounds(226, 33, 24, 16);
+        add(label_3);
+
+        txtKappa = new JTextField();
+        txtKappa.setText("5");
+        txtKappa.setHorizontalAlignment(SwingConstants.RIGHT);
+        txtKappa.setColumns(10);
+        txtKappa.setBounds(250, 31, 60, 20);
+        add(txtKappa);
     }
 
     /**
@@ -116,5 +132,4 @@ public class CIDMoPanel extends DeactivatablePanel {
         this.txtBeta.setEnabled(false);
         this.txtC.setEnabled(false);
     }
-
 }
