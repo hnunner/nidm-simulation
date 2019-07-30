@@ -175,10 +175,10 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
 
 
         //////////// UTILITY ////////////
-        JPanel utilityPane = new JPanel();
-        utilityPane.setBorder(new MatteBorder(1, 1, 1, 1, new Color(192, 192, 192)));
-        tabbedPane.add("Utility", utilityPane);
-        utilityPane.setLayout(null);
+        JPanel modelPane = new JPanel();
+        modelPane.setBorder(new MatteBorder(1, 1, 1, 1, new Color(192, 192, 192)));
+        tabbedPane.add("Model", modelPane);
+        modelPane.setLayout(null);
 
         utilityFunctionCBox = new JComboBox<String>();
         utilityFunctionCBox.addActionListener(new ActionListener() {
@@ -214,14 +214,14 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         for (int i = 0; i < utilityFunctions.length; i++) {
             utilityFunctionCBox.addItem(utilityFunctions[i]);
         }
-        utilityPane.add(utilityFunctionCBox);
+        modelPane.add(utilityFunctionCBox);
 
         cidmoPanel.setBounds(20, 38, 214, 225);
-        utilityPane.add(cidmoPanel);
+        modelPane.add(cidmoPanel);
 
         cumulativePanel.setBounds(20, 38, 214, 225);
         cumulativePanel.setVisible(false);
-        utilityPane.add(cumulativePanel);
+        modelPane.add(cumulativePanel);
 
         //////////// DISEASE ////////////
         JPanel diseasePane = new JPanel();
