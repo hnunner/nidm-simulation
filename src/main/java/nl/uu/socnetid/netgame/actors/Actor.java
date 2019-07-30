@@ -64,12 +64,15 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      *          the function the actor uses to compute his utility of the network
      * @param diseaseSpecs
      *          the disease characteristics that is or might become present in the network
-     * @param riskFactor
-     *          the risk factor of a actor (<1: risk seeking, =1: risk neutral; >1: risk averse)
+     * @param riskFactorSigma
+     *          the risk factor for disease severity (<1: risk seeking, =1: risk neutral; >1: risk averse)
+     * @param riskFactorPi
+     *          the risk factor for probability of infections (<1: risk seeking, =1: risk neutral; >1: risk averse)
      * @param phi
      *          the share of peers to evaluate per round
      */
-    public void initActor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, Double riskFactor, Double phi) {
+    public void initActor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs,
+            Double riskFactorSigma, Double riskFactorPi, Double phi) {
         this.addAttribute(ActorAttributes.UTILITY_FUNCTION, utilityFunction);
         this.addAttribute(ActorAttributes.DISEASE_SPECS, diseaseSpecs);
         DiseaseGroup diseaseGroup = DiseaseGroup.SUSCEPTIBLE;
@@ -77,8 +80,10 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
         // ui-class required only for ui properties as defined in resources/graph-stream.css
         // --> no listener notifications
         this.addAttribute(ActorAttributes.UI_CLASS, diseaseGroup.toString(), false);
-        this.addAttribute(ActorAttributes.RISK_FACTOR, riskFactor);
-        this.addAttribute(ActorAttributes.RISK_MEANING, getRiskMeaning(riskFactor));
+        this.addAttribute(ActorAttributes.RISK_FACTOR_SIGMA, riskFactorSigma);
+        this.addAttribute(ActorAttributes.RISK_FACTOR_PI, riskFactorPi);
+        this.addAttribute(ActorAttributes.RISK_MEANING_SIGMA, getRiskMeaning(riskFactorSigma));
+        this.addAttribute(ActorAttributes.RISK_MEANING_PI, getRiskMeaning(riskFactorPi));
         this.addAttribute(ActorAttributes.PHI, phi);
         this.addAttribute(ActorAttributes.SATISFIED, false);
         this.addAttribute(ActorAttributes.CONNECTION_STATS, new ActorConnectionStats());
@@ -86,10 +91,12 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
     }
 
     public String getLabel() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("[r=").append(this.getRiskFactor()).append("; ")
-        .append(this.getRiskMeaning(this.getRiskFactor())).append("]");
-        return sb.toString();
+        return "";
+        // TODO create better label
+//        StringBuilder sb = new StringBuilder();
+//        sb.append("[r=").append(this.getRiskFactor()).append("; ")
+//        .append(this.getRiskMeaning(this.getRiskFactor())).append("]");
+//        return sb.toString();
     }
 
     /**
@@ -265,12 +272,21 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
     }
 
     /**
-     * Gets the actor's risk factor.
+     * Gets the actor's risk factor for disease severity.
      *
-     * @return the actor's risk factor
+     * @return the actor's risk factor for disease severity
      */
-    public double getRiskFactor() {
-        return (double) this.getAttribute(ActorAttributes.RISK_FACTOR);
+    public double getRSigma() {
+        return (double) this.getAttribute(ActorAttributes.RISK_FACTOR_SIGMA);
+    }
+
+    /**
+     * Gets the actor's risk factor for probability of infections.
+     *
+     * @return the actor's risk factor for probability of infections
+     */
+    public double getRPi() {
+        return (double) this.getAttribute(ActorAttributes.RISK_FACTOR_PI);
     }
 
     /**

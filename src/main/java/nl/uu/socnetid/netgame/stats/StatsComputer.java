@@ -209,7 +209,9 @@ public final class StatsComputer {
         int nS = 0;
         int nI = 0;
         int nR = 0;
-        int  m = 0;
+        int mS = 0;
+        int mI = 0;
+        int mR = 0;
 
         // indirect connections considered only once
         List<Actor> consideredIndirectBenefits = new LinkedList<Actor>();
@@ -260,11 +262,28 @@ public final class StatsComputer {
                         || consideredIndirectBenefits.contains(indirectConnection)) {
                     continue;
                 }
-                m++;
+
+                // disease group of direct connection
+                switch (indirectConnection.getDiseaseGroup()) {
+                    case SUSCEPTIBLE:
+                        mS++;
+                        break;
+
+                    case INFECTED:
+                        mI++;
+                        break;
+
+                    case RECOVERED:
+                        mR++;
+                        break;
+
+                    default:
+                        logger.warn("Unhandled disease group: " + indirectConnection.getDiseaseGroup());
+                }
                 consideredIndirectBenefits.add(indirectConnection);
             }
         }
-        return new LocalActorConnectionsStats(nS, nI, nR, m);
+        return new LocalActorConnectionsStats(nS, nI, nR, mS, mI, mR);
     }
 
     /**

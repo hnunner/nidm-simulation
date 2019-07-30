@@ -16,6 +16,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
@@ -32,14 +33,17 @@ import nl.uu.socnetid.netgame.diseases.types.DiseaseType;
 import nl.uu.socnetid.netgame.gui.CIDMoPanel;
 import nl.uu.socnetid.netgame.gui.CumulativePanel;
 import nl.uu.socnetid.netgame.gui.DeactivatablePanel;
+import nl.uu.socnetid.netgame.gui.ExportAdjacencyMatrixPanel;
+import nl.uu.socnetid.netgame.gui.ExportEdgeListPanel;
 import nl.uu.socnetid.netgame.gui.ExportFrame;
+import nl.uu.socnetid.netgame.gui.ExportGEXFPanel;
 import nl.uu.socnetid.netgame.gui.ExportListener;
 import nl.uu.socnetid.netgame.gui.NodeClick;
 import nl.uu.socnetid.netgame.gui.NodeClickListener;
 import nl.uu.socnetid.netgame.gui.OsType;
-import nl.uu.socnetid.netgame.gui.SIRPanel;
 import nl.uu.socnetid.netgame.gui.StatsFrame;
 import nl.uu.socnetid.netgame.networks.DisplayableNetwork;
+import nl.uu.socnetid.netgame.networks.Network;
 import nl.uu.socnetid.netgame.simulation.Simulation;
 import nl.uu.socnetid.netgame.simulation.SimulationListener;
 import nl.uu.socnetid.netgame.stats.StatsComputer;
@@ -70,20 +74,12 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
 
     // UTILITY
     // selection
-    private JComboBox<String> utilityFunctionCBox;
-    private final String[] utilityFunctions = {"CIDMo", "Cumulative"};
+    private JComboBox<String> modelTypeCBox;
+    private final String[] utilityFunctions = {"CIDMo"};  //, "Cumulative"};
     // panels
     private CumulativePanel cumulativePanel = new CumulativePanel();
     private CIDMoPanel cidmoPanel = new CIDMoPanel();
     private final DeactivatablePanel[] utilityPanels = {cumulativePanel, cidmoPanel};
-
-    // DISEASE
-    // selection
-    private JComboBox<String> diseaseCBox;
-    private String[] diseases = {DiseaseType.SIR.toString()};
-    // panels
-    private SIRPanel sirPanel = new SIRPanel();
-    private final DeactivatablePanel[] diseasePanels = {sirPanel};
 
     // ACTOR
     // amount to add
@@ -102,6 +98,10 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     private ExecutorService simulationExecutor = Executors.newSingleThreadExecutor();
     private Future<?> simulationTask;
     private JSpinner simulationDelay;
+    private JTextField textField;
+    private JTextField textField_1;
+    private JTextField textField_2;
+    private JTextField txtTau;
 
 
     /**
@@ -152,12 +152,12 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
 
         // init settings frame
         settingsFrame.getContentPane().setLayout(null);
-        settingsFrame.setBounds(10, 10, 400, 600);
+        settingsFrame.setBounds(10, 10, 352, 510);
         switch (osType) {
             case WIN:
                 break;
             case MAC:
-                settingsFrame.setBounds(10, 10, 370, 575);
+                settingsFrame.setBounds(10, 10, 352, 510);
                 break;
             case OTHER:
             case UNIX:
@@ -168,23 +168,45 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         settingsFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //////////// TABBED PANE (UTILITY, DISEASE, EXPORT, ACTORS) ////////////
-        JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.LEFT, JTabbedPane.WRAP_TAB_LAYOUT);
+        JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
         tabbedPane.setBorder(null);
-        tabbedPane.setBounds(25, 6, 315, 374);
+        tabbedPane.setBounds(6, 6, 340, 483);
         settingsFrame.getContentPane().add(tabbedPane);
 
 
         //////////// UTILITY ////////////
-        JPanel modelPane = new JPanel();
-        modelPane.setBorder(new MatteBorder(1, 1, 1, 1, new Color(192, 192, 192)));
-        tabbedPane.add("Model", modelPane);
-        modelPane.setLayout(null);
+        JPanel utilityPane = new JPanel();
+        utilityPane.setBorder(new MatteBorder(1, 1, 1, 1, new Color(192, 192, 192)));
+        tabbedPane.add("Utility", utilityPane);
+        utilityPane.setLayout(null);
 
-        utilityFunctionCBox = new JComboBox<String>();
-        utilityFunctionCBox.addActionListener(new ActionListener() {
+        cidmoPanel.setBounds(3, 51, 312, 380);
+        utilityPane.add(cidmoPanel);
+
+        cumulativePanel.setBounds(3, 51, 312, 380);
+        cumulativePanel.setVisible(false);
+        utilityPane.add(cumulativePanel);
+
+        modelTypeCBox = new JComboBox<String>();
+        for (int i = 0; i < utilityFunctions.length; i++) {
+            modelTypeCBox.addItem(utilityFunctions[i]);
+        }
+        modelTypeCBox.setBounds(111, 5, 195, 30);
+        utilityPane.add(modelTypeCBox);
+
+        JLabel lblModel = new JLabel("Model type:");
+        lblModel.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+        lblModel.setBounds(16, 10, 83, 16);
+        utilityPane.add(lblModel);
+
+        JSeparator separator_3 = new JSeparator(SwingConstants.HORIZONTAL);
+        separator_3.setForeground(Color.LIGHT_GRAY);
+        separator_3.setBounds(3, 41, 312, 10);
+        utilityPane.add(separator_3);
+        modelTypeCBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                switch (utilityFunctionCBox.getSelectedIndex()) {
+                switch (modelTypeCBox.getSelectedIndex()) {
                     case 0:
                         cidmoPanel.setVisible(true);
                         txtR.setEnabled(true);
@@ -210,48 +232,6 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
                 }
             }
         });
-        utilityFunctionCBox.setBounds(20, 6, 215, 30);
-        for (int i = 0; i < utilityFunctions.length; i++) {
-            utilityFunctionCBox.addItem(utilityFunctions[i]);
-        }
-        modelPane.add(utilityFunctionCBox);
-
-        cidmoPanel.setBounds(20, 38, 214, 225);
-        modelPane.add(cidmoPanel);
-
-        cumulativePanel.setBounds(20, 38, 214, 225);
-        cumulativePanel.setVisible(false);
-        modelPane.add(cumulativePanel);
-
-        //////////// DISEASE ////////////
-        JPanel diseasePane = new JPanel();
-        diseasePane.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-        tabbedPane.add("Disease", diseasePane);
-        diseasePane.setLayout(null);
-
-        diseaseCBox = new JComboBox<String>();
-        diseaseCBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                switch (diseaseCBox.getSelectedIndex()) {
-                    case 0:
-                        sirPanel.setVisible(true);
-                        break;
-
-                    default:
-                        throw new RuntimeException("Undefined disease!");
-                }
-            }
-        });
-        for (int i = 0; i < diseases.length; i ++) {
-            diseaseCBox.addItem(diseases[i]);
-        }
-        diseaseCBox.setBounds(20, 6, 215, 30);
-        diseasePane.add(diseaseCBox);
-
-        sirPanel.setBounds(20, 38, 214, 225);
-        sirPanel.setVisible(true);
-        diseasePane.add(sirPanel);
 
 
         //////////// NETWORK ////////////
@@ -260,64 +240,38 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         tabbedPane.addTab("Network", networkPane);
         networkPane.setLayout(null);
 
-        JButton btnAddActor = new JButton("Add Actor");
-        btnAddActor.setIcon(new ImageIcon(getClass().getResource("/add.png")));
-        btnAddActor.setBounds(18, 6, 217, 30);
-        networkPane.add(btnAddActor);
+        JButton btnAddAgent = new JButton("Add agent");
+        btnAddAgent.setIcon(new ImageIcon(getClass().getResource("/add.png")));
+        btnAddAgent.setBounds(40, 200, 110, 30);
+        networkPane.add(btnAddAgent);
 
-        JButton btnRemoveActor = new JButton("Remove Actor");
-        btnRemoveActor.setIcon(new ImageIcon(getClass().getResource("/remove.png")));
-        btnRemoveActor.setBounds(18, 88, 217, 30);
-        networkPane.add(btnRemoveActor);
+        JButton btnRemoveAgent = new JButton("Remove agent");
+        btnRemoveAgent.setIcon(new ImageIcon(getClass().getResource("/remove.png")));
+        btnRemoveAgent.setBounds(40, 231, 110, 30);
+        networkPane.add(btnRemoveAgent);
 
-        JButton btnInfectRandomActor = new JButton("Infect Random Actor");
-        btnInfectRandomActor.setIcon(new ImageIcon(getClass().getResource("/infect.png")));
-        btnInfectRandomActor.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                infectRandomActor();
-            }
-        });
-        btnInfectRandomActor.setBounds(18, 120, 217, 30);
-        networkPane.add(btnInfectRandomActor);
-
-        JButton btnClearEdges = new JButton("Clear Edges");
+        JButton btnClearEdges = new JButton("Clear ties");
         btnClearEdges.setIcon(new ImageIcon(getClass().getResource("/clear.png")));
-        btnClearEdges.setBounds(18, 184, 217, 30);
+        btnClearEdges.setBounds(40, 336, 258, 30);
         networkPane.add(btnClearEdges);
 
         txtR.setText("1.00");
         txtR.setHorizontalAlignment(SwingConstants.RIGHT);
         txtR.setColumns(10);
-        txtR.setBounds(168, 63, 60, 20);
+        txtR.setBounds(248, 36, 50, 20);
         networkPane.add(txtR);
 
-        lblR = new JLabel("Risk factor");
+        lblR = new JLabel("Risk perception (per agent):");
+        lblR.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+        //        Font font = lblR.getFont();
+        //        Map<TextAttribute, Object> attributes = new HashMap<>(font.getAttributes());
+        //        attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+        //        lblR.setFont(font.deriveFont(attributes));
         lblR.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
-        lblR.setBounds(27, 65, 96, 16);
+        lblR.setBounds(16, 10, 201, 16);
         networkPane.add(lblR);
 
-        JPanel pnlNodeClick = new JPanel();
-        pnlNodeClick.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-        pnlNodeClick.setBounds(18, 255, 217, 81);
-        networkPane.add(pnlNodeClick);
-        pnlNodeClick.setLayout(null);
-
-        chckbxToggleInfection = new JCheckBox("Toggle infection");
-        chckbxToggleInfection.setBounds(6, 52, 141, 23);
-        pnlNodeClick.add(chckbxToggleInfection);
-        chckbxToggleInfection.setSelected(false);
-
-        chckbxShowActorStats = new JCheckBox("Show actor stats");
-        chckbxShowActorStats.setBounds(6, 29, 141, 23);
-        pnlNodeClick.add(chckbxShowActorStats);
-        chckbxShowActorStats.setSelected(true);
-
-        JLabel lblOnNodeClick = new JLabel("On node click:");
-        lblOnNodeClick.setBounds(6, 6, 127, 16);
-        pnlNodeClick.add(lblOnNodeClick);
-
-        JButton btnClearAll = new JButton("Clear All");
+        JButton btnClearAll = new JButton("Clear all");
         btnClearAll.setIcon(new ImageIcon(getClass().getResource("/clearall.png")));
         btnClearAll.addActionListener(new ActionListener() {
             @Override
@@ -325,31 +279,33 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
                 clearAll();
             }
         });
-        btnClearAll.setBounds(18, 216, 217, 30);
+        btnClearAll.setBounds(40, 368, 258, 30);
         networkPane.add(btnClearAll);
 
         txtAddAmount = new JTextField();
         txtAddAmount.setText("1");
         txtAddAmount.setHorizontalAlignment(SwingConstants.RIGHT);
         txtAddAmount.setColumns(10);
-        txtAddAmount.setBounds(168, 40, 60, 20);
+        txtAddAmount.setBounds(248, 206, 50, 20);
         networkPane.add(txtAddAmount);
 
-        JLabel lblAmount = new JLabel("Amount:");
+        JLabel lblAmount = new JLabel("amount");
         lblAmount.setToolTipText("Risk behavior of the actor - r<1: risk seeking, "
                 + "r=1: risk neutral, r>1: risk averse");
-        lblAmount.setBounds(27, 42, 103, 16);
+        lblAmount.setBounds(157, 208, 60, 16);
         networkPane.add(lblAmount);
 
-        JLabel lblr = new JLabel("(r):");
-        lblr.setBounds(138, 65, 24, 16);
+        JLabel lblr = new JLabel("(r  ):");
+        lblr.setHorizontalAlignment(SwingConstants.RIGHT);
+        lblr.setBounds(204, 38, 35, 16);
         networkPane.add(lblr);
 
         JLabel lbln = new JLabel("(N):");
-        lbln.setBounds(138, 42, 24, 16);
+        lbln.setHorizontalAlignment(SwingConstants.RIGHT);
+        lbln.setBounds(215, 208, 24, 16);
         networkPane.add(lbln);
 
-        JButton btnCreateFullNetwork = new JButton("Create Full Network");
+        JButton btnCreateFullNetwork = new JButton("Create full fetwork (ɩ)");
         btnCreateFullNetwork.setIcon(new ImageIcon(getClass().getResource("/full.png")));
         btnCreateFullNetwork.addActionListener(new ActionListener() {
             @Override
@@ -357,64 +313,142 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
                 createFullNetwork();
             }
         });
-        btnCreateFullNetwork.setBounds(18, 152, 217, 29);
+        btnCreateFullNetwork.setBounds(40, 304, 258, 29);
         networkPane.add(btnCreateFullNetwork);
 
-        btnClearEdges.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                clearEdges();
-            }
-        });
-        btnRemoveActor.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                removeActor();
-            }
-        });
-        btnAddActor.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addActor();
-            }
-        });
+        JLabel label = new JLabel("amount");
+        label.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
+        label.setBounds(157, 238, 60, 16);
+        networkPane.add(label);
+
+        JLabel label_1 = new JLabel("(N):");
+        label_1.setHorizontalAlignment(SwingConstants.RIGHT);
+        label_1.setBounds(215, 238, 24, 16);
+        networkPane.add(label_1);
+
+        textField = new JTextField();
+        textField.setText("1");
+        textField.setHorizontalAlignment(SwingConstants.RIGHT);
+        textField.setColumns(10);
+        textField.setBounds(248, 236, 50, 20);
+        networkPane.add(textField);
+
+        JLabel lblProbabilityOfInfection = new JLabel("Probability of infection");
+        lblProbabilityOfInfection.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
+        lblProbabilityOfInfection.setBounds(40, 38, 163, 16);
+        networkPane.add(lblProbabilityOfInfection);
+
+        JLabel label_2 = new JLabel("π");
+        label_2.setFont(new Font("Lucida Grande", Font.PLAIN, 8));
+        label_2.setHorizontalAlignment(SwingConstants.RIGHT);
+        label_2.setBounds(222, 46, 7, 10);
+        networkPane.add(label_2);
+
+        textField_1 = new JTextField();
+        textField_1.setText("1.00");
+        textField_1.setHorizontalAlignment(SwingConstants.RIGHT);
+        textField_1.setColumns(10);
+        textField_1.setBounds(248, 61, 50, 20);
+        networkPane.add(textField_1);
+
+        JLabel label_3 = new JLabel("(r  ):");
+        label_3.setHorizontalAlignment(SwingConstants.RIGHT);
+        label_3.setBounds(204, 63, 35, 16);
+        networkPane.add(label_3);
+
+        JLabel lblDiseaseSeverity = new JLabel("Disease severity");
+        lblDiseaseSeverity.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
+        lblDiseaseSeverity.setBounds(40, 63, 163, 16);
+        networkPane.add(lblDiseaseSeverity);
+
+        JLabel label_5 = new JLabel("σ");
+        label_5.setHorizontalAlignment(SwingConstants.RIGHT);
+        label_5.setFont(new Font("Lucida Grande", Font.PLAIN, 8));
+        label_5.setBounds(222, 71, 7, 10);
+        networkPane.add(label_5);
+
+        JLabel lblNetworkSize = new JLabel("Evaluation of peers (per agent):");
+        lblNetworkSize.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
+        lblNetworkSize.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+        lblNetworkSize.setBounds(16, 104, 238, 16);
+        networkPane.add(lblNetworkSize);
+
+        JLabel lblNetworkStructure = new JLabel("Network structure:");
+        lblNetworkStructure.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
+        lblNetworkStructure.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+        lblNetworkStructure.setBounds(16, 279, 142, 16);
+        networkPane.add(lblNetworkStructure);
+
+        JLabel label_6 = new JLabel("Network size:");
+        label_6.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
+        label_6.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+        label_6.setBounds(16, 175, 142, 16);
+        networkPane.add(label_6);
+
+        JLabel lblOfNetwork = new JLabel("% of network per time step");
+        lblOfNetwork.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
+        lblOfNetwork.setBounds(40, 134, 177, 16);
+        networkPane.add(lblOfNetwork);
+
+        JLabel label_8 = new JLabel("(ϕ):");
+        label_8.setHorizontalAlignment(SwingConstants.RIGHT);
+        label_8.setBounds(204, 134, 35, 16);
+        networkPane.add(label_8);
+
+        textField_2 = new JTextField();
+        textField_2.setText("1.00");
+        textField_2.setHorizontalAlignment(SwingConstants.RIGHT);
+        textField_2.setColumns(10);
+        textField_2.setBounds(248, 132, 50, 20);
+        networkPane.add(textField_2);
+
+        JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
+        separator.setForeground(Color.LIGHT_GRAY);
+        separator.setBounds(3, 94, 312, 10);
+        networkPane.add(separator);
+
+        JSeparator separator_1 = new JSeparator(SwingConstants.HORIZONTAL);
+        separator_1.setForeground(Color.LIGHT_GRAY);
+        separator_1.setBounds(3, 165, 312, 10);
+        networkPane.add(separator_1);
+
+        JSeparator separator_2 = new JSeparator(SwingConstants.HORIZONTAL);
+        separator_2.setForeground(Color.LIGHT_GRAY);
+        separator_2.setBounds(3, 269, 312, 10);
+        networkPane.add(separator_2);
+
+        //////////// DISEASE ////////////
+        JPanel simulationPane = new JPanel();
+        simulationPane.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
+        tabbedPane.add("Simulation", simulationPane);
+        simulationPane.setLayout(null);
+
+        JLabel simulationDelayLabel = new JLabel("Simulation delay (10 ms):");
+        simulationDelayLabel.setBounds(16, 210, 170, 16);
+        simulationPane.add(simulationDelayLabel);
+
+        simulationDelay = new JSpinner();
+        simulationDelay.setBounds(215, 205, 80, 26);
+        simulationPane.add(simulationDelay);
+        simulationDelay.setValue(10);
 
 
         //////////// SIMULATION ////////////
         JButton btnStart = new JButton(" Start");
+        btnStart.setBounds(37, 238, 260, 35);
+        simulationPane.add(btnStart);
         btnStart.setFont(new Font("Lucida Grande", Font.PLAIN, 14));
         btnStart.setIcon(new ImageIcon(getClass().getResource("/start.png")));
-        btnStart.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                startSimulation();
-            }
-        });
-        btnStart.setBounds(29, 422, 311, 35);
-        settingsFrame.getContentPane().add(btnStart);
-
-        simulationDelay = new JSpinner();
-        simulationDelay.setValue(10);
-        simulationDelay.setBounds(261, 387, 70, 26);
-        settingsFrame.getContentPane().add(simulationDelay);
-
-        JLabel simulationDelayLabel = new JLabel("Simulation delay (10 ms):");
-        simulationDelayLabel.setBounds(35, 392, 170, 16);
-        settingsFrame.getContentPane().add(simulationDelayLabel);
 
         JButton btnPauseSimulation = new JButton(" Pause");
+        btnPauseSimulation.setBounds(37, 275, 260, 35);
+        simulationPane.add(btnPauseSimulation);
         btnPauseSimulation.setIcon(new ImageIcon(getClass().getResource("/pause.png")));
         btnPauseSimulation.setFont(new Font("Lucida Grande", Font.PLAIN, 14));
-        btnPauseSimulation.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                pauseSimulation();
-            }
-        });
-        btnPauseSimulation.setBounds(29, 459, 311, 35);
-        settingsFrame.getContentPane().add(btnPauseSimulation);
 
         JButton btnReset = new JButton(" Reset");
+        btnReset.setBounds(37, 312, 260, 35);
+        simulationPane.add(btnReset);
         btnReset.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -423,8 +457,145 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         });
         btnReset.setIcon(new ImageIcon(getClass().getResource("/reset.png")));
         btnReset.setFont(new Font("Lucida Grande", Font.PLAIN, 14));
-        btnReset.setBounds(29, 496, 311, 35);
-        settingsFrame.getContentPane().add(btnReset);
+
+        JButton btnInfectRandomActor = new JButton("Infect Random Actor");
+        btnInfectRandomActor.setBounds(37, 62, 260, 30);
+        simulationPane.add(btnInfectRandomActor);
+        btnInfectRandomActor.setIcon(new ImageIcon(getClass().getResource("/infect.png")));
+
+        JLabel lblTimeStepsTo = new JLabel("Disease related:");
+        lblTimeStepsTo.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
+        lblTimeStepsTo.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+        lblTimeStepsTo.setBounds(16, 10, 238, 16);
+        simulationPane.add(lblTimeStepsTo);
+
+        JLabel lblTau1 = new JLabel("Time steps to recover");
+        lblTau1.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
+        lblTau1.setBounds(40, 40, 177, 16);
+        simulationPane.add(lblTau1);
+
+        JLabel lblTau2 = new JLabel("(τ):");
+        lblTau2.setHorizontalAlignment(SwingConstants.RIGHT);
+        lblTau2.setBounds(204, 40, 35, 16);
+        simulationPane.add(lblTau2);
+
+        txtTau = new JTextField();
+        txtTau.setText("1.00");
+        txtTau.setHorizontalAlignment(SwingConstants.RIGHT);
+        txtTau.setColumns(10);
+        txtTau.setBounds(248, 38, 50, 20);
+        simulationPane.add(txtTau);
+
+        JSeparator separator_5 = new JSeparator(SwingConstants.HORIZONTAL);
+        separator_5.setForeground(Color.LIGHT_GRAY);
+        separator_5.setBounds(3, 100, 312, 10);
+        simulationPane.add(separator_5);
+
+        JLabel lblOnNodeClick_1 = new JLabel("On node click:");
+        lblOnNodeClick_1.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
+        lblOnNodeClick_1.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+        lblOnNodeClick_1.setBounds(16, 110, 238, 16);
+        simulationPane.add(lblOnNodeClick_1);
+
+        chckbxShowActorStats = new JCheckBox("Show actor stats");
+        chckbxShowActorStats.setBounds(46, 135, 141, 23);
+        simulationPane.add(chckbxShowActorStats);
+        chckbxShowActorStats.setSelected(true);
+
+        chckbxToggleInfection = new JCheckBox("Toggle infection");
+        chckbxToggleInfection.setBounds(46, 160, 141, 23);
+        simulationPane.add(chckbxToggleInfection);
+        chckbxToggleInfection.setSelected(false);
+
+        JSeparator separator_4 = new JSeparator(SwingConstants.HORIZONTAL);
+        separator_4.setForeground(Color.LIGHT_GRAY);
+        separator_4.setBounds(3, 195, 312, 10);
+        simulationPane.add(separator_4);
+        btnInfectRandomActor.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                infectRandomActor();
+            }
+        });
+        btnPauseSimulation.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                pauseSimulation();
+            }
+        });
+        btnStart.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                startSimulation();
+            }
+        });
+        JPanel exportPanel = new JPanel();
+        exportPanel.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
+        tabbedPane.addTab("Export", null, exportPanel, null);
+        exportPanel.setLayout(null);
+
+        JPanel panel = new JPanel();
+        panel.setBounds(159, 5, 1, 1);
+        panel.setLayout(null);
+        panel.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
+        exportPanel.add(panel);
+
+        JComboBox<String> comboBox = new JComboBox<String>();
+        comboBox.setBounds(6, 6, 215, 30);
+        panel.add(comboBox);
+
+        ExportGEXFPanel exportGEXFPanel = new ExportGEXFPanel((Network) null);
+        exportGEXFPanel.setBounds(6, 34, 214, 192);
+        panel.add(exportGEXFPanel);
+
+        ExportAdjacencyMatrixPanel exportAdjacencyMatrixPanel = new ExportAdjacencyMatrixPanel((Network) null);
+        exportAdjacencyMatrixPanel.setBounds(6, 34, 214, 192);
+        panel.add(exportAdjacencyMatrixPanel);
+
+        ExportEdgeListPanel exportEdgeListPanel = new ExportEdgeListPanel((Network) null);
+        exportEdgeListPanel.setBounds(6, 34, 214, 192);
+        panel.add(exportEdgeListPanel);
+
+        JPanel panel_1 = new JPanel();
+        panel_1.setLayout(null);
+        panel_1.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
+        panel_1.setBounds(59, 170, 231, 240);
+        exportPanel.add(panel_1);
+
+        JComboBox<String> comboBox_1 = new JComboBox<String>();
+        comboBox_1.setBounds(6, 6, 215, 30);
+        panel_1.add(comboBox_1);
+
+        ExportGEXFPanel exportGEXFPanel_1 = new ExportGEXFPanel((Network) null);
+        exportGEXFPanel_1.setBounds(6, 34, 214, 192);
+        panel_1.add(exportGEXFPanel_1);
+
+        ExportAdjacencyMatrixPanel exportAdjacencyMatrixPanel_1 = new ExportAdjacencyMatrixPanel((Network) null);
+        exportAdjacencyMatrixPanel_1.setBounds(6, 34, 214, 192);
+        panel_1.add(exportAdjacencyMatrixPanel_1);
+
+        ExportEdgeListPanel exportEdgeListPanel_1 = new ExportEdgeListPanel((Network) null);
+        exportEdgeListPanel_1.setBounds(6, 34, 214, 192);
+        panel_1.add(exportEdgeListPanel_1);
+
+        btnClearEdges.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                clearEdges();
+            }
+        });
+        btnRemoveAgent.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                removeActor();
+            }
+        });
+        btnAddAgent.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addActor();
+            }
+        });
 
 
         //////////// CREATE A UI REPRESENATION OF THE NETWORK ////////////
@@ -447,7 +618,6 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
 
         // disable utility and disease panels
         disableUtilityPanels();
-        disableDiseasePanels();
 
         // get disease and utility specs
         DiseaseSpecs ds = getDiseaseSpecs();
@@ -479,7 +649,6 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         if (this.network.getActors().isEmpty()) {
             this.statsFrame.resetGlobalActorStats();
             enableUtilityPanels();
-            enableDiseasePanels();
         }
 
         // update stats
@@ -533,7 +702,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
      * @return the selected utility function
      */
     private UtilityFunction getUtilityFunction() {
-        switch (utilityFunctionCBox.getSelectedIndex()) {
+        switch (modelTypeCBox.getSelectedIndex()) {
             case 0:
                 return new IRTC(this.cidmoPanel.getAlpha(),
                         this.cidmoPanel.getBeta(),
@@ -552,18 +721,12 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
      * @return the selected disease
      */
     private DiseaseSpecs getDiseaseSpecs() {
-        switch (diseaseCBox.getSelectedIndex()) {
-            case 0:
-                return new DiseaseSpecs(
-                        DiseaseType.SIR,
-                        this.sirPanel.getTau(),
-                        this.sirPanel.getS(),
-                        this.sirPanel.getGamma(),
-                        this.sirPanel.getMu());
-
-            default:
-                throw new RuntimeException("Undefined disease type!");
-        }
+        return new DiseaseSpecs(
+                DiseaseType.SIR,
+                Integer.valueOf(this.txtTau.getText()),
+                this.cidmoPanel.getSigma(),
+                this.cidmoPanel.getGamma(),
+                this.cidmoPanel.getMu());
     }
 
 
@@ -603,33 +766,13 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
 
     //////////// UI ALTERATIONS ////////////
     /**
-     * Enables the disease panel and its subcomponents.
-     */
-    private void enableDiseasePanels() {
-        for (int i = 0; i < diseasePanels.length; i++) {
-            diseasePanels[i].enableComponents();
-        }
-        this.diseaseCBox.setEnabled(true);
-    }
-
-    /**
      * Enables the utility panel and its subcomponents.
      */
     private void enableUtilityPanels() {
         for (int i = 0; i < utilityPanels.length; i++) {
             utilityPanels[i].enableComponents();
         }
-        this.utilityFunctionCBox.setEnabled(true);
-    }
-
-    /**
-     * Disables the disease panel and its subcomponents.
-     */
-    private void disableDiseasePanels() {
-        for (int i = 0; i < diseasePanels.length; i++) {
-            diseasePanels[i].diseableComponents();
-        }
-        this.diseaseCBox.setEnabled(false);
+        this.modelTypeCBox.setEnabled(true);
     }
 
     /**
@@ -639,7 +782,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         for (int i = 0; i < utilityPanels.length; i++) {
             utilityPanels[i].diseableComponents();
         }
-        this.utilityFunctionCBox.setEnabled(false);
+        this.modelTypeCBox.setEnabled(false);
     }
 
 
