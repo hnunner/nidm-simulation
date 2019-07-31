@@ -32,6 +32,8 @@ public class StatsComputerTest {
     private Actor actor6;
     private Actor actor7;
 
+    // actor
+    private static final double phi   = 0.4;
     // disease
     private static final int    tau   = 10;
     private static final double s     = 8.4;
@@ -50,16 +52,16 @@ public class StatsComputerTest {
         UtilityFunction uf = new Cumulative();
         this.ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
 
-        // risk neutral
-        this.actor1 = this.network.addActor(uf, ds, 1.0);
-        this.actor2 = this.network.addActor(uf, ds, 1.0);
-        // risk seeking
-        this.actor3 = this.network.addActor(uf, ds, 0.25);
-        this.actor4 = this.network.addActor(uf, ds, 0.8);
-        this.actor5 = this.network.addActor(uf, ds, 0.9);
-        // risk averse
-        this.actor6 = this.network.addActor(uf, ds, 1.5);
-        this.actor7 = this.network.addActor(uf, ds, 2.0);
+        // sigma: risk neutral, pi: risk seeking
+        this.actor1 = this.network.addActor(uf, ds, 1.0, 0.9, phi);
+        this.actor2 = this.network.addActor(uf, ds, 1.0, 0.33, phi);
+        // sigma: risk seeking, pi: risk averse
+        this.actor3 = this.network.addActor(uf, ds, 0.25, 1.5, phi);
+        this.actor4 = this.network.addActor(uf, ds, 0.8, 1.4, phi);
+        this.actor5 = this.network.addActor(uf, ds, 0.9, 1.3, phi);
+        // sigma: risk averse; pi: risk neutral
+        this.actor6 = this.network.addActor(uf, ds, 1.5, 1.0, phi);
+        this.actor7 = this.network.addActor(uf, ds, 2.0, 1.0, phi);
 
         this.actor1.addConnection(this.actor2);
         this.actor1.addConnection(this.actor3);
@@ -128,10 +130,14 @@ public class StatsComputerTest {
         assertEquals(1, gas.getnS());
         assertEquals(4, gas.getnI());
         assertEquals(2, gas.getnR());
-        assertEquals(2, gas.getnRiskNeutral());
-        assertEquals(3, gas.getnRiskSeeking());
-        assertEquals(2, gas.getnRiskAverse());
-        assertEquals(1.064, gas.getAvRisk(), 0.001);
+        assertEquals(2, gas.getnRSigmaNeutral());
+        assertEquals(3, gas.getnRSigmaSeeking());
+        assertEquals(2, gas.getnRSigmaAverse());
+        assertEquals(1.064, gas.getAvRSigma(), 0.001);
+        assertEquals(2, gas.getnRPiNeutral());
+        assertEquals(2, gas.getnRPiSeeking());
+        assertEquals(3, gas.getnRPiAverse());
+        assertEquals(1.061, gas.getAvRPi(), 0.001);
     }
 
     /**

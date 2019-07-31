@@ -44,6 +44,7 @@ public class GEXFWriterTest {
 
     // actors
     private static final double r     = 1.2;
+    private static final double phi   = 0.4;
     private Actor actor1;
     private Actor actor2;
     private Actor actor3;
@@ -68,15 +69,15 @@ public class GEXFWriterTest {
         this.uf = new IRTC(alpha, beta, c);
         this.ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
 
-        this.actor1 = this.network.addActor(uf, ds, r);
-        this.actor2 = this.network.addActor(uf, ds, r);
-        this.actor3 = this.network.addActor(uf, ds, r);
-        this.actor4 = this.network.addActor(uf, ds, r);
-        this.actor5 = this.network.addActor(uf, ds, r);
-        this.actor6 = this.network.addActor(uf, ds, r);
-        this.actor7 = this.network.addActor(uf, ds, r);
-        this.actor8 = this.network.addActor(uf, ds, r);
-        this.actor9 = this.network.addActor(uf, ds, r);
+        this.actor1 = this.network.addActor(uf, ds, r, r, phi);
+        this.actor2 = this.network.addActor(uf, ds, r, r, phi);
+        this.actor3 = this.network.addActor(uf, ds, r, r, phi);
+        this.actor4 = this.network.addActor(uf, ds, r, r, phi);
+        this.actor5 = this.network.addActor(uf, ds, r, r, phi);
+        this.actor6 = this.network.addActor(uf, ds, r, r, phi);
+        this.actor7 = this.network.addActor(uf, ds, r, r, phi);
+        this.actor8 = this.network.addActor(uf, ds, r, r, phi);
+        this.actor9 = this.network.addActor(uf, ds, r, r, phi);
 
         // connections
         this.actor1.addConnection(this.actor2);

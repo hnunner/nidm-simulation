@@ -47,8 +47,8 @@ import nl.uu.socnetid.netgame.networks.Network;
 import nl.uu.socnetid.netgame.simulation.Simulation;
 import nl.uu.socnetid.netgame.simulation.SimulationListener;
 import nl.uu.socnetid.netgame.stats.StatsComputer;
+import nl.uu.socnetid.netgame.utilities.CIDMo;
 import nl.uu.socnetid.netgame.utilities.Cumulative;
-import nl.uu.socnetid.netgame.utilities.IRTC;
 import nl.uu.socnetid.netgame.utilities.UtilityFunction;
 
 /**
@@ -86,7 +86,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     private JTextField txtAddAmount;
     // risk behavior
     private JLabel lblR;
-    private JTextField txtR = new JTextField();
+    private JTextField txtRPi = new JTextField();
     // on node click
     private Actor statsActor;
     private ExecutorService nodeClickExecutor = Executors.newSingleThreadExecutor();
@@ -98,9 +98,9 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     private ExecutorService simulationExecutor = Executors.newSingleThreadExecutor();
     private Future<?> simulationTask;
     private JSpinner simulationDelay;
-    private JTextField textField;
-    private JTextField textField_1;
-    private JTextField textField_2;
+    private JTextField txtRemoveAmount;
+    private JTextField txtRSigma;
+    private JTextField txtPhi;
     private JTextField txtTau;
 
 
@@ -209,21 +209,21 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
                 switch (modelTypeCBox.getSelectedIndex()) {
                     case 0:
                         cidmoPanel.setVisible(true);
-                        txtR.setEnabled(true);
+                        txtRPi.setEnabled(true);
                         cumulativePanel.setVisible(false);
                         break;
 
                     case 1:
                         cidmoPanel.setVisible(false);
-                        txtR.setEnabled(false);
-                        txtR.setText("1.00");
+                        txtRPi.setEnabled(false);
+                        txtRPi.setText("1.00");
                         cumulativePanel.setVisible(true);
                         break;
 
                     case 2:
                         cidmoPanel.setVisible(false);
-                        txtR.setEnabled(false);
-                        txtR.setText("1.00");
+                        txtRPi.setEnabled(false);
+                        txtRPi.setText("1.00");
                         cumulativePanel.setVisible(false);
                         break;
 
@@ -255,11 +255,11 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         btnClearEdges.setBounds(40, 336, 258, 30);
         networkPane.add(btnClearEdges);
 
-        txtR.setText("1.00");
-        txtR.setHorizontalAlignment(SwingConstants.RIGHT);
-        txtR.setColumns(10);
-        txtR.setBounds(248, 36, 50, 20);
-        networkPane.add(txtR);
+        txtRPi.setText("1.00");
+        txtRPi.setHorizontalAlignment(SwingConstants.RIGHT);
+        txtRPi.setColumns(10);
+        txtRPi.setBounds(248, 61, 50, 20);
+        networkPane.add(txtRPi);
 
         lblR = new JLabel("Risk perception (per agent):");
         lblR.setFont(new Font("Lucida Grande", Font.BOLD, 13));
@@ -326,30 +326,30 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         label_1.setBounds(215, 238, 24, 16);
         networkPane.add(label_1);
 
-        textField = new JTextField();
-        textField.setText("1");
-        textField.setHorizontalAlignment(SwingConstants.RIGHT);
-        textField.setColumns(10);
-        textField.setBounds(248, 236, 50, 20);
-        networkPane.add(textField);
+        txtRemoveAmount = new JTextField();
+        txtRemoveAmount.setText("1");
+        txtRemoveAmount.setHorizontalAlignment(SwingConstants.RIGHT);
+        txtRemoveAmount.setColumns(10);
+        txtRemoveAmount.setBounds(248, 236, 50, 20);
+        networkPane.add(txtRemoveAmount);
 
         JLabel lblProbabilityOfInfection = new JLabel("Probability of infection");
         lblProbabilityOfInfection.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
-        lblProbabilityOfInfection.setBounds(40, 38, 163, 16);
+        lblProbabilityOfInfection.setBounds(40, 63, 163, 16);
         networkPane.add(lblProbabilityOfInfection);
 
         JLabel label_2 = new JLabel("π");
         label_2.setFont(new Font("Lucida Grande", Font.PLAIN, 8));
         label_2.setHorizontalAlignment(SwingConstants.RIGHT);
-        label_2.setBounds(222, 46, 7, 10);
+        label_2.setBounds(222, 71, 7, 10);
         networkPane.add(label_2);
 
-        textField_1 = new JTextField();
-        textField_1.setText("1.00");
-        textField_1.setHorizontalAlignment(SwingConstants.RIGHT);
-        textField_1.setColumns(10);
-        textField_1.setBounds(248, 61, 50, 20);
-        networkPane.add(textField_1);
+        txtRSigma = new JTextField();
+        txtRSigma.setText("1.00");
+        txtRSigma.setHorizontalAlignment(SwingConstants.RIGHT);
+        txtRSigma.setColumns(10);
+        txtRSigma.setBounds(248, 36, 50, 20);
+        networkPane.add(txtRSigma);
 
         JLabel label_3 = new JLabel("(r  ):");
         label_3.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -358,13 +358,13 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
 
         JLabel lblDiseaseSeverity = new JLabel("Disease severity");
         lblDiseaseSeverity.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
-        lblDiseaseSeverity.setBounds(40, 63, 163, 16);
+        lblDiseaseSeverity.setBounds(40, 38, 163, 16);
         networkPane.add(lblDiseaseSeverity);
 
         JLabel label_5 = new JLabel("σ");
         label_5.setHorizontalAlignment(SwingConstants.RIGHT);
         label_5.setFont(new Font("Lucida Grande", Font.PLAIN, 8));
-        label_5.setBounds(222, 71, 7, 10);
+        label_5.setBounds(222, 46, 7, 10);
         networkPane.add(label_5);
 
         JLabel lblNetworkSize = new JLabel("Evaluation of peers (per agent):");
@@ -395,12 +395,12 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         label_8.setBounds(204, 134, 35, 16);
         networkPane.add(label_8);
 
-        textField_2 = new JTextField();
-        textField_2.setText("1.00");
-        textField_2.setHorizontalAlignment(SwingConstants.RIGHT);
-        textField_2.setColumns(10);
-        textField_2.setBounds(248, 132, 50, 20);
-        networkPane.add(textField_2);
+        txtPhi = new JTextField();
+        txtPhi.setText("1.00");
+        txtPhi.setHorizontalAlignment(SwingConstants.RIGHT);
+        txtPhi.setColumns(10);
+        txtPhi.setBounds(248, 132, 50, 20);
+        networkPane.add(txtPhi);
 
         JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
         separator.setForeground(Color.LIGHT_GRAY);
@@ -424,7 +424,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         simulationPane.setLayout(null);
 
         JLabel simulationDelayLabel = new JLabel("Simulation delay (10 ms):");
-        simulationDelayLabel.setBounds(16, 210, 170, 16);
+        simulationDelayLabel.setBounds(40, 210, 170, 16);
         simulationPane.add(simulationDelayLabel);
 
         simulationDelay = new JSpinner();
@@ -480,7 +480,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         simulationPane.add(lblTau2);
 
         txtTau = new JTextField();
-        txtTau.setText("1.00");
+        txtTau.setText("10");
         txtTau.setHorizontalAlignment(SwingConstants.RIGHT);
         txtTau.setColumns(10);
         txtTau.setBounds(248, 38, 50, 20);
@@ -625,7 +625,10 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
 
         // add each actor with selected utility function and disease specs
         for (int i = 0; i < Integer.parseInt(txtAddAmount.getText()); i++) {
-            Actor actor = this.network.addActor(uf, ds, Double.valueOf(this.txtR.getText()));
+            Actor actor = this.network.addActor(uf, ds,
+                    Double.valueOf(this.txtRSigma.getText()),
+                    Double.valueOf(this.txtRPi.getText()),
+                    Double.valueOf(this.txtPhi.getText()));
             actor.addActorListener(this);
         }
 
@@ -643,7 +646,11 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
      * Removes a actor from the game.
      */
     private void removeActor() {
-        this.network.removeActor();
+        for (int i = 0; i < Integer.parseInt(txtAddAmount.getText()); i++) {
+            if (!this.network.getActors().isEmpty()) {
+                this.network.removeActor();
+            }
+        }
 
         // if there are no more actors in the networks enable utility and disease panels
         if (this.network.getActors().isEmpty()) {
@@ -704,8 +711,11 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     private UtilityFunction getUtilityFunction() {
         switch (modelTypeCBox.getSelectedIndex()) {
             case 0:
-                return new IRTC(this.cidmoPanel.getAlpha(),
+                return new CIDMo(
+                        this.cidmoPanel.getAlpha(),
+                        this.cidmoPanel.getKappa(),
                         this.cidmoPanel.getBeta(),
+                        this.cidmoPanel.getLamda(),
                         this.cidmoPanel.getC());
 
             case 1:

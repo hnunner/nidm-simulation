@@ -30,7 +30,7 @@ import nl.uu.socnetid.netgame.simulation.Simulation;
 import nl.uu.socnetid.netgame.simulation.SimulationListener;
 import nl.uu.socnetid.netgame.simulation.SimulationStage;
 import nl.uu.socnetid.netgame.stats.StatsComputer;
-import nl.uu.socnetid.netgame.utilities.IRTC;
+import nl.uu.socnetid.netgame.utilities.CIDMo;
 import nl.uu.socnetid.netgame.utilities.UtilityFunction;
 
 
@@ -51,7 +51,9 @@ public class DataGenerator implements ActorListener, SimulationListener {
 
     // utility
     private static final double[] ALPHAS = new double[] {10.0};
+    private static final double   KAPPA  = 1.0;
     private static final double[] BETAS  = new double[] {2.0, 8.0};
+    private static final double   LAMDA  = 1.0;
     private static final double[] CS     = new double[] {9.0}; //, 11.0};
 
     // disease
@@ -61,8 +63,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
     private static final double[] GAMMAS = new double[] {0.1};
     private static final double[] MUS    = new double[] {1.0, 1.5};
 
-    // risk behavior
-//    private static final double[] R_BOUNDS = new double[] {0.25, 1.75};
+    // risk behavior - RPi == RSigma!!!
     private static final double[] RS    = new double[] {0.5, 1.0, 1.5};
 
     // initial network
@@ -207,18 +208,13 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                         this.gexfExportFile = this.exportDir + this.uid + ".gexf";
                                                         gexfWriter.startRecording(network, this.gexfExportFile);
                                                     }
-    //                                                // random risk factor
-    //                                                double minR = R_BOUNDS[0];
-    //                                                double maxR = R_BOUNDS[1];
-    //                                                double randR = minR + Math.random() * (maxR - minR);
                                                     // create utility and disease specs
-                                                    UtilityFunction uf = new IRTC(alpha, beta, c);
+                                                    UtilityFunction uf = new CIDMo(alpha, KAPPA, beta, LAMDA, c);
                                                     this.ds = new DiseaseSpecs(
                                                             DISEASE_TYPE, tau, s, gamma, mu);
-                                                    // add actors
+                                                    // add actors - with RPi == RSigma!!!
                                                     for (int i = 0; i < N; i++) {
-//                                                        Actor actor = network.addActor(uf, this.ds, randR, PHI);
-                                                        Actor actor = network.addActor(uf, this.ds, r, PHI);
+                                                        Actor actor = network.addActor(uf, this.ds, r, r, PHI);
                                                         actor.addActorListener(this);
                                                     }
                                                     // create full network if required
@@ -403,7 +399,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
         simulationSummaryCSVCols.add(String.valueOf(network.getAvAlpha()));
         simulationSummaryCSVCols.add(String.valueOf(network.getAvBeta()));
         simulationSummaryCSVCols.add(String.valueOf(network.getAvC()));
-        simulationSummaryCSVCols.add(String.valueOf(network.getAvR()));
+        simulationSummaryCSVCols.add(String.valueOf(network.getAvRPi()));   // RPi == RSigma!!!
         // disease
         simulationSummaryCSVCols.add(String.valueOf(this.ds.getS()));
         simulationSummaryCSVCols.add(String.valueOf(this.ds.getGamma()));
@@ -521,7 +517,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
         // network
         roundSummaryCSVCols.add(String.valueOf(network.getN()));
         roundSummaryCSVCols.add(String.valueOf(network.getAvBeta()));
-        roundSummaryCSVCols.add(String.valueOf(network.getAvR()));
+        roundSummaryCSVCols.add(String.valueOf(network.getAvRPi()));   // RPi == RSigma!!!
         // disease
         roundSummaryCSVCols.add(String.valueOf(this.ds.getS()));
         roundSummaryCSVCols.add(String.valueOf(this.ds.getMu()));
@@ -635,7 +631,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
             actorDetailsCSVCols.add(String.valueOf(network.getN()));
             // actor
             actorDetailsCSVCols.add(actor.getId());
-            actorDetailsCSVCols.add(String.valueOf(actor.getRiskFactor()));
+            actorDetailsCSVCols.add(String.valueOf(actor.getRPi()));   // RPi == RSigma!!!
             actorDetailsCSVCols.add(String.valueOf(actor.getUtilityFunction().getAlpha()));
             actorDetailsCSVCols.add(String.valueOf(actor.getUtilityFunction().getBeta()));
             actorDetailsCSVCols.add(String.valueOf(actor.getUtilityFunction().getC()));

@@ -72,30 +72,32 @@ public class IRTC extends UtilityFunction {
     protected double getEffectOfDisease(LocalActorConnectionsStats lacs, Actor actor) {
         int nI = lacs.getnI();
         double p;
-        double r;
+        double s;
+        double rSigma = actor.getRSigma();
+        double rPi = actor.getRPi();
 
         // depending own actor's own risk group
         switch (actor.getDiseaseGroup()) {
             case SUSCEPTIBLE:
-                p = StatsComputer.computeProbabilityOfInfection(actor, nI);
-                r = actor.getRiskFactor();
+                p = Math.pow(StatsComputer.computeProbabilityOfInfection(actor, nI), (2 - rPi));
+                s = Math.pow(actor.getDiseaseSpecs().getS(), rSigma) ;
                 break;
 
             case INFECTED:
                 p = 1;
-                r = 1;
+                s = actor.getDiseaseSpecs().getS();
                 break;
 
             case RECOVERED:
                 p = 0;
-                r = 1;
+                s = 0;
                 break;
 
             default:
                 throw new RuntimeException("Unknown disease group: " + actor.getDiseaseGroup());
         }
 
-        return p * Math.pow(actor.getDiseaseSpecs().getS(), r);
+        return p * s;
     }
 
 }

@@ -130,10 +130,16 @@ public final class StatsComputer {
         int nR = 0;
 
         // risk behavior
-        int nRiskAverse = 0;
-        int nRiskNeutral = 0;
-        int nRiskSeeking = 0;
-        double cumRisk = 0.0;
+        // disease severity
+        int nRSigmaAverse = 0;
+        int nRSigmaNeutral = 0;
+        int nRSigmaSeeking = 0;
+        double cumRSigma = 0.0;
+        // probability of infection
+        int nRPiAverse = 0;
+        int nRPiNeutral = 0;
+        int nRPiSeeking = 0;
+        double cumRPi = 0.0;
 
         // check all actors
         Iterator<Actor> actorsIt = actors.iterator();
@@ -159,18 +165,32 @@ public final class StatsComputer {
             }
 
             // risk behavior
-            double riskFactor = actor.getRiskFactor();
-            if (riskFactor > 1) {
-                nRiskAverse++;
-            } else if (riskFactor < 1) {
-                nRiskSeeking++;
+            // disease severity
+            double rSigma = actor.getRSigma();
+            if (rSigma > 1) {
+                nRSigmaAverse++;
+            } else if (rSigma < 1) {
+                nRSigmaSeeking++;
             } else {
-                nRiskNeutral++;
+                nRSigmaNeutral++;
             }
-            cumRisk += riskFactor;
+            cumRSigma += rSigma;
+            // probability of infection
+            double rPi = actor.getRPi();
+            if (rPi > 1) {
+                nRPiAverse++;
+            } else if (rPi < 1) {
+                nRPiSeeking++;
+            } else {
+                nRPiNeutral++;
+            }
+            cumRPi += rPi;
         }
 
-        return new GlobalActorStats(n, nS, nI, nR, nRiskAverse, nRiskNeutral, nRiskSeeking, cumRisk / n);
+        return new GlobalActorStats(
+                n, nS, nI, nR,
+                nRSigmaAverse, nRSigmaNeutral, nRSigmaSeeking, cumRSigma / n,
+                nRPiAverse, nRPiNeutral, nRPiSeeking, cumRPi / n);
     }
 
     public static GlobalSimulationStats computeGlobalSimulationStats(Simulation simulation) {

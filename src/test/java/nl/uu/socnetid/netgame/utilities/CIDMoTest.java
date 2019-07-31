@@ -16,21 +16,24 @@ import nl.uu.socnetid.netgame.networks.Network;
  *
  * @author Hendrik Nunner
  */
-public class IRTCTest {
+public class CIDMoTest {
 
     // network
     private Network network;
 
     // constants
-    private static final double alpha = 5.3;
-    private static final double beta  = 1.2;
-    private static final double c     = 4.1;
-    private static final double s     = 8.4;
-    private static final double gamma = 0.1;
-    private static final double mu    = 2.5;
-    private static final double r     = 1.2;
-    private static final double phi   = 0.4;
-    private static final int    tau   = 10;
+    private static final double alpha   = 5.3;
+    private static final double kappa   = 0.7;
+    private static final double beta    = 1.2;
+    private static final double lamda   = 0.9;
+    private static final double c       = 4.1;
+    private static final double s       = 8.4;
+    private static final double gamma   = 0.1;
+    private static final double mu      = 2.5;
+    private static final double rSigma  = 1.2;
+    private static final double rPi     = 0.5;
+    private static final double phi     = 0.4;
+    private static final int    tau     = 10;
 
     // actors
     private Actor actor1;
@@ -50,18 +53,18 @@ public class IRTCTest {
     public void initActor() {
         this.network = new Network("IRTC Test");
 
-        UtilityFunction uf = new IRTC(alpha, beta, c);
+        UtilityFunction uf = new CIDMo(alpha, kappa, beta, lamda, c);
         DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
 
-        this.actor1 = this.network.addActor(uf, ds, r, r, phi);
-        this.actor2 = this.network.addActor(uf, ds, r, r, phi);
-        this.actor3 = this.network.addActor(uf, ds, r, r, phi);
-        this.actor4 = this.network.addActor(uf, ds, r, r, phi);
-        this.actor5 = this.network.addActor(uf, ds, r, r, phi);
-        this.actor6 = this.network.addActor(uf, ds, r, r, phi);
-        this.actor7 = this.network.addActor(uf, ds, r, r, phi);
-        this.actor8 = this.network.addActor(uf, ds, r, r, phi);
-        this.actor9 = this.network.addActor(uf, ds, r, r, phi);
+        this.actor1 = this.network.addActor(uf, ds, rSigma, rPi, phi);
+        this.actor2 = this.network.addActor(uf, ds, rSigma, rPi, phi);
+        this.actor3 = this.network.addActor(uf, ds, rSigma, rPi, phi);
+        this.actor4 = this.network.addActor(uf, ds, rSigma, rPi, phi);
+        this.actor5 = this.network.addActor(uf, ds, rSigma, rPi, phi);
+        this.actor6 = this.network.addActor(uf, ds, rSigma, rPi, phi);
+        this.actor7 = this.network.addActor(uf, ds, rSigma, rPi, phi);
+        this.actor8 = this.network.addActor(uf, ds, rSigma, rPi, phi);
+        this.actor9 = this.network.addActor(uf, ds, rSigma, rPi, phi);
 
         // infections
         this.actor4.infect(ds);
@@ -90,9 +93,9 @@ public class IRTCTest {
      */
     @Test
     public void testGetUtility() {
-        assertEquals( -0.99, Precision.round(this.actor1.getUtility().getOverallUtility(), 2), 0);
-        assertEquals( -6.15, Precision.round(this.actor4.getUtility().getOverallUtility(), 2), 0);
-        assertEquals(-13.37, Precision.round(this.actor7.getUtility().getOverallUtility(), 2), 0);
+        assertEquals( -1.07, Precision.round(this.actor1.getUtility().getOverallUtility(), 2), 0);
+        assertEquals( -7.86, Precision.round(this.actor4.getUtility().getOverallUtility(), 2), 0);
+        assertEquals(-15.43, Precision.round(this.actor7.getUtility().getOverallUtility(), 2), 0);
     }
 
 }
