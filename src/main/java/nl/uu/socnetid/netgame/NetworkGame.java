@@ -35,7 +35,6 @@ import nl.uu.socnetid.netgame.gui.CumulativePanel;
 import nl.uu.socnetid.netgame.gui.DeactivatablePanel;
 import nl.uu.socnetid.netgame.gui.ExportAdjacencyMatrixPanel;
 import nl.uu.socnetid.netgame.gui.ExportEdgeListPanel;
-import nl.uu.socnetid.netgame.gui.ExportFrame;
 import nl.uu.socnetid.netgame.gui.ExportGEXFPanel;
 import nl.uu.socnetid.netgame.gui.ExportListener;
 import nl.uu.socnetid.netgame.gui.NodeClick;
@@ -68,8 +67,6 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     // WINDOWS
     private JFrame controlsFrame = new JFrame("Settings");
     private final StatsFrame statsFrame = new StatsFrame("Statistics");
-    private final ExportFrame exportFrame = new ExportFrame("Export", this.network);
-
 
     // UTILITY
     // selection
@@ -118,7 +115,6 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
             public void run() {
                 try {
                     NetworkGame window = new NetworkGame();
-                    window.exportFrame.setVisible(true);
                     window.statsFrame.setVisible(true);
                     window.controlsFrame.setVisible(true);
                 } catch (Exception e) {
@@ -492,7 +488,6 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         NodeClick nodeClickListener = new NodeClick(this.network);
         nodeClickListener.addListener(this);
         this.nodeClickExecutor.submit(nodeClickListener);
-        this.exportFrame.addExportListener(this);
     }
 
 
