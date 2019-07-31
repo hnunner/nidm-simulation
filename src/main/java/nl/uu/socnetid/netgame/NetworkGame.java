@@ -65,7 +65,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     private final DisplayableNetwork network = new DisplayableNetwork();
 
     // WINDOWS
-    private JFrame controlsFrame = new JFrame("Settings");
+    private JFrame controlsFrame = new JFrame("Controls");
     private final StatsFrame statsFrame = new StatsFrame("Statistics");
 
     // UTILITY
