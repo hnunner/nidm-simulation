@@ -25,6 +25,7 @@ public class StatsFrame extends JFrame {
     private static final long serialVersionUID = -5532614279437810025L;
 
     private static final String NA_STRING = "---";
+    private static final boolean SHOW_DIAMETER_AND_AV_DISTANCE = false;
 
     // labels global stats
     // utility
@@ -717,37 +718,37 @@ public class StatsFrame extends JFrame {
         JLabel lblDiameter = new JLabel("Diameter");
         lblDiameter.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
         lblDiameter.setBounds(20, 450, 83, 16);
-        lblDiameter.setVisible(false);
+        lblDiameter.setVisible(SHOW_DIAMETER_AND_AV_DISTANCE);
         panel_1.add(lblDiameter);
 
         JLabel label_50 = new JLabel(":");
         label_50.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
         label_50.setBounds(117, 450, 10, 16);
-        label_50.setVisible(false);
+        label_50.setVisible(SHOW_DIAMETER_AND_AV_DISTANCE);
         panel_1.add(label_50);
 
         lblGlobalDiameter = new JLabel(NA_STRING);
         lblGlobalDiameter.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
         lblGlobalDiameter.setBounds(130, 450, 56, 16);
-        lblGlobalDiameter.setVisible(false);
+        lblGlobalDiameter.setVisible(SHOW_DIAMETER_AND_AV_DISTANCE);
         panel_1.add(lblGlobalDiameter);
 
         JLabel lblDistance = new JLabel("∅ Distance");
         lblDistance.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
         lblDistance.setBounds(20, 465, 83, 16);
-        lblDistance.setVisible(false);
+        lblDistance.setVisible(SHOW_DIAMETER_AND_AV_DISTANCE);
         panel_1.add(lblDistance);
 
         lblGlobalAvDistance = new JLabel(NA_STRING);
         lblGlobalAvDistance.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
         lblGlobalAvDistance.setBounds(130, 465, 56, 16);
-        lblGlobalAvDistance.setVisible(false);
+        lblGlobalAvDistance.setVisible(SHOW_DIAMETER_AND_AV_DISTANCE);
         panel_1.add(lblGlobalAvDistance);
 
         JLabel label_27 = new JLabel(":");
         label_27.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
         label_27.setBounds(117, 465, 10, 16);
-        label_27.setVisible(false);
+        label_27.setVisible(SHOW_DIAMETER_AND_AV_DISTANCE);
         panel_1.add(label_27);
 
         JLabel label_31 = new JLabel(":");
@@ -757,53 +758,53 @@ public class StatsFrame extends JFrame {
 
         JLabel lblSimulation = new JLabel("Simulation");
         lblSimulation.setFont(new Font("Lucida Grande", Font.BOLD, 9));
-        lblSimulation.setBounds(10, 480, 97, 16);
+        lblSimulation.setBounds(10, SHOW_DIAMETER_AND_AV_DISTANCE ? 480 : 480 - (2*15), 97, 16);
         panel_1.add(lblSimulation);
 
-        JLabel lblRound = new JLabel("Running");
-        lblRound.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblRound.setBounds(20, 495, 83, 16);
-        panel_1.add(lblRound);
+        JLabel lblSimRunning = new JLabel("Running");
+        lblSimRunning.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblSimRunning.setBounds(20, SHOW_DIAMETER_AND_AV_DISTANCE ? 495 : 495 - (2*15), 83, 16);
+        panel_1.add(lblSimRunning);
 
-        JLabel label_38 = new JLabel(":");
-        label_38.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_38.setBounds(117, 495, 10, 16);
-        panel_1.add(label_38);
+        JLabel lblSimRunningColon = new JLabel(":");
+        lblSimRunningColon.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblSimRunningColon.setBounds(117, SHOW_DIAMETER_AND_AV_DISTANCE ? 495 : 495 - (2*15),10, 16);
+        panel_1.add(lblSimRunningColon);
 
         lblGlobalSimulationRunning = new JLabel("no");
         lblGlobalSimulationRunning.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblGlobalSimulationRunning.setBounds(130, 495, 56, 16);
+        lblGlobalSimulationRunning.setBounds(130, SHOW_DIAMETER_AND_AV_DISTANCE ? 495 : 495 - (2*15), 56, 16);
         panel_1.add(lblGlobalSimulationRunning);
 
-        JLabel label_32 = new JLabel("Round");
-        label_32.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_32.setBounds(20, 510, 83, 16);
-        panel_1.add(label_32);
+        JLabel lblSimRound = new JLabel("Time step");
+        lblSimRound.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblSimRound.setBounds(20, SHOW_DIAMETER_AND_AV_DISTANCE ? 510 : 510 - (2*15), 83, 16);
+        panel_1.add(lblSimRound);
 
-        JLabel label_37 = new JLabel(":");
-        label_37.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_37.setBounds(117, 510, 10, 16);
-        panel_1.add(label_37);
+        JLabel lblSimRoundColon = new JLabel(":");
+        lblSimRoundColon.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblSimRoundColon.setBounds(117, SHOW_DIAMETER_AND_AV_DISTANCE ? 510 : 510 - (2*15), 10, 16);
+        panel_1.add(lblSimRoundColon);
 
         lblGlobalSimulationRound = new JLabel("---");
         lblGlobalSimulationRound.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblGlobalSimulationRound.setBounds(130, 510, 56, 16);
+        lblGlobalSimulationRound.setBounds(130, SHOW_DIAMETER_AND_AV_DISTANCE ? 510 : 510 - (2*15), 56, 16);
         panel_1.add(lblGlobalSimulationRound);
 
         lblGlobalSimulationRecording = new JLabel("no");
         lblGlobalSimulationRecording.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblGlobalSimulationRecording.setBounds(130, 525, 56, 16);
+        lblGlobalSimulationRecording.setBounds(130, SHOW_DIAMETER_AND_AV_DISTANCE ? 525 : 525 - (2*15), 56, 16);
         panel_1.add(lblGlobalSimulationRecording);
 
-        JLabel label_44 = new JLabel(":");
-        label_44.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_44.setBounds(117, 525, 10, 16);
-        panel_1.add(label_44);
+        JLabel lblSimRecordingColon = new JLabel(":");
+        lblSimRecordingColon.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblSimRecordingColon.setBounds(117, SHOW_DIAMETER_AND_AV_DISTANCE ? 525 : 525 - (2*15), 10, 16);
+        panel_1.add(lblSimRecordingColon);
 
-        JLabel lblRecording = new JLabel("Recording");
-        lblRecording.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblRecording.setBounds(20, 525, 83, 16);
-        panel_1.add(lblRecording);
+        JLabel lblSimRecording = new JLabel("Recording");
+        lblSimRecording.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblSimRecording.setBounds(20, SHOW_DIAMETER_AND_AV_DISTANCE ? 525 : 525 - (2*15), 83, 16);
+        panel_1.add(lblSimRecording);
 
         JLabel label_55 = new JLabel("Risk averse");
         label_55.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
@@ -1186,9 +1187,9 @@ public class StatsFrame extends JFrame {
         }
         double rPi = actor.getRPi();
         this.lblActorRPi.setText(Double.toString(rPi));
-        if (rSigma < 1) {
+        if (rPi < 1) {
             this.lblActorRPiMeaning.setText("seeking");
-        } else if (rSigma > 1) {
+        } else if (rPi > 1) {
             this.lblActorRPiMeaning.setText("averse");
         } else {
             this.lblActorRPiMeaning.setText("neutral");

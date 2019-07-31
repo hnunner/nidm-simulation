@@ -23,6 +23,10 @@ public class CIDMoPanel extends DeactivatablePanel {
     private JTextField txtMu;
     private JTextField txtSigma;
     private JTextField txtGamma;
+    private JTextField txtRSigma;
+    private JTextField txtRPi;
+    private JTextField txtPhi;
+    private JTextField txtTau;
 
     /**
      * Create the panel.
@@ -84,7 +88,7 @@ public class CIDMoPanel extends DeactivatablePanel {
         txtBeta = new JTextField();
         txtBeta.setBounds(245, 143, 50, 20);
         add(txtBeta);
-        txtBeta.setText("2");
+        txtBeta.setText("8");
         txtBeta.setHorizontalAlignment(SwingConstants.RIGHT);
         txtBeta.setColumns(10);
 
@@ -155,7 +159,7 @@ public class CIDMoPanel extends DeactivatablePanel {
         add(lblMu2);
 
         txtMu = new JTextField();
-        txtMu.setText("1.0");
+        txtMu.setText("1.5");
         txtMu.setHorizontalAlignment(SwingConstants.RIGHT);
         txtMu.setColumns(10);
         txtMu.setBounds(245, 264, 50, 20);
@@ -175,7 +179,7 @@ public class CIDMoPanel extends DeactivatablePanel {
         lblSigma1.setBounds(37, 337, 152, 16);
         add(lblSigma1);
 
-        JLabel lblGamma1 = new JLabel("Probability to get infected");
+        JLabel lblGamma1 = new JLabel("Probability of infection");
         lblGamma1.setBounds(37, 362, 170, 16);
         add(lblGamma1);
 
@@ -185,7 +189,7 @@ public class CIDMoPanel extends DeactivatablePanel {
         add(lblSigma2);
 
         txtSigma = new JTextField();
-        txtSigma.setText("10");
+        txtSigma.setText("50");
         txtSigma.setHorizontalAlignment(SwingConstants.RIGHT);
         txtSigma.setColumns(10);
         txtSigma.setBounds(246, 335, 50, 20);
@@ -202,6 +206,116 @@ public class CIDMoPanel extends DeactivatablePanel {
         txtGamma.setColumns(10);
         txtGamma.setBounds(246, 360, 50, 20);
         add(txtGamma);
+
+        JLabel lblRiskPerception = new JLabel("Risk perception:");
+        lblRiskPerception.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+        lblRiskPerception.setBounds(37, 392, 242, 16);
+        add(lblRiskPerception);
+
+        JLabel lblDiseaseSeverity = new JLabel("Disease severity");
+        lblDiseaseSeverity.setBounds(53, 422, 153, 16);
+        add(lblDiseaseSeverity);
+
+        txtRSigma = new JTextField();
+        txtRSigma.setText("1.0");
+        txtRSigma.setHorizontalAlignment(SwingConstants.RIGHT);
+        txtRSigma.setColumns(10);
+        txtRSigma.setBounds(246, 420, 50, 20);
+        add(txtRSigma);
+
+        JLabel lblProbabilityOfInfection = new JLabel("Probability of infection");
+        lblProbabilityOfInfection.setBounds(53, 447, 154, 16);
+        add(lblProbabilityOfInfection);
+
+        txtRPi = new JTextField();
+        txtRPi.setText("1.0");
+        txtRPi.setHorizontalAlignment(SwingConstants.RIGHT);
+        txtRPi.setColumns(10);
+        txtRPi.setBounds(246, 445, 50, 20);
+        add(txtRPi);
+
+        JSeparator separator_4 = new JSeparator(SwingConstants.HORIZONTAL);
+        separator_4.setForeground(Color.WHITE);
+        separator_4.setBounds(36, 385, 260, 10);
+        add(separator_4);
+
+        JLabel label = new JLabel("(r  ):");
+        label.setHorizontalAlignment(SwingConstants.RIGHT);
+        label.setBounds(201, 422, 35, 16);
+        add(label);
+
+        JLabel label_1 = new JLabel("π");
+        label_1.setHorizontalAlignment(SwingConstants.RIGHT);
+        label_1.setFont(new Font("Lucida Grande", Font.PLAIN, 8));
+        label_1.setBounds(219, 455, 7, 10);
+        add(label_1);
+
+        JLabel label_2 = new JLabel("(r  ):");
+        label_2.setHorizontalAlignment(SwingConstants.RIGHT);
+        label_2.setBounds(201, 447, 35, 16);
+        add(label_2);
+
+        JLabel label_3 = new JLabel("σ");
+        label_3.setHorizontalAlignment(SwingConstants.RIGHT);
+        label_3.setFont(new Font("Lucida Grande", Font.PLAIN, 8));
+        label_3.setBounds(219, 430, 7, 10);
+        add(label_3);
+
+        JLabel lblNetworkEvaluation = new JLabel("Network - evaluation (per agent):");
+        lblNetworkEvaluation.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
+        lblNetworkEvaluation.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+        lblNetworkEvaluation.setBounds(14, 488, 238, 16);
+        add(lblNetworkEvaluation);
+
+        JLabel label_9 = new JLabel("% of network per time step");
+        label_9.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
+        label_9.setBounds(38, 518, 177, 16);
+        add(label_9);
+
+        JLabel label_10 = new JLabel("(ϕ):");
+        label_10.setHorizontalAlignment(SwingConstants.RIGHT);
+        label_10.setBounds(202, 518, 35, 16);
+        add(label_10);
+
+        txtPhi = new JTextField();
+        txtPhi.setText("0.4");
+        txtPhi.setHorizontalAlignment(SwingConstants.RIGHT);
+        txtPhi.setColumns(10);
+        txtPhi.setBounds(246, 516, 50, 20);
+        add(txtPhi);
+
+        JSeparator separator_5 = new JSeparator(SwingConstants.HORIZONTAL);
+        separator_5.setForeground(Color.LIGHT_GRAY);
+        separator_5.setBounds(1, 478, 312, 10);
+        add(separator_5);
+
+        JSeparator separator_6 = new JSeparator(SwingConstants.HORIZONTAL);
+        separator_6.setForeground(Color.LIGHT_GRAY);
+        separator_6.setBounds(1, 549, 312, 10);
+        add(separator_6);
+
+        JLabel lblSimulation = new JLabel("Simulation:");
+        lblSimulation.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
+        lblSimulation.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+        lblSimulation.setBounds(13, 559, 238, 16);
+        add(lblSimulation);
+
+        JLabel label_5 = new JLabel("Time steps to recover");
+        label_5.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
+        label_5.setBounds(37, 589, 177, 16);
+        add(label_5);
+
+        JLabel label_6 = new JLabel("(τ):");
+        label_6.setHorizontalAlignment(SwingConstants.RIGHT);
+        label_6.setBounds(201, 589, 35, 16);
+        add(label_6);
+
+        txtTau = new JTextField();
+        txtTau.setText("10");
+        txtTau.setHorizontalAlignment(SwingConstants.RIGHT);
+        txtTau.setColumns(10);
+        txtTau.setBounds(245, 587, 50, 20);
+        add(txtTau);
     }
 
     /**
@@ -274,6 +388,42 @@ public class CIDMoPanel extends DeactivatablePanel {
      */
     public double getGamma() {
         return Double.valueOf(this.txtGamma.getText());
+    }
+
+    /**
+     * Gets the risk perception for disease severity (rSigma).
+     *
+     * @return the risk perception for disease severity (rSigma)
+     */
+    public double getRSigma() {
+        return Double.valueOf(this.txtRSigma.getText());
+    }
+
+    /**
+     * Gets the risk perception for probability of infections (rPi).
+     *
+     * @return the risk perception for probability of infections (rPi)
+     */
+    public double getRPi() {
+        return Double.valueOf(this.txtRPi.getText());
+    }
+
+    /**
+     * Gets the share of peers to evaluate per time step (phi).
+     *
+     * @return the share of peers to evaluate per time step (phi)
+     */
+    public double getPhi() {
+        return Double.valueOf(this.txtPhi.getText());
+    }
+
+    /**
+     * Gets the number of time step to recover (tau).
+     *
+     * @return the number of time step to recover (tau)
+     */
+    public int getTau() {
+        return Integer.valueOf(this.txtTau.getText());
     }
 
     /* (non-Javadoc)

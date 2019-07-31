@@ -95,7 +95,7 @@ public final class StatsComputer {
         int connections = 0;
         double avDegree = 0.0;
 
-        // implement diameter and average distance (if it adds to understanding)
+        // TODO implement diameter and average distance
         int diameter = 0;
         double avDistance = 0.0;
 

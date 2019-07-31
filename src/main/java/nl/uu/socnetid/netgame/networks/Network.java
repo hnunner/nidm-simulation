@@ -165,6 +165,24 @@ public class Network extends SingleGraph {
     }
 
     /**
+     * Gets a random susceptible actor.
+     *
+     * @return a random susceptible actor
+     */
+    public Actor getRandomSusceptibleActor() {
+        List<Actor> tmpActors = new LinkedList<Actor>(this.getActors());
+        while (!tmpActors.isEmpty()) {
+            int randomIndex = ThreadLocalRandom.current().nextInt(0, tmpActors.size());
+            Actor actor = tmpActors.get(randomIndex);
+            if (actor.isSusceptible()) {
+                return actor;
+            }
+            tmpActors.remove(actor);
+        }
+        return null;
+    }
+
+    /**
      * Gets the actor with the highest index.
      *
      * @return the actor with the highest index
