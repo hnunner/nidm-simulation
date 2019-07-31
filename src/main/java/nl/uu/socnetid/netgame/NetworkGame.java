@@ -67,7 +67,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     private final DisplayableNetwork network = new DisplayableNetwork();
 
     // WINDOWS
-    private JFrame settingsFrame = new JFrame("Settings");
+    private JFrame controlsFrame = new JFrame("Settings");
     private final StatsFrame statsFrame = new StatsFrame("Statistics");
     private final ExportFrame exportFrame = new ExportFrame("Export", this.network);
 
@@ -118,7 +118,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
                     NetworkGame window = new NetworkGame();
                     window.exportFrame.setVisible(true);
                     window.statsFrame.setVisible(true);
-                    window.settingsFrame.setVisible(true);
+                    window.controlsFrame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -151,27 +151,28 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         }
 
         // init settings frame
-        settingsFrame.getContentPane().setLayout(null);
-        settingsFrame.setBounds(10, 10, 352, 510);
+        controlsFrame.getContentPane().setLayout(null);
+        controlsFrame.setTitle("");
+        controlsFrame.setBounds(10, 10, 352, 510);
         switch (osType) {
             case WIN:
                 break;
             case MAC:
-                settingsFrame.setBounds(10, 10, 352, 510);
+                controlsFrame.setBounds(10, 10, 352, 510);
                 break;
             case OTHER:
             case UNIX:
             default:
                 break;
         }
-        settingsFrame.setResizable(false);
-        settingsFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        controlsFrame.setResizable(false);
+        controlsFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //////////// TABBED PANE (UTILITY, DISEASE, EXPORT, ACTORS) ////////////
         JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
         tabbedPane.setBorder(null);
         tabbedPane.setBounds(6, 6, 340, 483);
-        settingsFrame.getContentPane().add(tabbedPane);
+        controlsFrame.getContentPane().add(tabbedPane);
 
 
         //////////// UTILITY ////////////
