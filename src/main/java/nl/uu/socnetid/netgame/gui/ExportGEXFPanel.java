@@ -1,6 +1,7 @@
 package nl.uu.socnetid.netgame.gui;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -15,9 +16,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.border.MatteBorder;
+import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
 
 import nl.uu.socnetid.netgame.io.network.GEXFWriter;
 import nl.uu.socnetid.netgame.networks.Network;
@@ -52,6 +53,8 @@ public class ExportGEXFPanel extends DeactivatablePanel {
     // listeners
     private final Set<ExportListener> exportListeners =
             new CopyOnWriteArraySet<ExportListener>();
+    private JLabel lblNetworkType_1;
+    private JSeparator separator;
 
 
     /**
@@ -73,43 +76,10 @@ public class ExportGEXFPanel extends DeactivatablePanel {
                 exportStaticNetwork();
             }
         });
-        btnExport.setBounds(6, 95, 202, 30);
+        btnExport.setBounds(37, 97, 258, 30);
         add(btnExport);
 
-        JPanel panel = new JPanel();
-        panel.setLayout(null);
-        panel.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-        panel.setBounds(6, 6, 202, 81);
-        add(panel);
-
-        JLabel lblNetworkType = new JLabel("Network type:");
-        lblNetworkType.setBounds(6, 6, 127, 16);
-        panel.add(lblNetworkType);
-
-        rdbtnDynamic = new JRadioButton("Dynamic");
-        rdbtnDynamic.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                updateVisibility();
-            }
-        });
-        rdbtnDynamic.setBounds(6, 27, 141, 23);
-        panel.add(rdbtnDynamic);
-
-        rdbtnStatic = new JRadioButton("Static");
-        rdbtnStatic.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                updateVisibility();
-            }
-        });
-        rdbtnStatic.setBounds(6, 52, 141, 23);
-        panel.add(rdbtnStatic);
-
         ButtonGroup buttonGroup = new ButtonGroup();
-        buttonGroup.add(rdbtnStatic);
-        buttonGroup.add(rdbtnDynamic);
-        rdbtnDynamic.setSelected(true);
 
         btnStartRecording = new JButton("Start recording");
         btnStartRecording.setIcon(new ImageIcon(getClass().getResource("/record.png")));
@@ -119,7 +89,7 @@ public class ExportGEXFPanel extends DeactivatablePanel {
                 startRecording();
             }
         });
-        btnStartRecording.setBounds(6, 95, 202, 30);
+        btnStartRecording.setBounds(37, 95, 258, 30);
         btnStartRecording.setToolTipText("If no explicit output file is selected, "
                 + "a default file will be generated in folder: "
                 + GEXFWriter.DEFAULT_EXPORT_DIR);
@@ -133,7 +103,7 @@ public class ExportGEXFPanel extends DeactivatablePanel {
                 stopRecording();
             }
         });
-        btnStopRecording.setBounds(6, 125, 202, 30);
+        btnStopRecording.setBounds(37, 127, 258, 30);
         add(btnStopRecording);
 
         btnChooseExportFile = new JButton("Choose export file");
@@ -144,8 +114,42 @@ public class ExportGEXFPanel extends DeactivatablePanel {
                 chooseExportFile();
             }
         });
-        btnChooseExportFile.setBounds(6, 155, 202, 30);
+        btnChooseExportFile.setBounds(37, 157, 258, 30);
         add(btnChooseExportFile);
+
+        lblNetworkType_1 = new JLabel("Network type");
+        lblNetworkType_1.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
+        lblNetworkType_1.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+        lblNetworkType_1.setBounds(13, 0, 238, 16);
+        add(lblNetworkType_1);
+
+        separator = new JSeparator(SwingConstants.HORIZONTAL);
+        separator.setForeground(Color.LIGHT_GRAY);
+        separator.setBounds(0, 85, 312, 10);
+        add(separator);
+
+                rdbtnStatic = new JRadioButton("Static");
+                rdbtnStatic.setBounds(35, 50, 141, 23);
+                add(rdbtnStatic);
+                rdbtnStatic.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        updateVisibility();
+                    }
+                });
+                buttonGroup.add(rdbtnStatic);
+
+                        rdbtnDynamic = new JRadioButton("Dynamic");
+                        rdbtnDynamic.setSelected(true);
+                        rdbtnDynamic.setBounds(35, 25, 141, 23);
+                        add(rdbtnDynamic);
+                        rdbtnDynamic.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                updateVisibility();
+                            }
+                        });
+                        buttonGroup.add(rdbtnDynamic);
 
         updateVisibility();
     }

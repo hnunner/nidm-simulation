@@ -45,7 +45,7 @@ public abstract class ExportCSVPanel extends DeactivatablePanel {
                 exportStaticNetwork();
             }
         });
-        btnExport.setBounds(6, 6, 205, 30);
+        btnExport.setBounds(37, 0, 258, 30);
         add(btnExport);
     }
 
