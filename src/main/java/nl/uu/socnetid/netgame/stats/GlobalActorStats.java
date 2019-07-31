@@ -9,10 +9,14 @@ public class GlobalActorStats {
     private final int nS;
     private final int nI;
     private final int nR;
-    private final int nRiskAverse;
-    private final int nRiskNeutral;
-    private final int nRiskSeeking;
-    private final double avRisk;
+    private final int nRSigmaAverse;
+    private final int nRSigmaNeutral;
+    private final int nRSigmaSeeking;
+    private final double avRSigma;
+    private final int nRPiAverse;
+    private final int nRPiNeutral;
+    private final int nRPiSeeking;
+    private final double avRPi;
 
     /**
      * Constructor.
@@ -25,25 +29,38 @@ public class GlobalActorStats {
      *          the amount of infected
      * @param nR
      *          the amount of recovered
-     * @param nRiskAverse
-     *          the amount of risk averse
-     * @param nRiskNeutral
-     *          the amount of risk neutral
-     * @param nRiskSeeking
-     *          the amount of risk seeking
-     * @param avRisk
-     *          the average risk factor
+     * @param nRSigmaAverse
+     *          the amount of risk averse (disease severity)
+     * @param nRSigmaNeutral
+     *          the amount of risk neutral (disease severity)
+     * @param nRSigmaSeeking
+     *          the amount of risk seeking (disease severity)
+     * @param avRSigma
+     *          the average risk factor (disease severity)
+     * @param nRPiAverse
+     *          the amount of risk averse (probability of infection)
+     * @param nRPiNeutral
+     *          the amount of risk neutral (probability of infection)
+     * @param nRPiSeeking
+     *          the amount of risk seeking (probability of infection)
+     * @param avRPi
+     *          the average risk factor (probability of infection)
      */
-    public GlobalActorStats(int n, int nS, int nI, int nR, int nRiskAverse, int nRiskNeutral, int nRiskSeeking,
-            double avRisk) {
+    public GlobalActorStats(int n, int nS, int nI, int nR,
+            int nRSigmaAverse, int nRSigmaNeutral, int nRSigmaSeeking, double avRSigma,
+            int nRPiAverse, int nRPiNeutral, int nRPiSeeking, double avRPi) {
         this.n = n;
         this.nS = nS;
         this.nI = nI;
         this.nR = nR;
-        this.nRiskAverse = nRiskAverse;
-        this.nRiskNeutral = nRiskNeutral;
-        this.nRiskSeeking = nRiskSeeking;
-        this.avRisk = avRisk;
+        this.nRSigmaAverse = nRSigmaAverse;
+        this.nRSigmaNeutral = nRSigmaNeutral;
+        this.nRSigmaSeeking = nRSigmaSeeking;
+        this.avRSigma= avRSigma;
+        this.nRPiAverse = nRPiAverse;
+        this.nRPiNeutral = nRPiNeutral;
+        this.nRPiSeeking = nRPiSeeking;
+        this.avRPi = avRPi;
     }
 
     /**
@@ -75,31 +92,59 @@ public class GlobalActorStats {
     }
 
     /**
-     * @return the nRiskAverse
+     * @return the nRSigmaAverse
      */
-    public int getnRiskAverse() {
-        return nRiskAverse;
+    public int getnRSigmaAverse() {
+        return nRSigmaAverse;
     }
 
     /**
-     * @return the nRiskNeutral
+     * @return the nRSigmaNeutral
      */
-    public int getnRiskNeutral() {
-        return nRiskNeutral;
+    public int getnRSigmaNeutral() {
+        return nRSigmaNeutral;
     }
 
     /**
-     * @return the nRiskSeeking
+     * @return the nRSigmaSeeking
      */
-    public int getnRiskSeeking() {
-        return nRiskSeeking;
+    public int getnRSigmaSeeking() {
+        return nRSigmaSeeking;
     }
 
     /**
-     * @return the avRisk
+     * @return the avRSigma
      */
-    public double getAvRisk() {
-        return avRisk;
+    public double getAvRSigma() {
+        return avRSigma;
+    }
+
+    /**
+     * @return the nRPiAverse
+     */
+    public int getnRPiAverse() {
+        return nRPiAverse;
+    }
+
+    /**
+     * @return the nRPiNeutral
+     */
+    public int getnRPiNeutral() {
+        return nRPiNeutral;
+    }
+
+    /**
+     * @return the nRPiSeeking
+     */
+    public int getnRPiSeeking() {
+        return nRPiSeeking;
+    }
+
+    /**
+     * @return the avRPi
+     */
+    public double getAvRPi() {
+        return avRPi;
     }
 
 }

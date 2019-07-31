@@ -51,8 +51,8 @@ public class DisplayableNetwork extends Network {
      * double)
      */
     @Override
-    public Actor addActor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double riskFactor) {
-        Actor actor = super.addActor(utilityFunction, diseaseSpecs, riskFactor);
+    public Actor addActor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi) {
+        Actor actor = super.addActor(utilityFunction, diseaseSpecs, rSigma, rPi, phi);
 
         // sprite
         Sprite sprite = this.spriteManager.addSprite(actor.getId());

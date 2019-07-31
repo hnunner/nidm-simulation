@@ -43,10 +43,14 @@ public class StatsFrame extends JFrame {
     private JLabel lblGlobalSusceptibles;
     private JLabel lblGlobalInfected;
     private JLabel lblGlobalRecovered;
-    private JLabel lblGlobalRiskAverse;
-    private JLabel lblGlobalRiskNeutrals;
-    private JLabel lblGlobalRiskSeeking;
-    private JLabel lblGlobalAvRisk;
+    private JLabel lblGlobalRSigmaAverse;
+    private JLabel lblGlobalRSigmaNeutrals;
+    private JLabel lblGlobalRSigmaSeeking;
+    private JLabel lblGlobalAvRSigma;
+    private JLabel lblGlobalRPiAverse;
+    private JLabel lblGlobalRPiNeutrals;
+    private JLabel lblGlobalRPiSeeking;
+    private JLabel lblGlobalAvRPi;
     // network
     private JLabel lblGlobalStable;
     private JLabel lblGlobalConnections;
@@ -580,10 +584,10 @@ public class StatsFrame extends JFrame {
         lblGlobalRecovered.setBounds(130, 255, 56, 16);
         panel_1.add(lblGlobalRecovered);
 
-        lblGlobalRiskAverse = new JLabel(NA_STRING);
-        lblGlobalRiskAverse.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblGlobalRiskAverse.setBounds(130, 270, 56, 16);
-        panel_1.add(lblGlobalRiskAverse);
+        lblGlobalRSigmaAverse = new JLabel(NA_STRING);
+        lblGlobalRSigmaAverse.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblGlobalRSigmaAverse.setBounds(130, 270, 56, 16);
+        panel_1.add(lblGlobalRSigmaAverse);
 
         JLabel lblAverageRiskFactor = new JLabel("∅ Risk factor");
         lblAverageRiskFactor.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
@@ -600,20 +604,20 @@ public class StatsFrame extends JFrame {
         lblRiskNeutral.setBounds(20, 285, 89, 16);
         panel_1.add(lblRiskNeutral);
 
-        lblGlobalRiskNeutrals = new JLabel(NA_STRING);
-        lblGlobalRiskNeutrals.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblGlobalRiskNeutrals.setBounds(130, 285, 56, 16);
-        panel_1.add(lblGlobalRiskNeutrals);
+        lblGlobalRSigmaNeutrals = new JLabel(NA_STRING);
+        lblGlobalRSigmaNeutrals.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblGlobalRSigmaNeutrals.setBounds(130, 285, 56, 16);
+        panel_1.add(lblGlobalRSigmaNeutrals);
 
-        lblGlobalRiskSeeking = new JLabel(NA_STRING);
-        lblGlobalRiskSeeking.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblGlobalRiskSeeking.setBounds(130, 300, 56, 16);
-        panel_1.add(lblGlobalRiskSeeking);
+        lblGlobalRSigmaSeeking = new JLabel(NA_STRING);
+        lblGlobalRSigmaSeeking.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblGlobalRSigmaSeeking.setBounds(130, 300, 56, 16);
+        panel_1.add(lblGlobalRSigmaSeeking);
 
-        lblGlobalAvRisk = new JLabel(NA_STRING);
-        lblGlobalAvRisk.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblGlobalAvRisk.setBounds(130, 315, 56, 16);
-        panel_1.add(lblGlobalAvRisk);
+        lblGlobalAvRSigma = new JLabel(NA_STRING);
+        lblGlobalAvRSigma.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblGlobalAvRSigma.setBounds(130, 315, 56, 16);
+        panel_1.add(lblGlobalAvRSigma);
 
         JLabel label_7 = new JLabel(":");
         label_7.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
@@ -640,109 +644,109 @@ public class StatsFrame extends JFrame {
         label_46.setBounds(117, 255, 10, 16);
         panel_1.add(label_46);
 
-        JLabel lblr = new JLabel("(r):");
+        JLabel lblr = new JLabel("(r  ):");
         lblr.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblr.setBounds(108, 315, 24, 16);
+        lblr.setBounds(102, 315, 24, 16);
         panel_1.add(lblr);
 
-        JLabel lblr_1 = new JLabel("(r>1):");
+        JLabel lblr_1 = new JLabel("(r  >1):");
         lblr_1.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblr_1.setBounds(95, 270, 33, 16);
+        lblr_1.setBounds(89, 270, 33, 16);
         panel_1.add(lblr_1);
 
-        JLabel lblr_2 = new JLabel("(r=1):");
+        JLabel lblr_2 = new JLabel("(r  =1):");
         lblr_2.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblr_2.setBounds(95, 285, 35, 16);
+        lblr_2.setBounds(89, 285, 35, 16);
         panel_1.add(lblr_2);
 
-        JLabel lblr_3 = new JLabel("(r<1):");
+        JLabel lblr_3 = new JLabel("(r  <1):");
         lblr_3.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblr_3.setBounds(95, 300, 35, 16);
+        lblr_3.setBounds(89, 300, 35, 16);
         panel_1.add(lblr_3);
 
         JLabel lblNetwork = new JLabel("Network");
         lblNetwork.setFont(new Font("Lucida Grande", Font.BOLD, 9));
-        lblNetwork.setBounds(10, 330, 97, 16);
+        lblNetwork.setBounds(10, 390, 97, 16);
         panel_1.add(lblNetwork);
 
         JLabel lblStable = new JLabel("Stable");
         lblStable.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblStable.setBounds(20, 345, 83, 16);
+        lblStable.setBounds(20, 405, 83, 16);
         panel_1.add(lblStable);
 
         JLabel label_29 = new JLabel(":");
         label_29.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_29.setBounds(117, 345, 10, 16);
+        label_29.setBounds(117, 405, 10, 16);
         panel_1.add(label_29);
 
         lblGlobalStable = new JLabel(NA_STRING);
         lblGlobalStable.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblGlobalStable.setBounds(130, 345, 56, 16);
+        lblGlobalStable.setBounds(130, 405, 56, 16);
         panel_1.add(lblGlobalStable);
 
         JLabel lblConnections = new JLabel("Connections");
         lblConnections.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblConnections.setBounds(20, 360, 67, 16);
+        lblConnections.setBounds(20, 420, 67, 16);
         panel_1.add(lblConnections);
 
         JLabel label_34 = new JLabel(":");
         label_34.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_34.setBounds(117, 360, 10, 16);
+        label_34.setBounds(117, 420, 10, 16);
         panel_1.add(label_34);
 
         lblGlobalConnections = new JLabel(NA_STRING);
         lblGlobalConnections.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblGlobalConnections.setBounds(130, 360, 56, 16);
+        lblGlobalConnections.setBounds(130, 420, 56, 16);
         panel_1.add(lblGlobalConnections);
 
         JLabel lblDegree = new JLabel("∅ Degree");
         lblDegree.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblDegree.setBounds(20, 375, 67, 16);
+        lblDegree.setBounds(20, 435, 67, 16);
         panel_1.add(lblDegree);
 
         JLabel label_47 = new JLabel(":");
         label_47.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_47.setBounds(117, 375, 10, 16);
+        label_47.setBounds(117, 435, 10, 16);
         panel_1.add(label_47);
 
         lblGlobalAvDegree = new JLabel(NA_STRING);
         lblGlobalAvDegree.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblGlobalAvDegree.setBounds(130, 375, 56, 16);
+        lblGlobalAvDegree.setBounds(130, 435, 56, 16);
         panel_1.add(lblGlobalAvDegree);
 
         JLabel lblDiameter = new JLabel("Diameter");
         lblDiameter.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblDiameter.setBounds(20, 390, 83, 16);
+        lblDiameter.setBounds(20, 450, 83, 16);
         lblDiameter.setVisible(false);
         panel_1.add(lblDiameter);
 
         JLabel label_50 = new JLabel(":");
         label_50.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_50.setBounds(117, 390, 10, 16);
+        label_50.setBounds(117, 450, 10, 16);
         label_50.setVisible(false);
         panel_1.add(label_50);
 
         lblGlobalDiameter = new JLabel(NA_STRING);
         lblGlobalDiameter.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblGlobalDiameter.setBounds(130, 390, 56, 16);
+        lblGlobalDiameter.setBounds(130, 450, 56, 16);
         lblGlobalDiameter.setVisible(false);
         panel_1.add(lblGlobalDiameter);
 
         JLabel lblDistance = new JLabel("∅ Distance");
         lblDistance.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblDistance.setBounds(20, 405, 83, 16);
+        lblDistance.setBounds(20, 465, 83, 16);
         lblDistance.setVisible(false);
         panel_1.add(lblDistance);
 
         lblGlobalAvDistance = new JLabel(NA_STRING);
         lblGlobalAvDistance.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblGlobalAvDistance.setBounds(130, 405, 56, 16);
+        lblGlobalAvDistance.setBounds(130, 465, 56, 16);
         lblGlobalAvDistance.setVisible(false);
         panel_1.add(lblGlobalAvDistance);
 
         JLabel label_27 = new JLabel(":");
         label_27.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_27.setBounds(117, 405, 10, 16);
+        label_27.setBounds(117, 465, 10, 16);
         label_27.setVisible(false);
         panel_1.add(label_27);
 
@@ -753,53 +757,153 @@ public class StatsFrame extends JFrame {
 
         JLabel lblSimulation = new JLabel("Simulation");
         lblSimulation.setFont(new Font("Lucida Grande", Font.BOLD, 9));
-        lblSimulation.setBounds(10, 420, 97, 16);
+        lblSimulation.setBounds(10, 480, 97, 16);
         panel_1.add(lblSimulation);
 
         JLabel lblRound = new JLabel("Running");
         lblRound.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblRound.setBounds(20, 435, 83, 16);
+        lblRound.setBounds(20, 495, 83, 16);
         panel_1.add(lblRound);
 
         JLabel label_38 = new JLabel(":");
         label_38.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_38.setBounds(117, 435, 10, 16);
+        label_38.setBounds(117, 495, 10, 16);
         panel_1.add(label_38);
 
         lblGlobalSimulationRunning = new JLabel("no");
         lblGlobalSimulationRunning.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblGlobalSimulationRunning.setBounds(130, 435, 56, 16);
+        lblGlobalSimulationRunning.setBounds(130, 495, 56, 16);
         panel_1.add(lblGlobalSimulationRunning);
 
         JLabel label_32 = new JLabel("Round");
         label_32.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_32.setBounds(20, 450, 83, 16);
+        label_32.setBounds(20, 510, 83, 16);
         panel_1.add(label_32);
 
         JLabel label_37 = new JLabel(":");
         label_37.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_37.setBounds(117, 450, 10, 16);
+        label_37.setBounds(117, 510, 10, 16);
         panel_1.add(label_37);
 
         lblGlobalSimulationRound = new JLabel("---");
         lblGlobalSimulationRound.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblGlobalSimulationRound.setBounds(130, 450, 56, 16);
+        lblGlobalSimulationRound.setBounds(130, 510, 56, 16);
         panel_1.add(lblGlobalSimulationRound);
 
         lblGlobalSimulationRecording = new JLabel("no");
         lblGlobalSimulationRecording.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblGlobalSimulationRecording.setBounds(130, 465, 56, 16);
+        lblGlobalSimulationRecording.setBounds(130, 525, 56, 16);
         panel_1.add(lblGlobalSimulationRecording);
 
         JLabel label_44 = new JLabel(":");
         label_44.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_44.setBounds(117, 465, 10, 16);
+        label_44.setBounds(117, 525, 10, 16);
         panel_1.add(label_44);
 
         JLabel lblRecording = new JLabel("Recording");
         lblRecording.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblRecording.setBounds(20, 465, 83, 16);
+        lblRecording.setBounds(20, 525, 83, 16);
         panel_1.add(lblRecording);
+
+        JLabel label_55 = new JLabel("Risk averse");
+        label_55.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_55.setBounds(20, 330, 83, 16);
+        panel_1.add(label_55);
+
+        lblGlobalRPiAverse = new JLabel("---");
+        lblGlobalRPiAverse.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblGlobalRPiAverse.setBounds(130, 330, 56, 16);
+        panel_1.add(lblGlobalRPiAverse);
+
+        JLabel label_68 = new JLabel("∅ Risk factor");
+        label_68.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_68.setBounds(20, 375, 97, 16);
+        panel_1.add(label_68);
+
+        JLabel label_74 = new JLabel("Risk seeking");
+        label_74.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_74.setBounds(20, 360, 99, 16);
+        panel_1.add(label_74);
+
+        JLabel label_75 = new JLabel("Risk neutral");
+        label_75.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        label_75.setBounds(20, 345, 89, 16);
+        panel_1.add(label_75);
+
+        lblGlobalRPiNeutrals = new JLabel("---");
+        lblGlobalRPiNeutrals.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblGlobalRPiNeutrals.setBounds(130, 345, 56, 16);
+        panel_1.add(lblGlobalRPiNeutrals);
+
+        lblGlobalRPiSeeking = new JLabel("---");
+        lblGlobalRPiSeeking.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblGlobalRPiSeeking.setBounds(130, 360, 56, 16);
+        panel_1.add(lblGlobalRPiSeeking);
+
+        lblGlobalAvRPi = new JLabel("---");
+        lblGlobalAvRPi.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblGlobalAvRPi.setBounds(130, 375, 56, 16);
+        panel_1.add(lblGlobalAvRPi);
+
+        JLabel lblr_8 = new JLabel("(r  ):");
+        lblr_8.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblr_8.setBounds(102, 375, 24, 16);
+        panel_1.add(lblr_8);
+
+        JLabel lblr_7 = new JLabel("(r  >1):");
+        lblr_7.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblr_7.setBounds(89, 330, 33, 16);
+        panel_1.add(lblr_7);
+
+        JLabel lblr_6 = new JLabel("(r  =1):");
+        lblr_6.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblr_6.setBounds(89, 345, 35, 16);
+        panel_1.add(lblr_6);
+
+        JLabel lblr_9 = new JLabel("(r  <1):");
+        lblr_9.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblr_9.setBounds(89, 360, 35, 16);
+        panel_1.add(lblr_9);
+
+        JLabel label_80 = new JLabel("π");
+        label_80.setFont(new Font("Lucida Grande", Font.PLAIN, 7));
+        label_80.setBounds(95, 336, 10, 11);
+        panel_1.add(label_80);
+
+        JLabel label_81 = new JLabel("π");
+        label_81.setFont(new Font("Lucida Grande", Font.PLAIN, 7));
+        label_81.setBounds(95, 351, 10, 11);
+        panel_1.add(label_81);
+
+        JLabel label_82 = new JLabel("π");
+        label_82.setFont(new Font("Lucida Grande", Font.PLAIN, 7));
+        label_82.setBounds(95, 366, 10, 11);
+        panel_1.add(label_82);
+
+        JLabel label_83 = new JLabel("π");
+        label_83.setFont(new Font("Lucida Grande", Font.PLAIN, 7));
+        label_83.setBounds(108, 381, 10, 11);
+        panel_1.add(label_83);
+
+        JLabel label_84 = new JLabel("σ");
+        label_84.setFont(new Font("Lucida Grande", Font.PLAIN, 7));
+        label_84.setBounds(95, 276, 10, 11);
+        panel_1.add(label_84);
+
+        JLabel label_85 = new JLabel("σ");
+        label_85.setFont(new Font("Lucida Grande", Font.PLAIN, 7));
+        label_85.setBounds(95, 291, 10, 11);
+        panel_1.add(label_85);
+
+        JLabel label_86 = new JLabel("σ");
+        label_86.setFont(new Font("Lucida Grande", Font.PLAIN, 7));
+        label_86.setBounds(95, 306, 10, 11);
+        panel_1.add(label_86);
+
+        JLabel label_79 = new JLabel("σ");
+        label_79.setFont(new Font("Lucida Grande", Font.PLAIN, 7));
+        label_79.setBounds(108, 321, 10, 11);
+        panel_1.add(label_79);
 
         JLabel label_42 = new JLabel("Connections");
         label_42.setFont(new Font("Lucida Grande", Font.BOLD, 9));
@@ -975,10 +1079,14 @@ public class StatsFrame extends JFrame {
         this.lblGlobalSusceptibles.setText(Integer.toString(globalActorStats.getnS()));
         this.lblGlobalInfected.setText(Integer.toString(globalActorStats.getnI()));
         this.lblGlobalRecovered.setText(Integer.toString(globalActorStats.getnR()));
-        this.lblGlobalRiskAverse.setText(Integer.toString(globalActorStats.getnRiskAverse()));
-        this.lblGlobalRiskNeutrals.setText(Integer.toString(globalActorStats.getnRiskNeutral()));
-        this.lblGlobalRiskSeeking.setText(Integer.toString(globalActorStats.getnRiskSeeking()));
-        this.lblGlobalAvRisk.setText(Double.toString(globalActorStats.getAvRisk()));
+        this.lblGlobalRSigmaAverse.setText(Integer.toString(globalActorStats.getnRSigmaAverse()));
+        this.lblGlobalRSigmaNeutrals.setText(Integer.toString(globalActorStats.getnRSigmaNeutral()));
+        this.lblGlobalRSigmaSeeking.setText(Integer.toString(globalActorStats.getnRSigmaSeeking()));
+        this.lblGlobalAvRSigma.setText(Double.toString(globalActorStats.getAvRSigma()));
+        this.lblGlobalRPiAverse.setText(Integer.toString(globalActorStats.getnRPiAverse()));
+        this.lblGlobalRPiNeutrals.setText(Integer.toString(globalActorStats.getnRPiNeutral()));
+        this.lblGlobalRPiSeeking.setText(Integer.toString(globalActorStats.getnRPiSeeking()));
+        this.lblGlobalAvRPi.setText(Double.toString(globalActorStats.getAvRPi()));
     }
 
     /**

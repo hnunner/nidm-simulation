@@ -83,25 +83,6 @@ public class Network extends SingleGraph {
      * @param rPi
      *          the factor describing how the actor perceives the risk of an infection:
      *          <1: risk seeking, =1: risk neutral; >1: risk averse
-     * @return the newly added actor.
-     */
-    public Actor addActor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi) {
-        return this.addActor(utilityFunction, diseaseSpecs, rSigma, rPi, STANDARD_PHI);
-    }
-
-    /**
-     * Creates and adds an actor to the network.
-     *
-     * @param utilityFunction
-     *          the actor's utility function
-     * @param diseaseSpecs
-     *          the disease specs
-     * @param rSigma
-     *          the factor describing how the actor perceives severity of diseases:
-     *          <1: risk seeking, =1: risk neutral; >1: risk averse
-     * @param rPi
-     *          the factor describing how the actor perceives the risk of an infection:
-     *          <1: risk seeking, =1: risk neutral; >1: risk averse
      * @param phi
      *          the share of peers an actor evaluates per round
      * @return the newly added actor.

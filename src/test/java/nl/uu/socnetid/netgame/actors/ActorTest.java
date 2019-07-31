@@ -307,7 +307,6 @@ public class ActorTest {
         assertEquals(5, network.getN());
         double evalShare = (network.getN()-1)*phi;
         int exp = (int) Math.round(evalShare);
-        System.out.println(evalShare + "-->" + exp);
         assertEquals(exp, actor.getNumberOfNetworkDecisions());
 
         // f(10) = 2
@@ -317,7 +316,6 @@ public class ActorTest {
         assertEquals(10, network.getN());
         evalShare = (network.getN()-1)*phi;
         exp = (int) Math.round(evalShare);
-        System.out.println(evalShare + "-->" + exp);
         assertEquals((int) Math.round((network.getN()-1)*phi), actor.getNumberOfNetworkDecisions());
 
         // f(15) = 3
@@ -327,7 +325,6 @@ public class ActorTest {
         assertEquals(15, network.getN());
         evalShare = (network.getN()-1)*phi;
         exp = (int) Math.round(evalShare);
-        System.out.println(evalShare + "-->" + exp);
         assertEquals((int) Math.round((network.getN()-1)*phi), actor.getNumberOfNetworkDecisions());
 
         // f(20) = 4
@@ -337,7 +334,6 @@ public class ActorTest {
         assertEquals(20, network.getN());
         evalShare = (network.getN()-1)*phi;
         exp = (int) Math.round(evalShare);
-        System.out.println(evalShare + "-->" + exp);
         assertEquals((int) Math.round((network.getN()-1)*phi), actor.getNumberOfNetworkDecisions());
 
         // f(25) = 5
@@ -347,7 +343,6 @@ public class ActorTest {
         assertEquals(25, network.getN());
         evalShare = (network.getN()-1)*phi;
         exp = (int) Math.round(evalShare);
-        System.out.println(evalShare + "-->" + exp);
         assertEquals((int) Math.round((network.getN()-1)*phi), actor.getNumberOfNetworkDecisions());
 
         // f(50) = 10
@@ -357,7 +352,6 @@ public class ActorTest {
         assertEquals(50, network.getN());
         evalShare = (network.getN()-1)*phi;
         exp = (int) Math.round(evalShare);
-        System.out.println(evalShare + "-->" + exp);
         assertEquals((int) Math.round((network.getN()-1)*phi), actor.getNumberOfNetworkDecisions());
 
         // f(75) = 15
@@ -367,7 +361,6 @@ public class ActorTest {
         assertEquals(75, network.getN());
         evalShare = (network.getN()-1)*phi;
         exp = (int) Math.round(evalShare);
-        System.out.println(evalShare + "-->" + exp);
         assertEquals((int) Math.round((network.getN()-1)*phi), actor.getNumberOfNetworkDecisions());
 
         // f(100) = 20
@@ -377,7 +370,6 @@ public class ActorTest {
         assertEquals(100, network.getN());
         evalShare = (network.getN()-1)*phi;
         exp = (int) Math.round(evalShare);
-        System.out.println(evalShare + "-->" + exp);
         assertEquals((int) Math.round((network.getN()-1)*phi), actor.getNumberOfNetworkDecisions());
 
     }
