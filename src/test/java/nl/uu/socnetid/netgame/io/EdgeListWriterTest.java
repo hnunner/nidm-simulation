@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import nl.uu.socnetid.netgame.actors.Actor;
+import nl.uu.socnetid.netgame.agents.Agent;
 import nl.uu.socnetid.netgame.diseases.DiseaseSpecs;
 import nl.uu.socnetid.netgame.diseases.types.DiseaseType;
 import nl.uu.socnetid.netgame.io.network.EdgeListWriter;
@@ -62,15 +62,15 @@ public class EdgeListWriterTest {
         UtilityFunction uf = new Cumulative();
         DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
 
-        Actor actor1 = this.network.addActor(uf, ds);
-        Actor actor2 = this.network.addActor(uf, ds);
-        Actor actor3 = this.network.addActor(uf, ds);
-        Actor actor4 = this.network.addActor(uf, ds);
+        Agent agent1 = this.network.addAgent(uf, ds);
+        Agent agent2 = this.network.addAgent(uf, ds);
+        Agent agent3 = this.network.addAgent(uf, ds);
+        Agent agent4 = this.network.addAgent(uf, ds);
 
-        actor1.addConnection(actor2);
-        actor1.addConnection(actor3);
-        actor1.addConnection(actor4);
-        actor3.addConnection(actor4);
+        agent1.addConnection(agent2);
+        agent1.addConnection(agent3);
+        agent1.addConnection(agent4);
+        agent3.addConnection(agent4);
     }
 
     /**

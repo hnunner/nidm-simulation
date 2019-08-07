@@ -11,7 +11,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import nl.uu.socnetid.netgame.actors.Actor;
+import nl.uu.socnetid.netgame.agents.Agent;
 import nl.uu.socnetid.netgame.diseases.DiseaseSpecs;
 import nl.uu.socnetid.netgame.diseases.types.DiseaseType;
 import nl.uu.socnetid.netgame.utilities.Cumulative;
@@ -28,13 +28,13 @@ public class NetworkTest {
     // network
     private Network network;
 
-    // actors
-    private Actor actor1;
-    private Actor actor2;
-    private Actor actor3;
-    private Actor actor4;
-    private Actor actor5;
-    private Actor actor6;
+    // agents
+    private Agent agent1;
+    private Agent agent2;
+    private Agent agent3;
+    private Agent agent4;
+    private Agent agent5;
+    private Agent agent6;
 
     // utility
     private UtilityFunction uf;
@@ -57,40 +57,40 @@ public class NetworkTest {
         this.uf = new Cumulative();
         this.ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
 
-        this.actor1 = this.network.addActor(uf, ds);
-        this.actor2 = this.network.addActor(uf, ds);
-        this.actor3 = this.network.addActor(uf, ds);
-        this.actor4 = this.network.addActor(uf, ds);
-        this.actor5 = this.network.addActor(uf, ds);
-        this.actor6 = this.network.addActor(uf, ds);
+        this.agent1 = this.network.addAgent(uf, ds);
+        this.agent2 = this.network.addAgent(uf, ds);
+        this.agent3 = this.network.addAgent(uf, ds);
+        this.agent4 = this.network.addAgent(uf, ds);
+        this.agent5 = this.network.addAgent(uf, ds);
+        this.agent6 = this.network.addAgent(uf, ds);
 
-        this.actor1.addConnection(this.actor2);
-        this.actor1.addConnection(this.actor3);
-        this.actor1.addConnection(this.actor4);
-        this.actor3.addConnection(this.actor4);
+        this.agent1.addConnection(this.agent2);
+        this.agent1.addConnection(this.agent3);
+        this.agent1.addConnection(this.agent4);
+        this.agent3.addConnection(this.agent4);
 
-        this.actor6.infect(ds);
+        this.agent6.infect(ds);
 	}
 
 
     /**
-     * Test of adding an actor.
+     * Test of adding an agent.
      */
     @Test
-    public void testAddActor() {
-        assertEquals(6, this.network.getActors().size());
-        this.network.addActor(this.uf, this.ds);
-        assertEquals(7, this.network.getActors().size());
+    public void testAddAgent() {
+        assertEquals(6, this.network.getAgents().size());
+        this.network.addAgent(this.uf, this.ds);
+        assertEquals(7, this.network.getAgents().size());
     }
 
     /**
-     * Test of removing an actor.
+     * Test of removing an agent.
      */
     @Test
-    public void testRemoveActor() {
-        assertEquals(6, this.network.getActors().size());
-        this.network.removeActor();
-        assertEquals(5, this.network.getActors().size());
+    public void testRemoveAgent() {
+        assertEquals(6, this.network.getAgents().size());
+        this.network.removeAgent();
+        assertEquals(5, this.network.getAgents().size());
     }
 
     /**
@@ -104,7 +104,7 @@ public class NetworkTest {
     }
 
     /**
-     * Test of creating a full network with connection between all actors.
+     * Test of creating a full network with connection between all agents.
      */
     @Test
     public void testCreateFullNetwork() {
@@ -114,30 +114,30 @@ public class NetworkTest {
     }
 
     /**
-     * Test of getting all actors.
+     * Test of getting all agents.
      */
     @Test
-    public void testGetActors() {
-        assertEquals(6, this.network.getActors().size());
+    public void testGetAgents() {
+        assertEquals(6, this.network.getAgents().size());
     }
 
     /**
-     * Test of infecting a random actor.
+     * Test of infecting a random agent.
      */
     @Test
-    public void testInfectRandomActor() {
-        Iterator<Actor> actorIt = this.network.getActorIterator();
-        while (actorIt.hasNext()) {
-            Actor actor = actorIt.next();
-            assertTrue(!actor.isInfected() || actor.equals(this.actor6));
+    public void testInfectRandomAgent() {
+        Iterator<Agent> agentIt = this.network.getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            assertTrue(!agent.isInfected() || agent.equals(this.agent6));
         }
-        this.network.infectRandomActor(this.ds);
+        this.network.infectRandomAgent(this.ds);
 
-        actorIt = this.network.getActorIterator();
+        agentIt = this.network.getAgentIterator();
         int infected = 0;
-        while (actorIt.hasNext()) {
-            Actor actor = actorIt.next();
-            if (actor.isInfected()) {
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            if (agent.isInfected()) {
                 infected++;
             }
         }
@@ -145,17 +145,17 @@ public class NetworkTest {
     }
 
     /**
-     * Test of resetting all actors.
+     * Test of resetting all agents.
      */
     @Test
-    public void testResetActors() {
+    public void testResetAgents() {
         assertEquals(4, this.network.getEdgeCount());
-        assertTrue(this.actor1.isSusceptible());
-        assertTrue(this.actor6.isInfected());
-        this.network.resetActors();
+        assertTrue(this.agent1.isSusceptible());
+        assertTrue(this.agent6.isInfected());
+        this.network.resetAgents();
         assertEquals(0, this.network.getEdgeCount());
-        assertTrue(this.actor1.isSusceptible());
-        assertTrue(this.actor6.isSusceptible());
+        assertTrue(this.agent1.isSusceptible());
+        assertTrue(this.agent6.isSusceptible());
     }
 
     /**
@@ -163,41 +163,41 @@ public class NetworkTest {
      */
     @Test
     public void testToggleInfection() {
-        assertTrue(this.actor5.isSusceptible());
-        this.network.toggleInfection(this.actor5.getId(), this.ds);
-        assertTrue(this.actor5.isInfected());
-        this.network.toggleInfection(this.actor5.getId(), this.ds);
-        assertTrue(this.actor5.isRecovered());
-        this.network.toggleInfection(this.actor5.getId(), this.ds);
-        assertTrue(this.actor5.isSusceptible());
+        assertTrue(this.agent5.isSusceptible());
+        this.network.toggleInfection(this.agent5.getId(), this.ds);
+        assertTrue(this.agent5.isInfected());
+        this.network.toggleInfection(this.agent5.getId(), this.ds);
+        assertTrue(this.agent5.isRecovered());
+        this.network.toggleInfection(this.agent5.getId(), this.ds);
+        assertTrue(this.agent5.isSusceptible());
     }
 
 	/**
      * Test of removing a connection.
      */
     @Test
-    public void testGetRandomActor() {
-        List<Actor> actors = new LinkedList<Actor>(this.network.getActors());
+    public void testGetRandomAgent() {
+        List<Agent> agents = new LinkedList<Agent>(this.network.getAgents());
         for (int i = 0; i < 100; i++) {
-            Actor randomActor = this.network.getRandomActor();
-            assertNotNull(randomActor);
-            actors.remove(randomActor);
+            Agent randomAgent = this.network.getRandomAgent();
+            assertNotNull(randomAgent);
+            agents.remove(randomAgent);
         }
-        assertTrue(actors.isEmpty());
+        assertTrue(agents.isEmpty());
     }
 
     /**
      * Test of removing a connection.
      */
     @Test
-    public void testGetRandomNotInfectedActor() {
-        List<Actor> actors = new LinkedList<Actor>(this.network.getActors());
+    public void testGetRandomNotInfectedAgent() {
+        List<Agent> agents = new LinkedList<Agent>(this.network.getAgents());
         for (int i = 0; i < 100; i++) {
-            Actor randomActor = this.network.getRandomNotInfectedActor();
-            actors.remove(randomActor);
+            Agent randomAgent = this.network.getRandomNotInfectedAgent();
+            agents.remove(randomAgent);
         }
-        assertTrue(actors.size() == 1);
-        assertEquals(this.actor6, actors.get(0));
+        assertTrue(agents.size() == 1);
+        assertEquals(this.agent6, agents.get(0));
     }
 
     /**
@@ -207,93 +207,93 @@ public class NetworkTest {
     public void testGetType() {
 
         Network empty = new Network("Empty Network");
-        Actor actor1 = empty.addActor(uf, ds);
-        Actor actor2 = empty.addActor(uf, ds);
-        Actor actor3 = empty.addActor(uf, ds);
-        Actor actor4 = empty.addActor(uf, ds);
-        Actor actor5 = empty.addActor(uf, ds);
-        Actor actor6 = empty.addActor(uf, ds);
+        Agent agent1 = empty.addAgent(uf, ds);
+        Agent agent2 = empty.addAgent(uf, ds);
+        Agent agent3 = empty.addAgent(uf, ds);
+        Agent agent4 = empty.addAgent(uf, ds);
+        Agent agent5 = empty.addAgent(uf, ds);
+        Agent agent6 = empty.addAgent(uf, ds);
         assertEquals(NetworkTypes.EMPTY, empty.getType());
 
         Network full = new Network("Full Network");
-        actor1 = full.addActor(uf, ds);
-        actor2 = full.addActor(uf, ds);
-        actor3 = full.addActor(uf, ds);
-        actor4 = full.addActor(uf, ds);
-        actor5 = full.addActor(uf, ds);
-        actor6 = full.addActor(uf, ds);
-        actor1.addConnection(this.actor2);
-        actor1.addConnection(this.actor3);
-        actor1.addConnection(this.actor4);
-        actor1.addConnection(this.actor5);
-        actor1.addConnection(this.actor6);
-        actor2.addConnection(this.actor3);
-        actor2.addConnection(this.actor4);
-        actor2.addConnection(this.actor5);
-        actor2.addConnection(this.actor6);
-        actor3.addConnection(this.actor4);
-        actor3.addConnection(this.actor5);
-        actor3.addConnection(this.actor6);
-        actor4.addConnection(this.actor5);
-        actor4.addConnection(this.actor6);
-        actor5.addConnection(this.actor6);
+        agent1 = full.addAgent(uf, ds);
+        agent2 = full.addAgent(uf, ds);
+        agent3 = full.addAgent(uf, ds);
+        agent4 = full.addAgent(uf, ds);
+        agent5 = full.addAgent(uf, ds);
+        agent6 = full.addAgent(uf, ds);
+        agent1.addConnection(this.agent2);
+        agent1.addConnection(this.agent3);
+        agent1.addConnection(this.agent4);
+        agent1.addConnection(this.agent5);
+        agent1.addConnection(this.agent6);
+        agent2.addConnection(this.agent3);
+        agent2.addConnection(this.agent4);
+        agent2.addConnection(this.agent5);
+        agent2.addConnection(this.agent6);
+        agent3.addConnection(this.agent4);
+        agent3.addConnection(this.agent5);
+        agent3.addConnection(this.agent6);
+        agent4.addConnection(this.agent5);
+        agent4.addConnection(this.agent6);
+        agent5.addConnection(this.agent6);
         assertEquals(NetworkTypes.FULL, full.getType());
 
         Network ring = new Network("Ring Network");
-        actor1 = ring.addActor(uf, ds);
-        actor2 = ring.addActor(uf, ds);
-        actor3 = ring.addActor(uf, ds);
-        actor4 = ring.addActor(uf, ds);
-        actor5 = ring.addActor(uf, ds);
-        actor6 = ring.addActor(uf, ds);
-        actor1.addConnection(this.actor2);
-        actor2.addConnection(this.actor3);
-        actor3.addConnection(this.actor4);
-        actor4.addConnection(this.actor5);
-        actor5.addConnection(this.actor6);
-        actor6.addConnection(this.actor1);
+        agent1 = ring.addAgent(uf, ds);
+        agent2 = ring.addAgent(uf, ds);
+        agent3 = ring.addAgent(uf, ds);
+        agent4 = ring.addAgent(uf, ds);
+        agent5 = ring.addAgent(uf, ds);
+        agent6 = ring.addAgent(uf, ds);
+        agent1.addConnection(this.agent2);
+        agent2.addConnection(this.agent3);
+        agent3.addConnection(this.agent4);
+        agent4.addConnection(this.agent5);
+        agent5.addConnection(this.agent6);
+        agent6.addConnection(this.agent1);
         assertEquals(NetworkTypes.RING, ring.getType());
 
         Network twoRings = new Network("Two Rings Network");
-        actor1 = twoRings.addActor(uf, ds);
-        actor2 = twoRings.addActor(uf, ds);
-        actor3 = twoRings.addActor(uf, ds);
-        actor4 = twoRings.addActor(uf, ds);
-        actor5 = twoRings.addActor(uf, ds);
-        actor6 = twoRings.addActor(uf, ds);
-        actor1.addConnection(this.actor2);
-        actor2.addConnection(this.actor3);
-        actor3.addConnection(this.actor1);
-        actor4.addConnection(this.actor5);
-        actor5.addConnection(this.actor6);
-        actor6.addConnection(this.actor4);
+        agent1 = twoRings.addAgent(uf, ds);
+        agent2 = twoRings.addAgent(uf, ds);
+        agent3 = twoRings.addAgent(uf, ds);
+        agent4 = twoRings.addAgent(uf, ds);
+        agent5 = twoRings.addAgent(uf, ds);
+        agent6 = twoRings.addAgent(uf, ds);
+        agent1.addConnection(this.agent2);
+        agent2.addConnection(this.agent3);
+        agent3.addConnection(this.agent1);
+        agent4.addConnection(this.agent5);
+        agent5.addConnection(this.agent6);
+        agent6.addConnection(this.agent4);
         assertEquals(NetworkTypes.UNDEFINED, twoRings.getType());
 
         Network star = new Network("Star Network");
-        actor1 = star.addActor(uf, ds);
-        actor2 = star.addActor(uf, ds);
-        actor3 = star.addActor(uf, ds);
-        actor4 = star.addActor(uf, ds);
-        actor5 = star.addActor(uf, ds);
-        actor6 = star.addActor(uf, ds);
-        actor1.addConnection(this.actor2);
-        actor1.addConnection(this.actor3);
-        actor1.addConnection(this.actor4);
-        actor1.addConnection(this.actor5);
-        actor1.addConnection(this.actor6);
+        agent1 = star.addAgent(uf, ds);
+        agent2 = star.addAgent(uf, ds);
+        agent3 = star.addAgent(uf, ds);
+        agent4 = star.addAgent(uf, ds);
+        agent5 = star.addAgent(uf, ds);
+        agent6 = star.addAgent(uf, ds);
+        agent1.addConnection(this.agent2);
+        agent1.addConnection(this.agent3);
+        agent1.addConnection(this.agent4);
+        agent1.addConnection(this.agent5);
+        agent1.addConnection(this.agent6);
         assertEquals(NetworkTypes.STAR, star.getType());
 
         Network incompleteStar = new Network("Incomplete Star Network");
-        actor1 = incompleteStar.addActor(uf, ds);
-        actor2 = incompleteStar.addActor(uf, ds);
-        actor3 = incompleteStar.addActor(uf, ds);
-        actor4 = incompleteStar.addActor(uf, ds);
-        actor5 = incompleteStar.addActor(uf, ds);
-        actor6 = incompleteStar.addActor(uf, ds);
-        actor1.addConnection(this.actor2);
-        actor1.addConnection(this.actor3);
-        actor1.addConnection(this.actor4);
-        actor1.addConnection(this.actor5);
+        agent1 = incompleteStar.addAgent(uf, ds);
+        agent2 = incompleteStar.addAgent(uf, ds);
+        agent3 = incompleteStar.addAgent(uf, ds);
+        agent4 = incompleteStar.addAgent(uf, ds);
+        agent5 = incompleteStar.addAgent(uf, ds);
+        agent6 = incompleteStar.addAgent(uf, ds);
+        agent1.addConnection(this.agent2);
+        agent1.addConnection(this.agent3);
+        agent1.addConnection(this.agent4);
+        agent1.addConnection(this.agent5);
         assertEquals(NetworkTypes.UNDEFINED, incompleteStar.getType());
 
     }
@@ -307,56 +307,56 @@ public class NetworkTest {
 
         // f(5) = 2.28
         for (int i = 0; i < 5; i++) {
-            network.addActor(uf, ds);
+            network.addAgent(uf, ds);
         }
         assertEquals(5, network.getN());
         assertEquals(2.28, network.getAverageDegree(), 0.2);
 
         // f(10) = 3.58
         for (int i = 0; i < 5; i++) {
-            network.addActor(uf, ds);
+            network.addAgent(uf, ds);
         }
         assertEquals(10, network.getN());
         assertEquals(3.58, network.getAverageDegree(), 0.2);
 
         // f(15) = 4.62
         for (int i = 0; i < 5; i++) {
-            network.addActor(uf, ds);
+            network.addAgent(uf, ds);
         }
         assertEquals(15, network.getN());
         assertEquals(4.62, network.getAverageDegree(), 0.2);
 
         // f(20) = 5.49
         for (int i = 0; i < 5; i++) {
-            network.addActor(uf, ds);
+            network.addAgent(uf, ds);
         }
         assertEquals(20, network.getN());
         assertEquals(5.49, network.getAverageDegree(), 0.2);
 
         // f(25) = 6.25
         for (int i = 0; i < 5; i++) {
-            network.addActor(uf, ds);
+            network.addAgent(uf, ds);
         }
         assertEquals(25, network.getN());
         assertEquals(6.25, network.getAverageDegree(), 0.2);
 
         // f(50) = 9.93
         for (int i = 0; i < 25; i++) {
-            network.addActor(uf, ds);
+            network.addAgent(uf, ds);
         }
         assertEquals(50, network.getN());
         assertEquals(9.93, network.getAverageDegree(), 0.2);
 
         // f(75) = 12.8
         for (int i = 0; i < 25; i++) {
-            network.addActor(uf, ds);
+            network.addAgent(uf, ds);
         }
         assertEquals(75, network.getN());
         assertEquals(12.8, network.getAverageDegree(), 0.2);
 
         // f(100) = 15.31
         for (int i = 0; i < 25; i++) {
-            network.addActor(uf, ds);
+            network.addAgent(uf, ds);
         }
         assertEquals(100, network.getN());
         assertEquals(15.31, network.getAverageDegree(), 0.2);

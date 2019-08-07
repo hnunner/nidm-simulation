@@ -8,9 +8,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.MatteBorder;
 
-import nl.uu.socnetid.netgame.actors.Actor;
+import nl.uu.socnetid.netgame.agents.Agent;
 import nl.uu.socnetid.netgame.diseases.DiseaseSpecs;
-import nl.uu.socnetid.netgame.stats.GlobalActorStats;
+import nl.uu.socnetid.netgame.stats.GlobalAgentStats;
 import nl.uu.socnetid.netgame.stats.GlobalNetworkStats;
 import nl.uu.socnetid.netgame.stats.GlobalSimulationStats;
 import nl.uu.socnetid.netgame.stats.StatsComputer;
@@ -1075,7 +1075,7 @@ public class StatsFrame extends JFrame {
      * @param globalAgentStats
      *          the global agent stats
      */
-    public void refreshGlobalAgentStats(GlobalActorStats globalAgentStats) {
+    public void refreshGlobalAgentStats(GlobalAgentStats globalAgentStats) {
         this.lblGlobalAgentsOverall.setText(Integer.toString(globalAgentStats.getN()));
         this.lblGlobalSusceptibles.setText(Integer.toString(globalAgentStats.getnS()));
         this.lblGlobalInfected.setText(Integer.toString(globalAgentStats.getnI()));
@@ -1143,7 +1143,7 @@ public class StatsFrame extends JFrame {
      * @param agent
      *          the agent to refresh the stats for
      */
-    public void refreshLocalAgentStats(Actor agent) {
+    public void refreshLocalAgentStats(Agent agent) {
 
         // identifier
         this.lblAgentID.setText(agent.getId());

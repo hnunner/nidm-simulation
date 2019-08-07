@@ -24,26 +24,26 @@ public class CumulativePanel extends DeactivatablePanel {
 
         JLabel lblBenefitdelta = new JLabel("Direct benefit");
         lblBenefitdelta.setBounds(10, 5, 100, 16);
-        lblBenefitdelta.setToolTipText("The benefit an actor gets from direct connections.");
+        lblBenefitdelta.setToolTipText("The benefit an agent gets from direct connections.");
         add(lblBenefitdelta);
 
         txtDirect = new JTextField();
         txtDirect.setBounds(151, 3, 60, 20);
         txtDirect.setHorizontalAlignment(SwingConstants.RIGHT);
-        txtDirect.setToolTipText("The benefit a actor gets from direct connections.");
+        txtDirect.setToolTipText("The benefit a agent gets from direct connections.");
         txtDirect.setText("1");
         add(txtDirect);
         txtDirect.setColumns(10);
 
         JLabel lblCostsc = new JLabel("Indirect benefit");
         lblCostsc.setBounds(10, 28, 109, 16);
-        lblCostsc.setToolTipText("The benefit a actor gets from indirect connections. That is, connections at distance 2.");
+        lblCostsc.setToolTipText("The benefit a agent gets from indirect connections. That is, connections at distance 2.");
         add(lblCostsc);
 
         txtIndirect = new JTextField();
         txtIndirect.setBounds(151, 26, 60, 20);
         txtIndirect.setHorizontalAlignment(SwingConstants.RIGHT);
-        txtIndirect.setToolTipText("The benefit a actor gets from indirect connections. That is, connections at distance 2.");
+        txtIndirect.setToolTipText("The benefit a agent gets from indirect connections. That is, connections at distance 2.");
         txtIndirect.setText("0.5");
         add(txtIndirect);
         txtIndirect.setColumns(10);

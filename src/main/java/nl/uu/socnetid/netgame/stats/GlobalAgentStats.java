@@ -3,7 +3,7 @@ package nl.uu.socnetid.netgame.stats;
 /**
  * @author Hendrik Nunner
  */
-public class GlobalActorStats {
+public class GlobalAgentStats {
 
     private final int n;
     private final int nS;
@@ -22,7 +22,7 @@ public class GlobalActorStats {
      * Constructor.
      *
      * @param n
-     *          the overall amount of actors
+     *          the overall amount of agents
      * @param nS
      *          the amount of susceptibles
      * @param nI
@@ -46,7 +46,7 @@ public class GlobalActorStats {
      * @param avRPi
      *          the average risk factor (probability of infection)
      */
-    public GlobalActorStats(int n, int nS, int nI, int nR,
+    public GlobalAgentStats(int n, int nS, int nI, int nR,
             int nRSigmaAverse, int nRSigmaNeutral, int nRSigmaSeeking, double avRSigma,
             int nRPiAverse, int nRPiNeutral, int nRPiSeeking, double avRPi) {
         this.n = n;

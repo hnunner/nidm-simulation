@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import nl.uu.socnetid.netgame.actors.Actor;
+import nl.uu.socnetid.netgame.agents.Agent;
 import nl.uu.socnetid.netgame.networks.Network;
 
 /**
@@ -31,21 +31,21 @@ public class EdgeListWriter implements NetworkWriter {
         sb.append(SOURCE_COLUMN).append(VALUE_SEPERATOR).append(TARGET_COLUMN);
         sb.append(System.getProperty("line.separator"));
 
-        List<Actor> actors = new ArrayList<Actor>(network.getActors());
-        Collections.sort(actors);
+        List<Agent> agents = new ArrayList<Agent>(network.getAgents());
+        Collections.sort(agents);
 
-        // first row = all actors
-        Iterator<Actor> actorsIt = actors.iterator();
-        while (actorsIt.hasNext()) {
-            Actor currActor = actorsIt.next();
+        // first row = all agents
+        Iterator<Agent> agentsIt = agents.iterator();
+        while (agentsIt.hasNext()) {
+            Agent currAgent = agentsIt.next();
 
-            Collection<Actor> connections = currActor.getConnections();
-            Iterator<Actor> connectionsIt = actors.iterator();
+            Collection<Agent> connections = currAgent.getConnections();
+            Iterator<Agent> connectionsIt = agents.iterator();
             while (connectionsIt.hasNext()) {
-                Actor currConnection = connectionsIt.next();
+                Agent currConnection = connectionsIt.next();
 
                 if (connections.contains(currConnection)) {
-                    sb.append(currActor.getId()).append(VALUE_SEPERATOR).append(currConnection.getId());
+                    sb.append(currAgent.getId()).append(VALUE_SEPERATOR).append(currConnection.getId());
                     sb.append(System.getProperty("line.separator"));
                 }
             }

@@ -3,7 +3,7 @@ package nl.uu.socnetid.netgame.stats;
 /**
  * @author Hendrik Nunner
  */
-public class LocalActorConnectionsStats {
+public class LocalAgentConnectionsStats {
 
     private final int n;
     private final int nS;
@@ -30,7 +30,7 @@ public class LocalActorConnectionsStats {
      * @param mR
      *          the amount of recovered indirect connections
      */
-    public LocalActorConnectionsStats(int nS, int nI, int nR, int mS, int mI, int mR) {
+    public LocalAgentConnectionsStats(int nS, int nI, int nR, int mS, int mI, int mR) {
         this.n = nS + nI + nR;
         this.nS = nS;
         this.nI = nI;

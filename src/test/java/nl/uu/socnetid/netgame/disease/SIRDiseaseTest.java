@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import nl.uu.socnetid.netgame.actors.Actor;
+import nl.uu.socnetid.netgame.agents.Agent;
 import nl.uu.socnetid.netgame.diseases.DiseaseSpecs;
 import nl.uu.socnetid.netgame.diseases.types.DiseaseType;
 import nl.uu.socnetid.netgame.networks.Network;
@@ -15,7 +15,7 @@ import nl.uu.socnetid.netgame.utilities.UtilityFunction;
 
 
 /**
- * Test cases for the {@link Actor} class.
+ * Test cases for the {@link Agent} class.
  *
  * @author Hendrik Nunner
  */
@@ -24,8 +24,8 @@ public class SIRDiseaseTest {
     // network
     private Network network;
 
-    // actors
-    private Actor actor1;
+    // s
+    private Agent agent1;
 
     // disease related
     private static final int    tau   = 10;
@@ -40,11 +40,11 @@ public class SIRDiseaseTest {
      */
     @Before
     public void initNetwork() {
-        this.network = new Network("Actor Test");
+        this.network = new Network("Agent Test");
         UtilityFunction uf = new Cumulative();
         this.ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
-        this.actor1 = this.network.addActor(uf, this.ds);
-        this.actor1.infect(ds);
+        this.agent1 = this.network.addAgent(uf, this.ds);
+        this.agent1.infect(ds);
     }
 
 
@@ -53,10 +53,10 @@ public class SIRDiseaseTest {
 	 */
 	@Test
 	public void testEvolve() {
-	    assertTrue(this.actor1.isInfected());
-	    assertEquals(10, this.actor1.getDisease().getTimeUntilCured());
-	    this.actor1.getDisease().evolve();
-        assertEquals(9, this.actor1.getDisease().getTimeUntilCured());
+	    assertTrue(this.agent1.isInfected());
+	    assertEquals(10, this.agent1.getDisease().getTimeUntilCured());
+	    this.agent1.getDisease().evolve();
+        assertEquals(9, this.agent1.getDisease().getTimeUntilCured());
 	}
 
 }

@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import nl.uu.socnetid.netgame.actors.Actor;
+import nl.uu.socnetid.netgame.agents.Agent;
 import nl.uu.socnetid.netgame.networks.Network;
 
 /**
@@ -22,28 +22,28 @@ public class AdjacencyMatrixWriter implements NetworkWriter {
 
         StringBuilder sb = new StringBuilder();
 
-        List<Actor> actors = new ArrayList<Actor>(network.getActors());
-        Collections.sort(actors);
+        List<Agent> agents = new ArrayList<Agent>(network.getAgents());
+        Collections.sort(agents);
 
-        // first row = all actors
-        Iterator<Actor> actorsIt = actors.iterator();
-        while (actorsIt.hasNext()) {
-            Actor currActor = actorsIt.next();
-            sb.append(",").append(PLAYER_PREFIX).append(currActor.getId());
+        // first row = all agents
+        Iterator<Agent> agentsIt = agents.iterator();
+        while (agentsIt.hasNext()) {
+            Agent currAgent = agentsIt.next();
+            sb.append(",").append(PLAYER_PREFIX).append(currAgent.getId());
         }
         sb.append(System.getProperty("line.separator"));
 
-        // succeding rows = all connections of corresponding actor
-        actorsIt = actors.iterator();
-        while (actorsIt.hasNext()) {
-            Actor currActor = actorsIt.next();
-            sb.append(PLAYER_PREFIX).append(currActor.getId());
+        // succeding rows = all connections of corresponding agent
+        agentsIt = agents.iterator();
+        while (agentsIt.hasNext()) {
+            Agent currAgent = agentsIt.next();
+            sb.append(PLAYER_PREFIX).append(currAgent.getId());
 
-            Collection<Actor> connections = currActor.getConnections();
+            Collection<Agent> connections = currAgent.getConnections();
 
-            Iterator<Actor> connectionsIt = actors.iterator();
+            Iterator<Agent> connectionsIt = agents.iterator();
             while (connectionsIt.hasNext()) {
-                Actor currConnection = connectionsIt.next();
+                Agent currConnection = connectionsIt.next();
                 if (connections.contains(currConnection)) {
                     sb.append(VALUE_SEPERATOR).append(CONNECTION);
                 } else {

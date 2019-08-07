@@ -1,9 +1,9 @@
-package nl.uu.socnetid.netgame.actors;
+package nl.uu.socnetid.netgame.agents;
 
 /**
  * @author Hendrik Nunner
  */
-public enum ActorAttributes {
+public enum AgentAttributes {
 
     UTILITY_FUNCTION("utility.function"),
     DISEASE_SPECS("disease.specs"),
@@ -27,7 +27,7 @@ public enum ActorAttributes {
      * @param name
      *          the name of the enum
      */
-    ActorAttributes(String name) {
+    AgentAttributes(String name) {
         this.name = name;
     }
 

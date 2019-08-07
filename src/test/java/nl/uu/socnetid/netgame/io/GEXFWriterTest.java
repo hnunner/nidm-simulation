@@ -12,8 +12,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import nl.uu.socnetid.netgame.actors.Actor;
-import nl.uu.socnetid.netgame.actors.ActorAttributes;
+import nl.uu.socnetid.netgame.agents.Agent;
+import nl.uu.socnetid.netgame.agents.AgentAttributes;
 import nl.uu.socnetid.netgame.diseases.DiseaseSpecs;
 import nl.uu.socnetid.netgame.diseases.types.DiseaseType;
 import nl.uu.socnetid.netgame.io.network.GEXFWriter;
@@ -42,18 +42,18 @@ public class GEXFWriterTest {
     private static final int    tau   = 10;
     private DiseaseSpecs ds;
 
-    // actors
+    // agents
     private static final double r     = 1.2;
     private static final double phi   = 0.4;
-    private Actor actor1;
-    private Actor actor2;
-    private Actor actor3;
-    private Actor actor4;
-    private Actor actor5;
-    private Actor actor6;
-    private Actor actor7;
-    private Actor actor8;
-    private Actor actor9;
+    private Agent agent1;
+    private Agent agent2;
+    private Agent agent3;
+    private Agent agent4;
+    private Agent agent5;
+    private Agent agent6;
+    private Agent agent7;
+    private Agent agent8;
+    private Agent agent9;
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
@@ -69,30 +69,30 @@ public class GEXFWriterTest {
         this.uf = new IRTC(alpha, beta, c);
         this.ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
 
-        this.actor1 = this.network.addActor(uf, ds, r, r, phi);
-        this.actor2 = this.network.addActor(uf, ds, r, r, phi);
-        this.actor3 = this.network.addActor(uf, ds, r, r, phi);
-        this.actor4 = this.network.addActor(uf, ds, r, r, phi);
-        this.actor5 = this.network.addActor(uf, ds, r, r, phi);
-        this.actor6 = this.network.addActor(uf, ds, r, r, phi);
-        this.actor7 = this.network.addActor(uf, ds, r, r, phi);
-        this.actor8 = this.network.addActor(uf, ds, r, r, phi);
-        this.actor9 = this.network.addActor(uf, ds, r, r, phi);
+        this.agent1 = this.network.addAgent(uf, ds, r, r, phi);
+        this.agent2 = this.network.addAgent(uf, ds, r, r, phi);
+        this.agent3 = this.network.addAgent(uf, ds, r, r, phi);
+        this.agent4 = this.network.addAgent(uf, ds, r, r, phi);
+        this.agent5 = this.network.addAgent(uf, ds, r, r, phi);
+        this.agent6 = this.network.addAgent(uf, ds, r, r, phi);
+        this.agent7 = this.network.addAgent(uf, ds, r, r, phi);
+        this.agent8 = this.network.addAgent(uf, ds, r, r, phi);
+        this.agent9 = this.network.addAgent(uf, ds, r, r, phi);
 
         // connections
-        this.actor1.addConnection(this.actor2);
-        this.actor1.addConnection(this.actor3);
-        this.actor1.addConnection(this.actor4);
-        this.actor2.addConnection(this.actor6);
-        this.actor3.addConnection(this.actor5);
-        this.actor4.addConnection(this.actor5);
-        this.actor4.addConnection(this.actor6);
-        this.actor4.addConnection(this.actor7);
-        this.actor5.addConnection(this.actor7);
-        this.actor5.addConnection(this.actor8);
-        this.actor6.addConnection(this.actor7);
-        this.actor7.addConnection(this.actor8);
-        this.actor8.addConnection(this.actor9);
+        this.agent1.addConnection(this.agent2);
+        this.agent1.addConnection(this.agent3);
+        this.agent1.addConnection(this.agent4);
+        this.agent2.addConnection(this.agent6);
+        this.agent3.addConnection(this.agent5);
+        this.agent4.addConnection(this.agent5);
+        this.agent4.addConnection(this.agent6);
+        this.agent4.addConnection(this.agent7);
+        this.agent5.addConnection(this.agent7);
+        this.agent5.addConnection(this.agent8);
+        this.agent6.addConnection(this.agent7);
+        this.agent7.addConnection(this.agent8);
+        this.agent8.addConnection(this.agent9);
     }
 
     /**
@@ -119,15 +119,15 @@ public class GEXFWriterTest {
         assertEquals(this.network.getEdgeSet().size(), graph.getEdgeSet().size());
         assertEquals(this.network.getNodeSet().size(), graph.getNodeSet().size());
         for (int i = 0; i < 20; i++) {
-            Actor actor = this.network.getRandomActor();
-            Node expectedNode = this.network.getNode(actor.getId());
-            Node actualNode = graph.getNode(actor.getId());
+            Agent agent = this.network.getRandomAgent();
+            Node expectedNode = this.network.getNode(agent.getId());
+            Node actualNode = graph.getNode(agent.getId());
             assertEquals(expectedNode.getId(), actualNode.getId());
             assertEquals(expectedNode.getAttributeCount(), actualNode.getAttributeCount());
             String expectedDiseaseGroup = expectedNode.getAttribute(
-                    ActorAttributes.DISEASE_GROUP.toString()).toString();
+                    AgentAttributes.DISEASE_GROUP.toString()).toString();
             String actualDiseaseGroup = actualNode.getAttribute(
-                    ActorAttributes.DISEASE_GROUP.toString()).toString();
+                    AgentAttributes.DISEASE_GROUP.toString()).toString();
             assertEquals(expectedDiseaseGroup, actualDiseaseGroup);
             assertEquals(expectedNode.getDegree(), actualNode.getDegree());
         }
@@ -150,23 +150,23 @@ public class GEXFWriterTest {
         GEXFWriter gexfWriter = new GEXFWriter();
         gexfWriter.startRecording(dynamicNetwork, file);
 
-        Actor dynamicActor1 = dynamicNetwork.addActor(this.uf, this.ds);
-        Actor dynamicActor2 = dynamicNetwork.addActor(this.uf, this.ds);
-        Actor dynamicActor3 = dynamicNetwork.addActor(this.uf, this.ds);
-        Actor dynamicActor4 = dynamicNetwork.addActor(this.uf, this.ds);
+        Agent dynamicAgent1 = dynamicNetwork.addAgent(this.uf, this.ds);
+        Agent dynamicAgent2 = dynamicNetwork.addAgent(this.uf, this.ds);
+        Agent dynamicAgent3 = dynamicNetwork.addAgent(this.uf, this.ds);
+        Agent dynamicAgent4 = dynamicNetwork.addAgent(this.uf, this.ds);
 
-        dynamicActor1.addConnection(dynamicActor2);
-        dynamicActor1.addConnection(dynamicActor3);
-        dynamicActor1.addConnection(dynamicActor4);
-        dynamicActor3.addConnection(dynamicActor4);
+        dynamicAgent1.addConnection(dynamicAgent2);
+        dynamicAgent1.addConnection(dynamicAgent3);
+        dynamicAgent1.addConnection(dynamicAgent4);
+        dynamicAgent3.addConnection(dynamicAgent4);
 
-        dynamicActor1.infect(this.ds);
-        dynamicActor2.infect(this.ds);
-        dynamicActor3.infect(this.ds);
-        dynamicActor1.cure();
-        dynamicActor4.infect(this.ds);
-        dynamicActor2.cure();
-        dynamicActor1.makeSusceptible();
+        dynamicAgent1.infect(this.ds);
+        dynamicAgent2.infect(this.ds);
+        dynamicAgent3.infect(this.ds);
+        dynamicAgent1.cure();
+        dynamicAgent4.infect(this.ds);
+        dynamicAgent2.cure();
+        dynamicAgent1.makeSusceptible();
 
         gexfWriter.stopRecording();
 
@@ -180,14 +180,14 @@ public class GEXFWriterTest {
         assertEquals(dynamicNetwork.getEdgeSet().size(), graph.getEdgeSet().size());
         assertEquals(dynamicNetwork.getNodeSet().size(), graph.getNodeSet().size());
         for (int i = 0; i < 20; i++) {
-            Actor actor = dynamicNetwork.getRandomActor();
-            Node expectedNode = dynamicNetwork.getNode(actor.getId());
-            Node actualNode = graph.getNode(actor.getId());
+            Agent agent = dynamicNetwork.getRandomAgent();
+            Node expectedNode = dynamicNetwork.getNode(agent.getId());
+            Node actualNode = graph.getNode(agent.getId());
             assertEquals(expectedNode.getId(), actualNode.getId());
             String expectedDiseaseGroup = expectedNode.getAttribute(
-                    ActorAttributes.DISEASE_GROUP.toString()).toString();
+                    AgentAttributes.DISEASE_GROUP.toString()).toString();
             String actualDiseaseGroup = actualNode.getAttribute(
-                    ActorAttributes.DISEASE_GROUP.toString()).toString();
+                    AgentAttributes.DISEASE_GROUP.toString()).toString();
             assertEquals(expectedDiseaseGroup, actualDiseaseGroup);
             assertEquals(expectedNode.getDegree(), actualNode.getDegree());
         }

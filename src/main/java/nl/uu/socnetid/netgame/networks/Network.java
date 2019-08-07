@@ -14,8 +14,8 @@ import org.apache.log4j.Logger;
 import org.graphstream.algorithm.Toolkit;
 import org.graphstream.graph.implementations.SingleGraph;
 
-import nl.uu.socnetid.netgame.actors.Actor;
-import nl.uu.socnetid.netgame.actors.ActorFactory;
+import nl.uu.socnetid.netgame.agents.Agent;
+import nl.uu.socnetid.netgame.agents.AgentFactory;
 import nl.uu.socnetid.netgame.diseases.DiseaseSpecs;
 import nl.uu.socnetid.netgame.utilities.UtilityFunction;
 
@@ -27,10 +27,10 @@ public class Network extends SingleGraph {
     // logger
     private static final Logger logger = Logger.getLogger(Network.class);
 
-    // risk factor for risk neutral actors
+    // risk factor for risk neutral agents
     private static final double RISK_FACTOR_NEUTRAL = 1.0;
 
-    // standard share to evaluate per actor
+    // standard share to evaluate per agent
     private static final double STANDARD_PHI = 0.4;
 
     // listener
@@ -53,164 +53,164 @@ public class Network extends SingleGraph {
      */
     public Network(String id) {
         super(id);
-        this.setNodeFactory(new ActorFactory());
+        this.setNodeFactory(new AgentFactory());
     }
 
 
     /**
-     * Creates and adds an actor to the network.
+     * Creates and adds an agent to the network.
      *
      * @param utilityFunction
-     *          the actor's utility function
+     *          the agent's utility function
      * @param diseaseSpecs
      *          the disease specs
-     * @return the newly added actor.
+     * @return the newly added agent.
      */
-    public Actor addActor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs) {
-        return this.addActor(utilityFunction, diseaseSpecs, RISK_FACTOR_NEUTRAL, RISK_FACTOR_NEUTRAL, STANDARD_PHI);
+    public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs) {
+        return this.addAgent(utilityFunction, diseaseSpecs, RISK_FACTOR_NEUTRAL, RISK_FACTOR_NEUTRAL, STANDARD_PHI);
     }
 
     /**
-     * Creates and adds an actor to the network.
+     * Creates and adds an agent to the network.
      *
      * @param utilityFunction
-     *          the actor's utility function
+     *          the agent's utility function
      * @param diseaseSpecs
      *          the disease specs
      * @param rSigma
-     *          the factor describing how the actor perceives severity of diseases:
+     *          the factor describing how the agent perceives severity of diseases:
      *          <1: risk seeking, =1: risk neutral; >1: risk averse
      * @param rPi
-     *          the factor describing how the actor perceives the risk of an infection:
+     *          the factor describing how the agent perceives the risk of an infection:
      *          <1: risk seeking, =1: risk neutral; >1: risk averse
      * @param phi
-     *          the share of peers an actor evaluates per round
-     * @return the newly added actor.
+     *          the share of peers an agent evaluates per round
+     * @return the newly added agent.
      */
-    public Actor addActor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi) {
-        Actor actor = this.addNode(String.valueOf(this.getNodeCount() + 1));
-        actor.initActor(utilityFunction, diseaseSpecs, rSigma, rPi, phi);
-        notifyActorAdded(actor);
-        return actor;
+    public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi) {
+        Agent agent = this.addNode(String.valueOf(this.getNodeCount() + 1));
+        agent.initAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi);
+        notifyAgentAdded(agent);
+        return agent;
     }
 
 
     /**
-     * Removes a actor from the network.
+     * Removes a agent from the network.
      *
-     * @return the id of the removed actor
+     * @return the id of the removed agent
      */
-    public String removeActor() {
-        if (this.getActors().size() == 0) {
+    public String removeAgent() {
+        if (this.getAgents().size() == 0) {
             return null;
         }
-        String actorId = this.getLastActor().getId();
-        this.removeNode(String.valueOf(actorId));
-        notifyActorRemoved(actorId);
-        return actorId;
+        String agentId = this.getLastAgent().getId();
+        this.removeNode(String.valueOf(agentId));
+        notifyAgentRemoved(agentId);
+        return agentId;
     }
 
     /**
-     * Creates the full network based on the actors available.
+     * Creates the full network based on the agents available.
      */
     public void createFullNetwork() {
-        if (this.getActors().size() == 0) {
+        if (this.getAgents().size() == 0) {
             return;
         }
 
-        Iterator<Actor> actorsIt = this.getActors().iterator();
-        while (actorsIt.hasNext()) {
-            Actor actor = actorsIt.next();
-            actor.connectToAll();
+        Iterator<Agent> agentsIt = this.getAgents().iterator();
+        while (agentsIt.hasNext()) {
+            Agent agent = agentsIt.next();
+            agent.connectToAll();
         }
     }
 
     /**
-     * Gets the actor with the corresponding identifier.
+     * Gets the agent with the corresponding identifier.
      *
      * @param id
-     *          the identifier of the actor to get
-     * @return the actor with the corresponding identifier
+     *          the identifier of the agent to get
+     * @return the agent with the corresponding identifier
      */
-    public Actor getActor(String id) {
-        return (Actor) this.getNode(id);
+    public Agent getAgent(String id) {
+        return (Agent) this.getNode(id);
     }
 
     /**
-     * Gets a random actor.
+     * Gets a random agent.
      *
-     * @return a random actor
+     * @return a random agent
      */
-    public Actor getRandomActor() {
-        int randomIndex = ThreadLocalRandom.current().nextInt(0, getActors().size());
-        return (Actor) this.getNode(randomIndex);
+    public Agent getRandomAgent() {
+        int randomIndex = ThreadLocalRandom.current().nextInt(0, getAgents().size());
+        return (Agent) this.getNode(randomIndex);
     }
 
     /**
-     * Gets a random actor that is not infected.
+     * Gets a random agent that is not infected.
      *
-     * @return a random not infected actor
+     * @return a random not infected agent
      */
-    public Actor getRandomNotInfectedActor() {
-        List<Actor> tmpActors = new LinkedList<Actor>(this.getActors());
-        while (!tmpActors.isEmpty()) {
-            int randomIndex = ThreadLocalRandom.current().nextInt(0, tmpActors.size());
-            Actor actor = tmpActors.get(randomIndex);
-            if (!actor.isInfected()) {
-                return actor;
+    public Agent getRandomNotInfectedAgent() {
+        List<Agent> tmpAgents = new LinkedList<Agent>(this.getAgents());
+        while (!tmpAgents.isEmpty()) {
+            int randomIndex = ThreadLocalRandom.current().nextInt(0, tmpAgents.size());
+            Agent agent = tmpAgents.get(randomIndex);
+            if (!agent.isInfected()) {
+                return agent;
             }
-            tmpActors.remove(actor);
+            tmpAgents.remove(agent);
         }
         return null;
     }
 
     /**
-     * Gets a random susceptible actor.
+     * Gets a random susceptible agent.
      *
-     * @return a random susceptible actor
+     * @return a random susceptible agent
      */
-    public Actor getRandomSusceptibleActor() {
-        List<Actor> tmpActors = new LinkedList<Actor>(this.getActors());
-        while (!tmpActors.isEmpty()) {
-            int randomIndex = ThreadLocalRandom.current().nextInt(0, tmpActors.size());
-            Actor actor = tmpActors.get(randomIndex);
-            if (actor.isSusceptible()) {
-                return actor;
+    public Agent getRandomSusceptibleAgent() {
+        List<Agent> tmpAgents = new LinkedList<Agent>(this.getAgents());
+        while (!tmpAgents.isEmpty()) {
+            int randomIndex = ThreadLocalRandom.current().nextInt(0, tmpAgents.size());
+            Agent agent = tmpAgents.get(randomIndex);
+            if (agent.isSusceptible()) {
+                return agent;
             }
-            tmpActors.remove(actor);
+            tmpAgents.remove(agent);
         }
         return null;
     }
 
     /**
-     * Gets the actor with the highest index.
+     * Gets the agent with the highest index.
      *
-     * @return the actor with the highest index
+     * @return the agent with the highest index
      */
-    public Actor getLastActor() {
+    public Agent getLastAgent() {
         return this.getNode(this.getNodeSet().size() - 1);
     }
 
     /**
-     * Gets all actors within the network.
+     * Gets all agents within the network.
      *
-     * @return all actors within the network.
+     * @return all agents within the network.
      */
-    public Collection<Actor> getActors() {
+    public Collection<Agent> getAgents() {
         return this.getNodeSet();
     }
 
     /**
-     * Gets the number of actors in the network.
+     * Gets the number of agents in the network.
      *
-     * @return the number of actor in the network.
+     * @return the number of agent in the network.
      */
     public int getN() {
-        return this.getActors().size();
+        return this.getAgents().size();
     }
 
     /**
-     * The formula was fitted using the average degree per actor,
+     * The formula was fitted using the average degree per agent,
      * dependent on the network size.
      *
      * @return the average degree dependent on network size
@@ -220,18 +220,18 @@ public class Network extends SingleGraph {
     }
 
     /**
-     * Gets all susceptible actors within the network.
+     * Gets all susceptible agents within the network.
      *
-     * @return all susceptible actors within the network.
+     * @return all susceptible agents within the network.
      */
-    public Collection<Actor> getSusceptibles() {
-        List<Actor> susceptibles = new LinkedList<Actor>();
+    public Collection<Agent> getSusceptibles() {
+        List<Agent> susceptibles = new LinkedList<Agent>();
 
-        Iterator<Actor> actorIt = getActorIterator();
-        while (actorIt.hasNext()) {
-            Actor actor = actorIt.next();
-            if (actor.isSusceptible()) {
-                susceptibles.add(actor);
+        Iterator<Agent> agentIt = getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            if (agent.isSusceptible()) {
+                susceptibles.add(agent);
             }
         }
 
@@ -239,18 +239,18 @@ public class Network extends SingleGraph {
     }
 
     /**
-     * Gets all infected actors within the network.
+     * Gets all infected agents within the network.
      *
-     * @return all infected actors within the network.
+     * @return all infected agents within the network.
      */
-    public Collection<Actor> getInfected() {
-        List<Actor> infected = new LinkedList<Actor>();
+    public Collection<Agent> getInfected() {
+        List<Agent> infected = new LinkedList<Agent>();
 
-        Iterator<Actor> actorIt = getActorIterator();
-        while (actorIt.hasNext()) {
-            Actor actor = actorIt.next();
-            if (actor.isInfected()) {
-                infected.add(actor);
+        Iterator<Agent> agentIt = getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            if (agent.isInfected()) {
+                infected.add(agent);
             }
         }
 
@@ -258,18 +258,18 @@ public class Network extends SingleGraph {
     }
 
     /**
-     * Gets all recovered actors within the network.
+     * Gets all recovered agents within the network.
      *
-     * @return all recovered actors within the network.
+     * @return all recovered agents within the network.
      */
-    public Collection<Actor> getRecovered() {
-        List<Actor> recovered = new LinkedList<Actor>();
+    public Collection<Agent> getRecovered() {
+        List<Agent> recovered = new LinkedList<Agent>();
 
-        Iterator<Actor> actorIt = getActorIterator();
-        while (actorIt.hasNext()) {
-            Actor actor = actorIt.next();
-            if (actor.isRecovered()) {
-                recovered.add(actor);
+        Iterator<Agent> agentIt = getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            if (agent.isRecovered()) {
+                recovered.add(agent);
             }
         }
 
@@ -277,89 +277,89 @@ public class Network extends SingleGraph {
     }
 
     /**
-     * Gets an iterator over all actors in an undefined order.
+     * Gets an iterator over all agents in an undefined order.
      *
-     * @return an iterator over all actors in an undefined order
+     * @return an iterator over all agents in an undefined order
      */
-    public Iterator<Actor> getActorIterator() {
+    public Iterator<Agent> getAgentIterator() {
         return this.getNodeIterator();
     }
 
     /**
-     * Clears all connections between the actors.
+     * Clears all connections between the agents.
      */
     public void clearConnections() {
-        Iterator<Actor> actorsIt = this.getActors().iterator();
-        while (actorsIt.hasNext()) {
-            actorsIt.next().removeAllConnections();
+        Iterator<Agent> agentsIt = this.getAgents().iterator();
+        while (agentsIt.hasNext()) {
+            agentsIt.next().removeAllConnections();
         }
     }
 
     /**
-     * Removes all connections between actors and resets the actors to being susceptible.
+     * Removes all connections between agents and resets the agents to being susceptible.
      */
-    public void resetActors() {
+    public void resetAgents() {
         clearConnections();
-        Iterator<Actor> actorsIt = this.getActors().iterator();
-        while (actorsIt.hasNext()) {
-            Actor actor = actorsIt.next();
-            actor.makeSusceptible();
+        Iterator<Agent> agentsIt = this.getAgents().iterator();
+        while (agentsIt.hasNext()) {
+            Agent agent = agentsIt.next();
+            agent.makeSusceptible();
         }
     }
 
     /**
-     * Infects a random actor.
+     * Infects a random agent.
      *
      * @param diseaseSpecs
-     *          the characteristics of the disease to infect a actor with
-     * @return the infected actor, null if no actor was infected
+     *          the characteristics of the disease to infect a agent with
+     * @return the infected agent, null if no agent was infected
      */
-    public Actor infectRandomActor(DiseaseSpecs diseaseSpecs) {
-        if (this.getActors() == null || this.getActors().isEmpty()) {
-            logger.info("Unable to infect a random actor. No actor available.");
+    public Agent infectRandomAgent(DiseaseSpecs diseaseSpecs) {
+        if (this.getAgents() == null || this.getAgents().isEmpty()) {
+            logger.info("Unable to infect a random agent. No agent available.");
             return null;
         }
 
-        // actors performing action in random order
-        List<Actor> actors = new ArrayList<Actor>(this.getActors());
-        Collections.shuffle(actors);
-        Iterator<Actor> actorsIt = actors.iterator();
-        while (actorsIt.hasNext()) {
-            Actor actor = actorsIt.next();
-            if (actor.isSusceptible()) {
-                actor.forceInfect(diseaseSpecs);
-                return actor;
+        // agents performing action in random order
+        List<Agent> agents = new ArrayList<Agent>(this.getAgents());
+        Collections.shuffle(agents);
+        Iterator<Agent> agentsIt = agents.iterator();
+        while (agentsIt.hasNext()) {
+            Agent agent = agentsIt.next();
+            if (agent.isSusceptible()) {
+                agent.forceInfect(diseaseSpecs);
+                return agent;
             }
         }
-        logger.info("Unable to infect a random actor. No susceptible actor available.");
+        logger.info("Unable to infect a random agent. No susceptible agent available.");
         return null;
     }
 
     /**
-     * Toggles the infection of a specific actor.
+     * Toggles the infection of a specific agent.
      *
-     * @param actorId
-     *          the actor's id
+     * @param agentId
+     *          the agent's id
      * @param diseaseSpecs
-     *          the characteristics of the disease to infect the actor with
+     *          the characteristics of the disease to infect the agent with
      */
-    public void toggleInfection(String actorId, DiseaseSpecs diseaseSpecs) {
-        Iterator<Actor> actorsIt = this.getActorIterator();
-        while (actorsIt.hasNext()) {
-            Actor actor = actorsIt.next();
-            if (actor.getId() == actorId) {
+    public void toggleInfection(String agentId, DiseaseSpecs diseaseSpecs) {
+        Iterator<Agent> agentsIt = this.getAgentIterator();
+        while (agentsIt.hasNext()) {
+            Agent agent = agentsIt.next();
+            if (agent.getId() == agentId) {
 
-                switch (actor.getDiseaseGroup()) {
+                switch (agent.getDiseaseGroup()) {
                     case SUSCEPTIBLE:
-                        actor.forceInfect(diseaseSpecs);
+                        agent.forceInfect(diseaseSpecs);
                         break;
 
                     case INFECTED:
-                        actor.cure();
+                        agent.cure();
                         break;
 
                     case RECOVERED:
-                        actor.makeSusceptible();
+                        agent.makeSusceptible();
                         break;
 
                     default:
@@ -370,17 +370,17 @@ public class Network extends SingleGraph {
     }
 
     /**
-     * Checks whether the network is stable. That is, all actors are satisfied.
-     * An actor is satisfied if (s)he does not prefer to add a non-existing tie,
+     * Checks whether the network is stable. That is, all agents are satisfied.
+     * An agent is satisfied if (s)he does not prefer to add a non-existing tie,
      * or remove an existing tie.
      *
      * @return true if the network is stable, false otherwise
      */
     public boolean isStable() {
-        Iterator<Actor> actorIt = this.getActorIterator();
-        while (actorIt.hasNext()) {
-            Actor actor = actorIt.next();
-            if (!actor.isSatisfied()) {
+        Iterator<Agent> agentIt = this.getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            if (!agent.isSatisfied()) {
                 return false;
             }
         }
@@ -388,16 +388,16 @@ public class Network extends SingleGraph {
     }
 
     /**
-     * Checks whether the network has an active infection. That is, whether at least one actor
+     * Checks whether the network has an active infection. That is, whether at least one agent
      * is infected and therefore is infectious to others.
      *
      * @return true if the network has an active infection, false otherwise
      */
     public boolean hasActiveInfection() {
-        Iterator<Actor> actorIt = this.getActorIterator();
-        while (actorIt.hasNext()) {
-            Actor actor = actorIt.next();
-            if (actor.isInfected()) {
+        Iterator<Agent> agentIt = this.getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            if (agent.isInfected()) {
                 return true;
             }
         }
@@ -434,7 +434,7 @@ public class Network extends SingleGraph {
 
 
     /**
-     * Checks whether the network is empty. That is, whether there are no connections between any actors whatsoever.
+     * Checks whether the network is empty. That is, whether there are no connections between any agents whatsoever.
      *
      * @return true if the network is empty, false otherwise
      */
@@ -443,15 +443,15 @@ public class Network extends SingleGraph {
     }
 
     /**
-     * Checks whether the network is full. That is, whether every actor is connected to every other actor.
+     * Checks whether the network is full. That is, whether every agent is connected to every other agent.
      *
      * @return true if the network is full, false otherwise
      */
     private boolean isFull() {
-        Iterator<Actor> actorIt = getActorIterator();
-        // every actor needs to have connections to every other actor
-        while (actorIt.hasNext()) {
-            if (actorIt.next().getDegree() != (this.getActors().size() - 1)) {
+        Iterator<Agent> agentIt = getAgentIterator();
+        // every agent needs to have connections to every other agent
+        while (agentIt.hasNext()) {
+            if (agentIt.next().getDegree() != (this.getAgents().size() - 1)) {
                 return false;
             }
         }
@@ -459,8 +459,8 @@ public class Network extends SingleGraph {
     }
 
     /**
-     * Checks whether the network is a ring. That is, whether all actors are connected to two other actors,
-     * forming a ring that connects all actors within the network.
+     * Checks whether the network is a ring. That is, whether all agents are connected to two other agents,
+     * forming a ring that connects all agents within the network.
      *
      * @return true if the network is a ring, false otherwise
      */
@@ -468,20 +468,20 @@ public class Network extends SingleGraph {
 
         boolean ring = true;
 
-        Iterator<Actor> actorIt = getActorIterator();
-        Actor firstActor = null;
-        while (actorIt.hasNext()) {
-            Actor actor = actorIt.next();
+        Iterator<Agent> agentIt = getAgentIterator();
+        Agent firstAgent = null;
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
 
-            // ring - 1st condition: every actor needs to be connected to exactly two other actors
-            ring = ring && (actor.getDegree() == 2);
+            // ring - 1st condition: every agent needs to be connected to exactly two other agents
+            ring = ring && (agent.getDegree() == 2);
 
             // ring - 2nd condition: make sure it's a single ring,
             // meaning a node can reach every other node
-            if (firstActor == null) {
-                firstActor = actor;
+            if (firstAgent == null) {
+                firstAgent = agent;
             } else {
-                ring = ring && firstActor.hasConnectionTo(actor);
+                ring = ring && firstAgent.hasConnectionTo(agent);
             }
         }
 
@@ -499,20 +499,20 @@ public class Network extends SingleGraph {
         int centers = 0;
         int peripheries = 0;
 
-        Iterator<Actor> actorIt = getActorIterator();
-        while (actorIt.hasNext()) {
-            Actor actor = actorIt.next();
+        Iterator<Agent> agentIt = getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
 
-            if (actor.getDegree() == 1) {
+            if (agent.getDegree() == 1) {
                 peripheries++;
-            } else if (actor.getDegree() == (this.getActors().size() - 1)) {
+            } else if (agent.getDegree() == (this.getAgents().size() - 1)) {
                 centers++;
             } else {
                 return false;
             }
         }
 
-        return ((centers == 1) && (peripheries == this.getActors().size() - 1));
+        return ((centers == 1) && (peripheries == this.getAgents().size() - 1));
     }
 
 
@@ -537,28 +537,28 @@ public class Network extends SingleGraph {
     }
 
     /**
-     * Notifies the listeners of the added actor.
+     * Notifies the listeners of the added agent.
      *
-     * @param actor
-     *          the actor being added
+     * @param agent
+     *          the agent being added
      */
-    private final void notifyActorAdded(Actor actor) {
+    private final void notifyAgentAdded(Agent agent) {
         Iterator<NetworkListener> listenersIt = this.networkListeners.iterator();
         while (listenersIt.hasNext()) {
-            listenersIt.next().notifyActorAdded(actor);
+            listenersIt.next().notifyAgentAdded(agent);
         }
     }
 
     /**
-     * Notifies the actorRemovedListeners of the added actor.
+     * Notifies the agentRemovedListeners of the added agent.
      *
-     * @param actorId
-     *          the id of the actor being removed
+     * @param agentId
+     *          the id of the agent being removed
      */
-    private final void notifyActorRemoved(String actorId) {
+    private final void notifyAgentRemoved(String agentId) {
         Iterator<NetworkListener> listenersIt = this.networkListeners.iterator();
         while (listenersIt.hasNext()) {
-            listenersIt.next().notifyActorRemoved(actorId);
+            listenersIt.next().notifyAgentRemoved(agentId);
         }
     }
 
@@ -578,12 +578,12 @@ public class Network extends SingleGraph {
      */
     public double getAvDegree2() {
         double avDegree2 = 0;
-        Iterator<Actor> actorsIt = this.getActors().iterator();
-        while (actorsIt.hasNext()) {
-            Actor actor = actorsIt.next();
-            avDegree2 += actor.getSecondOrderDegree();
+        Iterator<Agent> agentsIt = this.getAgents().iterator();
+        while (agentsIt.hasNext()) {
+            Agent agent = agentsIt.next();
+            avDegree2 += agent.getSecondOrderDegree();
         }
-        return avDegree2/this.getActors().size();
+        return avDegree2/this.getAgents().size();
     }
 
     /**
@@ -593,12 +593,12 @@ public class Network extends SingleGraph {
      */
     public double getAvCloseness() {
         double avCloseness = 0;
-        Iterator<Actor> actorsIt = this.getActors().iterator();
-        while (actorsIt.hasNext()) {
-            Actor actor = actorsIt.next();
-            avCloseness += actor.getCloseness();
+        Iterator<Agent> agentsIt = this.getAgents().iterator();
+        while (agentsIt.hasNext()) {
+            Agent agent = agentsIt.next();
+            avCloseness += agent.getCloseness();
         }
-        return avCloseness/this.getActors().size();
+        return avCloseness/this.getAgents().size();
     }
 
     /**
@@ -620,154 +620,154 @@ public class Network extends SingleGraph {
     }
 
     /**
-     * Gets the average alpha of all actors in the network.
+     * Gets the average alpha of all agents in the network.
      *
-     * @return the average alpha of all actors in the network
+     * @return the average alpha of all agents in the network
      */
     public double getAvAlpha() {
         double avAlpha = 0;
-        Iterator<Actor> actorIt = this.getActorIterator();
-        while (actorIt.hasNext()) {
-            Actor actor = actorIt.next();
-            avAlpha += actor.getUtilityFunction().getAlpha();
+        Iterator<Agent> agentIt = this.getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            avAlpha += agent.getUtilityFunction().getAlpha();
         }
-        return (avAlpha / this.getActors().size());
+        return (avAlpha / this.getAgents().size());
     }
 
 
     /**
-     * Gets the average beta of all actors in the network.
+     * Gets the average beta of all agents in the network.
      *
-     * @return the average beta of all actors in the network
+     * @return the average beta of all agents in the network
      */
     public double getAvBeta() {
         double avBeta = 0;
-        Iterator<Actor> actorIt = this.getActorIterator();
-        while (actorIt.hasNext()) {
-            Actor actor = actorIt.next();
-            avBeta += actor.getUtilityFunction().getBeta();
+        Iterator<Agent> agentIt = this.getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            avBeta += agent.getUtilityFunction().getBeta();
         }
-        return (avBeta / this.getActors().size());
+        return (avBeta / this.getAgents().size());
     }
 
     /**
-     * Gets the network maintenance costs of all actors in the network.
+     * Gets the network maintenance costs of all agents in the network.
      *
-     * @return the network maintenance costs of all actors in the network
+     * @return the network maintenance costs of all agents in the network
      */
     public double getAvC() {
         double avC = 0;
-        Iterator<Actor> actorIt = this.getActorIterator();
-        while (actorIt.hasNext()) {
-            Actor actor = actorIt.next();
-            avC += actor.getUtilityFunction().getC();
+        Iterator<Agent> agentIt = this.getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            avC += agent.getUtilityFunction().getC();
         }
-        return (avC / this.getActors().size());
+        return (avC / this.getAgents().size());
     }
 
     /**
-     * Gets the average risk factor for disease severity of all actors in the network.
+     * Gets the average risk factor for disease severity of all agents in the network.
      *
-     * @return the average risk factor for disease severity of all actors in the network
+     * @return the average risk factor for disease severity of all agents in the network
      */
     public double getAvRSigma() {
         double avRSigma = 0;
-        Iterator<Actor> actorIt = this.getActorIterator();
-        while (actorIt.hasNext()) {
-            Actor actor = actorIt.next();
-            avRSigma += actor.getRSigma();
+        Iterator<Agent> agentIt = this.getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            avRSigma += agent.getRSigma();
         }
-        return (avRSigma / this.getActors().size());
+        return (avRSigma / this.getAgents().size());
     }
 
     /**
-     * Gets the average risk factor for probability of infections of all actors in the network.
+     * Gets the average risk factor for probability of infections of all agents in the network.
      *
-     * @return the average risk factor for probability of infections of all actors in the network
+     * @return the average risk factor for probability of infections of all agents in the network
      */
     public double getAvRPi() {
         double avRPi = 0;
-        Iterator<Actor> actorIt = this.getActorIterator();
-        while (actorIt.hasNext()) {
-            Actor actor = actorIt.next();
-            avRPi += actor.getRPi();
+        Iterator<Agent> agentIt = this.getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            avRPi += agent.getRPi();
         }
-        return (avRPi / this.getActors().size());
+        return (avRPi / this.getAgents().size());
     }
 
     /**
-     * Gets the average utility of all actors in the network.
+     * Gets the average utility of all agents in the network.
      *
-     * @return the average utility of all actors in the network
+     * @return the average utility of all agents in the network
      */
     public double getAvUtility() {
         double avUtility = 0;
-        Iterator<Actor> actorIt = this.getActorIterator();
-        while (actorIt.hasNext()) {
-            Actor actor = actorIt.next();
-            avUtility += actor.getUtility().getOverallUtility();
+        Iterator<Agent> agentIt = this.getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            avUtility += agent.getUtility().getOverallUtility();
         }
-        return (avUtility / this.getActors().size());
+        return (avUtility / this.getAgents().size());
     }
 
     /**
-     * Gets the average benefit at distance 1 of all actors in the network.
+     * Gets the average benefit at distance 1 of all agents in the network.
      *
-     * @return the average benefit at distance 1 of all actors in the network
+     * @return the average benefit at distance 1 of all agents in the network
      */
     public double getAvBenefitDistance1() {
         double avBenefit1 = 0;
-        Iterator<Actor> actorIt = this.getActorIterator();
-        while (actorIt.hasNext()) {
-            Actor actor = actorIt.next();
-            avBenefit1 += actor.getUtility().getBenefitDirectConnections();
+        Iterator<Agent> agentIt = this.getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            avBenefit1 += agent.getUtility().getBenefitDirectConnections();
         }
-        return (avBenefit1 / this.getActors().size());
+        return (avBenefit1 / this.getAgents().size());
     }
 
     /**
-     * Gets the average benefit at distance 2 of all actors in the network.
+     * Gets the average benefit at distance 2 of all agents in the network.
      *
-     * @return the average benefit at distance 2 of all actors in the network
+     * @return the average benefit at distance 2 of all agents in the network
      */
     public double getAvBenefitDistance2() {
         double avBenefit2 = 0;
-        Iterator<Actor> actorIt = this.getActorIterator();
-        while (actorIt.hasNext()) {
-            Actor actor = actorIt.next();
-            avBenefit2 += actor.getUtility().getBenefitIndirectConnections();
+        Iterator<Agent> agentIt = this.getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            avBenefit2 += agent.getUtility().getBenefitIndirectConnections();
         }
-        return (avBenefit2 / this.getActors().size());
+        return (avBenefit2 / this.getAgents().size());
     }
 
     /**
-     * Gets the average costs for actors at distance 1 of all actors in the network.
+     * Gets the average costs for agents at distance 1 of all agents in the network.
      *
-     * @return the average costs for actors at distance 1 of all actors in the network
+     * @return the average costs for agents at distance 1 of all agents in the network
      */
     public double getAvCostsDistance1() {
         double avCosts1 = 0;
-        Iterator<Actor> actorIt = this.getActorIterator();
-        while (actorIt.hasNext()) {
-            Actor actor = actorIt.next();
-            avCosts1 += actor.getUtility().getCostsDirectConnections();
+        Iterator<Agent> agentIt = this.getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            avCosts1 += agent.getUtility().getCostsDirectConnections();
         }
-        return (avCosts1 / this.getActors().size());
+        return (avCosts1 / this.getAgents().size());
     }
 
     /**
-     * Gets the average disease costs of all actors in the network.
+     * Gets the average disease costs of all agents in the network.
      *
-     * @return the average disease costs of all actors in the network
+     * @return the average disease costs of all agents in the network
      */
     public double getAvCostsDisease() {
         double avCostsDisease = 0;
-        Iterator<Actor> actorIt = this.getActorIterator();
-        while (actorIt.hasNext()) {
-            Actor actor = actorIt.next();
-            avCostsDisease += actor.getUtility().getEffectOfDisease();
+        Iterator<Agent> agentIt = this.getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            avCostsDisease += agent.getUtility().getEffectOfDisease();
         }
-        return (avCostsDisease / this.getActors().size());
+        return (avCostsDisease / this.getAgents().size());
     }
 
 

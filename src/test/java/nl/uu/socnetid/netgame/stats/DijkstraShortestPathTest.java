@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import org.junit.Before;
 import org.junit.Test;
 
-import nl.uu.socnetid.netgame.actors.Actor;
+import nl.uu.socnetid.netgame.agents.Agent;
 import nl.uu.socnetid.netgame.diseases.DiseaseSpecs;
 import nl.uu.socnetid.netgame.diseases.types.DiseaseType;
 import nl.uu.socnetid.netgame.networks.Network;
@@ -31,47 +31,47 @@ public class DijkstraShortestPathTest {
     private static final double gamma = 0.1;
     private static final double mu    = 2.5;
 
-    // actors
-    private Actor actor1;
-    private Actor actor2;
-    private Actor actor3;
-    private Actor actor4;
-    private Actor actor5;
-    private Actor actor6;
-    private Actor actor7;
-    private Actor actor8;
-    private Actor actor9;
+    // agents
+    private Agent agent1;
+    private Agent agent2;
+    private Agent agent3;
+    private Agent agent4;
+    private Agent agent5;
+    private Agent agent6;
+    private Agent agent7;
+    private Agent agent8;
+    private Agent agent9;
 
 
     /**
      * Performed before each test: Initialization of the network.
      */
     @Before
-    public void initActor() {
+    public void initAgent() {
         this.network = new Network("Dijkstra Shortest Path Test");
 
         UtilityFunction uf = new Cumulative();
         DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
 
-        this.actor1 = this.network.addActor(uf, ds);
-        this.actor2 = this.network.addActor(uf, ds);
-        this.actor3 = this.network.addActor(uf, ds);
-        this.actor4 = this.network.addActor(uf, ds);
-        this.actor5 = this.network.addActor(uf, ds);
-        this.actor6 = this.network.addActor(uf, ds);
-        this.actor7 = this.network.addActor(uf, ds);
-        this.actor8 = this.network.addActor(uf, ds);
-        this.actor9 = this.network.addActor(uf, ds);
+        this.agent1 = this.network.addAgent(uf, ds);
+        this.agent2 = this.network.addAgent(uf, ds);
+        this.agent3 = this.network.addAgent(uf, ds);
+        this.agent4 = this.network.addAgent(uf, ds);
+        this.agent5 = this.network.addAgent(uf, ds);
+        this.agent6 = this.network.addAgent(uf, ds);
+        this.agent7 = this.network.addAgent(uf, ds);
+        this.agent8 = this.network.addAgent(uf, ds);
+        this.agent9 = this.network.addAgent(uf, ds);
 
-        this.actor1.addConnection(this.actor2);
-        this.actor1.addConnection(this.actor5);
-        this.actor1.addConnection(this.actor7);
-        this.actor2.addConnection(this.actor3);
-        this.actor3.addConnection(this.actor4);
-        this.actor3.addConnection(this.actor6);
-        this.actor5.addConnection(this.actor6);
-        this.actor5.addConnection(this.actor8);
-        this.actor7.addConnection(this.actor8);
+        this.agent1.addConnection(this.agent2);
+        this.agent1.addConnection(this.agent5);
+        this.agent1.addConnection(this.agent7);
+        this.agent2.addConnection(this.agent3);
+        this.agent3.addConnection(this.agent4);
+        this.agent3.addConnection(this.agent6);
+        this.agent5.addConnection(this.agent6);
+        this.agent5.addConnection(this.agent8);
+        this.agent7.addConnection(this.agent8);
     }
 
 
@@ -81,20 +81,20 @@ public class DijkstraShortestPathTest {
     @Test
     public void testGetShortestPath() {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath();
-        dijkstraShortestPath.executeShortestPaths(this.actor1);
+        dijkstraShortestPath.executeShortestPaths(this.agent1);
 
-        LinkedList<Actor> shortestPathActor4 = dijkstraShortestPath.getShortestPath(this.actor4);
-        assertEquals(4, shortestPathActor4.size());
-        assertEquals(this.actor1, shortestPathActor4.get(0));
-        assertEquals(this.actor2, shortestPathActor4.get(1));
-        assertEquals(this.actor3, shortestPathActor4.get(2));
-        assertEquals(this.actor4, shortestPathActor4.get(3));
+        LinkedList<Agent> shortestPathAgent4 = dijkstraShortestPath.getShortestPath(this.agent4);
+        assertEquals(4, shortestPathAgent4.size());
+        assertEquals(this.agent1, shortestPathAgent4.get(0));
+        assertEquals(this.agent2, shortestPathAgent4.get(1));
+        assertEquals(this.agent3, shortestPathAgent4.get(2));
+        assertEquals(this.agent4, shortestPathAgent4.get(3));
 
-        LinkedList<Actor> shortestPathActor6 = dijkstraShortestPath.getShortestPath(this.actor6);
-        assertEquals(3, shortestPathActor6.size());
-        assertEquals(this.actor1, shortestPathActor6.get(0));
-        assertEquals(this.actor5, shortestPathActor6.get(1));
-        assertEquals(this.actor6, shortestPathActor6.get(2));
+        LinkedList<Agent> shortestPathAgent6 = dijkstraShortestPath.getShortestPath(this.agent6);
+        assertEquals(3, shortestPathAgent6.size());
+        assertEquals(this.agent1, shortestPathAgent6.get(0));
+        assertEquals(this.agent5, shortestPathAgent6.get(1));
+        assertEquals(this.agent6, shortestPathAgent6.get(2));
     }
 
     /**
@@ -103,19 +103,19 @@ public class DijkstraShortestPathTest {
     @Test
     public void testGetShortestPathLength() {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath();
-        dijkstraShortestPath.executeShortestPaths(this.actor1);
+        dijkstraShortestPath.executeShortestPaths(this.agent1);
 
-        Integer shortestPathLengthActor4 = dijkstraShortestPath.getShortestPathLength(this.actor4);
-        assertEquals(3, shortestPathLengthActor4.intValue());
+        Integer shortestPathLengthAgent4 = dijkstraShortestPath.getShortestPathLength(this.agent4);
+        assertEquals(3, shortestPathLengthAgent4.intValue());
 
-        Integer shortestPathLengthActor7 = dijkstraShortestPath.getShortestPathLength(this.actor7);
-        assertEquals(1, shortestPathLengthActor7.intValue());
+        Integer shortestPathLengthAgent7 = dijkstraShortestPath.getShortestPathLength(this.agent7);
+        assertEquals(1, shortestPathLengthAgent7.intValue());
 
-        Integer shortestPathLengthActor8 = dijkstraShortestPath.getShortestPathLength(this.actor8);
-        assertEquals(2, shortestPathLengthActor8.intValue());
+        Integer shortestPathLengthAgent8 = dijkstraShortestPath.getShortestPathLength(this.agent8);
+        assertEquals(2, shortestPathLengthAgent8.intValue());
 
-        Integer shortestPathLengthActor9 = dijkstraShortestPath.getShortestPathLength(this.actor9);
-        assertNull(shortestPathLengthActor9);
+        Integer shortestPathLengthAgent9 = dijkstraShortestPath.getShortestPathLength(this.agent9);
+        assertNull(shortestPathLengthAgent9);
     }
 
 }

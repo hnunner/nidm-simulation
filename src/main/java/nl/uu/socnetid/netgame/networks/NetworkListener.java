@@ -1,6 +1,6 @@
 package nl.uu.socnetid.netgame.networks;
 
-import nl.uu.socnetid.netgame.actors.Actor;
+import nl.uu.socnetid.netgame.agents.Agent;
 
 /**
  * @author Hendrik Nunner
@@ -8,19 +8,19 @@ import nl.uu.socnetid.netgame.actors.Actor;
 public interface NetworkListener {
 
     /**
-     * Entry point for actors being added notifications.
+     * Entry point for agents being added notifications.
      *
-     * @param actor
-     *          the actor being added
+     * @param agent
+     *          the agent being added
      */
-    void notifyActorAdded(final Actor actor);
+    void notifyAgentAdded(final Agent agent);
 
     /**
-     * Entry point for actors being removed notifications.
+     * Entry point for agents being removed notifications.
      *
-     * @param actorId
-     *          the id of the actor being removed
+     * @param agentId
+     *          the id of the agent being removed
      */
-    void notifyActorRemoved(final String actorId);
+    void notifyAgentRemoved(final String agentId);
 
 }

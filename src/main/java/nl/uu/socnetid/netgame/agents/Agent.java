@@ -1,4 +1,4 @@
-package nl.uu.socnetid.netgame.actors;
+package nl.uu.socnetid.netgame.agents;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,27 +22,27 @@ import nl.uu.socnetid.netgame.diseases.DiseaseFactory;
 import nl.uu.socnetid.netgame.diseases.DiseaseSpecs;
 import nl.uu.socnetid.netgame.diseases.types.DiseaseGroup;
 import nl.uu.socnetid.netgame.networks.Network;
-import nl.uu.socnetid.netgame.stats.ActorConnectionStats;
+import nl.uu.socnetid.netgame.stats.AgentConnectionStats;
 import nl.uu.socnetid.netgame.stats.StatsComputer;
 import nl.uu.socnetid.netgame.utilities.Utility;
 import nl.uu.socnetid.netgame.utilities.UtilityFunction;
 
 /**
- * Interface of a basic actor.
+ * Interface of a basic agent.
  *
  * @author Hendrik Nunner
  */
-public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
+public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
 
     // logger
-    private final static Logger logger = Logger.getLogger(Actor.class);
+    private final static Logger logger = Logger.getLogger(Agent.class);
 
     // concurrency lock
     private Lock lock;
 
     // listeners
-    private final Set<ActorListener> actorListeners =
-            new CopyOnWriteArraySet<ActorListener>();
+    private final Set<AgentListener> agentListeners =
+            new CopyOnWriteArraySet<AgentListener>();
 
 
     /**
@@ -51,9 +51,9 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      * @param id
      *          the unique identifier
      * @param network
-     *          the network the actor is being a part of
+     *          the network the agent is being a part of
      */
-    protected Actor(String id, Network network) {
+    protected Agent(String id, Network network) {
         super(network, id);
     }
 
@@ -61,7 +61,7 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      * Initializes the node attributes.
      *
      * @param utilityFunction
-     *          the function the actor uses to compute his utility of the network
+     *          the function the agent uses to compute his utility of the network
      * @param diseaseSpecs
      *          the disease characteristics that is or might become present in the network
      * @param riskFactorSigma
@@ -71,22 +71,22 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      * @param phi
      *          the share of peers to evaluate per round
      */
-    public void initActor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs,
+    public void initAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs,
             Double riskFactorSigma, Double riskFactorPi, Double phi) {
-        this.addAttribute(ActorAttributes.UTILITY_FUNCTION, utilityFunction);
-        this.addAttribute(ActorAttributes.DISEASE_SPECS, diseaseSpecs);
+        this.addAttribute(AgentAttributes.UTILITY_FUNCTION, utilityFunction);
+        this.addAttribute(AgentAttributes.DISEASE_SPECS, diseaseSpecs);
         DiseaseGroup diseaseGroup = DiseaseGroup.SUSCEPTIBLE;
-        this.addAttribute(ActorAttributes.DISEASE_GROUP, diseaseGroup);
+        this.addAttribute(AgentAttributes.DISEASE_GROUP, diseaseGroup);
         // ui-class required only for ui properties as defined in resources/graph-stream.css
         // --> no listener notifications
-        this.addAttribute(ActorAttributes.UI_CLASS, diseaseGroup.toString(), false);
-        this.addAttribute(ActorAttributes.RISK_FACTOR_SIGMA, riskFactorSigma);
-        this.addAttribute(ActorAttributes.RISK_FACTOR_PI, riskFactorPi);
-        this.addAttribute(ActorAttributes.RISK_MEANING_SIGMA, getRiskMeaning(riskFactorSigma));
-        this.addAttribute(ActorAttributes.RISK_MEANING_PI, getRiskMeaning(riskFactorPi));
-        this.addAttribute(ActorAttributes.PHI, phi);
-        this.addAttribute(ActorAttributes.SATISFIED, false);
-        this.addAttribute(ActorAttributes.CONNECTION_STATS, new ActorConnectionStats());
+        this.addAttribute(AgentAttributes.UI_CLASS, diseaseGroup.toString(), false);
+        this.addAttribute(AgentAttributes.RISK_FACTOR_SIGMA, riskFactorSigma);
+        this.addAttribute(AgentAttributes.RISK_FACTOR_PI, riskFactorPi);
+        this.addAttribute(AgentAttributes.RISK_MEANING_SIGMA, getRiskMeaning(riskFactorSigma));
+        this.addAttribute(AgentAttributes.RISK_MEANING_PI, getRiskMeaning(riskFactorPi));
+        this.addAttribute(AgentAttributes.PHI, phi);
+        this.addAttribute(AgentAttributes.SATISFIED, false);
+        this.addAttribute(AgentAttributes.CONNECTION_STATS, new AgentConnectionStats());
         this.addAttribute("ui.label", this.getId());
     }
 
@@ -116,17 +116,17 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
     }
 
     /**
-     * Gets the network the actor is being a part of.
+     * Gets the network the agent is being a part of.
      *
-     * @return the network the actor is being a part of
+     * @return the network the agent is being a part of
      */
     public Network getNetwork() {
         return (Network) super.getGraph();
     }
 
     /**
-     * Gets the number of network decisions an actor is allowed to make in a single round.
-     * This depends on the average number of connections an actor has.
+     * Gets the number of network decisions an agent is allowed to make in a single round.
+     * This depends on the average number of connections an agent has.
      *
      * @return the number of network decisions
      */
@@ -142,7 +142,7 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      *          the attribute to get
      * @return the value of the attribute
      */
-    private Object getAttribute(ActorAttributes attribute) {
+    private Object getAttribute(AgentAttributes attribute) {
         return super.getAttribute(attribute.toString());
     }
 
@@ -154,7 +154,7 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      * @param value
      *          the value
      */
-    private void addAttribute(ActorAttributes attribute, Object value) {
+    private void addAttribute(AgentAttributes attribute, Object value) {
         this.addAttribute(attribute, value, true);
     }
 
@@ -166,9 +166,9 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      * @param value
      *          the value
      * @param notify
-     *          flag whether actor listeners ought to be notified of the added attribute
+     *          flag whether agent listeners ought to be notified of the added attribute
      */
-    private void addAttribute(ActorAttributes attribute, Object value, boolean notify) {
+    private void addAttribute(AgentAttributes attribute, Object value, boolean notify) {
         super.addAttribute(attribute.toString(), value);
         if (notify) {
             notifyAttributeAdded(attribute, value);
@@ -185,7 +185,7 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      * @param newValue
      *          the new value
      */
-    private void changeAttribute(ActorAttributes attribute, Object oldValue, Object newValue) {
+    private void changeAttribute(AgentAttributes attribute, Object oldValue, Object newValue) {
         this.changeAttribute(attribute, oldValue, newValue, true);
     }
 
@@ -199,9 +199,9 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      * @param newValue
      *          the new value
      * @param notify
-     *          flag whether actor listeners ought to be notified of the changed attribute
+     *          flag whether agent listeners ought to be notified of the changed attribute
      */
-    private void changeAttribute(ActorAttributes attribute, Object oldValue, Object newValue, boolean notify) {
+    private void changeAttribute(AgentAttributes attribute, Object oldValue, Object newValue, boolean notify) {
         super.changeAttribute(attribute.toString(), newValue);
         if (notify) {
             notifyAttributeChanged(attribute, oldValue, newValue);
@@ -214,7 +214,7 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      * @param attribute
      *          the attribute
      */
-    private void removeAttribute(ActorAttributes attribute) {
+    private void removeAttribute(AgentAttributes attribute) {
         this.removeAttribute(attribute, true);
     }
 
@@ -226,9 +226,9 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      * @param value
      *          the value
      * @param notify
-     *          flag whether actor listeners ought to be notified of the added attribute
+     *          flag whether agent listeners ought to be notified of the added attribute
      */
-    private void removeAttribute(ActorAttributes attribute, boolean notify) {
+    private void removeAttribute(AgentAttributes attribute, boolean notify) {
         super.removeAttribute(attribute.toString());
         if (notify) {
             notifyAttributeRemoved(attribute);
@@ -236,22 +236,22 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
     }
 
     /**
-     * Gets the actor's utility.
+     * Gets the agent's utility.
      *
-     * @return the actor's utility
+     * @return the agent's utility
      */
     public Utility getUtility() {
         return this.getUtility(this.getConnections());
     }
 
     /**
-     * Gets the utility for a actor based on a list of connections.
+     * Gets the utility for a agent based on a list of connections.
      *
      * @param connections
      *          the connections to compute the utility for
-     * @return the utility for a actor based on a list of connections
+     * @return the utility for a agent based on a list of connections
      */
-    protected Utility getUtility(Collection<Actor> connections) {
+    protected Utility getUtility(Collection<Agent> connections) {
         return this.getUtilityFunction().getUtility(this, connections);
     }
 
@@ -268,53 +268,53 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
             return;
         }
         // change - update
-        this.changeAttribute(ActorAttributes.SATISFIED, oldValue, newValue);
+        this.changeAttribute(AgentAttributes.SATISFIED, oldValue, newValue);
     }
 
     /**
-     * Gets the actor's risk factor for disease severity.
+     * Gets the agent's risk factor for disease severity.
      *
-     * @return the actor's risk factor for disease severity
+     * @return the agent's risk factor for disease severity
      */
     public double getRSigma() {
-        return (double) this.getAttribute(ActorAttributes.RISK_FACTOR_SIGMA);
+        return (double) this.getAttribute(AgentAttributes.RISK_FACTOR_SIGMA);
     }
 
     /**
-     * Gets the actor's risk factor for probability of infections.
+     * Gets the agent's risk factor for probability of infections.
      *
-     * @return the actor's risk factor for probability of infections
+     * @return the agent's risk factor for probability of infections
      */
     public double getRPi() {
-        return (double) this.getAttribute(ActorAttributes.RISK_FACTOR_PI);
+        return (double) this.getAttribute(AgentAttributes.RISK_FACTOR_PI);
     }
 
     /**
-     * Gets the actor's share of peers to evaluate per round.
+     * Gets the agent's share of peers to evaluate per round.
      *
-     * @return the actor's share of peers to evaluate per round
+     * @return the agent's share of peers to evaluate per round
      */
     public double getPhi() {
-        return (double) this.getAttribute(ActorAttributes.PHI);
+        return (double) this.getAttribute(AgentAttributes.PHI);
     }
 
     /**
-     * Gets the actor's utility function.
+     * Gets the agent's utility function.
      *
-     * @return the actor's utility function
+     * @return the agent's utility function
      */
     public UtilityFunction getUtilityFunction() {
-        return (UtilityFunction) this.getAttribute(ActorAttributes.UTILITY_FUNCTION);
+        return (UtilityFunction) this.getAttribute(AgentAttributes.UTILITY_FUNCTION);
     }
 
     /**
-     * Gets the actor's connections.
+     * Gets the agent's connections.
      *
-     * @return the actor's connections
+     * @return the agent's connections
      */
-    public Collection<Actor> getConnections() {
-        List<Actor> connections = new LinkedList<Actor>();
-        Iterator<Actor> neighborIt = getNeighborNodeIterator();
+    public Collection<Agent> getConnections() {
+        List<Agent> connections = new LinkedList<Agent>();
+        Iterator<Agent> neighborIt = getNeighborNodeIterator();
         while (neighborIt.hasNext()) {
             connections.add(neighborIt.next());
         }
@@ -322,32 +322,32 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
     }
 
     /**
-     * Gets the actor's co-actors.
+     * Gets the agent's co-agents.
      *
-     * @return the actor's co-actors
+     * @return the agent's co-agents
      */
-    public Collection<Actor> getCoActors() {
-        Collection<Actor> coActors = new ArrayList<Actor>(getNetwork().getActors());
-        coActors.remove(this);
-        return coActors;
+    public Collection<Agent> getCoAgents() {
+        Collection<Agent> coAgents = new ArrayList<Agent>(getNetwork().getAgents());
+        coAgents.remove(this);
+        return coAgents;
     }
 
     /**
-     * Gets whether the actor is satisfied with the current connections.
+     * Gets whether the agent is satisfied with the current connections.
      *
-     * @return true if the actor is satisfied with the current connections, false otherwise
+     * @return true if the agent is satisfied with the current connections, false otherwise
      */
     public boolean isSatisfied() {
-        return (boolean) this.getAttribute(ActorAttributes.SATISFIED);
+        return (boolean) this.getAttribute(AgentAttributes.SATISFIED);
     }
 
     /**
-     * Gets the actor's connection stats.
+     * Gets the agent's connection stats.
      *
-     * @return the actor's connection stats
+     * @return the agent's connection stats
      */
-    public ActorConnectionStats getConnectionStats() {
-        return (ActorConnectionStats) this.getAttribute(ActorAttributes.CONNECTION_STATS);
+    public AgentConnectionStats getConnectionStats() {
+        return (AgentConnectionStats) this.getAttribute(AgentAttributes.CONNECTION_STATS);
     }
 
     /**
@@ -383,10 +383,10 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      */
     private void trackBrokenTieActive() {
         // stats
-        ActorConnectionStats oldConnectionStats = getConnectionStats().clone();
-        ActorConnectionStats newConnectionStats = getConnectionStats();
+        AgentConnectionStats oldConnectionStats = getConnectionStats().clone();
+        AgentConnectionStats newConnectionStats = getConnectionStats();
         newConnectionStats.incBrokenTiesActive();
-        changeAttribute(ActorAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
+        changeAttribute(AgentAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
     }
 
     /**
@@ -394,10 +394,10 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      */
     private void trackBrokenTiePassive() {
         // stats
-        ActorConnectionStats oldConnectionStats = getConnectionStats().clone();
-        ActorConnectionStats newConnectionStats = getConnectionStats();
+        AgentConnectionStats oldConnectionStats = getConnectionStats().clone();
+        AgentConnectionStats newConnectionStats = getConnectionStats();
         newConnectionStats.incBrokenTiesPassive();
-        changeAttribute(ActorAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
+        changeAttribute(AgentAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
     }
 
     /**
@@ -405,10 +405,10 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      */
     private void trackAcceptedRequestOut() {
         // stats
-        ActorConnectionStats oldConnectionStats = getConnectionStats().clone();
-        ActorConnectionStats newConnectionStats = getConnectionStats();
+        AgentConnectionStats oldConnectionStats = getConnectionStats().clone();
+        AgentConnectionStats newConnectionStats = getConnectionStats();
         newConnectionStats.incAcceptedRequestsOut();
-        changeAttribute(ActorAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
+        changeAttribute(AgentAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
     }
 
     /**
@@ -416,10 +416,10 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      */
     private void trackDeclinedRequestOut() {
         // stats
-        ActorConnectionStats oldConnectionStats = getConnectionStats().clone();
-        ActorConnectionStats newConnectionStats = getConnectionStats();
+        AgentConnectionStats oldConnectionStats = getConnectionStats().clone();
+        AgentConnectionStats newConnectionStats = getConnectionStats();
         newConnectionStats.incDeclinedRequestsOut();
-        changeAttribute(ActorAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
+        changeAttribute(AgentAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
     }
 
     /**
@@ -427,10 +427,10 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      */
     private void trackAcceptedRequestIn() {
         // stats
-        ActorConnectionStats oldConnectionStats = getConnectionStats().clone();
-        ActorConnectionStats newConnectionStats = getConnectionStats();
+        AgentConnectionStats oldConnectionStats = getConnectionStats().clone();
+        AgentConnectionStats newConnectionStats = getConnectionStats();
         newConnectionStats.incAcceptedRequestsIn();
-        changeAttribute(ActorAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
+        changeAttribute(AgentAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
     }
 
     /**
@@ -438,25 +438,25 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      */
     private void trackDeclinedRequestIn() {
         // stats
-        ActorConnectionStats oldConnectionStats = getConnectionStats().clone();
-        ActorConnectionStats newConnectionStats = getConnectionStats();
+        AgentConnectionStats oldConnectionStats = getConnectionStats().clone();
+        AgentConnectionStats newConnectionStats = getConnectionStats();
         newConnectionStats.incDeclinedRequestsIn();
-        changeAttribute(ActorAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
+        changeAttribute(AgentAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
     }
 
     /* (non-Javadoc)
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
     @Override
-    public int compareTo(Actor p) {
+    public int compareTo(Agent p) {
         return (int) (Long.valueOf(this.getId()) - Long.valueOf(p.getId()));
     }
 
 
     /////////////////////////////////////////////////// CONNECTIONS ///////////////////////////////////////////////////
     /**
-     * Computes a single round for an actor. That is, an {@link Actor} tries to connect to
-     * or disconnects from another {@link Actor} if it produces higher utility.
+     * Computes a single round for an agent. That is, an {@link Agent} tries to connect to
+     * or disconnects from another {@link Agent} if it produces higher utility.
      *
      * @param delay
      *          the delay in ms to wait in between network decisions
@@ -465,27 +465,27 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
         // starting assumption: current connections are not satisfactory
         boolean satisfied = true;
 
-        // get random collection of co-actors
-        List<Actor> randomCoActors = getRandomListOfCoActors(getNumberOfNetworkDecisions());
-        Collections.shuffle(randomCoActors);
+        // get random collection of co-agents
+        List<Agent> randomCoAgents = getRandomListOfCoAgents(getNumberOfNetworkDecisions());
+        Collections.shuffle(randomCoAgents);
 
-        Iterator<Actor> it = randomCoActors.iterator();
+        Iterator<Agent> it = randomCoAgents.iterator();
         while (it.hasNext()) {
-            Actor randomCoActor = it.next();
-            if (this.hasDirectConnectionTo(randomCoActor)) {
-                if (existingConnectionTooCostly(randomCoActor)) {
-                    disconnectFrom(randomCoActor);
+            Agent randomCoAgent = it.next();
+            if (this.hasDirectConnectionTo(randomCoAgent)) {
+                if (existingConnectionTooCostly(randomCoAgent)) {
+                    disconnectFrom(randomCoAgent);
                     satisfied = false;
                 }
             } else {
-                if (newConnectionValuable(randomCoActor)) {
-                    connectTo(randomCoActor);
+                if (newConnectionValuable(randomCoAgent)) {
+                    connectTo(randomCoAgent);
                     satisfied = false;
                 }
             }
 
             if (it.hasNext() && delay > 0) {
-                // some delay before each actor moves (e.g., for animation processes)
+                // some delay before each agent moves (e.g., for animation processes)
                 try {
                     Thread.sleep(delay * 10);
                 } catch (InterruptedException e) {
@@ -501,37 +501,37 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
     }
 
     /**
-     * Computes a single round for an actor. That is, an {@link Actor} tries to connect to
-     * or disconnects from another {@link Actor} if it produces higher utility.
+     * Computes a single round for an agent. That is, an {@link Agent} tries to connect to
+     * or disconnects from another {@link Agent} if it produces higher utility.
      */
     public void computeRound() {
         this.computeRound(0);
     }
 
     /**
-     * Checks whether a new connection adds value to the overall utility of an actor.
+     * Checks whether a new connection adds value to the overall utility of an agent.
      *
      * @param newConnection
-     *          the actor on the other side of the new connection
-     * @return true if the new connection adds value to the overall utility of an actor
+     *          the agent on the other side of the new connection
+     * @return true if the new connection adds value to the overall utility of an agent
      */
-    public boolean newConnectionValuable(Actor newConnection) {
-        List<Actor> potentialConnections = new ArrayList<Actor>(this.getConnections());
+    public boolean newConnectionValuable(Agent newConnection) {
+        List<Agent> potentialConnections = new ArrayList<Agent>(this.getConnections());
         potentialConnections.add(newConnection);
         return this.getUtility(potentialConnections).getOverallUtility() >= this.getUtility().getOverallUtility();
     }
 
     /**
-     * Creates a connection between this actor and another actor.
+     * Creates a connection between this agent and another agent.
      *
-     * @param actor
-     *          the actor to connect to
+     * @param agent
+     *          the agent to connect to
      * @return true if connection was accepted and created, false otherwise
      */
-    public boolean connectTo(Actor actor) {
-        // other actor accepting connection?
-        if (actor.acceptConnection(this)) {
-            addConnection(actor);
+    public boolean connectTo(Agent agent) {
+        // other agent accepting connection?
+        if (agent.acceptConnection(this)) {
+            addConnection(agent);
             trackAcceptedRequestOut();
             return true;
         }
@@ -543,35 +543,35 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      * Checks whether an existing connection creates more costs than it provides benefits.
      *
      * @param existingConnection
-     *          the actor on the other side of the existing connection
+     *          the agent on the other side of the existing connection
      * @return true if the existing connection create more costs than it provides benefits
      */
-    public boolean existingConnectionTooCostly(Actor existingConnection) {
-        List<Actor> potentialConnections = new ArrayList<Actor>(this.getConnections());
+    public boolean existingConnectionTooCostly(Agent existingConnection) {
+        List<Agent> potentialConnections = new ArrayList<Agent>(this.getConnections());
         potentialConnections.remove(existingConnection);
         return this.getUtility(potentialConnections).getOverallUtility() > this.getUtility().getOverallUtility();
     }
 
     /**
-     * Disconnects this actor from another actor.
+     * Disconnects this agent from another agent.
      *
-     * @param actor
-     *          the actor to disconnect from
+     * @param agent
+     *          the agent to disconnect from
      */
-    public void disconnectFrom(Actor actor) {
-        this.removeConnection(actor);
+    public void disconnectFrom(Agent agent) {
+        this.removeConnection(agent);
         this.trackBrokenTieActive();
-        actor.notifyBrokenTie(this);
+        agent.notifyBrokenTie(this);
     }
 
     /**
      * Entry point for incoming connection requests.
      *
      * @param newConnection
-     *          the actor requesting to establish a connection
+     *          the agent requesting to establish a connection
      * @return true if the connection is being accepted, false otherwise
      */
-    public boolean acceptConnection(Actor newConnection) {
+    public boolean acceptConnection(Agent newConnection) {
         boolean accept = newConnectionValuable(newConnection);
         if (accept) {
             trackAcceptedRequestIn();
@@ -587,23 +587,23 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      * @param initiator
      *          the initiatior who broke the tie
      */
-    public void notifyBrokenTie(Actor initiator) {
+    public void notifyBrokenTie(Agent initiator) {
         trackBrokenTiePassive();
     }
 
     /**
-     * Creates a collection of randomly selected co-actors.
+     * Creates a collection of randomly selected co-agents.
      *
      * @param amount
-     *          the amount of co-actors to add
-     * @return a random collection of co-actors
+     *          the amount of co-agents to add
+     * @return a random collection of co-agents
      */
-    public List<Actor> getRandomListOfCoActors(int amount) {
-        List<Actor> collect = new ArrayList<Actor>(amount);
-        Collection<Actor> coActors = getCoActors();
+    public List<Agent> getRandomListOfCoAgents(int amount) {
+        List<Agent> collect = new ArrayList<Agent>(amount);
+        Collection<Agent> coAgents = getCoAgents();
         while (collect.size() < amount) {
-            int index = ThreadLocalRandom.current().nextInt(coActors.size());
-            collect.add((Actor) coActors.toArray()[index]);
+            int index = ThreadLocalRandom.current().nextInt(coAgents.size());
+            collect.add((Agent) coAgents.toArray()[index]);
         }
         return collect;
     }
@@ -615,25 +615,25 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      */
     private class Connector {
         private String edgeId;
-        private String idActor1;
-        private String idActor2;
+        private String idAgent1;
+        private String idAgent2;
 
-        private Actor actor1;
-        private Actor actor2;
+        private Agent agent1;
+        private Agent agent2;
 
-        protected Connector(Actor actor1, Actor actor2) {
+        protected Connector(Agent agent1, Agent agent2) {
             // edge id consistency: lower index comes always first
-            ArrayList<Actor> actors = new ArrayList<Actor>();
-            actors.add(actor1);
-            actors.add(actor2);
-            Collections.sort(actors);
+            ArrayList<Agent> agents = new ArrayList<Agent>();
+            agents.add(agent1);
+            agents.add(agent2);
+            Collections.sort(agents);
 
-            this.actor1 = actors.get(0);
-            this.actor2 = actors.get(1);
+            this.agent1 = agents.get(0);
+            this.agent2 = agents.get(1);
 
-            this.edgeId = String.valueOf(this.actor1.getId()) + String.valueOf(this.actor2.getId());
-            this.idActor1 = String.valueOf(this.actor1.getId());
-            this.idActor2 = String.valueOf(this.actor2.getId());
+            this.edgeId = String.valueOf(this.agent1.getId()) + String.valueOf(this.agent2.getId());
+            this.idAgent1 = String.valueOf(this.agent1.getId());
+            this.idAgent2 = String.valueOf(this.agent2.getId());
         }
 
         /**
@@ -644,41 +644,41 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
         }
 
         /**
-         * @return the idActor1
+         * @return the idAgent1
          */
-        protected String getIdActor1() {
-            return idActor1;
+        protected String getIdAgent1() {
+            return idAgent1;
         }
 
         /**
-         * @return the idActor2
+         * @return the idAgent2
          */
-        protected String getIdActor2() {
-            return idActor2;
+        protected String getIdAgent2() {
+            return idAgent2;
         }
 
         /**
-         * @return the actor1
+         * @return the agent1
          */
-        public Actor getActor1() {
-            return actor1;
+        public Agent getAgent1() {
+            return agent1;
         }
 
         /**
-         * @return the actor2
+         * @return the agent2
          */
-        public Actor getActor2() {
-            return actor2;
+        public Agent getAgent2() {
+            return agent2;
         }
     }
 
     /**
-     * Adds a new connection to another actor.
+     * Adds a new connection to another agent.
      *
      * @param newConnection
-     *          the actor to connect to
+     *          the agent to connect to
      */
-    public void addConnection(Actor newConnection) {
+    public void addConnection(Agent newConnection) {
 
         // check node consistency
         if (!checkNewConnectionConsistency(newConnection)) {
@@ -691,35 +691,35 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
 
         Network network = this.getNetwork();
         if (network.getEdge(edgeId) == null) {
-            network.addEdge(edgeId, connector.getIdActor1(), connector.getIdActor2());
+            network.addEdge(edgeId, connector.getIdAgent1(), connector.getIdAgent2());
         }
-        notifyConnectionAdded(network.getEdge(edgeId), connector.getActor1(), connector.getActor2());
+        notifyConnectionAdded(network.getEdge(edgeId), connector.getAgent1(), connector.getAgent2());
     }
 
     /**
-     * Checks whether the actor has a direct connection to another actor
+     * Checks whether the agent has a direct connection to another agent
      *
-     * @param actor
-     *          the other actor to check the connection to
+     * @param agent
+     *          the other agent to check the connection to
      * @return true if there is a connection, false otherwise
      */
-    public boolean hasDirectConnectionTo(Actor actor) {
-        Connector connector = new Connector(this, actor);
+    public boolean hasDirectConnectionTo(Agent agent) {
+        Connector connector = new Connector(this, agent);
         return this.getNetwork().getEdge(connector.getEdgeId()) != null;
     }
 
     /**
-     * Checks whether the actor has a connection somehow to another actor.
+     * Checks whether the agent has a connection somehow to another agent.
      *
-     * @param actor
-     *          the actor to check for an existing connection
-     * @return true if the actors are somehow connected, false otherwise
+     * @param agent
+     *          the agent to check for an existing connection
+     * @return true if the agents are somehow connected, false otherwise
      */
-    public boolean hasConnectionTo(Actor actor) {
+    public boolean hasConnectionTo(Agent agent) {
         Iterator<Node> bfIt = this.getBreadthFirstIterator();
         while (bfIt.hasNext()) {
             Node node = bfIt.next();
-            if (node.getId() == actor.getId()) {
+            if (node.getId() == agent.getId()) {
                 return true;
             }
         }
@@ -727,15 +727,15 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
     }
 
     /**
-     * Creates connections to all other co-actors.
+     * Creates connections to all other co-agents.
      */
     public void connectToAll() {
-        ArrayList<Actor> noConnections = new ArrayList<Actor>(getCoActors());
+        ArrayList<Agent> noConnections = new ArrayList<Agent>(getCoAgents());
         noConnections.removeAll(getConnections());
 
-        Iterator<Actor> noConnectionsIt = noConnections.iterator();
+        Iterator<Agent> noConnectionsIt = noConnections.iterator();
         while (noConnectionsIt.hasNext()) {
-            Actor noConnection = noConnectionsIt.next();
+            Agent noConnection = noConnectionsIt.next();
             addConnection(noConnection);
         }
     }
@@ -745,7 +745,7 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      *          the new connection to check for consistency
      * @return true if new node can be added, false otherwise
      */
-    protected boolean checkNewConnectionConsistency(Actor newConnection) {
+    protected boolean checkNewConnectionConsistency(Agent newConnection) {
         if (newConnection.equals(this)) {
             logger.warn("Inconsistent new connection: reflexive");
             return false;
@@ -758,12 +758,12 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
     }
 
     /**
-     * Removes a connection to another actor.
+     * Removes a connection to another agent.
      *
      * @param connection
-     *          the actore to remove the connection from
+     *          the agent to remove the connection from
      */
-    public void removeConnection(Actor connection) {
+    public void removeConnection(Agent connection) {
 
         // check node consistency
         if (connection.equals(this)) {
@@ -772,14 +772,14 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
         }
 
         // edge id consistency
-        ArrayList<Actor> tmpActors = new ArrayList<Actor>();
-        tmpActors.add(this);
-        tmpActors.add(connection);
-        Collections.sort(tmpActors);
+        ArrayList<Agent> tmpAgents = new ArrayList<Agent>();
+        tmpAgents.add(this);
+        tmpAgents.add(connection);
+        Collections.sort(tmpAgents);
 
         // remove
         Network network = this.getNetwork();
-        String edgeId = String.valueOf(tmpActors.get(0).getId()) + String.valueOf(tmpActors.get(1).getId());
+        String edgeId = String.valueOf(tmpAgents.get(0).getId()) + String.valueOf(tmpAgents.get(1).getId());
         Edge edge = network.getEdge(edgeId);
         if (edge != null) {
             network.removeEdge(edgeId);
@@ -788,11 +788,11 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
     }
 
     /**
-     * Removes all connections to other actors.
+     * Removes all connections to other agents.
      */
     public void removeAllConnections() {
         Network network = this.getNetwork();
-        // remove all graph edges of the current actor
+        // remove all graph edges of the current agent
         Edge[] edges = network.getNode(String.valueOf(getId())).getEdgeSet().toArray(new Edge[0]);
         for(int i = 0; i < edges.length; ++i){
             Edge edge = edges[i];
@@ -817,10 +817,10 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
     }
 
     /**
-     * Sets the lock required to synchronize threaded actors.
+     * Sets the lock required to synchronize threaded agents.
      *
      * @param lock
-     *          the lock used to synchronize threaded actors.
+     *          the lock used to synchronize threaded agents.
      */
     public void setLock(Lock lock) {
         this.lock = lock;
@@ -829,83 +829,83 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
 
     ///////////////////////////////////////////////////// DISEASE /////////////////////////////////////////////////////
     /**
-     * Gets the specifications of the disease the actor considers for decision making processes.
+     * Gets the specifications of the disease the agent considers for decision making processes.
      *
-     * @return the specifications of the disease the actor considers for decision making processes
+     * @return the specifications of the disease the agent considers for decision making processes
      */
     public DiseaseSpecs getDiseaseSpecs() {
-        return (DiseaseSpecs) this.getAttribute(ActorAttributes.DISEASE_SPECS);
+        return (DiseaseSpecs) this.getAttribute(AgentAttributes.DISEASE_SPECS);
     }
 
     /**
-     * Gets the disease group the actor is in.
+     * Gets the disease group the agent is in.
      *
-     * @return the disease group the actor is in
+     * @return the disease group the agent is in
      */
     public DiseaseGroup getDiseaseGroup() {
-        return (DiseaseGroup) this.getAttribute(ActorAttributes.DISEASE_GROUP);
+        return (DiseaseGroup) this.getAttribute(AgentAttributes.DISEASE_GROUP);
     }
 
     /**
-     * Checks whether the actor is susceptible.
+     * Checks whether the agent is susceptible.
      *
-     * @return true if the actor is susceptible, false otherwise
+     * @return true if the agent is susceptible, false otherwise
      */
     public boolean isSusceptible() {
         return this.getDiseaseGroup() == DiseaseGroup.SUSCEPTIBLE;
     }
 
     /**
-     * Checks whether the actor is infected.
+     * Checks whether the agent is infected.
      *
-     * @return true if the actor is infected, false otherwise
+     * @return true if the agent is infected, false otherwise
      */
     public boolean isInfected() {
         return this.getDiseaseGroup() == DiseaseGroup.INFECTED;
     }
 
     /**
-     * Checks whether the actor is recovered.
+     * Checks whether the agent is recovered.
      *
-     * @return true if the actor is recovered, false otherwise
+     * @return true if the agent is recovered, false otherwise
      */
     public boolean isRecovered() {
         return this.getDiseaseGroup() == DiseaseGroup.RECOVERED;
     }
 
     /**
-     * Makes the actor susceptible.
+     * Makes the agent susceptible.
      */
     public void makeSusceptible() {
         DiseaseGroup prevDiseaseGroup = this.getDiseaseGroup();
         if (this.isInfected()) {
-            this.removeAttribute(ActorAttributes.DISEASE_INFECTION);
+            this.removeAttribute(AgentAttributes.DISEASE_INFECTION);
         }
-        this.changeAttribute(ActorAttributes.DISEASE_GROUP, prevDiseaseGroup, DiseaseGroup.SUSCEPTIBLE);
+        this.changeAttribute(AgentAttributes.DISEASE_GROUP, prevDiseaseGroup, DiseaseGroup.SUSCEPTIBLE);
         // ui-class required only for ui properties as defined in resources/graph-stream.css
         // --> no listener notifications
-        this.changeAttribute(ActorAttributes.UI_CLASS,
+        this.changeAttribute(AgentAttributes.UI_CLASS,
                 prevDiseaseGroup.toString(), DiseaseGroup.SUSCEPTIBLE.toString(), false);
     }
 
     /**
-     * Gets the disease the actor is infected with.
+     * Gets the disease the agent is infected with.
      *
-     * @return the disease the actor is infected with
+     * @return the disease the agent is infected with
      */
     public Disease getDisease() {
         if (this.isInfected()) {
-            return (Disease) this.getAttribute(ActorAttributes.DISEASE_INFECTION);
+            return (Disease) this.getAttribute(AgentAttributes.DISEASE_INFECTION);
         }
         return null;
     }
 
     /**
-     * Computes whether the actor is being infected by one of his infected connections.
+     * Computes whether the agent is being infected by one of his infected connections.
      */
     public void computeDiseaseTransmission() {
         if (this.isSusceptible()) {
-            int nI = StatsComputer.computeLocalActorConnectionsStats(this).getnI();
+            int nI = StatsComputer.computeLocalAgentConnectionsStats(this).getnI();
             if (ThreadLocalRandom.current().nextDouble() <=
                     StatsComputer.computeProbabilityOfInfection(this, nI)) {
                 this.infect(this.getDiseaseSpecs());
@@ -914,10 +914,10 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
     }
 
     /**
-     * Infects the actor with a disease.
+     * Infects the agent with a disease.
      *
      * @param diseaseSpecs
-     *          the specificationso of the disease the actor is infected with
+     *          the specificationso of the disease the agent is infected with
      */
     public void infect(DiseaseSpecs diseaseSpecs) {
         if (isRecovered()) {
@@ -927,10 +927,10 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
     }
 
     /**
-     * Forces an infection onto the actor no matter whether the actor is immune or not.
+     * Forces an infection onto the agent no matter whether the agent is immune or not.
      *
      * @param diseaseSpecs
-     *          the specificationso of the disease the actor is infected with
+     *          the specificationso of the disease the agent is infected with
      */
     public void forceInfect(DiseaseSpecs diseaseSpecs) {
 
@@ -941,16 +941,16 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
 
         // infect
         DiseaseGroup prevDiseaseGroup = this.getDiseaseGroup();
-        this.addAttribute(ActorAttributes.DISEASE_INFECTION, DiseaseFactory.createInfection(diseaseSpecs));
-        this.changeAttribute(ActorAttributes.DISEASE_GROUP, prevDiseaseGroup, DiseaseGroup.INFECTED);
+        this.addAttribute(AgentAttributes.DISEASE_INFECTION, DiseaseFactory.createInfection(diseaseSpecs));
+        this.changeAttribute(AgentAttributes.DISEASE_GROUP, prevDiseaseGroup, DiseaseGroup.INFECTED);
         // ui-class required only for ui properties as defined in resources/graph-stream.css
         // --> no listener notifications
-        this.changeAttribute(ActorAttributes.UI_CLASS,
+        this.changeAttribute(AgentAttributes.UI_CLASS,
                 prevDiseaseGroup.toString(), DiseaseGroup.INFECTED.toString(), false);
     }
 
     /**
-     * Triggers the actor to fight the disease.
+     * Triggers the agent to fight the disease.
      */
     public void fightDisease() {
         Disease disease = this.getDisease();
@@ -964,9 +964,9 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
     }
 
     /**
-     * Gets the time remaining before the actor has recovered from a disease.
+     * Gets the time remaining before the agent has recovered from a disease.
      *
-     * @return the time remaining before the actor has recovered from a disease
+     * @return the time remaining before the agent has recovered from a disease
      */
     public int getTimeUntilRecovered() {
         if (isInfected()) {
@@ -976,39 +976,39 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
     }
 
     /**
-     * Cures the actor from a disease.
+     * Cures the agent from a disease.
      */
     public void cure() {
         // cure
         DiseaseGroup prevDiseaseGroup = this.getDiseaseGroup();
-        this.changeAttribute(ActorAttributes.DISEASE_GROUP, prevDiseaseGroup, DiseaseGroup.RECOVERED);
+        this.changeAttribute(AgentAttributes.DISEASE_GROUP, prevDiseaseGroup, DiseaseGroup.RECOVERED);
         // ui-class required only for ui properties as defined in resources/graph-stream.css
         // --> no listener notifications
-        this.changeAttribute(ActorAttributes.UI_CLASS,
+        this.changeAttribute(AgentAttributes.UI_CLASS,
                 prevDiseaseGroup.toString(), DiseaseGroup.RECOVERED.toString(), false);
-        this.removeAttribute(ActorAttributes.DISEASE_INFECTION);
+        this.removeAttribute(AgentAttributes.DISEASE_INFECTION);
     }
 
 
     //////////////////////////////////////////// LISTENERS / NOTIFICATIONS ////////////////////////////////////////////
     /**
-     * Adds a listener for actor notifications.
+     * Adds a listener for agent notifications.
      *
-     * @param actorListener
+     * @param agentListener
      *          the listener to be added
      */
-    public void addActorListener(ActorListener actorListener) {
-        this.actorListeners.add(actorListener);
+    public void addAgentListener(AgentListener agentListener) {
+        this.agentListeners.add(agentListener);
     }
 
     /**
-     * Removes a listener for actor notifications.
+     * Removes a listener for agent notifications.
      *
-     * @param actorListener
+     * @param agentListener
      *          the listener to be removed
      */
-    public void removeActorListener(ActorListener actorListener) {
-        this.actorListeners.remove(actorListener);
+    public void removeAgentListener(AgentListener agentListener) {
+        this.agentListeners.remove(agentListener);
     }
 
     /**
@@ -1019,8 +1019,8 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      * @param value
      *          the attribute's value
      */
-    private final void notifyAttributeAdded(ActorAttributes attribute, Object value) {
-        Iterator<ActorListener> listenersIt = this.actorListeners.iterator();
+    private final void notifyAttributeAdded(AgentAttributes attribute, Object value) {
+        Iterator<AgentListener> listenersIt = this.agentListeners.iterator();
         while (listenersIt.hasNext()) {
             listenersIt.next().notifyAttributeAdded(this, attribute.toString(), value);
         }
@@ -1036,8 +1036,8 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      * @param newValue
      *          the attribute's new value
      */
-    private final void notifyAttributeChanged(ActorAttributes attribute, Object oldValue, Object newValue) {
-        Iterator<ActorListener> listenersIt = this.actorListeners.iterator();
+    private final void notifyAttributeChanged(AgentAttributes attribute, Object oldValue, Object newValue) {
+        Iterator<AgentListener> listenersIt = this.agentListeners.iterator();
         while (listenersIt.hasNext()) {
             listenersIt.next().notifyAttributeChanged(this, attribute.toString(), oldValue, newValue);
         }
@@ -1049,8 +1049,8 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      * @param attribute
      *          the attribute
      */
-    private final void notifyAttributeRemoved(ActorAttributes attribute) {
-        Iterator<ActorListener> listenersIt = this.actorListeners.iterator();
+    private final void notifyAttributeRemoved(AgentAttributes attribute) {
+        Iterator<AgentListener> listenersIt = this.agentListeners.iterator();
         while (listenersIt.hasNext()) {
             listenersIt.next().notifyAttributeRemoved(this, attribute.toString());
         }
@@ -1061,15 +1061,15 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      *
      * @param edge
      *          the new connection
-     * @param actor1
-     *          the first actor the connection has been added to
-     * @param actor2
-     *          the second actor the connection has been added to
+     * @param agent1
+     *          the first agent the connection has been added to
+     * @param agent2
+     *          the second agent the connection has been added to
      */
-    private final void notifyConnectionAdded(Edge edge, Actor actor1, Actor actor2) {
-        Iterator<ActorListener> listenersIt = this.actorListeners.iterator();
+    private final void notifyConnectionAdded(Edge edge, Agent agent1, Agent agent2) {
+        Iterator<AgentListener> listenersIt = this.agentListeners.iterator();
         while (listenersIt.hasNext()) {
-            listenersIt.next().notifyConnectionAdded(edge, actor1, actor2);
+            listenersIt.next().notifyConnectionAdded(edge, agent1, agent2);
         }
     }
 
@@ -1080,17 +1080,17 @@ public class Actor extends SingleNode implements Comparable<Actor>, Runnable {
      *          the removed edge
      */
     private final void notifyConnectionRemoved(Edge edge) {
-        Iterator<ActorListener> listenersIt = this.actorListeners.iterator();
+        Iterator<AgentListener> listenersIt = this.agentListeners.iterator();
         while (listenersIt.hasNext()) {
             listenersIt.next().notifyConnectionRemoved(this, edge);
         }
     }
 
     /**
-     * Notifies listeners of finished actor rounds.
+     * Notifies listeners of finished agent rounds.
      */
     private final void notifyRoundFinished() {
-        Iterator<ActorListener> listenersIt = this.actorListeners.iterator();
+        Iterator<AgentListener> listenersIt = this.agentListeners.iterator();
         while (listenersIt.hasNext()) {
             listenersIt.next().notifyRoundFinished(this);
         }
