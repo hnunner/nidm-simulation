@@ -2,10 +2,12 @@ package nl.uu.socnetid.netgame.gui;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.text.NumberFormat;
 
+import javax.swing.InputVerifier;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JSeparator;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 /**
@@ -15,18 +17,38 @@ public class CIDMoPanel extends DeactivatablePanel {
 
     private static final long serialVersionUID = -6334519672487731007L;
 
-    private JTextField txtAlpha;
-    private JTextField txtKappa;
-    private JTextField txtBeta;
-    private JTextField txtLamda;
-    private JTextField txtC;
-    private JTextField txtMu;
-    private JTextField txtSigma;
-    private JTextField txtGamma;
-    private JTextField txtRSigma;
-    private JTextField txtRPi;
-    private JTextField txtPhi;
-    private JTextField txtTau;
+    private JFormattedTextField txtAlpha;
+    private JFormattedTextField txtKappa;
+    private JFormattedTextField txtBeta;
+    private JFormattedTextField txtLamda;
+    private JFormattedTextField txtC;
+    private JFormattedTextField txtMu;
+    private JFormattedTextField txtSigma;
+    private JFormattedTextField txtGamma;
+    private JFormattedTextField txtRSigma;
+    private JFormattedTextField txtRPi;
+    private JFormattedTextField txtPhi;
+    private JFormattedTextField txtTau;
+
+    // INPUT VALIDATION
+    private static final NumberFormat NUM_FORMAT = NumberFormat.getNumberInstance();
+    // benefit of direct connections (alpha), benefit of indirect connections (beta), maintenance costs (c)
+    private static final InputVerifier REAL_NUMBERS_VERIFIER = new DoubleInputVerifier();
+    // discounts for infected ties (kappa, lamda)
+    private static final InputVerifier DISCOUNT_VERIFIER = new DoubleInputVerifier(0.0, 1.0);
+    // care factor for infected direct connections (mu)
+    private static final InputVerifier MU_VERIFIER = new DoubleInputVerifier(1.0, null);
+    // disease severity (sigma)
+    private static final InputVerifier SIGMA_VERIFIER = new DoubleInputVerifier(1.001, null);
+    // probability of infections (gamma)
+    private static final InputVerifier GAMMA_VERIFIER = new DoubleInputVerifier(0.0, 1.0);
+    // risk perceptions (r_sigma, r_pi)
+    private static final InputVerifier R_VERIFIER = new DoubleInputVerifier(0.0, 2.0);
+    // share of peers to evaluate per time step (phi)
+    private static final InputVerifier PHI_VERIFIER = new DoubleInputVerifier(0.001, 1.0);
+    // time steps to recover (tau)
+    private static final InputVerifier TAU_VERIFIER = new IntegerInputVerifier(1, null);
+
 
     /**
      * Create the panel.
@@ -48,12 +70,13 @@ public class CIDMoPanel extends DeactivatablePanel {
         lblAlpha2.setBounds(200, 58, 35, 16);
         add(lblAlpha2);
 
-        txtAlpha = new JTextField();
+        txtAlpha = new JFormattedTextField(NUM_FORMAT);
         txtAlpha.setBounds(245, 58, 50, 20);
         add(txtAlpha);
         txtAlpha.setHorizontalAlignment(SwingConstants.RIGHT);
-        txtAlpha.setText("10");
         txtAlpha.setColumns(10);
+        txtAlpha.setValue(new Double(10));
+        txtAlpha.setInputVerifier(REAL_NUMBERS_VERIFIER);
 
         JLabel lblKappa1 = new JLabel("Discount for infected tie");
         lblKappa1.setBounds(52, 85, 154, 16);
@@ -64,12 +87,13 @@ public class CIDMoPanel extends DeactivatablePanel {
         lblKappa2.setBounds(200, 85, 35, 16);
         add(lblKappa2);
 
-        txtKappa = new JTextField();
+        txtKappa = new JFormattedTextField(NUM_FORMAT);
         txtKappa.setBounds(245, 83, 50, 20);
         add(txtKappa);
         txtKappa.setHorizontalAlignment(SwingConstants.RIGHT);
-        txtKappa.setText("1.0");
         txtKappa.setColumns(10);
+        txtKappa.setValue(new Double(1.0));
+        txtKappa.setInputVerifier(DISCOUNT_VERIFIER);
 
         JLabel lblDiscountOfInfected_2 = new JLabel("Indirect ties:");
         lblDiscountOfInfected_2.setBounds(36, 115, 242, 16);
@@ -85,12 +109,13 @@ public class CIDMoPanel extends DeactivatablePanel {
         lblBeta2.setBounds(200, 145, 35, 16);
         add(lblBeta2);
 
-        txtBeta = new JTextField();
+        txtBeta = new JFormattedTextField(NUM_FORMAT);
         txtBeta.setBounds(245, 143, 50, 20);
         add(txtBeta);
-        txtBeta.setText("8");
         txtBeta.setHorizontalAlignment(SwingConstants.RIGHT);
         txtBeta.setColumns(10);
+        txtBeta.setValue(new Double(8));
+        txtBeta.setInputVerifier(REAL_NUMBERS_VERIFIER);
 
         JLabel lblLamda1 = new JLabel("Discount for infected tie");
         lblLamda1.setBounds(52, 170, 154, 16);
@@ -101,12 +126,13 @@ public class CIDMoPanel extends DeactivatablePanel {
         lblLamda2.setBounds(200, 170, 35, 16);
         add(lblLamda2);
 
-        txtLamda = new JTextField();
+        txtLamda = new JFormattedTextField(NUM_FORMAT);
         txtLamda.setBounds(245, 168, 50, 20);
         add(txtLamda);
-        txtLamda.setText("1.0");
         txtLamda.setHorizontalAlignment(SwingConstants.RIGHT);
         txtLamda.setColumns(10);
+        txtLamda.setValue(new Double(1.0));
+        txtLamda.setInputVerifier(DISCOUNT_VERIFIER);
 
         JLabel lblC1 = new JLabel("Direct ties");
         lblC1.setBounds(36, 241, 100, 16);
@@ -117,12 +143,13 @@ public class CIDMoPanel extends DeactivatablePanel {
         lblC2.setBounds(200, 241, 35, 16);
         add(lblC2);
 
-        txtC = new JTextField();
+        txtC = new JFormattedTextField(NUM_FORMAT);
         txtC.setBounds(245, 239, 50, 20);
         add(txtC);
-        txtC.setText("9");
         txtC.setHorizontalAlignment(SwingConstants.RIGHT);
         txtC.setColumns(10);
+        txtC.setValue(new Double(9));
+        txtC.setInputVerifier(REAL_NUMBERS_VERIFIER);
 
         JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
         separator.setForeground(Color.LIGHT_GRAY);
@@ -158,12 +185,13 @@ public class CIDMoPanel extends DeactivatablePanel {
         lblMu2.setBounds(200, 266, 35, 16);
         add(lblMu2);
 
-        txtMu = new JTextField();
-        txtMu.setText("1.5");
+        txtMu = new JFormattedTextField(NUM_FORMAT);
         txtMu.setHorizontalAlignment(SwingConstants.RIGHT);
         txtMu.setColumns(10);
         txtMu.setBounds(245, 264, 50, 20);
         add(txtMu);
+        txtMu.setValue(new Double(1.5));
+        txtMu.setInputVerifier(MU_VERIFIER);
 
         JSeparator separator_3 = new JSeparator(SwingConstants.HORIZONTAL);
         separator_3.setForeground(Color.LIGHT_GRAY);
@@ -188,24 +216,27 @@ public class CIDMoPanel extends DeactivatablePanel {
         lblSigma2.setBounds(201, 337, 35, 16);
         add(lblSigma2);
 
-        txtSigma = new JTextField();
-        txtSigma.setText("50");
+        txtSigma = new JFormattedTextField(NUM_FORMAT);
         txtSigma.setHorizontalAlignment(SwingConstants.RIGHT);
         txtSigma.setColumns(10);
         txtSigma.setBounds(246, 335, 50, 20);
         add(txtSigma);
+        txtSigma.setValue(new Double(50));
+        txtSigma.setInputVerifier(SIGMA_VERIFIER);
 
         JLabel lblGamma2 = new JLabel("(γ):");
         lblGamma2.setHorizontalAlignment(SwingConstants.RIGHT);
         lblGamma2.setBounds(201, 362, 35, 16);
         add(lblGamma2);
 
-        txtGamma = new JTextField();
-        txtGamma.setText("0.1");
+        txtGamma = new JFormattedTextField(NUM_FORMAT);
         txtGamma.setHorizontalAlignment(SwingConstants.RIGHT);
         txtGamma.setColumns(10);
         txtGamma.setBounds(246, 360, 50, 20);
         add(txtGamma);
+        txtGamma.setValue(new Double(0.1));
+        txtGamma.setInputVerifier(GAMMA_VERIFIER);
+
 
         JLabel lblRiskPerception = new JLabel("Risk perception:");
         lblRiskPerception.setFont(new Font("Lucida Grande", Font.BOLD, 13));
@@ -216,23 +247,25 @@ public class CIDMoPanel extends DeactivatablePanel {
         lblDiseaseSeverity.setBounds(53, 422, 153, 16);
         add(lblDiseaseSeverity);
 
-        txtRSigma = new JTextField();
-        txtRSigma.setText("1.0");
+        txtRSigma = new JFormattedTextField(NUM_FORMAT);
         txtRSigma.setHorizontalAlignment(SwingConstants.RIGHT);
         txtRSigma.setColumns(10);
         txtRSigma.setBounds(246, 420, 50, 20);
         add(txtRSigma);
+        txtRSigma.setValue(new Double(1.0));
+        txtRSigma.setInputVerifier(R_VERIFIER);
 
         JLabel lblProbabilityOfInfection = new JLabel("Probability of infection");
         lblProbabilityOfInfection.setBounds(53, 447, 154, 16);
         add(lblProbabilityOfInfection);
 
-        txtRPi = new JTextField();
-        txtRPi.setText("1.0");
+        txtRPi = new JFormattedTextField(NUM_FORMAT);
         txtRPi.setHorizontalAlignment(SwingConstants.RIGHT);
         txtRPi.setColumns(10);
         txtRPi.setBounds(246, 445, 50, 20);
         add(txtRPi);
+        txtRPi.setValue(new Double(1.0));
+        txtRPi.setInputVerifier(R_VERIFIER);
 
         JSeparator separator_4 = new JSeparator(SwingConstants.HORIZONTAL);
         separator_4.setForeground(Color.WHITE);
@@ -277,12 +310,13 @@ public class CIDMoPanel extends DeactivatablePanel {
         label_10.setBounds(202, 518, 35, 16);
         add(label_10);
 
-        txtPhi = new JTextField();
-        txtPhi.setText("0.4");
+        txtPhi = new JFormattedTextField(NUM_FORMAT);
         txtPhi.setHorizontalAlignment(SwingConstants.RIGHT);
         txtPhi.setColumns(10);
         txtPhi.setBounds(246, 516, 50, 20);
         add(txtPhi);
+        txtPhi.setValue(new Double(0.4));
+        txtPhi.setInputVerifier(PHI_VERIFIER);
 
         JSeparator separator_5 = new JSeparator(SwingConstants.HORIZONTAL);
         separator_5.setForeground(Color.LIGHT_GRAY);
@@ -310,12 +344,14 @@ public class CIDMoPanel extends DeactivatablePanel {
         label_6.setBounds(201, 589, 35, 16);
         add(label_6);
 
-        txtTau = new JTextField();
+        txtTau = new JFormattedTextField(NUM_FORMAT);
         txtTau.setText("10");
         txtTau.setHorizontalAlignment(SwingConstants.RIGHT);
         txtTau.setColumns(10);
         txtTau.setBounds(245, 587, 50, 20);
         add(txtTau);
+        txtTau.setValue(new Integer(10));
+        txtTau.setInputVerifier(TAU_VERIFIER);
     }
 
     /**
