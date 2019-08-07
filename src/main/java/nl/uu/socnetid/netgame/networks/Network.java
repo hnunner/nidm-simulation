@@ -347,7 +347,7 @@ public class Network extends SingleGraph {
         Iterator<Agent> agentsIt = this.getAgentIterator();
         while (agentsIt.hasNext()) {
             Agent agent = agentsIt.next();
-            if (agent.getId() == agentId) {
+            if (agent.getId().equals(agentId)) {
 
                 switch (agent.getDiseaseGroup()) {
                     case SUSCEPTIBLE:

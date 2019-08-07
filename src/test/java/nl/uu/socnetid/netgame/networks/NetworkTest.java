@@ -201,99 +201,134 @@ public class NetworkTest {
     }
 
     /**
-     * Test of getting the network type.
+     * Test of getting empty network type.
      */
     @Test
-    public void testGetType() {
+    public void testEmpty() {
 
         Network empty = new Network("Empty Network");
-        Agent agent1 = empty.addAgent(uf, ds);
-        Agent agent2 = empty.addAgent(uf, ds);
-        Agent agent3 = empty.addAgent(uf, ds);
-        Agent agent4 = empty.addAgent(uf, ds);
-        Agent agent5 = empty.addAgent(uf, ds);
-        Agent agent6 = empty.addAgent(uf, ds);
+        this.agent1 = empty.addAgent(uf, ds);
+        this.agent2 = empty.addAgent(uf, ds);
+        this.agent3 = empty.addAgent(uf, ds);
+        this.agent4 = empty.addAgent(uf, ds);
+        this.agent5 = empty.addAgent(uf, ds);
+        this.agent6 = empty.addAgent(uf, ds);
         assertEquals(NetworkTypes.EMPTY, empty.getType());
+    }
+
+    /**
+     * Test of getting full network type.
+     */
+    @Test
+    public void testFull() {
 
         Network full = new Network("Full Network");
-        agent1 = full.addAgent(uf, ds);
-        agent2 = full.addAgent(uf, ds);
-        agent3 = full.addAgent(uf, ds);
-        agent4 = full.addAgent(uf, ds);
-        agent5 = full.addAgent(uf, ds);
-        agent6 = full.addAgent(uf, ds);
-        agent1.addConnection(this.agent2);
-        agent1.addConnection(this.agent3);
-        agent1.addConnection(this.agent4);
-        agent1.addConnection(this.agent5);
-        agent1.addConnection(this.agent6);
-        agent2.addConnection(this.agent3);
-        agent2.addConnection(this.agent4);
-        agent2.addConnection(this.agent5);
-        agent2.addConnection(this.agent6);
-        agent3.addConnection(this.agent4);
-        agent3.addConnection(this.agent5);
-        agent3.addConnection(this.agent6);
-        agent4.addConnection(this.agent5);
-        agent4.addConnection(this.agent6);
-        agent5.addConnection(this.agent6);
+        this.agent1 = full.addAgent(uf, ds);
+        this.agent2 = full.addAgent(uf, ds);
+        this.agent3 = full.addAgent(uf, ds);
+        this.agent4 = full.addAgent(uf, ds);
+        this.agent5 = full.addAgent(uf, ds);
+        this.agent6 = full.addAgent(uf, ds);
+        this.agent1.addConnection(this.agent2);
+        this.agent1.addConnection(this.agent3);
+        this.agent1.addConnection(this.agent4);
+        this.agent1.addConnection(this.agent5);
+        this.agent1.addConnection(this.agent6);
+        this.agent2.addConnection(this.agent3);
+        this.agent2.addConnection(this.agent4);
+        this.agent2.addConnection(this.agent5);
+        this.agent2.addConnection(this.agent6);
+        this.agent3.addConnection(this.agent4);
+        this.agent3.addConnection(this.agent5);
+        this.agent3.addConnection(this.agent6);
+        this.agent4.addConnection(this.agent5);
+        this.agent4.addConnection(this.agent6);
+        this.agent5.addConnection(this.agent6);
         assertEquals(NetworkTypes.FULL, full.getType());
+    }
+
+    /**
+     * Test of getting ring network type.
+     */
+    @Test
+    public void testRing() {
 
         Network ring = new Network("Ring Network");
-        agent1 = ring.addAgent(uf, ds);
-        agent2 = ring.addAgent(uf, ds);
-        agent3 = ring.addAgent(uf, ds);
-        agent4 = ring.addAgent(uf, ds);
-        agent5 = ring.addAgent(uf, ds);
-        agent6 = ring.addAgent(uf, ds);
-        agent1.addConnection(this.agent2);
-        agent2.addConnection(this.agent3);
-        agent3.addConnection(this.agent4);
-        agent4.addConnection(this.agent5);
-        agent5.addConnection(this.agent6);
-        agent6.addConnection(this.agent1);
+        this.agent1 = ring.addAgent(uf, ds);
+        this.agent2 = ring.addAgent(uf, ds);
+        this.agent3 = ring.addAgent(uf, ds);
+        this.agent4 = ring.addAgent(uf, ds);
+        this.agent5 = ring.addAgent(uf, ds);
+        this.agent6 = ring.addAgent(uf, ds);
+        this.agent1.addConnection(this.agent2);
+        this.agent2.addConnection(this.agent3);
+        this.agent3.addConnection(this.agent4);
+        this.agent4.addConnection(this.agent5);
+        this.agent5.addConnection(this.agent6);
+        this.agent6.addConnection(this.agent1);
         assertEquals(NetworkTypes.RING, ring.getType());
+    }
+
+    /**
+     * Test of getting two rings network type.
+     */
+    @Test
+    public void testTwoRings() {
 
         Network twoRings = new Network("Two Rings Network");
-        agent1 = twoRings.addAgent(uf, ds);
-        agent2 = twoRings.addAgent(uf, ds);
-        agent3 = twoRings.addAgent(uf, ds);
-        agent4 = twoRings.addAgent(uf, ds);
-        agent5 = twoRings.addAgent(uf, ds);
-        agent6 = twoRings.addAgent(uf, ds);
-        agent1.addConnection(this.agent2);
-        agent2.addConnection(this.agent3);
-        agent3.addConnection(this.agent1);
-        agent4.addConnection(this.agent5);
-        agent5.addConnection(this.agent6);
-        agent6.addConnection(this.agent4);
+        this.agent1 = twoRings.addAgent(uf, ds);
+        this.agent2 = twoRings.addAgent(uf, ds);
+        this.agent3 = twoRings.addAgent(uf, ds);
+        this.agent4 = twoRings.addAgent(uf, ds);
+        this.agent5 = twoRings.addAgent(uf, ds);
+        this.agent6 = twoRings.addAgent(uf, ds);
+        this.agent1.addConnection(this.agent2);
+        this.agent2.addConnection(this.agent3);
+        this.agent3.addConnection(this.agent1);
+        this.agent4.addConnection(this.agent5);
+        this.agent5.addConnection(this.agent6);
+        this.agent6.addConnection(this.agent4);
         assertEquals(NetworkTypes.UNDEFINED, twoRings.getType());
+    }
+
+    /**
+     * Test of getting star network type.
+     */
+    @Test
+    public void testStar() {
 
         Network star = new Network("Star Network");
-        agent1 = star.addAgent(uf, ds);
-        agent2 = star.addAgent(uf, ds);
-        agent3 = star.addAgent(uf, ds);
-        agent4 = star.addAgent(uf, ds);
-        agent5 = star.addAgent(uf, ds);
-        agent6 = star.addAgent(uf, ds);
-        agent1.addConnection(this.agent2);
-        agent1.addConnection(this.agent3);
-        agent1.addConnection(this.agent4);
-        agent1.addConnection(this.agent5);
-        agent1.addConnection(this.agent6);
+        this.agent1 = star.addAgent(uf, ds);
+        this.agent2 = star.addAgent(uf, ds);
+        this.agent3 = star.addAgent(uf, ds);
+        this.agent4 = star.addAgent(uf, ds);
+        this.agent5 = star.addAgent(uf, ds);
+        this.agent6 = star.addAgent(uf, ds);
+        this.agent1.addConnection(this.agent2);
+        this.agent1.addConnection(this.agent3);
+        this.agent1.addConnection(this.agent4);
+        this.agent1.addConnection(this.agent5);
+        this.agent1.addConnection(this.agent6);
         assertEquals(NetworkTypes.STAR, star.getType());
+    }
+
+    /**
+     * Test of getting incomplete star network type.
+     */
+    @Test
+    public void testIncompleteStar() {
 
         Network incompleteStar = new Network("Incomplete Star Network");
-        agent1 = incompleteStar.addAgent(uf, ds);
-        agent2 = incompleteStar.addAgent(uf, ds);
-        agent3 = incompleteStar.addAgent(uf, ds);
-        agent4 = incompleteStar.addAgent(uf, ds);
-        agent5 = incompleteStar.addAgent(uf, ds);
-        agent6 = incompleteStar.addAgent(uf, ds);
-        agent1.addConnection(this.agent2);
-        agent1.addConnection(this.agent3);
-        agent1.addConnection(this.agent4);
-        agent1.addConnection(this.agent5);
+        this.agent1 = incompleteStar.addAgent(uf, ds);
+        this.agent2 = incompleteStar.addAgent(uf, ds);
+        this.agent3 = incompleteStar.addAgent(uf, ds);
+        this.agent4 = incompleteStar.addAgent(uf, ds);
+        this.agent5 = incompleteStar.addAgent(uf, ds);
+        this.agent6 = incompleteStar.addAgent(uf, ds);
+        this.agent1.addConnection(this.agent2);
+        this.agent1.addConnection(this.agent3);
+        this.agent1.addConnection(this.agent4);
+        this.agent1.addConnection(this.agent5);
         assertEquals(NetworkTypes.UNDEFINED, incompleteStar.getType());
 
     }

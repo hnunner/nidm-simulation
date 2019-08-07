@@ -719,7 +719,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         Iterator<Node> bfIt = this.getBreadthFirstIterator();
         while (bfIt.hasNext()) {
             Node node = bfIt.next();
-            if (node.getId() == agent.getId()) {
+            if (node.getId().equals(agent.getId())) {
                 return true;
             }
         }
