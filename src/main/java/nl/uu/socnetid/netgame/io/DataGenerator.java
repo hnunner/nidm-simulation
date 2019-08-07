@@ -12,13 +12,13 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.graphstream.graph.Edge;
 
-import nl.uu.socnetid.netgame.actors.Actor;
-import nl.uu.socnetid.netgame.actors.ActorListener;
+import nl.uu.socnetid.netgame.agents.Agent;
+import nl.uu.socnetid.netgame.agents.AgentListener;
 import nl.uu.socnetid.netgame.diseases.DiseaseSpecs;
 import nl.uu.socnetid.netgame.diseases.types.DiseaseType;
 import nl.uu.socnetid.netgame.io.network.GEXFWriter;
-import nl.uu.socnetid.netgame.io.types.ActorParameters;
-import nl.uu.socnetid.netgame.io.types.ActorProperties;
+import nl.uu.socnetid.netgame.io.types.AgentParameters;
+import nl.uu.socnetid.netgame.io.types.AgentProperties;
 import nl.uu.socnetid.netgame.io.types.DiseaseParameters;
 import nl.uu.socnetid.netgame.io.types.DiseaseProperties;
 import nl.uu.socnetid.netgame.io.types.NetworkParameters;
@@ -38,7 +38,7 @@ import nl.uu.socnetid.netgame.utilities.UtilityFunction;
  *
  * @author Hendrik Nunner
  */
-public class DataGenerator implements ActorListener, SimulationListener {
+public class DataGenerator implements AgentListener, SimulationListener {
 
     // logger
     private static final Logger logger = Logger.getLogger(DataGenerator.class);
@@ -73,14 +73,14 @@ public class DataGenerator implements ActorListener, SimulationListener {
     private static final int ROUNDS_PRE_EPIDEMIC = 150;
     private static final int ROUNDS_EPIDEMIC = 200;
 
-    // share of peers an actor evaluates per round
+    // share of peers an agent evaluates per round
     private static final double PHI = 0.4;
 
     // what kind of data to export
     private static final boolean EXPORT_SUMMARY_DATA = true;
     private static final boolean EXPORT_ROUND_SUMMARY_DATA = true;
-    private static final boolean EXPORT_ACTOR_DETAIL_DATA = false;
-    private static final boolean EXPORT_ACTOR_DETAIL_REDUCED_DATA = true;
+    private static final boolean EXPORT_AGENT_DETAIL_DATA = false;
+    private static final boolean EXPORT_AGENT_DETAIL_REDUCED_DATA = true;
     private static final boolean EXPORT_GEXF_DATA = false;
 
     // simulation stage
@@ -127,7 +127,7 @@ public class DataGenerator implements ActorListener, SimulationListener {
     // CSV writers
     private FileWriter simulationSummaryCSVWriter;
     private FileWriter roundSummaryCSVWriter;
-    private FileWriter actorDetailsCSVWriter;
+    private FileWriter agentDetailsCSVWriter;
 
     // unique parameter combination
     private int upc = 0;
@@ -212,10 +212,10 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                     UtilityFunction uf = new CIDMo(alpha, KAPPA, beta, LAMDA, c);
                                                     this.ds = new DiseaseSpecs(
                                                             DISEASE_TYPE, tau, s, gamma, mu);
-                                                    // add actors - with RPi == RSigma!!!
+                                                    // add agents - with RPi == RSigma!!!
                                                     for (int i = 0; i < N; i++) {
-                                                        Actor actor = network.addActor(uf, this.ds, r, r, PHI);
-                                                        actor.addActorListener(this);
+                                                        Agent agent = network.addAgent(uf, this.ds, r, r, PHI);
+                                                        agent.addAgentListener(this);
                                                     }
                                                     // create full network if required
                                                     if (!this.startWithEmptyNetwork) {
@@ -241,11 +241,11 @@ public class DataGenerator implements ActorListener, SimulationListener {
                                                     this.avCostsDistance1 = network.getAvCostsDistance1();
                                                     this.avCostsDisease = network.getAvCostsDisease();
                                                     // TODO improve:
-                                                    if (!EXPORT_ACTOR_DETAIL_DATA && EXPORT_ACTOR_DETAIL_REDUCED_DATA) {
-                                                        logActorDetails(simulation);
+                                                    if (!EXPORT_AGENT_DETAIL_DATA && EXPORT_AGENT_DETAIL_REDUCED_DATA) {
+                                                        logAgentDetails(simulation);
                                                     }
                                                     // EPIDEMIC AND POST-EPIDEMIC STAGES
-                                                    Actor indexCase = network.infectRandomActor(ds);
+                                                    Agent indexCase = network.infectRandomAgent(ds);
                                                     this.simStage = SimulationStage.ACTIVE_EPIDEMIC;
 
                                                     // save index case properties of pre-epidemic stage
@@ -296,9 +296,9 @@ public class DataGenerator implements ActorListener, SimulationListener {
         if (EXPORT_ROUND_SUMMARY_DATA) {
             initRoundSummaryCSV();
         }
-        // actor details
-        if (EXPORT_ACTOR_DETAIL_DATA || EXPORT_ACTOR_DETAIL_REDUCED_DATA) {
-            initActorDetailsCSV();
+        // agent details
+        if (EXPORT_AGENT_DETAIL_DATA || EXPORT_AGENT_DETAIL_REDUCED_DATA) {
+            initAgentDetailsCSV();
         }
     }
 
@@ -357,15 +357,15 @@ public class DataGenerator implements ActorListener, SimulationListener {
         simulationSummaryCSVCols.add(NetworkProperties.DENSITY_PRE.toString());
         simulationSummaryCSVCols.add(NetworkProperties.DENSITY_POST.toString());
         // index case
-        simulationSummaryCSVCols.add(ActorProperties.DEGREE1.toString());
-        simulationSummaryCSVCols.add(ActorProperties.DEGREE2.toString());
-        simulationSummaryCSVCols.add(ActorProperties.CLOSENESS.toString());
-        simulationSummaryCSVCols.add(ActorProperties.CLUSTERING.toString());
-        simulationSummaryCSVCols.add(ActorProperties.UTIL.toString());
-        simulationSummaryCSVCols.add(ActorProperties.BENEFIT_DIST1.toString());
-        simulationSummaryCSVCols.add(ActorProperties.BENEFIT_DIST2.toString());
-        simulationSummaryCSVCols.add(ActorProperties.COSTS_DIST1.toString());
-        simulationSummaryCSVCols.add(ActorProperties.COSTS_DISEASE.toString());
+        simulationSummaryCSVCols.add(AgentProperties.DEGREE1.toString());
+        simulationSummaryCSVCols.add(AgentProperties.DEGREE2.toString());
+        simulationSummaryCSVCols.add(AgentProperties.CLOSENESS.toString());
+        simulationSummaryCSVCols.add(AgentProperties.CLUSTERING.toString());
+        simulationSummaryCSVCols.add(AgentProperties.UTIL.toString());
+        simulationSummaryCSVCols.add(AgentProperties.BENEFIT_DIST1.toString());
+        simulationSummaryCSVCols.add(AgentProperties.BENEFIT_DIST2.toString());
+        simulationSummaryCSVCols.add(AgentProperties.COSTS_DIST1.toString());
+        simulationSummaryCSVCols.add(AgentProperties.COSTS_DISEASE.toString());
 
         // FILE SYSTEM
         try {
@@ -546,135 +546,135 @@ public class DataGenerator implements ActorListener, SimulationListener {
     }
 
     /**
-     * Initializes the CSV file for actor detail data.
+     * Initializes the CSV file for agent detail data.
      */
-    private void initActorDetailsCSV() {
+    private void initAgentDetailsCSV() {
 
-        List<String> actorDetailsCSVCols = new LinkedList<String>();
+        List<String> agentDetailsCSVCols = new LinkedList<String>();
 
         // PARAMETERS
         // simulation
-        actorDetailsCSVCols.add(SimulationParameters.UID.toString());
-        actorDetailsCSVCols.add(SimulationParameters.UPC.toString());
-        actorDetailsCSVCols.add(SimulationParameters.SIM.toString());
+        agentDetailsCSVCols.add(SimulationParameters.UID.toString());
+        agentDetailsCSVCols.add(SimulationParameters.UPC.toString());
+        agentDetailsCSVCols.add(SimulationParameters.SIM.toString());
         // network
-        actorDetailsCSVCols.add(NetworkParameters.N.toString());
-        // actor
-        actorDetailsCSVCols.add(ActorParameters.ID.toString());
-        actorDetailsCSVCols.add(ActorParameters.R.toString());
-        actorDetailsCSVCols.add(ActorParameters.ALPHA.toString());
-        actorDetailsCSVCols.add(ActorParameters.BETA.toString());
-        actorDetailsCSVCols.add(ActorParameters.C.toString());
-        actorDetailsCSVCols.add(ActorParameters.TAU.toString());
-        actorDetailsCSVCols.add(ActorParameters.S.toString());
-        actorDetailsCSVCols.add(ActorParameters.GAMMA.toString());
-        actorDetailsCSVCols.add(ActorParameters.MU.toString());
+        agentDetailsCSVCols.add(NetworkParameters.N.toString());
+        // agent
+        agentDetailsCSVCols.add(AgentParameters.ID.toString());
+        agentDetailsCSVCols.add(AgentParameters.R.toString());
+        agentDetailsCSVCols.add(AgentParameters.ALPHA.toString());
+        agentDetailsCSVCols.add(AgentParameters.BETA.toString());
+        agentDetailsCSVCols.add(AgentParameters.C.toString());
+        agentDetailsCSVCols.add(AgentParameters.TAU.toString());
+        agentDetailsCSVCols.add(AgentParameters.S.toString());
+        agentDetailsCSVCols.add(AgentParameters.GAMMA.toString());
+        agentDetailsCSVCols.add(AgentParameters.MU.toString());
 
         // PROPERTIES
         // simulation
-        actorDetailsCSVCols.add(SimulationProperties.SIM_ROUND.toString());
-        actorDetailsCSVCols.add(SimulationProperties.SIM_STAGE.toString());
+        agentDetailsCSVCols.add(SimulationProperties.SIM_ROUND.toString());
+        agentDetailsCSVCols.add(SimulationProperties.SIM_STAGE.toString());
         // network
-        actorDetailsCSVCols.add(NetworkProperties.STABLE.toString());
-        actorDetailsCSVCols.add(NetworkProperties.DENSITY.toString());
-        actorDetailsCSVCols.add(NetworkProperties.AV_DEGREE.toString());
-        actorDetailsCSVCols.add(NetworkProperties.AV_CLUSTERING.toString());
-        // actor
-        actorDetailsCSVCols.add(ActorProperties.SATISFIED.toString());
-        actorDetailsCSVCols.add(ActorProperties.UTIL.toString());
-        actorDetailsCSVCols.add(ActorProperties.BENEFIT_DIST1.toString());
-        actorDetailsCSVCols.add(ActorProperties.BENEFIT_DIST2.toString());
-        actorDetailsCSVCols.add(ActorProperties.COSTS_DIST1.toString());
-        actorDetailsCSVCols.add(ActorProperties.COSTS_DISEASE.toString());
-        actorDetailsCSVCols.add(ActorProperties.DISEASE_STATE.toString());
-        actorDetailsCSVCols.add(ActorProperties.DISEASE_ROUNDS_REMAINING.toString());
-        actorDetailsCSVCols.add(ActorProperties.DEGREE1.toString());
-        actorDetailsCSVCols.add(ActorProperties.DEGREE2.toString());
-        actorDetailsCSVCols.add(ActorProperties.CLOSENESS.toString());
-        actorDetailsCSVCols.add(ActorProperties.CONS_BROKEN_ACTIVE.toString());
-        actorDetailsCSVCols.add(ActorProperties.CONS_BROKEN_PASSIVE.toString());
-        actorDetailsCSVCols.add(ActorProperties.CONS_OUT_ACCEPTED.toString());
-        actorDetailsCSVCols.add(ActorProperties.CONS_OUT_DECLINED.toString());
-        actorDetailsCSVCols.add(ActorProperties.CONS_IN_ACCEPTED.toString());
-        actorDetailsCSVCols.add(ActorProperties.CONS_IN_DECLINED.toString());
+        agentDetailsCSVCols.add(NetworkProperties.STABLE.toString());
+        agentDetailsCSVCols.add(NetworkProperties.DENSITY.toString());
+        agentDetailsCSVCols.add(NetworkProperties.AV_DEGREE.toString());
+        agentDetailsCSVCols.add(NetworkProperties.AV_CLUSTERING.toString());
+        // agent
+        agentDetailsCSVCols.add(AgentProperties.SATISFIED.toString());
+        agentDetailsCSVCols.add(AgentProperties.UTIL.toString());
+        agentDetailsCSVCols.add(AgentProperties.BENEFIT_DIST1.toString());
+        agentDetailsCSVCols.add(AgentProperties.BENEFIT_DIST2.toString());
+        agentDetailsCSVCols.add(AgentProperties.COSTS_DIST1.toString());
+        agentDetailsCSVCols.add(AgentProperties.COSTS_DISEASE.toString());
+        agentDetailsCSVCols.add(AgentProperties.DISEASE_STATE.toString());
+        agentDetailsCSVCols.add(AgentProperties.DISEASE_ROUNDS_REMAINING.toString());
+        agentDetailsCSVCols.add(AgentProperties.DEGREE1.toString());
+        agentDetailsCSVCols.add(AgentProperties.DEGREE2.toString());
+        agentDetailsCSVCols.add(AgentProperties.CLOSENESS.toString());
+        agentDetailsCSVCols.add(AgentProperties.CONS_BROKEN_ACTIVE.toString());
+        agentDetailsCSVCols.add(AgentProperties.CONS_BROKEN_PASSIVE.toString());
+        agentDetailsCSVCols.add(AgentProperties.CONS_OUT_ACCEPTED.toString());
+        agentDetailsCSVCols.add(AgentProperties.CONS_OUT_DECLINED.toString());
+        agentDetailsCSVCols.add(AgentProperties.CONS_IN_ACCEPTED.toString());
+        agentDetailsCSVCols.add(AgentProperties.CONS_IN_DECLINED.toString());
 
         try {
-            this.actorDetailsCSVWriter = new FileWriter(this.exportDir + "actor-details.csv");
-            CSVUtils.writeLine(this.actorDetailsCSVWriter, actorDetailsCSVCols);
+            this.agentDetailsCSVWriter = new FileWriter(this.exportDir + "agent-details.csv");
+            CSVUtils.writeLine(this.agentDetailsCSVWriter, agentDetailsCSVCols);
         } catch (IOException e) {
             logger.error(e);
         }
     }
 
     /**
-     * Logs the actor detail data.
+     * Logs the agent detail data.
      *
      * @param simulation
-     *          the simulation to log the actor details for.
+     *          the simulation to log the agent details for.
      */
-    private void logActorDetails(Simulation simulation) {
+    private void logAgentDetails(Simulation simulation) {
         Network network = simulation.getNetwork();
-        List<Actor> actors = new LinkedList<Actor>(network.getActors());
-        Collections.sort(actors);
+        List<Agent> agents = new LinkedList<Agent>(network.getAgents());
+        Collections.sort(agents);
 
-        for (Actor actor : actors) {
+        for (Agent agent : agents) {
 
             // a single CSV row
-            List<String> actorDetailsCSVCols = new LinkedList<String>();
+            List<String> agentDetailsCSVCols = new LinkedList<String>();
 
             // PARAMETERS
             // simulation
-            actorDetailsCSVCols.add(this.uid);
-            actorDetailsCSVCols.add(String.valueOf(this.upc));
-            actorDetailsCSVCols.add(String.valueOf(this.simPerUpc));
+            agentDetailsCSVCols.add(this.uid);
+            agentDetailsCSVCols.add(String.valueOf(this.upc));
+            agentDetailsCSVCols.add(String.valueOf(this.simPerUpc));
             // network
-            actorDetailsCSVCols.add(String.valueOf(network.getN()));
-            // actor
-            actorDetailsCSVCols.add(actor.getId());
-            actorDetailsCSVCols.add(String.valueOf(actor.getRPi()));   // RPi == RSigma!!!
-            actorDetailsCSVCols.add(String.valueOf(actor.getUtilityFunction().getAlpha()));
-            actorDetailsCSVCols.add(String.valueOf(actor.getUtilityFunction().getBeta()));
-            actorDetailsCSVCols.add(String.valueOf(actor.getUtilityFunction().getC()));
-            actorDetailsCSVCols.add(String.valueOf(actor.getDiseaseSpecs().getTau()));
-            actorDetailsCSVCols.add(String.valueOf(actor.getDiseaseSpecs().getS()));
-            actorDetailsCSVCols.add(String.valueOf(actor.getDiseaseSpecs().getGamma()));
-            actorDetailsCSVCols.add(String.valueOf(actor.getDiseaseSpecs().getMu()));
+            agentDetailsCSVCols.add(String.valueOf(network.getN()));
+            // agent
+            agentDetailsCSVCols.add(agent.getId());
+            agentDetailsCSVCols.add(String.valueOf(agent.getRPi()));   // RPi == RSigma!!!
+            agentDetailsCSVCols.add(String.valueOf(agent.getUtilityFunction().getAlpha()));
+            agentDetailsCSVCols.add(String.valueOf(agent.getUtilityFunction().getBeta()));
+            agentDetailsCSVCols.add(String.valueOf(agent.getUtilityFunction().getC()));
+            agentDetailsCSVCols.add(String.valueOf(agent.getDiseaseSpecs().getTau()));
+            agentDetailsCSVCols.add(String.valueOf(agent.getDiseaseSpecs().getS()));
+            agentDetailsCSVCols.add(String.valueOf(agent.getDiseaseSpecs().getGamma()));
+            agentDetailsCSVCols.add(String.valueOf(agent.getDiseaseSpecs().getMu()));
 
             // PROPERTIES
             // simulation
-            actorDetailsCSVCols.add(String.valueOf(simulation.getRounds()));
-            actorDetailsCSVCols.add(String.valueOf(this.simStage));
+            agentDetailsCSVCols.add(String.valueOf(simulation.getRounds()));
+            agentDetailsCSVCols.add(String.valueOf(this.simStage));
             // network
-            actorDetailsCSVCols.add(String.valueOf(network.isStable()));
-            actorDetailsCSVCols.add(String.valueOf(network.getDensity()));
-            actorDetailsCSVCols.add(String.valueOf(network.getAvDegree()));
-            actorDetailsCSVCols.add(String.valueOf(network.getAvClustering()));
-            // actor
-            actorDetailsCSVCols.add(String.valueOf(actor.isSatisfied()));
-            actorDetailsCSVCols.add(String.valueOf(actor.getUtility().getOverallUtility()));
-            actorDetailsCSVCols.add(String.valueOf(actor.getUtility().getBenefitDirectConnections()));
-            actorDetailsCSVCols.add(String.valueOf(actor.getUtility().getBenefitIndirectConnections()));
-            actorDetailsCSVCols.add(String.valueOf(actor.getUtility().getCostsDirectConnections()));
-            actorDetailsCSVCols.add(String.valueOf(actor.getUtility().getEffectOfDisease()));
-            actorDetailsCSVCols.add(actor.getDiseaseGroup().name());
-            if (actor.isInfected()) {
-                actorDetailsCSVCols.add(String.valueOf(actor.getTimeUntilRecovered()));
+            agentDetailsCSVCols.add(String.valueOf(network.isStable()));
+            agentDetailsCSVCols.add(String.valueOf(network.getDensity()));
+            agentDetailsCSVCols.add(String.valueOf(network.getAvDegree()));
+            agentDetailsCSVCols.add(String.valueOf(network.getAvClustering()));
+            // agent
+            agentDetailsCSVCols.add(String.valueOf(agent.isSatisfied()));
+            agentDetailsCSVCols.add(String.valueOf(agent.getUtility().getOverallUtility()));
+            agentDetailsCSVCols.add(String.valueOf(agent.getUtility().getBenefitDirectConnections()));
+            agentDetailsCSVCols.add(String.valueOf(agent.getUtility().getBenefitIndirectConnections()));
+            agentDetailsCSVCols.add(String.valueOf(agent.getUtility().getCostsDirectConnections()));
+            agentDetailsCSVCols.add(String.valueOf(agent.getUtility().getEffectOfDisease()));
+            agentDetailsCSVCols.add(agent.getDiseaseGroup().name());
+            if (agent.isInfected()) {
+                agentDetailsCSVCols.add(String.valueOf(agent.getTimeUntilRecovered()));
             } else {
-                actorDetailsCSVCols.add("NA");
+                agentDetailsCSVCols.add("NA");
             }
-            actorDetailsCSVCols.add(String.valueOf(StatsComputer.computeFirstOrderDegree(actor)));
-            actorDetailsCSVCols.add(String.valueOf(StatsComputer.computeSecondOrderDegree(actor)));
-            actorDetailsCSVCols.add(String.valueOf(StatsComputer.computeCloseness(actor)));
-            actorDetailsCSVCols.add(String.valueOf(actor.getConnectionStats().getBrokenTiesActive()));
-            actorDetailsCSVCols.add(String.valueOf(actor.getConnectionStats().getBrokenTiesPassive()));
-            actorDetailsCSVCols.add(String.valueOf(actor.getConnectionStats().getAcceptedRequestsOut()));
-            actorDetailsCSVCols.add(String.valueOf(actor.getConnectionStats().getDeclinedRequestsOut()));
-            actorDetailsCSVCols.add(String.valueOf(actor.getConnectionStats().getAcceptedRequestsIn()));
-            actorDetailsCSVCols.add(String.valueOf(actor.getConnectionStats().getDeclinedRequestsIn()));
+            agentDetailsCSVCols.add(String.valueOf(StatsComputer.computeFirstOrderDegree(agent)));
+            agentDetailsCSVCols.add(String.valueOf(StatsComputer.computeSecondOrderDegree(agent)));
+            agentDetailsCSVCols.add(String.valueOf(StatsComputer.computeCloseness(agent)));
+            agentDetailsCSVCols.add(String.valueOf(agent.getConnectionStats().getBrokenTiesActive()));
+            agentDetailsCSVCols.add(String.valueOf(agent.getConnectionStats().getBrokenTiesPassive()));
+            agentDetailsCSVCols.add(String.valueOf(agent.getConnectionStats().getAcceptedRequestsOut()));
+            agentDetailsCSVCols.add(String.valueOf(agent.getConnectionStats().getDeclinedRequestsOut()));
+            agentDetailsCSVCols.add(String.valueOf(agent.getConnectionStats().getAcceptedRequestsIn()));
+            agentDetailsCSVCols.add(String.valueOf(agent.getConnectionStats().getDeclinedRequestsIn()));
 
             try {
-                CSVUtils.writeLine(this.actorDetailsCSVWriter, actorDetailsCSVCols);
-                this.actorDetailsCSVWriter.flush();
+                CSVUtils.writeLine(this.agentDetailsCSVWriter, agentDetailsCSVCols);
+                this.agentDetailsCSVWriter.flush();
             } catch (IOException e) {
                 logger.error(e);
             }
@@ -694,9 +694,9 @@ public class DataGenerator implements ActorListener, SimulationListener {
                 this.roundSummaryCSVWriter.flush();
                 this.roundSummaryCSVWriter.close();
             }
-            if (EXPORT_ACTOR_DETAIL_DATA || EXPORT_ACTOR_DETAIL_REDUCED_DATA) {
-                this.actorDetailsCSVWriter.flush();
-                this.actorDetailsCSVWriter.close();
+            if (EXPORT_AGENT_DETAIL_DATA || EXPORT_AGENT_DETAIL_REDUCED_DATA) {
+                this.agentDetailsCSVWriter.flush();
+                this.agentDetailsCSVWriter.close();
             }
         } catch (IOException e) {
             logger.error(e);
@@ -705,50 +705,50 @@ public class DataGenerator implements ActorListener, SimulationListener {
 
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.netgame.actors.ActorListener#notifyAttributeAdded(
-     * nl.uu.socnetid.netgame.actors.Actor, java.lang.String, java.lang.Object)
+     * @see nl.uu.socnetid.netgame.agents.AgentListener#notifyAttributeAdded(
+     * nl.uu.socnetid.netgame.agents.Agent, java.lang.String, java.lang.Object)
      */
     @Override
-    public void notifyAttributeAdded(Actor actor, String attribute, Object value) { }
+    public void notifyAttributeAdded(Agent agent, String attribute, Object value) { }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.netgame.actors.ActorListener#notifyAttributeChanged(
-     * nl.uu.socnetid.netgame.actors.Actor, java.lang.String, java.lang.Object, java.lang.Object)
+     * @see nl.uu.socnetid.netgame.agents.AgentListener#notifyAttributeChanged(
+     * nl.uu.socnetid.netgame.agents.Agent, java.lang.String, java.lang.Object, java.lang.Object)
      */
     @Override
-    public void notifyAttributeChanged(Actor actor, String attribute, Object oldValue, Object newValue) { }
+    public void notifyAttributeChanged(Agent agent, String attribute, Object oldValue, Object newValue) { }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.netgame.actors.ActorListener#notifyAttributeRemoved(
-     * nl.uu.socnetid.netgame.actors.Actor, java.lang.String)
+     * @see nl.uu.socnetid.netgame.agents.AgentListener#notifyAttributeRemoved(
+     * nl.uu.socnetid.netgame.agents.Agent, java.lang.String)
      */
     @Override
-    public void notifyAttributeRemoved(Actor actor, String attribute) { }
+    public void notifyAttributeRemoved(Agent agent, String attribute) { }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.netgame.actors.ActorListener#notifyConnectionAdded(
-     * org.graphstream.graph.Edge, nl.uu.socnetid.netgame.actors.Actor, nl.uu.socnetid.netgame.actors.Actor)
+     * @see nl.uu.socnetid.netgame.agents.AgentListener#notifyConnectionAdded(
+     * org.graphstream.graph.Edge, nl.uu.socnetid.netgame.agents.Agent, nl.uu.socnetid.netgame.agents.Agent)
      */
     @Override
-    public void notifyConnectionAdded(Edge edge, Actor actor1, Actor actor2) { }
+    public void notifyConnectionAdded(Edge edge, Agent agent1, Agent agent2) { }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.netgame.actors.ActorListener#notifyConnectionRemoved(
-     * nl.uu.socnetid.netgame.actors.Actor, org.graphstream.graph.Edge)
+     * @see nl.uu.socnetid.netgame.agents.AgentListener#notifyConnectionRemoved(
+     * nl.uu.socnetid.netgame.agents.Agent, org.graphstream.graph.Edge)
      */
     @Override
-    public void notifyConnectionRemoved(Actor actor, Edge edge) {
+    public void notifyConnectionRemoved(Agent agent, Edge edge) {
         if (this.simStage == SimulationStage.ACTIVE_EPIDEMIC) {
             this.tiesBrokenWithInfectionPresent = true;
         }
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.netgame.actors.ActorListener#notifyRoundFinished(
-     * nl.uu.socnetid.netgame.actors.Actor)
+     * @see nl.uu.socnetid.netgame.agents.AgentListener#notifyRoundFinished(
+     * nl.uu.socnetid.netgame.agents.Agent)
      */
     @Override
-    public void notifyRoundFinished(Actor actor) { }
+    public void notifyRoundFinished(Agent agent) { }
 
 
     /* (non-Javadoc)
@@ -760,8 +760,8 @@ public class DataGenerator implements ActorListener, SimulationListener {
         if (EXPORT_ROUND_SUMMARY_DATA) {
             logRoundSummaryCSV(simulation);
         }
-        if (EXPORT_ACTOR_DETAIL_DATA) {
-            logActorDetails(simulation);
+        if (EXPORT_AGENT_DETAIL_DATA) {
+            logAgentDetails(simulation);
         }
     }
 
@@ -774,8 +774,8 @@ public class DataGenerator implements ActorListener, SimulationListener {
         this.roundsLastInfection = simulation.getRounds() - this.roundStartInfection;
         this.simStage = SimulationStage.POST_EPIDEMIC;
         // TODO improve
-        if (!EXPORT_ACTOR_DETAIL_DATA && EXPORT_ACTOR_DETAIL_REDUCED_DATA) {
-            logActorDetails(simulation);
+        if (!EXPORT_AGENT_DETAIL_DATA && EXPORT_AGENT_DETAIL_REDUCED_DATA) {
+            logAgentDetails(simulation);
         }
     }
 
@@ -790,8 +790,8 @@ public class DataGenerator implements ActorListener, SimulationListener {
             if (EXPORT_ROUND_SUMMARY_DATA) {
                 logRoundSummaryCSV(simulation);
             }
-            if (EXPORT_ACTOR_DETAIL_DATA || EXPORT_ACTOR_DETAIL_REDUCED_DATA) {
-                logActorDetails(simulation);
+            if (EXPORT_AGENT_DETAIL_DATA || EXPORT_AGENT_DETAIL_REDUCED_DATA) {
+                logAgentDetails(simulation);
             }
         }
     }

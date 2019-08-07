@@ -3,7 +3,7 @@ package nl.uu.socnetid.netgame.io.types;
 /**
  * @author Hendrik Nunner
  */
-public enum ActorProperties {
+public enum AgentProperties {
 
 //    agentsDetailsCSVCols.add("act.prop.satisfied");
 //    agentsDetailsCSVCols.add("act.prop.util.overall");
@@ -51,7 +51,7 @@ public enum ActorProperties {
      * @param name
      *          the name of the enum
      */
-    ActorProperties(String name) {
+    AgentProperties(String name) {
         this.name = name;
     }
 

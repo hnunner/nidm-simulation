@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import nl.uu.socnetid.netgame.actors.Actor;
+import nl.uu.socnetid.netgame.agents.Agent;
 import nl.uu.socnetid.netgame.networks.Network;
 import nl.uu.socnetid.netgame.simulation.Simulation;
 
@@ -23,49 +23,49 @@ public final class StatsComputer {
 
 
     /**
-     * Computes the first order degree of an actor.
+     * Computes the first order degree of an agent.
      *
-     * @param actor
-     *          the actor to compute the first degree for
-     * @return the first order degree of the actor
+     * @param agent
+     *          the agent to compute the first degree for
+     * @return the first order degree of the agent
      */
-    public static int computeFirstOrderDegree(Actor actor) {
-        return actor.getDegree();
+    public static int computeFirstOrderDegree(Agent agent) {
+        return agent.getDegree();
     }
 
     /**
-     * Computes the second order degree of an actor.
+     * Computes the second order degree of an agent.
      *
-     * @param actor
-     *          the actor to compute the second degree for
-     * @return the second order degree of the actor
+     * @param agent
+     *          the agent to compute the second degree for
+     * @return the second order degree of the agent
      */
-    public static int computeSecondOrderDegree(Actor actor) {
-        return StatsComputer.computeLocalActorConnectionsStats(actor).getM();
+    public static int computeSecondOrderDegree(Agent agent) {
+        return StatsComputer.computeLocalAgentConnectionsStats(agent).getM();
     }
 
     /**
-     * Computes the closeness of an actor. Based on Buechel & Buskens (2013) formula (1), p.163.
+     * Computes the closeness of an agent. Based on Buechel & Buskens (2013) formula (1), p.163.
      *
-     * @param actor
-     *          the actor to compute the closeness for
-     * @return the closeness of the actor
+     * @param agent
+     *          the agent to compute the closeness for
+     * @return the closeness of the agent
      */
-    public static double computeCloseness(Actor actor) {
+    public static double computeCloseness(Agent agent) {
 
         // Note: M = n, see Buechel & Buskens (2013), p. 162
-        double n = actor.getCoActors().size() + 1;              // all co-actors plus the actor himself
+        double n = agent.getCoAgents().size() + 1;              // all co-agents plus the agent himself
         double M = n;
         double cumulatedDistance = 0.0;
 
         // distances
-        // 1st calculate shortest paths for all co-actors
+        // 1st calculate shortest paths for all co-agents
         DijkstraShortestPath dsp = new DijkstraShortestPath();
-        dsp.executeShortestPaths(actor);
-        Iterator<Actor> coActorsIt = actor.getCoActors().iterator();
-        while (coActorsIt.hasNext()) {
-            Actor coActor = coActorsIt.next();
-            Integer shortestPathLength = dsp.getShortestPathLength(coActor);
+        dsp.executeShortestPaths(agent);
+        Iterator<Agent> coAgentsIt = agent.getCoAgents().iterator();
+        while (coAgentsIt.hasNext()) {
+            Agent coAgent = coAgentsIt.next();
+            Integer shortestPathLength = dsp.getShortestPathLength(coAgent);
             // if path exists
             if (shortestPathLength != null) {
                 // distance of connected nodes
@@ -89,7 +89,7 @@ public final class StatsComputer {
      */
     public static GlobalNetworkStats computeGlobalNetworkStats(Network network) {
 
-        Collection<Actor> actors = network.getActors();
+        Collection<Agent> agents = network.getAgents();
 
         boolean stable = true;
         int connections = 0;
@@ -99,30 +99,30 @@ public final class StatsComputer {
         int diameter = 0;
         double avDistance = 0.0;
 
-        Iterator<Actor> actorsIt = actors.iterator();
-        while (actorsIt.hasNext()) {
-            Actor actor = actorsIt.next();
-            stable &= actor.isSatisfied();
-            connections += actor.getConnections().size();
+        Iterator<Agent> agentsIt = agents.iterator();
+        while (agentsIt.hasNext()) {
+            Agent agent = agentsIt.next();
+            stable &= agent.isSatisfied();
+            connections += agent.getConnections().size();
         }
-        avDegree = actors.size() == 0 ? 0.0 : (double) connections / actors.size();
+        avDegree = agents.size() == 0 ? 0.0 : (double) connections / agents.size();
         connections /= 2;
 
         return new GlobalNetworkStats(stable, connections, avDegree, diameter, avDistance);
     }
 
     /**
-     * Computes the global actor stats for the given network.
+     * Computes the global agent stats for the given network.
      *
      * @param network
      *          the network to compute the global network stats for
-     * @return the global actor stats for the given network
+     * @return the global agent stats for the given network
      */
-    public static GlobalActorStats computeGlobalActorStats(Network network) {
+    public static GlobalAgentStats computeGlobalAgentStats(Network network) {
 
-        // all actors
-        Collection<Actor> actors = network.getActors();
-        int n = actors.size();
+        // all agents
+        Collection<Agent> agents = network.getAgents();
+        int n = agents.size();
 
         // disease groups
         int nS = 0;
@@ -141,13 +141,13 @@ public final class StatsComputer {
         int nRPiSeeking = 0;
         double cumRPi = 0.0;
 
-        // check all actors
-        Iterator<Actor> actorsIt = actors.iterator();
-        while (actorsIt.hasNext()) {
-            Actor actor = actorsIt.next();
+        // check all agents
+        Iterator<Agent> agentsIt = agents.iterator();
+        while (agentsIt.hasNext()) {
+            Agent agent = agentsIt.next();
 
             // disease group
-            switch (actor.getDiseaseGroup()) {
+            switch (agent.getDiseaseGroup()) {
                 case SUSCEPTIBLE:
                     nS++;
                     break;
@@ -161,12 +161,12 @@ public final class StatsComputer {
                     break;
 
                 default:
-                    logger.warn("Unknown disease group: " + actor.getDiseaseGroup());
+                    logger.warn("Unknown disease group: " + agent.getDiseaseGroup());
             }
 
             // risk behavior
             // disease severity
-            double rSigma = actor.getRSigma();
+            double rSigma = agent.getRSigma();
             if (rSigma > 1) {
                 nRSigmaAverse++;
             } else if (rSigma < 1) {
@@ -176,7 +176,7 @@ public final class StatsComputer {
             }
             cumRSigma += rSigma;
             // probability of infection
-            double rPi = actor.getRPi();
+            double rPi = agent.getRPi();
             if (rPi > 1) {
                 nRPiAverse++;
             } else if (rPi < 1) {
@@ -187,7 +187,7 @@ public final class StatsComputer {
             cumRPi += rPi;
         }
 
-        return new GlobalActorStats(
+        return new GlobalAgentStats(
                 n, nS, nI, nR,
                 nRSigmaAverse, nRSigmaNeutral, nRSigmaSeeking, cumRSigma / n,
                 nRPiAverse, nRPiNeutral, nRPiSeeking, cumRPi / n);
@@ -201,29 +201,29 @@ public final class StatsComputer {
     }
 
     /**
-     * Computes the stats for a single actor's connections.
+     * Computes the stats for a single agent's connections.
      *
-     * @param actor
-     *          the actor
-     * @return the stats for a single actor's connections.
+     * @param agent
+     *          the agent
+     * @return the stats for a single agent's connections.
      */
-    public static LocalActorConnectionsStats computeLocalActorConnectionsStats(Actor actor) {
-        return StatsComputer.computeLocalActorConnectionsStats(actor, actor.getConnections());
+    public static LocalAgentConnectionsStats computeLocalAgentConnectionsStats(Agent agent) {
+        return StatsComputer.computeLocalAgentConnectionsStats(agent, agent.getConnections());
     }
 
     /**
-     * Computes the stats for a single actor's connections.
+     * Computes the stats for a single agent's connections.
      *
-     * @param actor
-     *          the actor
+     * @param agent
+     *          the agent
      * @param connections
-     *          the connections - given explicitly and not used from the actor's existing connections,
-     *          because this might be used to compare the actor's current connections with potentially
+     *          the connections - given explicitly and not used from the agent's existing connections,
+     *          because this might be used to compare the agent's current connections with potentially
      *          altered connections
-     * @return the stats for a single actor's connections.
+     * @return the stats for a single agent's connections.
      */
-    public static LocalActorConnectionsStats computeLocalActorConnectionsStats(Actor actor,
-            Collection<Actor> connections) {
+    public static LocalAgentConnectionsStats computeLocalAgentConnectionsStats(Agent agent,
+            Collection<Agent> connections) {
 
         // number of connections
         int nS = 0;
@@ -234,14 +234,14 @@ public final class StatsComputer {
         int mR = 0;
 
         // indirect connections considered only once
-        List<Actor> consideredIndirectBenefits = new LinkedList<Actor>();
+        List<Agent> consideredIndirectBenefits = new LinkedList<Agent>();
 
         // for every direct connection
-        Iterator<Actor> directIt = connections.iterator();
+        Iterator<Agent> directIt = connections.iterator();
         while (directIt.hasNext()) {
 
             // no direct connection? do nothing
-            Actor directConnection = directIt.next();
+            Agent directConnection = directIt.next();
             if (directConnection == null) {
                 continue;
             }
@@ -265,17 +265,17 @@ public final class StatsComputer {
             }
 
             // no indirect connections --> go to next direct connection
-            Collection<Actor> indirectConnections = directConnection.getConnections();
+            Collection<Agent> indirectConnections = directConnection.getConnections();
             if (indirectConnections == null) {
                 continue;
             }
 
             // for every indirect connection at distance 2
-            Iterator<Actor> indirectIt = indirectConnections.iterator();
+            Iterator<Agent> indirectIt = indirectConnections.iterator();
             while (indirectIt.hasNext()) {
-                Actor indirectConnection = indirectIt.next();
+                Agent indirectConnection = indirectIt.next();
                 // no benefit from self
-                if (indirectConnection.equals(actor)
+                if (indirectConnection.equals(agent)
                         // no double benefits for indirect connections being also direct connections
                         || connections.contains(indirectConnection)
                         // no double benefits for indirect connections that have been booked already
@@ -303,20 +303,20 @@ public final class StatsComputer {
                 consideredIndirectBenefits.add(indirectConnection);
             }
         }
-        return new LocalActorConnectionsStats(nS, nI, nR, mS, mI, mR);
+        return new LocalAgentConnectionsStats(nS, nI, nR, mS, mI, mR);
     }
 
     /**
-     * Computes the actor's probability of getting infected.
+     * Computes the agent's probability of getting infected.
      *
-     * @param actor
-     *          the actor to compute the probability for
+     * @param agent
+     *          the agent to compute the probability for
      * @param nI
      *          the number of infected direct connections
-     * @return the actor's probability of getting infected
+     * @return the agent's probability of getting infected
      */
-    public static double computeProbabilityOfInfection(Actor actor, int nI) {
-        return 1 - Math.pow((1 - actor.getDiseaseSpecs().getGamma()), nI);
+    public static double computeProbabilityOfInfection(Agent agent, int nI) {
+        return 1 - Math.pow((1 - agent.getDiseaseSpecs().getGamma()), nI);
     }
 
 }

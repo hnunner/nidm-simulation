@@ -28,8 +28,8 @@ import javax.swing.border.MatteBorder;
 import org.apache.log4j.Logger;
 import org.graphstream.graph.Edge;
 
-import nl.uu.socnetid.netgame.actors.Actor;
-import nl.uu.socnetid.netgame.actors.ActorListener;
+import nl.uu.socnetid.netgame.agents.Agent;
+import nl.uu.socnetid.netgame.agents.AgentListener;
 import nl.uu.socnetid.netgame.diseases.DiseaseSpecs;
 import nl.uu.socnetid.netgame.diseases.types.DiseaseType;
 import nl.uu.socnetid.netgame.gui.CIDMoPanel;
@@ -55,7 +55,7 @@ import nl.uu.socnetid.netgame.utilities.UtilityFunction;
 /**
  * @author Hendrik Nunner
  */
-public class NetworkGame implements NodeClickListener, SimulationListener, ActorListener, ExportListener {
+public class NetworkGame implements NodeClickListener, SimulationListener, AgentListener, ExportListener {
 
     // logger
     @SuppressWarnings("unused")
@@ -80,14 +80,14 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     private CIDMoPanel cidmoPanel = new CIDMoPanel();
     private final DeactivatablePanel[] utilityPanels = {cumulativePanel, cidmoPanel};
 
-    // ACTOR
+    // AGENT
     // network size
     private JFormattedTextField txtAddAmount;
     private JFormattedTextField txtRemoveAmount;
     // on node click
-    private Actor statsActor;
+    private Agent statsAgent;
     private ExecutorService nodeClickExecutor = Executors.newSingleThreadExecutor();
-    private JCheckBox chckbxShowActorStats;
+    private JCheckBox chckbxShowAgentStats;
     private JCheckBox chckbxToggleInfection;
 
     // SIMULATION
@@ -174,7 +174,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         controlsFrame.setResizable(false);
         controlsFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        //////////// TABBED PANE (UTILITY, DISEASE, EXPORT, ACTORS) ////////////
+        //////////// TABBED PANE (UTILITY, DISEASE, EXPORT, AGENTS) ////////////
         JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
         tabbedPane.setBorder(null);
         tabbedPane.setBounds(6, 6, 340, 715);
@@ -271,7 +271,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         simulationPane.add(txtAddAmount);
 
         JLabel lblAmount = new JLabel("amount");
-        lblAmount.setToolTipText("Risk behavior of the actor - r<1: risk seeking, "
+        lblAmount.setToolTipText("Risk behavior of the agent - r<1: risk seeking, "
                 + "r=1: risk neutral, r>1: risk averse");
         lblAmount.setBounds(157, 43, 60, 16);
         simulationPane.add(lblAmount);
@@ -293,7 +293,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         simulationPane.add(btnCreateFullNetwork);
 
         JLabel label = new JLabel("amount");
-        label.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
+        label.setToolTipText("Risk behavior of the agent - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
         label.setBounds(157, 74, 60, 16);
         simulationPane.add(label);
 
@@ -311,7 +311,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         simulationPane.add(txtRemoveAmount);
 
         JLabel lblNetworkControls = new JLabel("Network controls:");
-        lblNetworkControls.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
+        lblNetworkControls.setToolTipText("Risk behavior of the agent - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
         lblNetworkControls.setFont(new Font("Lucida Grande", Font.BOLD, 13));
         lblNetworkControls.setBounds(16, 10, 142, 16);
         simulationPane.add(lblNetworkControls);
@@ -351,10 +351,10 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         btnReset.setIcon(new ImageIcon(getClass().getResource("/reset.png")));
         btnReset.setFont(new Font("Lucida Grande", Font.PLAIN, 14));
 
-        JButton btnInfectRandomActor = new JButton("Infect Random Actor");
-        btnInfectRandomActor.setBounds(40, 99, 258, 30);
-        simulationPane.add(btnInfectRandomActor);
-        btnInfectRandomActor.setIcon(new ImageIcon(getClass().getResource("/infect.png")));
+        JButton btnInfectRandomAgent = new JButton("Infect Random Agent");
+        btnInfectRandomAgent.setBounds(40, 99, 258, 30);
+        simulationPane.add(btnInfectRandomAgent);
+        btnInfectRandomAgent.setIcon(new ImageIcon(getClass().getResource("/infect.png")));
 
         JSeparator separator_5 = new JSeparator(SwingConstants.HORIZONTAL);
         separator_5.setForeground(Color.LIGHT_GRAY);
@@ -362,15 +362,15 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         simulationPane.add(separator_5);
 
         JLabel lblOnNodeClick_1 = new JLabel("On node click:");
-        lblOnNodeClick_1.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
+        lblOnNodeClick_1.setToolTipText("Risk behavior of the agent - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
         lblOnNodeClick_1.setFont(new Font("Lucida Grande", Font.BOLD, 13));
         lblOnNodeClick_1.setBounds(16, 247, 238, 16);
         simulationPane.add(lblOnNodeClick_1);
 
-        chckbxShowActorStats = new JCheckBox("Show agent stats");
-        chckbxShowActorStats.setBounds(38, 272, 141, 23);
-        simulationPane.add(chckbxShowActorStats);
-        chckbxShowActorStats.setSelected(true);
+        chckbxShowAgentStats = new JCheckBox("Show agent stats");
+        chckbxShowAgentStats.setBounds(38, 272, 141, 23);
+        simulationPane.add(chckbxShowAgentStats);
+        chckbxShowAgentStats.setSelected(true);
 
         chckbxToggleInfection = new JCheckBox("Toggle infection");
         chckbxToggleInfection.setBounds(38, 297, 141, 23);
@@ -391,10 +391,10 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         separator_2.setForeground(Color.LIGHT_GRAY);
         separator_2.setBounds(3, 504, 312, 10);
         simulationPane.add(separator_2);
-        btnInfectRandomActor.addActionListener(new ActionListener() {
+        btnInfectRandomAgent.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                infectRandomActor();
+                infectRandomAgent();
             }
         });
         btnPauseSimulation.addActionListener(new ActionListener() {
@@ -479,13 +479,13 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         btnRemoveAgent.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                removeActor();
+                removeAgent();
             }
         });
         btnAddAgent.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                addActor();
+                addAgent();
             }
         });
 
@@ -503,9 +503,9 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
 
     //////////// USER ALTERABLE NETWORK PROPERTIES ////////////
     /**
-     * Adds a actor to the game.
+     * Adds a agent to the game.
      */
-    private void addActor() {
+    private void addAgent() {
 
         // disable utility and disease panels
         disableUtilityPanels();
@@ -514,40 +514,40 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         DiseaseSpecs ds = getDiseaseSpecs();
         UtilityFunction uf = getUtilityFunction();
 
-        // add each actor with selected utility function and disease specs
+        // add each agent with selected utility function and disease specs
         for (int i = 0; i < ((Number)txtAddAmount.getValue()).intValue(); i++) {
-            Actor actor = this.network.addActor(uf, ds, cidmoPanel.getRSigma(), cidmoPanel.getRPi(), cidmoPanel.getPhi());
-            actor.addActorListener(this);
+            Agent agent = this.network.addAgent(uf, ds, cidmoPanel.getRSigma(), cidmoPanel.getRPi(), cidmoPanel.getPhi());
+            agent.addAgentListener(this);
         }
 
         // update stats
-        if (this.network.getActors().size() <= 1) {
+        if (this.network.getAgents().size() <= 1) {
             this.statsFrame.refreshGlobalUtilityStats(uf);
             this.statsFrame.refreshGlobalDiseaseStats(ds);
         }
-        this.statsFrame.refreshGlobalAgentStats(StatsComputer.computeGlobalActorStats(this.network));
+        this.statsFrame.refreshGlobalAgentStats(StatsComputer.computeGlobalAgentStats(this.network));
         this.statsFrame.refreshGlobalNetworkStats(StatsComputer.computeGlobalNetworkStats(this.network));
         this.statsFrame.refreshGlobalSimulationStats(StatsComputer.computeGlobalSimulationStats(this.simulation));
     }
 
     /**
-     * Removes a actor from the game.
+     * Removes a agent from the game.
      */
-    private void removeActor() {
+    private void removeAgent() {
         for (int i = 0; i < ((Number)txtRemoveAmount.getValue()).intValue(); i++) {
-            if (!this.network.getActors().isEmpty()) {
-                this.network.removeActor();
+            if (!this.network.getAgents().isEmpty()) {
+                this.network.removeAgent();
             }
         }
 
-        // if there are no more actors in the networks enable utility and disease panels
-        if (this.network.getActors().isEmpty()) {
+        // if there are no more agents in the networks enable utility and disease panels
+        if (this.network.getAgents().isEmpty()) {
             this.statsFrame.resetGlobalAgentStats();
             enableUtilityPanels();
         }
 
         // update stats
-        this.statsFrame.refreshGlobalAgentStats(StatsComputer.computeGlobalActorStats(this.network));
+        this.statsFrame.refreshGlobalAgentStats(StatsComputer.computeGlobalAgentStats(this.network));
         this.statsFrame.refreshGlobalNetworkStats(StatsComputer.computeGlobalNetworkStats(this.network));
     }
 
@@ -565,13 +565,13 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
      */
     private void clearAll() {
         clearEdges();
-        while (!this.network.getActors().isEmpty()) {
-            removeActor();
+        while (!this.network.getAgents().isEmpty()) {
+            removeAgent();
         }
     }
 
     /**
-     * Creates the full network based on the actors available.
+     * Creates the full network based on the agents available.
      */
     private void createFullNetwork() {
         if (this.network != null) {
@@ -580,12 +580,12 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     }
 
     /**
-     * Infects a random actor.
+     * Infects a random agent.
      */
-    private void infectRandomActor() {
-        Actor actor = this.network.getRandomNotInfectedActor();
-        if (actor != null) {
-            actor.infect(getDiseaseSpecs());
+    private void infectRandomAgent() {
+        Agent agent = this.network.getRandomNotInfectedAgent();
+        if (agent != null) {
+            agent.infect(getDiseaseSpecs());
         }
     }
 
@@ -655,10 +655,10 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     }
 
     /**
-     * Clears all edges and resets all actors to being susceptible.
+     * Clears all edges and resets all agents to being susceptible.
      */
     private void resetSimulation() {
-        this.network.resetActors();
+        this.network.resetAgents();
     }
 
 
@@ -690,21 +690,21 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
      */
     @Override
     public void notify(NodeClick nodeClick) {
-        String clickActorId = nodeClick.getClickedNodeId();
+        String clickAgentId = nodeClick.getClickedNodeId();
 
         // toggle infection on node click
         if (this.chckbxToggleInfection.isSelected()) {
-            this.network.toggleInfection(clickActorId, getDiseaseSpecs());
+            this.network.toggleInfection(clickAgentId, getDiseaseSpecs());
         }
 
-        // show actor stats on node click
-        if (this.chckbxShowActorStats.isSelected()) {
-            this.statsActor = this.network.getActor(clickActorId);
-            this.statsFrame.refreshLocalAgentStats(network.getActor(clickActorId));
+        // show agent stats on node click
+        if (this.chckbxShowAgentStats.isSelected()) {
+            this.statsAgent = this.network.getAgent(clickAgentId);
+            this.statsFrame.refreshLocalAgentStats(network.getAgent(clickAgentId));
         }
 
         // update stats
-        this.statsFrame.refreshGlobalAgentStats(StatsComputer.computeGlobalActorStats(this.network));
+        this.statsFrame.refreshGlobalAgentStats(StatsComputer.computeGlobalAgentStats(this.network));
     }
 
     /* (non-Javadoc)
@@ -732,60 +732,60 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.netgame.actors.ActorListener#notifyAttributeAdded(
-     * nl.uu.socnetid.netgame.actors.Actor, java.lang.String, java.lang.Object)
+     * @see nl.uu.socnetid.netgame.agents.AgentListener#notifyAttributeAdded(
+     * nl.uu.socnetid.netgame.agents.Agent, java.lang.String, java.lang.Object)
      */
     @Override
-    public void notifyAttributeAdded(Actor actor, String attribute, Object value) {
+    public void notifyAttributeAdded(Agent agent, String attribute, Object value) {
         updateStats();
     }
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.netgame.actors.ActorListener#notifyAttributeChanged(
-     * nl.uu.socnetid.netgame.actors.Actor, java.lang.String, java.lang.Object, java.lang.Object)
+     * @see nl.uu.socnetid.netgame.agents.AgentListener#notifyAttributeChanged(
+     * nl.uu.socnetid.netgame.agents.Agent, java.lang.String, java.lang.Object, java.lang.Object)
      */
     @Override
-    public void notifyAttributeChanged(Actor actor, String attribute, Object oldValue, Object newValue) {
+    public void notifyAttributeChanged(Agent agent, String attribute, Object oldValue, Object newValue) {
         updateStats();
     }
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.netgame.actors.listeners.ActorListener#notifyAttributeRemoved(
-     * nl.uu.socnetid.netgame.actors.Actor, java.lang.String)
+     * @see nl.uu.socnetid.netgame.agents.listeners.AgentListener#notifyAttributeRemoved(
+     * nl.uu.socnetid.netgame.agents.Agent, java.lang.String)
      */
     @Override
-    public void notifyAttributeRemoved(Actor actor, String attribute) {
+    public void notifyAttributeRemoved(Agent agent, String attribute) {
         updateStats();
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.netgame.actors.listeners.ActorRoundFinishedListener#notifyRoundFinished(
-     * nl.uu.socnetid.netgame.actors.Actor)
+     * @see nl.uu.socnetid.netgame.agents.listeners.AgentRoundFinishedListener#notifyRoundFinished(
+     * nl.uu.socnetid.netgame.agents.Agent)
      */
     @Override
-    public void notifyRoundFinished(Actor actor) {
+    public void notifyRoundFinished(Agent agent) {
         updateStats();
     }
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.netgame.actors.listeners.ActorConnectionListener#notifyConnectionAdded(
-     * org.graphstream.graph.Edge, nl.uu.socnetid.netgame.actors.Actor, nl.uu.socnetid.netgame.actors.Actor)
+     * @see nl.uu.socnetid.netgame.agents.listeners.AgentConnectionListener#notifyConnectionAdded(
+     * org.graphstream.graph.Edge, nl.uu.socnetid.netgame.agents.Agent, nl.uu.socnetid.netgame.agents.Agent)
      */
     @Override
-    public void notifyConnectionAdded(Edge edge, Actor actor1, Actor actor2) {
+    public void notifyConnectionAdded(Edge edge, Agent agent1, Agent agent2) {
         updateStats();
     }
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.netgame.actors.listeners.ActorConnectionListener#
+     * @see nl.uu.socnetid.netgame.agents.listeners.AgentConnectionListener#
      * notifyEdgeRemoved(org.graphstream.graph.Edge)
      */
     @Override
-    public void notifyConnectionRemoved(Actor actor, Edge edge) {
+    public void notifyConnectionRemoved(Agent agent, Edge edge) {
         updateStats();
     }
 
@@ -797,11 +797,11 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         this.statsFrame.refreshGlobalNetworkStats(StatsComputer.computeGlobalNetworkStats(this.network));
         this.statsFrame.refreshGlobalSimulationStats(StatsComputer.computeGlobalSimulationStats(this.simulation));
 
-        // actor stats
-        if (this.statsActor == null) {
+        // agent stats
+        if (this.statsAgent == null) {
             return;
         }
-        this.statsFrame.refreshLocalAgentStats(statsActor);
+        this.statsFrame.refreshLocalAgentStats(statsAgent);
     }
 
     /* (non-Javadoc)

@@ -6,7 +6,7 @@ import static org.junit.Assert.assertFalse;
 import org.junit.Before;
 import org.junit.Test;
 
-import nl.uu.socnetid.netgame.actors.Actor;
+import nl.uu.socnetid.netgame.agents.Agent;
 import nl.uu.socnetid.netgame.diseases.DiseaseSpecs;
 import nl.uu.socnetid.netgame.diseases.types.DiseaseType;
 import nl.uu.socnetid.netgame.networks.Network;
@@ -23,16 +23,16 @@ public class StatsComputerTest {
     // graph
     private Network network;
 
-    // actors
-    private Actor actor1;
-    private Actor actor2;
-    private Actor actor3;
-    private Actor actor4;
-    private Actor actor5;
-    private Actor actor6;
-    private Actor actor7;
+    // agents
+    private Agent agent1;
+    private Agent agent2;
+    private Agent agent3;
+    private Agent agent4;
+    private Agent agent5;
+    private Agent agent6;
+    private Agent agent7;
 
-    // actor
+    //
     private static final double phi   = 0.4;
     // disease
     private static final int    tau   = 10;
@@ -46,28 +46,28 @@ public class StatsComputerTest {
      * Performed before each test: Initialization of the network.
      */
     @Before
-    public void initActor() {
+    public void initAgent() {
         this.network = new Network("StatsComputer Test");
 
         UtilityFunction uf = new Cumulative();
         this.ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
 
         // sigma: risk neutral, pi: risk seeking
-        this.actor1 = this.network.addActor(uf, ds, 1.0, 0.9, phi);
-        this.actor2 = this.network.addActor(uf, ds, 1.0, 0.33, phi);
+        this.agent1 = this.network.addAgent(uf, ds, 1.0, 0.9, phi);
+        this.agent2 = this.network.addAgent(uf, ds, 1.0, 0.33, phi);
         // sigma: risk seeking, pi: risk averse
-        this.actor3 = this.network.addActor(uf, ds, 0.25, 1.5, phi);
-        this.actor4 = this.network.addActor(uf, ds, 0.8, 1.4, phi);
-        this.actor5 = this.network.addActor(uf, ds, 0.9, 1.3, phi);
+        this.agent3 = this.network.addAgent(uf, ds, 0.25, 1.5, phi);
+        this.agent4 = this.network.addAgent(uf, ds, 0.8, 1.4, phi);
+        this.agent5 = this.network.addAgent(uf, ds, 0.9, 1.3, phi);
         // sigma: risk averse; pi: risk neutral
-        this.actor6 = this.network.addActor(uf, ds, 1.5, 1.0, phi);
-        this.actor7 = this.network.addActor(uf, ds, 2.0, 1.0, phi);
+        this.agent6 = this.network.addAgent(uf, ds, 1.5, 1.0, phi);
+        this.agent7 = this.network.addAgent(uf, ds, 2.0, 1.0, phi);
 
-        this.actor1.addConnection(this.actor2);
-        this.actor1.addConnection(this.actor3);
-        this.actor1.addConnection(this.actor4);
-        this.actor2.addConnection(this.actor4);
-        this.actor5.addConnection(this.actor6);
+        this.agent1.addConnection(this.agent2);
+        this.agent1.addConnection(this.agent3);
+        this.agent1.addConnection(this.agent4);
+        this.agent2.addConnection(this.agent4);
+        this.agent5.addConnection(this.agent6);
     }
 
 
@@ -76,10 +76,10 @@ public class StatsComputerTest {
      */
     @Test
     public void testComputeCloseness() {
-        assertEquals(0.5, StatsComputer.computeCloseness(this.actor1), 0.01);
-        assertEquals(0.47, StatsComputer.computeCloseness(this.actor4), 0.01);
-        assertEquals(0.17, StatsComputer.computeCloseness(this.actor5), 0.01);
-        assertEquals(0, StatsComputer.computeCloseness(this.actor7), 0.01);
+        assertEquals(0.5, StatsComputer.computeCloseness(this.agent1), 0.01);
+        assertEquals(0.47, StatsComputer.computeCloseness(this.agent4), 0.01);
+        assertEquals(0.17, StatsComputer.computeCloseness(this.agent5), 0.01);
+        assertEquals(0, StatsComputer.computeCloseness(this.agent7), 0.01);
     }
 
     /**
@@ -87,12 +87,12 @@ public class StatsComputerTest {
      */
     @Test
     public void testFirstOrderDegree() {
-        assertEquals(3, StatsComputer.computeFirstOrderDegree(this.actor1));
-        assertEquals(2, StatsComputer.computeFirstOrderDegree(this.actor2));
-        assertEquals(1, StatsComputer.computeFirstOrderDegree(this.actor3));
-        assertEquals(2, StatsComputer.computeFirstOrderDegree(this.actor4));
-        assertEquals(1, StatsComputer.computeFirstOrderDegree(this.actor5));
-        assertEquals(1, StatsComputer.computeFirstOrderDegree(this.actor6));
+        assertEquals(3, StatsComputer.computeFirstOrderDegree(this.agent1));
+        assertEquals(2, StatsComputer.computeFirstOrderDegree(this.agent2));
+        assertEquals(1, StatsComputer.computeFirstOrderDegree(this.agent3));
+        assertEquals(2, StatsComputer.computeFirstOrderDegree(this.agent4));
+        assertEquals(1, StatsComputer.computeFirstOrderDegree(this.agent5));
+        assertEquals(1, StatsComputer.computeFirstOrderDegree(this.agent6));
     }
 
     /**
@@ -100,32 +100,32 @@ public class StatsComputerTest {
      */
     @Test
     public void testSecondOrderDegree() {
-        assertEquals(0, StatsComputer.computeSecondOrderDegree(this.actor1));
-        assertEquals(1, StatsComputer.computeSecondOrderDegree(this.actor2));
-        assertEquals(2, StatsComputer.computeSecondOrderDegree(this.actor3));
-        assertEquals(1, StatsComputer.computeSecondOrderDegree(this.actor4));
-        assertEquals(0, StatsComputer.computeSecondOrderDegree(this.actor5));
-        assertEquals(0, StatsComputer.computeSecondOrderDegree(this.actor6));
+        assertEquals(0, StatsComputer.computeSecondOrderDegree(this.agent1));
+        assertEquals(1, StatsComputer.computeSecondOrderDegree(this.agent2));
+        assertEquals(2, StatsComputer.computeSecondOrderDegree(this.agent3));
+        assertEquals(1, StatsComputer.computeSecondOrderDegree(this.agent4));
+        assertEquals(0, StatsComputer.computeSecondOrderDegree(this.agent5));
+        assertEquals(0, StatsComputer.computeSecondOrderDegree(this.agent6));
     }
 
     /**
-     * Test of global actor stats computation.
+     * Test of global agent stats computation.
      */
     @Test
-    public void testComputeGlobalActorStats() {
-        // 1 susceptible (actor1)
+    public void testComputeGlobalAgentStats() {
+        // 1 susceptible (agent1)
         // 4 infected
-        network.toggleInfection(this.actor2.getId(), this.ds);
-        network.toggleInfection(this.actor3.getId(), this.ds);
-        network.toggleInfection(this.actor4.getId(), this.ds);
-        network.toggleInfection(this.actor5.getId(), this.ds);
+        network.toggleInfection(this.agent2.getId(), this.ds);
+        network.toggleInfection(this.agent3.getId(), this.ds);
+        network.toggleInfection(this.agent4.getId(), this.ds);
+        network.toggleInfection(this.agent5.getId(), this.ds);
         // 2 recovered
-        network.toggleInfection(this.actor6.getId(), this.ds);
-        network.toggleInfection(this.actor6.getId(), this.ds);
-        network.toggleInfection(this.actor7.getId(), this.ds);
-        network.toggleInfection(this.actor7.getId(), this.ds);
+        network.toggleInfection(this.agent6.getId(), this.ds);
+        network.toggleInfection(this.agent6.getId(), this.ds);
+        network.toggleInfection(this.agent7.getId(), this.ds);
+        network.toggleInfection(this.agent7.getId(), this.ds);
 
-        GlobalActorStats gas = StatsComputer.computeGlobalActorStats(this.network);
+        GlobalAgentStats gas = StatsComputer.computeGlobalAgentStats(this.network);
         assertEquals(7, gas.getN());
         assertEquals(1, gas.getnS());
         assertEquals(4, gas.getnI());
@@ -147,7 +147,7 @@ public class StatsComputerTest {
     public void testComputeGlobalNetworkStats() {
         GlobalNetworkStats gns = StatsComputer.computeGlobalNetworkStats(this.network);
         assertFalse(gns.isStable());
-        assertEquals(10.0/this.network.getActors().size(), gns.getAvDegree(), 0.001);
+        assertEquals(10.0/this.network.getAgents().size(), gns.getAvDegree(), 0.001);
         assertEquals(5, gns.getConnections());
         // not implemented:
         // gns.getDiameter();
@@ -155,22 +155,22 @@ public class StatsComputerTest {
     }
 
     /**
-     * Test of local actor connections stats computation.
+     * Test of local agent connections stats computation.
      */
     @Test
-    public void testComputeLocalActorConnectionsStats() {
-        network.toggleInfection(this.actor3.getId(), this.ds);
-        network.toggleInfection(this.actor4.getId(), this.ds);
-        network.toggleInfection(this.actor4.getId(), this.ds);
+    public void testComputeLocalAgentConnectionsStats() {
+        network.toggleInfection(this.agent3.getId(), this.ds);
+        network.toggleInfection(this.agent4.getId(), this.ds);
+        network.toggleInfection(this.agent4.getId(), this.ds);
 
-        LocalActorConnectionsStats lacs = StatsComputer.computeLocalActorConnectionsStats(this.actor1);
+        LocalAgentConnectionsStats lacs = StatsComputer.computeLocalAgentConnectionsStats(this.agent1);
         assertEquals(3, lacs.getN());
         assertEquals(0, lacs.getM());
         assertEquals(1, lacs.getnS());
         assertEquals(1, lacs.getnI());
         assertEquals(1, lacs.getnR());
 
-        lacs = StatsComputer.computeLocalActorConnectionsStats(this.actor3);
+        lacs = StatsComputer.computeLocalAgentConnectionsStats(this.agent3);
         assertEquals(1, lacs.getN());
         assertEquals(2, lacs.getM());
         assertEquals(1, lacs.getnS());
@@ -179,16 +179,16 @@ public class StatsComputerTest {
     }
 
     /**
-     * Test of local actor connections stats computation.
+     * Test of local agent connections stats computation.
      */
     @Test
     public void testComputeProbabilityOfInfection() {
         // 2 infected with a transmission rate of 0.1 each
-        network.toggleInfection(this.actor2.getId(), this.ds);
-        network.toggleInfection(this.actor3.getId(), this.ds);
+        network.toggleInfection(this.agent2.getId(), this.ds);
+        network.toggleInfection(this.agent3.getId(), this.ds);
 
-        int infectedConnections = StatsComputer.computeLocalActorConnectionsStats(this.actor1).getnI();
-        assertEquals(0.19, StatsComputer.computeProbabilityOfInfection(actor1, infectedConnections), 0.001);
+        int infectedConnections = StatsComputer.computeLocalAgentConnectionsStats(this.agent1).getnI();
+        assertEquals(0.19, StatsComputer.computeProbabilityOfInfection(agent1, infectedConnections), 0.001);
     }
 
 }

@@ -118,7 +118,7 @@ public class ExportGEXFPanel extends DeactivatablePanel {
         add(btnChooseExportFile);
 
         lblNetworkType_1 = new JLabel("Network type");
-        lblNetworkType_1.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
+        lblNetworkType_1.setToolTipText("Risk behavior of the agent - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
         lblNetworkType_1.setFont(new Font("Lucida Grande", Font.BOLD, 13));
         lblNetworkType_1.setBounds(13, 0, 238, 16);
         add(lblNetworkType_1);
@@ -290,7 +290,7 @@ public class ExportGEXFPanel extends DeactivatablePanel {
     }
 
     /**
-     * Notifies listeners of finished actor rounds.
+     * Notifies listeners of finished agent rounds.
      */
     private final void notifyRecordingStarted() {
         Iterator<ExportListener> listenersIt = this.exportListeners.iterator();
@@ -300,7 +300,7 @@ public class ExportGEXFPanel extends DeactivatablePanel {
     }
 
     /**
-     * Notifies listeners of finished actor rounds.
+     * Notifies listeners of finished agent rounds.
      */
     private final void notifyRecordingStopped() {
         Iterator<ExportListener> listenersIt = this.exportListeners.iterator();

@@ -25,15 +25,15 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import nl.uu.socnetid.netgame.actors.Actor;
-import nl.uu.socnetid.netgame.actors.ActorListener;
+import nl.uu.socnetid.netgame.agents.Agent;
+import nl.uu.socnetid.netgame.agents.AgentListener;
 import nl.uu.socnetid.netgame.networks.Network;
 import nl.uu.socnetid.netgame.networks.NetworkListener;
 
 /**
  * @author Hendrik Nunner
  */
-public class GEXFWriter implements ActorListener, NetworkListener {
+public class GEXFWriter implements AgentListener, NetworkListener {
 
     // logger
     private static final Logger logger = Logger.getLogger(GEXFWriter.class);
@@ -97,9 +97,9 @@ public class GEXFWriter implements ActorListener, NetworkListener {
 
         // listeners
         network.addNetworkListener(this);
-        Iterator<Actor> actorIt = network.getActorIterator();
-        while (actorIt.hasNext()) {
-            actorIt.next().addActorListener(this);
+        Iterator<Agent> agentIt = network.getAgentIterator();
+        while (agentIt.hasNext()) {
+            agentIt.next().addAgentListener(this);
         }
 
         this.fileSink = new FileSinkGEXF2();
@@ -115,14 +115,14 @@ public class GEXFWriter implements ActorListener, NetworkListener {
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.netgame.networks.NetworkListener#notifyActorAdded(
-     * nl.uu.socnetid.netgame.actors.Actor)
+     * @see nl.uu.socnetid.netgame.networks.NetworkListener#notifyAgentAdded(
+     * nl.uu.socnetid.netgame.agents.Agent)
      */
     @Override
-    public void notifyActorAdded(Actor actor) {
-        actor.addActorListener(this);
+    public void notifyAgentAdded(Agent agent) {
+        agent.addAgentListener(this);
         this.fileSink.stepBegins(this.networkId, this.timeId, RECORD_STEP.getAndIncrement());
-        this.fileSink.nodeAdded(this.networkId, this.timeId, actor.getId());
+        this.fileSink.nodeAdded(this.networkId, this.timeId, agent.getId());
         try {
             fileSink.flush();
         } catch (IOException e) {
@@ -132,12 +132,12 @@ public class GEXFWriter implements ActorListener, NetworkListener {
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.netgame.networks.listeners.NetworkListener#notifyActorRemoved(java.lang.String)
+     * @see nl.uu.socnetid.netgame.networks.listeners.NetworkListener#notifyAgentRemoved(java.lang.String)
      */
     @Override
-    public void notifyActorRemoved(String actorId) {
+    public void notifyAgentRemoved(String agentId) {
         this.fileSink.stepBegins(this.networkId, this.timeId, RECORD_STEP.getAndIncrement());
-        this.fileSink.nodeRemoved(this.networkId, this.timeId, actorId);
+        this.fileSink.nodeRemoved(this.networkId, this.timeId, agentId);
         try {
             this.fileSink.flush();
         } catch (IOException e) {
@@ -147,14 +147,14 @@ public class GEXFWriter implements ActorListener, NetworkListener {
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.netgame.actors.ActorListener#notifyAttributeAdded(
-     * nl.uu.socnetid.netgame.actors.Actor, java.lang.String, java.lang.Object)
+     * @see nl.uu.socnetid.netgame.agents.AgentListener#notifyAttributeAdded(
+     * nl.uu.socnetid.netgame.agents.Agent, java.lang.String, java.lang.Object)
      */
     @Override
-    public void notifyAttributeAdded(Actor actor, String attribute, Object value) {
+    public void notifyAttributeAdded(Agent agent, String attribute, Object value) {
         this.fileSink.stepBegins(this.networkId, this.timeId, RECORD_STEP.getAndIncrement());
         this.fileSink.nodeAttributeAdded(this.networkId, this.timeId,
-                String.valueOf(actor.getId()), attribute, value.toString());
+                String.valueOf(agent.getId()), attribute, value.toString());
         try {
             this.fileSink.flush();
         } catch (IOException e) {
@@ -164,14 +164,14 @@ public class GEXFWriter implements ActorListener, NetworkListener {
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.netgame.actors.ActorListener#notifyAttributeChanged(
-     * nl.uu.socnetid.netgame.actors.Actor, java.lang.String, java.lang.Object, java.lang.Object)
+     * @see nl.uu.socnetid.netgame.agents.AgentListener#notifyAttributeChanged(
+     * nl.uu.socnetid.netgame.agents.Agent, java.lang.String, java.lang.Object, java.lang.Object)
      */
     @Override
-    public void notifyAttributeChanged(Actor actor, String attribute, Object oldValue, Object newValue) {
+    public void notifyAttributeChanged(Agent agent, String attribute, Object oldValue, Object newValue) {
         this.fileSink.stepBegins(this.networkId, this.timeId, RECORD_STEP.getAndIncrement());
         this.fileSink.nodeAttributeChanged(this.networkId, this.timeId,
-                String.valueOf(actor.getId()), attribute, oldValue.toString(), newValue.toString());
+                String.valueOf(agent.getId()), attribute, oldValue.toString(), newValue.toString());
         try {
             this.fileSink.flush();
         } catch (IOException e) {
@@ -180,14 +180,14 @@ public class GEXFWriter implements ActorListener, NetworkListener {
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.netgame.actors.listeners.ActorListener#notifyAttributeRemoved(
-     * nl.uu.socnetid.netgame.actors.Actor, java.lang.String)
+     * @see nl.uu.socnetid.netgame.agents.listeners.AgentListener#notifyAttributeRemoved(
+     * nl.uu.socnetid.netgame.agents.Agent, java.lang.String)
      */
     @Override
-    public void notifyAttributeRemoved(Actor actor, String attribute) {
+    public void notifyAttributeRemoved(Agent agent, String attribute) {
         this.fileSink.stepBegins(this.networkId, this.timeId, RECORD_STEP.getAndIncrement());
         this.fileSink.nodeAttributeRemoved(this.networkId, this.timeId,
-                String.valueOf(actor.getId()), attribute);
+                String.valueOf(agent.getId()), attribute);
         try {
             this.fileSink.flush();
         } catch (IOException e) {
@@ -197,14 +197,14 @@ public class GEXFWriter implements ActorListener, NetworkListener {
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.netgame.actors.listeners.ActorConnectionListener#notifyConnectionAdded(
-     * org.graphstream.graph.Edge, nl.uu.socnetid.netgame.actors.Actor, nl.uu.socnetid.netgame.actors.Actor)
+     * @see nl.uu.socnetid.netgame.agents.listeners.AgentConnectionListener#notifyConnectionAdded(
+     * org.graphstream.graph.Edge, nl.uu.socnetid.netgame.agents.Agent, nl.uu.socnetid.netgame.agents.Agent)
      */
     @Override
-    public void notifyConnectionAdded(Edge edge, Actor actor1, Actor actor2) {
+    public void notifyConnectionAdded(Edge edge, Agent agent1, Agent agent2) {
         this.fileSink.stepBegins(this.networkId, this.timeId, RECORD_STEP.getAndIncrement());
         this.fileSink.edgeAdded(this.networkId, this.timeId, edge.getId(),
-                String.valueOf(actor1.getId()), String.valueOf(actor2.getId()), false);
+                String.valueOf(agent1.getId()), String.valueOf(agent2.getId()), false);
         try {
             fileSink.flush();
         } catch (IOException e) {
@@ -215,11 +215,11 @@ public class GEXFWriter implements ActorListener, NetworkListener {
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.netgame.actors.ActorListener#notifyEdgeRemoved(
-     * nl.uu.socnetid.netgame.actors.Actor, org.graphstream.graph.Edge)
+     * @see nl.uu.socnetid.netgame.agents.AgentListener#notifyEdgeRemoved(
+     * nl.uu.socnetid.netgame.agents.Agent, org.graphstream.graph.Edge)
      */
     @Override
-    public void notifyConnectionRemoved(Actor actor, Edge edge) {
+    public void notifyConnectionRemoved(Agent agent, Edge edge) {
         this.fileSink.stepBegins(this.networkId, this.timeId, RECORD_STEP.getAndIncrement());
         this.fileSink.edgeRemoved(this.networkId, this.timeId, edge.getId());
         try {
@@ -305,11 +305,11 @@ public class GEXFWriter implements ActorListener, NetworkListener {
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.netgame.actors.ActorListener#notifyRoundFinished(
-     * nl.uu.socnetid.netgame.actors.Actor)
+     * @see nl.uu.socnetid.netgame.agents.AgentListener#notifyRoundFinished(
+     * nl.uu.socnetid.netgame.agents.Agent)
      */
     @Override
-    public void notifyRoundFinished(Actor actor) {
+    public void notifyRoundFinished(Agent agent) {
         // nothing to do
     }
 

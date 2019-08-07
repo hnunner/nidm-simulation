@@ -5,10 +5,10 @@ import org.apache.log4j.Logger;
 /**
  * @author Hendrik Nunner
  */
-public class ActorConnectionStats implements Cloneable {
+public class AgentConnectionStats implements Cloneable {
 
     // logger
-    private static final Logger logger = Logger.getLogger(ActorConnectionStats.class);
+    private static final Logger logger = Logger.getLogger(AgentConnectionStats.class);
 
     // stats
     private int brokenTiesActive = 0;
@@ -109,10 +109,10 @@ public class ActorConnectionStats implements Cloneable {
      * @see java.lang.Object#clone()
      */
     @Override
-    public ActorConnectionStats clone() {
-        ActorConnectionStats acs = null;
+    public AgentConnectionStats clone() {
+        AgentConnectionStats acs = null;
         try {
-            acs = (ActorConnectionStats) super.clone();
+            acs = (AgentConnectionStats) super.clone();
         } catch (CloneNotSupportedException e) {
             logger.error(e);
         }
