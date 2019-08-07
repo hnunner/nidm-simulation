@@ -12,7 +12,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import nl.uu.socnetid.netgame.actors.Actor;
+import nl.uu.socnetid.netgame.agents.Agent;
 
 /**
  * @author Hendrik Nunner
@@ -32,12 +32,12 @@ public class DijkstraShortestPath {
     private static final Logger logger = Logger.getLogger(DijkstraShortestPath.class);
 
     // computation queues for settled and unsettled nodes
-    private Set<Actor> settledNodes;
-    private Set<Actor> unSettledNodes;
+    private Set<Agent> settledNodes;
+    private Set<Agent> unSettledNodes;
 
     // maps to hold the results of the computations
-    private Map<Actor, Actor> predecessors;
-    private Map<Actor, Integer> distance;
+    private Map<Agent, Agent> predecessors;
+    private Map<Agent, Integer> distance;
 
 
     /**
@@ -47,13 +47,13 @@ public class DijkstraShortestPath {
      * @param source
      *          the node to start with
      */
-    public void executeShortestPaths(Actor source) {
+    public void executeShortestPaths(Agent source) {
 
         // init or clean up
-        this.settledNodes = new HashSet<Actor>();
-        this.unSettledNodes = new HashSet<Actor>();
-        this.predecessors = new HashMap<Actor, Actor>();
-        this.distance = new HashMap<Actor, Integer>();
+        this.settledNodes = new HashSet<Agent>();
+        this.unSettledNodes = new HashSet<Agent>();
+        this.predecessors = new HashMap<Agent, Agent>();
+        this.distance = new HashMap<Agent, Integer>();
 
         // start with source node
         distance.put(source, 0);
@@ -61,16 +61,16 @@ public class DijkstraShortestPath {
 
         // compute paths for all connected nodes
         while (!unSettledNodes.isEmpty()) {
-            Actor node = getMinimumDistanceNode(unSettledNodes);
+            Agent node = getMinimumDistanceNode(unSettledNodes);
             settledNodes.add(node);
             unSettledNodes.remove(node);
             findMinimalDistances(node);
         }
     }
 
-    private Actor getMinimumDistanceNode(Set<Actor> nodes) {
-        Actor minimum = null;
-        for (Actor node : nodes) {
+    private Agent getMinimumDistanceNode(Set<Agent> nodes) {
+        Agent minimum = null;
+        for (Agent node : nodes) {
             if (minimum == null) {
                 minimum = node;
             } else {
@@ -82,9 +82,9 @@ public class DijkstraShortestPath {
         return minimum;
     }
 
-    private void findMinimalDistances(Actor node) {
-        List<Actor> unsettledNeighbors = getUnsettledNeighbors(node);
-        for (Actor target : unsettledNeighbors) {
+    private void findMinimalDistances(Agent node) {
+        List<Agent> unsettledNeighbors = getUnsettledNeighbors(node);
+        for (Agent target : unsettledNeighbors) {
             if (getShortestDistance(target) > getShortestDistance(node) + getDistance()) {
                 distance.put(target, getShortestDistance(node) + getDistance());
                 predecessors.put(target, node);
@@ -100,11 +100,11 @@ public class DijkstraShortestPath {
      *          the node to get the unsettled neighbors for
      * @return the neighbors of a node that are not yet settled
      */
-    private List<Actor> getUnsettledNeighbors(Actor node) {
-        List<Actor> neighbors = new ArrayList<Actor>();
-        Iterator<Actor> connectionsIt = node.getConnections().iterator();
+    private List<Agent> getUnsettledNeighbors(Agent node) {
+        List<Agent> neighbors = new ArrayList<Agent>();
+        Iterator<Agent> connectionsIt = node.getConnections().iterator();
         while (connectionsIt.hasNext()) {
-            Actor connection = connectionsIt.next();
+            Agent connection = connectionsIt.next();
             if (!isSettled(connection)) {
                 neighbors.add(connection);
             }
@@ -119,7 +119,7 @@ public class DijkstraShortestPath {
      *          the node to check if it is settled
      * @return true, if the node is settled, false otherwise
      */
-    private boolean isSettled(Actor node) {
+    private boolean isSettled(Agent node) {
         return settledNodes.contains(node);
     }
 
@@ -130,7 +130,7 @@ public class DijkstraShortestPath {
      *          the destination node
      * @return the shortest distance of a destination node
      */
-    private int getShortestDistance(Actor destination) {
+    private int getShortestDistance(Agent destination) {
         Integer d = distance.get(destination);
         if (d == null) {
             return Integer.MAX_VALUE;
@@ -138,7 +138,7 @@ public class DijkstraShortestPath {
         return d;
     }
 
-    private int getDistance() {    //Actor node, Actor target) {
+    private int getDistance() {    //Agent node, Agent target) {
         // no implementation of weighted connections
         return 1;
         /*
@@ -160,9 +160,9 @@ public class DijkstraShortestPath {
      *          the target node
      * @return the shortest path between the node the computation has been executed with and a target node
      */
-    public LinkedList<Actor> getShortestPath(Actor target) {
-        LinkedList<Actor> path = new LinkedList<Actor>();
-        Actor step = target;
+    public LinkedList<Agent> getShortestPath(Agent target) {
+        LinkedList<Agent> path = new LinkedList<Agent>();
+        Agent step = target;
 
         // no path
         if (predecessors.get(step) == null) {
@@ -189,15 +189,15 @@ public class DijkstraShortestPath {
      *          the target node
      * @return the shortest path length between the node the computation has been executed with and a target node
      */
-    public Integer getShortestPathLength(Actor target) {
-        LinkedList<Actor> shortestPath = getShortestPath(target);
+    public Integer getShortestPathLength(Agent target) {
+        LinkedList<Agent> shortestPath = getShortestPath(target);
         if (shortestPath == null) {
             return null;
         }
 
         // all connections have the same weight
-        // also, shortest path contains the actors, thus the
-        // amount of edges is the number of actors minus one
+        // also, shortest path contains the agents, thus the
+        // amount of edges is the number of agents minus one
         return shortestPath.size() - 1;
     }
 

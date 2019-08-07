@@ -3,7 +3,7 @@ package nl.uu.socnetid.netgame.io.types;
 /**
  * @author Hendrik Nunner
  */
-public enum ActorParameters {
+public enum AgentParameters {
 
 //    agentsDetailsCSVCols.add("act.id");
 //    agentsDetailsCSVCols.add("act.param.risk.factor");
@@ -34,7 +34,7 @@ public enum ActorParameters {
      * @param name
      *          the name of the enum
      */
-    ActorParameters(String name) {
+    AgentParameters(String name) {
         this.name = name;
     }
 

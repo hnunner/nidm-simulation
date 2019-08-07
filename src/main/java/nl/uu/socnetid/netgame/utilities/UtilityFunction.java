@@ -2,8 +2,8 @@ package nl.uu.socnetid.netgame.utilities;
 
 import java.util.Collection;
 
-import nl.uu.socnetid.netgame.actors.Actor;
-import nl.uu.socnetid.netgame.stats.LocalActorConnectionsStats;
+import nl.uu.socnetid.netgame.agents.Agent;
+import nl.uu.socnetid.netgame.stats.LocalAgentConnectionsStats;
 import nl.uu.socnetid.netgame.stats.StatsComputer;
 
 /**
@@ -37,23 +37,23 @@ public abstract class UtilityFunction {
 
 
     /**
-     * Computes the utility for a actor based on the social connections.
+     * Computes the utility for a agent based on the social connections.
      *
-     * @param actor
-     *          the actor to compute the utility for
+     * @param agent
+     *          the agent to compute the utility for
      * @param connections
-     *          the actor's connections
-     * @return the actor's utility based on the connections
+     *          the agent's connections
+     * @return the agent's utility based on the connections
      */
-    public Utility getUtility(Actor actor, Collection<Actor> connections) {
+    public Utility getUtility(Agent agent, Collection<Agent> connections) {
 
-        LocalActorConnectionsStats lacs = StatsComputer.computeLocalActorConnectionsStats(actor, connections);
+        LocalAgentConnectionsStats lacs = StatsComputer.computeLocalAgentConnectionsStats(agent, connections);
 
         return new Utility(
                 getBenefitOfDirectConnections(lacs),
                 getBenefitOfIndirectConnections(lacs),
-                getCostsOfDirectConnections(lacs, actor),
-                getEffectOfDisease(lacs, actor)
+                getCostsOfDirectConnections(lacs, agent),
+                getEffectOfDisease(lacs, agent)
                 );
     }
 
@@ -66,41 +66,41 @@ public abstract class UtilityFunction {
      * Computes the benefit of direct connections.
      *
      * @param lacs
-     *          the actor's connection stats
+     *          the agent's connection stats
      * @return the benefit of direct connections
      */
-    protected abstract double getBenefitOfDirectConnections(LocalActorConnectionsStats lacs);
+    protected abstract double getBenefitOfDirectConnections(LocalAgentConnectionsStats lacs);
 
     /**
      * Computes the benefit of indirect connections.
      *
      * @param lacs
-     *          the actor's connection stats
+     *          the agent's connection stats
      * @return the benefit of indirect connections
      */
-    protected abstract double getBenefitOfIndirectConnections(LocalActorConnectionsStats lacs);
+    protected abstract double getBenefitOfIndirectConnections(LocalAgentConnectionsStats lacs);
 
     /**
      * Computes the costs of direct connections.
      *
      * @param lacs
-     *          the actor's connection stats
-     * @param actor
-     *          the actor to compute the costs for
+     *          the agent's connection stats
+     * @param agent
+     *          the agent to compute the costs for
      * @return the costs of direct connections
      */
-    protected abstract double getCostsOfDirectConnections(LocalActorConnectionsStats lacs, Actor actor);
+    protected abstract double getCostsOfDirectConnections(LocalAgentConnectionsStats lacs, Agent agent);
 
     /**
      * Computes the effect of a disease.
      *
      * @param lacs
-     *          the actor's connection stats
-     * @param actor
-     *          the actor to compute the effect for
+     *          the agent's connection stats
+     * @param agent
+     *          the agent to compute the effect for
      * @return the benefit of a disease
      */
-    protected abstract double getEffectOfDisease(LocalActorConnectionsStats lacs, Actor actor);
+    protected abstract double getEffectOfDisease(LocalAgentConnectionsStats lacs, Agent agent);
 
     /**
      * @return the utility for direct connections

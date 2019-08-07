@@ -8,7 +8,7 @@ import org.graphstream.ui.spriteManager.Sprite;
 import org.graphstream.ui.spriteManager.SpriteManager;
 import org.graphstream.ui.view.Viewer;
 
-import nl.uu.socnetid.netgame.actors.Actor;
+import nl.uu.socnetid.netgame.agents.Agent;
 import nl.uu.socnetid.netgame.diseases.DiseaseSpecs;
 import nl.uu.socnetid.netgame.utilities.UtilityFunction;
 
@@ -46,31 +46,31 @@ public class DisplayableNetwork extends Network {
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.netgame.networks.Network#addActor(
+     * @see nl.uu.socnetid.netgame.networks.Network#addAgent(
      * nl.uu.socnetid.netgame.utilities.UtilityFunction, nl.uu.socnetid.netgame.diseases.DiseaseSpecs,
      * double)
      */
     @Override
-    public Actor addActor(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi) {
-        Actor actor = super.addActor(utilityFunction, diseaseSpecs, rSigma, rPi, phi);
+    public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi) {
+        Agent agent = super.addAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi);
 
         // sprite
-        Sprite sprite = this.spriteManager.addSprite(actor.getId());
+        Sprite sprite = this.spriteManager.addSprite(agent.getId());
         sprite.setPosition(Units.PX, 15, 0, -90);
-        sprite.attachToNode(actor.getId());
-        sprite.setAttribute("label", actor.getLabel());
+        sprite.attachToNode(agent.getId());
+        sprite.setAttribute("label", agent.getLabel());
 
-        return actor;
+        return agent;
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.netgame.networks.Network#removeActor()
+     * @see nl.uu.socnetid.netgame.networks.Network#removeAgent()
      */
     @Override
-    public String removeActor() {
-        String actorId = super.removeActor();
-        this.spriteManager.removeSprite(actorId);
-        return actorId;
+    public String removeAgent() {
+        String agentId = super.removeAgent();
+        this.spriteManager.removeSprite(agentId);
+        return agentId;
     }
 
 

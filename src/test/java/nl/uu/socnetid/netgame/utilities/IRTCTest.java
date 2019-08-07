@@ -6,7 +6,7 @@ import org.apache.commons.math3.util.Precision;
 import org.junit.Before;
 import org.junit.Test;
 
-import nl.uu.socnetid.netgame.actors.Actor;
+import nl.uu.socnetid.netgame.agents.Agent;
 import nl.uu.socnetid.netgame.diseases.DiseaseSpecs;
 import nl.uu.socnetid.netgame.diseases.types.DiseaseType;
 import nl.uu.socnetid.netgame.networks.Network;
@@ -32,56 +32,56 @@ public class IRTCTest {
     private static final double phi   = 0.4;
     private static final int    tau   = 10;
 
-    // actors
-    private Actor actor1;
-    private Actor actor2;
-    private Actor actor3;
-    private Actor actor4;
-    private Actor actor5;
-    private Actor actor6;
-    private Actor actor7;
-    private Actor actor8;
-    private Actor actor9;
+    // agents
+    private Agent agent1;
+    private Agent agent2;
+    private Agent agent3;
+    private Agent agent4;
+    private Agent agent5;
+    private Agent agent6;
+    private Agent agent7;
+    private Agent agent8;
+    private Agent agent9;
 
     /**
      * Performed before each test: Initialization of the network.
      */
     @Before
-    public void initActor() {
+    public void initAgent() {
         this.network = new Network("IRTC Test");
 
         UtilityFunction uf = new IRTC(alpha, beta, c);
         DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
 
-        this.actor1 = this.network.addActor(uf, ds, r, r, phi);
-        this.actor2 = this.network.addActor(uf, ds, r, r, phi);
-        this.actor3 = this.network.addActor(uf, ds, r, r, phi);
-        this.actor4 = this.network.addActor(uf, ds, r, r, phi);
-        this.actor5 = this.network.addActor(uf, ds, r, r, phi);
-        this.actor6 = this.network.addActor(uf, ds, r, r, phi);
-        this.actor7 = this.network.addActor(uf, ds, r, r, phi);
-        this.actor8 = this.network.addActor(uf, ds, r, r, phi);
-        this.actor9 = this.network.addActor(uf, ds, r, r, phi);
+        this.agent1 = this.network.addAgent(uf, ds, r, r, phi);
+        this.agent2 = this.network.addAgent(uf, ds, r, r, phi);
+        this.agent3 = this.network.addAgent(uf, ds, r, r, phi);
+        this.agent4 = this.network.addAgent(uf, ds, r, r, phi);
+        this.agent5 = this.network.addAgent(uf, ds, r, r, phi);
+        this.agent6 = this.network.addAgent(uf, ds, r, r, phi);
+        this.agent7 = this.network.addAgent(uf, ds, r, r, phi);
+        this.agent8 = this.network.addAgent(uf, ds, r, r, phi);
+        this.agent9 = this.network.addAgent(uf, ds, r, r, phi);
 
         // infections
-        this.actor4.infect(ds);
-        this.actor6.infect(ds);
-        this.actor8.infect(ds);
+        this.agent4.infect(ds);
+        this.agent6.infect(ds);
+        this.agent8.infect(ds);
 
         // connections
-        this.actor1.addConnection(this.actor2);
-        this.actor1.addConnection(this.actor3);
-        this.actor1.addConnection(this.actor4);
-        this.actor2.addConnection(this.actor6);
-        this.actor3.addConnection(this.actor5);
-        this.actor4.addConnection(this.actor5);
-        this.actor4.addConnection(this.actor6);
-        this.actor4.addConnection(this.actor7);
-        this.actor5.addConnection(this.actor7);
-        this.actor5.addConnection(this.actor8);
-        this.actor6.addConnection(this.actor7);
-        this.actor7.addConnection(this.actor8);
-        this.actor8.addConnection(this.actor9);
+        this.agent1.addConnection(this.agent2);
+        this.agent1.addConnection(this.agent3);
+        this.agent1.addConnection(this.agent4);
+        this.agent2.addConnection(this.agent6);
+        this.agent3.addConnection(this.agent5);
+        this.agent4.addConnection(this.agent5);
+        this.agent4.addConnection(this.agent6);
+        this.agent4.addConnection(this.agent7);
+        this.agent5.addConnection(this.agent7);
+        this.agent5.addConnection(this.agent8);
+        this.agent6.addConnection(this.agent7);
+        this.agent7.addConnection(this.agent8);
+        this.agent8.addConnection(this.agent9);
     }
 
 
@@ -90,9 +90,9 @@ public class IRTCTest {
      */
     @Test
     public void testGetUtility() {
-        assertEquals( -0.99, Precision.round(this.actor1.getUtility().getOverallUtility(), 2), 0);
-        assertEquals( -6.15, Precision.round(this.actor4.getUtility().getOverallUtility(), 2), 0);
-        assertEquals(-13.37, Precision.round(this.actor7.getUtility().getOverallUtility(), 2), 0);
+        assertEquals( -0.99, Precision.round(this.agent1.getUtility().getOverallUtility(), 2), 0);
+        assertEquals( -6.15, Precision.round(this.agent4.getUtility().getOverallUtility(), 2), 0);
+        assertEquals(-13.37, Precision.round(this.agent7.getUtility().getOverallUtility(), 2), 0);
     }
 
 }

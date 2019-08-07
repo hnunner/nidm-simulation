@@ -295,13 +295,13 @@ public class CIDMoPanel extends DeactivatablePanel {
         add(label_3);
 
         JLabel lblNetworkEvaluation = new JLabel("Network - evaluation (per agent):");
-        lblNetworkEvaluation.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
+        lblNetworkEvaluation.setToolTipText("Risk behavior of the agent - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
         lblNetworkEvaluation.setFont(new Font("Lucida Grande", Font.BOLD, 13));
         lblNetworkEvaluation.setBounds(14, 488, 238, 16);
         add(lblNetworkEvaluation);
 
         JLabel label_9 = new JLabel("% of network per time step");
-        label_9.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
+        label_9.setToolTipText("Risk behavior of the agent - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
         label_9.setBounds(38, 518, 177, 16);
         add(label_9);
 
@@ -329,13 +329,13 @@ public class CIDMoPanel extends DeactivatablePanel {
         add(separator_6);
 
         JLabel lblSimulation = new JLabel("Simulation:");
-        lblSimulation.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
+        lblSimulation.setToolTipText("Risk behavior of the agent - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
         lblSimulation.setFont(new Font("Lucida Grande", Font.BOLD, 13));
         lblSimulation.setBounds(13, 559, 238, 16);
         add(lblSimulation);
 
         JLabel label_5 = new JLabel("Time steps to recover");
-        label_5.setToolTipText("Risk behavior of the actor - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
+        label_5.setToolTipText("Risk behavior of the agent - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
         label_5.setBounds(37, 589, 177, 16);
         add(label_5);
 

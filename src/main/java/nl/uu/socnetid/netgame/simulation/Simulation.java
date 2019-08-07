@@ -9,7 +9,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.apache.log4j.Logger;
 
-import nl.uu.socnetid.netgame.actors.Actor;
+import nl.uu.socnetid.netgame.agents.Agent;
 import nl.uu.socnetid.netgame.networks.Network;
 
 /**
@@ -47,10 +47,10 @@ public class Simulation implements Runnable {
     }
 
     /**
-     * Sets the delay between actor moves.
+     * Sets the delay between agent moves.
      *
      * @param delay
-     *          the delay between actor moves
+     *          the delay between agent moves
      */
     public void setDelay(int delay) {
         this.delay = delay;
@@ -70,7 +70,7 @@ public class Simulation implements Runnable {
     }
 
     /**
-     * Simulates the network dynamics (disease and actors)
+     * Simulates the network dynamics (disease and agents)
      * for a number of rounds
      *
      * @param rounds
@@ -123,12 +123,12 @@ public class Simulation implements Runnable {
 
     /**
      * Computes a single round,
-     * composed of disease and actor dynamics.
+     * composed of disease and agent dynamics.
      */
     private void computeSingleRound() {
 
         computeDiseaseDynamics();
-        computeActorDynamics();
+        computeAgentDynamics();
 
         this.rounds++;
 
@@ -160,68 +160,68 @@ public class Simulation implements Runnable {
     private void computeDiseaseDynamics() {
 
         // random order
-        List<Actor> actors = new ArrayList<Actor>(this.network.getActors());
-        Collections.shuffle(actors);
+        List<Agent> agents = new ArrayList<Agent>(this.network.getAgents());
+        Collections.shuffle(agents);
 
-        Iterator<Actor> actorsIt = actors.iterator();
-        while (actorsIt.hasNext()) {
+        Iterator<Agent> agentsIt = agents.iterator();
+        while (agentsIt.hasNext()) {
             if (this.paused) {
                 return;
             }
-            Actor actor = actorsIt.next();
-            if (actor.isInfected()) {
-                actor.fightDisease();
+            Agent agent = agentsIt.next();
+            if (agent.isInfected()) {
+                agent.fightDisease();
             }
-            actor.computeDiseaseTransmission();
+            agent.computeDiseaseTransmission();
         }
     }
 
     /**
      * Computes a single round of the disease dynamics of the network.
      */
-    private void computeActorDynamics() {
+    private void computeAgentDynamics() {
 
         // random order
-        List<Actor> actors = new ArrayList<Actor>(this.network.getActors());
-        Collections.shuffle(actors);
+        List<Agent> agents = new ArrayList<Agent>(this.network.getAgents());
+        Collections.shuffle(agents);
 
-        Iterator<Actor> actorsIt = actors.iterator();
-        while (actorsIt.hasNext()) {
+        Iterator<Agent> agentsIt = agents.iterator();
+        while (agentsIt.hasNext()) {
             if (this.paused) {
                 return;
             }
             if (this.delay > 0) {
-                // some delay before each actor moves (e.g., for animation processes)
+                // some delay before each agent moves (e.g., for animation processes)
                 try {
                     Thread.sleep(this.delay * 10);
                 } catch (InterruptedException e) {
                     return;
                 }
             }
-            computeActorRound(actorsIt.next());
+            computeAgentRound(agentsIt.next());
         }
     }
 
     /**
-     * Computes a single round of play for a given {@link Actor}.
+     * Computes a single round of play for a given {@link Agent}.
      *
-     * @param actor
-     *          the {@link Actor} to compute the single round of play for
+     * @param agent
+     *          the {@link Agent} to compute the single round of play for
      */
-    protected void computeActorRound(Actor actor) {
-        actor.computeRound();
+    protected void computeAgentRound(Agent agent) {
+        agent.computeRound();
     }
 
     /**
-     * Computes a single round of play for a given {@link Actor}.
+     * Computes a single round of play for a given {@link Agent}.
      *
-     * @param actor
-     *          the {@link Actor} to compute the single round of play for
+     * @param agent
+     *          the {@link Agent} to compute the single round of play for
      * @param delay
      *          the delay between each network decision
      */
-    protected void computeActorRound(Actor actor, int delay) {
-        actor.computeRound(delay);
+    protected void computeAgentRound(Agent agent, int delay) {
+        agent.computeRound(delay);
     }
 
     /**

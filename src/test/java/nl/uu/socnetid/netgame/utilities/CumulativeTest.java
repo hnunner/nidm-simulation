@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import nl.uu.socnetid.netgame.actors.Actor;
+import nl.uu.socnetid.netgame.agents.Agent;
 import nl.uu.socnetid.netgame.diseases.DiseaseSpecs;
 import nl.uu.socnetid.netgame.diseases.types.DiseaseType;
 import nl.uu.socnetid.netgame.networks.Network;
@@ -20,16 +20,16 @@ public class CumulativeTest {
     // network
     private Network network;
 
-    // actors
-    private Actor actor1;
-    private Actor actor2;
-    private Actor actor3;
-    private Actor actor4;
-    private Actor actor5;
-    private Actor actor6;
-    private Actor actor7;
-    private Actor actor8;
-    private Actor actor9;
+    // agents
+    private Agent agent1;
+    private Agent agent2;
+    private Agent agent3;
+    private Agent agent4;
+    private Agent agent5;
+    private Agent agent6;
+    private Agent agent7;
+    private Agent agent8;
+    private Agent agent9;
 
     // disease related
     private static final int    tau   = 10;
@@ -41,35 +41,35 @@ public class CumulativeTest {
      * Performed before each test: Initialization of the network.
      */
     @Before
-    public void initActor() {
+    public void initAgent() {
         this.network = new Network("Cumulative Test");
         UtilityFunction uf = new Cumulative();
         DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
 
-        this.actor1 = this.network.addActor(uf, ds);
-        this.actor2 = this.network.addActor(uf, ds);
-        this.actor3 = this.network.addActor(uf, ds);
-        this.actor4 = this.network.addActor(uf, ds);
-        this.actor5 = this.network.addActor(uf, ds);
-        this.actor6 = this.network.addActor(uf, ds);
-        this.actor7 = this.network.addActor(uf, ds);
-        this.actor8 = this.network.addActor(uf, ds);
-        this.actor9 = this.network.addActor(uf, ds);
+        this.agent1 = this.network.addAgent(uf, ds);
+        this.agent2 = this.network.addAgent(uf, ds);
+        this.agent3 = this.network.addAgent(uf, ds);
+        this.agent4 = this.network.addAgent(uf, ds);
+        this.agent5 = this.network.addAgent(uf, ds);
+        this.agent6 = this.network.addAgent(uf, ds);
+        this.agent7 = this.network.addAgent(uf, ds);
+        this.agent8 = this.network.addAgent(uf, ds);
+        this.agent9 = this.network.addAgent(uf, ds);
 
         // connections
-        this.actor1.addConnection(this.actor2);
-        this.actor1.addConnection(this.actor3);
-        this.actor1.addConnection(this.actor4);
-        this.actor2.addConnection(this.actor6);
-        this.actor3.addConnection(this.actor5);
-        this.actor4.addConnection(this.actor5);
-        this.actor4.addConnection(this.actor6);
-        this.actor4.addConnection(this.actor7);
-        this.actor5.addConnection(this.actor7);
-        this.actor5.addConnection(this.actor8);
-        this.actor6.addConnection(this.actor7);
-        this.actor7.addConnection(this.actor8);
-        this.actor8.addConnection(this.actor9);
+        this.agent1.addConnection(this.agent2);
+        this.agent1.addConnection(this.agent3);
+        this.agent1.addConnection(this.agent4);
+        this.agent2.addConnection(this.agent6);
+        this.agent3.addConnection(this.agent5);
+        this.agent4.addConnection(this.agent5);
+        this.agent4.addConnection(this.agent6);
+        this.agent4.addConnection(this.agent7);
+        this.agent5.addConnection(this.agent7);
+        this.agent5.addConnection(this.agent8);
+        this.agent6.addConnection(this.agent7);
+        this.agent7.addConnection(this.agent8);
+        this.agent8.addConnection(this.agent9);
     }
 
 
@@ -78,15 +78,15 @@ public class CumulativeTest {
      */
     @Test
     public void testGetUtility() {
-        assertEquals(4.5, this.actor1.getUtility().getOverallUtility(), 0);
-        assertEquals(3.5, this.actor2.getUtility().getOverallUtility(), 0);
-        assertEquals(4, this.actor3.getUtility().getOverallUtility(), 0);
-        assertEquals(5.5, this.actor4.getUtility().getOverallUtility(), 0);
-        assertEquals(5.5, this.actor5.getUtility().getOverallUtility(), 0);
-        assertEquals(4.5, this.actor6.getUtility().getOverallUtility(), 0);
-        assertEquals(6, this.actor7.getUtility().getOverallUtility(), 0);
-        assertEquals(4.5, this.actor8.getUtility().getOverallUtility(), 0);
-        assertEquals(2, this.actor9.getUtility().getOverallUtility(), 0);
+        assertEquals(4.5, this.agent1.getUtility().getOverallUtility(), 0);
+        assertEquals(3.5, this.agent2.getUtility().getOverallUtility(), 0);
+        assertEquals(4, this.agent3.getUtility().getOverallUtility(), 0);
+        assertEquals(5.5, this.agent4.getUtility().getOverallUtility(), 0);
+        assertEquals(5.5, this.agent5.getUtility().getOverallUtility(), 0);
+        assertEquals(4.5, this.agent6.getUtility().getOverallUtility(), 0);
+        assertEquals(6, this.agent7.getUtility().getOverallUtility(), 0);
+        assertEquals(4.5, this.agent8.getUtility().getOverallUtility(), 0);
+        assertEquals(2, this.agent9.getUtility().getOverallUtility(), 0);
     }
 
 }

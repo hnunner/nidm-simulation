@@ -6,7 +6,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.log4j.Logger;
 
-import nl.uu.socnetid.netgame.actors.Actor;
+import nl.uu.socnetid.netgame.agents.Agent;
 import nl.uu.socnetid.netgame.networks.Network;
 
 /**
@@ -18,9 +18,9 @@ public class ThreadedSimulation extends Simulation {
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(ThreadedSimulation.class);
 
-    // the executor actorExecutor used for the actor threads
-    private ExecutorService actorExecutor;
-    // actor concurrency
+    // the executor agentExecutor used for the agent threads
+    private ExecutorService agentExecutor;
+    // agent concurrency
     private final ReentrantLock lock = new ReentrantLock();
 
 
@@ -32,18 +32,18 @@ public class ThreadedSimulation extends Simulation {
      */
     public ThreadedSimulation(Network network) {
         super(network);
-        this.actorExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        this.agentExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     }
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.netgame.simulation.Simulation#computeActorRound(
-     * nl.uu.socnetid.netgame.actors.Actor)
+     * @see nl.uu.socnetid.netgame.simulation.Simulation#computeAgentRound(
+     * nl.uu.socnetid.netgame.agents.Agent)
      */
     @Override
-    protected void computeActorRound(Actor actor) {
-        actor.setLock(this.lock);
-        actorExecutor.submit(actor);
+    protected void computeAgentRound(Agent agent) {
+        agent.setLock(this.lock);
+        agentExecutor.submit(agent);
         // stop simulaiton if thread is interrupted
         if (Thread.currentThread().isInterrupted()) {
             this.pause();
