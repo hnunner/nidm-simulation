@@ -39,8 +39,8 @@ public class StatsFrame extends JFrame {
     private JLabel lblGlobalS;
     private JLabel lblGlobalGamma;
     private JLabel lblGlobalMu;
-    // actors
-    private JLabel lblGlobalActorsOverall;
+    // agents
+    private JLabel lblGlobalAgentsOverall;
     private JLabel lblGlobalSusceptibles;
     private JLabel lblGlobalInfected;
     private JLabel lblGlobalRecovered;
@@ -63,37 +63,37 @@ public class StatsFrame extends JFrame {
     private JLabel lblGlobalSimulationRound;
     private JLabel lblGlobalSimulationRecording;
 
-    // labels actor stats
-    private JLabel lblActorID;
-    private JLabel lblActorSatisfied;
-    private JLabel lblActorUtility;
+    // labels agent stats
+    private JLabel lblAgentID;
+    private JLabel lblAgentSatisfied;
+    private JLabel lblAgentUtility;
     // benefit
-    private JLabel lblActorBenefit;
-    private JLabel lblActorBenefitDirect;
-    private JLabel lblActorBenefitIndirect;
+    private JLabel lblAgentBenefit;
+    private JLabel lblAgentBenefitDirect;
+    private JLabel lblAgentBenefitIndirect;
     // costs
-    private JLabel lblActorCosts;
-    private JLabel lblActorCostsDirect;
-    private JLabel lblActorCostsDisease;
+    private JLabel lblAgentCosts;
+    private JLabel lblAgentCostsDirect;
+    private JLabel lblAgentCostsDisease;
     // disease
-    private JLabel lblActorDiseaseGroup;
-    private JLabel lblActorDiseaseTimeRemaining;
+    private JLabel lblAgentDiseaseGroup;
+    private JLabel lblAgentDiseaseTimeRemaining;
     // risk behavior
-    private JLabel lblActorRSigma;
-    private JLabel lblActorRSigmaMeaning;
-    private JLabel lblActorRPi;
-    private JLabel lblActorRPiMeaning;
+    private JLabel lblAgentRSigma;
+    private JLabel lblAgentRSigmaMeaning;
+    private JLabel lblAgentRPi;
+    private JLabel lblAgentRPiMeaning;
     // network
-    private JLabel lblActorFirstOrderDegree;
-    private JLabel lblActorCloseness;
-    private JLabel lblActorSecondOrderDegree;
+    private JLabel lblAgentFirstOrderDegree;
+    private JLabel lblAgentCloseness;
+    private JLabel lblAgentSecondOrderDegree;
     // connections
-    private JLabel lblActorTiesBrokenActive;
-    private JLabel lblActorTiesBrokenPassive;
-    private JLabel lblActorAcceptedTiesOut;
-    private JLabel lblActorDeclinedTiesOut;
-    private JLabel lblActorAcceptedTiesIn;
-    private JLabel lblActorDeclinedTiesIn;
+    private JLabel lblAgentTiesBrokenActive;
+    private JLabel lblAgentTiesBrokenPassive;
+    private JLabel lblAgentAcceptedTiesOut;
+    private JLabel lblAgentDeclinedTiesOut;
+    private JLabel lblAgentAcceptedTiesIn;
+    private JLabel lblAgentDeclinedTiesIn;
 
     /**
      * Constructor.
@@ -129,7 +129,7 @@ public class StatsFrame extends JFrame {
         panel.setBounds(203, 6, 192, 566);
         getContentPane().add(panel);
 
-        JLabel label = new JLabel("Actor Stats");
+        JLabel label = new JLabel("Agent Stats");
         label.setFont(new Font("Lucida Grande", Font.PLAIN, 13));
         label.setBounds(6, 6, 113, 19);
         panel.add(label);
@@ -139,15 +139,15 @@ public class StatsFrame extends JFrame {
         label_1.setBounds(10, 30, 61, 16);
         panel.add(label_1);
 
-        lblActorID = new JLabel(NA_STRING);
-        lblActorID.setFont(new Font("Lucida Grande", Font.BOLD, 9));
-        lblActorID.setBounds(130, 30, 61, 16);
-        panel.add(lblActorID);
+        lblAgentID = new JLabel(NA_STRING);
+        lblAgentID.setFont(new Font("Lucida Grande", Font.BOLD, 9));
+        lblAgentID.setBounds(130, 30, 61, 16);
+        panel.add(lblAgentID);
 
-        lblActorDiseaseGroup = new JLabel(NA_STRING);
-        lblActorDiseaseGroup.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorDiseaseGroup.setBounds(130, 180, 61, 16);
-        panel.add(lblActorDiseaseGroup);
+        lblAgentDiseaseGroup = new JLabel(NA_STRING);
+        lblAgentDiseaseGroup.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblAgentDiseaseGroup.setBounds(130, 180, 61, 16);
+        panel.add(lblAgentDiseaseGroup);
 
         JLabel label_14 = new JLabel("Group");
         label_14.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
@@ -159,10 +159,10 @@ public class StatsFrame extends JFrame {
         label_19.setBounds(20, 195, 97, 16);
         panel.add(label_19);
 
-        lblActorDiseaseTimeRemaining = new JLabel(NA_STRING);
-        lblActorDiseaseTimeRemaining.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorDiseaseTimeRemaining.setBounds(130, 195, 61, 16);
-        panel.add(lblActorDiseaseTimeRemaining);
+        lblAgentDiseaseTimeRemaining = new JLabel(NA_STRING);
+        lblAgentDiseaseTimeRemaining.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblAgentDiseaseTimeRemaining.setBounds(130, 195, 61, 16);
+        panel.add(lblAgentDiseaseTimeRemaining);
 
         JLabel label_25 = new JLabel("Risk behavior");
         label_25.setFont(new Font("Lucida Grande", Font.BOLD, 9));
@@ -174,35 +174,35 @@ public class StatsFrame extends JFrame {
         lblDiseaseSeverity.setBounds(20, 225, 97, 16);
         panel.add(lblDiseaseSeverity);
 
-        lblActorRSigma = new JLabel(NA_STRING);
-        lblActorRSigma.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorRSigma.setBounds(130, 225, 61, 16);
-        panel.add(lblActorRSigma);
+        lblAgentRSigma = new JLabel(NA_STRING);
+        lblAgentRSigma.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblAgentRSigma.setBounds(130, 225, 61, 16);
+        panel.add(lblAgentRSigma);
 
         JLabel label_28 = new JLabel("Meaning");
         label_28.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
         label_28.setBounds(20, 240, 97, 16);
         panel.add(label_28);
 
-        lblActorRSigmaMeaning = new JLabel(NA_STRING);
-        lblActorRSigmaMeaning.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorRSigmaMeaning.setBounds(130, 240, 61, 16);
-        panel.add(lblActorRSigmaMeaning);
+        lblAgentRSigmaMeaning = new JLabel(NA_STRING);
+        lblAgentRSigmaMeaning.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblAgentRSigmaMeaning.setBounds(130, 240, 61, 16);
+        panel.add(lblAgentRSigmaMeaning);
 
         JLabel lblstOrderDegree = new JLabel("1st order degree");
         lblstOrderDegree.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
         lblstOrderDegree.setBounds(20, 300, 97, 16);
         panel.add(lblstOrderDegree);
 
-        lblActorFirstOrderDegree = new JLabel(NA_STRING);
-        lblActorFirstOrderDegree.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorFirstOrderDegree.setBounds(130, 300, 61, 16);
-        panel.add(lblActorFirstOrderDegree);
+        lblAgentFirstOrderDegree = new JLabel(NA_STRING);
+        lblAgentFirstOrderDegree.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblAgentFirstOrderDegree.setBounds(130, 300, 61, 16);
+        panel.add(lblAgentFirstOrderDegree);
 
-        lblActorCloseness = new JLabel(NA_STRING);
-        lblActorCloseness.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorCloseness.setBounds(130, 330, 61, 16);
-        panel.add(lblActorCloseness);
+        lblAgentCloseness = new JLabel(NA_STRING);
+        lblAgentCloseness.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblAgentCloseness.setBounds(130, 330, 61, 16);
+        panel.add(lblAgentCloseness);
 
         JLabel label_35 = new JLabel("Closeness");
         label_35.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
@@ -219,10 +219,10 @@ public class StatsFrame extends JFrame {
         lblndOrderDegree.setBounds(20, 315, 97, 16);
         panel.add(lblndOrderDegree);
 
-        lblActorSecondOrderDegree = new JLabel(NA_STRING);
-        lblActorSecondOrderDegree.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorSecondOrderDegree.setBounds(130, 315, 61, 16);
-        panel.add(lblActorSecondOrderDegree);
+        lblAgentSecondOrderDegree = new JLabel(NA_STRING);
+        lblAgentSecondOrderDegree.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblAgentSecondOrderDegree.setBounds(130, 315, 61, 16);
+        panel.add(lblAgentSecondOrderDegree);
 
         JLabel label_2 = new JLabel("Disease");
         label_2.setFont(new Font("Lucida Grande", Font.BOLD, 9));
@@ -244,10 +244,10 @@ public class StatsFrame extends JFrame {
         label_33.setBounds(117, 90, 10, 16);
         panel.add(label_33);
 
-        lblActorBenefitDirect = new JLabel(NA_STRING);
-        lblActorBenefitDirect.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorBenefitDirect.setBounds(130, 90, 56, 16);
-        panel.add(lblActorBenefitDirect);
+        lblAgentBenefitDirect = new JLabel(NA_STRING);
+        lblAgentBenefitDirect.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblAgentBenefitDirect.setBounds(130, 90, 56, 16);
+        panel.add(lblAgentBenefitDirect);
 
         JLabel lblIndirectConnections = new JLabel("Indirect connections");
         lblIndirectConnections.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
@@ -259,10 +259,10 @@ public class StatsFrame extends JFrame {
         label_41.setBounds(117, 105, 10, 16);
         panel.add(label_41);
 
-        lblActorBenefitIndirect = new JLabel(NA_STRING);
-        lblActorBenefitIndirect.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorBenefitIndirect.setBounds(130, 105, 56, 16);
-        panel.add(lblActorBenefitIndirect);
+        lblAgentBenefitIndirect = new JLabel(NA_STRING);
+        lblAgentBenefitIndirect.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblAgentBenefitIndirect.setBounds(130, 105, 56, 16);
+        panel.add(lblAgentBenefitIndirect);
 
         JLabel lblCurrentCosts = new JLabel("Current costs");
         lblCurrentCosts.setFont(new Font("Lucida Grande", Font.BOLD, 9));
@@ -279,10 +279,10 @@ public class StatsFrame extends JFrame {
         label_45.setBounds(117, 135, 10, 16);
         panel.add(label_45);
 
-        lblActorCostsDirect = new JLabel(NA_STRING);
-        lblActorCostsDirect.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorCostsDirect.setBounds(130, 135, 56, 16);
-        panel.add(lblActorCostsDirect);
+        lblAgentCostsDirect = new JLabel(NA_STRING);
+        lblAgentCostsDirect.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblAgentCostsDirect.setBounds(130, 135, 56, 16);
+        panel.add(lblAgentCostsDirect);
 
         JLabel lblEffectOfDisease = new JLabel("Effect of disease");
         lblEffectOfDisease.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
@@ -294,10 +294,10 @@ public class StatsFrame extends JFrame {
         label_53.setBounds(117, 150, 10, 16);
         panel.add(label_53);
 
-        lblActorCostsDisease = new JLabel(NA_STRING);
-        lblActorCostsDisease.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorCostsDisease.setBounds(130, 150, 56, 16);
-        panel.add(lblActorCostsDisease);
+        lblAgentCostsDisease = new JLabel(NA_STRING);
+        lblAgentCostsDisease.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblAgentCostsDisease.setBounds(130, 150, 56, 16);
+        panel.add(lblAgentCostsDisease);
 
         JLabel label_4 = new JLabel(":");
         label_4.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
@@ -324,10 +324,10 @@ public class StatsFrame extends JFrame {
         label_40.setBounds(117, 60, 10, 16);
         panel.add(label_40);
 
-        lblActorUtility = new JLabel(NA_STRING);
-        lblActorUtility.setFont(new Font("Lucida Grande", Font.BOLD, 9));
-        lblActorUtility.setBounds(130, 60, 61, 16);
-        panel.add(lblActorUtility);
+        lblAgentUtility = new JLabel(NA_STRING);
+        lblAgentUtility.setFont(new Font("Lucida Grande", Font.BOLD, 9));
+        lblAgentUtility.setBounds(130, 60, 61, 16);
+        panel.add(lblAgentUtility);
 
         JLabel label_52 = new JLabel(":");
         label_52.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
@@ -359,25 +359,25 @@ public class StatsFrame extends JFrame {
         label_24.setBounds(117, 75, 10, 16);
         panel.add(label_24);
 
-        lblActorBenefit = new JLabel(NA_STRING);
-        lblActorBenefit.setFont(new Font("Lucida Grande", Font.BOLD, 9));
-        lblActorBenefit.setBounds(130, 75, 61, 16);
-        panel.add(lblActorBenefit);
+        lblAgentBenefit = new JLabel(NA_STRING);
+        lblAgentBenefit.setFont(new Font("Lucida Grande", Font.BOLD, 9));
+        lblAgentBenefit.setBounds(130, 75, 61, 16);
+        panel.add(lblAgentBenefit);
 
         JLabel label_62 = new JLabel(":");
         label_62.setFont(new Font("Lucida Grande", Font.BOLD, 9));
         label_62.setBounds(117, 120, 10, 16);
         panel.add(label_62);
 
-        lblActorCosts = new JLabel(NA_STRING);
-        lblActorCosts.setFont(new Font("Lucida Grande", Font.BOLD, 9));
-        lblActorCosts.setBounds(130, 120, 61, 16);
-        panel.add(lblActorCosts);
+        lblAgentCosts = new JLabel(NA_STRING);
+        lblAgentCosts.setFont(new Font("Lucida Grande", Font.BOLD, 9));
+        lblAgentCosts.setBounds(130, 120, 61, 16);
+        panel.add(lblAgentCosts);
 
-        lblActorSatisfied = new JLabel(NA_STRING);
-        lblActorSatisfied.setFont(new Font("Lucida Grande", Font.BOLD, 9));
-        lblActorSatisfied.setBounds(130, 45, 61, 16);
-        panel.add(lblActorSatisfied);
+        lblAgentSatisfied = new JLabel(NA_STRING);
+        lblAgentSatisfied.setFont(new Font("Lucida Grande", Font.BOLD, 9));
+        lblAgentSatisfied.setBounds(130, 45, 61, 16);
+        panel.add(lblAgentSatisfied);
 
         JLabel label_39 = new JLabel(":");
         label_39.setFont(new Font("Lucida Grande", Font.BOLD, 9));
@@ -490,7 +490,7 @@ public class StatsFrame extends JFrame {
         panel_1.add(lblGlobalGamma);
         lblGlobalGamma.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
 
-        JLabel label_30 = new JLabel("Care factor");
+        JLabel label_30 = new JLabel("Care fagent");
         label_30.setBounds(20, 180, 67, 16);
         panel_1.add(label_30);
         label_30.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
@@ -535,10 +535,10 @@ public class StatsFrame extends JFrame {
         label_20.setBounds(105, 180, 24, 16);
         panel_1.add(label_20);
 
-        JLabel lblActors = new JLabel("Actors");
-        lblActors.setFont(new Font("Lucida Grande", Font.BOLD, 9));
-        lblActors.setBounds(10, 195, 97, 16);
-        panel_1.add(lblActors);
+        JLabel lblAgents = new JLabel("Agents");
+        lblAgents.setFont(new Font("Lucida Grande", Font.BOLD, 9));
+        lblAgents.setBounds(10, 195, 97, 16);
+        panel_1.add(lblAgents);
 
         JLabel lblAmountOverall = new JLabel("Amount overall");
         lblAmountOverall.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
@@ -565,10 +565,10 @@ public class StatsFrame extends JFrame {
         lblRiskAverse.setBounds(20, 270, 83, 16);
         panel_1.add(lblRiskAverse);
 
-        lblGlobalActorsOverall = new JLabel(NA_STRING);
-        lblGlobalActorsOverall.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblGlobalActorsOverall.setBounds(130, 210, 56, 16);
-        panel_1.add(lblGlobalActorsOverall);
+        lblGlobalAgentsOverall = new JLabel(NA_STRING);
+        lblGlobalAgentsOverall.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblGlobalAgentsOverall.setBounds(130, 210, 56, 16);
+        panel_1.add(lblGlobalAgentsOverall);
 
         lblGlobalSusceptibles = new JLabel(NA_STRING);
         lblGlobalSusceptibles.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
@@ -590,10 +590,10 @@ public class StatsFrame extends JFrame {
         lblGlobalRSigmaAverse.setBounds(130, 270, 56, 16);
         panel_1.add(lblGlobalRSigmaAverse);
 
-        JLabel lblAverageRiskFactor = new JLabel("∅ Risk factor");
-        lblAverageRiskFactor.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblAverageRiskFactor.setBounds(20, 315, 97, 16);
-        panel_1.add(lblAverageRiskFactor);
+        JLabel lblAverageRiskFagent = new JLabel("∅ Risk fagent");
+        lblAverageRiskFagent.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblAverageRiskFagent.setBounds(20, 315, 97, 16);
+        panel_1.add(lblAverageRiskFagent);
 
         JLabel lblRiskSeeking = new JLabel("Risk seeking");
         lblRiskSeeking.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
@@ -816,7 +816,7 @@ public class StatsFrame extends JFrame {
         lblGlobalRPiAverse.setBounds(130, 330, 56, 16);
         panel_1.add(lblGlobalRPiAverse);
 
-        JLabel label_68 = new JLabel("∅ Risk factor");
+        JLabel label_68 = new JLabel("∅ Risk fagent");
         label_68.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
         label_68.setBounds(20, 375, 97, 16);
         panel_1.add(label_68);
@@ -921,10 +921,10 @@ public class StatsFrame extends JFrame {
         label_63.setBounds(117, 360, 10, 16);
         panel.add(label_63);
 
-        lblActorTiesBrokenActive = new JLabel("---");
-        lblActorTiesBrokenActive.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorTiesBrokenActive.setBounds(130, 360, 61, 16);
-        panel.add(lblActorTiesBrokenActive);
+        lblAgentTiesBrokenActive = new JLabel("---");
+        lblAgentTiesBrokenActive.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblAgentTiesBrokenActive.setBounds(130, 360, 61, 16);
+        panel.add(lblAgentTiesBrokenActive);
 
         JLabel label_49 = new JLabel("Broken (passive)");
         label_49.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
@@ -936,10 +936,10 @@ public class StatsFrame extends JFrame {
         label_64.setBounds(117, 375, 10, 16);
         panel.add(label_64);
 
-        lblActorTiesBrokenPassive = new JLabel("---");
-        lblActorTiesBrokenPassive.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorTiesBrokenPassive.setBounds(130, 375, 61, 16);
-        panel.add(lblActorTiesBrokenPassive);
+        lblAgentTiesBrokenPassive = new JLabel("---");
+        lblAgentTiesBrokenPassive.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblAgentTiesBrokenPassive.setBounds(130, 375, 61, 16);
+        panel.add(lblAgentTiesBrokenPassive);
 
         JLabel label_51 = new JLabel("Accepted (out)");
         label_51.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
@@ -951,10 +951,10 @@ public class StatsFrame extends JFrame {
         label_65.setBounds(117, 390, 10, 16);
         panel.add(label_65);
 
-        lblActorAcceptedTiesOut = new JLabel("---");
-        lblActorAcceptedTiesOut.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorAcceptedTiesOut.setBounds(130, 390, 61, 16);
-        panel.add(lblActorAcceptedTiesOut);
+        lblAgentAcceptedTiesOut = new JLabel("---");
+        lblAgentAcceptedTiesOut.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblAgentAcceptedTiesOut.setBounds(130, 390, 61, 16);
+        panel.add(lblAgentAcceptedTiesOut);
 
         JLabel label_66 = new JLabel("Declined (out)");
         label_66.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
@@ -966,10 +966,10 @@ public class StatsFrame extends JFrame {
         label_67.setBounds(117, 405, 10, 16);
         panel.add(label_67);
 
-        lblActorDeclinedTiesOut = new JLabel("---");
-        lblActorDeclinedTiesOut.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorDeclinedTiesOut.setBounds(130, 405, 61, 16);
-        panel.add(lblActorDeclinedTiesOut);
+        lblAgentDeclinedTiesOut = new JLabel("---");
+        lblAgentDeclinedTiesOut.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblAgentDeclinedTiesOut.setBounds(130, 405, 61, 16);
+        panel.add(lblAgentDeclinedTiesOut);
 
         JLabel label_69 = new JLabel("Accepted (in)");
         label_69.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
@@ -981,10 +981,10 @@ public class StatsFrame extends JFrame {
         label_70.setBounds(117, 420, 10, 16);
         panel.add(label_70);
 
-        lblActorAcceptedTiesIn = new JLabel("---");
-        lblActorAcceptedTiesIn.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorAcceptedTiesIn.setBounds(130, 420, 61, 16);
-        panel.add(lblActorAcceptedTiesIn);
+        lblAgentAcceptedTiesIn = new JLabel("---");
+        lblAgentAcceptedTiesIn.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblAgentAcceptedTiesIn.setBounds(130, 420, 61, 16);
+        panel.add(lblAgentAcceptedTiesIn);
 
         JLabel label_72 = new JLabel("Declined (in)");
         label_72.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
@@ -996,30 +996,30 @@ public class StatsFrame extends JFrame {
         label_73.setBounds(117, 435, 10, 16);
         panel.add(label_73);
 
-        lblActorDeclinedTiesIn = new JLabel("---");
-        lblActorDeclinedTiesIn.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorDeclinedTiesIn.setBounds(130, 435, 61, 16);
-        panel.add(lblActorDeclinedTiesIn);
+        lblAgentDeclinedTiesIn = new JLabel("---");
+        lblAgentDeclinedTiesIn.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblAgentDeclinedTiesIn.setBounds(130, 435, 61, 16);
+        panel.add(lblAgentDeclinedTiesIn);
 
         JLabel lblProbabilityInfection = new JLabel("Probability inf.");
         lblProbabilityInfection.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
         lblProbabilityInfection.setBounds(20, 255, 97, 16);
         panel.add(lblProbabilityInfection);
 
-        lblActorRPi = new JLabel("---");
-        lblActorRPi.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorRPi.setBounds(130, 255, 61, 16);
-        panel.add(lblActorRPi);
+        lblAgentRPi = new JLabel("---");
+        lblAgentRPi.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblAgentRPi.setBounds(130, 255, 61, 16);
+        panel.add(lblAgentRPi);
 
         JLabel label_61 = new JLabel("Meaning");
         label_61.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
         label_61.setBounds(20, 270, 97, 16);
         panel.add(label_61);
 
-        lblActorRPiMeaning = new JLabel("---");
-        lblActorRPiMeaning.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblActorRPiMeaning.setBounds(130, 270, 61, 16);
-        panel.add(lblActorRPiMeaning);
+        lblAgentRPiMeaning = new JLabel("---");
+        lblAgentRPiMeaning.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblAgentRPiMeaning.setBounds(130, 270, 61, 16);
+        panel.add(lblAgentRPiMeaning);
 
         JLabel label_71 = new JLabel(":");
         label_71.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
@@ -1043,7 +1043,7 @@ public class StatsFrame extends JFrame {
     }
 
     /**
-     * Refreshes the global utility stats for actors.
+     * Refreshes the global utility stats for agents.
      *
      * @param uf
      *          the utility function
@@ -1056,7 +1056,7 @@ public class StatsFrame extends JFrame {
     }
 
     /**
-     * Refreshes the global disease stats for actors.
+     * Refreshes the global disease stats for agents.
      *
      * @param ds
      *          the disease specs
@@ -1070,24 +1070,24 @@ public class StatsFrame extends JFrame {
     }
 
     /**
-     * Refreshes the global actor stats.
+     * Refreshes the global agent stats.
      *
-     * @param globalActorStats
-     *          the global actor stats
+     * @param globalAgentStats
+     *          the global agent stats
      */
-    public void refreshGlobalActorStats(GlobalActorStats globalActorStats) {
-        this.lblGlobalActorsOverall.setText(Integer.toString(globalActorStats.getN()));
-        this.lblGlobalSusceptibles.setText(Integer.toString(globalActorStats.getnS()));
-        this.lblGlobalInfected.setText(Integer.toString(globalActorStats.getnI()));
-        this.lblGlobalRecovered.setText(Integer.toString(globalActorStats.getnR()));
-        this.lblGlobalRSigmaAverse.setText(Integer.toString(globalActorStats.getnRSigmaAverse()));
-        this.lblGlobalRSigmaNeutrals.setText(Integer.toString(globalActorStats.getnRSigmaNeutral()));
-        this.lblGlobalRSigmaSeeking.setText(Integer.toString(globalActorStats.getnRSigmaSeeking()));
-        this.lblGlobalAvRSigma.setText(Double.toString(globalActorStats.getAvRSigma()));
-        this.lblGlobalRPiAverse.setText(Integer.toString(globalActorStats.getnRPiAverse()));
-        this.lblGlobalRPiNeutrals.setText(Integer.toString(globalActorStats.getnRPiNeutral()));
-        this.lblGlobalRPiSeeking.setText(Integer.toString(globalActorStats.getnRPiSeeking()));
-        this.lblGlobalAvRPi.setText(Double.toString(globalActorStats.getAvRPi()));
+    public void refreshGlobalAgentStats(GlobalActorStats globalAgentStats) {
+        this.lblGlobalAgentsOverall.setText(Integer.toString(globalAgentStats.getN()));
+        this.lblGlobalSusceptibles.setText(Integer.toString(globalAgentStats.getnS()));
+        this.lblGlobalInfected.setText(Integer.toString(globalAgentStats.getnI()));
+        this.lblGlobalRecovered.setText(Integer.toString(globalAgentStats.getnR()));
+        this.lblGlobalRSigmaAverse.setText(Integer.toString(globalAgentStats.getnRSigmaAverse()));
+        this.lblGlobalRSigmaNeutrals.setText(Integer.toString(globalAgentStats.getnRSigmaNeutral()));
+        this.lblGlobalRSigmaSeeking.setText(Integer.toString(globalAgentStats.getnRSigmaSeeking()));
+        this.lblGlobalAvRSigma.setText(Double.toString(globalAgentStats.getAvRSigma()));
+        this.lblGlobalRPiAverse.setText(Integer.toString(globalAgentStats.getnRPiAverse()));
+        this.lblGlobalRPiNeutrals.setText(Integer.toString(globalAgentStats.getnRPiNeutral()));
+        this.lblGlobalRPiSeeking.setText(Integer.toString(globalAgentStats.getnRPiSeeking()));
+        this.lblGlobalAvRPi.setText(Double.toString(globalAgentStats.getAvRPi()));
     }
 
     /**
@@ -1120,9 +1120,9 @@ public class StatsFrame extends JFrame {
     }
 
     /**
-     * Resets the global stats for actors.
+     * Resets the global stats for agents.
      */
-    public void resetGlobalActorStats() {
+    public void resetGlobalAgentStats() {
         // utility
         this.lblGlobalUtilityFunction.setText(NA_STRING);
         this.lblGlobalAlpha.setText(NA_STRING);
@@ -1138,74 +1138,74 @@ public class StatsFrame extends JFrame {
     }
 
     /**
-     * Refreshes the stats for one specific actor.
+     * Refreshes the stats for one specific agent.
      *
-     * @param actor
-     *          the actor to refresh the stats for
+     * @param agent
+     *          the agent to refresh the stats for
      */
-    public void refreshLocalActorStats(Actor actor) {
+    public void refreshLocalAgentStats(Actor agent) {
 
         // identifier
-        this.lblActorID.setText(actor.getId());
+        this.lblAgentID.setText(agent.getId());
 
         // satisfaction
-        this.lblActorSatisfied.setText(actor.isSatisfied() ? "yes" : "no");
+        this.lblAgentSatisfied.setText(agent.isSatisfied() ? "yes" : "no");
 
         // utility
-        Utility utility = actor.getUtility();
-        this.lblActorUtility.setText(Double.toString(utility.getOverallUtility()));
+        Utility utility = agent.getUtility();
+        this.lblAgentUtility.setText(Double.toString(utility.getOverallUtility()));
 
         // benefit
-        this.lblActorBenefit.setText(Double.toString(utility.getBenefitDirectConnections()
+        this.lblAgentBenefit.setText(Double.toString(utility.getBenefitDirectConnections()
                 + utility.getBenefitIndirectConnections()));
-        this.lblActorBenefitDirect.setText(Double.toString(utility.getBenefitDirectConnections()));
-        this.lblActorBenefitIndirect.setText(Double.toString(utility.getBenefitIndirectConnections()));
+        this.lblAgentBenefitDirect.setText(Double.toString(utility.getBenefitDirectConnections()));
+        this.lblAgentBenefitIndirect.setText(Double.toString(utility.getBenefitIndirectConnections()));
 
         // costs
-        this.lblActorCosts.setText(Double.toString(utility.getCostsDirectConnections()
+        this.lblAgentCosts.setText(Double.toString(utility.getCostsDirectConnections()
                 - utility.getEffectOfDisease()));
-        this.lblActorCostsDirect.setText(Double.toString(utility.getCostsDirectConnections()));
-        this.lblActorCostsDisease.setText(Double.toString(utility.getEffectOfDisease()));
+        this.lblAgentCostsDirect.setText(Double.toString(utility.getCostsDirectConnections()));
+        this.lblAgentCostsDisease.setText(Double.toString(utility.getEffectOfDisease()));
 
         // disease
-        this.lblActorDiseaseGroup.setText(actor.getDiseaseGroup().toString());
-        if (actor.isInfected()) {
-            this.lblActorDiseaseTimeRemaining.setText(Integer.toString(actor.getTimeUntilRecovered()));
+        this.lblAgentDiseaseGroup.setText(agent.getDiseaseGroup().toString());
+        if (agent.isInfected()) {
+            this.lblAgentDiseaseTimeRemaining.setText(Integer.toString(agent.getTimeUntilRecovered()));
         } else {
-            this.lblActorDiseaseTimeRemaining.setText(NA_STRING);
+            this.lblAgentDiseaseTimeRemaining.setText(NA_STRING);
         }
 
         // risk behavior
-        double rSigma = actor.getRSigma();
-        this.lblActorRSigma.setText(Double.toString(rSigma));
+        double rSigma = agent.getRSigma();
+        this.lblAgentRSigma.setText(Double.toString(rSigma));
         if (rSigma < 1) {
-            this.lblActorRSigmaMeaning.setText("seeking");
+            this.lblAgentRSigmaMeaning.setText("seeking");
         } else if (rSigma > 1) {
-            this.lblActorRSigmaMeaning.setText("averse");
+            this.lblAgentRSigmaMeaning.setText("averse");
         } else {
-            this.lblActorRSigmaMeaning.setText("neutral");
+            this.lblAgentRSigmaMeaning.setText("neutral");
         }
-        double rPi = actor.getRPi();
-        this.lblActorRPi.setText(Double.toString(rPi));
+        double rPi = agent.getRPi();
+        this.lblAgentRPi.setText(Double.toString(rPi));
         if (rPi < 1) {
-            this.lblActorRPiMeaning.setText("seeking");
+            this.lblAgentRPiMeaning.setText("seeking");
         } else if (rPi > 1) {
-            this.lblActorRPiMeaning.setText("averse");
+            this.lblAgentRPiMeaning.setText("averse");
         } else {
-            this.lblActorRPiMeaning.setText("neutral");
+            this.lblAgentRPiMeaning.setText("neutral");
         }
 
         // network
-        this.lblActorFirstOrderDegree.setText(Integer.toString(StatsComputer.computeFirstOrderDegree(actor)));
-        this.lblActorSecondOrderDegree.setText(Integer.toString(StatsComputer.computeSecondOrderDegree(actor)));
-        this.lblActorCloseness.setText(Double.toString(StatsComputer.computeCloseness(actor)));
+        this.lblAgentFirstOrderDegree.setText(Integer.toString(StatsComputer.computeFirstOrderDegree(agent)));
+        this.lblAgentSecondOrderDegree.setText(Integer.toString(StatsComputer.computeSecondOrderDegree(agent)));
+        this.lblAgentCloseness.setText(Double.toString(StatsComputer.computeCloseness(agent)));
 
         // connections
-        this.lblActorTiesBrokenActive.setText(Integer.toString(actor.getConnectionStats().getBrokenTiesActive()));
-        this.lblActorTiesBrokenPassive.setText(Integer.toString(actor.getConnectionStats().getBrokenTiesPassive()));
-        this.lblActorAcceptedTiesOut.setText(Integer.toString(actor.getConnectionStats().getAcceptedRequestsOut()));
-        this.lblActorDeclinedTiesOut.setText(Integer.toString(actor.getConnectionStats().getDeclinedRequestsOut()));
-        this.lblActorAcceptedTiesIn.setText(Integer.toString(actor.getConnectionStats().getAcceptedRequestsIn()));
-        this.lblActorDeclinedTiesIn.setText(Integer.toString(actor.getConnectionStats().getDeclinedRequestsIn()));
+        this.lblAgentTiesBrokenActive.setText(Integer.toString(agent.getConnectionStats().getBrokenTiesActive()));
+        this.lblAgentTiesBrokenPassive.setText(Integer.toString(agent.getConnectionStats().getBrokenTiesPassive()));
+        this.lblAgentAcceptedTiesOut.setText(Integer.toString(agent.getConnectionStats().getAcceptedRequestsOut()));
+        this.lblAgentDeclinedTiesOut.setText(Integer.toString(agent.getConnectionStats().getDeclinedRequestsOut()));
+        this.lblAgentAcceptedTiesIn.setText(Integer.toString(agent.getConnectionStats().getAcceptedRequestsIn()));
+        this.lblAgentDeclinedTiesIn.setText(Integer.toString(agent.getConnectionStats().getDeclinedRequestsIn()));
     }
 }

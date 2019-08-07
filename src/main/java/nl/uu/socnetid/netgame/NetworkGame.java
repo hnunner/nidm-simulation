@@ -5,21 +5,23 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.NumberFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import javax.swing.ImageIcon;
+import javax.swing.InputVerifier;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 
@@ -37,6 +39,7 @@ import nl.uu.socnetid.netgame.gui.ExportAdjacencyMatrixPanel;
 import nl.uu.socnetid.netgame.gui.ExportEdgeListPanel;
 import nl.uu.socnetid.netgame.gui.ExportGEXFPanel;
 import nl.uu.socnetid.netgame.gui.ExportListener;
+import nl.uu.socnetid.netgame.gui.IntegerInputVerifier;
 import nl.uu.socnetid.netgame.gui.NodeClick;
 import nl.uu.socnetid.netgame.gui.NodeClickListener;
 import nl.uu.socnetid.netgame.gui.OsType;
@@ -78,8 +81,9 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     private final DeactivatablePanel[] utilityPanels = {cumulativePanel, cidmoPanel};
 
     // ACTOR
-    // amount to add
-    private JTextField txtAddAmount;
+    // network size
+    private JFormattedTextField txtAddAmount;
+    private JFormattedTextField txtRemoveAmount;
     // on node click
     private Actor statsActor;
     private ExecutorService nodeClickExecutor = Executors.newSingleThreadExecutor();
@@ -91,7 +95,6 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     private ExecutorService simulationExecutor = Executors.newSingleThreadExecutor();
     private Future<?> simulationTask;
     private JSpinner simulationDelay;
-    private JTextField txtRemoveAmount;
 
     // EXPORT
     // selection
@@ -101,6 +104,11 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     ExportGEXFPanel gexfPanel;
     ExportAdjacencyMatrixPanel adjacencyMatrixPanel;
     ExportEdgeListPanel edgeListPanel;
+
+    // INPUT VALIDATION
+    // network size (N)
+    private static final InputVerifier N_VERIFIER = new IntegerInputVerifier(0, 50);
+    private static final NumberFormat NUM_FORMAT = NumberFormat.getNumberInstance();
 
 
     /**
@@ -254,11 +262,12 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         btnClearAll.setBounds(40, 196, 258, 30);
         simulationPane.add(btnClearAll);
 
-        txtAddAmount = new JTextField();
-        txtAddAmount.setText("1");
+        txtAddAmount = new JFormattedTextField(NUM_FORMAT);
+        txtAddAmount.setValue(new Integer(1));
         txtAddAmount.setHorizontalAlignment(SwingConstants.RIGHT);
         txtAddAmount.setColumns(10);
         txtAddAmount.setBounds(248, 41, 50, 20);
+        txtAddAmount.setInputVerifier(N_VERIFIER);
         simulationPane.add(txtAddAmount);
 
         JLabel lblAmount = new JLabel("amount");
@@ -293,11 +302,12 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         label_1.setBounds(215, 74, 24, 16);
         simulationPane.add(label_1);
 
-        txtRemoveAmount = new JTextField();
-        txtRemoveAmount.setText("1");
+        txtRemoveAmount = new JFormattedTextField(NUM_FORMAT);
+        txtRemoveAmount.setValue(new Integer(1));
         txtRemoveAmount.setHorizontalAlignment(SwingConstants.RIGHT);
         txtRemoveAmount.setColumns(10);
         txtRemoveAmount.setBounds(248, 72, 50, 20);
+        txtRemoveAmount.setInputVerifier(N_VERIFIER);
         simulationPane.add(txtRemoveAmount);
 
         JLabel lblNetworkControls = new JLabel("Network controls:");
@@ -357,7 +367,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         lblOnNodeClick_1.setBounds(16, 247, 238, 16);
         simulationPane.add(lblOnNodeClick_1);
 
-        chckbxShowActorStats = new JCheckBox("Show actor stats");
+        chckbxShowActorStats = new JCheckBox("Show agent stats");
         chckbxShowActorStats.setBounds(38, 272, 141, 23);
         simulationPane.add(chckbxShowActorStats);
         chckbxShowActorStats.setSelected(true);
@@ -505,7 +515,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         UtilityFunction uf = getUtilityFunction();
 
         // add each actor with selected utility function and disease specs
-        for (int i = 0; i < Integer.parseInt(txtAddAmount.getText()); i++) {
+        for (int i = 0; i < ((Number)txtAddAmount.getValue()).intValue(); i++) {
             Actor actor = this.network.addActor(uf, ds, cidmoPanel.getRSigma(), cidmoPanel.getRPi(), cidmoPanel.getPhi());
             actor.addActorListener(this);
         }
@@ -515,7 +525,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
             this.statsFrame.refreshGlobalUtilityStats(uf);
             this.statsFrame.refreshGlobalDiseaseStats(ds);
         }
-        this.statsFrame.refreshGlobalActorStats(StatsComputer.computeGlobalActorStats(this.network));
+        this.statsFrame.refreshGlobalAgentStats(StatsComputer.computeGlobalActorStats(this.network));
         this.statsFrame.refreshGlobalNetworkStats(StatsComputer.computeGlobalNetworkStats(this.network));
         this.statsFrame.refreshGlobalSimulationStats(StatsComputer.computeGlobalSimulationStats(this.simulation));
     }
@@ -524,7 +534,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
      * Removes a actor from the game.
      */
     private void removeActor() {
-        for (int i = 0; i < Integer.parseInt(txtRemoveAmount.getText()); i++) {
+        for (int i = 0; i < ((Number)txtRemoveAmount.getValue()).intValue(); i++) {
             if (!this.network.getActors().isEmpty()) {
                 this.network.removeActor();
             }
@@ -532,12 +542,12 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
 
         // if there are no more actors in the networks enable utility and disease panels
         if (this.network.getActors().isEmpty()) {
-            this.statsFrame.resetGlobalActorStats();
+            this.statsFrame.resetGlobalAgentStats();
             enableUtilityPanels();
         }
 
         // update stats
-        this.statsFrame.refreshGlobalActorStats(StatsComputer.computeGlobalActorStats(this.network));
+        this.statsFrame.refreshGlobalAgentStats(StatsComputer.computeGlobalActorStats(this.network));
         this.statsFrame.refreshGlobalNetworkStats(StatsComputer.computeGlobalNetworkStats(this.network));
     }
 
@@ -690,11 +700,11 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         // show actor stats on node click
         if (this.chckbxShowActorStats.isSelected()) {
             this.statsActor = this.network.getActor(clickActorId);
-            this.statsFrame.refreshLocalActorStats(network.getActor(clickActorId));
+            this.statsFrame.refreshLocalAgentStats(network.getActor(clickActorId));
         }
 
         // update stats
-        this.statsFrame.refreshGlobalActorStats(StatsComputer.computeGlobalActorStats(this.network));
+        this.statsFrame.refreshGlobalAgentStats(StatsComputer.computeGlobalActorStats(this.network));
     }
 
     /* (non-Javadoc)
@@ -791,7 +801,7 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
         if (this.statsActor == null) {
             return;
         }
-        this.statsFrame.refreshLocalActorStats(statsActor);
+        this.statsFrame.refreshLocalAgentStats(statsActor);
     }
 
     /* (non-Javadoc)
@@ -809,4 +819,5 @@ public class NetworkGame implements NodeClickListener, SimulationListener, Actor
     public void notifyRecordingStopped() {
         this.statsFrame.refreshSimulationRecording(false);
     }
+
 }
