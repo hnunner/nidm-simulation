@@ -28,7 +28,7 @@ public class RScriptTest {
 
             String r = "/usr/local/bin/Rscript";
             String script = RSCRIPT_DIR + "analysis.R";
-            String scriptArg = "20190808-134653";
+            String scriptArg = "20190804-183751";
 
             ProcessBuilder pb = new ProcessBuilder(r, script, scriptArg);
             Process p = pb.start();

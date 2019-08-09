@@ -850,6 +850,93 @@ exportNetworkSizeMeasures <- function() {
 }
 
 
+
+
+############################################ DESCRIPIVES #############################################
+#----------------------------------------------------------------------------------------------------#
+# function: exportDescriptiveMeasures
+#     Exports descriptive statistics for selected plot properties.y
+#----------------------------------------------------------------------------------------------------#
+exportDescriptiveMeasures <- function() {
+
+  # INITIALIZATIONS
+  # data
+  ssData <- loadSimulationSummaryData()
+  rsData <- reduceRoundSummaryData(loadRoundSummaryData(), cropTail = 20)
+
+  ##### BETA-MU #####
+  # results data frame
+  resBetaMu <- data.frame(matrix(0, ncol= 6, nrow=length(unique(ssData$net.param.beta))*length(unique(ssData$dis.param.mu))))
+  colnames(resBetaMu) <- c("beta", "mu", "attack.rate", "duration", "degree.pre.epidemic", "degree.min")
+
+  # ATTACK RATE, DURATION
+  ssBetaMu <- subsetsByColumnValues(data = ssData,
+                                    col1 = 'net.param.beta',
+                                    col2 = 'dis.param.mu')
+  for (i in 1:length(ssBetaMu)) {
+    ss <- ssBetaMu[[i]]
+    resBetaMu[i,1]  <- head(ss, 1)$net.param.beta
+    resBetaMu[i,2]  <- head(ss, 1)$dis.param.mu
+    resBetaMu[i,3]  <- median(ss$dis.prop.pct.rec)
+    resBetaMu[i,4]  <- median(ss$dis.prop.duration)
+  }
+
+  # AVERAGE DEGREES
+  rsBetaMu <- subsetsByColumnValues(data = rsData,
+                                    col1 = 'net.param.beta',
+                                    col2 = 'dis.param.mu')
+  for (rs in rsBetaMu) {
+    # average degree prior to epidemic
+    resBetaMu$degree.pre.epidemic[
+      resBetaMu$beta == head(rs, 1)$net.param.beta
+      & resBetaMu$mu == head(rs, 1)$dis.param.mu
+      ] <- median(subset(rs, sim.prop.round == 10)$net.prop.av.degree)
+    # average minimum degree during epidemic
+    resBetaMu$degree.min[
+      resBetaMu$beta == head(rs, 1)$net.param.beta
+      & resBetaMu$mu == head(rs, 1)$dis.param.mu
+      ] <- median(aggregate(net.prop.av.degree ~ sim.param.uid, data = rs, min)$net.prop.av.degree)
+  }
+  exportDataFrame(resBetaMu, "descriptives-beta-mu")
+
+
+  ##### SIGMA-R #####
+  # results data frame
+  resSigmaR <- data.frame(matrix(0, ncol= 6, nrow=length(unique(ssData$dis.param.s))*length(unique(ssData$net.param.r))))
+  colnames(resSigmaR) <- c("sigma", "risk.factor", "attack.rate", "duration", "degree.pre.epidemic", "degree.min")
+
+  # ATTACK RATE, DURATION
+  ssSigmaR <- subsetsByColumnValues(data = ssData,
+                                    col1 = 'dis.param.s',
+                                    col2 = 'net.param.r')
+  for (i in 1:length(ssSigmaR)) {
+    ss <- ssSigmaR[[i]]
+    resSigmaR[i,1]  <- head(ss, 1)$dis.param.s
+    resSigmaR[i,2]  <- head(ss, 1)$net.param.r
+    resSigmaR[i,3]  <- median(ss$dis.prop.pct.rec)
+    resSigmaR[i,4]  <- median(ss$dis.prop.duration)
+  }
+
+  # AVERAGE DEGREES
+  rsSigmaR <- subsetsByColumnValues(data = rsData,
+                                    col1 = 'dis.param.s',
+                                    col2 = 'net.param.r')
+  for (rs in rsSigmaR) {
+    # average degree prior to epidemic
+    resSigmaR$degree.pre.epidemic[
+      resSigmaR$sigma == head(rs, 1)$dis.param.s
+      & resSigmaR$risk.factor == head(rs, 1)$net.param.r
+      ] <- median(subset(rs, sim.prop.round == 10)$net.prop.av.degree)
+    # average minimum degree during epidemic
+    resSigmaR$degree.min[
+      resSigmaR$sigma == head(rs, 1)$dis.param.s
+      & resSigmaR$risk.factor == head(rs, 1)$net.param.r
+      ] <- median(aggregate(net.prop.av.degree ~ sim.param.uid, data = rs, min)$net.prop.av.degree)
+  }
+  exportDataFrame(resSigmaR, "descriptives-sigma-r")
+}
+
+
 ########################################## SCRIPT COMPOSITION ########################################
 print("###########################################################")
 print(paste("Creating directory for figure export:", EXPORT_PATH_PLOTS))
@@ -857,17 +944,27 @@ dir.create(EXPORT_PATH_PLOTS)
 
 print("###########################################################")
 print("Starting to export individual plots..")
-#exportPlots()
+exportPlots()
 print("Finished exporting individual plots..")
 
 print("###########################################################")
 print("Starting to export grid plots..")
-#exportGridPlots()
+exportGridPlots()
 print("Finished exporting grid plots..")
 
 print("###########################################################")
 print(paste("Creating directory for numerical analyses export:", EXPORT_PATH_NUM))
 dir.create(EXPORT_PATH_NUM)
+
+print("###########################################################")
+print("Starting to export regression models for attack rate..")
+exportAttackRateModels()
+print("Finished exporting regression models for attack rate..")
+
+print("###########################################################")
+print("Starting to export regression models linearity checks for attack rate..")
+exportAttackRateLinearityChecks()
+print("Finished exporting regression models linearity checks for attack rate..")
 
 print("###########################################################")
 print("Starting to export regression models for duration of epidemics..")
@@ -883,5 +980,10 @@ print("###########################################################")
 print("Starting to export network size measures..")
 exportNetworkSizeMeasures()
 print("Finished exporting network size measures..")
+
+print("###########################################################")
+print("Starting to export descriptive measures..")
+exportDescriptiveMeasures()
+print("Finished exporting descriptive measures..")
 
 return(0)
