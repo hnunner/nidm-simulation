@@ -1,26 +1,32 @@
 #!/usr/bin/env Rscript
-############################################## LIBRARIES ##############################################
-library(reshape2)
-library(ggplot2)
-library(QuantPsyc)
-library(texreg)
-library(lme4)
-library(sjstats)
-library(usdm)
-library(xtable)
-library(dplyr)
-library(xtable)
 
+
+############################################## LIBRARIES ##############################################
+sourceLibs <- function(libs) {
+  for (lib in libs) {
+    if(lib %in% rownames(installed.packages()) == FALSE) {install.packages(lib)}
+    library(lib, character.only = TRUE)
+  }
+}
+sourceLibs(c("reshape2",    # 'melt' function
+             "ggplot2",     # all plots
+             "QuantPsyc",   # 'meanCenter' function
+             "lme4",        # regression analyses
+             "sjstats",     # "icc" function
+             "texreg"       # html export
+             )
+           )
 
 ########################################### GLOBAL CONSTANTS ##########################################
-# input/output directory
+# input/output directory and
+DATA_PATH                   <- ""
 args = commandArgs(trailingOnly=TRUE)
-if (length(args) != 1) {
-  stop("Exactly one argument must be supplied (input/output directory).n", call.=FALSE)
+if (length(args) == 0) {
+  DATA_DIR                  <- "20190808-111111"
+  DATA_PATH                 <- paste(dirname(sys.frame(1)$ofile), "/../data/", DATA_DIR, "/", sep = "")
+} else {
+  DATA_PATH                 <- paste(args[1], "/", sep = "")
 }
-IO_DIR <- args[1]
-# path to generated data (*.csv files)
-DATA_PATH                   <- paste("data/", IO_DIR, "/", sep = "")
 # file names of generated data
 CSV_SUMMARY_PATH            <- paste(DATA_PATH, "simulation-summary.csv", sep = "")
 CSV_ROUND_SUMMARY_PATH      <- paste(DATA_PATH, "round-summary.csv", sep = "")
@@ -117,7 +123,6 @@ reduceRoundSummaryData <- function(rsData, cropTail = 0) {
     roundsToPlot <- roundsToPlot + 1
   }
   reducedRsData <- subset(reducedRsData, sim.prop.round <= roundsToPlot)
-
   return(reducedRsData)
 }
 
@@ -216,6 +221,7 @@ plotSIRDevelopment <- function(rsData = reduceRoundSummaryData(loadRoundSummaryD
   if (showDegree) {
     scaleFactor           <- 10
   }
+
   ### NETWORK DENSITY data
   if (showDensity) {
     # preparations :: statistical summary for densities
@@ -234,6 +240,7 @@ plotSIRDevelopment <- function(rsData = reduceRoundSummaryData(loadRoundSummaryD
     ribbonData$DenMin   <- densityRibbonData$DenMin[match(ribbonData$Timestep, densityRibbonData$Timestep)]
     ribbonData$DenMax   <- densityRibbonData$DenMax[match(ribbonData$Timestep, densityRibbonData$Timestep)]
   }
+
   ### DEGREE data
   if (showDegree) {
     # preparations :: statistical summary for degrees
@@ -253,9 +260,7 @@ plotSIRDevelopment <- function(rsData = reduceRoundSummaryData(loadRoundSummaryD
     ribbonData$DegMax   <- degreeRibbonData$DegMax[match(ribbonData$Timestep, degreeRibbonData$Timestep)]
   }
 
-
   ### PLOT assembly
-
   # initializations
   plot <- ggplot(plotData, aes(x = Timestep, y = Frequency, col = Measure))
 
@@ -334,8 +339,6 @@ plotSIRDevelopment <- function(rsData = reduceRoundSummaryData(loadRoundSummaryD
   return(plot)
 }
 
-
-############################################ PLOT EXPORTS ############################################
 #----------------------------------------------------------------------------------------------------#
 # function: exportPlots
 #     Exports plots for visual inspection of selected interaction effects.
@@ -368,11 +371,13 @@ exportPlots <- function(rsData = reduceRoundSummaryData(loadRoundSummaryData(), 
                         plotWidth = EXPORT_PLOT_WIDTH,
                         plotHeight = EXPORT_PLOT_HEIGHT) {
 
+  # create directory if necessary
+  dir.create(EXPORT_PATH_PLOTS, showWarnings = FALSE)
+
   # 1. care factor (mu) by denefit of indirect connections (beta)
   subsetsBetaMu <- subsetsByColumnValues(data = rsData,
                                          col1 = 'net.param.beta',
                                          col2 = 'dis.param.mu')
-
   for (subsetBetaMu in subsetsBetaMu) {
     plot <- plotSIRDevelopment(subsetBetaMu, showLegend, showRibbons, showDegree, showDensity, showAxes)
 
@@ -382,7 +387,6 @@ exportPlots <- function(rsData = reduceRoundSummaryData(loadRoundSummaryData(), 
                       "-mu", unique(subsetBetaMu$dis.param.mu),
                       EXPORT_FILE_EXTENSION_PLOTS,
                       sep = "")
-    print(paste(".. exporting: ", filepath))
     ggsave(filepath,
            plot,
            width = plotWidth,
@@ -390,13 +394,13 @@ exportPlots <- function(rsData = reduceRoundSummaryData(loadRoundSummaryData(), 
            units = EXPORT_SIZE_UNITS,
            dpi = EXPORT_DPI,
            device = EXPORT_FILE_TYPE_PLOTS)
+    print(paste(":::::::: Export of ", filepath, " succesful.", sep = ""))
   }
 
   # 2. disease severity (sigma) by risk behavior (r)
   subsetsRS <- subsetsByColumnValues(data = rsData,
                                      col1 = 'net.param.r',
                                      col2 = 'dis.param.s')
-
   for (subsetRS in subsetsRS) {
     plot <- plotSIRDevelopment(subsetRS, showLegend, showRibbons, showDegree, showDensity, showAxes)
 
@@ -406,7 +410,6 @@ exportPlots <- function(rsData = reduceRoundSummaryData(loadRoundSummaryData(), 
                       "-sigma", unique(subsetRS$dis.param.s),
                       EXPORT_FILE_EXTENSION_PLOTS,
                       sep = "")
-    print(paste(".. exporting: ", filepath))
     ggsave(filepath,
            plot,
            width = plotWidth,
@@ -414,17 +417,18 @@ exportPlots <- function(rsData = reduceRoundSummaryData(loadRoundSummaryData(), 
            units = EXPORT_SIZE_UNITS,
            dpi = EXPORT_DPI,
            device = EXPORT_FILE_TYPE_PLOTS)
-  }
 
+    print(paste(":::::::: Export of ", filepath, " succesful.", sep = ""))
+  }
 }
 
 #----------------------------------------------------------------------------------------------------#
 # function: exportGridPlots
 #     Exports plots of selected interaction effects for grid assembly (no axes and labels).
 #----------------------------------------------------------------------------------------------------#
-exportGridPlots <- function() {
+exportGridPlots <- function(rsData = reduceRoundSummaryData(loadRoundSummaryData(), cropTail = 20)) {
   exportPlots(
-    rsData = reduceRoundSummaryData(loadRoundSummaryData(), cropTail = 20),
+    rsData,
     showLegend = FALSE,
     showRibbons = TRUE,
     showDegree = TRUE,
@@ -436,10 +440,10 @@ exportGridPlots <- function() {
 }
 
 
-######################################### REGRESSION EXPORT ##########################################
+############################################ REGRESSIONS #############################################
 #----------------------------------------------------------------------------------------------------#
 # function: exportModels
-#     Creates file outputs for regression models (comparison of models, anova, ICCs).
+#     Creates file outputs for regression models (comparison of models, ICCs).
 # param:  models
 #     the models to create outputs for
 #         filename:
@@ -452,333 +456,549 @@ exportModels <- function(models, filename) {
                     EXPORT_FILE_EXTENSION_REG,
                     sep = "")
 
+  # create directory if necessary
+  dir.create(EXPORT_PATH_NUM, showWarnings = FALSE)
+
+  # close standard notes and begin new standard row
+  notes <- "</span></td>\n</tr>\n<tr>\n"
+  # intraclass correlation coefficients (ICC)
+  notes <- paste(notes, "<td class=\"bottomRule\">ICC</td>\n", sep = "")
+  for (i in 1:length(models)) {
+    notes <- paste(notes, "<td class=\"bottomRule\">",
+                   round(icc(models[[i]])[[1]], digits = 3),
+                   "</td>\n",
+                   sep = "")
+  }
+  # close additional infos
+  notes <- paste(notes, "</span></td>\n</tr>")
+  # correlation stars
+  notes <- paste(notes,
+                 "<tr>\n<td colspan=\"", length(models)+1,
+                 "\"><span style=\"font-size:0.8em\">",
+                 "<sup>***</sup>p &lt; 0.001, <sup>**</sup>p &lt; 0.01, <sup>*</sup>p &lt; 0.05</span></td>", sep = "")
+
   htmlreg(models,
           filepath,
+          custom.note = notes,
           inline.css = FALSE,
           doctype = TRUE,
           html.tag = TRUE,
           head.tag = TRUE,
-          body.tag = TRUE)
+          body.tag = TRUE,
+          )
 }
 
 #----------------------------------------------------------------------------------------------------#
-# function: exportAttackRateModels
-#     Exports regression models for attack rate.
-# param:  models
-#     the models to create outputs for
-#----------------------------------------------------------------------------------------------------#
-exportAttackRateModels <- function(models = getAttackRateModels()) {
-  exportModels(models, "attack-rate")
-}
-
-#----------------------------------------------------------------------------------------------------#
-# function: exportAttackRateLinearityChecks
-#     Exports regression linearity checks for attack rate.
-# param:  models
-#     the models to create linearity checks for
-#----------------------------------------------------------------------------------------------------#
-exportAttackRateLinearityChecks <- function(models = getAttackRateLinearityChecks()) {
-  exportModels(models, "attack-rate-linearity-checks")
-}
-
-#----------------------------------------------------------------------------------------------------#
-# function: exportDurationModels
-#     Exports regression models for duration of epidemics.
-# param:  models
-#     the models to create outputs for
-#----------------------------------------------------------------------------------------------------#
-exportDurationModels <- function(models = getDurationModels()) {
-  exportModels(models, "duration-regressions")
-}
-
-#----------------------------------------------------------------------------------------------------#
-# function: exportDurationLinearityChecks
-#     Exports regression linearity checks for duration of epidemics.
-# param:  models
-#     the models to create linearity checks for
-#----------------------------------------------------------------------------------------------------#
-exportDurationLinearityChecks <- function(models = getDurationLinearityChecks()) {
-  exportModels(models, "duration-linearity-checks")
-}
-
-
-######################################### REGRESSION MODELS ##########################################
-#----------------------------------------------------------------------------------------------------#
-# function: getAttackRateModels
-#     Creates multi-level logistic regression models for attack rate.
+# function: exportAttackRateModelsComplete
+#     Creates and exports multi-level logistic regression models for attack rate with all possible
+#     parameters and interaction effects.
 # param:  ssData
 #     simulation summary data to get regression models for
-# return: multi-level logistic regression models for attack rate
 #----------------------------------------------------------------------------------------------------#
-getAttackRateModels <- function(ssData = loadSimulationSummaryData()) {
+exportAttackRateModelsComplete <- function(ssData = loadSimulationSummaryData()) {
 
-  # main effects
-  N     <- meanCenter(ssData$net.param.N / 50)
+  # MAIN EFFECTS
+  # CIDMo parameters
   beta  <- meanCenter(ssData$net.param.beta)
   mu    <- meanCenter(ssData$dis.param.mu)
+  sigma <- meanCenter(ssData$dis.param.s / 50)
   r     <- meanCenter(ssData$net.param.r)
-  s     <- meanCenter(ssData$dis.param.s / 50)
+  N     <- meanCenter(ssData$net.param.N / 50)
+  iota  <- meanCenter(ssData$net.param.net.empty)
+  # network properties
   deg1  <- meanCenter(ssData$act.prop.net.degree.order.1 / (ssData$net.param.N-1))
   dens  <- meanCenter(ssData$net.prop.density.pre.epidemic)
-  # interaction effects
-  intNBeta      <- (N - mean(N))        *   (beta - mean(beta))
-  intNMu        <- (N - mean(N))        *   (mu - mean(mu))
-  intNR         <- (N - mean(N))        *   (r - mean(r))
-  intNS         <- (N - mean(N))        *   (s - mean(s))
-  intNDeg1      <- (N - mean(N))        *   (deg1 - mean(deg1))
-  intNDens      <- (N - mean(N))        *   (dens - mean(dens))
-  intBetaMu     <- (beta - mean(beta))  *   (mu - mean(mu))
-  intBetaR      <- (beta - mean(beta))  *   (r - mean(r))
-  intBetaS      <- (beta - mean(beta))  *   (s - mean(s))
-  intBetaDeg1   <- (beta - mean(beta))  *   (deg1 - mean(deg1))
-  intBetaDens   <- (beta - mean(beta))  *   (dens - mean(dens))
-  intMuR        <- (mu - mean(mu))      *   (r - mean(r))
-  intMuS        <- (mu - mean(mu))      *   (s - mean(s))
-  intMuDeg1     <- (mu - mean(mu))      *   (deg1 - mean(deg1))
-  intMuDens     <- (mu - mean(mu))      *   (dens - mean(dens))
-  intRS         <- (r - mean(r))        *   (s - mean(s))
-  intRDeg1      <- (r - mean(r))        *   (deg1 - mean(deg1))
-  intRDens      <- (r - mean(r))        *   (dens - mean(dens))
-  intSDeg1      <- (s - mean(s))        *   (deg1 - mean(deg1))
-  intSDens      <- (s - mean(s))        *   (dens - mean(dens))
-  intDeg1Dens   <- (deg1 - mean(deg1))  *   (dens - mean(dens))
+  # INTERACTION EFFECTS
+  intBetaMu     <- (beta - mean(beta))    *   (mu - mean(mu))
+  intBetaSigma  <- (beta - mean(beta))    *   (sigma - mean(sigma))
+  intBetaR      <- (beta - mean(beta))    *   (r - mean(r))
+  intBetaN      <- (beta - mean(beta))    *   (N - mean(N))
+  intBetaIota   <- (beta - mean(beta))    *   (iota - mean(iota))
+  intBetaDens   <- (beta - mean(beta))    *   (dens - mean(dens))
+  intBetaDeg1   <- (beta - mean(beta))    *   (deg1 - mean(deg1))
+  # combinations of mu
+  intMuSigma    <- (mu - mean(mu))        *   (sigma - mean(sigma))
+  intMuR        <- (mu - mean(mu))        *   (r - mean(r))
+  intMuN        <- (mu - mean(mu))        *   (N - mean(N))
+  intMuIota     <- (mu - mean(mu))        *   (iota - mean(iota))
+  intMuDens     <- (mu - mean(mu))        *   (dens - mean(dens))
+  intMuDeg1     <- (mu - mean(mu))        *   (deg1 - mean(deg1))
+  # combinations of sigma
+  intSigmaR     <- (sigma - mean(sigma))  *   (r - mean(r))
+  intSigmaN     <- (sigma - mean(sigma))  *   (N - mean(N))
+  intSigmaIota  <- (sigma - mean(sigma))  *   (iota - mean(iota))
+  intSigmaDens  <- (sigma - mean(sigma))  *   (dens - mean(dens))
+  intSigmaDeg1  <- (sigma - mean(sigma))  *   (deg1 - mean(deg1))
+  # combinations of r
+  intRN         <- (r - mean(r))          *   (N - mean(N))
+  intRIota      <- (r - mean(r))          *   (iota - mean(iota))
+  intRDens      <- (r - mean(r))          *   (dens - mean(dens))
+  intRDeg1      <- (r - mean(r))          *   (deg1 - mean(deg1))
+  # combinations of N
+  intNIota      <- (N - mean(N))          *   (iota - mean(iota))
+  intNDens      <- (N - mean(N))          *   (dens - mean(dens))
+  intNDeg1      <- (N - mean(N))          *   (deg1 - mean(deg1))
+  # combinations of iota
+  intIotaDens   <- (iota - mean(iota))    *   (dens - mean(dens))
+  intIotaDeg1   <- (iota - mean(iota))    *   (deg1 - mean(deg1))
+  # combinations of density
+  intDensDeg1   <- (dens - mean(dens))  *   (deg1 - mean(deg1))
 
   ### 2-LEVEL LOGISTIC REGRESSIONS    ###
   ### level 2: parameters combination ###
   ### level 1: simulation runs        ###
-  # Null-Modell
+  # null-model
   reg00 <- glmer(ssData$dis.prop.pct.rec/100 ~
                    1 +
                    (1 | sim.param.upc),
                  family = binomial,
                  data = ssData)
-  # Random intercepts
+  # main effects: varied CIDMo parameters
   reg1Main <- glmer(ssData$dis.prop.pct.rec/100 ~
                       #  model parameters
-                      beta + mu + s + r + N +
+                      beta + mu + sigma + r + N + iota +
                       (1 | sim.param.upc),
                     family = binomial,
                     data = ssData)
+  # main effects: varied CIDMo parameters + network properties at the time of the first infection
   reg2Main <- glmer(ssData$dis.prop.pct.rec/100 ~
                       #  model parameters
-                      beta + mu + s + r + N +
+                      beta + mu + sigma + r + N + iota +
                       # network properties
                       dens + deg1 +
                       (1 | sim.param.upc),
                     family = binomial,
                     data = ssData)
+  # interaction effects
   reg2Int <- glmer(ssData$dis.prop.pct.rec/100 ~
                      #  model parameters
-                     beta + mu + s + r + N +
+                     beta + mu + sigma + r + N + iota +
                      # network properties
                      dens + deg1 +
                      # interaction effects
                      intBetaMu +
-                     intMuS +
+                     intBetaSigma +
+                     intBetaR +
+                     intBetaN +
+                     intBetaIota +
+                     intBetaDens +
+                     intBetaDeg1 +
+                     intMuSigma +
                      intMuR +
-                     intRS +
+                     intMuN +
+                     intMuIota +
+                     intMuDens +
+                     intMuDeg1 +
+                     intSigmaR +
+                     intSigmaN +
+                     intSigmaIota +
+                     intSigmaDens +
+                     intSigmaDeg1 +
+                     intRN +
+                     intRIota +
                      intRDens +
+                     intRDeg1 +
+                     intNIota +
+                     intNDens +
                      intNDeg1 +
+                     intIotaDens +
+                     intIotaDeg1 +
+                     intDensDeg1 +
                      (1 | sim.param.upc),
                    family = binomial,
                    data = ssData)
-
-  return(list(reg00,reg1Main,reg2Main,reg2Int))
-
+  exportModels(list(reg00,reg1Main,reg2Main,reg2Int), "reg-attack-rate-complete")
 }
 
 #----------------------------------------------------------------------------------------------------#
-# function: getAttackRateLinearityChecks
-#     Creates linearity checks for multi-level logistic regression models for attack rate.
+# function: exportAttackRateModelsSelected
+#     Creates and exports multi-level logistic regression models for attack rate with only
+#     selected parameters and interactions. This method is a copy of 'exportAttackRateModelsComplete',
+#     but is intended to find the best models with only significant and expressive parameters by
+#     modyfying the model parameters without changing the complete export for command line
+#     invocations.
 # param:  ssData
 #     simulation summary data to get regression models for
-# return: linearity checks for multi-level logistic regression models for attack rate
 #----------------------------------------------------------------------------------------------------#
-getAttackRateLinearityChecks <- function(ssData = loadSimulationSummaryData()) {
+exportAttackRateModelsSelected <- function(ssData = loadSimulationSummaryData()) {
 
-  # main effects
-  N     <- ssData$net.param.N
-  beta  <- ssData$net.param.beta
-  mu    <- ssData$dis.param.mu
-  r     <- ssData$net.param.r
-  s     <- ssData$dis.param.s
-  # dummies
-  N10   <- ifelse(N == 10, 10, 0)
-  N15   <- ifelse(N == 15, 15, 0)
-  N20   <- ifelse(N == 20, 20, 0)
-  N25   <- ifelse(N == 25, 25, 0)
-  r1.0  <- ifelse(r == 1.0, 1.0, 0)
-  r1.5  <- ifelse(r == 1.5, 1.5, 0)
-  s10   <- ifelse(s == 10, 10, 0)
-  s50   <- ifelse(s == 50, 50, 0)
+  # MAIN EFFECTS
+  # CIDMo parameters
+  beta  <- meanCenter(ssData$net.param.beta)
+  mu    <- meanCenter(ssData$dis.param.mu)
+  sigma <- meanCenter(ssData$dis.param.s / 50)
+  r     <- meanCenter(ssData$net.param.r)
+  N     <- meanCenter(ssData$net.param.N / 50)
+  iota  <- meanCenter(ssData$net.param.net.empty)
+  # network properties
+  deg1  <- meanCenter(ssData$act.prop.net.degree.order.1 / (ssData$net.param.N-1))
+  dens  <- meanCenter(ssData$net.prop.density.pre.epidemic)
+  # INTERACTION EFFECTS
+  # combinations of beta
+  intBetaMu     <- (beta - mean(beta))    *   (mu - mean(mu))
+  intBetaSigma  <- (beta - mean(beta))    *   (sigma - mean(sigma))
+  intBetaR      <- (beta - mean(beta))    *   (r - mean(r))
+  intBetaN      <- (beta - mean(beta))    *   (N - mean(N))
+  intBetaIota   <- (beta - mean(beta))    *   (iota - mean(iota))
+  intBetaDens   <- (beta - mean(beta))    *   (dens - mean(dens))
+  intBetaDeg1   <- (beta - mean(beta))    *   (deg1 - mean(deg1))
+  # combinations of mu
+  intMuSigma    <- (mu - mean(mu))        *   (sigma - mean(sigma))
+  intMuR        <- (mu - mean(mu))        *   (r - mean(r))
+  intMuN        <- (mu - mean(mu))        *   (N - mean(N))
+  intMuIota     <- (mu - mean(mu))        *   (iota - mean(iota))
+  intMuDens     <- (mu - mean(mu))        *   (dens - mean(dens))
+  intMuDeg1     <- (mu - mean(mu))        *   (deg1 - mean(deg1))
+  # combinations of sigma
+  intSigmaR     <- (sigma - mean(sigma))  *   (r - mean(r))
+  intSigmaN     <- (sigma - mean(sigma))  *   (N - mean(N))
+  intSigmaIota  <- (sigma - mean(sigma))  *   (iota - mean(iota))
+  intSigmaDens  <- (sigma - mean(sigma))  *   (dens - mean(dens))
+  intSigmaDeg1  <- (sigma - mean(sigma))  *   (deg1 - mean(deg1))
+  # combinations of r
+  intRN         <- (r - mean(r))          *   (N - mean(N))
+  intRIota      <- (r - mean(r))          *   (iota - mean(iota))
+  intRDens      <- (r - mean(r))          *   (dens - mean(dens))
+  intRDeg1      <- (r - mean(r))          *   (deg1 - mean(deg1))
+  # combinations of N
+  intNIota      <- (N - mean(N))          *   (iota - mean(iota))
+  intNDens      <- (N - mean(N))          *   (dens - mean(dens))
+  intNDeg1      <- (N - mean(N))          *   (deg1 - mean(deg1))
+  # combinations of iota
+  intIotaDens   <- (iota - mean(iota))    *   (dens - mean(dens))
+  intIotaDeg1   <- (iota - mean(iota))    *   (deg1 - mean(deg1))
+  # combinations of density
+  intDensDeg1   <- (dens - mean(dens))  *   (deg1 - mean(deg1))
 
   ### 2-LEVEL LOGISTIC REGRESSIONS    ###
   ### level 2: parameters combination ###
   ### level 1: simulation runs        ###
-  # Null-Modell
+  # null-model
   reg00 <- glmer(ssData$dis.prop.pct.rec/100 ~
                    1 +
                    (1 | sim.param.upc),
                  family = binomial,
                  data = ssData)
-  # Random intercepts
+  # main effects: varied CIDMo parameters
   reg1Main <- glmer(ssData$dis.prop.pct.rec/100 ~
                       #  model parameters
-                      beta + mu + s + r + N +
+                      beta + mu + sigma + r + N + # iota +
                       (1 | sim.param.upc),
                     family = binomial,
                     data = ssData)
-  # Linearity checks
-  reg1LCheck <- glmer(ssData$dis.prop.pct.rec/100 ~
-                        #  model parameters
-                        beta + mu + s10 + s50 + r1.0 + r1.5 + N10 + N15 + N20 + N25 +
-                        (1 | sim.param.upc),
-                      family = binomial,
-                      data = ssData)
-
-  return(list(reg00,reg1Main,reg1LCheck))
-
-}
-
-#----------------------------------------------------------------------------------------------------#
-# function: getDurationLinearityChecks
-#     Creates linearity checks for multi-level linear regression models for duration of epidemics.
-# param:  ssData
-#     simulation summary data to get regression models for
-# return: linearity checks for multi-level linear regression models for duration of epidemics
-#----------------------------------------------------------------------------------------------------#
-getDurationLinearityChecks <- function(ssData = loadSimulationSummaryData()) {
-
-  # main effects
-  N     <- ssData$net.param.N
-  beta  <- ssData$net.param.beta
-  mu    <- ssData$dis.param.mu
-  r     <- ssData$net.param.r
-  s     <- ssData$dis.param.s
-  # dummies
-  N10   <- ifelse(N == 10, 10, 0)
-  N15   <- ifelse(N == 15, 15, 0)
-  N20   <- ifelse(N == 20, 20, 0)
-  N25   <- ifelse(N == 25, 25, 0)
-  r1.0  <- ifelse(r == 1.0, 1.0, 0)
-  r1.5  <- ifelse(r == 1.5, 1.5, 0)
-  s10   <- ifelse(s == 10, 10, 0)
-  s50   <- ifelse(s == 50, 50, 0)
-
-  ### 2-LEVEL LINEAR REGRESSIONS      ###
-  ### level 2: parameters combination ###
-  ### level 1: simulation runs        ###
-  # Null-Modell
-  reg00 <- lmer(ssData$dis.prop.duration
-                ~ 1 +
-                  (1 | sim.param.upc),
-                data = ssData,
-                REML = FALSE)
-  # Random intercepts
-  reg1Main <- lmer(ssData$dis.prop.duration ~
+  # main effects: varied CIDMo parameters + network properties at the time of the first infection
+  reg2Main <- glmer(ssData$dis.prop.pct.rec/100 ~
+                      #  model parameters
+                      beta + mu + sigma + r + N + # iota +
+                      # network properties
+                      dens + deg1 +
+                      (1 | sim.param.upc),
+                    family = binomial,
+                    data = ssData)
+  # interaction effects
+  reg2Int <- glmer(ssData$dis.prop.pct.rec/100 ~
                      #  model parameters
-                     beta + mu + s + r + N +
+                     beta + mu + sigma + r + N + # iota +
+                     # network properties
+                     dens + deg1 +
+                     # interaction effects
+                     intBetaMu +
+                     # intBetaSigma +
+                     # intBetaR +
+                     # intBetaN +
+                     # intBetaIota +
+                     # intBetaDens +
+                     # intBetaDeg1 +
+                     intMuSigma +
+                     intMuR +
+                     # intMuN +
+                     # intMuIota +
+                     # intMuDens +
+                     # intMuDeg1 +
+                     intSigmaR +
+                     # intSigmaN +
+                     # intSigmaIota +
+                     # intSigmaDens +
+                     # intSigmaDeg1 +
+                     # intRN +
+                     # intRIota +
+                     intRDens +
+                     # intRDeg1 +
+                     # intNIota +
+                     # intNDens +
+                     intNDeg1 +
+                     # intIotaDens +
+                     # intIotaDeg1 +
+                     # intDensDeg1 +
                      (1 | sim.param.upc),
-                   data = ssData,
-                   REML = FALSE)
-  # Linearity checks
-  reg1LCheck <- lmer(ssData$dis.prop.duration ~
-                       #  model parameters
-                       beta + mu + s10 + s50 + r1.0 + r1.5 + N + #N10 + N15 + N20 + N25 +
-                       (1 | sim.param.upc),
-                     data = ssData,
-                     REML = FALSE)
-
-  return(list(reg00,reg1Main,reg1LCheck))
+                   family = binomial,
+                   data = ssData)
+  exportModels(list(reg00,reg1Main,reg2Main,reg2Int), "reg-attack-rate-selected")
 }
 
 #----------------------------------------------------------------------------------------------------#
-# function: getDurationModels
-#     Creates multi-level linear regression models for duration of epidemics.
+# function: exportDurationModels
+#     Creates and exports multi-level linear regression models for duration of epidemics with all
+#     possible parameters and interaction effects.
 # param:  ssData
 #     simulation summary data to get regression models for
-# return: multi-level linear regression models for duration of epidemics
 #----------------------------------------------------------------------------------------------------#
-getDurationModels <- function(ssData = loadSimulationSummaryData()) {
+exportDurationModelsComplete <- function(ssData = loadSimulationSummaryData()) {
 
-  # main effects
-  N     <- meanCenter(ssData$net.param.N / 50)
+  # MAIN EFFECTS
+  # CIDMo parameters
   beta  <- meanCenter(ssData$net.param.beta)
   mu    <- meanCenter(ssData$dis.param.mu)
+  sigma <- meanCenter(ssData$dis.param.s / 50)
   r     <- meanCenter(ssData$net.param.r)
-  s     <- meanCenter(ssData$dis.param.s / 50)
+  N     <- meanCenter(ssData$net.param.N / 50)
+  iota  <- meanCenter(ssData$net.param.net.empty)
+  # network properties
   deg1  <- meanCenter(ssData$act.prop.net.degree.order.1 / (ssData$net.param.N-1))
   dens  <- meanCenter(ssData$net.prop.density.pre.epidemic)
-  # interaction effects
-  intNBeta      <- (N - mean(N))        *   (beta - mean(beta))
-  intNMu        <- (N - mean(N))        *   (mu - mean(mu))
-  intNR         <- (N - mean(N))        *   (r - mean(r))
-  intNS         <- (N - mean(N))        *   (s - mean(s))
-  intNDeg1      <- (N - mean(N))        *   (deg1 - mean(deg1))
-  intNDens      <- (N - mean(N))        *   (dens - mean(dens))
-  intBetaMu     <- (beta - mean(beta))  *   (mu - mean(mu))
-  intBetaR      <- (beta - mean(beta))  *   (r - mean(r))
-  intBetaS      <- (beta - mean(beta))  *   (s - mean(s))
-  intBetaDeg1   <- (beta - mean(beta))  *   (deg1 - mean(deg1))
-  intBetaDens   <- (beta - mean(beta))  *   (dens - mean(dens))
-  intMuR        <- (mu - mean(mu))      *   (r - mean(r))
-  intMuS        <- (mu - mean(mu))      *   (s - mean(s))
-  intMuDeg1     <- (mu - mean(mu))      *   (deg1 - mean(deg1))
-  intMuDens     <- (mu - mean(mu))      *   (dens - mean(dens))
-  intRS         <- (r - mean(r))        *   (s - mean(s))
-  intRDeg1      <- (r - mean(r))        *   (deg1 - mean(deg1))
-  intRDens      <- (r - mean(r))        *   (dens - mean(dens))
-  intSDeg1      <- (s - mean(s))        *   (deg1 - mean(deg1))
-  intSDens      <- (s - mean(s))        *   (dens - mean(dens))
-  intDeg1Dens   <- (deg1 - mean(deg1))  *   (dens - mean(dens))
+  # INTERACTION EFFECTS
+  intBetaMu     <- (beta - mean(beta))    *   (mu - mean(mu))
+  intBetaSigma  <- (beta - mean(beta))    *   (sigma - mean(sigma))
+  intBetaR      <- (beta - mean(beta))    *   (r - mean(r))
+  intBetaN      <- (beta - mean(beta))    *   (N - mean(N))
+  intBetaIota   <- (beta - mean(beta))    *   (iota - mean(iota))
+  intBetaDens   <- (beta - mean(beta))    *   (dens - mean(dens))
+  intBetaDeg1   <- (beta - mean(beta))    *   (deg1 - mean(deg1))
+  # combinations of mu
+  intMuSigma    <- (mu - mean(mu))        *   (sigma - mean(sigma))
+  intMuR        <- (mu - mean(mu))        *   (r - mean(r))
+  intMuN        <- (mu - mean(mu))        *   (N - mean(N))
+  intMuIota     <- (mu - mean(mu))        *   (iota - mean(iota))
+  intMuDens     <- (mu - mean(mu))        *   (dens - mean(dens))
+  intMuDeg1     <- (mu - mean(mu))        *   (deg1 - mean(deg1))
+  # combinations of sigma
+  intSigmaR     <- (sigma - mean(sigma))  *   (r - mean(r))
+  intSigmaN     <- (sigma - mean(sigma))  *   (N - mean(N))
+  intSigmaIota  <- (sigma - mean(sigma))  *   (iota - mean(iota))
+  intSigmaDens  <- (sigma - mean(sigma))  *   (dens - mean(dens))
+  intSigmaDeg1  <- (sigma - mean(sigma))  *   (deg1 - mean(deg1))
+  # combinations of r
+  intRN         <- (r - mean(r))          *   (N - mean(N))
+  intRIota      <- (r - mean(r))          *   (iota - mean(iota))
+  intRDens      <- (r - mean(r))          *   (dens - mean(dens))
+  intRDeg1      <- (r - mean(r))          *   (deg1 - mean(deg1))
+  # combinations of N
+  intNIota      <- (N - mean(N))          *   (iota - mean(iota))
+  intNDens      <- (N - mean(N))          *   (dens - mean(dens))
+  intNDeg1      <- (N - mean(N))          *   (deg1 - mean(deg1))
+  # combinations of iota
+  intIotaDens   <- (iota - mean(iota))    *   (dens - mean(dens))
+  intIotaDeg1   <- (iota - mean(iota))    *   (deg1 - mean(deg1))
+  # combinations of density
+  intDensDeg1   <- (dens - mean(dens))  *   (deg1 - mean(deg1))
 
   ### 2-LEVEL LINEAR REGRESSIONS      ###
   ### level 2: parameters combination ###
   ### level 1: simulation runs        ###
-  # Null-Modell
+  # null-model
   reg00 <- lmer(ssData$dis.prop.duration
                 ~ 1 +
                   (1 | sim.param.upc),
                 data = ssData,
                 REML = FALSE)
-  # Random intercepts
+  # main effects: varied CIDMo parameters
   reg1Main <- lmer(ssData$dis.prop.duration ~
-                     #  model parameters
-                     beta + mu + s + r + N +
+                     # CIDMo parameters
+                     beta + mu + sigma + r + N + iota +
                      (1 | sim.param.upc),
                    data = ssData,
                    REML = FALSE)
+  # main effects: varied CIDMo parameters + network properties at the time of the first infection
   reg2Main <- lmer(ssData$dis.prop.duration ~
-                     #  model parameters
-                     beta + mu + s + r + N +
+                     # CIDMo parameters
+                     beta + mu + sigma + r + N + iota +
                      # network properties
                      dens + deg1 +
                      (1 | sim.param.upc),
                    data = ssData,
                    REML = FALSE)
+  # interaction effects
   reg2Int <- lmer(ssData$dis.prop.duration ~
-                    #  model parameters
-                    beta + mu + s + r + N +
+                    # CIDMo parameters
+                    beta + mu + sigma + r + N + iota +
                     # network properties
                     dens + deg1 +
                     # interaction effects
                     intBetaMu +
-                    intNBeta +
+                    intBetaSigma +
+                    intBetaR +
+                    intBetaN +
+                    intBetaIota +
+                    intBetaDens +
+                    intBetaDeg1 +
+                    intMuSigma +
+                    intMuR +
+                    intMuN +
+                    intMuIota +
                     intMuDens +
-                    intRS +
-                    intNS +
-                    intNR +
+                    intMuDeg1 +
+                    intSigmaR +
+                    intSigmaN +
+                    intSigmaIota +
+                    intSigmaDens +
+                    intSigmaDeg1 +
+                    intRN +
+                    intRIota +
+                    intRDens +
+                    intRDeg1 +
+                    intNIota +
                     intNDens +
+                    intNDeg1 +
+                    intIotaDens +
+                    intIotaDeg1 +
+                    intDensDeg1 +
                     (1 | sim.param.upc),
                   data = ssData,
                   REML = FALSE)
 
-  return(list(reg00,reg1Main,reg2Main,reg2Int))
+  exportModels(list(reg00,reg1Main,reg2Main,reg2Int), "reg-duration-complete")
+}
 
+#----------------------------------------------------------------------------------------------------#
+# function: exportDurationModelsSelected
+#     Creates and exports multi-level linear regression models for duration of epidemics with only
+#     selected parameters and interactions. This method is a copy of 'exportDurationModelsComplete',
+#     but is intended to find the best models with only significant and expressive parameters by
+#     modyfying the model parameters without changing the complete export for command line
+#     invocations.
+# param:  ssData
+#     simulation summary data to get regression models for
+#----------------------------------------------------------------------------------------------------#
+exportDurationModelsSelected <- function(ssData = loadSimulationSummaryData()) {
+
+  # MAIN EFFECTS
+  # CIDMo parameters
+  beta  <- meanCenter(ssData$net.param.beta)
+  mu    <- meanCenter(ssData$dis.param.mu)
+  sigma <- meanCenter(ssData$dis.param.s / 50)
+  r     <- meanCenter(ssData$net.param.r)
+  N     <- meanCenter(ssData$net.param.N / 50)
+  iota  <- meanCenter(ssData$net.param.net.empty)
+  # network properties
+  deg1  <- meanCenter(ssData$act.prop.net.degree.order.1 / (ssData$net.param.N-1))
+  dens  <- meanCenter(ssData$net.prop.density.pre.epidemic)
+  # INTERACTION EFFECTS
+  intBetaMu     <- (beta - mean(beta))    *   (mu - mean(mu))
+  intBetaSigma  <- (beta - mean(beta))    *   (sigma - mean(sigma))
+  intBetaR      <- (beta - mean(beta))    *   (r - mean(r))
+  intBetaN      <- (beta - mean(beta))    *   (N - mean(N))
+  intBetaIota   <- (beta - mean(beta))    *   (iota - mean(iota))
+  intBetaDens   <- (beta - mean(beta))    *   (dens - mean(dens))
+  intBetaDeg1   <- (beta - mean(beta))    *   (deg1 - mean(deg1))
+  # combinations of mu
+  intMuSigma    <- (mu - mean(mu))        *   (sigma - mean(sigma))
+  intMuR        <- (mu - mean(mu))        *   (r - mean(r))
+  intMuN        <- (mu - mean(mu))        *   (N - mean(N))
+  intMuIota     <- (mu - mean(mu))        *   (iota - mean(iota))
+  intMuDens     <- (mu - mean(mu))        *   (dens - mean(dens))
+  intMuDeg1     <- (mu - mean(mu))        *   (deg1 - mean(deg1))
+  # combinations of sigma
+  intSigmaR     <- (sigma - mean(sigma))  *   (r - mean(r))
+  intSigmaN     <- (sigma - mean(sigma))  *   (N - mean(N))
+  intSigmaIota  <- (sigma - mean(sigma))  *   (iota - mean(iota))
+  intSigmaDens  <- (sigma - mean(sigma))  *   (dens - mean(dens))
+  intSigmaDeg1  <- (sigma - mean(sigma))  *   (deg1 - mean(deg1))
+  # combinations of r
+  intRN         <- (r - mean(r))          *   (N - mean(N))
+  intRIota      <- (r - mean(r))          *   (iota - mean(iota))
+  intRDens      <- (r - mean(r))          *   (dens - mean(dens))
+  intRDeg1      <- (r - mean(r))          *   (deg1 - mean(deg1))
+  # combinations of N
+  intNIota      <- (N - mean(N))          *   (iota - mean(iota))
+  intNDens      <- (N - mean(N))          *   (dens - mean(dens))
+  intNDeg1      <- (N - mean(N))          *   (deg1 - mean(deg1))
+  # combinations of iota
+  intIotaDens   <- (iota - mean(iota))    *   (dens - mean(dens))
+  intIotaDeg1   <- (iota - mean(iota))    *   (deg1 - mean(deg1))
+  # combinations of density
+  intDensDeg1   <- (dens - mean(dens))  *   (deg1 - mean(deg1))
+
+  ### 2-LEVEL LINEAR REGRESSIONS      ###
+  ### level 2: parameters combination ###
+  ### level 1: simulation runs        ###
+  # null-model
+  reg00 <- lmer(ssData$dis.prop.duration
+                ~ 1 +
+                  (1 | sim.param.upc),
+                data = ssData,
+                REML = FALSE)
+  # main effects: varied CIDMo parameters
+  reg1Main <- lmer(ssData$dis.prop.duration ~
+                     # CIDMo parameters
+                     beta + mu + sigma + r + N + # iota +
+                     (1 | sim.param.upc),
+                   data = ssData,
+                   REML = FALSE)
+  # main effects: varied CIDMo parameters + network properties at the time of the first infection
+  reg2Main <- lmer(ssData$dis.prop.duration ~
+                     # CIDMo parameters
+                     beta + mu + sigma + r + N + # iota +
+                     # network properties
+                     dens + deg1 +
+                     (1 | sim.param.upc),
+                   data = ssData,
+                   REML = FALSE)
+  # interaction effects
+  reg2Int <- lmer(ssData$dis.prop.duration ~
+                    # CIDMo parameters
+                    beta + mu + sigma + r + N + # iota +
+                    # network properties
+                    dens + deg1 +
+                    # interaction effects
+                    intBetaMu +
+                    # intBetaSigma +
+                    # intBetaR +
+                    intBetaN +
+                    # intBetaIota +
+                    # intBetaDens +
+                    # intBetaDeg1 +
+                    # intMuSigma +
+                    # intMuR +
+                    # intMuN +
+                    # intMuIota +
+                    intMuDens +
+                    # intMuDeg1 +
+                    intSigmaR +
+                    intSigmaN +
+                    # intSigmaIota +
+                    # intSigmaDens +
+                    # intSigmaDeg1 +
+                    intRN +
+                    # intRIota +
+                    # intRDens +
+                    # intRDeg1 +
+                    # intNIota +
+                    intNDens +
+                    # intNDeg1 +
+                    # intIotaDens +
+                    # intIotaDeg1 +
+                    # intDensDeg1 +
+                    (1 | sim.param.upc),
+                  data = ssData,
+                  REML = FALSE)
+
+  exportModels(list(reg00,reg1Main,reg2Main,reg2Int), "reg-duration-selected")
 }
 
 
+############################################ DESCRIPIVES #############################################
+#----------------------------------------------------------------------------------------------------#
+# function: exportDataFrame
+#     Exports a generic data frame.
+# param:  df
+#     the data frame to export
+# param:  filename
+#     the filename for the data frame to export
+#----------------------------------------------------------------------------------------------------#
 exportDataFrame <- function(df, filename) {
+
+  # create directory if necessary
+  dir.create(EXPORT_PATH_NUM, showWarnings = FALSE)
 
   filepath <- paste(EXPORT_PATH_NUM,
                     filename,
@@ -788,10 +1008,21 @@ exportDataFrame <- function(df, filename) {
   write.table(df, file=filepath, sep = ";", row.names = TRUE, col.names = NA)
 }
 
-getNetworkSizeMeasures <- function() {
+#----------------------------------------------------------------------------------------------------#
+# function: exportNetworkSizeMeasures
+#     Exports various measures dependent on network size, such as density, average degree,
+#     attack rate, duration of epidemics, and time steps to epidemic peaks.
+# param:  ssData
+#     simulation summary data to export network size dependent measures for
+# param:  rsData
+#     round summary data to export network size dependent measures for
+# param:  filename
+#     the name of the export file
+#----------------------------------------------------------------------------------------------------#
+exportNetworkSizeMeasures <- function(ssData = loadSimulationSummaryData(),
+                                      rsData = reduceRoundSummaryData(loadRoundSummaryData(), cropTail = 20),
+                                      filename = "network-size-measures") {
 
-  ssData <- loadSimulationSummaryData()
-  rsData  <- reduceRoundSummaryData(loadRoundSummaryData(), cropTail = 20)
   peakData <- data.frame(rsData$net.param.N,
                          rsData$sim.param.uid,
                          rsData$sim.prop.round-10,
@@ -841,28 +1072,21 @@ getNetworkSizeMeasures <- function() {
                            attackRates, sdAttackRates,
                            durations, sdDurations,
                            epiPeaks, sdEpiPeaks)
-  return(nsMeasures)
 
+  exportDataFrame(nsMeasures, filename)
 }
 
-exportNetworkSizeMeasures <- function() {
-  exportDataFrame(getNetworkSizeMeasures(), "network-size-measures")
-}
-
-
-
-
-############################################ DESCRIPIVES #############################################
 #----------------------------------------------------------------------------------------------------#
-# function: exportDescriptiveMeasures
-#     Exports descriptive statistics for selected plot properties.y
+# function: exportEpidemicMeasures
+#     Exports descriptive statistics for epidemics, such as attack rate, duration,
+#     average degree prior to epidemics, and average minimum degree during epidemics.
+# param:  ssData
+#     simulation summary data to export epidemic measures for
+# param:  rsData
+#     round summary data to export epidemic measures for
 #----------------------------------------------------------------------------------------------------#
-exportDescriptiveMeasures <- function() {
-
-  # INITIALIZATIONS
-  # data
-  ssData <- loadSimulationSummaryData()
-  rsData <- reduceRoundSummaryData(loadRoundSummaryData(), cropTail = 20)
+exportEpidemicMeasures <- function(ssData = loadSimulationSummaryData(),
+                                   rsData = reduceRoundSummaryData(loadRoundSummaryData(), cropTail = 20)) {
 
   ##### BETA-MU #####
   # results data frame
@@ -877,8 +1101,8 @@ exportDescriptiveMeasures <- function() {
     ss <- ssBetaMu[[i]]
     resBetaMu[i,1]  <- head(ss, 1)$net.param.beta
     resBetaMu[i,2]  <- head(ss, 1)$dis.param.mu
-    resBetaMu[i,3]  <- median(ss$dis.prop.pct.rec)
-    resBetaMu[i,4]  <- median(ss$dis.prop.duration)
+    resBetaMu[i,3]  <- round(median(ss$dis.prop.pct.rec), digits = 3)
+    resBetaMu[i,4]  <- round(median(ss$dis.prop.duration), digits = 3)
   }
 
   # AVERAGE DEGREES
@@ -890,12 +1114,12 @@ exportDescriptiveMeasures <- function() {
     resBetaMu$degree.pre.epidemic[
       resBetaMu$beta == head(rs, 1)$net.param.beta
       & resBetaMu$mu == head(rs, 1)$dis.param.mu
-      ] <- median(subset(rs, sim.prop.round == 10)$net.prop.av.degree)
+      ] <- round(median(subset(rs, sim.prop.round == 10)$net.prop.av.degree), digits = 3)
     # average minimum degree during epidemic
     resBetaMu$degree.min[
       resBetaMu$beta == head(rs, 1)$net.param.beta
       & resBetaMu$mu == head(rs, 1)$dis.param.mu
-      ] <- median(aggregate(net.prop.av.degree ~ sim.param.uid, data = rs, min)$net.prop.av.degree)
+      ] <- round(median(aggregate(net.prop.av.degree ~ sim.param.uid, data = rs, min)$net.prop.av.degree), digits = 3)
   }
   exportDataFrame(resBetaMu, "descriptives-beta-mu")
 
@@ -913,8 +1137,8 @@ exportDescriptiveMeasures <- function() {
     ss <- ssSigmaR[[i]]
     resSigmaR[i,1]  <- head(ss, 1)$dis.param.s
     resSigmaR[i,2]  <- head(ss, 1)$net.param.r
-    resSigmaR[i,3]  <- median(ss$dis.prop.pct.rec)
-    resSigmaR[i,4]  <- median(ss$dis.prop.duration)
+    resSigmaR[i,3]  <- round(median(ss$dis.prop.pct.rec), digits = 3)
+    resSigmaR[i,4]  <- round(median(ss$dis.prop.duration), digits = 3)
   }
 
   # AVERAGE DEGREES
@@ -926,64 +1150,59 @@ exportDescriptiveMeasures <- function() {
     resSigmaR$degree.pre.epidemic[
       resSigmaR$sigma == head(rs, 1)$dis.param.s
       & resSigmaR$risk.factor == head(rs, 1)$net.param.r
-      ] <- median(subset(rs, sim.prop.round == 10)$net.prop.av.degree)
+      ] <- round(median(subset(rs, sim.prop.round == 10)$net.prop.av.degree), digits = 3)
     # average minimum degree during epidemic
     resSigmaR$degree.min[
       resSigmaR$sigma == head(rs, 1)$dis.param.s
       & resSigmaR$risk.factor == head(rs, 1)$net.param.r
-      ] <- median(aggregate(net.prop.av.degree ~ sim.param.uid, data = rs, min)$net.prop.av.degree)
+      ] <- round(median(aggregate(net.prop.av.degree ~ sim.param.uid, data = rs, min)$net.prop.av.degree), digits = 3)
   }
   exportDataFrame(resSigmaR, "descriptives-sigma-r")
 }
 
 
-########################################## SCRIPT COMPOSITION ########################################
-print("###########################################################")
-print(paste("Creating directory for figure export:", EXPORT_PATH_PLOTS))
-dir.create(EXPORT_PATH_PLOTS)
+############################## SCRIPT COMPOSITION FOR COMPLETE EXPORT ################################
+#----------------------------------------------------------------------------------------------------#
+# function: exportAll
+#     Exports all analyses. Note: Regressions are complete. Regressions with selected parameters
+#     and interaction effects need to be exported individually using methods
+#     'exportAttackRateModelsSelected()' and 'exportDurationModelsSelected()'!
+#----------------------------------------------------------------------------------------------------#
+exportAll <- function() {
 
-print("###########################################################")
-print("Starting to export individual plots..")
-exportPlots()
-print("Finished exporting individual plots..")
+  print("::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
+  print(paste(":: BEGINNING TO ANALYZE DATA IN: ", DATA_PATH, sep = ""))
 
-print("###########################################################")
-print("Starting to export grid plots..")
-exportGridPlots()
-print("Finished exporting grid plots..")
+  print(":::: DATA IMPORT")
+  print(paste(":::::: Importing ", CSV_ROUND_SUMMARY_PATH, sep = ""))
+  rsData <- reduceRoundSummaryData(loadRoundSummaryData(), cropTail = 20)
+  print(paste(":::::: Importing ", CSV_SUMMARY_PATH, ":", sep = ""))
+  ssData <- loadSimulationSummaryData()
 
-print("###########################################################")
-print(paste("Creating directory for numerical analyses export:", EXPORT_PATH_NUM))
-dir.create(EXPORT_PATH_NUM)
+  print(":::: PLOT EXPORT")
+  print(":::::: Exporting individual plots:")
+  exportPlots(rsData = rsData)
+  print(":::::: Exporting grid plots:")
+  exportGridPlots(rsData = rsData)
 
-print("###########################################################")
-print("Starting to export regression models for attack rate..")
-exportAttackRateModels()
-print("Finished exporting regression models for attack rate..")
+  print(":::: NUMERICAL ANALYSES")
+  print(":::::: Exporting regression models for attack rate..")
+  exportAttackRateModelsComplete(ssData = ssData)
+  print(":::::: Exporting regression models for duration of epidemics..")
+  exportDurationModelsComplete(ssData = ssData)
+  print(":::::: Exporting network size measures..")
+  exportNetworkSizeMeasures(ssData = ssData, rsData = rsData)
+  print(":::::: Exporting epidemic measures..")
+  exportEpidemicMeasures(ssData = ssData, rsData = rsData)
 
-print("###########################################################")
-print("Starting to export regression models linearity checks for attack rate..")
-exportAttackRateLinearityChecks()
-print("Finished exporting regression models linearity checks for attack rate..")
+  print(paste(":: ANALYSIS FINISHED SUCCESSFULLY!", sep = ""))
+  print("::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
 
-print("###########################################################")
-print("Starting to export regression models for duration of epidemics..")
-exportDurationModels()
-print("Finished exporting regression models for duration of epidemics..")
+  quit()
+}
 
-print("###########################################################")
-print("Starting to export regression models linearity checks for duration of epidemics..")
-exportDurationLinearityChecks()
-print("Finished exporting regression models linearity checks for duration of epidemics..")
 
-print("###########################################################")
-print("Starting to export network size measures..")
-exportNetworkSizeMeasures()
-print("Finished exporting network size measures..")
-
-print("###########################################################")
-print("Starting to export descriptive measures..")
-exportDescriptiveMeasures()
-print("Finished exporting descriptive measures..")
-
-return(0)
+####################################### COMMAND LINE EXECUTION #######################################
+if (length(args) >= 1) {
+  exportAll()
+}

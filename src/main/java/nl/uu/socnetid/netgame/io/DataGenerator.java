@@ -1,8 +1,10 @@
 package nl.uu.socnetid.netgame.io;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
@@ -42,6 +44,17 @@ public class DataGenerator implements AgentListener, SimulationListener {
 
     // logger
     private static final Logger logger = Logger.getLogger(DataGenerator.class);
+
+    // location of R-executable
+    // TODO WINDOWS: "C:\Program Files\R\R-3.4.3\bin\Rscript.exe"
+    private static final String R_LOCATION = "/usr/local/bin/Rscript";
+    // R-script for data analyses
+    private static final String R_SCRIPT = new StringBuilder().append(System.getProperty("user.dir"))
+            .append("/analysis/analysis.R").toString();
+    // export folder
+    private static final String EXPORT_FOLDER = (new SimpleDateFormat("yyyyMMdd-HHmmss")).format(new Date());
+    // export directory
+    private final String EXPORT_DIR = GEXFWriter.DEFAULT_EXPORT_DIR + EXPORT_FOLDER + "/";
 
     // simulations per unique parameter combination
     private static final int SIMS_PER_UPC = 3;
@@ -117,9 +130,6 @@ public class DataGenerator implements AgentListener, SimulationListener {
     private double indexCosts1;
     private double indexCostsDisease;
 
-    // export directory
-    private final String exportDir;
-
     // GEXF export file
     private String gexfExportFile = "NA";
     private GEXFWriter gexfWriter;
@@ -154,12 +164,8 @@ public class DataGenerator implements AgentListener, SimulationListener {
     public DataGenerator() {
         super();
 
-        // initialize export directory
-        this.exportDir = GEXFWriter.DEFAULT_EXPORT_DIR
-                + (new SimpleDateFormat("yyyyMMdd-HHmmss")).format(new Date()) + "/";
-
         // create export directory if it does not exist
-        File directory = new File(this.exportDir);
+        File directory = new File(EXPORT_DIR);
         if (!directory.exists()){
             directory.mkdirs();
         }
@@ -205,7 +211,7 @@ public class DataGenerator implements AgentListener, SimulationListener {
                                                     // begin: GEXF export
                                                     if (EXPORT_GEXF_DATA) {
                                                         this.gexfWriter = new GEXFWriter();
-                                                        this.gexfExportFile = this.exportDir + this.uid + ".gexf";
+                                                        this.gexfExportFile = EXPORT_DIR + this.uid + ".gexf";
                                                         gexfWriter.startRecording(network, this.gexfExportFile);
                                                     }
                                                     // create utility and disease specs
@@ -281,6 +287,34 @@ public class DataGenerator implements AgentListener, SimulationListener {
             }
         }
         finalizeDataExportFiles();
+
+        // invoke data analysis
+        try {
+            ProcessBuilder pb = new ProcessBuilder(R_LOCATION, R_SCRIPT, EXPORT_DIR);
+            logger.info("Starting analysis of simulated data. "
+                    + "Invoking R-script: "
+                    + pb.command().toString());
+            Process p = pb.start();
+
+            BufferedReader reader =
+                    new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+
+            int exitCode = p.waitFor();
+            if (exitCode == 0) {
+                logger.info("Analysis finished successfully.");
+            } else {
+                logger.error("Analysis finished with error code: " + exitCode);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -369,7 +403,7 @@ public class DataGenerator implements AgentListener, SimulationListener {
 
         // FILE SYSTEM
         try {
-            this.simulationSummaryCSVWriter = new FileWriter(this.exportDir + "simulation-summary.csv");
+            this.simulationSummaryCSVWriter = new FileWriter(EXPORT_DIR + "simulation-summary.csv");
             CSVUtils.writeLine(this.simulationSummaryCSVWriter, simulationSummaryCSVCols);
         } catch (IOException e) {
             logger.error(e);
@@ -491,7 +525,7 @@ public class DataGenerator implements AgentListener, SimulationListener {
 
         // FILE SYSTEM
         try {
-            this.roundSummaryCSVWriter = new FileWriter(this.exportDir + "round-summary.csv");
+            this.roundSummaryCSVWriter = new FileWriter(EXPORT_DIR + "round-summary.csv");
             CSVUtils.writeLine(this.roundSummaryCSVWriter, roundSummaryCSVCols);
         } catch (IOException e) {
             logger.error(e);
@@ -599,7 +633,7 @@ public class DataGenerator implements AgentListener, SimulationListener {
         agentDetailsCSVCols.add(AgentProperties.CONS_IN_DECLINED.toString());
 
         try {
-            this.agentDetailsCSVWriter = new FileWriter(this.exportDir + "agent-details.csv");
+            this.agentDetailsCSVWriter = new FileWriter(EXPORT_DIR + "agent-details.csv");
             CSVUtils.writeLine(this.agentDetailsCSVWriter, agentDetailsCSVCols);
         } catch (IOException e) {
             logger.error(e);
