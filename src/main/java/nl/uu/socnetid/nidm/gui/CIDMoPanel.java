@@ -17,17 +17,17 @@ public class CIDMoPanel extends DeactivatablePanel {
 
     private static final long serialVersionUID = -6334519672487731007L;
 
-    private JFormattedTextField txtAlpha;
-    private JFormattedTextField txtKappa;
-    private JFormattedTextField txtBeta;
-    private JFormattedTextField txtLamda;
-    private JFormattedTextField txtC;
-    private JFormattedTextField txtMu;
-    private JFormattedTextField txtSigma;
-    private JFormattedTextField txtGamma;
-    private JFormattedTextField txtRSigma;
-    private JFormattedTextField txtRPi;
-    private JFormattedTextField txtPhi;
+    private DoubleJFormattedTextField txtAlpha;
+    private DoubleJFormattedTextField txtKappa;
+    private DoubleJFormattedTextField txtBeta;
+    private DoubleJFormattedTextField txtLamda;
+    private DoubleJFormattedTextField txtC;
+    private DoubleJFormattedTextField txtMu;
+    private DoubleJFormattedTextField txtSigma;
+    private DoubleJFormattedTextField txtGamma;
+    private DoubleJFormattedTextField txtRSigma;
+    private DoubleJFormattedTextField txtRPi;
+    private DoubleJFormattedTextField txtPhi;
     private JFormattedTextField txtTau;
 
     // INPUT VALIDATION
@@ -70,7 +70,7 @@ public class CIDMoPanel extends DeactivatablePanel {
         lblAlpha2.setBounds(200, 58, 35, 16);
         add(lblAlpha2);
 
-        txtAlpha = new JFormattedTextField(NUM_FORMAT);
+        txtAlpha = new DoubleJFormattedTextField(NUM_FORMAT);
         txtAlpha.setBounds(245, 58, 50, 20);
         add(txtAlpha);
         txtAlpha.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -87,7 +87,7 @@ public class CIDMoPanel extends DeactivatablePanel {
         lblKappa2.setBounds(200, 85, 35, 16);
         add(lblKappa2);
 
-        txtKappa = new JFormattedTextField(NUM_FORMAT);
+        txtKappa = new DoubleJFormattedTextField(NUM_FORMAT);
         txtKappa.setBounds(245, 83, 50, 20);
         add(txtKappa);
         txtKappa.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -109,7 +109,7 @@ public class CIDMoPanel extends DeactivatablePanel {
         lblBeta2.setBounds(200, 145, 35, 16);
         add(lblBeta2);
 
-        txtBeta = new JFormattedTextField(NUM_FORMAT);
+        txtBeta = new DoubleJFormattedTextField(NUM_FORMAT);
         txtBeta.setBounds(245, 143, 50, 20);
         add(txtBeta);
         txtBeta.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -126,7 +126,7 @@ public class CIDMoPanel extends DeactivatablePanel {
         lblLamda2.setBounds(200, 170, 35, 16);
         add(lblLamda2);
 
-        txtLamda = new JFormattedTextField(NUM_FORMAT);
+        txtLamda = new DoubleJFormattedTextField(NUM_FORMAT);
         txtLamda.setBounds(245, 168, 50, 20);
         add(txtLamda);
         txtLamda.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -143,7 +143,7 @@ public class CIDMoPanel extends DeactivatablePanel {
         lblC2.setBounds(200, 241, 35, 16);
         add(lblC2);
 
-        txtC = new JFormattedTextField(NUM_FORMAT);
+        txtC = new DoubleJFormattedTextField(NUM_FORMAT);
         txtC.setBounds(245, 239, 50, 20);
         add(txtC);
         txtC.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -185,7 +185,7 @@ public class CIDMoPanel extends DeactivatablePanel {
         lblMu2.setBounds(200, 266, 35, 16);
         add(lblMu2);
 
-        txtMu = new JFormattedTextField(NUM_FORMAT);
+        txtMu = new DoubleJFormattedTextField(NUM_FORMAT);
         txtMu.setHorizontalAlignment(SwingConstants.RIGHT);
         txtMu.setColumns(10);
         txtMu.setBounds(245, 264, 50, 20);
@@ -216,7 +216,7 @@ public class CIDMoPanel extends DeactivatablePanel {
         lblSigma2.setBounds(201, 337, 35, 16);
         add(lblSigma2);
 
-        txtSigma = new JFormattedTextField(NUM_FORMAT);
+        txtSigma = new DoubleJFormattedTextField(NUM_FORMAT);
         txtSigma.setHorizontalAlignment(SwingConstants.RIGHT);
         txtSigma.setColumns(10);
         txtSigma.setBounds(246, 335, 50, 20);
@@ -229,7 +229,7 @@ public class CIDMoPanel extends DeactivatablePanel {
         lblGamma2.setBounds(201, 362, 35, 16);
         add(lblGamma2);
 
-        txtGamma = new JFormattedTextField(NUM_FORMAT);
+        txtGamma = new DoubleJFormattedTextField(NUM_FORMAT);
         txtGamma.setHorizontalAlignment(SwingConstants.RIGHT);
         txtGamma.setColumns(10);
         txtGamma.setBounds(246, 360, 50, 20);
@@ -247,7 +247,7 @@ public class CIDMoPanel extends DeactivatablePanel {
         lblDiseaseSeverity.setBounds(53, 422, 153, 16);
         add(lblDiseaseSeverity);
 
-        txtRSigma = new JFormattedTextField(NUM_FORMAT);
+        txtRSigma = new DoubleJFormattedTextField(NUM_FORMAT);
         txtRSigma.setHorizontalAlignment(SwingConstants.RIGHT);
         txtRSigma.setColumns(10);
         txtRSigma.setBounds(246, 420, 50, 20);
@@ -259,7 +259,7 @@ public class CIDMoPanel extends DeactivatablePanel {
         lblProbabilityOfInfection.setBounds(53, 447, 154, 16);
         add(lblProbabilityOfInfection);
 
-        txtRPi = new JFormattedTextField(NUM_FORMAT);
+        txtRPi = new DoubleJFormattedTextField(NUM_FORMAT);
         txtRPi.setHorizontalAlignment(SwingConstants.RIGHT);
         txtRPi.setColumns(10);
         txtRPi.setBounds(246, 445, 50, 20);
@@ -310,7 +310,7 @@ public class CIDMoPanel extends DeactivatablePanel {
         label_10.setBounds(202, 518, 35, 16);
         add(label_10);
 
-        txtPhi = new JFormattedTextField(NUM_FORMAT);
+        txtPhi = new DoubleJFormattedTextField(NUM_FORMAT);
         txtPhi.setHorizontalAlignment(SwingConstants.RIGHT);
         txtPhi.setColumns(10);
         txtPhi.setBounds(246, 516, 50, 20);
@@ -360,7 +360,7 @@ public class CIDMoPanel extends DeactivatablePanel {
      * @return the benefit of a direct connection (alpha)
      */
     public double getAlpha() {
-        return Double.valueOf(this.txtAlpha.getText());
+        return this.txtAlpha.getDouble();
     }
 
     /**
@@ -369,7 +369,7 @@ public class CIDMoPanel extends DeactivatablePanel {
      * @return the discount for infected direct connections (kappa)
      */
     public double getKappa() {
-        return Double.valueOf(this.txtKappa.getText());
+        return this.txtKappa.getDouble();
     }
 
     /**
@@ -378,7 +378,7 @@ public class CIDMoPanel extends DeactivatablePanel {
      * @return the benefit of an indirect connection (beta)
      */
     public double getBeta() {
-        return Double.valueOf(this.txtBeta.getText());
+        return this.txtBeta.getDouble();
     }
 
     /**
@@ -387,7 +387,7 @@ public class CIDMoPanel extends DeactivatablePanel {
      * @return the discount for infected indirect connections (lamda)
      */
     public double getLamda() {
-        return Double.valueOf(this.txtLamda.getText());
+        return this.txtLamda.getDouble();
     }
 
     /**
@@ -396,7 +396,7 @@ public class CIDMoPanel extends DeactivatablePanel {
      * @return the costs for direct connections (c)
      */
     public double getC() {
-        return Double.valueOf(this.txtC.getText());
+        return this.txtC.getDouble();
     }
 
     /**
@@ -405,7 +405,7 @@ public class CIDMoPanel extends DeactivatablePanel {
      * @return the care factor for infected direct connections (mu)
      */
     public double getMu() {
-        return Double.valueOf(this.txtMu.getText());
+        return this.txtMu.getDouble();
     }
 
     /**
@@ -414,7 +414,7 @@ public class CIDMoPanel extends DeactivatablePanel {
      * @return the disease severity (sigma)
      */
     public double getSigma() {
-        return Double.valueOf(this.txtSigma.getText());
+        return this.txtSigma.getDouble();
     }
 
     /**
@@ -423,7 +423,7 @@ public class CIDMoPanel extends DeactivatablePanel {
      * @return the probability to get infected per contact (gamma)
      */
     public double getGamma() {
-        return Double.valueOf(this.txtGamma.getText());
+        return this.txtGamma.getDouble();
     }
 
     /**
@@ -432,7 +432,7 @@ public class CIDMoPanel extends DeactivatablePanel {
      * @return the risk perception for disease severity (rSigma)
      */
     public double getRSigma() {
-        return Double.valueOf(this.txtRSigma.getText());
+        return this.txtRSigma.getDouble();
     }
 
     /**
@@ -441,7 +441,7 @@ public class CIDMoPanel extends DeactivatablePanel {
      * @return the risk perception for probability of infections (rPi)
      */
     public double getRPi() {
-        return Double.valueOf(this.txtRPi.getText());
+        return this.txtRPi.getDouble();
     }
 
     /**
@@ -450,7 +450,7 @@ public class CIDMoPanel extends DeactivatablePanel {
      * @return the share of peers to evaluate per time step (phi)
      */
     public double getPhi() {
-        return Double.valueOf(this.txtPhi.getText());
+        return this.txtPhi.getDouble();
     }
 
     /**
