@@ -22,7 +22,7 @@ sourceLibs(c("reshape2",    # 'melt' function
 DATA_PATH                   <- ""
 args = commandArgs(trailingOnly=TRUE)
 if (length(args) == 0) {
-  DATA_DIR                  <- "20190808-111111"
+  DATA_DIR                  <- "20190804-183751"
   DATA_PATH                 <- paste(dirname(sys.frame(1)$ofile), "/../data/", DATA_DIR, "/", sep = "")
 } else {
   DATA_PATH                 <- paste(args[1], "/", sep = "")
@@ -1186,10 +1186,14 @@ exportAll <- function() {
   exportGridPlots(rsData = rsData)
 
   print(":::: NUMERICAL ANALYSES")
-  print(":::::: Exporting regression models for attack rate..")
+  print(":::::: Exporting complete regression models for attack rate..")
   exportAttackRateModelsComplete(ssData = ssData)
-  print(":::::: Exporting regression models for duration of epidemics..")
+  print(":::::: Exporting selected regression models for attack rate..")
+  exportAttackRateModelsSelected(ssData = ssData)
+  print(":::::: Exporting complete regression models for duration of epidemics..")
   exportDurationModelsComplete(ssData = ssData)
+  print(":::::: Exporting selected regression models for duration of epidemics..")
+  exportDurationModelsSelected(ssData = ssData)
   print(":::::: Exporting network size measures..")
   exportNetworkSizeMeasures(ssData = ssData, rsData = rsData)
   print(":::::: Exporting epidemic measures..")
