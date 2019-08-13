@@ -122,7 +122,6 @@ public class StatsFrame extends JFrame {
     private void initialize() {
 
         this.setBounds(1200, 10, 400, 600);
-        System.out.println(UserInterface.osType);
         switch (UserInterface.osType) {
             case WIN:
                 this.setBounds(1200, 10, 407, 607);
