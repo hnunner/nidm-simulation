@@ -58,7 +58,6 @@ import nl.uu.socnetid.nidm.utilities.UtilityFunction;
 public class UserInterface implements NodeClickListener, SimulationListener, AgentListener, ExportListener {
 
     // logger
-    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(UserInterface.class);
 
     // OS TYPE
