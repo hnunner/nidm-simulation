@@ -10,6 +10,7 @@ import javax.swing.border.MatteBorder;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
+import nl.uu.socnetid.nidm.mains.UserInterface;
 import nl.uu.socnetid.nidm.stats.GlobalAgentStats;
 import nl.uu.socnetid.nidm.stats.GlobalNetworkStats;
 import nl.uu.socnetid.nidm.stats.GlobalSimulationStats;
@@ -111,6 +112,7 @@ public class StatsFrame extends JFrame {
      */
     public StatsFrame(String title) {
         super(title);
+        setResizable(false);
         initialize();
     }
 
@@ -120,6 +122,18 @@ public class StatsFrame extends JFrame {
     private void initialize() {
 
         this.setBounds(1200, 10, 400, 600);
+        System.out.println(UserInterface.osType);
+        switch (UserInterface.osType) {
+            case WIN:
+                this.setBounds(1200, 10, 407, 607);
+                break;
+            case MAC:
+            case OTHER:
+            case UNIX:
+            default:
+                break;
+        }
+
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.getContentPane().setLayout(null);
 
