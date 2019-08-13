@@ -118,6 +118,18 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
      *          command line arguments
      */
     public static void main(String[] args) {
+        // os type
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.indexOf("win") >= 0) {
+            osType = OsType.WIN;
+        } else if (os.indexOf("mac") >= 0) {
+            osType = OsType.MAC;
+        } else if (os.indexOf("nix") >= 0
+                || os.indexOf("nux") >= 0
+                || os.indexOf("aix") >= 0) {
+            osType = OsType.UNIX;
+        }
+
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -144,28 +156,15 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
      */
     private void initialize() {
 
-        // os type
-        String os = System.getProperty("os.name").toLowerCase();
-        if (os.indexOf("win") >= 0) {
-            osType = OsType.WIN;
-        } else if (os.indexOf("mac") >= 0) {
-            osType = OsType.MAC;
-        } else if (os.indexOf("nix") >= 0
-                || os.indexOf("nux") >= 0
-                || os.indexOf("aix") >= 0) {
-            osType = OsType.UNIX;
-        }
-
         // init settings frame
         controlsFrame.getContentPane().setLayout(null);
         controlsFrame.setTitle("");
         controlsFrame.setBounds(10, 10, 352, 740);
         switch (osType) {
             case WIN:
+                controlsFrame.setBounds(10, 10, 358, 755);
                 break;
             case MAC:
-                controlsFrame.setBounds(10, 10, 352, 740);
-                break;
             case OTHER:
             case UNIX:
             default:
@@ -259,7 +258,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
                 clearAll();
             }
         });
-        btnClearAll.setBounds(40, 196, 258, 30);
+        btnClearAll.setBounds(40, 195, 258, 30);
         simulationPane.add(btnClearAll);
 
         txtAddAmount = new JFormattedTextField(NUM_FORMAT);
