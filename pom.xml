@@ -3,7 +3,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.uu.socnetid</groupId>
-	<artifactId>netgame</artifactId>
+	<artifactId>nidm-simulation</artifactId>
 	<version>3.0.2</version>
 	<url>http://maven.apache.org</url>
 
@@ -38,7 +38,7 @@
 				<version>${maven-shade-plugin.version}</version>
 				<executions>
 					<execution>
-						<id>netgame-cli</id>
+						<id>nidm-data-generator</id>
 						<phase>package</phase>
 						<goals>
 							<goal>shade</goal>
@@ -47,10 +47,10 @@
 							<transformers>
 								<transformer
 									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>nl.uu.socnetid.netgame.io.DataGenerator</mainClass>
+									<mainClass>nl.uu.socnetid.nidm.mains.DataGenerator</mainClass>
 								</transformer>
 							</transformers>
-							<finalName>netgame-cli-${project.version}</finalName>
+							<finalName>nidm-data-generator-${project.version}</finalName>
 							<filters>
 								<filter>
 									<artifact>*:*</artifact>
@@ -64,7 +64,7 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>netgame-gui</id>
+						<id>nidm-user-interface</id>
 						<phase>package</phase>
 						<goals>
 							<goal>shade</goal>
@@ -73,10 +73,10 @@
 							<transformers>
 								<transformer
 									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>nl.uu.socnetid.netgame.NetworkGame</mainClass>
+									<mainClass>nl.uu.socnetid.nidm.mains.UserInterface</mainClass>
 								</transformer>
 							</transformers>
-							<finalName>netgame-gui-${project.version}</finalName>
+							<finalName>nidm-user-interface-${project.version}</finalName>
 							<filters>
 								<filter>
 									<artifact>*:*</artifact>
