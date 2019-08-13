@@ -312,9 +312,9 @@ public class DataGenerator implements AgentListener, SimulationListener {
                 logger.error("Analysis finished with error code: " + exitCode);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
     }
 

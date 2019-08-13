@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.uu.socnetid</groupId>
 	<artifactId>nidm-simulation</artifactId>
-	<version>3.0.2</version>
+	<version>4.0.0</version>
 	<url>http://maven.apache.org</url>
 
 	<properties>
