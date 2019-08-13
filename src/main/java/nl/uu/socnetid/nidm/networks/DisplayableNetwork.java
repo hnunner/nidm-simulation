@@ -1,7 +1,5 @@
 package nl.uu.socnetid.nidm.networks;
 
-import java.net.URL;
-
 import org.apache.log4j.Logger;
 import org.graphstream.ui.graphicGraph.stylesheet.StyleConstants.Units;
 import org.graphstream.ui.spriteManager.Sprite;
@@ -16,6 +14,41 @@ import nl.uu.socnetid.nidm.utilities.UtilityFunction;
  * @author Hendrik Nunner
  */
 public class DisplayableNetwork extends Network {
+
+    private static final String GS_CSS = ""
+            + "graph {"
+            + "     fill-color: #FFFFFF;"
+            + "}"
+            + "node {"
+            + "     shape: circle;"
+            + "     fill-color: #FECD0A;"
+            + "     size: 15px;"
+            + "     stroke-mode: plain;"
+            + "     stroke-color: black;"
+            + "     stroke-width: 1px;"
+            + "     shadow-mode: gradient-radial;"
+            + "     shadow-color: #AAAAAA;"
+            + "     shadow-width: 1.5;"
+            + "     shadow-offset: 1.5, -1.5;"
+            + "}"
+            + "node.susceptible {"
+            + "     fill-color: #FECD0A;"
+            + "}"
+            + "node.infected {"
+            + "     fill-color: #FF5500;"
+            + "}"
+            + "node.recovered {"
+            + "     fill-color: #56B4E9;"
+            + "}"
+            + "node:clicked {"
+            + "     shape:circle;"
+            + "     size: 30px;"
+            + "}"
+            + "sprite {"
+            + "     shape: box;"
+            + "     size: 0px, 0px;"
+            + "}";
+
 
     // logger
     @SuppressWarnings("unused")
@@ -37,8 +70,9 @@ public class DisplayableNetwork extends Network {
         // init graph-stream ui settings
         this.addAttribute("ui.quality");
         this.addAttribute("ui.antialias");
-        URL gsStyles = this.getClass().getClassLoader().getResource("graph-stream.css");
-        this.addAttribute("ui.stylesheet", "url('file:" + gsStyles.getPath() + "')");
+        // URL gsStyles = this.getClass().getResource("/graph-stream.css");
+        // this.addAttribute("ui.stylesheet", "url('file:" + gsStyles.getPath() + "')");
+        this.addAttribute("ui.stylesheet", GS_CSS);
         System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
 
         // sprite manager
