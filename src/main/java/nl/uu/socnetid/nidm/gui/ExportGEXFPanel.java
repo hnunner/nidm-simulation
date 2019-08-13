@@ -76,7 +76,7 @@ public class ExportGEXFPanel extends DeactivatablePanel {
                 exportStaticNetwork();
             }
         });
-        btnExport.setBounds(37, 97, 258, 30);
+        btnExport.setBounds(37, 95, 258, 30);
         add(btnExport);
 
         ButtonGroup buttonGroup = new ButtonGroup();
@@ -114,7 +114,7 @@ public class ExportGEXFPanel extends DeactivatablePanel {
                 chooseExportFile();
             }
         });
-        btnChooseExportFile.setBounds(37, 157, 258, 30);
+        btnChooseExportFile.setBounds(37, 159, 258, 30);
         add(btnChooseExportFile);
 
         lblNetworkType_1 = new JLabel("Network type");
