@@ -138,7 +138,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
                     window.statsFrame.setVisible(true);
                     window.controlsFrame.setVisible(true);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error(e);
                 }
             }
         });
@@ -484,7 +484,11 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
         btnAddAgent.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                addAgent();
+                try {
+                    addAgent();
+                } catch (Exception ex) {
+                    logger.error(ex);
+                }
             }
         });
 
