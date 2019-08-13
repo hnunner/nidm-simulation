@@ -71,8 +71,8 @@ loadCSV <- function(filePath) {
 
 #----------------------------------------------------------------------------------------------------#
 # function: loadSimulationSummaryData
-#     Loads summary data for NetGame simulations.
-# return: the summary data for NetGame simulations
+#     Loads summary data for NIDM simulations.
+# return: the summary data for NIDM simulations
 #----------------------------------------------------------------------------------------------------#
 loadSimulationSummaryData <- function() {
   return(loadCSV(CSV_SUMMARY_PATH))
@@ -80,8 +80,8 @@ loadSimulationSummaryData <- function() {
 
 #----------------------------------------------------------------------------------------------------#
 # function: loadRoundSummaryData
-#     Loads summary data for all simulated NetGame rounds.
-# return: the summary data for all simulated NetGame rounds
+#     Loads summary data for all simulated NIDM rounds.
+# return: the summary data for all simulated NIDM rounds
 #----------------------------------------------------------------------------------------------------#
 loadRoundSummaryData <- function() {
   return(loadCSV(CSV_ROUND_SUMMARY_PATH))
