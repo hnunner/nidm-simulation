@@ -121,25 +121,26 @@ public class StatsFrame extends JFrame {
      */
     private void initialize() {
 
-        this.setBounds(1200, 10, 400, 600);
+        this.setBounds(1080, 10, 400, 740);
         switch (UserInterface.osType) {
             case WIN:
-                this.setBounds(1200, 10, 407, 607);
+                this.setBounds(1086, 10, 407, 747);
                 break;
             case MAC:
             case OTHER:
             case UNIX:
             default:
+                this.setBounds(1080, 10, 400, 740);
                 break;
         }
 
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.getContentPane().setLayout(null);
 
         JPanel panel = new JPanel();
         panel.setLayout(null);
         panel.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-        panel.setBounds(203, 6, 192, 566);
+        panel.setBounds(203, 6, 192, 706);
         getContentPane().add(panel);
 
         JLabel label = new JLabel("Agent Stats");
@@ -405,7 +406,7 @@ public class StatsFrame extends JFrame {
         JPanel panel_1 = new JPanel();
         panel_1.setLayout(null);
         panel_1.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-        panel_1.setBounds(6, 6, 192, 566);
+        panel_1.setBounds(6, 6, 192, 706);
         getContentPane().add(panel_1);
 
         JLabel lblGlobalStats = new JLabel("Global Stats");

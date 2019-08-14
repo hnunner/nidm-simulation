@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.InputVerifier;
 import javax.swing.JButton;
@@ -17,16 +18,19 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
+import javax.swing.border.EtchedBorder;
 import javax.swing.border.MatteBorder;
 
 import org.apache.log4j.Logger;
 import org.graphstream.graph.Edge;
+import org.graphstream.ui.swingViewer.ViewPanel;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.agents.AgentListener;
@@ -157,16 +161,17 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
 
         // init settings frame
         controlsFrame.getContentPane().setLayout(null);
-        controlsFrame.setTitle("");
-        controlsFrame.setBounds(10, 10, 352, 740);
+        controlsFrame.setTitle("Networking during Infectious Diseases Model (NIDM) Simulator");
+        controlsFrame.setBounds(10, 10, 1060, 740);
         switch (osType) {
             case WIN:
-                controlsFrame.setBounds(10, 10, 358, 755);
+                controlsFrame.setBounds(10, 10, 1066, 755);
                 break;
             case MAC:
             case OTHER:
             case UNIX:
             default:
+                controlsFrame.setBounds(10, 10, 1060, 740);
                 break;
         }
         controlsFrame.setResizable(false);
@@ -493,7 +498,18 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
 
 
         //////////// CREATE A UI REPRESENATION OF THE NETWORK ////////////
-        this.network.show();
+        // this.network.show();
+        ViewPanel view = this.network.createView();
+        JInternalFrame netFrame = new JInternalFrame("");
+        netFrame.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+        netFrame.setResizable(false);
+        netFrame.setMaximizable(false);
+        netFrame.setIconifiable(false);
+        netFrame.setClosable(false);
+        netFrame.setBounds(351, 11, 698, 698);
+        netFrame.getContentPane().add(view);
+        controlsFrame.getContentPane().add(netFrame);
+        netFrame.setVisible(true);
 
 
         //////////// LISTENER ////////////
@@ -821,5 +837,4 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
     public void notifyRecordingStopped() {
         this.statsFrame.refreshSimulationRecording(false);
     }
-
 }
