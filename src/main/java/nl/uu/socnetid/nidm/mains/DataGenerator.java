@@ -16,19 +16,21 @@ import org.graphstream.graph.Edge;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.agents.AgentListener;
+import nl.uu.socnetid.nidm.data.AgentParameters;
+import nl.uu.socnetid.nidm.data.AgentProperties;
+import nl.uu.socnetid.nidm.data.DiseaseParameters;
+import nl.uu.socnetid.nidm.data.DiseaseProperties;
+import nl.uu.socnetid.nidm.data.NetworkParameters;
+import nl.uu.socnetid.nidm.data.NetworkProperties;
+import nl.uu.socnetid.nidm.data.SimulationParameters;
+import nl.uu.socnetid.nidm.data.SimulationProperties;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
 import nl.uu.socnetid.nidm.io.CSVUtils;
-import nl.uu.socnetid.nidm.io.network.GEXFWriter;
-import nl.uu.socnetid.nidm.io.types.AgentParameters;
-import nl.uu.socnetid.nidm.io.types.AgentProperties;
-import nl.uu.socnetid.nidm.io.types.DiseaseParameters;
-import nl.uu.socnetid.nidm.io.types.DiseaseProperties;
-import nl.uu.socnetid.nidm.io.types.NetworkParameters;
-import nl.uu.socnetid.nidm.io.types.NetworkProperties;
-import nl.uu.socnetid.nidm.io.types.SimulationParameters;
-import nl.uu.socnetid.nidm.io.types.SimulationProperties;
+import nl.uu.socnetid.nidm.io.GEXFWriter;
 import nl.uu.socnetid.nidm.networks.Network;
+import nl.uu.socnetid.nidm.os.OsTypes;
+import nl.uu.socnetid.nidm.os.PropertiesReader;
 import nl.uu.socnetid.nidm.simulation.Simulation;
 import nl.uu.socnetid.nidm.simulation.SimulationListener;
 import nl.uu.socnetid.nidm.simulation.SimulationStage;
@@ -38,7 +40,6 @@ import nl.uu.socnetid.nidm.utilities.UtilityFunction;
 
 
 /**
- *
  * @author Hendrik Nunner
  */
 public class DataGenerator implements AgentListener, SimulationListener {
@@ -47,28 +48,29 @@ public class DataGenerator implements AgentListener, SimulationListener {
     private static final Logger logger = Logger.getLogger(DataGenerator.class);
 
     // location of R-executable
-    // private static final String R_LOCATION = "C:/Program Files/R/R-3.6.0/bin/Rscript.exe";
-    private static final String R_LOCATION = "/usr/local/bin/Rscript";
+    private static final String R_LOCATION_WIN = "C:/Program Files/R/R-3.6.0/bin/Rscript.exe";
+    private static final String R_LOCATION_OTHER = "/usr/local/bin/Rscript";
+
     // R-script for data analyses
-    private static final String R_SCRIPT = new StringBuilder().append(System.getProperty("user.dir"))
+    private static final String R_SCRIPT = new StringBuilder().append(PropertiesReader.getUserDir())
             .append("/analysis/analysis.R").toString();
-    // export folder
+
+    // export - file system
     private static final String EXPORT_FOLDER = (new SimpleDateFormat("yyyyMMdd-HHmmss")).format(new Date());
-    // export directory
-    private final String EXPORT_DIR = GEXFWriter.DEFAULT_EXPORT_DIR + EXPORT_FOLDER + "/";
+    private static final String EXPORT_DIR = GEXFWriter.DEFAULT_EXPORT_DIR + EXPORT_FOLDER + "/";
 
     // simulations per unique parameter combination
-    private static final int SIMS_PER_UPC = 2;
+    private static final int SIMS_PER_UPC = 100;
 
     // network size
-    private static final int[] NS = new int[] {5, 10};   //{5, 10, 15, 20, 25, 50, 75, 100};
+    private static final int[] NS = new int[] {5, 10, 15, 20, 25, 50};   //{5, 10, 15, 20, 25, 50, 75, 100};
 
     // utility
     private static final double[] ALPHAS = new double[] {10.0};
     private static final double   KAPPA  = 1.0;
     private static final double[] BETAS  = new double[] {2.0, 8.0};
     private static final double   LAMDA  = 1.0;
-    private static final double[] CS     = new double[] {9.0}; //, 11.0};
+    private static final double[] CS     = new double[] {9.0};
 
     // disease
     private static final DiseaseType DISEASE_TYPE = DiseaseType.SIR;
@@ -163,8 +165,6 @@ public class DataGenerator implements AgentListener, SimulationListener {
      * Constructor.
      */
     public DataGenerator() {
-        super();
-
         // create export directory if it does not exist
         File directory = new File(EXPORT_DIR);
         if (!directory.exists()){
@@ -184,7 +184,7 @@ public class DataGenerator implements AgentListener, SimulationListener {
         // initialization of data export files
         initDataExportFiles();
 
-
+        // loop over all possible parameter combinations
         for (int N : NS) {
             for (double alpha : ALPHAS) {
                 for (double beta : BETAS) {
@@ -202,28 +202,34 @@ public class DataGenerator implements AgentListener, SimulationListener {
                                                         + ++this.upc + " / "
                                                         + upcs);
 
+                                                // multiple simulations for same parameter combination
                                                 for (this.simPerUpc = 1; this.simPerUpc <= SIMS_PER_UPC; this.simPerUpc++) {
 
                                                     // INITIALIZATIONS
                                                     // uid = "upc-sim"
                                                     this.uid = String.valueOf(this.upc) + "-" + String.valueOf(this.simPerUpc);
+
                                                     // create network
                                                     Network network = new Network();
+
                                                     // begin: GEXF export
                                                     if (EXPORT_GEXF_DATA) {
                                                         this.gexfWriter = new GEXFWriter();
                                                         this.gexfExportFile = EXPORT_DIR + this.uid + ".gexf";
                                                         gexfWriter.startRecording(network, this.gexfExportFile);
                                                     }
+
                                                     // create utility and disease specs
                                                     UtilityFunction uf = new CIDMo(alpha, KAPPA, beta, LAMDA, c);
                                                     this.ds = new DiseaseSpecs(
                                                             DISEASE_TYPE, tau, s, gamma, mu);
+
                                                     // add agents - with RPi == RSigma!!!
                                                     for (int i = 0; i < N; i++) {
                                                         Agent agent = network.addAgent(uf, this.ds, r, r, PHI);
                                                         agent.addAgentListener(this);
                                                     }
+
                                                     // create full network if required
                                                     if (!this.startWithEmptyNetwork) {
                                                         network.createFullNetwork();
@@ -235,8 +241,10 @@ public class DataGenerator implements AgentListener, SimulationListener {
                                                     this.tiesBrokenWithInfectionPresent = false;
                                                     Simulation simulation = new Simulation(network);
                                                     simulation.addSimulationListener(this);
+                                                    // simulate
                                                     simulation.simulate(ROUNDS_PRE_EPIDEMIC);
-                                                    // save network properties of pre-epidemic stage
+
+                                                    // save data of last round of pre-epidemic stage
                                                     this.densityPre = network.getDensity();
                                                     this.avDegreePre = network.getAvDegree();
                                                     this.avDegree2Pre = network.getAvDegree2();
@@ -247,14 +255,13 @@ public class DataGenerator implements AgentListener, SimulationListener {
                                                     this.avBenefitDistance2 = network.getAvBenefitDistance2();
                                                     this.avCostsDistance1 = network.getAvCostsDistance1();
                                                     this.avCostsDisease = network.getAvCostsDisease();
-                                                    // TODO improve:
                                                     if (!EXPORT_AGENT_DETAIL_DATA && EXPORT_AGENT_DETAIL_REDUCED_DATA) {
                                                         logAgentDetails(simulation);
                                                     }
+
                                                     // EPIDEMIC AND POST-EPIDEMIC STAGES
                                                     Agent indexCase = network.infectRandomAgent(ds);
                                                     this.simStage = SimulationStage.ACTIVE_EPIDEMIC;
-
                                                     // save index case properties of pre-epidemic stage
                                                     this.indexDegree1 = indexCase.getDegree();
                                                     this.indexDegree2 = indexCase.getSecondOrderDegree();
@@ -265,13 +272,15 @@ public class DataGenerator implements AgentListener, SimulationListener {
                                                     this.indexBenefit2 = indexCase.getUtility().getBenefitIndirectConnections();
                                                     this.indexCosts1 = indexCase.getUtility().getCostsDirectConnections();
                                                     this.indexCostsDisease = indexCase.getUtility().getEffectOfDisease();
-
                                                     this.roundStartInfection = simulation.getRounds();
+                                                    // simulate
                                                     simulation.simulate(ROUNDS_EPIDEMIC);
+
                                                     // end: GEXF export
                                                     if (EXPORT_GEXF_DATA) {
                                                         this.gexfWriter.stopRecording();
                                                     }
+
                                                     // log simulation summary
                                                     if (EXPORT_SUMMARY_DATA) {
                                                         logSimulationSummaryCSV(simulation);
@@ -287,24 +296,29 @@ public class DataGenerator implements AgentListener, SimulationListener {
                 }
             }
         }
+
+        // finish data generation
         finalizeDataExportFiles();
 
-        // invoke data analysis
+        // DATA ANALYSIS
         try {
-            ProcessBuilder pb = new ProcessBuilder(R_LOCATION, R_SCRIPT, EXPORT_DIR);
+            // invocation of R-script
+            ProcessBuilder pb = new ProcessBuilder(
+                    PropertiesReader.getOsType() == OsTypes.WIN ? R_LOCATION_WIN : R_LOCATION_OTHER,
+                    R_SCRIPT, EXPORT_DIR);
             logger.info("Starting analysis of simulated data. "
                     + "Invoking R-script: "
                     + pb.command().toString());
             Process p = pb.start();
 
-            BufferedReader reader =
-                    new BufferedReader(new InputStreamReader(p.getInputStream()));
-
+            // status messages of R-script
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
                 System.out.println(line);
             }
 
+            // wait for analysis to finish (blocking)
             int exitCode = p.waitFor();
             if (exitCode == 0) {
                 logger.info("Analysis finished successfully.");

@@ -131,7 +131,6 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      * @return the number of network decisions
      */
     public int getNumberOfNetworkDecisions() {
-//        return (int) Math.round(this.getNetwork().getAverageDegree());
         return (int) (Math.round((this.getNetwork().getNodeCount() - 1) * this.getPhi()));
     }
 

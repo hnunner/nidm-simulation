@@ -13,8 +13,6 @@ import org.junit.Test;
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
-import nl.uu.socnetid.nidm.io.network.AdjacencyMatrixWriter;
-import nl.uu.socnetid.nidm.io.network.NetworkWriter;
 import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.utilities.Cumulative;
 import nl.uu.socnetid.nidm.utilities.UtilityFunction;
@@ -41,11 +39,11 @@ public class AdjacencyMatrixWriterTest {
     public static void initSuite() {
         // for "Run as Junit Test"
         StringBuilder sb = new StringBuilder();
-        sb.append(",P1,P2,P3,P4").append(System.getProperty("line.separator"));
-        sb.append("P1,0,1,1,1").append(System.getProperty("line.separator"));
-        sb.append("P2,1,0,0,0").append(System.getProperty("line.separator"));
-        sb.append("P3,1,0,0,1").append(System.getProperty("line.separator"));
-        sb.append("P4,1,0,1,0").append(System.getProperty("line.separator"));
+        sb.append(",A1,A2,A3,A4").append(System.getProperty("line.separator"));
+        sb.append("A1,0,1,1,1").append(System.getProperty("line.separator"));
+        sb.append("A2,1,0,0,0").append(System.getProperty("line.separator"));
+        sb.append("A3,1,0,0,1").append(System.getProperty("line.separator"));
+        sb.append("A4,1,0,1,0").append(System.getProperty("line.separator"));
         expectedMatrix = sb.toString();
     }
 
