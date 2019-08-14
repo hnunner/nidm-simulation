@@ -1,7 +1,7 @@
 package nl.uu.socnetid.nidm.gui;
 
-import nl.uu.socnetid.nidm.io.network.EdgeListWriter;
-import nl.uu.socnetid.nidm.io.network.NetworkWriter;
+import nl.uu.socnetid.nidm.io.EdgeListWriter;
+import nl.uu.socnetid.nidm.io.NetworkWriter;
 import nl.uu.socnetid.nidm.networks.Network;
 
 /**

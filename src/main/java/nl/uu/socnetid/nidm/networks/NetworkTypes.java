@@ -5,8 +5,8 @@ package nl.uu.socnetid.nidm.networks;
  * @author Hendrik Nunner
  */
 public enum NetworkTypes {
-    // TODO add missing types, such as bipartite
 
+    // TODO add missing types, such as bipartite
     EMPTY("empty"),
     FULL("full"),
     RING("ring"),
