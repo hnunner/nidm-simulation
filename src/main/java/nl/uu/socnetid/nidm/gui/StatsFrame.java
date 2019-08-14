@@ -10,11 +10,11 @@ import javax.swing.border.MatteBorder;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
-import nl.uu.socnetid.nidm.os.PropertiesReader;
 import nl.uu.socnetid.nidm.stats.GlobalAgentStats;
 import nl.uu.socnetid.nidm.stats.GlobalNetworkStats;
 import nl.uu.socnetid.nidm.stats.GlobalSimulationStats;
 import nl.uu.socnetid.nidm.stats.StatsComputer;
+import nl.uu.socnetid.nidm.system.PropertiesReader;
 import nl.uu.socnetid.nidm.utilities.Utility;
 import nl.uu.socnetid.nidm.utilities.UtilityFunction;
 
@@ -124,7 +124,7 @@ public class StatsFrame extends JFrame {
         this.setBounds(1080, 10, 400, 740);
         switch (PropertiesReader.getOsType()) {
             case WIN:
-                this.setBounds(1086, 10, 407, 747);
+                this.setBounds(1090, 10, 407, 755);
                 break;
             case MAC:
             case OTHER:
@@ -140,7 +140,18 @@ public class StatsFrame extends JFrame {
         JPanel panel = new JPanel();
         panel.setLayout(null);
         panel.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-        panel.setBounds(203, 6, 192, 706);
+        panel.setBounds(203, 11, 192, 711);
+        switch (PropertiesReader.getOsType()) {
+            case WIN:
+                panel.setBounds(203, 11, 192, 710);
+                break;
+            case MAC:
+            case OTHER:
+            case UNIX:
+            default:
+                panel.setBounds(203, 11, 192, 697);
+                break;
+        }
         getContentPane().add(panel);
 
         JLabel label = new JLabel("Agent Stats");
@@ -406,7 +417,18 @@ public class StatsFrame extends JFrame {
         JPanel panel_1 = new JPanel();
         panel_1.setLayout(null);
         panel_1.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-        panel_1.setBounds(6, 6, 192, 706);
+        panel_1.setBounds(6, 6, 192, 711);
+        switch (PropertiesReader.getOsType()) {
+            case WIN:
+                panel_1.setBounds(6, 11, 192, 710);
+                break;
+            case MAC:
+            case OTHER:
+            case UNIX:
+            default:
+                panel_1.setBounds(6, 11, 192, 697);
+                break;
+        }
         getContentPane().add(panel_1);
 
         JLabel lblGlobalStats = new JLabel("Global Stats");
