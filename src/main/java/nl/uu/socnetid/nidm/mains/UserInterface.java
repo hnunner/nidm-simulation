@@ -46,9 +46,9 @@ import nl.uu.socnetid.nidm.gui.ExportListener;
 import nl.uu.socnetid.nidm.gui.IntegerInputVerifier;
 import nl.uu.socnetid.nidm.gui.NodeClick;
 import nl.uu.socnetid.nidm.gui.NodeClickListener;
-import nl.uu.socnetid.nidm.gui.OsType;
 import nl.uu.socnetid.nidm.gui.StatsFrame;
 import nl.uu.socnetid.nidm.networks.DisplayableNetwork;
+import nl.uu.socnetid.nidm.os.PropertiesReader;
 import nl.uu.socnetid.nidm.simulation.Simulation;
 import nl.uu.socnetid.nidm.simulation.SimulationListener;
 import nl.uu.socnetid.nidm.stats.StatsComputer;
@@ -61,11 +61,8 @@ import nl.uu.socnetid.nidm.utilities.UtilityFunction;
  */
 public class UserInterface implements NodeClickListener, SimulationListener, AgentListener, ExportListener {
 
-    // logger
+    // LOGGER
     private static final Logger logger = Logger.getLogger(UserInterface.class);
-
-    // OS TYPE
-    public static OsType osType = OsType.OTHER;
 
     // NETWORK
     private final DisplayableNetwork network = new DisplayableNetwork();
@@ -121,18 +118,6 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
      *          command line arguments
      */
     public static void main(String[] args) {
-        // os type
-        String os = System.getProperty("os.name").toLowerCase();
-        if (os.indexOf("win") >= 0) {
-            osType = OsType.WIN;
-        } else if (os.indexOf("mac") >= 0) {
-            osType = OsType.MAC;
-        } else if (os.indexOf("nix") >= 0
-                || os.indexOf("nux") >= 0
-                || os.indexOf("aix") >= 0) {
-            osType = OsType.UNIX;
-        }
-
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -155,15 +140,15 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
     }
 
     /**
-     * Initialize the contents of the frame.
+     * Initialize the contents of the controls frame.
      */
     private void initialize() {
 
-        // init settings frame
+        // init controls frame
         controlsFrame.getContentPane().setLayout(null);
         controlsFrame.setTitle("Networking during Infectious Diseases Model (NIDM) Simulator");
         controlsFrame.setBounds(10, 10, 1060, 740);
-        switch (osType) {
+        switch (PropertiesReader.getOsType()) {
             case WIN:
                 controlsFrame.setBounds(10, 10, 1066, 755);
                 break;
@@ -177,14 +162,13 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
         controlsFrame.setResizable(false);
         controlsFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        //////////// TABBED PANE (UTILITY, DISEASE, EXPORT, AGENTS) ////////////
+        //////////// TABBED PANE (MODEL, SIMULATION, EXPORT) ////////////
         JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
         tabbedPane.setBorder(null);
         tabbedPane.setBounds(6, 6, 340, 715);
         controlsFrame.getContentPane().add(tabbedPane);
 
-
-        //////////// UTILITY ////////////
+        //////////// MODEL ////////////
         JPanel modelPane = new JPanel();
         modelPane.setBorder(new MatteBorder(1, 1, 1, 1, new Color(192, 192, 192)));
         tabbedPane.add("Model", modelPane);
@@ -233,7 +217,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
             }
         });
 
-        //////////// DISEASE ////////////
+        //////////// SIMULATION ////////////
         JPanel simulationPane = new JPanel();
         simulationPane.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
         tabbedPane.add("Simulation", simulationPane);
@@ -328,8 +312,6 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
         simulationPane.add(simulationDelay);
         simulationDelay.setValue(10);
 
-
-        //////////// SIMULATION ////////////
         JButton btnStart = new JButton(" Start");
         btnStart.setBounds(39, 549, 258, 35);
         simulationPane.add(btnStart);
@@ -394,6 +376,8 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
         separator_2.setForeground(Color.LIGHT_GRAY);
         separator_2.setBounds(3, 504, 312, 10);
         simulationPane.add(separator_2);
+
+
         btnInfectRandomAgent.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -412,6 +396,30 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
                 startSimulation();
             }
         });
+        btnClearEdges.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                clearEdges();
+            }
+        });
+        btnRemoveAgent.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                removeAgent();
+            }
+        });
+        btnAddAgent.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    addAgent();
+                } catch (Exception ex) {
+                    logger.error(ex);
+                }
+            }
+        });
+
+        //////////// EXPORT ////////////
         JPanel exportPanel = new JPanel();
         exportPanel.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
         tabbedPane.addTab("Export", null, exportPanel, null);
@@ -473,30 +481,6 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
         });
         exportPanel.add(exportCBox);
 
-        btnClearEdges.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                clearEdges();
-            }
-        });
-        btnRemoveAgent.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                removeAgent();
-            }
-        });
-        btnAddAgent.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    addAgent();
-                } catch (Exception ex) {
-                    logger.error(ex);
-                }
-            }
-        });
-
-
         //////////// CREATE A UI REPRESENATION OF THE NETWORK ////////////
         // this.network.show();
         ViewPanel view = this.network.createView();
@@ -511,7 +495,6 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
         controlsFrame.getContentPane().add(netFrame);
         netFrame.setVisible(true);
 
-
         //////////// LISTENER ////////////
         NodeClick nodeClickListener = new NodeClick(this.network);
         nodeClickListener.addListener(this);
@@ -519,7 +502,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
     }
 
 
-    //////////// USER ALTERABLE NETWORK PROPERTIES ////////////
+    //////////// USER DEFINABLE NETWORK PROPERTIES ////////////
     /**
      * Adds a agent to the game.
      */
@@ -816,7 +799,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
         this.statsFrame.refreshGlobalSimulationStats(StatsComputer.computeGlobalSimulationStats(this.simulation));
         this.statsFrame.refreshGlobalAgentStats(StatsComputer.computeGlobalAgentStats(this.network));
 
-        // agent stats
+        // local agent stats
         if (this.statsAgent == null) {
             return;
         }

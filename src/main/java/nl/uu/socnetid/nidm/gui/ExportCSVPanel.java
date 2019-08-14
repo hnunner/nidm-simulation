@@ -8,8 +8,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
-import nl.uu.socnetid.nidm.io.network.NetworkFileWriter;
-import nl.uu.socnetid.nidm.io.network.NetworkWriter;
+import nl.uu.socnetid.nidm.io.NetworkFileWriter;
+import nl.uu.socnetid.nidm.io.NetworkWriter;
 import nl.uu.socnetid.nidm.networks.Network;
 
 /**

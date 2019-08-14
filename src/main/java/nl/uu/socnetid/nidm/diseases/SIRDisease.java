@@ -16,7 +16,6 @@ public class SIRDisease implements Disease {
     // state of the disease
     private DiseaseState diseaseState;
 
-
     /**
      * Constructor initializations.
      *

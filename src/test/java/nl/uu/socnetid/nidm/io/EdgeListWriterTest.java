@@ -9,8 +9,6 @@ import org.junit.Test;
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
-import nl.uu.socnetid.nidm.io.network.EdgeListWriter;
-import nl.uu.socnetid.nidm.io.network.NetworkWriter;
 import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.utilities.Cumulative;
 import nl.uu.socnetid.nidm.utilities.UtilityFunction;
