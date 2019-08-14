@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.graphstream.ui.graphicGraph.stylesheet.StyleConstants.Units;
 import org.graphstream.ui.spriteManager.Sprite;
 import org.graphstream.ui.spriteManager.SpriteManager;
+import org.graphstream.ui.swingViewer.ViewPanel;
 import org.graphstream.ui.view.Viewer;
 
 import nl.uu.socnetid.nidm.agents.Agent;
@@ -109,11 +110,22 @@ public class DisplayableNetwork extends Network {
 
 
     /**
-     * Creates a ui representation of the network.
+     * Creates a graphstream default frame for the network.
      */
     public void show() {
         this.viewer = this.display();
         this.viewer.enableAutoLayout();
+    }
+
+    /**
+     * Creates a view for displaying networks that can be integrated into a frame manually.
+     *
+     * @return the view for displaying networks that can be integrated into a frame manually
+     */
+    public ViewPanel createView() {
+        this.viewer = new Viewer(this, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+        this.viewer.enableAutoLayout();
+        return viewer.addDefaultView(false);
     }
 
     /**
