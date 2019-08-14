@@ -77,26 +77,11 @@ public class Simulation implements Runnable {
      *          the number of rounds
      */
     public void simulate(int rounds) {
-//        int safetyMargin = 1;
-//        int stableRounds = 0;
+
         this.activeInfection = false;
 
         for (int i = 0; i < rounds; i++) {
             computeSingleRound();
-
-//            if (this.network.isStable()) {
-//                stableRounds++;
-//                // to be on the safe side: network needs to be stable for three consecutive rounds
-//                if (stableRounds >= safetyMargin) {
-//                    if (!this.network.hasActiveInfection()) {
-//                        logger.debug("Simulation finished after" + i + " rounds.");
-//                        this.notifySimulationFinished();
-//                        return;
-//                    }
-//                }
-//            } else {
-//                stableRounds = 0;
-//            }
         }
 
         // status message

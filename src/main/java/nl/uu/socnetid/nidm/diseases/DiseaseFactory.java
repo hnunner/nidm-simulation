@@ -15,13 +15,10 @@ public final class DiseaseFactory {
     public static Disease createInfection(DiseaseSpecs diseaseSpecs) {
 
         switch (diseaseSpecs.getDiseaseType()) {
-
             case SIR:
                 return new SIRDisease(diseaseSpecs);
-
             default:
                 throw new RuntimeException("Unknown disease type: " + diseaseSpecs.getDiseaseType().toString());
         }
     }
-
 }

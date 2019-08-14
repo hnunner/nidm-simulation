@@ -10,7 +10,7 @@ import javax.swing.border.MatteBorder;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
-import nl.uu.socnetid.nidm.mains.UserInterface;
+import nl.uu.socnetid.nidm.os.PropertiesReader;
 import nl.uu.socnetid.nidm.stats.GlobalAgentStats;
 import nl.uu.socnetid.nidm.stats.GlobalNetworkStats;
 import nl.uu.socnetid.nidm.stats.GlobalSimulationStats;
@@ -122,7 +122,7 @@ public class StatsFrame extends JFrame {
     private void initialize() {
 
         this.setBounds(1080, 10, 400, 740);
-        switch (UserInterface.osType) {
+        switch (PropertiesReader.getOsType()) {
             case WIN:
                 this.setBounds(1086, 10, 407, 747);
                 break;

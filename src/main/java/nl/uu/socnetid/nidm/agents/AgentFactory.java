@@ -17,5 +17,4 @@ public final class AgentFactory implements NodeFactory<Agent> {
     public Agent newInstance(String id, Graph graph) {
         return new Agent(id, (Network) graph);
     }
-
 }

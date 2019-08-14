@@ -33,7 +33,6 @@ public class NodeClick implements Runnable, ViewerListener {
      */
     public NodeClick(DisplayableNetwork network) {
         this.viewerPipe = network.getViewer().newViewerPipe();
-        // network.getViewer().getDefaultView().setMouseManager(this);
         this.viewerPipe.addViewerListener(this);
         this.viewerPipe.addSink(network);
         this.viewerPipe.addAttributeSink(network);
