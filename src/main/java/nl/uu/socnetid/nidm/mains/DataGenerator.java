@@ -29,12 +29,12 @@ import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
 import nl.uu.socnetid.nidm.io.CSVUtils;
 import nl.uu.socnetid.nidm.io.GEXFWriter;
 import nl.uu.socnetid.nidm.networks.Network;
-import nl.uu.socnetid.nidm.os.OsTypes;
-import nl.uu.socnetid.nidm.os.PropertiesReader;
 import nl.uu.socnetid.nidm.simulation.Simulation;
 import nl.uu.socnetid.nidm.simulation.SimulationListener;
 import nl.uu.socnetid.nidm.simulation.SimulationStage;
 import nl.uu.socnetid.nidm.stats.StatsComputer;
+import nl.uu.socnetid.nidm.system.OsTypes;
+import nl.uu.socnetid.nidm.system.PropertiesReader;
 import nl.uu.socnetid.nidm.utilities.CIDMo;
 import nl.uu.socnetid.nidm.utilities.UtilityFunction;
 

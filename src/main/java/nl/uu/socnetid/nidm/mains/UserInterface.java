@@ -27,6 +27,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.MatteBorder;
+import javax.swing.plaf.basic.BasicInternalFrameUI;
 
 import org.apache.log4j.Logger;
 import org.graphstream.graph.Edge;
@@ -48,10 +49,10 @@ import nl.uu.socnetid.nidm.gui.NodeClick;
 import nl.uu.socnetid.nidm.gui.NodeClickListener;
 import nl.uu.socnetid.nidm.gui.StatsFrame;
 import nl.uu.socnetid.nidm.networks.DisplayableNetwork;
-import nl.uu.socnetid.nidm.os.PropertiesReader;
 import nl.uu.socnetid.nidm.simulation.Simulation;
 import nl.uu.socnetid.nidm.simulation.SimulationListener;
 import nl.uu.socnetid.nidm.stats.StatsComputer;
+import nl.uu.socnetid.nidm.system.PropertiesReader;
 import nl.uu.socnetid.nidm.utilities.CIDMo;
 import nl.uu.socnetid.nidm.utilities.Cumulative;
 import nl.uu.socnetid.nidm.utilities.UtilityFunction;
@@ -150,7 +151,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
         controlsFrame.setBounds(10, 10, 1060, 740);
         switch (PropertiesReader.getOsType()) {
             case WIN:
-                controlsFrame.setBounds(10, 10, 1066, 755);
+                controlsFrame.setBounds(10, 10, 1075, 755);
                 break;
             case MAC:
             case OTHER:
@@ -491,9 +492,23 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
         netFrame.setIconifiable(false);
         netFrame.setClosable(false);
         netFrame.setBounds(351, 11, 698, 698);
+        switch (PropertiesReader.getOsType()) {
+            case WIN:
+                netFrame.setBounds(352, 11, 711, 711);
+                break;
+            case MAC:
+            case OTHER:
+            case UNIX:
+            default:
+                netFrame.setBounds(351, 11, 698, 698);
+                break;
+        }
         netFrame.getContentPane().add(view);
         controlsFrame.getContentPane().add(netFrame);
         netFrame.setVisible(true);
+        // making network pane "undraggable"
+        BasicInternalFrameUI basicNetFrame = (BasicInternalFrameUI)netFrame.getUI();
+        basicNetFrame.setNorthPane(null);
 
         //////////// LISTENER ////////////
         NodeClick nodeClickListener = new NodeClick(this.network);
