@@ -4,11 +4,11 @@ package nl.uu.socnetid.nidm.simulation;
  * @author Hendrik Nunner
  */
 public enum SimulationStage {
+
     PRE_EPIDEMIC("pre-epidemic"),
     ACTIVE_EPIDEMIC("active-epidemic"),
     POST_EPIDEMIC("post-epidemic"),
     FINISHED("finished");
-
 
     // the name
     private String name;
