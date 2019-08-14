@@ -1,4 +1,4 @@
-package nl.uu.socnetid.nidm.os;
+package nl.uu.socnetid.nidm.system;
 
 /**
  * @author Hendrik Nunner

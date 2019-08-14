@@ -1,4 +1,4 @@
-package nl.uu.socnetid.nidm.os;
+package nl.uu.socnetid.nidm.system;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -68,7 +68,7 @@ public class PropertiesReader {
                 System.getProperty("os.arch"));
         sb.append("\nOS: ").append(
                 System.getProperty("os.name")).append(" (").append(
-                        System.getProperty("os.version"));
+                        System.getProperty("os.version")).append(")");
         sb.append("\nUsed Java version: ").append(
                 System.getProperty("java.version")).append(" by ").append(
                         System.getProperty("java.vendor")).append(" (").append(
