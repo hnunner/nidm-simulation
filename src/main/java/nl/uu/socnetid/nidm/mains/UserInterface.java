@@ -814,6 +814,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
         // global stats
         this.statsFrame.refreshGlobalNetworkStats(StatsComputer.computeGlobalNetworkStats(this.network));
         this.statsFrame.refreshGlobalSimulationStats(StatsComputer.computeGlobalSimulationStats(this.simulation));
+        this.statsFrame.refreshGlobalAgentStats(StatsComputer.computeGlobalAgentStats(this.network));
 
         // agent stats
         if (this.statsAgent == null) {
