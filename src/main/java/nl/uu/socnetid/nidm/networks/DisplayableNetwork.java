@@ -71,8 +71,6 @@ public class DisplayableNetwork extends Network {
         // init graph-stream ui settings
         this.addAttribute("ui.quality");
         this.addAttribute("ui.antialias");
-        // URL gsStyles = this.getClass().getResource("/graph-stream.css");
-        // this.addAttribute("ui.stylesheet", "url('file:" + gsStyles.getPath() + "')");
         this.addAttribute("ui.stylesheet", GS_CSS);
         System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
 

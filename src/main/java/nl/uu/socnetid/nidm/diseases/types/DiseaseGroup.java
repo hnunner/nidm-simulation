@@ -4,6 +4,7 @@ package nl.uu.socnetid.nidm.diseases.types;
  * @author Hendrik Nunner
  */
 public enum DiseaseGroup {
+
     SUSCEPTIBLE("susceptible"),
     INFECTED("infected"),
     RECOVERED("recovered");
