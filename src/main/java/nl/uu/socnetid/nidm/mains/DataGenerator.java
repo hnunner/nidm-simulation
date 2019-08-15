@@ -34,7 +34,7 @@ import nl.uu.socnetid.nidm.simulation.SimulationListener;
 import nl.uu.socnetid.nidm.simulation.SimulationStage;
 import nl.uu.socnetid.nidm.stats.StatsComputer;
 import nl.uu.socnetid.nidm.system.OsTypes;
-import nl.uu.socnetid.nidm.system.Properties;
+import nl.uu.socnetid.nidm.system.PropertiesHandler;
 import nl.uu.socnetid.nidm.utilities.CIDM;
 import nl.uu.socnetid.nidm.utilities.UtilityFunction;
 
@@ -52,7 +52,7 @@ public class DataGenerator implements AgentListener, SimulationListener {
     private static final String R_LOCATION_OTHER = "/usr/local/bin/Rscript";
 
     // R-script for data analyses
-    private static final String R_SCRIPT = new StringBuilder().append(Properties.getUserDir())
+    private static final String R_SCRIPT = new StringBuilder().append(PropertiesHandler.getUserDir())
             .append("/analysis/analysis.R").toString();
 
     // export - file system
@@ -304,7 +304,7 @@ public class DataGenerator implements AgentListener, SimulationListener {
         try {
             // invocation of R-script
             ProcessBuilder pb = new ProcessBuilder(
-                    Properties.getOsType() == OsTypes.WIN ? R_LOCATION_WIN : R_LOCATION_OTHER,
+                    PropertiesHandler.getOsType() == OsTypes.WIN ? R_LOCATION_WIN : R_LOCATION_OTHER,
                     R_SCRIPT, EXPORT_DIR);
             logger.info("Starting analysis of simulated data. "
                     + "Invoking R-script: "
