@@ -12,13 +12,13 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 /**
  * @author Hendrik Nunner
  */
-public class Properties {
+public class PropertiesHandler {
 
     // logger
-    private static final Logger logger = Logger.getLogger(Properties.class);
+    private static final Logger logger = Logger.getLogger(PropertiesHandler.class);
 
     // singleton
-    private static Properties pReader = null;
+    private static PropertiesHandler pReader = null;
     // properties
     private OsTypes osType = null;
     private String userDir = null;
@@ -27,7 +27,7 @@ public class Properties {
     /**
      * Invisible constructor.
      */
-    private Properties() {
+    private PropertiesHandler() {
 
         // determine operating system
         String os = System.getProperty("os.name").toLowerCase();
@@ -89,7 +89,7 @@ public class Properties {
      */
     public static OsTypes getOsType() {
         if (pReader == null) {
-            pReader = new Properties();
+            pReader = new PropertiesHandler();
         }
         return pReader.osType;
     }
@@ -101,7 +101,7 @@ public class Properties {
      */
     public static String getUserDir() {
         if (pReader == null) {
-            pReader = new Properties();
+            pReader = new PropertiesHandler();
         }
         return pReader.userDir;
     }
