@@ -1,5 +1,6 @@
 package nl.uu.socnetid.nidm.system;
 
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -11,13 +12,13 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 /**
  * @author Hendrik Nunner
  */
-public class PropertiesReader {
+public class Properties {
 
     // logger
-    private static final Logger logger = Logger.getLogger(PropertiesReader.class);
+    private static final Logger logger = Logger.getLogger(Properties.class);
 
     // singleton
-    private static PropertiesReader pReader = null;
+    private static Properties pReader = null;
     // properties
     private OsTypes osType = null;
     private String userDir = null;
@@ -26,7 +27,7 @@ public class PropertiesReader {
     /**
      * Invisible constructor.
      */
-    private PropertiesReader() {
+    private Properties() {
 
         // determine operating system
         String os = System.getProperty("os.name").toLowerCase();
@@ -49,6 +50,7 @@ public class PropertiesReader {
         StringBuilder sb = new StringBuilder();
         sb.append("\n:::::::::::::::::::::::::::::::::::::::::::: SYSTEM INFOS ::::::::::::::::::::::::::::::::::::::::::::");
         // maven
+        // TODO create properties file, import version numbers into maven and here from properties file
         MavenXpp3Reader mvnReader = new MavenXpp3Reader();
         try {
             FileReader fileReader = new FileReader("pom.xml");
@@ -60,6 +62,8 @@ public class PropertiesReader {
             } finally {
                 fileReader.close();
             }
+        } catch (FileNotFoundException e) {
+            sb.append("\nBuild: unknown");
         } catch (IOException e) {
             logger.error(e);
         }
@@ -85,7 +89,7 @@ public class PropertiesReader {
      */
     public static OsTypes getOsType() {
         if (pReader == null) {
-            pReader = new PropertiesReader();
+            pReader = new Properties();
         }
         return pReader.osType;
     }
@@ -97,7 +101,7 @@ public class PropertiesReader {
      */
     public static String getUserDir() {
         if (pReader == null) {
-            pReader = new PropertiesReader();
+            pReader = new Properties();
         }
         return pReader.userDir;
     }

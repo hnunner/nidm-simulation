@@ -1,3 +1,5 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:1e6cee4db6fe0d777634a6bba0aa6bc6f86b626f9e7c1970a326b6f46dafd75b
-size 173
+"";"beta";"mu";"attack.rate";"duration";"degree.pre.epidemic";"degree.min"
+"1";2;1;100;21;5.7;5.4
+"2";2;1.5;40;17;5.7;3.36
+"3";8;1;100;22;5.7;5.467
+"4";8;1.5;100;22;5.7;4.4

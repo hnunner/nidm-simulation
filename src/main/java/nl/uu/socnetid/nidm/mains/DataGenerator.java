@@ -34,8 +34,8 @@ import nl.uu.socnetid.nidm.simulation.SimulationListener;
 import nl.uu.socnetid.nidm.simulation.SimulationStage;
 import nl.uu.socnetid.nidm.stats.StatsComputer;
 import nl.uu.socnetid.nidm.system.OsTypes;
-import nl.uu.socnetid.nidm.system.PropertiesReader;
-import nl.uu.socnetid.nidm.utilities.CIDMo;
+import nl.uu.socnetid.nidm.system.Properties;
+import nl.uu.socnetid.nidm.utilities.CIDM;
 import nl.uu.socnetid.nidm.utilities.UtilityFunction;
 
 
@@ -52,7 +52,7 @@ public class DataGenerator implements AgentListener, SimulationListener {
     private static final String R_LOCATION_OTHER = "/usr/local/bin/Rscript";
 
     // R-script for data analyses
-    private static final String R_SCRIPT = new StringBuilder().append(PropertiesReader.getUserDir())
+    private static final String R_SCRIPT = new StringBuilder().append(Properties.getUserDir())
             .append("/analysis/analysis.R").toString();
 
     // export - file system
@@ -220,7 +220,7 @@ public class DataGenerator implements AgentListener, SimulationListener {
                                                     }
 
                                                     // create utility and disease specs
-                                                    UtilityFunction uf = new CIDMo(alpha, KAPPA, beta, LAMDA, c);
+                                                    UtilityFunction uf = new CIDM(alpha, KAPPA, beta, LAMDA, c);
                                                     this.ds = new DiseaseSpecs(
                                                             DISEASE_TYPE, tau, s, gamma, mu);
 
@@ -304,7 +304,7 @@ public class DataGenerator implements AgentListener, SimulationListener {
         try {
             // invocation of R-script
             ProcessBuilder pb = new ProcessBuilder(
-                    PropertiesReader.getOsType() == OsTypes.WIN ? R_LOCATION_WIN : R_LOCATION_OTHER,
+                    Properties.getOsType() == OsTypes.WIN ? R_LOCATION_WIN : R_LOCATION_OTHER,
                     R_SCRIPT, EXPORT_DIR);
             logger.info("Starting analysis of simulated data. "
                     + "Invoking R-script: "

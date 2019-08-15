@@ -10,7 +10,7 @@ import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
 import nl.uu.socnetid.nidm.networks.Network;
-import nl.uu.socnetid.nidm.utilities.CIDMo;
+import nl.uu.socnetid.nidm.utilities.CIDM;
 import nl.uu.socnetid.nidm.utilities.Cumulative;
 import nl.uu.socnetid.nidm.utilities.UtilityFunction;
 
@@ -19,7 +19,7 @@ import nl.uu.socnetid.nidm.utilities.UtilityFunction;
  *
  * @author Hendrik Nunner
  */
-public class CIDMoTest {
+public class CIDMTest {
 
     // network
     private Network network;
@@ -56,7 +56,7 @@ public class CIDMoTest {
     public void initAgent() {
         this.network = new Network("IRTC Test");
 
-        UtilityFunction uf = new CIDMo(alpha, kappa, beta, lamda, c);
+        UtilityFunction uf = new CIDM(alpha, kappa, beta, lamda, c);
         DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
 
         this.agent1 = this.network.addAgent(uf, ds, rSigma, rPi, phi);
