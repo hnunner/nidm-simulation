@@ -498,7 +498,7 @@ exportModels <- function(models, filename) {
 exportAttackRateModelsComplete <- function(ssData = loadSimulationSummaryData()) {
 
   # MAIN EFFECTS
-  # CIDMo parameters
+  # CIDM parameters
   beta  <- meanCenter(ssData$net.param.beta)
   mu    <- meanCenter(ssData$dis.param.mu)
   sigma <- meanCenter(ssData$dis.param.s / 50)
@@ -553,14 +553,14 @@ exportAttackRateModelsComplete <- function(ssData = loadSimulationSummaryData())
                    (1 | sim.param.upc),
                  family = binomial,
                  data = ssData)
-  # main effects: varied CIDMo parameters
+  # main effects: varied CIDM parameters
   reg1Main <- glmer(ssData$dis.prop.pct.rec/100 ~
                       #  model parameters
                       beta + mu + sigma + r + N + iota +
                       (1 | sim.param.upc),
                     family = binomial,
                     data = ssData)
-  # main effects: varied CIDMo parameters + network properties at the time of the first infection
+  # main effects: varied CIDM parameters + network properties at the time of the first infection
   reg2Main <- glmer(ssData$dis.prop.pct.rec/100 ~
                       #  model parameters
                       beta + mu + sigma + r + N + iota +
@@ -623,7 +623,7 @@ exportAttackRateModelsComplete <- function(ssData = loadSimulationSummaryData())
 exportAttackRateModelsSelected <- function(ssData = loadSimulationSummaryData()) {
 
   # MAIN EFFECTS
-  # CIDMo parameters
+  # CIDM parameters
   beta  <- meanCenter(ssData$net.param.beta)
   mu    <- meanCenter(ssData$dis.param.mu)
   sigma <- meanCenter(ssData$dis.param.s / 50)
@@ -679,14 +679,14 @@ exportAttackRateModelsSelected <- function(ssData = loadSimulationSummaryData())
                    (1 | sim.param.upc),
                  family = binomial,
                  data = ssData)
-  # main effects: varied CIDMo parameters
+  # main effects: varied CIDM parameters
   reg1Main <- glmer(ssData$dis.prop.pct.rec/100 ~
                       #  model parameters
                       beta + mu + sigma + r + N + # iota +
                       (1 | sim.param.upc),
                     family = binomial,
                     data = ssData)
-  # main effects: varied CIDMo parameters + network properties at the time of the first infection
+  # main effects: varied CIDM parameters + network properties at the time of the first infection
   reg2Main <- glmer(ssData$dis.prop.pct.rec/100 ~
                       #  model parameters
                       beta + mu + sigma + r + N + # iota +
@@ -746,7 +746,7 @@ exportAttackRateModelsSelected <- function(ssData = loadSimulationSummaryData())
 exportDurationModelsComplete <- function(ssData = loadSimulationSummaryData()) {
 
   # MAIN EFFECTS
-  # CIDMo parameters
+  # CIDM parameters
   beta  <- meanCenter(ssData$net.param.beta)
   mu    <- meanCenter(ssData$dis.param.mu)
   sigma <- meanCenter(ssData$dis.param.s / 50)
@@ -801,16 +801,16 @@ exportDurationModelsComplete <- function(ssData = loadSimulationSummaryData()) {
                   (1 | sim.param.upc),
                 data = ssData,
                 REML = FALSE)
-  # main effects: varied CIDMo parameters
+  # main effects: varied CIDM parameters
   reg1Main <- lmer(ssData$dis.prop.duration ~
-                     # CIDMo parameters
+                     # CIDM parameters
                      beta + mu + sigma + r + N + iota +
                      (1 | sim.param.upc),
                    data = ssData,
                    REML = FALSE)
-  # main effects: varied CIDMo parameters + network properties at the time of the first infection
+  # main effects: varied CIDM parameters + network properties at the time of the first infection
   reg2Main <- lmer(ssData$dis.prop.duration ~
-                     # CIDMo parameters
+                     # CIDM parameters
                      beta + mu + sigma + r + N + iota +
                      # network properties
                      dens + deg1 +
@@ -819,7 +819,7 @@ exportDurationModelsComplete <- function(ssData = loadSimulationSummaryData()) {
                    REML = FALSE)
   # interaction effects
   reg2Int <- lmer(ssData$dis.prop.duration ~
-                    # CIDMo parameters
+                    # CIDM parameters
                     beta + mu + sigma + r + N + iota +
                     # network properties
                     dens + deg1 +
@@ -872,7 +872,7 @@ exportDurationModelsComplete <- function(ssData = loadSimulationSummaryData()) {
 exportDurationModelsSelected <- function(ssData = loadSimulationSummaryData()) {
 
   # MAIN EFFECTS
-  # CIDMo parameters
+  # CIDM parameters
   beta  <- meanCenter(ssData$net.param.beta)
   mu    <- meanCenter(ssData$dis.param.mu)
   sigma <- meanCenter(ssData$dis.param.s / 50)
@@ -927,16 +927,16 @@ exportDurationModelsSelected <- function(ssData = loadSimulationSummaryData()) {
                   (1 | sim.param.upc),
                 data = ssData,
                 REML = FALSE)
-  # main effects: varied CIDMo parameters
+  # main effects: varied CIDM parameters
   reg1Main <- lmer(ssData$dis.prop.duration ~
-                     # CIDMo parameters
+                     # CIDM parameters
                      beta + mu + sigma + r + N + # iota +
                      (1 | sim.param.upc),
                    data = ssData,
                    REML = FALSE)
-  # main effects: varied CIDMo parameters + network properties at the time of the first infection
+  # main effects: varied CIDM parameters + network properties at the time of the first infection
   reg2Main <- lmer(ssData$dis.prop.duration ~
-                     # CIDMo parameters
+                     # CIDM parameters
                      beta + mu + sigma + r + N + # iota +
                      # network properties
                      dens + deg1 +
@@ -945,7 +945,7 @@ exportDurationModelsSelected <- function(ssData = loadSimulationSummaryData()) {
                    REML = FALSE)
   # interaction effects
   reg2Int <- lmer(ssData$dis.prop.duration ~
-                    # CIDMo parameters
+                    # CIDM parameters
                     beta + mu + sigma + r + N + # iota +
                     # network properties
                     dens + deg1 +
