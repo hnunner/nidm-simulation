@@ -149,7 +149,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
         controlsFrame.getContentPane().setLayout(null);
         controlsFrame.setTitle("Networking during Infectious Diseases Model (NIDM) Simulator");
         controlsFrame.setBounds(10, 10, 1060, 740);
-        switch (PropertiesHandler.getOsType()) {
+        switch (PropertiesHandler.getInstance().getOsType()) {
             case WIN:
                 controlsFrame.setBounds(10, 10, 1075, 755);
                 break;
@@ -492,7 +492,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
         netFrame.setIconifiable(false);
         netFrame.setClosable(false);
         netFrame.setBounds(351, 11, 698, 698);
-        switch (PropertiesHandler.getOsType()) {
+        switch (PropertiesHandler.getInstance().getOsType()) {
             case WIN:
                 netFrame.setBounds(352, 11, 711, 711);
                 break;
