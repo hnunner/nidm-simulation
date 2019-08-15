@@ -7,7 +7,7 @@ import nl.uu.socnetid.nidm.stats.StatsComputer;
 /**
  * @author Hendrik Nunner
  */
-public class CIDMo extends UtilityFunction {
+public class CIDM extends UtilityFunction {
 
     // discount for infected direct connections
     private final double kappa;
@@ -28,7 +28,7 @@ public class CIDMo extends UtilityFunction {
      * @param c
      *          the maintenance costs for a direct connection
      */
-    public CIDMo(double alpha, double kappa, double beta, double lamda, double c) {
+    public CIDM(double alpha, double kappa, double beta, double lamda, double c) {
         super(alpha, beta, c);
         this.kappa = kappa;
         this.lamda = lamda;
@@ -40,7 +40,7 @@ public class CIDMo extends UtilityFunction {
      */
     @Override
     public String getStatsName() {
-        return "CIDMo";
+        return "CIDM";
     }
 
     /* (non-Javadoc)
