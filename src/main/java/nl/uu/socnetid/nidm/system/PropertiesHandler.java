@@ -171,7 +171,7 @@ public class PropertiesHandler {
         this.gitBranch = gitProps.getProperty("git.branch");
         this.gitBuildTime = gitProps.getProperty("git.build.time");
         this.gitBuildUserName = gitProps.getProperty("git.build.user.name");
-        this.gitBranch = gitProps.getProperty("git.remote.origin.url");
+        this.gitRemoteOriginUrl = gitProps.getProperty("git.remote.origin.url");
     }
 
 
@@ -203,8 +203,6 @@ public class PropertiesHandler {
                 this.javaVendor).append(" (").append(this.javaVendorUrl).append(")");
         sb.append("\nRscript path:\t\t").append(this.rscriptPath);
         sb.append("\nUser directory:\t\t").append(this.userDir);
-        sb.append("\nR analysis file path:\t").append(this.rAnalysisFilePath);
-        sb.append("\nData export path:\t").append(this.dataExportPath);
         return sb.toString();
     }
 
