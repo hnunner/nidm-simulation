@@ -22,6 +22,7 @@ import javax.swing.SwingConstants;
 
 import nl.uu.socnetid.nidm.io.GEXFWriter;
 import nl.uu.socnetid.nidm.networks.Network;
+import nl.uu.socnetid.nidm.system.PropertiesHandler;
 
 /**
  * @author Hendrik Nunner
@@ -92,7 +93,7 @@ public class ExportGEXFPanel extends DeactivatablePanel {
         btnStartRecording.setBounds(37, 95, 258, 30);
         btnStartRecording.setToolTipText("If no explicit output file is selected, "
                 + "a default file will be generated in folder: "
-                + GEXFWriter.DEFAULT_EXPORT_DIR);
+                + PropertiesHandler.getInstance().getDataExportPath());
         add(btnStartRecording);
 
         btnStopRecording = new JButton("Stop recording");
@@ -203,7 +204,7 @@ public class ExportGEXFPanel extends DeactivatablePanel {
             this.file = null;
 
         } else {
-            StringBuilder sb = new StringBuilder(GEXFWriter.DEFAULT_EXPORT_DIR);
+            StringBuilder sb = new StringBuilder(PropertiesHandler.getInstance().getDataExportPath());
             SimpleDateFormat sdfDate = new SimpleDateFormat("yyyyMMdd-HHmmss");
             sb.append("sim-").
             append(sdfDate.format(new Date())).
