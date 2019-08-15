@@ -38,11 +38,6 @@ public class GEXFWriter implements AgentListener, NetworkListener {
     // logger
     private static final Logger logger = Logger.getLogger(GEXFWriter.class);
 
-    // default export directory
-    // TODO: move this to a more general location (e.g., super class for all writers)
-    public static final String DEFAULT_EXPORT_DIR = new StringBuilder().append(System.getProperty("user.dir"))
-            .append("/data/").toString();
-
     // unique time identifier
     private static final AtomicLong TIME = new AtomicLong(1);
     private final long timeId = TIME.getAndIncrement();
