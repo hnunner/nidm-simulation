@@ -37,7 +37,7 @@ import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.agents.AgentListener;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
-import nl.uu.socnetid.nidm.gui.CIDMoPanel;
+import nl.uu.socnetid.nidm.gui.CIDMPanel;
 import nl.uu.socnetid.nidm.gui.CumulativePanel;
 import nl.uu.socnetid.nidm.gui.DeactivatablePanel;
 import nl.uu.socnetid.nidm.gui.ExportAdjacencyMatrixPanel;
@@ -52,8 +52,8 @@ import nl.uu.socnetid.nidm.networks.DisplayableNetwork;
 import nl.uu.socnetid.nidm.simulation.Simulation;
 import nl.uu.socnetid.nidm.simulation.SimulationListener;
 import nl.uu.socnetid.nidm.stats.StatsComputer;
-import nl.uu.socnetid.nidm.system.PropertiesReader;
-import nl.uu.socnetid.nidm.utilities.CIDMo;
+import nl.uu.socnetid.nidm.system.Properties;
+import nl.uu.socnetid.nidm.utilities.CIDM;
 import nl.uu.socnetid.nidm.utilities.Cumulative;
 import nl.uu.socnetid.nidm.utilities.UtilityFunction;
 
@@ -75,11 +75,11 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
     // UTILITY
     // selection
     private JComboBox<String> modelTypeCBox;
-    private final String[] utilityFunctions = {"CIDMo"};  //, "Cumulative"};
+    private final String[] utilityFunctions = {"CIDM"};  //, "Cumulative"};
     // panels
     private CumulativePanel cumulativePanel = new CumulativePanel();
-    private CIDMoPanel cidmoPanel = new CIDMoPanel();
-    private final DeactivatablePanel[] utilityPanels = {cumulativePanel, cidmoPanel};
+    private CIDMPanel cidmPanel = new CIDMPanel();
+    private final DeactivatablePanel[] utilityPanels = {cumulativePanel, cidmPanel};
 
     // AGENT
     // network size
@@ -149,7 +149,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
         controlsFrame.getContentPane().setLayout(null);
         controlsFrame.setTitle("Networking during Infectious Diseases Model (NIDM) Simulator");
         controlsFrame.setBounds(10, 10, 1060, 740);
-        switch (PropertiesReader.getOsType()) {
+        switch (Properties.getOsType()) {
             case WIN:
                 controlsFrame.setBounds(10, 10, 1075, 755);
                 break;
@@ -175,8 +175,8 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
         tabbedPane.add("Model", modelPane);
         modelPane.setLayout(null);
 
-        cidmoPanel.setBounds(3, 51, 312, 615);
-        modelPane.add(cidmoPanel);
+        cidmPanel.setBounds(3, 51, 312, 615);
+        modelPane.add(cidmPanel);
 
         cumulativePanel.setBounds(3, 51, 312, 615);
         cumulativePanel.setVisible(false);
@@ -203,12 +203,12 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
             public void actionPerformed(ActionEvent e) {
                 switch (modelTypeCBox.getSelectedIndex()) {
                     case 0:
-                        cidmoPanel.setVisible(true);
+                        cidmPanel.setVisible(true);
                         cumulativePanel.setVisible(false);
                         break;
 
                     case 1:
-                        cidmoPanel.setVisible(false);
+                        cidmPanel.setVisible(false);
                         cumulativePanel.setVisible(true);
                         break;
 
@@ -492,7 +492,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
         netFrame.setIconifiable(false);
         netFrame.setClosable(false);
         netFrame.setBounds(351, 11, 698, 698);
-        switch (PropertiesReader.getOsType()) {
+        switch (Properties.getOsType()) {
             case WIN:
                 netFrame.setBounds(352, 11, 711, 711);
                 break;
@@ -532,7 +532,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
 
         // add each agent with selected utility function and disease specs
         for (int i = 0; i < ((Number)txtAddAmount.getValue()).intValue(); i++) {
-            Agent agent = this.network.addAgent(uf, ds, cidmoPanel.getRSigma(), cidmoPanel.getRPi(), cidmoPanel.getPhi());
+            Agent agent = this.network.addAgent(uf, ds, cidmPanel.getRSigma(), cidmPanel.getRPi(), cidmPanel.getPhi());
             agent.addAgentListener(this);
         }
 
@@ -615,12 +615,12 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
     private UtilityFunction getUtilityFunction() {
         switch (modelTypeCBox.getSelectedIndex()) {
             case 0:
-                return new CIDMo(
-                        this.cidmoPanel.getAlpha(),
-                        this.cidmoPanel.getKappa(),
-                        this.cidmoPanel.getBeta(),
-                        this.cidmoPanel.getLamda(),
-                        this.cidmoPanel.getC());
+                return new CIDM(
+                        this.cidmPanel.getAlpha(),
+                        this.cidmPanel.getKappa(),
+                        this.cidmPanel.getBeta(),
+                        this.cidmPanel.getLamda(),
+                        this.cidmPanel.getC());
 
             case 1:
                 return new Cumulative(this.cumulativePanel.getDirectBenefit(),
@@ -637,10 +637,10 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
     private DiseaseSpecs getDiseaseSpecs() {
         return new DiseaseSpecs(
                 DiseaseType.SIR,
-                this.cidmoPanel.getTau(),
-                this.cidmoPanel.getSigma(),
-                this.cidmoPanel.getGamma(),
-                this.cidmoPanel.getMu());
+                this.cidmPanel.getTau(),
+                this.cidmPanel.getSigma(),
+                this.cidmPanel.getGamma(),
+                this.cidmPanel.getMu());
     }
 
 
