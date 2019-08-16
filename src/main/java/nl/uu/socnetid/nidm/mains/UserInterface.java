@@ -100,7 +100,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
     // EXPORT
     // selection
     private JComboBox<String> exportCBox;
-    private final String[] networkWriters = {"GEXF", "Edge List", "Adjacency Matrix"};
+    private final String[] networkWriters = {"GEXF", "Edge list", "Adjacency matrix"};
     // panels
     ExportGEXFPanel gexfPanel;
     ExportAdjacencyMatrixPanel adjacencyMatrixPanel;

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><gexf xmlns="http://www.gexf.net/1.2draft" xmlns:viz="http://www.gexf.net/1.2draft/viz" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd">
+ <meta lastmodifieddate="8/16/19 2:15 PM">
+  <creator>GraphStream using org.graphstream.stream.file.gexf.GEXFMeta</creator>
+  <keywords/>
+  <description/>
+ </meta>
+ <graph defaultedgetype="undirected" idtype="string" mode="dynamic" timeformat="double">
+  <attributes class="node" mode="dynamic">
+   <attribute id="0" title="connection.stats" type="string"/>
+   <attribute id="2" title="disease.infection" type="string"/>
+   <attribute id="1" title="satisfied" type="string"/>
+   <attribute id="3" title="disease.group" type="string"/>
+  </attributes>
+  <nodes>
+   <node id="1" label="1">
+    <attvalues>
+     <attvalue end="2421.0" for="0" start="2415.0" value="broken ties (active):0 | broken ties (passive):1 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="2453.0" for="0" start="2421.0" value="broken ties (active):0 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="2453.0" for="1" start="2429.0" value="true"/>
+     <attvalue end="2450.0" for="2" start="2439.0" value="specs:[disease type:generic SIR | tau:10 | s:10.0 | gamma:0.1 | mu:1.0] | duration:0 | state:infectious"/>
+     <attvalue end="2449.0" for="3" start="2440.0" value="infected"/>
+     <attvalue end="2453.0" for="3" start="2449.0" value="recovered"/>
+    </attvalues>
+    <spells>
+     <spell end="2453.0" start="2398.0"/>
+    </spells>
+   </node>
+   <node id="2" label="2">
+    <attvalues>
+     <attvalue end="2426.0" for="0" start="2418.0" value="broken ties (active):0 | broken ties (passive):1 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="2453.0" for="0" start="2426.0" value="broken ties (active):1 | broken ties (passive):1 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="2453.0" for="1" start="2430.0" value="true"/>
+     <attvalue end="2452.0" for="2" start="2443.0" value="specs:[disease type:generic SIR | tau:10 | s:10.0 | gamma:0.1 | mu:1.0] | duration:0 | state:infectious"/>
+     <attvalue end="2451.0" for="3" start="2444.0" value="infected"/>
+     <attvalue end="2453.0" for="3" start="2451.0" value="recovered"/>
+    </attvalues>
+    <spells>
+     <spell end="2453.0" start="2399.0"/>
+    </spells>
+   </node>
+   <node id="3" label="3">
+    <attvalues>
+     <attvalue end="2417.0" for="0" start="2414.0" value="broken ties (active):1 | broken ties (passive):0 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="2453.0" for="0" start="2417.0" value="broken ties (active):2 | broken ties (passive):0 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="2453.0" for="1" start="2431.0" value="true"/>
+     <attvalue end="2442.0" for="2" start="2433.0" value="specs:[disease type:generic SIR | tau:10 | s:10.0 | gamma:0.1 | mu:1.0] | duration:0 | state:infectious"/>
+     <attvalue end="2441.0" for="3" start="2434.0" value="infected"/>
+     <attvalue end="2453.0" for="3" start="2441.0" value="recovered"/>
+    </attvalues>
+    <spells>
+     <spell end="2453.0" start="2400.0"/>
+    </spells>
+   </node>
+   <node id="4" label="4">
+    <attvalues>
+     <attvalue end="2427.0" for="0" start="2424.0" value="broken ties (active):0 | broken ties (passive):1 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="2453.0" for="0" start="2427.0" value="broken ties (active):0 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="2453.0" for="1" start="2428.0" value="true"/>
+     <attvalue end="2448.0" for="2" start="2437.0" value="specs:[disease type:generic SIR | tau:10 | s:10.0 | gamma:0.1 | mu:1.0] | duration:0 | state:infectious"/>
+     <attvalue end="2447.0" for="3" start="2438.0" value="infected"/>
+     <attvalue end="2453.0" for="3" start="2447.0" value="recovered"/>
+    </attvalues>
+    <spells>
+     <spell end="2453.0" start="2401.0"/>
+    </spells>
+   </node>
+   <node id="5" label="5">
+    <attvalues>
+     <attvalue end="2423.0" for="0" start="2420.0" value="broken ties (active):1 | broken ties (passive):0 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="2453.0" for="0" start="2423.0" value="broken ties (active):2 | broken ties (passive):0 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="2453.0" for="1" start="2432.0" value="true"/>
+     <attvalue end="2446.0" for="2" start="2435.0" value="specs:[disease type:generic SIR | tau:10 | s:10.0 | gamma:0.1 | mu:1.0] | duration:0 | state:infectious"/>
+     <attvalue end="2445.0" for="3" start="2436.0" value="infected"/>
+     <attvalue end="2453.0" for="3" start="2445.0" value="recovered"/>
+    </attvalues>
+    <spells>
+     <spell end="2453.0" start="2402.0"/>
+    </spells>
+   </node>
+  </nodes>
+  <edges>
+   <edge id="12" label="12" source="1" target="2" type="undirected">
+    <spells>
+     <spell end="2453.0" start="2403.0"/>
+    </spells>
+   </edge>
+   <edge id="23" label="23" source="2" target="3" type="undirected">
+    <spells>
+     <spell end="2416.0" start="2407.0"/>
+    </spells>
+   </edge>
+   <edge id="34" label="34" source="3" target="4" type="undirected">
+    <spells>
+     <spell end="2453.0" start="2410.0"/>
+    </spells>
+   </edge>
+   <edge id="45" label="45" source="4" target="5" type="undirected">
+    <spells>
+     <spell end="2422.0" start="2412.0"/>
+    </spells>
+   </edge>
+   <edge id="13" label="13" source="1" target="3" type="undirected">
+    <spells>
+     <spell end="2413.0" start="2404.0"/>
+    </spells>
+   </edge>
+   <edge id="24" label="24" source="2" target="4" type="undirected">
+    <spells>
+     <spell end="2425.0" start="2408.0"/>
+    </spells>
+   </edge>
+   <edge id="35" label="35" source="3" target="5" type="undirected">
+    <spells>
+     <spell end="2453.0" start="2411.0"/>
+    </spells>
+   </edge>
+   <edge id="14" label="14" source="1" target="4" type="undirected">
+    <spells>
+     <spell end="2453.0" start="2405.0"/>
+    </spells>
+   </edge>
+   <edge id="25" label="25" source="2" target="5" type="undirected">
+    <spells>
+     <spell end="2453.0" start="2409.0"/>
+    </spells>
+   </edge>
+   <edge id="15" label="15" source="1" target="5" type="undirected">
+    <spells>
+     <spell end="2419.0" start="2406.0"/>
+    </spells>
+   </edge>
+  </edges>
+ </graph>
+</gexf>
