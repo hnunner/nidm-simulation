@@ -154,7 +154,7 @@ public class StatsFrame extends JFrame {
         }
         getContentPane().add(panel);
 
-        JLabel label = new JLabel("Agent Stats");
+        JLabel label = new JLabel("Agent stats");
         label.setFont(new Font("Lucida Grande", Font.PLAIN, 13));
         label.setBounds(6, 6, 113, 19);
         panel.add(label);
@@ -431,7 +431,7 @@ public class StatsFrame extends JFrame {
         }
         getContentPane().add(panel_1);
 
-        JLabel lblGlobalStats = new JLabel("Global Stats");
+        JLabel lblGlobalStats = new JLabel("Global stats");
         lblGlobalStats.setFont(new Font("Lucida Grande", Font.PLAIN, 13));
         lblGlobalStats.setBounds(6, 6, 113, 19);
         panel_1.add(lblGlobalStats);

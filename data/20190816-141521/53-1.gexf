@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><gexf xmlns="http://www.gexf.net/1.2draft" xmlns:viz="http://www.gexf.net/1.2draft/viz" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd">
+ <meta lastmodifieddate="8/16/19 2:15 PM">
+  <creator>GraphStream using org.graphstream.stream.file.gexf.GEXFMeta</creator>
+  <keywords/>
+  <description/>
+ </meta>
+ <graph defaultedgetype="undirected" idtype="string" mode="dynamic" timeformat="double">
+  <attributes class="node" mode="dynamic">
+   <attribute id="0" title="connection.stats" type="string"/>
+   <attribute id="2" title="disease.infection" type="string"/>
+   <attribute id="1" title="satisfied" type="string"/>
+   <attribute id="3" title="disease.group" type="string"/>
+  </attributes>
+  <nodes>
+   <node id="1" label="1">
+    <attvalues>
+     <attvalue end="23966.0" for="0" start="23961.0" value="broken ties (active):0 | broken ties (passive):1 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="23969.0" for="0" start="23966.0" value="broken ties (active):1 | broken ties (passive):1 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="23975.0" for="0" start="23969.0" value="broken ties (active):2 | broken ties (passive):1 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="24008.0" for="0" start="23975.0" value="broken ties (active):2 | broken ties (passive):1 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):1 | declined requests (in):0"/>
+     <attvalue end="24013.0" for="0" start="24008.0" value="broken ties (active):3 | broken ties (passive):1 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):1 | declined requests (in):0"/>
+     <attvalue end="24021.0" for="0" start="24013.0" value="broken ties (active):3 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):1 | declined requests (in):0"/>
+     <attvalue end="24039.0" for="0" start="24021.0" value="broken ties (active):3 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):1 | accepted requests (in):1 | declined requests (in):0"/>
+     <attvalue end="24041.0" for="0" start="24039.0" value="broken ties (active):3 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):2 | accepted requests (in):1 | declined requests (in):0"/>
+     <attvalue end="24054.0" for="0" start="24041.0" value="broken ties (active):3 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):3 | accepted requests (in):1 | declined requests (in):0"/>
+     <attvalue end="24056.0" for="0" start="24054.0" value="broken ties (active):3 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):4 | accepted requests (in):1 | declined requests (in):0"/>
+     <attvalue end="24062.0" for="0" start="24056.0" value="broken ties (active):3 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):5 | accepted requests (in):1 | declined requests (in):0"/>
+     <attvalue end="24069.0" for="0" start="24062.0" value="broken ties (active):3 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):5 | accepted requests (in):1 | declined requests (in):1"/>
+     <attvalue end="24076.0" for="0" start="24069.0" value="broken ties (active):3 | broken ties (passive):2 | accepted requests (out):1 | declined requests (out):5 | accepted requests (in):1 | declined requests (in):1"/>
+     <attvalue end="24077.0" for="0" start="24076.0" value="broken ties (active):3 | broken ties (passive):2 | accepted requests (out):2 | declined requests (out):5 | accepted requests (in):1 | declined requests (in):1"/>
+     <attvalue end="24087.0" for="0" start="24077.0" value="broken ties (active):3 | broken ties (passive):2 | accepted requests (out):2 | declined requests (out):5 | accepted requests (in):2 | declined requests (in):1"/>
+     <attvalue end="24100.0" for="0" start="24087.0" value="broken ties (active):3 | broken ties (passive):2 | accepted requests (out):2 | declined requests (out):5 | accepted requests (in):2 | declined requests (in):2"/>
+     <attvalue end="24104.0" for="0" start="24100.0" value="broken ties (active):3 | broken ties (passive):2 | accepted requests (out):3 | declined requests (out):5 | accepted requests (in):2 | declined requests (in):2"/>
+     <attvalue end="24010.0" for="1" start="23979.0" value="true"/>
+     <attvalue end="24029.0" for="1" start="24010.0" value="false"/>
+     <attvalue end="24042.0" for="1" start="24029.0" value="true"/>
+     <attvalue end="24046.0" for="1" start="24042.0" value="false"/>
+     <attvalue end="24057.0" for="1" start="24046.0" value="true"/>
+     <attvalue end="24091.0" for="1" start="24057.0" value="false"/>
+     <attvalue end="24101.0" for="1" start="24091.0" value="true"/>
+     <attvalue end="24103.0" for="1" start="24101.0" value="false"/>
+     <attvalue end="24104.0" for="1" start="24103.0" value="true"/>
+     <attvalue end="24059.0" for="2" start="23982.0" value="specs:[disease type:generic SIR | tau:10 | s:2.0 | gamma:0.1 | mu:1.5] | duration:0 | state:infectious"/>
+     <attvalue end="24058.0" for="3" start="23983.0" value="infected"/>
+     <attvalue end="24104.0" for="3" start="24058.0" value="recovered"/>
+    </attvalues>
+    <spells>
+     <spell end="24104.0" start="23944.0"/>
+    </spells>
+   </node>
+   <node id="2" label="2">
+    <attvalues>
+     <attvalue end="23963.0" for="0" start="23960.0" value="broken ties (active):1 | broken ties (passive):0 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="23990.0" for="0" start="23963.0" value="broken ties (active):2 | broken ties (passive):0 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="24019.0" for="0" start="23990.0" value="broken ties (active):2 | broken ties (passive):1 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="24023.0" for="0" start="24019.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="24036.0" for="0" start="24023.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):1 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="24050.0" for="0" start="24036.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):2 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="24061.0" for="0" start="24050.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):3 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="24063.0" for="0" start="24061.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):4 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="24074.0" for="0" start="24063.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):5 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="24092.0" for="0" start="24074.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):5 | accepted requests (in):1 | declined requests (in):0"/>
+     <attvalue end="24094.0" for="0" start="24092.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):5 | accepted requests (in):1 | declined requests (in):1"/>
+     <attvalue end="24104.0" for="0" start="24094.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):5 | accepted requests (in):1 | declined requests (in):2"/>
+     <attvalue end="24024.0" for="1" start="23978.0" value="true"/>
+     <attvalue end="24034.0" for="1" start="24024.0" value="false"/>
+     <attvalue end="24037.0" for="1" start="24034.0" value="true"/>
+     <attvalue end="24045.0" for="1" start="24037.0" value="false"/>
+     <attvalue end="24051.0" for="1" start="24045.0" value="true"/>
+     <attvalue end="24081.0" for="1" start="24051.0" value="false"/>
+     <attvalue end="24104.0" for="1" start="24081.0" value="true"/>
+     <attvalue end="24073.0" for="2" start="23986.0" value="specs:[disease type:generic SIR | tau:10 | s:2.0 | gamma:0.1 | mu:1.5] | duration:0 | state:infectious"/>
+     <attvalue end="24072.0" for="3" start="23987.0" value="infected"/>
+     <attvalue end="24104.0" for="3" start="24072.0" value="recovered"/>
+    </attvalues>
+    <spells>
+     <spell end="24104.0" start="23945.0"/>
+    </spells>
+   </node>
+   <node id="3" label="3">
+    <attvalues>
+     <attvalue end="23989.0" for="0" start="23973.0" value="broken ties (active):1 | broken ties (passive):0 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="23992.0" for="0" start="23989.0" value="broken ties (active):2 | broken ties (passive):0 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="23995.0" for="0" start="23992.0" value="broken ties (active):2 | broken ties (passive):0 | accepted requests (out):0 | declined requests (out):1 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="23998.0" for="0" start="23995.0" value="broken ties (active):2 | broken ties (passive):0 | accepted requests (out):0 | declined requests (out):2 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="24001.0" for="0" start="23998.0" value="broken ties (active):2 | broken ties (passive):1 | accepted requests (out):0 | declined requests (out):2 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="24006.0" for="0" start="24001.0" value="broken ties (active):2 | broken ties (passive):1 | accepted requests (out):0 | declined requests (out):3 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="24009.0" for="0" start="24006.0" value="broken ties (active):2 | broken ties (passive):1 | accepted requests (out):0 | declined requests (out):4 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="24016.0" for="0" start="24009.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):4 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="24033.0" for="0" start="24016.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):5 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="24044.0" for="0" start="24033.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):6 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="24048.0" for="0" start="24044.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):7 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="24079.0" for="0" start="24048.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):8 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="24104.0" for="0" start="24079.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):1 | declined requests (out):8 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="23993.0" for="1" start="23980.0" value="true"/>
+     <attvalue end="24052.0" for="1" start="23993.0" value="false"/>
+     <attvalue end="24080.0" for="1" start="24052.0" value="true"/>
+     <attvalue end="24086.0" for="1" start="24080.0" value="false"/>
+     <attvalue end="24104.0" for="1" start="24086.0" value="true"/>
+     <attvalue end="24071.0" for="2" start="23984.0" value="specs:[disease type:generic SIR | tau:10 | s:2.0 | gamma:0.1 | mu:1.5] | duration:0 | state:infectious"/>
+     <attvalue end="24070.0" for="3" start="23985.0" value="infected"/>
+     <attvalue end="24104.0" for="3" start="24070.0" value="recovered"/>
+    </attvalues>
+    <spells>
+     <spell end="24104.0" start="23946.0"/>
+    </spells>
+   </node>
+   <node id="4" label="4">
+    <attvalues>
+     <attvalue end="23970.0" for="0" start="23964.0" value="broken ties (active):0 | broken ties (passive):1 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="23997.0" for="0" start="23970.0" value="broken ties (active):0 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="24005.0" for="0" start="23997.0" value="broken ties (active):1 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="24015.0" for="0" start="24005.0" value="broken ties (active):1 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):1"/>
+     <attvalue end="24020.0" for="0" start="24015.0" value="broken ties (active):1 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):2"/>
+     <attvalue end="24026.0" for="0" start="24020.0" value="broken ties (active):1 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):3"/>
+     <attvalue end="24032.0" for="0" start="24026.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):3"/>
+     <attvalue end="24035.0" for="0" start="24032.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):4"/>
+     <attvalue end="24038.0" for="0" start="24035.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):5"/>
+     <attvalue end="24040.0" for="0" start="24038.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):6"/>
+     <attvalue end="24043.0" for="0" start="24040.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):7"/>
+     <attvalue end="24047.0" for="0" start="24043.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):8"/>
+     <attvalue end="24049.0" for="0" start="24047.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):9"/>
+     <attvalue end="24053.0" for="0" start="24049.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):10"/>
+     <attvalue end="24055.0" for="0" start="24053.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):11"/>
+     <attvalue end="24060.0" for="0" start="24055.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):12"/>
+     <attvalue end="24064.0" for="0" start="24060.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):13"/>
+     <attvalue end="24067.0" for="0" start="24064.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):14"/>
+     <attvalue end="24082.0" for="0" start="24067.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):1 | declined requests (in):14"/>
+     <attvalue end="24084.0" for="0" start="24082.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):1 | declined requests (in):15"/>
+     <attvalue end="24089.0" for="0" start="24084.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):1 | declined requests (in):16"/>
+     <attvalue end="24104.0" for="0" start="24089.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):1 | declined requests (in):17"/>
+     <attvalue end="23999.0" for="1" start="23971.0" value="true"/>
+     <attvalue end="24002.0" for="1" start="23999.0" value="false"/>
+     <attvalue end="24028.0" for="1" start="24002.0" value="true"/>
+     <attvalue end="24031.0" for="1" start="24028.0" value="false"/>
+     <attvalue end="24104.0" for="1" start="24031.0" value="true"/>
+    </attvalues>
+    <spells>
+     <spell end="24104.0" start="23947.0"/>
+    </spells>
+   </node>
+   <node id="5" label="5">
+    <attvalues>
+     <attvalue end="23974.0" for="0" start="23967.0" value="broken ties (active):0 | broken ties (passive):1 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="23977.0" for="0" start="23974.0" value="broken ties (active):0 | broken ties (passive):2 | accepted requests (out):0 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="23991.0" for="0" start="23977.0" value="broken ties (active):0 | broken ties (passive):2 | accepted requests (out):1 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):0"/>
+     <attvalue end="23994.0" for="0" start="23991.0" value="broken ties (active):0 | broken ties (passive):2 | accepted requests (out):1 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):1"/>
+     <attvalue end="24000.0" for="0" start="23994.0" value="broken ties (active):0 | broken ties (passive):2 | accepted requests (out):1 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):2"/>
+     <attvalue end="24012.0" for="0" start="24000.0" value="broken ties (active):0 | broken ties (passive):2 | accepted requests (out):1 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):3"/>
+     <attvalue end="24018.0" for="0" start="24012.0" value="broken ties (active):1 | broken ties (passive):2 | accepted requests (out):1 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):3"/>
+     <attvalue end="24022.0" for="0" start="24018.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):1 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):3"/>
+     <attvalue end="24027.0" for="0" start="24022.0" value="broken ties (active):2 | broken ties (passive):2 | accepted requests (out):1 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):4"/>
+     <attvalue end="24065.0" for="0" start="24027.0" value="broken ties (active):2 | broken ties (passive):3 | accepted requests (out):1 | declined requests (out):0 | accepted requests (in):0 | declined requests (in):4"/>
+     <attvalue end="24083.0" for="0" start="24065.0" value="broken ties (active):2 | broken ties (passive):3 | accepted requests (out):1 | declined requests (out):1 | accepted requests (in):0 | declined requests (in):4"/>
+     <attvalue end="24085.0" for="0" start="24083.0" value="broken ties (active):2 | broken ties (passive):3 | accepted requests (out):1 | declined requests (out):2 | accepted requests (in):0 | declined requests (in):4"/>
+     <attvalue end="24088.0" for="0" start="24085.0" value="broken ties (active):2 | broken ties (passive):3 | accepted requests (out):1 | declined requests (out):3 | accepted requests (in):0 | declined requests (in):4"/>
+     <attvalue end="24090.0" for="0" start="24088.0" value="broken ties (active):2 | broken ties (passive):3 | accepted requests (out):1 | declined requests (out):4 | accepted requests (in):0 | declined requests (in):4"/>
+     <attvalue end="24093.0" for="0" start="24090.0" value="broken ties (active):2 | broken ties (passive):3 | accepted requests (out):1 | declined requests (out):5 | accepted requests (in):0 | declined requests (in):4"/>
+     <attvalue end="24095.0" for="0" start="24093.0" value="broken ties (active):2 | broken ties (passive):3 | accepted requests (out):1 | declined requests (out):6 | accepted requests (in):0 | declined requests (in):4"/>
+     <attvalue end="24098.0" for="0" start="24095.0" value="broken ties (active):2 | broken ties (passive):3 | accepted requests (out):1 | declined requests (out):7 | accepted requests (in):0 | declined requests (in):4"/>
+     <attvalue end="24104.0" for="0" start="24098.0" value="broken ties (active):2 | broken ties (passive):3 | accepted requests (out):1 | declined requests (out):7 | accepted requests (in):1 | declined requests (in):4"/>
+     <attvalue end="24014.0" for="1" start="23981.0" value="true"/>
+     <attvalue end="24030.0" for="1" start="24014.0" value="false"/>
+     <attvalue end="24066.0" for="1" start="24030.0" value="true"/>
+     <attvalue end="24102.0" for="1" start="24066.0" value="false"/>
+     <attvalue end="24104.0" for="1" start="24102.0" value="true"/>
+     <attvalue end="24097.0" for="2" start="24003.0" value="specs:[disease type:generic SIR | tau:10 | s:2.0 | gamma:0.1 | mu:1.5] | duration:0 | state:infectious"/>
+     <attvalue end="24096.0" for="3" start="24004.0" value="infected"/>
+     <attvalue end="24104.0" for="3" start="24096.0" value="recovered"/>
+    </attvalues>
+    <spells>
+     <spell end="24104.0" start="23948.0"/>
+    </spells>
+   </node>
+  </nodes>
+  <edges>
+   <edge id="12" label="12" source="1" target="2" type="undirected">
+    <spells>
+     <spell end="23959.0" start="23949.0"/>
+     <spell end="24104.0" start="24075.0"/>
+    </spells>
+   </edge>
+   <edge id="23" label="23" source="2" target="3" type="undirected">
+    <spells>
+     <spell end="23988.0" start="23953.0"/>
+    </spells>
+   </edge>
+   <edge id="34" label="34" source="3" target="4" type="undirected">
+    <spells>
+     <spell end="23996.0" start="23956.0"/>
+    </spells>
+   </edge>
+   <edge id="45" label="45" source="4" target="5" type="undirected">
+    <spells>
+     <spell end="24025.0" start="23958.0"/>
+    </spells>
+   </edge>
+   <edge id="13" label="13" source="1" target="3" type="undirected">
+    <spells>
+     <spell end="24007.0" start="23950.0"/>
+     <spell end="24104.0" start="24078.0"/>
+    </spells>
+   </edge>
+   <edge id="24" label="24" source="2" target="4" type="undirected">
+    <spells>
+     <spell end="23962.0" start="23954.0"/>
+    </spells>
+   </edge>
+   <edge id="35" label="35" source="3" target="5" type="undirected">
+    <spells>
+     <spell end="23972.0" start="23957.0"/>
+    </spells>
+   </edge>
+   <edge id="14" label="14" source="1" target="4" type="undirected">
+    <spells>
+     <spell end="23968.0" start="23951.0"/>
+     <spell end="24104.0" start="24068.0"/>
+    </spells>
+   </edge>
+   <edge id="25" label="25" source="2" target="5" type="undirected">
+    <spells>
+     <spell end="24017.0" start="23955.0"/>
+    </spells>
+   </edge>
+   <edge id="15" label="15" source="1" target="5" type="undirected">
+    <spells>
+     <spell end="23965.0" start="23952.0"/>
+     <spell end="24011.0" start="23976.0"/>
+     <spell end="24104.0" start="24099.0"/>
+    </spells>
+   </edge>
+  </edges>
+ </graph>
+</gexf>
