@@ -145,7 +145,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
      */
     private void initialize() {
 
-        // init controls frame
+        // initialize controls frame
         controlsFrame.getContentPane().setLayout(null);
         controlsFrame.setTitle("NIDM Simulator");
         controlsFrame.setBounds(10, 10, 1060, 740);
