@@ -68,6 +68,7 @@ Dynamic network exports track detailed network data over the course of time. Thi
  6. Run a simulation (e.g., as described above).
  7. Push the __Pause__ button on the _Simulation_ tab.
  8. Push the __Stop recording__ button on the _Export_ tab.
+
 Once the __Stop recording__ button as been pushed, the file export is complete and the corresponding file can be opened in [Gephi](https://gephi.org/).
 
 
