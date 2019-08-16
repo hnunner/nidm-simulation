@@ -72,7 +72,6 @@ Dynamic network exports track detailed network data over the course of time. Thi
 
 Once the __Stop recording__ button as been pushed, the file export is complete and the corresponding file can be opened in [Gephi](https://gephi.org/).
 
-
 ### _GUI_ components
 
 #### Main window ####
@@ -140,7 +139,3 @@ The _Data Generator_ uses a configuration file (_path.to.nidm.simulator.project.
     * _export.agent.details.reduced_: creates a detailed overview of each single agent (e.g., parameter settings, disease states, utilities, network measures) at the end of each simulation run. If _export.agent.details_ is activated _export.agent.details.reduced_ is ignored.
     * _export.gexf_: creates individual dynamic _.gexf_ files for each simulation run.
  3. _Data analysis configuration_ to configure and trigger (_analyze.data=true_) data analysis subsequent to data generation. Please make sure that the correct location of the _Rscript_ executable is set, if _analyze.data_ is set _true_. Analysis results are stored in _path.to.nidm.simulator.project.folder/data/`date-time-of-data-generator-invocation`_.
-
-
-
-
