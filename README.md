@@ -59,8 +59,8 @@ Exporting static networks is the same for all static network types:
 #### Dynamic network exports ####
 Dynamic network exports track detailed network data over the course of time. This format is only supported by the _GEXF_ export type. In order to track the creation and progression of a dynamic network, please follow these steps:
  1. Reset the simulation if necessary.
-   1. Pause the simulation if it is running by pushing the __Pause__ button on the _Simulation_ tab.
-   2. Remove all agents and ties by pushing the __Clear all__ button on the _Simulation_ tab.
+    1. Pause the simulation if it is running by pushing the __Pause__ button on the _Simulation_ tab.
+    2. Remove all agents and ties by pushing the __Clear all__ button on the _Simulation_ tab.
  2. Select _GEXF_ as export type on the _Export_ tab.
  3. Select _Network type:_ - _Dynamic_ on the _Export_ tab.
  4. Select a file to write the dynamic network data to by clicking the __Choose export file__ button on the _Export_ tab. Note that the file ending _.gexf_ needs to be added either here or after export.
