@@ -26,7 +26,8 @@ This way allows to run both the _GUI_ and the _Data Generator_ versions. Further
  7. Click __Finish__
  8. In the _Package Explorer_ window on the left of Eclipse navigate to: _nidm-simulation_ - _src/main/java_ - _nl.uu.socnetid.nidm.mains_
  9. The location contains two files (_CIDMDataGenerator.java_, _UserInterface.java_) which can be started by right clicking on them and selecting: _Run as_ - _Java application_.
-Note: Depending on the settings in _src/main/resources/config.properties_ the _Data Generator_ may generate large amounts of data taking a very long time to finish.
+
+__Note:__ Depending on the settings in _src/main/resources/config.properties_ the _Data Generator_ may generate large amounts of data taking a very long time to finish.
 
 ## Using the _GUI_ version of the NIDM Simulator
 When starting the _GUI_ version of the NIDM Simulator (by double clicking path.to.unzipped.folder/executables/nidm-`version.number`.jar) two windows appear. The main window allows to define the parameter settings, control the simulation, export network data, and displays the network simulations. The second window shows detailed statistics for the whole network (_Global Stats_) and for a single agent (_Agent Stats_) that can be selected by clicking on the corresponding node in the white network area once agents have been added.
