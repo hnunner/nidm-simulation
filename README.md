@@ -25,7 +25,7 @@ This way allows to run both the _GUI_ and the _Data Generator_ versions. Further
  6. In the _Import Maven Projects_ window click on __Browse__ and go to the root folder of the cloned (or downloaded) repository. Note: This folder needs to contain a file named _pom.xml_.
  7. Click __Finish__
  8. In the _Package Explorer_ window on the left of Eclipse navigate to: _nidm-simulation_ - _src/main/java_ - _nl.uu.socnetid.nidm.mains_
- 9. You will find two files (_CIDMDataGenerator.java_, _UserInterface.java_) which you can start by right clicking on them and selecting: _Run as_ - _Java application_.
+ 9. The location contains two files (_CIDMDataGenerator.java_, _UserInterface.java_) which can be started by right clicking on them and selecting: _Run as_ - _Java application_.
 Note: Depending on the settings in _src/main/resources/config.properties_ the _Data Generator_ may generate large amounts of data taking a very long time to finish.
 
 ## Using the _GUI_ version of the NIDM Simulator
