@@ -41,6 +41,21 @@ Running a minimal simulation requires the following steps:
    2. Start the simulation by clicking the __Start__ button at the bottom of the window.
    3. Infect an agent by either clicking on the __Infect random agent__ button, or activating _On node click:_ - _Toggle infection_ and clicking on a network node.
 
+### Exporting data ###
+The simulator allows static and dynamic network exports.
+
+#### Static network exports ####
+Static network exports use the data of the network at the time the export is created. In order to ensure that the network structure does not change, it is advised to push the __Pause__ button on the _Simulation_ tab first. Three data types are available:
+ * _GEXF_: A detailed graph representation optimized for [Gephi](https://gephi.org/).
+ * _Edge List_: A list of all connections between nodes. This file is a plain text file and has no ending by default.
+ * _Adjacency Matrix_: A matrix of all nodes with a _1_ at the intersection of two nodes if a tie exists and _0_ otherwise. This file is a plain text file and has no ending by default.
+Exporting static networks is the same for all static network types:
+ 1. Run a simulation as described above.
+ 2. Pause the simulation by pushing the __Pause__ button on the _Simulation_ tab.
+ 3. Select the preferred data type in the _Export_ tab. In case of _GEXF_ make sure to select _Network type:_ - _Static_.
+ 4. Push the __Export__ button and select a folder and file to store the data in.
+
+
 ### _GUI_ components
 
 #### Main window ####
