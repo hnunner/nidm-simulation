@@ -34,12 +34,12 @@ When starting the _GUI_ version of the NIDM Simulator two windows appear. The ma
 ### Running a simulation
 Running a minimal simulation requires the following steps:
  1. Define the model and its parameters in the _Model_ tab:
-   1. Select the type of model (currently only the _CIDM_ model is available).
-   2. Set the parameters to values of interest. The initial settings provide a scenario with high social benefits, risk avoiding agents, and severe infections.
+    1. Select the type of model (currently only the _CIDM_ model is available).
+    2. Set the parameters to values of interest. The initial settings provide a scenario with high social benefits, risk avoiding agents, and severe infections.
  2. Add agents and start the simulation in the _Simulation_ tab:
-   1. Add agents by clicking the __Add agent__ button at the top of the window multiple times.
-   2. Start the simulation by clicking the __Start__ button at the bottom of the window.
-   3. Infect an agent by either clicking on the __Infect random agent__ button, or activating _On node click:_ - _Toggle infection_ and clicking on a network node.
+    1. Add agents by clicking the __Add agent__ button at the top of the window multiple times.
+    2. Start the simulation by clicking the __Start__ button at the bottom of the window.
+    3. Infect an agent by either clicking on the __Infect random agent__ button, or activating _On node click:_ - _Toggle infection_ and clicking on a network node.
 
 ### Exporting data ###
 The simulator allows static and dynamic network exports.
