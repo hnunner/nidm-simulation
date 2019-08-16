@@ -147,7 +147,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
 
         // init controls frame
         controlsFrame.getContentPane().setLayout(null);
-        controlsFrame.setTitle("Networking during Infectious Diseases Model (NIDM) Simulator");
+        controlsFrame.setTitle("NIDM Simulator");
         controlsFrame.setBounds(10, 10, 1060, 740);
         switch (PropertiesHandler.getInstance().getOsType()) {
             case WIN:

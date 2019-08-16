@@ -1,9 +1,13 @@
-# Network Games
+# Networking during Infectious Diseases Model (NIDM) Simulator
 
-This project contains the generic code for arbitrary network games as part of my dissertation project.
+Welcome to the NIDM Simulator project. This project is the Java implementation of the NIDM defined by Nunner, Buskens, & Kretzschmar (2019).
 
-## Versioning
+## Installing the NIDM Simulator
+The project is a stand-alone software application that can be used in two ways:
 
-- **X**.y.y - major release with [1] fundamentally new model behaviors or [2] structural changes in generated data files
-- y.**X**.y - minor release with new features not changing general model behavior or structure of generated data files
-- y.y.**X** - newly generated data files
+### Downloading the project and executing the provided jar-file
+ 1. (Make sure Java Runtime Environment (JRE) is installed)[https://www.baeldung.com/java-check-is-installed] is installed.
+ 2. Dowload (JRE)[https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html] and install if necessary.
+ 3. Download the NIDM project as zip-file by clicking the __Clone or download__ button at the top this page.
+ 4. Unzip the downloaded file.
+ 5. Execute the jar-file by double clicking: /executables/nidm-_version.number_.jar
