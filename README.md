@@ -111,13 +111,13 @@ The export tab provides controls for network exports.
  * If _Edge list_, _Adjacency matrix_, or _GEXF_ and _Static_ is selected as _Network type_:
     * Button __Export__: sets and writes the file to export the data to. Please make sure to use _.txt_ as file ending for _Edge list_ and _Adjacency matrix_ exports, and _.gexf_ as file ending for _GEXF_ exports.
 
-##### Network window #####
-The network window displays the simulated network. Nodes are interactive. That is, they can be clicked (i.e., to show agent statistics, to toggle disease states, and/or to move them around).
+##### Network display #####
+The network display displays the simulated network. Nodes are interactive. That is, they can be clicked (i.e., to show agent statistics, to toggle disease states, and/or to move them around).
 
 #### Statistics window ####
 The statistics window displays detailed information on the network and the simulation (_Global stats_) and on a single selected agent (_Agent stats_). Agent statistics can be selected by:
  1. Activating _Show agent stats_ for _One node click_ on the _Simulation_ tab of the main window.
- 2. Clicking on a node in the network window.
+ 2. Clicking on a node in the network display.
 
 ## Using the _Data Generator_ version of the NIDM Simulator
 The _Data Generator_ is used to generate and subsequently analyze large amounts of data for various parameter settings.
@@ -135,8 +135,8 @@ The _Data Generator_ uses a configuration file (_path.to.nidm.simulator.project.
  1. _CIDM configuration_ to define the parameters of the CIDM model.
  2. _Data export configuration_ to define what types of data ought to be exported. Exported data files are stored in _path.to.nidm.simulator.project.folder/data/`date-time-of-data-generator-invocation`_. Possible exports are:
     * _export.summary_: creates a summary of a single simulation run (e.g., parameter settings, disease and network measures just before introducing a disease and at the end of the simulation, network and utility measures of the initially infected agent).
-    * _export.summary.each.round_: creates a summary of each simulated round (e.g., parameter settings, network measures, disease states).
-    * _export.agent.details_: creates a detailed overview of each single agent (e.g., parameter settings, disease states, utilities, network measures) at the end of each simulated round. If activated _export.agent.details.reduced_ is ignored.
+    * _export.summary.each.round_: creates a summary of each simulated round (e.g., parameter settings, network measures, disease states). __Note:__ This option may create very large amount of data!
+    * _export.agent.details_: creates a detailed overview of each single agent (e.g., parameter settings, disease states, utilities, network measures) at the end of each simulated round. If activated _export.agent.details.reduced_ is ignored. __Note:__ This option may create very large amount of data!
     * _export.agent.details.reduced_: creates a detailed overview of each single agent (e.g., parameter settings, disease states, utilities, network measures) at the end of each simulation run. If _export.agent.details_ is activated _export.agent.details.reduced_ is ignored.
     * _export.gexf_: creates individual dynamic _.gexf_ files for each simulation run.
  3. _Data analysis configuration_ to configure and trigger (_analyze.data=true_) data analysis subsequent to data generation. Please make sure that the correct location of the _Rscript_ executable is set, if _analyze.data_ is set _true_. Analysis results are stored in _path.to.nidm.simulator.project.folder/data/`date-time-of-data-generator-invocation`_.
