@@ -29,7 +29,7 @@ This way allows to run both the _GUI_ and the _data generator_ versions. Further
 Note: Depending on the settings in _src/main/resources/config.properties_ the _data generator_ may generate large amounts of data taking a very long time to finish.
 
 ## Using the _GUI_ version of the NIDM Simulator
-When starting the _GUI_ version of the NIDM Simulator two windows appear. The main window allows to define the parameter settings, control the simulation, and export network data. The second window shows detailed statistics for the whole network (_Global Stats_) and for a single agent (_Agent Stats_) that can be selected by clicking on the corresponding node in the white network area once agents have been added.
+When starting the _GUI_ version of the NIDM Simulator two windows appear. The main window allows to define the parameter settings, control the simulation, export network data, and displays the network simulations. The second window shows detailed statistics for the whole network (_Global Stats_) and for a single agent (_Agent Stats_) that can be selected by clicking on the corresponding node in the white network area once agents have been added.
 
 ### Running a simulation
 Running a minimal simulation requires the following steps:
@@ -39,11 +39,20 @@ Running a minimal simulation requires the following steps:
  2. Add agents and start the simulation in the _Simulation_ tab:
    1. Add agents by clicking the __Add agent__ button at the top of the window multiple times.
    2. Start the simulation by clicking the __Start__ button at the bottom of the window.
-   3. Infect an agent by either
-   * clicking on the __Infect random agent__ button, or
-   * activating _On node click:_ - _Toggle infection_ and clicking on a network node.
+   3. Infect an agent by either clicking on the __Infect random agent__ button, or activating _On node click:_ - _Toggle infection_ and clicking on a network node.
 
+### _GUI_ components
 
+#### Main window ####
+The main window consists of two areas. The left area contains tabs to define the parameter settings, control the simulation, and export network data. The right area displays the network simulations.
+
+##### Model tab #####
+The model tab contains a drop-down list to select model types (currently only the _CIDM_ model is available). Parameter values of the selected model can be defined using the interactive fields below. These differ according to the selected model type.
+
+##### Simulation tab #####
+The simulation tab contains a number of different components:
+ * Button __Add agent__: adds agents to the network. The amount can be defined in the text field to its right.
+ * Button __Remove agent__: removes agents to the network. The amount can be defined in the text field to its right.
 
 
 
