@@ -49,6 +49,7 @@ Static network exports use the data of the network at the time the export is cre
  * _GEXF_: A detailed graph representation optimized for [Gephi](https://gephi.org/).
  * _Edge List_: A list of all connections between nodes. This file is a plain text file and has no ending by default.
  * _Adjacency Matrix_: A matrix of all nodes with a _1_ at the intersection of two nodes if a tie exists and _0_ otherwise. This file is a plain text file and has no ending by default.
+
 Exporting static networks is the same for all static network types:
  1. Run a simulation as described above.
  2. Pause the simulation by pushing the __Pause__ button on the _Simulation_ tab.
