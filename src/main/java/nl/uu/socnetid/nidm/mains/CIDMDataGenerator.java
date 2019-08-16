@@ -255,34 +255,36 @@ public class CIDMDataGenerator implements AgentListener, SimulationListener {
         // finish data generation
         finalizeDataExportFiles();
 
-        // DATA ANALYSIS
-        try {
-            // invocation of R-script
-            ProcessBuilder pb = new ProcessBuilder(PropertiesHandler.getInstance().getRscriptPath(),
-                    PropertiesHandler.getInstance().getRAnalysisFilePath(), FULL_DATA_EXPORT_PATH);
-            logger.info("Starting analysis of simulated data. "
-                    + "Invoking R-script: "
-                    + pb.command().toString());
-            Process p = pb.start();
+        // OPTIONAL DATA ANALYSIS
+        if (PropertiesHandler.getInstance().isAnalyzeData()) {
+            try {
+                // invocation of R-script
+                ProcessBuilder pb = new ProcessBuilder(PropertiesHandler.getInstance().getRscriptPath(),
+                        PropertiesHandler.getInstance().getRAnalysisFilePath(), FULL_DATA_EXPORT_PATH);
+                logger.info("Starting analysis of simulated data. "
+                        + "Invoking R-script: "
+                        + pb.command().toString());
+                Process p = pb.start();
 
-            // status messages of R-script
-            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
-            }
+                // status messages of R-script
+                BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line);
+                }
 
-            // wait for analysis to finish (blocking)
-            int exitCode = p.waitFor();
-            if (exitCode == 0) {
-                logger.info("Analysis finished successfully.");
-            } else {
-                logger.error("Analysis finished with error code: " + exitCode);
+                // wait for analysis to finish (blocking)
+                int exitCode = p.waitFor();
+                if (exitCode == 0) {
+                    logger.info("Analysis finished successfully.");
+                } else {
+                    logger.error("Analysis finished with error code: " + exitCode);
+                }
+            } catch (IOException e) {
+                logger.error(e);
+            } catch (InterruptedException e) {
+                logger.error(e);
             }
-        } catch (IOException e) {
-            logger.error(e);
-        } catch (InterruptedException e) {
-            logger.error(e);
         }
     }
 
