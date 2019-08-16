@@ -337,7 +337,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
         btnReset.setIcon(new ImageIcon(getClass().getResource("/reset.png")));
         btnReset.setFont(new Font("Lucida Grande", Font.PLAIN, 14));
 
-        JButton btnInfectRandomAgent = new JButton("Infect Random Agent");
+        JButton btnInfectRandomAgent = new JButton("Infect random agent");
         btnInfectRandomAgent.setBounds(40, 99, 258, 30);
         simulationPane.add(btnInfectRandomAgent);
         btnInfectRandomAgent.setIcon(new ImageIcon(getClass().getResource("/infect.png")));
