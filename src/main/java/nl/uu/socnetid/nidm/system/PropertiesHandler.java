@@ -45,6 +45,8 @@ public class PropertiesHandler {
     private boolean exportAgentDetails;
     private boolean exportAgentDetailsReduced;
     private boolean exportGexf;
+    // data analysis?
+    private boolean analyzeData;
 
     // GIT PROPERTIES
     private String gitCommitId;
@@ -152,6 +154,9 @@ public class PropertiesHandler {
         this.exportAgentDetails = Boolean.parseBoolean(configProps.getProperty("export.agent.details"));
         this.exportAgentDetailsReduced = Boolean.parseBoolean(configProps.getProperty("export.agent.details.reduced"));
         this.exportGexf = Boolean.parseBoolean(configProps.getProperty("export.gexf"));
+
+        // analyze data?
+        this.analyzeData = Boolean.parseBoolean(configProps.getProperty("analyze.data"));
     }
 
     private void readGitProperties() {
@@ -311,6 +316,13 @@ public class PropertiesHandler {
      */
     public CIDMParameters getCidmParameters() {
         return cidmParameters;
+    }
+
+    /**
+     * @return the analyzeData
+     */
+    public boolean isAnalyzeData() {
+        return analyzeData;
     }
 
 }
