@@ -634,6 +634,21 @@ public class Network extends SingleGraph {
         return (avAlpha / this.getAgents().size());
     }
 
+    /**
+     * Gets the average kappa of all agents in the network.
+     *
+     * @return the average kappa of all agents in the network
+     */
+    public double getAvKappa() {
+        double avKappa = 0;
+        Iterator<Agent> agentIt = this.getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            avKappa += agent.getUtilityFunction().getKappa();
+        }
+        return (avKappa / this.getAgents().size());
+    }
+
 
     /**
      * Gets the average beta of all agents in the network.
@@ -648,6 +663,21 @@ public class Network extends SingleGraph {
             avBeta += agent.getUtilityFunction().getBeta();
         }
         return (avBeta / this.getAgents().size());
+    }
+
+    /**
+     * Gets the average lamda of all agents in the network.
+     *
+     * @return the average lamda of all agents in the network
+     */
+    public double getAvLamda() {
+        double avLamda = 0;
+        Iterator<Agent> agentIt = this.getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            avLamda += agent.getUtilityFunction().getLamda();
+        }
+        return (avLamda / this.getAgents().size());
     }
 
     /**
@@ -693,6 +723,81 @@ public class Network extends SingleGraph {
             avRPi += agent.getRPi();
         }
         return (avRPi / this.getAgents().size());
+    }
+
+    /**
+     * Gets the average share of co-agents to evaluate per round for all agents in the network.
+     *
+     * @return the average share of co-agents to evaluate per round for all agents in the network
+     */
+    public double getAvPhi() {
+        double avPhi = 0;
+        Iterator<Agent> agentIt = this.getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            avPhi += agent.getPhi();
+        }
+        return (avPhi / this.getAgents().size());
+    }
+
+    /**
+     * Gets the average care costs for all agents in the network.
+     *
+     * @return the average care costs for all agents in the network
+     */
+    public double getAvMu() {
+        double avMu = 0;
+        Iterator<Agent> agentIt = this.getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            avMu += agent.getDiseaseSpecs().getMu();
+        }
+        return (avMu / this.getAgents().size());
+    }
+
+    /**
+     * Gets the average disease severity for all agents in the network.
+     *
+     * @return the average disease severity for all agents in the network
+     */
+    public double getAvSigma() {
+        double avSigma = 0;
+        Iterator<Agent> agentIt = this.getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            avSigma += agent.getDiseaseSpecs().getSigma();
+        }
+        return (avSigma / this.getAgents().size());
+    }
+
+    /**
+     * Gets the average probability of infections for all agents in the network.
+     *
+     * @return the average probability of infections for all agents in the network
+     */
+    public double getAvGamma() {
+        double avGamma = 0;
+        Iterator<Agent> agentIt = this.getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            avGamma += agent.getDiseaseSpecs().getGamma();
+        }
+        return (avGamma / this.getAgents().size());
+    }
+
+    /**
+     * Gets the average recovery time for all agents in the network.
+     *
+     * @return the average recovery time for all agents in the network
+     */
+    public double getAvTau() {
+        double avTau = 0;
+        Iterator<Agent> agentIt = this.getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            avTau += agent.getDiseaseSpecs().getTau();
+        }
+        return (avTau / this.getAgents().size());
     }
 
     /**

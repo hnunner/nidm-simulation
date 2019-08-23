@@ -110,11 +110,21 @@ public abstract class UtilityFunction {
     }
 
     /**
+     * @return the discount for infected direct connections
+     */
+    public abstract double getKappa();
+
+    /**
      * @return the utility for indirect connections
      */
     public double getBeta() {
         return this.beta;
     }
+
+    /**
+     * @return the discount for infected indirect connections
+     */
+    public abstract double getLamda();
 
     /**
      * @return the costs to maintain direct connections
