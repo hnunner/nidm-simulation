@@ -80,4 +80,20 @@ public final class Cumulative extends UtilityFunction {
         return 0.0;
     }
 
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.utilities.UtilityFunction#getKappa()
+     */
+    @Override
+    public double getKappa() {
+        return 0;
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.utilities.UtilityFunction#getLamda()
+     */
+    @Override
+    public double getLamda() {
+        return 0;
+    }
+
 }

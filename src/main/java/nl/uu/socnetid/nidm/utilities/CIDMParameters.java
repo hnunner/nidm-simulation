@@ -16,7 +16,9 @@ public class CIDMParameters {
     // potential harm of infections (currently: r_pi == r_sigma)
     private double[] sigmas;
     private double[] gammas;
-    private double[] rs;
+    private boolean rsEqual;
+    private double[] rSigmas;
+    private double[] rPis;
     // network
     private int[] Ns;
     private boolean[] iotas;
@@ -141,17 +143,45 @@ public class CIDMParameters {
     }
 
     /**
-     * @return the rs
+     * @return the rsEqual
      */
-    public double[] getRs() {
-        return rs;
+    public boolean isRsEqual() {
+        return rsEqual;
     }
 
     /**
-     * @param rs the rs to set
+     * @param rsEqual the rsCombined to set
      */
-    public void setRs(double[] rs) {
-        this.rs = rs;
+    public void setRsEqual(boolean rsEqual) {
+        this.rsEqual = rsEqual;
+    }
+
+    /**
+     * @return the rSigmas
+     */
+    public double[] getRSigmas() {
+        return rSigmas;
+    }
+
+    /**
+     * @param rSigmas the rSigmas to set
+     */
+    public void setRSigmas(double[] rSigmas) {
+        this.rSigmas = rSigmas;
+    }
+
+    /**
+     * @return the rPis
+     */
+    public double[] getRPis() {
+        return rPis;
+    }
+
+    /**
+     * @param rPis the rPis to set
+     */
+    public void setRPis(double[] rPis) {
+        this.rPis = rPis;
     }
 
     /**
