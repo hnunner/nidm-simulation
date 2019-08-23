@@ -88,12 +88,12 @@ public class CIDM extends UtilityFunction {
         switch (agent.getDiseaseGroup()) {
             case SUSCEPTIBLE:
                 p = Math.pow(StatsComputer.computeProbabilityOfInfection(agent, nI), (2 - rPi));
-                s = Math.pow(agent.getDiseaseSpecs().getS(), rSigma) ;
+                s = Math.pow(agent.getDiseaseSpecs().getSigma(), rSigma) ;
                 break;
 
             case INFECTED:
                 p = 1;
-                s = agent.getDiseaseSpecs().getS();
+                s = agent.getDiseaseSpecs().getSigma();
                 break;
 
             case RECOVERED:
@@ -106,6 +106,24 @@ public class CIDM extends UtilityFunction {
         }
 
         return p * s;
+    }
+
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.utilities.UtilityFunction#getKappa()
+     */
+    @Override
+    public double getKappa() {
+        return this.kappa;
+    }
+
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.utilities.UtilityFunction#getLamda()
+     */
+    @Override
+    public double getLamda() {
+        return this.lamda;
     }
 
 }

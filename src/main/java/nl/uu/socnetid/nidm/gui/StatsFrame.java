@@ -1100,7 +1100,7 @@ public class StatsFrame extends JFrame {
     public void refreshGlobalDiseaseStats(DiseaseSpecs ds) {
         this.lblGlobalDiseaseType.setText(ds.getStatsName());
         this.lblGlobalTau.setText(Integer.toString(ds.getTau()));
-        this.lblGlobalS.setText(Double.toString(ds.getS()));
+        this.lblGlobalS.setText(Double.toString(ds.getSigma()));
         this.lblGlobalGamma.setText(Double.toString(ds.getGamma()));
         this.lblGlobalMu.setText(Double.toString(ds.getMu()));
     }
