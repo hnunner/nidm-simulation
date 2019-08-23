@@ -14,7 +14,7 @@ public class DataGeneratorStats {
     private int simPerUpc;
     private boolean iota;
     private int roundStartInfection;
-    private int roundsLastInfection;
+    private int roundLastInfection;
     private boolean tiesBrokenWithInfectionPresent;
     private SimulationStage simStage;
     // pre-epidemic
@@ -57,17 +57,17 @@ public class DataGeneratorStats {
     }
 
     /**
-     * @return the roundsLastInfection
+     * @return the roundLastInfection
      */
-    public int getRoundsLastInfection() {
-        return roundsLastInfection;
+    public int getRoundLastInfection() {
+        return roundLastInfection;
     }
 
     /**
-     * @param roundsLastInfection the roundsLastInfection to set
+     * @param roundLastInfection the roundLastInfection to set
      */
-    public void setRoundsLastInfection(int roundsLastInfection) {
-        this.roundsLastInfection = roundsLastInfection;
+    public void setRoundLastInfection(int roundLastInfection) {
+        this.roundLastInfection = roundLastInfection;
     }
 
     /**

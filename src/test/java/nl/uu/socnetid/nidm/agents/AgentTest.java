@@ -182,7 +182,7 @@ public class AgentTest {
     @Test
     public void testGetDiseaseSpecs() {
         assertNotNull(this.agent1.getDiseaseSpecs());
-        assertEquals(s, this.agent1.getDiseaseSpecs().getS(), 0.0);
+        assertEquals(s, this.agent1.getDiseaseSpecs().getSigma(), 0.0);
         assertNotNull(this.agent2.getDiseaseSpecs());
         assertEquals(mu, this.agent2.getDiseaseSpecs().getMu(), 0.0);
         assertNotNull(this.agent5.getDiseaseSpecs());
