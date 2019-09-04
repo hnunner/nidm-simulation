@@ -1,4 +1,4 @@
-package nl.uu.socnetid.nidm.utilities;
+package nl.uu.socnetid.nidm.utility;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
@@ -7,7 +7,7 @@ import nl.uu.socnetid.nidm.stats.StatsComputer;
 /**
  * @author Hendrik Nunner
  */
-public class CIDM extends UtilityFunction {
+public class Cidm extends UtilityFunction {
 
     // discount for infected direct connections
     private final double kappa;
@@ -28,7 +28,7 @@ public class CIDM extends UtilityFunction {
      * @param c
      *          the maintenance costs for a direct connection
      */
-    public CIDM(double alpha, double kappa, double beta, double lamda, double c) {
+    public Cidm(double alpha, double kappa, double beta, double lamda, double c) {
         super(alpha, beta, c);
         this.kappa = kappa;
         this.lamda = lamda;
@@ -36,15 +36,15 @@ public class CIDM extends UtilityFunction {
 
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utilities.UtilityFunction#getStatsName()
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getStatsName()
      */
     @Override
     public String getStatsName() {
-        return "CIDM";
+        return "Cidm";
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utilities.UtilityFunction#getBenefitOfDirectConnections(
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getBenefitOfDirectConnections(
      * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats)
      */
     @Override
@@ -53,7 +53,7 @@ public class CIDM extends UtilityFunction {
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utilities.UtilityFunction#getBenefitOfIndirectConnections(
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getBenefitOfIndirectConnections(
      * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats)
      */
     @Override
@@ -63,7 +63,7 @@ public class CIDM extends UtilityFunction {
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utilities.UtilityFunction#getCostsOfDirectConnections(
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getCostsOfDirectConnections(
      * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats, nl.uu.socnetid.nidm.agents.Agent)
      */
     @Override
@@ -73,7 +73,7 @@ public class CIDM extends UtilityFunction {
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utilities.UtilityFunction#getEffectOfDisease(
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getEffectOfDisease(
      * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats, nl.uu.socnetid.nidm.agents.Agent)
      */
     @Override
@@ -110,7 +110,7 @@ public class CIDM extends UtilityFunction {
 
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utilities.UtilityFunction#getKappa()
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getKappa()
      */
     @Override
     public double getKappa() {
@@ -119,7 +119,7 @@ public class CIDM extends UtilityFunction {
 
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utilities.UtilityFunction#getLamda()
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getLamda()
      */
     @Override
     public double getLamda() {

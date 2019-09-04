@@ -1,4 +1,4 @@
-package nl.uu.socnetid.nidm.io;
+package nl.uu.socnetid.nidm.io.network;
 
 import nl.uu.socnetid.nidm.networks.Network;
 

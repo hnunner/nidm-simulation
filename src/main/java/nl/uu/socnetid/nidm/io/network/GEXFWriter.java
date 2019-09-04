@@ -1,4 +1,4 @@
-package nl.uu.socnetid.nidm.io;
+package nl.uu.socnetid.nidm.io.network;
 
 import java.io.File;
 import java.io.IOException;
