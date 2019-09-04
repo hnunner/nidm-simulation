@@ -13,7 +13,7 @@ import javax.swing.SwingConstants;
 /**
  * @author Hendrik Nunner
  */
-public class CIDMPanel extends DeactivatablePanel {
+public class CidmPanel extends DeactivatablePanel {
 
     private static final long serialVersionUID = -6334519672487731007L;
 
@@ -53,7 +53,7 @@ public class CIDMPanel extends DeactivatablePanel {
     /**
      * Create the panel.
      */
-    public CIDMPanel() {
+    public CidmPanel() {
         setLayout(null);
 
         JLabel lblBenefitsOfConnections = new JLabel("Direct ties:");

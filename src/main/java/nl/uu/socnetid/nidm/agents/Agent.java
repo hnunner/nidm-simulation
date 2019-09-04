@@ -24,8 +24,8 @@ import nl.uu.socnetid.nidm.diseases.types.DiseaseGroup;
 import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.stats.AgentConnectionStats;
 import nl.uu.socnetid.nidm.stats.StatsComputer;
-import nl.uu.socnetid.nidm.utilities.Utility;
-import nl.uu.socnetid.nidm.utilities.UtilityFunction;
+import nl.uu.socnetid.nidm.utility.Utility;
+import nl.uu.socnetid.nidm.utility.UtilityFunction;
 
 /**
  * Interface of a basic agent.

@@ -9,7 +9,7 @@ import org.graphstream.ui.view.Viewer;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
-import nl.uu.socnetid.nidm.utilities.UtilityFunction;
+import nl.uu.socnetid.nidm.utility.UtilityFunction;
 
 /**
  * @author Hendrik Nunner
@@ -80,7 +80,7 @@ public class DisplayableNetwork extends Network {
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.networks.Network#addAgent(
-     * nl.uu.socnetid.nidm.utilities.UtilityFunction, nl.uu.socnetid.nidm.diseases.DiseaseSpecs,
+     * nl.uu.socnetid.nidm.utility.UtilityFunction, nl.uu.socnetid.nidm.diseases.DiseaseSpecs,
      * double)
      */
     @Override
