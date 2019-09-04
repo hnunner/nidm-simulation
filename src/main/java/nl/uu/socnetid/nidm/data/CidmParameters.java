@@ -1,32 +1,46 @@
-package nl.uu.socnetid.nidm.utilities;
+package nl.uu.socnetid.nidm.data;
 
 /**
  * @author Hendrik Nunner
  */
-public class CIDMParameters {
+public class CidmParameters implements UtilityModelParameters {
 
     // social benefits
     private double[] alphas;
+    private double currAlpha;
     private double[] kappas;
+    private double currKappa;
     private double[] betas;
+    private double currBeta;
     private double[] lamdas;
+    private double currLamda;
     // social maintenance costs
     private double[] cs;
+    private double currC;
     private double[] mus;
+    private double currMu;
     // potential harm of infections (currently: r_pi == r_sigma)
     private double[] sigmas;
+    private double currSigma;
     private double[] gammas;
+    private double currGamma;
     private boolean rsEqual;
     private double[] rSigmas;
+    private double currRSigma;
     private double[] rPis;
+    private double currRPi;
     // network
     private int[] Ns;
+    private double currN;
     private boolean[] iotas;
+    private boolean currIota;
     private double[] phis;
+    private double currPhi;
     // simulation
     private int zeta;
     private int epsilon;
     private int[] taus;
+    private int currTau;
     private int simsPerParameterCombination;
 
 
@@ -280,6 +294,230 @@ public class CIDMParameters {
      */
     public void setSimsPerParameterCombination(int simsPerParameterCombination) {
         this.simsPerParameterCombination = simsPerParameterCombination;
+    }
+
+    /**
+     * @return the currAlpha
+     */
+    public double getCurrAlpha() {
+        return currAlpha;
+    }
+
+    /**
+     * @param currAlpha the currAlpha to set
+     */
+    public void setCurrAlpha(double currAlpha) {
+        this.currAlpha = currAlpha;
+    }
+
+    /**
+     * @return the currKappa
+     */
+    public double getCurrKappa() {
+        return currKappa;
+    }
+
+    /**
+     * @param currKappa the currKappa to set
+     */
+    public void setCurrKappa(double currKappa) {
+        this.currKappa = currKappa;
+    }
+
+    /**
+     * @return the currBeta
+     */
+    public double getCurrBeta() {
+        return currBeta;
+    }
+
+    /**
+     * @param currBeta the currBeta to set
+     */
+    public void setCurrBeta(double currBeta) {
+        this.currBeta = currBeta;
+    }
+
+    /**
+     * @return the currLamda
+     */
+    public double getCurrLamda() {
+        return currLamda;
+    }
+
+    /**
+     * @param currLamda the currLamda to set
+     */
+    public void setCurrLamda(double currLamda) {
+        this.currLamda = currLamda;
+    }
+
+    /**
+     * @return the currC
+     */
+    public double getCurrC() {
+        return currC;
+    }
+
+    /**
+     * @param currC the currC to set
+     */
+    public void setCurrC(double currC) {
+        this.currC = currC;
+    }
+
+    /**
+     * @return the currMu
+     */
+    public double getCurrMu() {
+        return currMu;
+    }
+
+    /**
+     * @param currMu the currMu to set
+     */
+    public void setCurrMu(double currMu) {
+        this.currMu = currMu;
+    }
+
+    /**
+     * @return the currSigma
+     */
+    public double getCurrSigma() {
+        return currSigma;
+    }
+
+    /**
+     * @param currSigma the currSigma to set
+     */
+    public void setCurrSigma(double currSigma) {
+        this.currSigma = currSigma;
+    }
+
+    /**
+     * @return the currGamma
+     */
+    public double getCurrGamma() {
+        return currGamma;
+    }
+
+    /**
+     * @param currGamma the currGamma to set
+     */
+    public void setCurrGamma(double currGamma) {
+        this.currGamma = currGamma;
+    }
+
+    /**
+     * @return the rSigmas
+     */
+    public double[] getrSigmas() {
+        return rSigmas;
+    }
+
+    /**
+     * @param rSigmas the rSigmas to set
+     */
+    public void setrSigmas(double[] rSigmas) {
+        this.rSigmas = rSigmas;
+    }
+
+    /**
+     * @return the currRSigma
+     */
+    public double getCurrRSigma() {
+        return currRSigma;
+    }
+
+    /**
+     * @param currRSigma the currRSigma to set
+     */
+    public void setCurrRSigma(double currRSigma) {
+        this.currRSigma = currRSigma;
+    }
+
+    /**
+     * @return the rPis
+     */
+    public double[] getrPis() {
+        return rPis;
+    }
+
+    /**
+     * @param rPis the rPis to set
+     */
+    public void setrPis(double[] rPis) {
+        this.rPis = rPis;
+    }
+
+    /**
+     * @return the currRPi
+     */
+    public double getCurrRPi() {
+        return currRPi;
+    }
+
+    /**
+     * @param currRPi the currRPi to set
+     */
+    public void setCurrRPi(double currRPi) {
+        this.currRPi = currRPi;
+    }
+
+    /**
+     * @return the currN
+     */
+    public double getCurrN() {
+        return currN;
+    }
+
+    /**
+     * @param currN the currN to set
+     */
+    public void setCurrN(double currN) {
+        this.currN = currN;
+    }
+
+    /**
+     * @return the currIota
+     */
+    public boolean isCurrIota() {
+        return currIota;
+    }
+
+    /**
+     * @param currIota the currIota to set
+     */
+    public void setCurrIota(boolean currIota) {
+        this.currIota = currIota;
+    }
+
+    /**
+     * @return the currPhi
+     */
+    public double getCurrPhi() {
+        return currPhi;
+    }
+
+    /**
+     * @param currPhi the currPhi to set
+     */
+    public void setCurrPhi(double currPhi) {
+        this.currPhi = currPhi;
+    }
+
+    /**
+     * @return the currTau
+     */
+    public int getCurrTau() {
+        return currTau;
+    }
+
+    /**
+     * @param currTau the currTau to set
+     */
+    public void setCurrTau(int currTau) {
+        this.currTau = currTau;
     }
 
 }

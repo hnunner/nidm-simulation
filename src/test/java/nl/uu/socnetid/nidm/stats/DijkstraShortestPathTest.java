@@ -13,8 +13,8 @@ import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
 import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.stats.DijkstraShortestPath;
-import nl.uu.socnetid.nidm.utilities.Cumulative;
-import nl.uu.socnetid.nidm.utilities.UtilityFunction;
+import nl.uu.socnetid.nidm.utility.Cumulative;
+import nl.uu.socnetid.nidm.utility.UtilityFunction;
 
 /**
  * Tests for {@link Cumulative} class.

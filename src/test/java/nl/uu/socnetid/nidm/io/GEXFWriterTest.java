@@ -16,9 +16,10 @@ import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.agents.AgentAttributes;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
+import nl.uu.socnetid.nidm.io.network.GEXFWriter;
 import nl.uu.socnetid.nidm.networks.Network;
-import nl.uu.socnetid.nidm.utilities.IRTC;
-import nl.uu.socnetid.nidm.utilities.UtilityFunction;
+import nl.uu.socnetid.nidm.utility.Irtc;
+import nl.uu.socnetid.nidm.utility.UtilityFunction;
 
 /**
  * @author Hendrik Nunner
@@ -65,7 +66,7 @@ public class GEXFWriterTest {
     public void initNetwork() {
         this.network = new Network("GEXFWriter Test");
 
-        this.uf = new IRTC(alpha, beta, c);
+        this.uf = new Irtc(alpha, beta, c);
         this.ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
 
         this.agent1 = this.network.addAgent(uf, ds, r, r, phi);

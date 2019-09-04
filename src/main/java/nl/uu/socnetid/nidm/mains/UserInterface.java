@@ -37,7 +37,7 @@ import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.agents.AgentListener;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
-import nl.uu.socnetid.nidm.gui.CIDMPanel;
+import nl.uu.socnetid.nidm.gui.CidmPanel;
 import nl.uu.socnetid.nidm.gui.CumulativePanel;
 import nl.uu.socnetid.nidm.gui.DeactivatablePanel;
 import nl.uu.socnetid.nidm.gui.ExportAdjacencyMatrixPanel;
@@ -53,9 +53,9 @@ import nl.uu.socnetid.nidm.simulation.Simulation;
 import nl.uu.socnetid.nidm.simulation.SimulationListener;
 import nl.uu.socnetid.nidm.stats.StatsComputer;
 import nl.uu.socnetid.nidm.system.PropertiesHandler;
-import nl.uu.socnetid.nidm.utilities.CIDM;
-import nl.uu.socnetid.nidm.utilities.Cumulative;
-import nl.uu.socnetid.nidm.utilities.UtilityFunction;
+import nl.uu.socnetid.nidm.utility.Cidm;
+import nl.uu.socnetid.nidm.utility.Cumulative;
+import nl.uu.socnetid.nidm.utility.UtilityFunction;
 
 /**
  * @author Hendrik Nunner
@@ -75,10 +75,10 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
     // UTILITY
     // selection
     private JComboBox<String> modelTypeCBox;
-    private final String[] utilityFunctions = {"CIDM"};  //, "Cumulative"};
+    private final String[] utilityFunctions = {"Cidm"};  //, "Cumulative"};
     // panels
     private CumulativePanel cumulativePanel = new CumulativePanel();
-    private CIDMPanel cidmPanel = new CIDMPanel();
+    private CidmPanel cidmPanel = new CidmPanel();
     private final DeactivatablePanel[] utilityPanels = {cumulativePanel, cidmPanel};
 
     // AGENT
@@ -615,7 +615,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
     private UtilityFunction getUtilityFunction() {
         switch (modelTypeCBox.getSelectedIndex()) {
             case 0:
-                return new CIDM(
+                return new Cidm(
                         this.cidmPanel.getAlpha(),
                         this.cidmPanel.getKappa(),
                         this.cidmPanel.getBeta(),
