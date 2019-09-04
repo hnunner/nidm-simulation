@@ -1,4 +1,4 @@
-package nl.uu.socnetid.nidm.utilities;
+package nl.uu.socnetid.nidm.utility;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
@@ -6,31 +6,42 @@ import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
 /**
  * @author Hendrik Nunner
  */
-public class TruncatedConnections extends UtilityFunction {
+public final class Cumulative extends UtilityFunction {
+
+    // default values
+    private static final double DEFAULT_DIRECT = 1.0;
+    private static final double DEFAULT_INDIRECT = 0.5;
 
     /**
-     * Constructor.
+     * Constructor with default values.
+     */
+    public Cumulative() {
+        this(DEFAULT_DIRECT, DEFAULT_INDIRECT);
+    }
+
+    /**
+     * Constructor
      *
      * @param alpha
-     *          the benefit for connections, deteriorating over distance
-     * @param c
-     *          the c to maintain direct connections
+     *          the utility for direct connections
+     * @param beta
+     *          the utility for indirect connections (distance 2)
      */
-    public TruncatedConnections(double alpha, double c) {
-        super(alpha, alpha * alpha, c);
+    public Cumulative(double alpha, double beta) {
+        super(alpha, beta, 0.0);
     }
 
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utilities.UtilityFunction#getStatsName()
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getStatsName()
      */
     @Override
     public String getStatsName() {
-        return "TC";
+        return "CUM";
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utilities.UtilityFunction#getBenefitOfDirectConnections(
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getBenefitOfDirectConnections(
      * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats)
      */
     @Override
@@ -39,7 +50,7 @@ public class TruncatedConnections extends UtilityFunction {
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utilities.UtilityFunction#getBenefitOfIndirectConnections(
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getBenefitOfIndirectConnections(
      * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats)
      */
     @Override
@@ -49,19 +60,18 @@ public class TruncatedConnections extends UtilityFunction {
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utilities.UtilityFunction#getCostsOfDirectConnections(
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getCostsOfDirectConnections(
      * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats, nl.uu.socnetid.nidm.agents.Agent)
      */
     @Override
     protected double getCostsOfDirectConnections(LocalAgentConnectionsStats lacs, Agent agent) {
-        int nSR = lacs.getnS() + lacs.getnR();
-        int nI = lacs.getnI();
-        return (nSR + (nI * agent.getDiseaseSpecs().getMu())) * this.getC();
+        // no costs
+        return 0.0;
     }
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utilities.UtilityFunction#getEffectOfDisease(
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getEffectOfDisease(
      * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats, nl.uu.socnetid.nidm.agents.Agent)
      */
     @Override
@@ -70,18 +80,16 @@ public class TruncatedConnections extends UtilityFunction {
         return 0.0;
     }
 
-
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utilities.UtilityFunction#getKappa()
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getKappa()
      */
     @Override
     public double getKappa() {
         return 0;
     }
 
-
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utilities.UtilityFunction#getLamda()
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getLamda()
      */
     @Override
     public double getLamda() {
