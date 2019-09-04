@@ -14,8 +14,8 @@ import nl.uu.socnetid.nidm.stats.GlobalAgentStats;
 import nl.uu.socnetid.nidm.stats.GlobalNetworkStats;
 import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
 import nl.uu.socnetid.nidm.stats.StatsComputer;
-import nl.uu.socnetid.nidm.utilities.Cumulative;
-import nl.uu.socnetid.nidm.utilities.UtilityFunction;
+import nl.uu.socnetid.nidm.utility.Cumulative;
+import nl.uu.socnetid.nidm.utility.UtilityFunction;
 
 /**
  * Tests for {@link Cumulative} class.

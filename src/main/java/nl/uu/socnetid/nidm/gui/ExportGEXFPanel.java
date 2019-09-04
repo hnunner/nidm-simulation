@@ -20,7 +20,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
-import nl.uu.socnetid.nidm.io.GEXFWriter;
+import nl.uu.socnetid.nidm.io.network.GEXFWriter;
 import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.system.PropertiesHandler;
 

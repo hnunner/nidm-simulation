@@ -1,4 +1,4 @@
-package nl.uu.socnetid.nidm.utilities;
+package nl.uu.socnetid.nidm.utility;
 
 import java.util.Collection;
 

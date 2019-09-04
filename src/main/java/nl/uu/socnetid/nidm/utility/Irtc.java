@@ -1,4 +1,4 @@
-package nl.uu.socnetid.nidm.utilities;
+package nl.uu.socnetid.nidm.utility;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
@@ -7,7 +7,7 @@ import nl.uu.socnetid.nidm.stats.StatsComputer;
 /**
  * @author Hendrik Nunner
  */
-public class IRTC extends UtilityFunction {
+public class Irtc extends UtilityFunction {
 
     /**
      * Constructor.
@@ -19,21 +19,21 @@ public class IRTC extends UtilityFunction {
      * @param c
      *          the maintenance costs for a direct connection
      */
-    public IRTC(double alpha, double beta, double c) {
+    public Irtc(double alpha, double beta, double c) {
         super(alpha, beta, c);
     }
 
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utilities.UtilityFunction#getStatsName()
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getStatsName()
      */
     @Override
     public String getStatsName() {
-        return "IRTC";
+        return "Irtc";
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utilities.UtilityFunction#getBenefitOfDirectConnections(
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getBenefitOfDirectConnections(
      * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats)
      */
     @Override
@@ -43,7 +43,7 @@ public class IRTC extends UtilityFunction {
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utilities.UtilityFunction#getBenefitOfIndirectConnections(
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getBenefitOfIndirectConnections(
      * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats)
      */
     @Override
@@ -53,7 +53,7 @@ public class IRTC extends UtilityFunction {
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utilities.UtilityFunction#getCostsOfDirectConnections(
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getCostsOfDirectConnections(
      * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats, nl.uu.socnetid.nidm.agents.Agent)
      */
     @Override
@@ -65,7 +65,7 @@ public class IRTC extends UtilityFunction {
 
     /*
      * (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utilities.UtilityFunction#getEffectOfDisease(
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getEffectOfDisease(
      * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats, nl.uu.socnetid.nidm.agents.Agent)
      */
     @Override
@@ -102,7 +102,7 @@ public class IRTC extends UtilityFunction {
 
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utilities.UtilityFunction#getKappa()
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getKappa()
      */
     @Override
     public double getKappa() {
@@ -111,7 +111,7 @@ public class IRTC extends UtilityFunction {
 
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utilities.UtilityFunction#getLamda()
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getLamda()
      */
     @Override
     public double getLamda() {

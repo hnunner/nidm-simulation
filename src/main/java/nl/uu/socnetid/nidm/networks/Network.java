@@ -17,7 +17,7 @@ import org.graphstream.graph.implementations.SingleGraph;
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.agents.AgentFactory;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
-import nl.uu.socnetid.nidm.utilities.UtilityFunction;
+import nl.uu.socnetid.nidm.utility.UtilityFunction;
 
 /**
  * @author Hendrik Nunner
