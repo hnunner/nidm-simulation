@@ -15,8 +15,8 @@ import nl.uu.socnetid.nidm.stats.GlobalNetworkStats;
 import nl.uu.socnetid.nidm.stats.GlobalSimulationStats;
 import nl.uu.socnetid.nidm.stats.StatsComputer;
 import nl.uu.socnetid.nidm.system.PropertiesHandler;
-import nl.uu.socnetid.nidm.utilities.Utility;
-import nl.uu.socnetid.nidm.utilities.UtilityFunction;
+import nl.uu.socnetid.nidm.utility.Utility;
+import nl.uu.socnetid.nidm.utility.UtilityFunction;
 
 /**
  * @author Hendrik Nunner
