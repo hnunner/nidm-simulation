@@ -7,8 +7,8 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
-import nl.uu.socnetid.nidm.data.LogParameters;
-import nl.uu.socnetid.nidm.utilities.CIDMParameters;
+import nl.uu.socnetid.nidm.data.CidmParameters;
+import nl.uu.socnetid.nidm.data.LogValues;
 
 
 /**
@@ -37,8 +37,8 @@ public class PropertiesHandler {
     // file system
     private String rscriptPath;
     private String rAnalysisFilePath;
-    // CIDM parameters
-    private CIDMParameters cidmParameters;
+    // Cidm parameters
+    private CidmParameters cidmParameters;
     // DATA EXPORT
     // types of data export
     private boolean exportSummary;
@@ -129,28 +129,28 @@ public class PropertiesHandler {
         this.rAnalysisFilePath = new StringBuilder().append(this.userDir).append(
                 configProps.getProperty("r.anlysis.file.path")).toString();
 
-        // CIDM parameters
+        // Cidm parameters
         // social maintenance costs
-        cidmParameters = new CIDMParameters();
-        cidmParameters.setAlphas(parseDoubleArray(configProps.getProperty(LogParameters.CIDM_ALPHA.toString())));
-        cidmParameters.setKappas(parseDoubleArray(configProps.getProperty(LogParameters.CIDM_KAPPA.toString())));
-        cidmParameters.setBetas(parseDoubleArray(configProps.getProperty(LogParameters.CIDM_BETA.toString())));
-        cidmParameters.setLamdas(parseDoubleArray(configProps.getProperty(LogParameters.CIDM_LAMDA.toString())));
-        cidmParameters.setCs(parseDoubleArray(configProps.getProperty(LogParameters.CIDM_C.toString())));
-        cidmParameters.setMus(parseDoubleArray(configProps.getProperty(LogParameters.CIDM_MU.toString())));
-        cidmParameters.setSigmas(parseDoubleArray(configProps.getProperty(LogParameters.CIDM_R_SIGMA.toString())));
-        cidmParameters.setGammas(parseDoubleArray(configProps.getProperty(LogParameters.CIDM_GAMMA.toString())));
-        cidmParameters.setRsEqual(Boolean.parseBoolean(configProps.getProperty(LogParameters.CIDM_RS_EQUAL.toString())));
-        cidmParameters.setRSigmas(parseDoubleArray(configProps.getProperty(LogParameters.CIDM_R_SIGMA.toString())));
-        cidmParameters.setRPis(parseDoubleArray(configProps.getProperty(LogParameters.CIDM_R_PI.toString())));
-        cidmParameters.setNs(parseIntArray(configProps.getProperty(LogParameters.CIDM_NET_SIZE.toString())));
-        cidmParameters.setIotas(parseBooleanArray(configProps.getProperty(LogParameters.CIDM_IOTA.toString())));
-        cidmParameters.setPhis(parseDoubleArray(configProps.getProperty(LogParameters.CIDM_PHI.toString())));
-        cidmParameters.setZeta(Integer.valueOf(configProps.getProperty(LogParameters.CIDM_ZETA.toString())));
-        cidmParameters.setEpsilon(Integer.valueOf(configProps.getProperty(LogParameters.CIDM_EPSILON.toString())));
-        cidmParameters.setTaus(parseIntArray(configProps.getProperty(LogParameters.CIDM_TAU.toString())));
+        cidmParameters = new CidmParameters();
+        cidmParameters.setAlphas(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_ALPHA.toString())));
+        cidmParameters.setKappas(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_KAPPA.toString())));
+        cidmParameters.setBetas(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_BETA.toString())));
+        cidmParameters.setLamdas(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_LAMDA.toString())));
+        cidmParameters.setCs(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_C.toString())));
+        cidmParameters.setMus(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_MU.toString())));
+        cidmParameters.setSigmas(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_R_SIGMA.toString())));
+        cidmParameters.setGammas(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_GAMMA.toString())));
+        cidmParameters.setRsEqual(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_CIDM_RS_EQUAL.toString())));
+        cidmParameters.setRSigmas(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_R_SIGMA.toString())));
+        cidmParameters.setRPis(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_R_PI.toString())));
+        cidmParameters.setNs(parseIntArray(configProps.getProperty(LogValues.IV_CIDM_NET_SIZE.toString())));
+        cidmParameters.setIotas(parseBooleanArray(configProps.getProperty(LogValues.IV_CIDM_IOTA.toString())));
+        cidmParameters.setPhis(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_PHI.toString())));
+        cidmParameters.setZeta(Integer.valueOf(configProps.getProperty(LogValues.IV_CIDM_ZETA.toString())));
+        cidmParameters.setEpsilon(Integer.valueOf(configProps.getProperty(LogValues.IV_CIDM_EPSILON.toString())));
+        cidmParameters.setTaus(parseIntArray(configProps.getProperty(LogValues.IV_CIDM_TAU.toString())));
         cidmParameters.setSimsPerParameterCombination(Integer.valueOf(configProps.getProperty(
-                LogParameters.CIDM_SIMS_PER_PC.toString())));
+                LogValues.IV_CIDM_SIMS_PER_PC.toString())));
 
         // types of data export
         this.exportSummary = Boolean.parseBoolean(configProps.getProperty("export.summary"));
@@ -314,11 +314,11 @@ public class PropertiesHandler {
     }
 
     /**
-     * Gets the CIDM parameters as defined in the config.properties
+     * Gets the Cidm parameters as defined in the config.properties
      *
-     * @return the CIDM parameters as defined in the config.properties
+     * @return the Cidm parameters as defined in the config.properties
      */
-    public CIDMParameters getCidmParameters() {
+    public CidmParameters getCidmParameters() {
         return cidmParameters;
     }
 

@@ -10,9 +10,9 @@ import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
 import nl.uu.socnetid.nidm.networks.Network;
-import nl.uu.socnetid.nidm.utilities.Cumulative;
-import nl.uu.socnetid.nidm.utilities.IRTC;
-import nl.uu.socnetid.nidm.utilities.UtilityFunction;
+import nl.uu.socnetid.nidm.utility.Cumulative;
+import nl.uu.socnetid.nidm.utility.Irtc;
+import nl.uu.socnetid.nidm.utility.UtilityFunction;
 
 /**
  * Tests for {@link Cumulative} class.
@@ -51,9 +51,9 @@ public class IRTCTest {
      */
     @Before
     public void initAgent() {
-        this.network = new Network("IRTC Test");
+        this.network = new Network("Irtc Test");
 
-        UtilityFunction uf = new IRTC(alpha, beta, c);
+        UtilityFunction uf = new Irtc(alpha, beta, c);
         DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
 
         this.agent1 = this.network.addAgent(uf, ds, r, r, phi);
