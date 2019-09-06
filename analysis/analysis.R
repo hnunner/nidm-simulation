@@ -21,7 +21,7 @@ sourceLibs(c("reshape2",    # 'melt' function
 DATA_PATH                   <- ""
 args = commandArgs(trailingOnly=TRUE)
 if (length(args) == 0) {
-  DATA_DIR                  <- "20190904-171440"
+  DATA_DIR                  <- "20190905-084651"
   DATA_PATH                 <- paste(dirname(sys.frame(1)$ofile), "/../data/", DATA_DIR, "/", sep = "")
 } else {
   DATA_PATH                 <- paste(args[1], "/", sep = "")
@@ -577,40 +577,40 @@ exportRegressionModelsComplete <- function(ssData = loadSimulationSummaryData())
 
   # INTERACTION EFFECTS
   # combinations of beta
-  beta.X.mu                          <- (beta - mean(beta)                       *  (mu - mean(mu)))
-  beta.X.sigma                       <- (beta - mean(beta)                       *  (sigma - mean(sigma)))
-  beta.X.r                           <- (beta - mean(beta)                       *  (r - mean(r)))
-  beta.X.N                           <- (beta - mean(beta)                       *  (N - mean(N)))
-  beta.X.iota                        <- (beta - mean(beta)                       *  (iota - mean(iota)))
-  beta.X.density                     <- (beta - mean(beta)                       *  (density - mean(density)))
-  beta.X.index.degree                <- (beta - mean(beta)                       *  (index.degree - mean(index.degree)))
+  beta.X.mu                          <- (beta - mean(beta))                      *  (mu - mean(mu))
+  beta.X.sigma                       <- (beta - mean(beta))                      *  (sigma - mean(sigma))
+  beta.X.r                           <- (beta - mean(beta))                      *  (r - mean(r))
+  beta.X.N                           <- (beta - mean(beta))                      *  (N - mean(N))
+  beta.X.iota                        <- (beta - mean(beta))                      *  (iota - mean(iota))
+  beta.X.density                     <- (beta - mean(beta))                      *  (density - mean(density))
+  beta.X.index.degree                <- (beta - mean(beta))                      *  (index.degree - mean(index.degree))
   # combinations of mu
-  mu.X.sigma                         <- (mu - mean(mu)                           *  (sigma - mean(sigma)))
-  mu.X.r                             <- (mu - mean(mu)                           *  (r - mean(r)))
-  mu.X.N                             <- (mu - mean(mu)                           *  (N - mean(N)))
-  mu.X.iota                          <- (mu - mean(mu)                           *  (iota - mean(iota)))
-  mu.X.density                       <- (mu - mean(mu)                           *  (density - mean(density)))
-  mu.X.index.degree                  <- (mu - mean(mu)                           *  (index.degree - mean(index.degree)))
+  mu.X.sigma                         <- (mu - mean(mu))                          *  (sigma - mean(sigma))
+  mu.X.r                             <- (mu - mean(mu))                          *  (r - mean(r))
+  mu.X.N                             <- (mu - mean(mu))                          *  (N - mean(N))
+  mu.X.iota                          <- (mu - mean(mu))                          *  (iota - mean(iota))
+  mu.X.density                       <- (mu - mean(mu))                          *  (density - mean(density))
+  mu.X.index.degree                  <- (mu - mean(mu))                          *  (index.degree - mean(index.degree))
   # combinations of sigma
-  sigma.X.r                          <- (sigma - mean(sigma)                     *  (r - mean(r)))
-  sigma.X.N                          <- (sigma - mean(sigma)                     *  (N - mean(N)))
-  sigma.X.iota                       <- (sigma - mean(sigma)                     *  (iota - mean(iota)))
-  sigma.X.density                    <- (sigma - mean(sigma)                     *  (density - mean(density)))
-  sigma.X.index.degree               <- (sigma - mean(sigma)                     *  (index.degree - mean(index.degree)))
+  sigma.X.r                          <- (sigma - mean(sigma))                    *  (r - mean(r))
+  sigma.X.N                          <- (sigma - mean(sigma))                    *  (N - mean(N))
+  sigma.X.iota                       <- (sigma - mean(sigma))                    *  (iota - mean(iota))
+  sigma.X.density                    <- (sigma - mean(sigma))                    *  (density - mean(density))
+  sigma.X.index.degree               <- (sigma - mean(sigma))                    *  (index.degree - mean(index.degree))
   # combinations of r
-  r.X.N                              <- (r - mean(r)                             *  (N - mean(N)))
-  r.X.iota                           <- (r - mean(r)                             *  (iota - mean(iota)))
-  r.X.density                        <- (r - mean(r)                             *  (density - mean(density)))
-  r.X.index.degree                   <- (r - mean(r)                             *  (index.degree - mean(index.degree)))
+  r.X.N                              <- (r - mean(r))                            *  (N - mean(N))
+  r.X.iota                           <- (r - mean(r))                            *  (iota - mean(iota))
+  r.X.density                        <- (r - mean(r))                            *  (density - mean(density))
+  r.X.index.degree                   <- (r - mean(r))                            *  (index.degree - mean(index.degree))
   # combinations of N
-  N.X.iota                           <- (N - mean(N)                             *  (iota - mean(iota)))
-  N.X.density                        <- (N - mean(N)                             *  (density - mean(density)))
-  N.X.index.degree                   <- (N - mean(N)                             *  (index.degree - mean(index.degree)))
+  N.X.iota                           <- (N - mean(N))                            *  (iota - mean(iota))
+  N.X.density                        <- (N - mean(N))                            *  (density - mean(density))
+  N.X.index.degree                   <- (N - mean(N))                            *  (index.degree - mean(index.degree))
   # combinations of iota
-  iota.X.density                     <- (iota - mean(iota)                       *  (density - mean(density)))
-  iota.X.index.degree                <- (iota - mean(iota)                       *  (index.degree - mean(index.degree)))
+  iota.X.density                     <- (iota - mean(iota))                      *  (density - mean(density))
+  iota.X.index.degree                <- (iota - mean(iota))                      *  (index.degree - mean(index.degree))
   # combinations of density
-  density.X.index.degree             <- (density - mean(density)                 *  (index.degree - mean(index.degree)))
+  density.X.index.degree             <- (density - mean(density))                *  (index.degree - mean(index.degree))
 
 
   ### 2-LEVEL LOGISTIC REGRESSIONS (attack rate)  ###
