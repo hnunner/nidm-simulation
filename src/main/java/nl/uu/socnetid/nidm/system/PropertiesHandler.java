@@ -36,7 +36,8 @@ public class PropertiesHandler {
     // CONFIG PROPERTIES
     // file system
     private String rscriptPath;
-    private String rAnalysisFilePath;
+    private String rAnalysisAutomatedTemplatePath;
+    private String rAnalysisCompleteTemplatePath;
     // Cidm parameters
     private CidmParameters cidmParameters;
     // DATA EXPORT
@@ -126,8 +127,10 @@ public class PropertiesHandler {
         }
 
         // R script for data analysis
-        this.rAnalysisFilePath = new StringBuilder().append(this.userDir).append(
-                configProps.getProperty("r.anlysis.file.path")).toString();
+        this.rAnalysisAutomatedTemplatePath = new StringBuilder().append(this.userDir).append(
+                configProps.getProperty("r.anlysis.automated.template.path")).toString();
+        this.rAnalysisCompleteTemplatePath = new StringBuilder().append(this.userDir).append(
+                configProps.getProperty("r.anlysis.complete.template.path")).toString();
 
         // Cidm parameters
         // social maintenance costs
@@ -138,7 +141,7 @@ public class PropertiesHandler {
         cidmParameters.setLamdas(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_LAMDA.toString())));
         cidmParameters.setCs(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_C.toString())));
         cidmParameters.setMus(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_MU.toString())));
-        cidmParameters.setSigmas(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_R_SIGMA.toString())));
+        cidmParameters.setSigmas(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_SIGMA.toString())));
         cidmParameters.setGammas(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_GAMMA.toString())));
         cidmParameters.setRsEqual(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_CIDM_RS_EQUAL.toString())));
         cidmParameters.setRSigmas(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_R_SIGMA.toString())));
@@ -265,13 +268,6 @@ public class PropertiesHandler {
     }
 
     /**
-     * @return the rAnalysisFilePath
-     */
-    public String getRAnalysisFilePath() {
-        return rAnalysisFilePath;
-    }
-
-    /**
      * @return the exportSummary
      */
     public boolean isExportSummary() {
@@ -327,6 +323,20 @@ public class PropertiesHandler {
      */
     public boolean isAnalyzeData() {
         return analyzeData;
+    }
+
+    /**
+     * @return the rAnalysisAutomatedTemplatePath
+     */
+    public String getRAnalysisAutomatedTemplatePath() {
+        return rAnalysisAutomatedTemplatePath;
+    }
+
+    /**
+     * @return the rAnalysisCompleteTemplatePath
+     */
+    public String getRAnalysisCompleteTemplatePath() {
+        return rAnalysisCompleteTemplatePath;
     }
 
 }
