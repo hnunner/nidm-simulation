@@ -16,6 +16,7 @@ import nl.uu.socnetid.nidm.agents.AgentListener;
 import nl.uu.socnetid.nidm.data.CidmDataGeneratorData;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
+import nl.uu.socnetid.nidm.io.analysis.RegressionParameterWriter;
 import nl.uu.socnetid.nidm.io.generator.CidmAgentDetailsWriter;
 import nl.uu.socnetid.nidm.io.generator.CidmRoundSummaryWriter;
 import nl.uu.socnetid.nidm.io.generator.CidmSimulationSummaryWriter;
@@ -309,9 +310,13 @@ public class CidmDataGenerator implements AgentListener, SimulationListener {
      */
     private void anaylzeData() {
         try {
+            // preparation of R-scripts
+            RegressionParameterWriter rpWriter = new RegressionParameterWriter();
+            String autoAnalysisFilePath = rpWriter.writeRegressionFiles(FULL_DATA_EXPORT_PATH);
+
             // invocation of R-script
             ProcessBuilder pb = new ProcessBuilder(PropertiesHandler.getInstance().getRscriptPath(),
-                    PropertiesHandler.getInstance().getRAnalysisFilePath(), FULL_DATA_EXPORT_PATH);
+                    autoAnalysisFilePath, FULL_DATA_EXPORT_PATH);
             logger.info("Starting analysis of simulated data. "
                     + "Invoking R-script: "
                     + pb.command().toString());
