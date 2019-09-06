@@ -1,4 +1,4 @@
-package nl.uu.socnetid.nidm.mains;
+package nl.uu.socnetid.nidm.io.analysis;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -20,6 +20,8 @@ import nl.uu.socnetid.nidm.system.PropertiesHandler;
 
 /**
  * @author Hendrik Nunner
+ *
+ * TODO improve whole class.. it's quite 'hacky' at the moment.
  */
 public class RegressionParameterWriter {
 
@@ -27,10 +29,13 @@ public class RegressionParameterWriter {
     private static final Logger logger = Logger.getLogger(RegressionParameterWriter.class);
 
     /**
-     * @param args
-     *          command line arguments
+     * Writes regression analyses based on templates (/analysis/) and copies them into the data path.
+     *
+     * @param destination
+     *          the destination where to write the analysis files to
+     * @return the path of the automated analysis file
      */
-    public static void main(String[] args) {
+    public String writeRegressionFiles(String destination) {
 
         // whole regression method
         StringBuilder sbComposition = new StringBuilder();
@@ -75,7 +80,7 @@ public class RegressionParameterWriter {
 
         // duration - standard beginning and ending
         sbModelDurationBeginning.append("<- lmer(ssData$");
-        sbModelDurationBeginning.append(LogValues.DV_SIM_EPIDEMIC_DURATION.toString()).append("/100 ~\n");
+        sbModelDurationBeginning.append(LogValues.DV_SIM_EPIDEMIC_DURATION.toString()).append(" ~\n");
         sbModelDurationEnding.append("                      (1 | ").append(LogValues.IV_SIM_UPC).append("),\n");
         sbModelDurationEnding.append("                    data = ssData,\n");
         sbModelDurationEnding.append("                    REML = FALSE)");
@@ -105,8 +110,8 @@ public class RegressionParameterWriter {
                 sbComposition.append(" ");
             }
             sbComposition.append("<- meanCenter(ssData$").append(paramFull);
-            if (paramFull.equals("cidm.N") ||
-                    paramFull.equals("cidm.sigma.av")) {
+            if (paramFull.equals(LogValues.IV_CIDM_NET_SIZE.toString()) ||
+                    paramFull.equals(LogValues.IV_CIDM_SIGMA_AV.toString())) {
                 sbComposition.append(" / 50");
             }
             sbComposition.append(")\n");
@@ -122,9 +127,9 @@ public class RegressionParameterWriter {
         sbModelDurationMainNet.append("  reg2Main ").append(sbModelDurationBeginning.toString());
         sbModelDurationMainNet.append(sbModelParamsMain.toString());
         sbModelParamsMainNet.append("                      #  network properties\n");
-        for (LogValues loglofValue : LogValues.getRegressionDependentVariables()) {
+        for (LogValues logValue : LogValues.getRegressionDependentVariables()) {
 
-            String propertyFull = loglofValue.toString();
+            String propertyFull = logValue.toString();
             String propertyName = propertyFull.replace("prop.", "").replace("net.", "").replace(".pre.epidemic", "");
             params.add(propertyName);
             sbModelParamsMainNet.append("                      ").append(propertyName).append(" +\n");
@@ -133,7 +138,11 @@ public class RegressionParameterWriter {
             for (int i = tabWidth1-propertyName.length(); i > 0; i--) {
                 sbComposition.append(" ");
             }
-            sbComposition.append("<- meanCenter(ssData$").append(propertyFull).append(")\n");
+            sbComposition.append("<- meanCenter(ssData$").append(propertyFull);
+            if (propertyFull.equals(LogValues.DV_INDEX_DEGREE1.toString())) {
+                sbComposition.append(" / (ssData$").append(LogValues.IV_CIDM_NET_SIZE.toString()).append("-1)");
+            }
+            sbComposition.append(")\n");
         }
         sbModelAttackRateMainNet.append(sbModelParamsMainNet.toString()).append(sbModelAttackRateEnding.toString());
         sbModelDurationMainNet.append(sbModelParamsMainNet.toString()).append(sbModelDurationEnding.toString());
@@ -163,12 +172,12 @@ public class RegressionParameterWriter {
                     for (int i = tabWidth1-intName.length(); i > 0; i--) {
                         sbComposition.append(" ");
                     }
-                    String intExpr = "<- (" + param + " - mean(" + param + ")";
+                    String intExpr = "<- (" + param + " - mean(" + param + "))";
                     sbComposition.append(intExpr);
                     for (int i = tabWidth2-intExpr.length(); i > 0; i--) {
                         sbComposition.append(" ");
                     }
-                    sbComposition.append("*  (").append(param2).append(" - mean(").append(param2).append(")))\n");
+                    sbComposition.append("*  (").append(param2).append(" - mean(").append(param2).append("))\n");
                 }
             }
         }
@@ -206,19 +215,26 @@ public class RegressionParameterWriter {
         }
 
 
-        String userDir = System.getProperty("user.dir");
-        Path pathIn = Paths.get(userDir + "/analysis/automated-regressions-template.R");
-        Path pathOut = Paths.get(userDir + "/analysis/automated-regressions.R");
+        Path pathAutoIn = Paths.get(PropertiesHandler.getInstance().getRAnalysisAutomatedTemplatePath());
+        Path pathAutoOut = Paths.get(destination + "automated.R");
+        Path pathCompleteIn = Paths.get(PropertiesHandler.getInstance().getRAnalysisCompleteTemplatePath());
+        Path pathCompleteOut = Paths.get(destination + "complete.R");
         Charset charset = StandardCharsets.UTF_8;
 
         try {
-            String content = new String(Files.readAllBytes(pathIn), charset);
+            String content = new String(Files.readAllBytes(pathAutoIn), charset);
             content = content.replace("# REPLACE LINE WITH GENERATED 'exportRegressionModelsComplete'", sbComposition.toString());
-            Files.write(pathOut, content.getBytes(charset));
+            Files.write(pathAutoOut, content.getBytes(charset));
+
+            content = new String(Files.readAllBytes(pathCompleteIn), charset);
+            content = content.replace("# REPLACE LINE WITH GENERATED 'exportRegressionModelsComplete'", sbComposition.toString());
+            Files.write(pathCompleteOut, content.getBytes(charset));
+
         } catch (IOException e) {
             logger.error(e);
         }
 
+        return pathAutoOut.toString();
 
     }
 

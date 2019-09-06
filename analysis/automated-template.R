@@ -11,18 +11,23 @@ sourceLibs(c("QuantPsyc",   # 'meanCenter' function
              "lme4",        # regression analyses
              "sjstats",     # "icc" function
              "texreg"       # html export
-            )
-          )
+)
+)
 
 ########################################### GLOBAL CONSTANTS ##########################################
 # input/output directory
+DATA_PATH                   <- ""
 args = commandArgs(trailingOnly=TRUE)
-DATA_PATH                 <- paste(args[1], "/", sep = "")
+if (length(args) == 0) {
+  DATA_PATH                 <- paste(dirname(sys.frame(1)$ofile), "/", sep = "")
+} else {
+  DATA_PATH                 <- args[1]
+}
 # file names of generated data
 CSV_SUMMARY_PATH            <- paste(DATA_PATH, "simulation-summary.csv", sep = "")
 # export - file system
-EXPORT_DIR_NUM              <- "numerical/"
-EXPORT_PATH_NUM             <- paste(DATA_PATH, EXPORT_DIR_NUM, sep = "")
+EXPORT_DIR_AUTO              <- "automated/"
+EXPORT_PATH_AUTO             <- paste(DATA_PATH, EXPORT_DIR_AUTO, sep = "")
 EXPORT_FILE_TYPE_REG        <- "html"
 EXPORT_FILE_EXTENSION_REG   <- paste(".", EXPORT_FILE_TYPE_REG, sep = "")
 
@@ -58,13 +63,13 @@ loadSimulationSummaryData <- function() {
 #----------------------------------------------------------------------------------------------------#
 exportModels <- function(models, filename) {
 
-  filepath <- paste(EXPORT_PATH_NUM,
+  filepath <- paste(EXPORT_PATH_AUTO,
                     filename,
                     EXPORT_FILE_EXTENSION_REG,
                     sep = "")
 
   # create directory if necessary
-  dir.create(EXPORT_PATH_NUM, showWarnings = FALSE)
+  dir.create(EXPORT_PATH_AUTO, showWarnings = FALSE)
 
   # close standard notes and begin new standard row
   notes <- "</span></td>\n</tr>\n<tr>\n"
@@ -104,10 +109,10 @@ exportModels <- function(models, filename) {
 if (length(args) >= 1) {
   print("::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
   print(paste(":: BEGINNING TO ANALYZE DATA IN: ", DATA_PATH, sep = ""))
-
-    print(":::::: Exporting complete regression models..")
+  print(":::::: Loading simulation summary data..")
+  ssData <- loadSimulationSummaryData()
+  print(":::::: Exporting complete regression models..")
   exportRegressionModelsComplete(ssData = ssData)
-
-  print(paste(":: ANALYSIS FINISHED SUCCESSFULLY!", sep = ""))
+  print(":: ANALYSIS FINISHED SUCCESSFULLY!")
   print("::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
 }
