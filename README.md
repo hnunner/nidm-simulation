@@ -140,8 +140,25 @@ The _Data Generator_ uses a configuration file (_path.to.nidm.simulator.project.
     * _export.gexf_: creates individual dynamic _.gexf_ files for each simulation run.
  3. _Data analysis configuration_ to configure and trigger (_analyze.data=true_) data analysis subsequent to data generation. Please make sure that the correct location of the _Rscript_ executable is set, if _analyze.data_ is set _true_. Analysis results are stored in _path.to.nidm.simulator.project.folder/data/`date-time-of-data-generator-invocation`_.
 
+## Third party software ##
+ * GraphStream v1.3 library (Pigné et al., 2008) for internal and visual representation of graphs.
+ * R version 3.6.0 (R Core Team, 2019) for statistical analyses.
+ * lme4 (Bates et al., 2015) for logit regressions.
+ * texreg (Leifeld, 2013) for result exports.
+ * ggplot2 (Wickham, 2016) for data visualization.
+
 ## References ##
+Bates, D., M ̈achler, M., Bolker, B., & Walker, S. (2015). Fitting linear mixed- effects models using lme4. Journal of Statistical Software, 67, 1–48.
+
+Leifeld, P. (2013). texreg: Conversion of statistical model output in R to LATEX and HTML tables. Journal of Statistical Software, 55, 1–24.
+
 Nunner, H., Buskens, V., & Kretzschmar, M. (2019). A model for the co-evolution of dynamic social networks and infectious diseases. Manuscript sumbitted for publication.
+
+Pigné, Y., Dutot, A., Guinand, F., & Olivier, D. (2008). Graphstream: A tool for bridging the gap between complex systems and dynamic graphs. CoRR, abs/0803.2093 .
+
+R Core Team (2019). R: A Language and Environment for Statistical Comput- ing. R Foundation for Statistical Computing Vienna, Austria.
+
+Wickham, H. (2016). ggplot2: Elegant Graphics for Data Analysis. Springer- Verlag New York.
 
 ## Copyright ##
 Copyright (C), 2017 - 2019,  Hendrik Nunner (<h.nunner@gmail.com>)
