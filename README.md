@@ -1,6 +1,6 @@
 # Networking during Infectious Diseases Model (NIDM) Simulator
 
-Welcome to the NIDM Simulator project. This project is a stand-alone Java program of the **N**etworking during **I**nfectious **D**iseases **M**odel (_NIDM_; Nunner, Buskens, & Kretzschmar, 2019) to simulate the dynamic interplay of social network formation and infectious diseases. The project comes in two versions:
+Welcome to the NIDM Simulator project. This project is a stand-alone Java program of the **N**etworking during **I**nfectious **D**iseases **M**odel (Nunner, Buskens, & Kretzschmar, 2019) to simulate the dynamic interplay of social network formation and infectious diseases. The project comes in two versions:
  1. A _GUI_ version that provides an easy to use graphical user interface, allows to play around with parameter settings, and produces a visualization and detailed real-time statistics of the resulting networks. This is suitable to investigate small networks with 50 agents max and test the immediate effects of different parameter combinations.
  2. A _Data Generator_ version that allows to produce large data with many different parameter combinations.
 
