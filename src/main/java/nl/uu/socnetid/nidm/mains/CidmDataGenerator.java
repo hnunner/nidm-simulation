@@ -29,6 +29,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
@@ -143,6 +149,15 @@ public class CidmDataGenerator implements AgentListener, SimulationListener {
         File directory = new File(FULL_DATA_EXPORT_PATH);
         if (!directory.exists()){
             directory.mkdirs();
+        }
+
+        // copy properties file to output folder
+        try {
+            Path srcProperties = Paths.get(CidmDataGenerator.class.getClassLoader().getResource("config.properties").toURI());
+            Path dstProperties = Paths.get(FULL_DATA_EXPORT_PATH + "config.properties");
+            Files.copy(srcProperties, dstProperties, StandardCopyOption.REPLACE_EXISTING);
+        } catch (URISyntaxException e) {
+            logger.error(e);
         }
 
         // summary CSV
@@ -377,7 +392,7 @@ public class CidmDataGenerator implements AgentListener, SimulationListener {
             BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
-                System.out.println(line);
+                logger.info(line);
             }
 
             // wait for analysis to finish (blocking)
