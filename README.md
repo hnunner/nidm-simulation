@@ -141,7 +141,7 @@ The _Data Generator_ uses a configuration file (_path.to.nidm.simulator.project.
  3. _Data analysis configuration_ to configure and trigger (_analyze.data=true_) data analysis subsequent to data generation. Please make sure that the correct location of the _Rscript_ executable is set, if _analyze.data_ is set _true_. Analysis results are stored in _path.to.nidm.simulator.project.folder/data/`date-time-of-data-generator-invocation`_.
 
 ## Third party software ##
- * GraphStream v1.3 library (Pigné et al., 2008) for internal and visual representation of graphs.
+ * GraphStream v1.3 library (Pigné et al., 2008) for internal and visual handling graph dynamics.
  * R version 3.6.0 (R Core Team, 2019) for statistical analyses.
  * lme4 (Bates et al., 2015) for logit regressions.
  * texreg (Leifeld, 2013) for result exports.
