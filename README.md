@@ -1,6 +1,6 @@
 # Networking during Infectious Diseases Model (NIDM) Simulator
 
-Welcome to the NIDM Simulator project. This project is the Java implementation of the NIDM defined by Nunner, Buskens, & Kretzschmar (2019). The project comes in two versions:
+Welcome to the NIDM Simulator project. This project is a stand-alone Java program of the __N__etworking during __I__nfectious __D__iseases __M__odel (NIDM; Nunner, Buskens, & Kretzschmar, 2019) to simulate the dynamic interplay of social network formation and infectious diseases. The project comes in two versions:
  1. A _GUI_ version that provides an easy to use graphical user interface, allows to play around with parameter settings, and produces a visualization and detailed real-time statistics of the resulting networks. This is suitable to investigate small networks with 50 agents max and test the immediate effects of different parameter combinations.
  2. A _Data Generator_ version that allows to produce large data with many different parameter combinations.
 
@@ -140,9 +140,10 @@ The _Data Generator_ uses a configuration file (_path.to.nidm.simulator.project.
     * _export.gexf_: creates individual dynamic _.gexf_ files for each simulation run.
  3. _Data analysis configuration_ to configure and trigger (_analyze.data=true_) data analysis subsequent to data generation. Please make sure that the correct location of the _Rscript_ executable is set, if _analyze.data_ is set _true_. Analysis results are stored in _path.to.nidm.simulator.project.folder/data/`date-time-of-data-generator-invocation`_.
 
+## References ##
+Nunner, H., Buskens, V., & Kretzschmar, M. (2019). A model for the co-evolution of dynamic social networks and infectious diseases. Manuscript sumbitted for publication.
+
 ## Copyright ##
 Copyright (C), 2017 - 2019,  Hendrik Nunner (<h.nunner@gmail.com>)
 
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
