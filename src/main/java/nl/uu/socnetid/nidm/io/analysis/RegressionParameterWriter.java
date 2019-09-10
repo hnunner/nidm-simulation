@@ -25,10 +25,7 @@
  */
 package nl.uu.socnetid.nidm.io.analysis;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -227,18 +224,6 @@ public class RegressionParameterWriter {
         sbComposition.append("\n").append(sbModelDurationInt.toString());
         sbComposition.append("\n").append("  exportModels(list(reg00,reg1Main,reg2Main,reg2Int), \"reg-duration-complete\")");
         sbComposition.append("\n}");
-
-
-        try {
-            PrintWriter writer = new PrintWriter("full-regressions.R", "UTF-8");
-            writer.print(sbComposition.toString());
-            writer.close();
-        } catch (FileNotFoundException e) {
-            logger.error(e);
-        } catch (UnsupportedEncodingException e) {
-            logger.error(e);
-        }
-
 
         Path pathAutoIn = Paths.get(PropertiesHandler.getInstance().getRAnalysisAutomatedTemplatePath());
         Path pathAutoOut = Paths.get(destination + "automated.R");
