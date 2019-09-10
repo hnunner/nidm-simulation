@@ -148,7 +148,7 @@ The _Data Generator_ uses a configuration file (_path.to.nidm.simulator.project.
  * ggplot2 (Wickham, 2016) for data visualization.
 
 ## References ##
- * Bates, D., M ̈achler, M., Bolker, B., & Walker, S. (2015). Fitting linear mixed- effects models using lme4. Journal of Statistical Software, 67, 1–48.
+ * Bates, D., Mächler, M., Bolker, B., & Walker, S. (2015). Fitting linear mixed- effects models using lme4. Journal of Statistical Software, 67, 1–48.
  * Leifeld, P. (2013). texreg: Conversion of statistical model output in R to LATEX and HTML tables. Journal of Statistical Software, 55, 1–24.
  * Nunner, H., Buskens, V., & Kretzschmar, M. (2019). A model for the co-evolution of dynamic social networks and infectious diseases. Manuscript sumbitted for publication.
  * Pigné, Y., Dutot, A., Guinand, F., & Olivier, D. (2008). Graphstream: A tool for bridging the gap between complex systems and dynamic graphs. CoRR, abs/0803.2093 .
