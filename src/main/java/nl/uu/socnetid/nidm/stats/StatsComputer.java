@@ -257,9 +257,12 @@ public final class StatsComputer {
         int mS = 0;
         int mI = 0;
         int mR = 0;
+        int z  = 0;
 
-        // indirect connections considered only once
-        List<Agent> consideredIndirectBenefits = new LinkedList<Agent>();
+        // consider indirect connections only once
+        List<Agent> consideredIndirectAgents = new LinkedList<Agent>();
+        // consider agents only once for triads
+        List<Agent> consideredTriadAgents = new LinkedList<Agent>();
 
         // for every direct connection
         Iterator<Agent> directIt = connections.iterator();
@@ -299,16 +302,29 @@ public final class StatsComputer {
             Iterator<Agent> indirectIt = indirectConnections.iterator();
             while (indirectIt.hasNext()) {
                 Agent indirectConnection = indirectIt.next();
-                // no benefit from self
-                if (indirectConnection.equals(agent)
-                        // no double benefits for indirect connections being also direct connections
-                        || connections.contains(indirectConnection)
-                        // no double benefits for indirect connections that have been booked already
-                        || consideredIndirectBenefits.contains(indirectConnection)) {
+
+                // ignore self
+                if (indirectConnection.equals(agent)) {
                     continue;
                 }
 
-                // disease group of direct connection
+                // do not consider indirect connections that have been considered before
+                if (consideredIndirectAgents.contains(indirectConnection)) {
+                    continue;
+                }
+
+                // connections that are direct and indirect connections at the same time ...
+                if (connections.contains(indirectConnection)) {
+                    // ... form a closed triad with self, but count only once
+                    if (!consideredTriadAgents.contains(directConnection)) {
+                        z++;
+                        consideredTriadAgents.add(indirectConnection);
+                    }
+                    // ... must not be counted as indirect connections
+                    continue;
+                }
+
+                // disease group
                 switch (indirectConnection.getDiseaseGroup()) {
                     case SUSCEPTIBLE:
                         mS++;
@@ -325,10 +341,10 @@ public final class StatsComputer {
                     default:
                         logger.warn("Unhandled disease group: " + indirectConnection.getDiseaseGroup());
                 }
-                consideredIndirectBenefits.add(indirectConnection);
+                consideredIndirectAgents.add(indirectConnection);
             }
         }
-        return new LocalAgentConnectionsStats(nS, nI, nR, mS, mI, mR);
+        return new LocalAgentConnectionsStats(nS, nI, nR, mS, mI, mR, z);
     }
 
     /**

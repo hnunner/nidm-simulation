@@ -39,10 +39,9 @@ public class AgentStats {
     private double closeness;
     private double clustering;
     private double utility;
-    private double benefit1;
-    private double benefit2;
-    private double costs1;
-    private double costsDisease;
+    private double socialBenefits;
+    private double socialCosts;
+    private double diseaseCosts;
     private DiseaseGroup diseaseGroup;
     private int timeToRecover;
     private int brokenTiesActive;
@@ -60,10 +59,9 @@ public class AgentStats {
         this.closeness = agent.getCloseness();
         this.clustering = agent.getClustering();
         this.utility = agent.getUtility().getOverallUtility();
-        this.benefit1 = agent.getUtility().getBenefitDirectConnections();
-        this.benefit2 = agent.getUtility().getBenefitIndirectConnections();
-        this.costs1 = agent.getUtility().getCostsDirectConnections();
-        this.costsDisease = agent.getUtility().getEffectOfDisease();
+        this.socialBenefits = agent.getUtility().getSocialBenefits();
+        this.socialCosts = agent.getUtility().getSocialCosts();
+        this.diseaseCosts = agent.getUtility().getDiseaseCosts();
         this.diseaseGroup = agent.getDiseaseGroup();
         if (agent.isInfected()) {
             this.timeToRecover = agent.getTimeUntilRecovered();
@@ -150,59 +148,45 @@ public class AgentStats {
     }
 
     /**
-     * @return the benefit1
+     * @return the socialBenefits
      */
-    public double getBenefit1() {
-        return benefit1;
+    public double getSocialBenefits() {
+        return socialBenefits;
     }
 
     /**
-     * @param benefit1 the benefit1 to set
+     * @param socialBenefits the socialBenefits to set
      */
-    public void setBenefit1(double benefit1) {
-        this.benefit1 = benefit1;
+    public void setSocialBenefits(double socialBenefits) {
+        this.socialBenefits = socialBenefits;
     }
 
     /**
-     * @return the benefit2
+     * @return the socialCosts
      */
-    public double getBenefit2() {
-        return benefit2;
+    public double getSocialCosts() {
+        return socialCosts;
     }
 
     /**
-     * @param benefit2 the benefit2 to set
+     * @param socialCosts the socialCosts to set
      */
-    public void setBenefit2(double benefit2) {
-        this.benefit2 = benefit2;
+    public void setSocialCosts(double socialCosts) {
+        this.socialCosts = socialCosts;
     }
 
     /**
-     * @return the costs1
+     * @return the diseaseCosts
      */
-    public double getCosts1() {
-        return costs1;
+    public double getDiseaseCosts() {
+        return diseaseCosts;
     }
 
     /**
-     * @param costs1 the costs1 to set
+     * @param diseaseCosts the diseaseCosts to set
      */
-    public void setCosts1(double costs1) {
-        this.costs1 = costs1;
-    }
-
-    /**
-     * @return the costsDisease
-     */
-    public double getCostsDisease() {
-        return costsDisease;
-    }
-
-    /**
-     * @param costsDisease the costsDisease to set
-     */
-    public void setCostsDisease(double costsDisease) {
-        this.costsDisease = costsDisease;
+    public void setDiseaseCosts(double diseaseCosts) {
+        this.diseaseCosts = diseaseCosts;
     }
 
     /**

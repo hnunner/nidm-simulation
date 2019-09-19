@@ -645,187 +645,6 @@ public class Network extends SingleGraph {
     }
 
     /**
-     * Gets the average alpha of all agents in the network.
-     *
-     * @return the average alpha of all agents in the network
-     */
-    public double getAvAlpha() {
-        double avAlpha = 0;
-        Iterator<Agent> agentIt = this.getAgentIterator();
-        while (agentIt.hasNext()) {
-            Agent agent = agentIt.next();
-            avAlpha += agent.getUtilityFunction().getAlpha();
-        }
-        return (avAlpha / this.getAgents().size());
-    }
-
-    /**
-     * Gets the average kappa of all agents in the network.
-     *
-     * @return the average kappa of all agents in the network
-     */
-    public double getAvKappa() {
-        double avKappa = 0;
-        Iterator<Agent> agentIt = this.getAgentIterator();
-        while (agentIt.hasNext()) {
-            Agent agent = agentIt.next();
-            avKappa += agent.getUtilityFunction().getKappa();
-        }
-        return (avKappa / this.getAgents().size());
-    }
-
-
-    /**
-     * Gets the average beta of all agents in the network.
-     *
-     * @return the average beta of all agents in the network
-     */
-    public double getAvBeta() {
-        double avBeta = 0;
-        Iterator<Agent> agentIt = this.getAgentIterator();
-        while (agentIt.hasNext()) {
-            Agent agent = agentIt.next();
-            avBeta += agent.getUtilityFunction().getBeta();
-        }
-        return (avBeta / this.getAgents().size());
-    }
-
-    /**
-     * Gets the average lamda of all agents in the network.
-     *
-     * @return the average lamda of all agents in the network
-     */
-    public double getAvLamda() {
-        double avLamda = 0;
-        Iterator<Agent> agentIt = this.getAgentIterator();
-        while (agentIt.hasNext()) {
-            Agent agent = agentIt.next();
-            avLamda += agent.getUtilityFunction().getLamda();
-        }
-        return (avLamda / this.getAgents().size());
-    }
-
-    /**
-     * Gets the network maintenance costs of all agents in the network.
-     *
-     * @return the network maintenance costs of all agents in the network
-     */
-    public double getAvC() {
-        double avC = 0;
-        Iterator<Agent> agentIt = this.getAgentIterator();
-        while (agentIt.hasNext()) {
-            Agent agent = agentIt.next();
-            avC += agent.getUtilityFunction().getC();
-        }
-        return (avC / this.getAgents().size());
-    }
-
-    /**
-     * Gets the average risk factor for disease severity of all agents in the network.
-     *
-     * @return the average risk factor for disease severity of all agents in the network
-     */
-    public double getAvRSigma() {
-        double avRSigma = 0;
-        Iterator<Agent> agentIt = this.getAgentIterator();
-        while (agentIt.hasNext()) {
-            Agent agent = agentIt.next();
-            avRSigma += agent.getRSigma();
-        }
-        return (avRSigma / this.getAgents().size());
-    }
-
-    /**
-     * Gets the average risk factor for probability of infections of all agents in the network.
-     *
-     * @return the average risk factor for probability of infections of all agents in the network
-     */
-    public double getAvRPi() {
-        double avRPi = 0;
-        Iterator<Agent> agentIt = this.getAgentIterator();
-        while (agentIt.hasNext()) {
-            Agent agent = agentIt.next();
-            avRPi += agent.getRPi();
-        }
-        return (avRPi / this.getAgents().size());
-    }
-
-    /**
-     * Gets the average share of co-agents to evaluate per round for all agents in the network.
-     *
-     * @return the average share of co-agents to evaluate per round for all agents in the network
-     */
-    public double getAvPhi() {
-        double avPhi = 0;
-        Iterator<Agent> agentIt = this.getAgentIterator();
-        while (agentIt.hasNext()) {
-            Agent agent = agentIt.next();
-            avPhi += agent.getPhi();
-        }
-        return (avPhi / this.getAgents().size());
-    }
-
-    /**
-     * Gets the average care costs for all agents in the network.
-     *
-     * @return the average care costs for all agents in the network
-     */
-    public double getAvMu() {
-        double avMu = 0;
-        Iterator<Agent> agentIt = this.getAgentIterator();
-        while (agentIt.hasNext()) {
-            Agent agent = agentIt.next();
-            avMu += agent.getDiseaseSpecs().getMu();
-        }
-        return (avMu / this.getAgents().size());
-    }
-
-    /**
-     * Gets the average disease severity for all agents in the network.
-     *
-     * @return the average disease severity for all agents in the network
-     */
-    public double getAvSigma() {
-        double avSigma = 0;
-        Iterator<Agent> agentIt = this.getAgentIterator();
-        while (agentIt.hasNext()) {
-            Agent agent = agentIt.next();
-            avSigma += agent.getDiseaseSpecs().getSigma();
-        }
-        return (avSigma / this.getAgents().size());
-    }
-
-    /**
-     * Gets the average probability of infections for all agents in the network.
-     *
-     * @return the average probability of infections for all agents in the network
-     */
-    public double getAvGamma() {
-        double avGamma = 0;
-        Iterator<Agent> agentIt = this.getAgentIterator();
-        while (agentIt.hasNext()) {
-            Agent agent = agentIt.next();
-            avGamma += agent.getDiseaseSpecs().getGamma();
-        }
-        return (avGamma / this.getAgents().size());
-    }
-
-    /**
-     * Gets the average recovery time for all agents in the network.
-     *
-     * @return the average recovery time for all agents in the network
-     */
-    public double getAvTau() {
-        double avTau = 0;
-        Iterator<Agent> agentIt = this.getAgentIterator();
-        while (agentIt.hasNext()) {
-            Agent agent = agentIt.next();
-            avTau += agent.getDiseaseSpecs().getTau();
-        }
-        return (avTau / this.getAgents().size());
-    }
-
-    /**
      * Gets the average utility of all agents in the network.
      *
      * @return the average utility of all agents in the network
@@ -841,46 +660,31 @@ public class Network extends SingleGraph {
     }
 
     /**
-     * Gets the average benefit at distance 1 of all agents in the network.
+     * Gets the average social benefits of all agents in the network.
      *
-     * @return the average benefit at distance 1 of all agents in the network
+     * @return the average social benefits of all agents in the network
      */
-    public double getAvBenefitDistance1() {
+    public double getAvSocialBenefits() {
         double avBenefit1 = 0;
         Iterator<Agent> agentIt = this.getAgentIterator();
         while (agentIt.hasNext()) {
             Agent agent = agentIt.next();
-            avBenefit1 += agent.getUtility().getBenefitDirectConnections();
+            avBenefit1 += agent.getUtility().getSocialBenefits();
         }
         return (avBenefit1 / this.getAgents().size());
     }
 
     /**
-     * Gets the average benefit at distance 2 of all agents in the network.
+     * Gets the average costs of social connections of all agents in the network.
      *
-     * @return the average benefit at distance 2 of all agents in the network
+     * @return the average costs of social connections of all agents in the network
      */
-    public double getAvBenefitDistance2() {
-        double avBenefit2 = 0;
-        Iterator<Agent> agentIt = this.getAgentIterator();
-        while (agentIt.hasNext()) {
-            Agent agent = agentIt.next();
-            avBenefit2 += agent.getUtility().getBenefitIndirectConnections();
-        }
-        return (avBenefit2 / this.getAgents().size());
-    }
-
-    /**
-     * Gets the average costs for agents at distance 1 of all agents in the network.
-     *
-     * @return the average costs for agents at distance 1 of all agents in the network
-     */
-    public double getAvCostsDistance1() {
+    public double getAvSocialCosts() {
         double avCosts1 = 0;
         Iterator<Agent> agentIt = this.getAgentIterator();
         while (agentIt.hasNext()) {
             Agent agent = agentIt.next();
-            avCosts1 += agent.getUtility().getCostsDirectConnections();
+            avCosts1 += agent.getUtility().getSocialCosts();
         }
         return (avCosts1 / this.getAgents().size());
     }
@@ -890,12 +694,12 @@ public class Network extends SingleGraph {
      *
      * @return the average disease costs of all agents in the network
      */
-    public double getAvCostsDisease() {
+    public double getAvDiseaseCosts() {
         double avCostsDisease = 0;
         Iterator<Agent> agentIt = this.getAgentIterator();
         while (agentIt.hasNext()) {
             Agent agent = agentIt.next();
-            avCostsDisease += agent.getUtility().getEffectOfDisease();
+            avCostsDisease += agent.getUtility().getDiseaseCosts();
         }
         return (avCostsDisease / this.getAgents().size());
     }
