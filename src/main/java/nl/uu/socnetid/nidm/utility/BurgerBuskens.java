@@ -27,35 +27,44 @@ package nl.uu.socnetid.nidm.utility;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
-import nl.uu.socnetid.nidm.stats.StatsComputer;
 
 /**
  * @author Hendrik Nunner
  */
-public class Irtc extends UtilityFunction {
+public class BurgerBuskens extends UtilityFunction {
 
-    // utility of direct connections
-    private final double alpha;
-    // utility of indirect connections
-    private final double beta;
-    // costs to maintain direct connections
-    private final double c;
+    // benefits of direct connections
+    private final double b1;
+    // benefits of closed triads
+    private final double b2;
+    // costs of direct connections
+    private final double c1;
+    // quadratic costs of additional direct connections
+    private final double c2;
+    // costs of closed triads
+    private final double c3;
 
 
     /**
      * Constructor.
      *
-     * @param alpha
-     *          the benefit of a direct connection
-     * @param beta
-     *          the benefit of an indirect connection
-     * @param c
-     *          the maintenance costs for a direct connection
+     * @param b1
+     *          the benefits of direct connections
+     * @param b2
+     *          the benefits of closed triads
+     * @param c1
+     *          the costs of direct connections
+     * @param c2
+     *          the quadratic costs of additional direct connections
+     * @param c3
+     *          the costs of closed triads
      */
-    public Irtc(double alpha, double beta, double c) {
-        this.alpha = alpha;
-        this.beta = beta;
-        this.c = c;
+    public BurgerBuskens(double b1, double b2, double c1, double c2, double c3) {
+        this.b1 = b1;
+        this.b2 = b2;
+        this.c1 = c1;
+        this.c2 = c2;
+        this.c3 = c3;
     }
 
 
@@ -64,9 +73,8 @@ public class Irtc extends UtilityFunction {
      */
     @Override
     public String getStatsName() {
-        return "Irtc";
+        return "BB";
     }
-
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getSocialBenefits(
@@ -74,11 +82,12 @@ public class Irtc extends UtilityFunction {
      */
     @Override
     protected double getSocialBenefits(LocalAgentConnectionsStats lacs, Agent agent) {
+        // TODO add disease states
         return
-                // direct connections
-                this.getAlpha() * lacs.getN() +
-                // indirect connections
-                this.getBeta() * lacs.getM();
+                // benefits of direct connections
+                this.getB1() * lacs.getN() +
+                // benefits for closed triads
+                this.getB2() * lacs.getZ();
     }
 
     /* (non-Javadoc)
@@ -87,9 +96,14 @@ public class Irtc extends UtilityFunction {
      */
     @Override
     protected double getSocialCosts(LocalAgentConnectionsStats lacs, Agent agent) {
-        int nSR = lacs.getnS() + lacs.getnR();
-        int nI = lacs.getnI();
-        return (nSR + (nI * agent.getDiseaseSpecs().getMu())) * this.getC();
+        // TODO add disease states
+        return
+                // costs of direct connections
+                this.getC1() * lacs.getN() +
+                // quadratic costs of direct connections
+                this.getC2() * (lacs.getN()*lacs.getN()) +
+                // costs for closed triads
+                this.getC3() * lacs.getZ();
     }
 
     /* (non-Javadoc)
@@ -98,58 +112,9 @@ public class Irtc extends UtilityFunction {
      */
     @Override
     protected double getDiseaseCosts(LocalAgentConnectionsStats lacs, Agent agent) {
-        int nI = lacs.getnI();
-        double p;
-        double s;
-        double rSigma = agent.getRSigma();
-        double rPi = agent.getRPi();
-
-        // depending own agent's own risk group
-        switch (agent.getDiseaseGroup()) {
-            case SUSCEPTIBLE:
-                p = Math.pow(StatsComputer.computeProbabilityOfInfection(agent, nI), (2 - rPi));
-                s = Math.pow(agent.getDiseaseSpecs().getSigma(), rSigma) ;
-                break;
-
-            case INFECTED:
-                p = 1;
-                s = agent.getDiseaseSpecs().getSigma();
-                break;
-
-            case RECOVERED:
-                p = 0;
-                s = 0;
-                break;
-
-            default:
-                throw new RuntimeException("Unknown disease group: " + agent.getDiseaseGroup());
-        }
-
-        return p * s;
+        // TODO add costs for disease
+        return 0;
     }
-
-
-    /**
-     * @return the alpha
-     */
-    public double getAlpha() {
-        return alpha;
-    }
-
-    /**
-     * @return the beta
-     */
-    public double getBeta() {
-        return beta;
-    }
-
-    /**
-     * @return the c
-     */
-    public double getC() {
-        return c;
-    }
-
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.utility.UtilityFunction#toString()
@@ -158,10 +123,47 @@ public class Irtc extends UtilityFunction {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("type:").append(getStatsName());
-        sb.append(" | alpha:").append(this.getAlpha());
-        sb.append(" | beta:").append(this.getBeta());
-        sb.append(" | c:").append(this.getC());
+        sb.append(" | b1:").append(this.getB1());
+        sb.append(" | b2:").append(this.getB2());
+        sb.append(" | c1:").append(this.getC1());
+        sb.append(" | c2:").append(this.getC2());
+        sb.append(" | c3:").append(this.getC3());
         return sb.toString();
+    }
+
+    /**
+     * @return the b1
+     */
+    public double getB1() {
+        return b1;
+    }
+
+    /**
+     * @return the b2
+     */
+    public double getB2() {
+        return b2;
+    }
+
+    /**
+     * @return the c1
+     */
+    public double getC1() {
+        return c1;
+    }
+
+    /**
+     * @return the c2
+     */
+    public double getC2() {
+        return c2;
+    }
+
+    /**
+     * @return the c3
+     */
+    public double getC3() {
+        return c3;
     }
 
 }

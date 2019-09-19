@@ -36,15 +36,14 @@ import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
 import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.utility.Cidm;
-import nl.uu.socnetid.nidm.utility.Cumulative;
 import nl.uu.socnetid.nidm.utility.UtilityFunction;
 
 /**
- * Tests for {@link Cumulative} class.
+ * Tests for {@link Cidm} class.
  *
  * @author Hendrik Nunner
  */
-public class CIDMTest {
+public class CidmTest {
 
     // network
     private Network network;
@@ -79,7 +78,7 @@ public class CIDMTest {
      */
     @Before
     public void initAgent() {
-        this.network = new Network("Irtc Test");
+        this.network = new Network("Cidm Test");
 
         UtilityFunction uf = new Cidm(alpha, kappa, beta, lamda, c);
         DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);

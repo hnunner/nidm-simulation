@@ -34,6 +34,7 @@ import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.data.CidmDataGeneratorData;
 import nl.uu.socnetid.nidm.data.LogValues;
 import nl.uu.socnetid.nidm.stats.AgentStats;
+import nl.uu.socnetid.nidm.utility.Cidm;
 
 /**
  * @author Hendrik Nunner
@@ -98,9 +99,8 @@ public class CidmAgentDetailsWriter extends CidmCsvFileWriter {
         // agent
         cols.add(LogValues.DV_AGENT_SATISFIED.toString());
         cols.add(LogValues.DV_AGENT_UTIL.toString());
-        cols.add(LogValues.DV_AGENT_BENEFIT_DIST1.toString());
-        cols.add(LogValues.DV_AGENT_BENEFIT_DIST2.toString());
-        cols.add(LogValues.DV_AGENT_COSTS_DIST1.toString());
+        cols.add(LogValues.DV_AGENT_BENEFIT_SOCIAL.toString());
+        cols.add(LogValues.DV_AGENT_COSTS_SOCIAL.toString());
         cols.add(LogValues.DV_AGENT_COSTS_DISEASE.toString());
         cols.add(LogValues.DV_AGENT_DISEASE_STATE.toString());
         cols.add(LogValues.DV_AGENT_DISEASE_ROUNDS_REMAINING.toString());
@@ -139,11 +139,12 @@ public class CidmAgentDetailsWriter extends CidmCsvFileWriter {
             currData.add(String.valueOf(this.dgData.getSimStats().getRounds()));
             currData.add(agent.getId());
             // Cidm
-            currData.add(String.valueOf(agent.getUtilityFunction().getAlpha()));
-            currData.add(String.valueOf(agent.getUtilityFunction().getKappa()));
-            currData.add(String.valueOf(agent.getUtilityFunction().getBeta()));
-            currData.add(String.valueOf(agent.getUtilityFunction().getLamda()));
-            currData.add(String.valueOf(agent.getUtilityFunction().getC()));
+            Cidm uf = (Cidm) agent.getUtilityFunction();
+            currData.add(String.valueOf(uf.getAlpha()));
+            currData.add(String.valueOf(uf.getKappa()));
+            currData.add(String.valueOf(uf.getBeta()));
+            currData.add(String.valueOf(uf.getLamda()));
+            currData.add(String.valueOf(uf.getC()));
             currData.add(String.valueOf(agent.getDiseaseSpecs().getMu()));
             currData.add(String.valueOf(agent.getDiseaseSpecs().getSigma()));
             currData.add(String.valueOf(agent.getDiseaseSpecs().getGamma()));
@@ -167,10 +168,9 @@ public class CidmAgentDetailsWriter extends CidmCsvFileWriter {
             AgentStats agentStats = new AgentStats(agent);
             currData.add(String.valueOf(agentStats.isSatisfied()));
             currData.add(String.valueOf(agentStats.getUtility()));
-            currData.add(String.valueOf(agentStats.getBenefit1()));
-            currData.add(String.valueOf(agentStats.getBenefit2()));
-            currData.add(String.valueOf(agentStats.getCosts1()));
-            currData.add(String.valueOf(agentStats.getCostsDisease()));
+            currData.add(String.valueOf(agentStats.getSocialBenefits()));
+            currData.add(String.valueOf(agentStats.getSocialCosts()));
+            currData.add(String.valueOf(agentStats.getDiseaseCosts()));
             currData.add(agentStats.getDiseaseGroup().name());
             currData.add(String.valueOf(agentStats.getTimeToRecover()));
             currData.add(String.valueOf(agentStats.getDegree1()));
