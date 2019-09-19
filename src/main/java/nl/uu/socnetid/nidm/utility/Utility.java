@@ -32,40 +32,30 @@ public class Utility {
 
     // overall utility
     private double overallUtility;
+    private double socialBenefits;
+    private double socialCosts;
+    private double diseaseCosts;
 
-    // benefits
-    private double benefitDirectConnections;
-    private double benefitIndirectConnections;
-
-    // costs
-    private double costsDirectConnections;
-    private double effectOfDisease;
 
     /**
      * Constructor.
      *
-     * @param benefitDirectConnections
-     *          the benefit of direct connections
-     * @param benefitIndirectConnections
-     *          the benefit of indirect connections
-     * @param costsDirectConnections
-     *          the costs of direct connections
-     * @param effectOfDisease
-     *          the effect of the disease
+     * @param socialBenefits
+     *          the benefits of social connections
+     * @param socialCosts
+     *          the costs of social connections
+     * @param diseaseCosts
+     *          the costs of the disease
      */
-    public Utility(double benefitDirectConnections, double benefitIndirectConnections,
-            double costsDirectConnections, double effectOfDisease) {
+    public Utility(double socialBenefits, double socialCosts, double diseaseCosts) {
 
-        this.benefitDirectConnections = benefitDirectConnections;
-        this.benefitIndirectConnections = benefitIndirectConnections;
-        this.costsDirectConnections = costsDirectConnections;
-        this.effectOfDisease = effectOfDisease;
+        this.socialBenefits = socialBenefits;
+        this.socialCosts = socialCosts;
+        this.diseaseCosts = diseaseCosts;
 
-        this.overallUtility = benefitDirectConnections
-                + benefitIndirectConnections
-                - costsDirectConnections
-                - effectOfDisease;
+        this.overallUtility = socialBenefits - socialCosts - diseaseCosts;
     }
+
 
     /**
      * @return the overallUtility
@@ -75,31 +65,24 @@ public class Utility {
     }
 
     /**
-     * @return the benefitDirectConnections
+     * @return the socialBenefits
      */
-    public double getBenefitDirectConnections() {
-        return benefitDirectConnections;
+    public double getSocialBenefits() {
+        return socialBenefits;
     }
 
     /**
-     * @return the benefitIndirectConnections
+     * @return the socialCosts
      */
-    public double getBenefitIndirectConnections() {
-        return benefitIndirectConnections;
+    public double getSocialCosts() {
+        return socialCosts;
     }
 
     /**
-     * @return the costsDirectConnections
+     * @return the diseaseCosts
      */
-    public double getCostsDirectConnections() {
-        return costsDirectConnections;
-    }
-
-    /**
-     * @return the effectOfDisease
-     */
-    public double getEffectOfDisease() {
-        return effectOfDisease;
+    public double getDiseaseCosts() {
+        return diseaseCosts;
     }
 
 }

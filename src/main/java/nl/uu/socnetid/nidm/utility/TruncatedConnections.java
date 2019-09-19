@@ -33,6 +33,14 @@ import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
  */
 public class TruncatedConnections extends UtilityFunction {
 
+    // utility of direct connections
+    private final double alpha;
+    // utility of indirect connections
+    private final double beta;
+    // costs to maintain direct connections
+    private final double c;
+
+
     /**
      * Constructor.
      *
@@ -42,7 +50,9 @@ public class TruncatedConnections extends UtilityFunction {
      *          the c to maintain direct connections
      */
     public TruncatedConnections(double alpha, double c) {
-        super(alpha, alpha * alpha, c);
+        this.alpha = alpha;
+        this.beta = alpha*alpha;
+        this.c = c;
     }
 
 
@@ -54,63 +64,74 @@ public class TruncatedConnections extends UtilityFunction {
         return "TC";
     }
 
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getBenefitOfDirectConnections(
-     * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats)
-     */
-    @Override
-    protected double getBenefitOfDirectConnections(LocalAgentConnectionsStats lacs) {
-        return this.getAlpha() * lacs.getN();
-    }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getBenefitOfIndirectConnections(
-     * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats)
-     */
-    @Override
-    protected double getBenefitOfIndirectConnections(LocalAgentConnectionsStats lacs) {
-        return this.getBeta() * lacs.getM();
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getCostsOfDirectConnections(
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getSocialBenefits(
      * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats, nl.uu.socnetid.nidm.agents.Agent)
      */
     @Override
-    protected double getCostsOfDirectConnections(LocalAgentConnectionsStats lacs, Agent agent) {
+    protected double getSocialBenefits(LocalAgentConnectionsStats lacs, Agent agent) {
+        return
+                // direct connections
+                this.getAlpha() * lacs.getN() +
+                // indirect connections
+                this.getBeta() * lacs.getM();
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getSocialCosts(
+     * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats, nl.uu.socnetid.nidm.agents.Agent)
+     */
+    @Override
+    protected double getSocialCosts(LocalAgentConnectionsStats lacs, Agent agent) {
         int nSR = lacs.getnS() + lacs.getnR();
         int nI = lacs.getnI();
         return (nSR + (nI * agent.getDiseaseSpecs().getMu())) * this.getC();
     }
 
-    /*
-     * (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getEffectOfDisease(
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getDiseaseCosts(
      * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats, nl.uu.socnetid.nidm.agents.Agent)
      */
     @Override
-    protected double getEffectOfDisease(LocalAgentConnectionsStats lacs, Agent agent) {
+    protected double getDiseaseCosts(LocalAgentConnectionsStats lacs, Agent agent) {
         // no effect
         return 0.0;
     }
 
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getKappa()
+    /**
+     * @return the alpha
      */
-    @Override
-    public double getKappa() {
-        return 0;
+    public double getAlpha() {
+        return alpha;
+    }
+
+    /**
+     * @return the beta
+     */
+    public double getBeta() {
+        return beta;
+    }
+
+    /**
+     * @return the c
+     */
+    public double getC() {
+        return c;
     }
 
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getLamda()
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#toString()
      */
     @Override
-    public double getLamda() {
-        return 0;
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("type:").append(getStatsName());
+        sb.append(" | alpha:").append(this.getAlpha());
+        sb.append(" | beta:").append(this.getBeta());
+        sb.append(" | c:").append(this.getC());
+        return sb.toString();
     }
 
 }
