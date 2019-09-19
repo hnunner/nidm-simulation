@@ -38,6 +38,7 @@ public class LocalAgentConnectionsStats {
     private final int mS;
     private final int mI;
     private final int mR;
+    private final int z;
 
     /**
      * Constructor.
@@ -54,8 +55,10 @@ public class LocalAgentConnectionsStats {
      *          the amount of infected indirect connections
      * @param mR
      *          the amount of recovered indirect connections
+     * @param z
+     *          the amount of closed triads the agent is part of
      */
-    public LocalAgentConnectionsStats(int nS, int nI, int nR, int mS, int mI, int mR) {
+    public LocalAgentConnectionsStats(int nS, int nI, int nR, int mS, int mI, int mR, int z) {
         this.n = nS + nI + nR;
         this.nS = nS;
         this.nI = nI;
@@ -64,6 +67,7 @@ public class LocalAgentConnectionsStats {
         this.mS = mS;
         this.mI = mI;
         this.mR = mR;
+        this.z = z;
     }
 
     /**
@@ -120,6 +124,13 @@ public class LocalAgentConnectionsStats {
      */
     public int getmR() {
         return mR;
+    }
+
+    /**
+     * @return the number of closed triads
+     */
+    public int getZ() {
+        return z;
     }
 
 }

@@ -37,6 +37,12 @@ public final class Cumulative extends UtilityFunction {
     private static final double DEFAULT_DIRECT = 1.0;
     private static final double DEFAULT_INDIRECT = 0.5;
 
+    // utility of direct connections
+    private final double alpha;
+    // utility of indirect connections
+    private final double beta;
+
+
     /**
      * Constructor with default values.
      */
@@ -53,7 +59,8 @@ public final class Cumulative extends UtilityFunction {
      *          the utility for indirect connections (distance 2)
      */
     public Cumulative(double alpha, double beta) {
-        super(alpha, beta, 0.0);
+        this.alpha = alpha;
+        this.beta = beta;
     }
 
 
@@ -66,59 +73,62 @@ public final class Cumulative extends UtilityFunction {
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getBenefitOfDirectConnections(
-     * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats)
-     */
-    @Override
-    protected double getBenefitOfDirectConnections(LocalAgentConnectionsStats lacs) {
-        return this.getAlpha() * lacs.getN();
-    }
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getBenefitOfIndirectConnections(
-     * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats)
-     */
-    @Override
-    protected double getBenefitOfIndirectConnections(LocalAgentConnectionsStats lacs) {
-        return this.getBeta() * lacs.getM();
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getCostsOfDirectConnections(
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getSocialBenefits(
      * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats, nl.uu.socnetid.nidm.agents.Agent)
      */
     @Override
-    protected double getCostsOfDirectConnections(LocalAgentConnectionsStats lacs, Agent agent) {
+    protected double getSocialBenefits(LocalAgentConnectionsStats lacs, Agent agent) {
+        return
+                // direct connections
+                this.getAlpha() * lacs.getN() +
+                // indirect connections
+                this.getBeta() * lacs.getM();
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getSocialCosts(
+     * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats, nl.uu.socnetid.nidm.agents.Agent)
+     */
+    @Override
+    protected double getSocialCosts(LocalAgentConnectionsStats lacs, Agent agent) {
         // no costs
         return 0.0;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getEffectOfDisease(
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getDiseaseCosts(
      * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats, nl.uu.socnetid.nidm.agents.Agent)
      */
     @Override
-    protected double getEffectOfDisease(LocalAgentConnectionsStats lacs, Agent agent) {
-        // no effect
+    protected double getDiseaseCosts(LocalAgentConnectionsStats lacs, Agent agent) {
+        // no costs
         return 0.0;
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getKappa()
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#toString()
      */
     @Override
-    public double getKappa() {
-        return 0;
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("type:").append(getStatsName());
+        sb.append(" | alpha:").append(this.getAlpha());
+        sb.append(" | beta:").append(this.getBeta());
+        return sb.toString();
     }
 
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getLamda()
+    /**
+     * @return the alpha
      */
-    @Override
-    public double getLamda() {
-        return 0;
+    public double getAlpha() {
+        return alpha;
+    }
+
+    /**
+     * @return the beta
+     */
+    public double getBeta() {
+        return beta;
     }
 
 }

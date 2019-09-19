@@ -34,10 +34,16 @@ import nl.uu.socnetid.nidm.stats.StatsComputer;
  */
 public class Cidm extends UtilityFunction {
 
+    // utility of direct connections
+    private final double alpha;
     // discount for infected direct connections
     private final double kappa;
+    // utility of indirect connections
+    private final double beta;
     // discount for infected indirect connections
     private final double lamda;
+    // costs to maintain direct connections
+    private final double c;
 
     /**
      * Constructor.
@@ -54,9 +60,11 @@ public class Cidm extends UtilityFunction {
      *          the maintenance costs for a direct connection
      */
     public Cidm(double alpha, double kappa, double beta, double lamda, double c) {
-        super(alpha, beta, c);
+        this.alpha = alpha;
         this.kappa = kappa;
+        this.beta = beta;
         this.lamda = lamda;
+        this.c = c;
     }
 
 
@@ -69,40 +77,33 @@ public class Cidm extends UtilityFunction {
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getBenefitOfDirectConnections(
-     * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats)
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getSocialBenefits(
+     * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats, nl.uu.socnetid.nidm.agents.Agent)
      */
     @Override
-    protected double getBenefitOfDirectConnections(LocalAgentConnectionsStats lacs) {
-        return this.getAlpha() * (lacs.getnS() + this.kappa * lacs.getnI() + lacs.getnR());
+    protected double getSocialBenefits(LocalAgentConnectionsStats lacs, Agent agent) {
+        return
+                // direct connections
+                this.getAlpha() * (lacs.getnS() + this.kappa * lacs.getnI() + lacs.getnR()) +
+                // indirect connections
+                this.getBeta() * (lacs.getmS() + this.lamda * lacs.getmI() + lacs.getmR());
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getBenefitOfIndirectConnections(
-     * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats)
-     */
-    @Override
-    protected double getBenefitOfIndirectConnections(LocalAgentConnectionsStats lacs) {
-        return this.getBeta() * (lacs.getmS() + this.lamda * lacs.getmI() + lacs.getmR());
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getCostsOfDirectConnections(
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getSocialCosts(
      * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats, nl.uu.socnetid.nidm.agents.Agent)
      */
     @Override
-    protected double getCostsOfDirectConnections(LocalAgentConnectionsStats lacs, Agent agent) {
+    protected double getSocialCosts(LocalAgentConnectionsStats lacs, Agent agent) {
         return this.getC() * (lacs.getnS() + agent.getDiseaseSpecs().getMu() * lacs.getnI() + lacs.getnR());
     }
 
-    /*
-     * (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getEffectOfDisease(
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getDiseaseCosts(
      * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats, nl.uu.socnetid.nidm.agents.Agent)
      */
     @Override
-    protected double getEffectOfDisease(LocalAgentConnectionsStats lacs, Agent agent) {
+    protected double getDiseaseCosts(LocalAgentConnectionsStats lacs, Agent agent) {
         int nI = lacs.getnI();
         double p;
         double s;
@@ -133,22 +134,54 @@ public class Cidm extends UtilityFunction {
         return p * s;
     }
 
-
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getKappa()
+     * @see java.lang.Object#toString()
      */
     @Override
-    public double getKappa() {
-        return this.kappa;
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("type:").append(getStatsName());
+        sb.append(" | alpha:").append(this.getAlpha());
+        sb.append(" | kappa:").append(this.getKappa());
+        sb.append(" | beta:").append(this.getBeta());
+        sb.append(" | lamda:").append(this.getLamda());
+        sb.append(" | c:").append(this.getC());
+        return sb.toString();
     }
 
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getLamda()
+    /**
+     * @return the alpha
      */
-    @Override
+    public double getAlpha() {
+        return alpha;
+    }
+
+    /**
+     * @return the kappa
+     */
+    public double getKappa() {
+        return kappa;
+    }
+
+    /**
+     * @return the beta
+     */
+    public double getBeta() {
+        return beta;
+    }
+
+    /**
+     * @return the lamda
+     */
     public double getLamda() {
-        return this.lamda;
+        return lamda;
+    }
+
+    /**
+     * @return the c
+     */
+    public double getC() {
+        return c;
     }
 
 }

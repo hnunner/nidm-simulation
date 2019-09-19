@@ -39,10 +39,9 @@ public class NetworkStats {
     private double avCloseness;
     private double avClustering;
     private double avUtility;
-    private double avBenefitDistance1;
-    private double avBenefitDistance2;
-    private double avCostsDistance1;
-    private double avCostsDisease;
+    private double avSocialBenefits;
+    private double avSocialCosts;
+    private double avDiseaseCosts;
     private int susceptiblesTotal;
     private int infectedTotal;
     private int recoveredTotal;
@@ -60,10 +59,9 @@ public class NetworkStats {
         this.avCloseness = network.getAvCloseness();
         this.avClustering = network.getAvClustering();
         this.avUtility = network.getAvUtility();
-        this.avBenefitDistance1 = network.getAvBenefitDistance1();
-        this.avBenefitDistance2 = network.getAvBenefitDistance2();
-        this.avCostsDistance1 = network.getAvCostsDistance1();
-        this.avCostsDisease = network.getAvCostsDisease();
+        this.avSocialBenefits = network.getAvSocialBenefits();
+        this.avSocialCosts = network.getAvSocialCosts();
+        this.avDiseaseCosts = network.getAvDiseaseCosts();
         this.susceptiblesTotal = network.getSusceptibles().size();
         this.infectedTotal = network.getInfected().size();
         this.recoveredTotal = network.getRecovered().size();
@@ -172,59 +170,45 @@ public class NetworkStats {
     }
 
     /**
-     * @return the avBenefitDistance1
+     * @return the avSocialBenefits
      */
-    public double getAvBenefitDistance1() {
-        return avBenefitDistance1;
+    public double getAvSocialBenefits() {
+        return avSocialBenefits;
     }
 
     /**
-     * @param avBenefitDistance1 the avBenefitDistance1 to set
+     * @param avSocialBenefits the avSocialBenefits to set
      */
-    public void setAvBenefitDistance1(double avBenefitDistance1) {
-        this.avBenefitDistance1 = avBenefitDistance1;
+    public void setAvSocialBenefits(double avSocialBenefits) {
+        this.avSocialBenefits = avSocialBenefits;
     }
 
     /**
-     * @return the avBenefitDistance2
+     * @return the avSocialCosts
      */
-    public double getAvBenefitDistance2() {
-        return avBenefitDistance2;
+    public double getAvSocialCosts() {
+        return avSocialCosts;
     }
 
     /**
-     * @param avBenefitDistance2 the avBenefitDistance2 to set
+     * @param avSocialCosts the avSocialCosts to set
      */
-    public void setAvBenefitDistance2(double avBenefitDistance2) {
-        this.avBenefitDistance2 = avBenefitDistance2;
+    public void setAvSocialCosts(double avSocialCosts) {
+        this.avSocialCosts = avSocialCosts;
     }
 
     /**
-     * @return the avCostsDistance1
+     * @return the avDiseaseCosts
      */
-    public double getAvCostsDistance1() {
-        return avCostsDistance1;
+    public double getAvDiseaseCosts() {
+        return avDiseaseCosts;
     }
 
     /**
-     * @param avCostsDistance1 the avCostsDistance1 to set
+     * @param avDiseaseCosts the avDiseaseCosts to set
      */
-    public void setAvCostsDistance1(double avCostsDistance1) {
-        this.avCostsDistance1 = avCostsDistance1;
-    }
-
-    /**
-     * @return the avCostsDisease
-     */
-    public double getAvCostsDisease() {
-        return avCostsDisease;
-    }
-
-    /**
-     * @param avCostsDisease the avCostsDisease to set
-     */
-    public void setAvCostsDisease(double avCostsDisease) {
-        this.avCostsDisease = avCostsDisease;
+    public void setAvDiseaseCosts(double avDiseaseCosts) {
+        this.avDiseaseCosts = avDiseaseCosts;
     }
 
     /**
