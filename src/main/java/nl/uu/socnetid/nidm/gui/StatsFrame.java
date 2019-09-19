@@ -56,9 +56,7 @@ public class StatsFrame extends JFrame {
     // labels global stats
     // utility
     private JLabel lblGlobalUtilityFunction;
-    private JLabel lblGlobalAlpha;
-    private JLabel lblGlobalBeta;
-    private JLabel lblGlobalC;
+    private JLabel lblGlobalUtilSettings;
     // disease
     private JLabel lblGlobalDiseaseType;
     private JLabel lblGlobalTau;
@@ -95,11 +93,9 @@ public class StatsFrame extends JFrame {
     private JLabel lblAgentUtility;
     // benefit
     private JLabel lblAgentBenefit;
-    private JLabel lblAgentBenefitDirect;
-    private JLabel lblAgentBenefitIndirect;
     // costs
     private JLabel lblAgentCosts;
-    private JLabel lblAgentCostsDirect;
+    private JLabel lblAgentCostsSocial;
     private JLabel lblAgentCostsDisease;
     // disease
     private JLabel lblAgentDiseaseGroup;
@@ -284,42 +280,12 @@ public class StatsFrame extends JFrame {
         lblCurrentBenefit.setBounds(10, 75, 97, 16);
         panel.add(lblCurrentBenefit);
 
-        JLabel lblDirectConnections_1 = new JLabel("Direct connections");
-        lblDirectConnections_1.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblDirectConnections_1.setBounds(20, 90, 99, 16);
-        panel.add(lblDirectConnections_1);
-
-        JLabel label_33 = new JLabel(":");
-        label_33.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_33.setBounds(117, 90, 10, 16);
-        panel.add(label_33);
-
-        lblAgentBenefitDirect = new JLabel(NA_STRING);
-        lblAgentBenefitDirect.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblAgentBenefitDirect.setBounds(130, 90, 56, 16);
-        panel.add(lblAgentBenefitDirect);
-
-        JLabel lblIndirectConnections = new JLabel("Indirect connections");
-        lblIndirectConnections.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblIndirectConnections.setBounds(20, 105, 99, 16);
-        panel.add(lblIndirectConnections);
-
-        JLabel label_41 = new JLabel(":");
-        label_41.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_41.setBounds(117, 105, 10, 16);
-        panel.add(label_41);
-
-        lblAgentBenefitIndirect = new JLabel(NA_STRING);
-        lblAgentBenefitIndirect.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblAgentBenefitIndirect.setBounds(130, 105, 56, 16);
-        panel.add(lblAgentBenefitIndirect);
-
         JLabel lblCurrentCosts = new JLabel("Current costs");
         lblCurrentCosts.setFont(new Font("Lucida Grande", Font.BOLD, 9));
         lblCurrentCosts.setBounds(10, 120, 97, 16);
         panel.add(lblCurrentCosts);
 
-        JLabel lblDirectConnections = new JLabel("Direct connections");
+        JLabel lblDirectConnections = new JLabel("Social connections");
         lblDirectConnections.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
         lblDirectConnections.setBounds(20, 135, 91, 16);
         panel.add(lblDirectConnections);
@@ -329,12 +295,12 @@ public class StatsFrame extends JFrame {
         label_45.setBounds(117, 135, 10, 16);
         panel.add(label_45);
 
-        lblAgentCostsDirect = new JLabel(NA_STRING);
-        lblAgentCostsDirect.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        lblAgentCostsDirect.setBounds(130, 135, 56, 16);
-        panel.add(lblAgentCostsDirect);
+        lblAgentCostsSocial = new JLabel(NA_STRING);
+        lblAgentCostsSocial.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblAgentCostsSocial.setBounds(130, 135, 56, 16);
+        panel.add(lblAgentCostsSocial);
 
-        JLabel lblEffectOfDisease = new JLabel("Effect of disease");
+        JLabel lblEffectOfDisease = new JLabel("Disease");
         lblEffectOfDisease.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
         lblEffectOfDisease.setBounds(20, 150, 99, 16);
         panel.add(lblEffectOfDisease);
@@ -476,35 +442,15 @@ public class StatsFrame extends JFrame {
         panel_1.add(lblGlobalUtilityFunction);
         lblGlobalUtilityFunction.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
 
-        JLabel lblDirectBenefit = new JLabel("Direct benefit");
-        lblDirectBenefit.setBounds(20, 60, 67, 16);
-        panel_1.add(lblDirectBenefit);
-        lblDirectBenefit.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        JLabel lblUtilSettings = new JLabel("Settings");
+        lblUtilSettings.setBounds(20, 60, 67, 16);
+        panel_1.add(lblUtilSettings);
+        lblUtilSettings.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
 
-        lblGlobalAlpha = new JLabel(NA_STRING);
-        lblGlobalAlpha.setBounds(130, 60, 56, 16);
-        panel_1.add(lblGlobalAlpha);
-        lblGlobalAlpha.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-
-        JLabel lblIndirectBenefit = new JLabel("Indirect benefit");
-        lblIndirectBenefit.setBounds(20, 75, 71, 16);
-        panel_1.add(lblIndirectBenefit);
-        lblIndirectBenefit.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-
-        lblGlobalBeta = new JLabel(NA_STRING);
-        lblGlobalBeta.setBounds(130, 75, 56, 16);
-        panel_1.add(lblGlobalBeta);
-        lblGlobalBeta.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-
-        JLabel label_11 = new JLabel("Costs");
-        label_11.setBounds(20, 90, 67, 16);
-        panel_1.add(label_11);
-        label_11.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-
-        lblGlobalC = new JLabel(NA_STRING);
-        lblGlobalC.setBounds(130, 90, 56, 16);
-        panel_1.add(lblGlobalC);
-        lblGlobalC.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+        lblGlobalUtilSettings = new JLabel(NA_STRING);
+        lblGlobalUtilSettings.setBounds(130, 60, 56, 16);
+        panel_1.add(lblGlobalUtilSettings);
+        lblGlobalUtilSettings.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
 
         JLabel label_12 = new JLabel("Disease");
         label_12.setBounds(10, 105, 97, 16);
@@ -561,20 +507,10 @@ public class StatsFrame extends JFrame {
         panel_1.add(lblGlobalMu);
         lblGlobalMu.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
 
-        JLabel label_6 = new JLabel("(α):");
+        JLabel label_6 = new JLabel("    :");
         label_6.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
         label_6.setBounds(105, 60, 24, 16);
         panel_1.add(label_6);
-
-        JLabel label_8 = new JLabel("(β):");
-        label_8.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_8.setBounds(105, 75, 24, 16);
-        panel_1.add(label_8);
-
-        JLabel label_10 = new JLabel("(c):");
-        label_10.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
-        label_10.setBounds(105, 90, 24, 16);
-        panel_1.add(label_10);
 
         JLabel label_13 = new JLabel("(τ):");
         label_13.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
@@ -1111,9 +1047,7 @@ public class StatsFrame extends JFrame {
      */
     public void refreshGlobalUtilityStats(UtilityFunction uf) {
         this.lblGlobalUtilityFunction.setText(uf.getStatsName());
-        this.lblGlobalAlpha.setText(Double.toString(uf.getAlpha()));
-        this.lblGlobalBeta.setText(Double.toString(uf.getBeta()));
-        this.lblGlobalC.setText(Double.toString(uf.getC()));
+        this.lblGlobalUtilSettings.setText(uf.toString());
     }
 
     /**
@@ -1186,9 +1120,7 @@ public class StatsFrame extends JFrame {
     public void resetGlobalAgentStats() {
         // utility
         this.lblGlobalUtilityFunction.setText(NA_STRING);
-        this.lblGlobalAlpha.setText(NA_STRING);
-        this.lblGlobalBeta.setText(NA_STRING);
-        this.lblGlobalC.setText(NA_STRING);
+        this.lblGlobalUtilSettings.setText(NA_STRING);
 
         // disease
         this.lblGlobalDiseaseType.setText(NA_STRING);
@@ -1217,16 +1149,12 @@ public class StatsFrame extends JFrame {
         this.lblAgentUtility.setText(Double.toString(utility.getOverallUtility()));
 
         // benefit
-        this.lblAgentBenefit.setText(Double.toString(utility.getBenefitDirectConnections()
-                + utility.getBenefitIndirectConnections()));
-        this.lblAgentBenefitDirect.setText(Double.toString(utility.getBenefitDirectConnections()));
-        this.lblAgentBenefitIndirect.setText(Double.toString(utility.getBenefitIndirectConnections()));
+        this.lblAgentBenefit.setText(Double.toString(utility.getSocialBenefits()));
 
         // costs
-        this.lblAgentCosts.setText(Double.toString(utility.getCostsDirectConnections()
-                - utility.getEffectOfDisease()));
-        this.lblAgentCostsDirect.setText(Double.toString(utility.getCostsDirectConnections()));
-        this.lblAgentCostsDisease.setText(Double.toString(utility.getEffectOfDisease()));
+        this.lblAgentCosts.setText(Double.toString(utility.getSocialCosts() - utility.getDiseaseCosts()));
+        this.lblAgentCostsSocial.setText(Double.toString(utility.getSocialCosts()));
+        this.lblAgentCostsDisease.setText(Double.toString(utility.getDiseaseCosts()));
 
         // disease
         this.lblAgentDiseaseGroup.setText(agent.getDiseaseGroup().toString());

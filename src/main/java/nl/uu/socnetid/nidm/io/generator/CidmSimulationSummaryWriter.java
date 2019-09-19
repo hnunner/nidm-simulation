@@ -96,9 +96,8 @@ public class CidmSimulationSummaryWriter extends CidmCsvFileWriter {
         cols.add(LogValues.DV_NET_AV_CLOSENESS_PRE.toString());
         cols.add(LogValues.DV_NET_AV_CLUSTERING_PRE.toString());
         cols.add(LogValues.DV_NET_AV_UTIL_PRE.toString());
-        cols.add(LogValues.DV_NET_AV_BENEFIT_DIST1_PRE.toString());
-        cols.add(LogValues.DV_NET_AV_BENEFIT_DIST2_PRE.toString());
-        cols.add(LogValues.DV_NET_AV_COSTS_DIST1_PRE.toString());
+        cols.add(LogValues.DV_NET_AV_BENEFIT_SOCIAL_PRE.toString());
+        cols.add(LogValues.DV_NET_AV_COSTS_SOCIAL_PRE.toString());
         cols.add(LogValues.DV_NET_AV_COSTS_DISEASE_PRE.toString());
         cols.add(LogValues.DV_NET_DENSITY_PRE.toString());
         // post-epidemic
@@ -111,9 +110,8 @@ public class CidmSimulationSummaryWriter extends CidmCsvFileWriter {
         cols.add(LogValues.DV_NET_AV_CLOSENESS_POST.toString());
         cols.add(LogValues.DV_NET_AV_CLUSTERING_POST.toString());
         cols.add(LogValues.DV_NET_AV_UTIL_POST.toString());
-        cols.add(LogValues.DV_NET_AV_BENEFIT_DIST1_POST.toString());
-        cols.add(LogValues.DV_NET_AV_BENEFIT_DIST2_POST.toString());
-        cols.add(LogValues.DV_NET_AV_COSTS_DIST1_POST.toString());
+        cols.add(LogValues.DV_NET_AV_BENEFIT_SOCIAL_POST.toString());
+        cols.add(LogValues.DV_NET_AV_COSTS_SOCIAL_POST.toString());
         cols.add(LogValues.DV_NET_AV_COSTS_DISEASE_POST.toString());
         cols.add(LogValues.DV_NET_DENSITY_POST.toString());
         // index case
@@ -180,10 +178,9 @@ public class CidmSimulationSummaryWriter extends CidmCsvFileWriter {
         currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvCloseness()));
         currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvClustering()));
         currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvUtility()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvBenefitDistance1()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvBenefitDistance2()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvCostsDistance1()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvCostsDisease()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvSocialBenefits()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvSocialCosts()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvDiseaseCosts()));
         currData.add(String.valueOf(this.dgData.getNetStatsPre().getDensity()));
         currData.add(String.valueOf(this.dgData.getNetStatsPost().getSusceptiblePercent()));
         currData.add(String.valueOf(this.dgData.getNetStatsPost().getInfectedPercent()));
@@ -194,18 +191,16 @@ public class CidmSimulationSummaryWriter extends CidmCsvFileWriter {
         currData.add(String.valueOf(this.dgData.getNetStatsPost().getAvCloseness()));
         currData.add(String.valueOf(this.dgData.getNetStatsPost().getAvClustering()));
         currData.add(String.valueOf(this.dgData.getNetStatsPost().getAvUtility()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPost().getAvBenefitDistance1()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPost().getAvBenefitDistance2()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPost().getAvCostsDistance1()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPost().getAvCostsDisease()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPost().getAvSocialBenefits()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPost().getAvSocialCosts()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPost().getAvDiseaseCosts()));
         currData.add(String.valueOf(this.dgData.getNetStatsPost().getDensity()));
         // index case
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().isSatisfied()));
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().getUtility()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getBenefit1()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getBenefit2()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getCosts1()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getCostsDisease()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getSocialBenefits()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getSocialCosts()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getDiseaseCosts()));
         currData.add(this.dgData.getIndexCaseStats().getDiseaseGroup().name());
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().getTimeToRecover()));
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().getDegree1()));
