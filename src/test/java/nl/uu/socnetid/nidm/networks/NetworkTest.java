@@ -33,6 +33,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.math3.util.Precision;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -447,6 +448,15 @@ public class NetworkTest {
     public void testGetAvCloseness() {
         assertEquals(6, this.network.getN());
         assertEquals(0.37, this.network.getAvCloseness(), 0.01);
+    }
+
+    /**
+     * Test whether average path length is computed correctly.
+     */
+    @Test
+    public void testGetAvPathLength() {
+        assertEquals(6, this.network.getN());
+        assertEquals(0.53, Precision.round(this.network.getAvPathLength(), 2), 0);
     }
 
 }
