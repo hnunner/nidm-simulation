@@ -74,6 +74,17 @@ public enum LogValues {
     IV_CIDM_ZETA("cidm.zeta"),
     IV_CIDM_EPSILON("cidm.epsilon"),
     IV_CIDM_SIMS_PER_PC("cidm.n"),
+    // BurgerBuskens
+    IV_BB_B1("bb.b1"),
+    IV_BB_C1("bb.c1"),
+    IV_BB_C2("bb.c2"),
+    IV_BB_B2C3_RANDOM("bb.b2c3.random"),
+    IV_BB_B2("bb.b2"),
+    IV_BB_C3("bb.c3"),
+    IV_BB_NET_SIZE("bb.N"),
+    IV_BB_IOTA("bb.iota"),
+    IV_BB_PHI("bb.phi"),
+    IV_BB_SIMS_PER_PC("bb.n"),
 
     // PROPERTIES (dependent variables)
     // simulation
@@ -97,6 +108,7 @@ public enum LogValues {
     DV_NET_AV_CLUSTERING("net.clustering.av"),
     DV_NET_AV_CLUSTERING_PRE("net.clustering.pre.epidemic.av"),
     DV_NET_AV_CLUSTERING_POST("net.clustering.post.epidemic.av"),
+    DV_NET_AV_PATHLENGTH("net.pathlength.av"),
     DV_NET_AV_UTIL_PRE("net.utility.pre.epidemic.av"),
     DV_NET_AV_UTIL_POST("net.utility.post.epidemic.av"),
     DV_NET_AV_BENEFIT_SOCIAL_PRE("net.benefit.social.pre.epidemic.av"),

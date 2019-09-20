@@ -25,7 +25,32 @@
  */
 package nl.uu.socnetid.nidm.data;
 
+import nl.uu.socnetid.nidm.system.PropertiesHandler;
+
 /**
  * @author Hendrik Nunner
  */
-public interface UtilityModelParameters {}
+public class BurgerBuskensDataGeneratorData extends DataGeneratorData<BurgerBuskensParameters> {
+
+    // parameters
+    private BurgerBuskensParameters bbParams;
+
+
+    /**
+     * Constructor.
+     */
+    public BurgerBuskensDataGeneratorData() {
+        super();
+        this.bbParams = PropertiesHandler.getInstance().getBurgerBuskensParameters();
+    }
+
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.data.DataGeneratorData#getUtilityModelParams()
+     */
+    @Override
+    public BurgerBuskensParameters getUtilityModelParams() {
+        return this.bbParams;
+    }
+
+}
