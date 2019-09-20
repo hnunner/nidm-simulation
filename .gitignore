@@ -20,3 +20,6 @@ target/
 
 # network exports
 network-exports/
+
+# bfg reports
+bfg-report*
