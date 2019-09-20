@@ -42,6 +42,7 @@ import org.graphstream.graph.implementations.SingleGraph;
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.agents.AgentFactory;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
+import nl.uu.socnetid.nidm.stats.DijkstraShortestPath;
 import nl.uu.socnetid.nidm.utility.UtilityFunction;
 
 /**
@@ -642,6 +643,41 @@ public class Network extends SingleGraph {
      */
     public double getAvClustering() {
         return Toolkit.averageClusteringCoefficient(this);
+    }
+
+    /**
+     * Gets the average path length of the network.
+     *
+     * @return the average path length of the network
+     */
+    public double getAvPathLength() {
+        double totalShortestPathLengths = 0;
+
+        Collection<Agent> agents1 = this.getAgents();
+        Iterator<Agent> agents1It = agents1.iterator();
+        while (agents1It.hasNext()) {
+            Agent a1 = agents1It.next();
+            DijkstraShortestPath dsp = new DijkstraShortestPath();
+            dsp.executeShortestPaths(a1);
+
+            Collection<Agent> agents2 = this.getAgents();
+            Iterator<Agent> agents2It = agents2.iterator();
+            while (agents2It.hasNext()) {
+                Agent a2 = agents2It.next();
+                // skip if a1 and a2 are identical
+                if (a1.getId().equals(a2.getId())) {
+                    continue;
+                }
+                Integer shortestPathLength = dsp.getShortestPathLength(a2);
+                // if nodes cannot be reached: path length = 0
+                if (shortestPathLength != null) {
+                    totalShortestPathLengths += shortestPathLength.intValue();
+                }
+            }
+        }
+
+        // average
+        return totalShortestPathLengths / (this.getN() * (this.getN()-1));
     }
 
     /**
