@@ -62,6 +62,7 @@ import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.agents.AgentListener;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
+import nl.uu.socnetid.nidm.gui.BurgerBuskensPanel;
 import nl.uu.socnetid.nidm.gui.CidmPanel;
 import nl.uu.socnetid.nidm.gui.CumulativePanel;
 import nl.uu.socnetid.nidm.gui.DeactivatablePanel;
@@ -78,6 +79,7 @@ import nl.uu.socnetid.nidm.simulation.Simulation;
 import nl.uu.socnetid.nidm.simulation.SimulationListener;
 import nl.uu.socnetid.nidm.stats.StatsComputer;
 import nl.uu.socnetid.nidm.system.PropertiesHandler;
+import nl.uu.socnetid.nidm.utility.BurgerBuskens;
 import nl.uu.socnetid.nidm.utility.Cidm;
 import nl.uu.socnetid.nidm.utility.Cumulative;
 import nl.uu.socnetid.nidm.utility.UtilityFunction;
@@ -100,11 +102,12 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
     // UTILITY
     // selection
     private JComboBox<String> modelTypeCBox;
-    private final String[] utilityFunctions = {"Cidm"};  //, "Cumulative"};
+    private final String[] utilityFunctions = {"CIDM", "Burger & Buskens (2009)"};
     // panels
     private CumulativePanel cumulativePanel = new CumulativePanel();
     private CidmPanel cidmPanel = new CidmPanel();
-    private final DeactivatablePanel[] utilityPanels = {cumulativePanel, cidmPanel};
+    private BurgerBuskensPanel bbPanel = new BurgerBuskensPanel();
+    private final DeactivatablePanel[] utilityPanels = {cumulativePanel, cidmPanel, bbPanel};
 
     // AGENT
     // network size
@@ -229,6 +232,9 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
         cidmPanel.setBounds(3, 51, 312, 615);
         modelPane.add(cidmPanel);
 
+        bbPanel.setBounds(3, 51, 312, 615);
+        modelPane.add(bbPanel);
+
         cumulativePanel.setBounds(3, 51, 312, 615);
         cumulativePanel.setVisible(false);
         modelPane.add(cumulativePanel);
@@ -255,11 +261,19 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
                 switch (modelTypeCBox.getSelectedIndex()) {
                     case 0:
                         cidmPanel.setVisible(true);
+                        bbPanel.setVisible(false);
                         cumulativePanel.setVisible(false);
                         break;
 
                     case 1:
                         cidmPanel.setVisible(false);
+                        bbPanel.setVisible(true);
+                        cumulativePanel.setVisible(false);
+                        break;
+
+                    case 2:
+                        cidmPanel.setVisible(false);
+                        bbPanel.setVisible(false);
                         cumulativePanel.setVisible(true);
                         break;
 
@@ -674,7 +688,16 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
                         this.cidmPanel.getC());
 
             case 1:
-                return new Cumulative(this.cumulativePanel.getDirectBenefit(),
+                return new BurgerBuskens(
+                        this.bbPanel.getB1(),
+                        this.bbPanel.getB2(),
+                        this.bbPanel.getC1(),
+                        this.bbPanel.getC2(),
+                        this.bbPanel.getC3());
+
+            case 2:
+                return new Cumulative(
+                        this.cumulativePanel.getDirectBenefit(),
                         this.cumulativePanel.getIndirectBenefit());
 
             default:

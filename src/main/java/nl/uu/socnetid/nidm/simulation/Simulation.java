@@ -44,6 +44,8 @@ public class Simulation implements Runnable {
 
     // logger
     private static final Logger logger = Logger.getLogger(Simulation.class);
+    // maximum number of rounds
+    private static final int MAX_ROUNDS = 1000;
 
     // the network
     private Network network;
@@ -95,8 +97,42 @@ public class Simulation implements Runnable {
     }
 
     /**
-     * Simulates the network dynamics (disease and agents)
-     * for a number of rounds
+     * Simulates the network dynamics (disease and agents) until the network is stable.
+     *
+     * @TODO generalize, as this method is very similar to simulate(int rounds)
+     */
+    public void simulate() {
+
+        this.activeInfection = false;
+
+        while (!this.network.isStable() && this.rounds < MAX_ROUNDS) {
+            computeSingleRound();
+        }
+
+        // status message
+        StringBuilder sb = new StringBuilder();
+        sb.append("Simulation finished after " + rounds + " rounds .");
+        boolean unfinished = false;
+        if (!this.network.isStable()) {
+            sb.append(" Network was unstable.");
+            unfinished = true;
+        }
+        if (this.network.hasActiveInfection()) {
+            sb.append(" Network had active infection.");
+            unfinished = true;
+        }
+        if (unfinished) {
+            logger.warn(sb.toString());
+        } else {
+            logger.debug(sb.toString());
+        }
+
+        // notify simulation finished
+        this.notifySimulationFinished();
+    }
+
+    /**
+     * Simulates the network dynamics (disease and agents) for a number of rounds.
      *
      * @param rounds
      *          the number of rounds

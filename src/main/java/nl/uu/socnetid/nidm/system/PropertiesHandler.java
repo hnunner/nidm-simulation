@@ -32,6 +32,7 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
+import nl.uu.socnetid.nidm.data.BurgerBuskensParameters;
 import nl.uu.socnetid.nidm.data.CidmParameters;
 import nl.uu.socnetid.nidm.data.LogValues;
 
@@ -65,6 +66,8 @@ public class PropertiesHandler {
     private String rAnalysisCompleteTemplatePath;
     // Cidm parameters
     private CidmParameters cidmParameters;
+    // BurgerBuskens parameters
+    private BurgerBuskensParameters bbParameters;
     // DATA EXPORT
     // types of data export
     private boolean exportSummary;
@@ -158,7 +161,6 @@ public class PropertiesHandler {
                 configProps.getProperty("r.anlysis.complete.template.path")).toString();
 
         // Cidm parameters
-        // social maintenance costs
         cidmParameters = new CidmParameters();
         cidmParameters.setAlphas(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_ALPHA.toString())));
         cidmParameters.setKappas(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_KAPPA.toString())));
@@ -179,6 +181,20 @@ public class PropertiesHandler {
         cidmParameters.setTaus(parseIntArray(configProps.getProperty(LogValues.IV_CIDM_TAU.toString())));
         cidmParameters.setSimsPerParameterCombination(Integer.valueOf(configProps.getProperty(
                 LogValues.IV_CIDM_SIMS_PER_PC.toString())));
+
+        // BurgerBuskens parameters
+        bbParameters = new BurgerBuskensParameters();
+        bbParameters.setB1s(parseDoubleArray(configProps.getProperty(LogValues.IV_BB_B1.toString())));
+        bbParameters.setC1s(parseDoubleArray(configProps.getProperty(LogValues.IV_BB_C1.toString())));
+        bbParameters.setC2s(parseDoubleArray(configProps.getProperty(LogValues.IV_BB_C2.toString())));
+        bbParameters.setB2c3Random(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_BB_B2C3_RANDOM.toString())));
+        bbParameters.setB2s(parseDoubleArray(configProps.getProperty(LogValues.IV_BB_B2.toString())));
+        bbParameters.setC3s(parseDoubleArray(configProps.getProperty(LogValues.IV_BB_C3.toString())));
+        bbParameters.setNs(parseIntArray(configProps.getProperty(LogValues.IV_BB_NET_SIZE.toString())));
+        bbParameters.setIotas(parseBooleanArray(configProps.getProperty(LogValues.IV_BB_IOTA.toString())));
+        bbParameters.setPhis(parseDoubleArray(configProps.getProperty(LogValues.IV_BB_PHI.toString())));
+        bbParameters.setSimsPerParameterCombination(Integer.valueOf(configProps.getProperty(
+                LogValues.IV_BB_SIMS_PER_PC.toString())));
 
         // types of data export
         this.exportSummary = Boolean.parseBoolean(configProps.getProperty("export.summary"));
@@ -341,6 +357,15 @@ public class PropertiesHandler {
      */
     public CidmParameters getCidmParameters() {
         return cidmParameters;
+    }
+
+    /**
+     * Gets the BurgerBuskens parameters as defined in the config.properties
+     *
+     * @return the BurgerBuskens parameters as defined in the config.properties
+     */
+    public BurgerBuskensParameters getBurgerBuskensParameters() {
+        return bbParameters;
     }
 
     /**
