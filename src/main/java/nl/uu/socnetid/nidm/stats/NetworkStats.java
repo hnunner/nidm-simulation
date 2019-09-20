@@ -32,12 +32,18 @@ import nl.uu.socnetid.nidm.networks.Network;
  */
 public class NetworkStats {
 
+    private Network network;
+
+    // TODO make all initializations lazy
+    // TODO remove setters
+
     private boolean stable;
     private double density;
     private double avDegree;
     private double avDegree2;
     private double avCloseness;
     private double avClustering;
+    private Double avPathLength = null;     // lazy initialization (very costly operations)
     private double avUtility;
     private double avSocialBenefits;
     private double avSocialCosts;
@@ -52,6 +58,7 @@ public class NetworkStats {
 
 
     public NetworkStats(Network network) {
+        this.network = network;
         this.stable = network.isStable();
         this.density = network.getDensity();
         this.avDegree = network.getAvDegree();
@@ -153,6 +160,23 @@ public class NetworkStats {
      */
     public void setAvClustering(double avClustering) {
         this.avClustering = avClustering;
+    }
+
+    /**
+     * @return the avPathLength
+     */
+    public double getAvPathLength() {
+        if (this.avPathLength == null) {
+            this.avPathLength = network.getAvPathLength();
+        }
+        return avPathLength;
+    }
+
+    /**
+     * @param avPathLength the avPathLength to set
+     */
+    public void setAvPathLength(double avPathLength) {
+        this.avPathLength = avPathLength;
     }
 
     /**
