@@ -64,6 +64,7 @@ public class PropertiesHandler {
     private String rscriptPath;
     private String rAnalysisAutomatedTemplatePath;
     private String rAnalysisCompleteTemplatePath;
+    private String rAnalysisBurgerBuskensTemplatePath;
     // Cidm parameters
     private CidmParameters cidmParameters;
     // BurgerBuskens parameters
@@ -154,11 +155,13 @@ public class PropertiesHandler {
             this.rscriptPath = configProps.getProperty("r.script.path.other");
         }
 
-        // R script for data analysis
+        // R scripts for data analysis
         this.rAnalysisAutomatedTemplatePath = new StringBuilder().append(this.userDir).append(
                 configProps.getProperty("r.anlysis.automated.template.path")).toString();
         this.rAnalysisCompleteTemplatePath = new StringBuilder().append(this.userDir).append(
                 configProps.getProperty("r.anlysis.complete.template.path")).toString();
+        this.rAnalysisBurgerBuskensTemplatePath = new StringBuilder().append(this.userDir).append(
+                configProps.getProperty("r.anlysis.burgerbuskens.path")).toString();
 
         // Cidm parameters
         cidmParameters = new CidmParameters();
@@ -184,15 +187,45 @@ public class PropertiesHandler {
 
         // BurgerBuskens parameters
         bbParameters = new BurgerBuskensParameters();
+        // b1
+        bbParameters.setB1Random(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_BB_B1_RANDOM.toString())));
+        bbParameters.setB1RandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_BB_B1_RANDOM_MIN.toString())));
+        bbParameters.setB1RandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_BB_B1_RANDOM_MAX.toString())));
         bbParameters.setB1s(parseDoubleArray(configProps.getProperty(LogValues.IV_BB_B1.toString())));
+        // c1
+        bbParameters.setC1Random(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_BB_C1_RANDOM.toString())));
+        bbParameters.setC1RandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_BB_C1_RANDOM_MIN.toString())));
+        bbParameters.setC1RandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_BB_C1_RANDOM_MAX.toString())));
         bbParameters.setC1s(parseDoubleArray(configProps.getProperty(LogValues.IV_BB_C1.toString())));
+        // c2
+        bbParameters.setC2Random(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_BB_C2_RANDOM.toString())));
+        bbParameters.setC2RandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_BB_C2_RANDOM_MIN.toString())));
+        bbParameters.setC2RandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_BB_C2_RANDOM_MAX.toString())));
         bbParameters.setC2s(parseDoubleArray(configProps.getProperty(LogValues.IV_BB_C2.toString())));
-        bbParameters.setB2c3Random(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_BB_B2C3_RANDOM.toString())));
+        // b2
+        bbParameters.setB2Random(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_BB_B2_RANDOM.toString())));
+        bbParameters.setB2RandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_BB_B2_RANDOM_MIN.toString())));
+        bbParameters.setB2RandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_BB_B2_RANDOM_MAX.toString())));
         bbParameters.setB2s(parseDoubleArray(configProps.getProperty(LogValues.IV_BB_B2.toString())));
+        // c3
+        bbParameters.setC3Random(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_BB_C3_RANDOM.toString())));
+        bbParameters.setC3RandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_BB_C3_RANDOM_MIN.toString())));
+        bbParameters.setC3RandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_BB_C3_RANDOM_MAX.toString())));
         bbParameters.setC3s(parseDoubleArray(configProps.getProperty(LogValues.IV_BB_C3.toString())));
+        // N
+        bbParameters.setNRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_BB_NET_SIZE_RANDOM.toString())));
+        bbParameters.setNRandomMin(Integer.valueOf(configProps.getProperty(LogValues.IV_BB_NET_SIZE_RANDOM_MIN.toString())));
+        bbParameters.setNRandomMax(Integer.valueOf(configProps.getProperty(LogValues.IV_BB_NET_SIZE_RANDOM_MAX.toString())));
         bbParameters.setNs(parseIntArray(configProps.getProperty(LogValues.IV_BB_NET_SIZE.toString())));
+        // iota
+        bbParameters.setIotaRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_BB_IOTA_RANDOM.toString())));
         bbParameters.setIotas(parseBooleanArray(configProps.getProperty(LogValues.IV_BB_IOTA.toString())));
+        // phi
+        bbParameters.setPhiRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_BB_PHI_RANDOM.toString())));
+        bbParameters.setPhiRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_BB_PHI_RANDOM_MIN.toString())));
+        bbParameters.setPhiRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_BB_PHI_RANDOM_MAX.toString())));
         bbParameters.setPhis(parseDoubleArray(configProps.getProperty(LogValues.IV_BB_PHI.toString())));
+        // n
         bbParameters.setSimsPerParameterCombination(Integer.valueOf(configProps.getProperty(
                 LogValues.IV_BB_SIMS_PER_PC.toString())));
 
@@ -387,6 +420,13 @@ public class PropertiesHandler {
      */
     public String getRAnalysisCompleteTemplatePath() {
         return rAnalysisCompleteTemplatePath;
+    }
+
+    /**
+     * @return the rAnalysisBurgerBuskensTemplatePath
+     */
+    public String getRAnalysisBurgerBuskensTemplatePath() {
+        return rAnalysisBurgerBuskensTemplatePath;
     }
 
 }

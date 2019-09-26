@@ -111,7 +111,7 @@ public class Simulation implements Runnable {
 
         // status message
         StringBuilder sb = new StringBuilder();
-        sb.append("Simulation finished after " + rounds + " rounds .");
+        sb.append("Simulation finished after " + rounds + " time steps.");
         boolean unfinished = false;
         if (!this.network.isStable()) {
             sb.append(" Network was unstable.");
@@ -147,7 +147,7 @@ public class Simulation implements Runnable {
 
         // status message
         StringBuilder sb = new StringBuilder();
-        sb.append("Simulation finished after " + rounds + " rounds .");
+        sb.append("Simulation finished after " + rounds + " time steps.");
         boolean unfinished = false;
         if (!this.network.isStable()) {
             sb.append(" Network was unstable.");
