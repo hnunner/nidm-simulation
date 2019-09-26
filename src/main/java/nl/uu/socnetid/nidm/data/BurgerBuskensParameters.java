@@ -31,26 +31,47 @@ package nl.uu.socnetid.nidm.data;
 public class BurgerBuskensParameters implements UtilityModelParameters {
 
     // social benefits
+    private boolean b1Random;
+    private double b1RandomMin;
+    private double b1RandomMax;
     private double[] b1s;
     private double currB1;
     // social costs
+    private boolean c1Random;
+    private double c1RandomMin;
+    private double c1RandomMax;
     private double[] c1s;
     private double currC1;
+    private boolean c2Random;
+    private double c2RandomMin;
+    private double c2RandomMax;
     private double[] c2s;
     private double currC2;
     // triadic closure
-    private boolean b2c3Random;
     // triadic closure - benefit (Colemanian)
+    private boolean b2Random;
+    private double b2RandomMin;
+    private double b2RandomMax;
     private double[] b2s;
     private double currB2;
     // triadic closure - cost (Burtian)
+    private boolean c3Random;
+    private double c3RandomMin;
+    private double c3RandomMax;
     private double[] c3s;
     private double currC3;
     // network
+    private boolean NRandom;
+    private int NRandomMin;
+    private int NRandomMax;
     private int[] Ns;
-    private double currN;
+    private int currN;
+    private boolean iotaRandom;
     private boolean[] iotas;
     private boolean currIota;
+    private boolean phiRandom;
+    private double phiRandomMin;
+    private double phiRandomMax;
     private double[] phis;
     private double currPhi;
     // simulation
@@ -212,20 +233,6 @@ public class BurgerBuskensParameters implements UtilityModelParameters {
     }
 
     /**
-     * @return the currN
-     */
-    public double getCurrN() {
-        return currN;
-    }
-
-    /**
-     * @param currN the currN to set
-     */
-    public void setCurrN(double currN) {
-        this.currN = currN;
-    }
-
-    /**
      * @return the iotas
      */
     public boolean[] getIotas() {
@@ -296,17 +303,325 @@ public class BurgerBuskensParameters implements UtilityModelParameters {
     }
 
     /**
-     * @return the b2c3Random
+     * @return the b1Random
      */
-    public boolean isB2c3Random() {
-        return b2c3Random;
+    public boolean isB1Random() {
+        return b1Random;
     }
 
     /**
-     * @param b2c3Random the b2c3Random to set
+     * @param b1Random the b1Random to set
      */
-    public void setB2c3Random(boolean b2c3Random) {
-        this.b2c3Random = b2c3Random;
+    public void setB1Random(boolean b1Random) {
+        this.b1Random = b1Random;
+    }
+
+    /**
+     * @return the c1Random
+     */
+    public boolean isC1Random() {
+        return c1Random;
+    }
+
+    /**
+     * @param c1Random the c1Random to set
+     */
+    public void setC1Random(boolean c1Random) {
+        this.c1Random = c1Random;
+    }
+
+    /**
+     * @return the c2Random
+     */
+    public boolean isC2Random() {
+        return c2Random;
+    }
+
+    /**
+     * @param c2Random the c2Random to set
+     */
+    public void setC2Random(boolean c2Random) {
+        this.c2Random = c2Random;
+    }
+
+    /**
+     * @return the b2Random
+     */
+    public boolean isB2Random() {
+        return b2Random;
+    }
+
+    /**
+     * @param b2Random the b2Random to set
+     */
+    public void setB2Random(boolean b2Random) {
+        this.b2Random = b2Random;
+    }
+
+    /**
+     * @return the c3Random
+     */
+    public boolean isC3Random() {
+        return c3Random;
+    }
+
+    /**
+     * @param c3Random the c3Random to set
+     */
+    public void setC3Random(boolean c3Random) {
+        this.c3Random = c3Random;
+    }
+
+    /**
+     * @return the iotaRandom
+     */
+    public boolean isIotaRandom() {
+        return iotaRandom;
+    }
+
+    /**
+     * @param iotaRandom the iotaRandom to set
+     */
+    public void setIotaRandom(boolean iotaRandom) {
+        this.iotaRandom = iotaRandom;
+    }
+
+    /**
+     * @return the phiRandom
+     */
+    public boolean isPhiRandom() {
+        return phiRandom;
+    }
+
+    /**
+     * @param phiRandom the phiRandom to set
+     */
+    public void setPhiRandom(boolean phiRandom) {
+        this.phiRandom = phiRandom;
+    }
+
+    /**
+     * @return the nRandom
+     */
+    public boolean isNRandom() {
+        return NRandom;
+    }
+
+    /**
+     * @param nRandom the nRandom to set
+     */
+    public void setNRandom(boolean nRandom) {
+        NRandom = nRandom;
+    }
+
+    /**
+     * @return the b1RandomMin
+     */
+    public double getB1RandomMin() {
+        return b1RandomMin;
+    }
+
+    /**
+     * @param b1RandomMin the b1RandomMin to set
+     */
+    public void setB1RandomMin(double b1RandomMin) {
+        this.b1RandomMin = b1RandomMin;
+    }
+
+    /**
+     * @return the b1RandomMax
+     */
+    public double getB1RandomMax() {
+        return b1RandomMax;
+    }
+
+    /**
+     * @param b1RandomMax the b1RandomMax to set
+     */
+    public void setB1RandomMax(double b1RandomMax) {
+        this.b1RandomMax = b1RandomMax;
+    }
+
+    /**
+     * @return the c1RandomMin
+     */
+    public double getC1RandomMin() {
+        return c1RandomMin;
+    }
+
+    /**
+     * @param c1RandomMin the c1RandomMin to set
+     */
+    public void setC1RandomMin(double c1RandomMin) {
+        this.c1RandomMin = c1RandomMin;
+    }
+
+    /**
+     * @return the c1RandomMax
+     */
+    public double getC1RandomMax() {
+        return c1RandomMax;
+    }
+
+    /**
+     * @param c1RandomMax the c1RandomMax to set
+     */
+    public void setC1RandomMax(double c1RandomMax) {
+        this.c1RandomMax = c1RandomMax;
+    }
+
+    /**
+     * @return the c2RandomMin
+     */
+    public double getC2RandomMin() {
+        return c2RandomMin;
+    }
+
+    /**
+     * @param c2RandomMin the c2RandomMin to set
+     */
+    public void setC2RandomMin(double c2RandomMin) {
+        this.c2RandomMin = c2RandomMin;
+    }
+
+    /**
+     * @return the c2RandomMax
+     */
+    public double getC2RandomMax() {
+        return c2RandomMax;
+    }
+
+    /**
+     * @param c2RandomMax the c2RandomMax to set
+     */
+    public void setC2RandomMax(double c2RandomMax) {
+        this.c2RandomMax = c2RandomMax;
+    }
+
+    /**
+     * @return the b2RandomMin
+     */
+    public double getB2RandomMin() {
+        return b2RandomMin;
+    }
+
+    /**
+     * @param b2RandomMin the b2RandomMin to set
+     */
+    public void setB2RandomMin(double b2RandomMin) {
+        this.b2RandomMin = b2RandomMin;
+    }
+
+    /**
+     * @return the b2RandomMax
+     */
+    public double getB2RandomMax() {
+        return b2RandomMax;
+    }
+
+    /**
+     * @param b2RandomMax the b2RandomMax to set
+     */
+    public void setB2RandomMax(double b2RandomMax) {
+        this.b2RandomMax = b2RandomMax;
+    }
+
+    /**
+     * @return the c3RandomMin
+     */
+    public double getC3RandomMin() {
+        return c3RandomMin;
+    }
+
+    /**
+     * @param c3RandomMin the c3RandomMin to set
+     */
+    public void setC3RandomMin(double c3RandomMin) {
+        this.c3RandomMin = c3RandomMin;
+    }
+
+    /**
+     * @return the c3RandomMax
+     */
+    public double getC3RandomMax() {
+        return c3RandomMax;
+    }
+
+    /**
+     * @param c3RandomMax the c3RandomMax to set
+     */
+    public void setC3RandomMax(double c3RandomMax) {
+        this.c3RandomMax = c3RandomMax;
+    }
+
+    /**
+     * @return the nRandomMin
+     */
+    public int getNRandomMin() {
+        return NRandomMin;
+    }
+
+    /**
+     * @param nRandomMin the nRandomMin to set
+     */
+    public void setNRandomMin(int nRandomMin) {
+        NRandomMin = nRandomMin;
+    }
+
+    /**
+     * @return the nRandomMax
+     */
+    public int getNRandomMax() {
+        return NRandomMax;
+    }
+
+    /**
+     * @param nRandomMax the nRandomMax to set
+     */
+    public void setNRandomMax(int nRandomMax) {
+        NRandomMax = nRandomMax;
+    }
+
+    /**
+     * @return the currN
+     */
+    public int getCurrN() {
+        return currN;
+    }
+
+    /**
+     * @param currN the currN to set
+     */
+    public void setCurrN(int currN) {
+        this.currN = currN;
+    }
+
+    /**
+     * @return the phiRandomMin
+     */
+    public double getPhiRandomMin() {
+        return phiRandomMin;
+    }
+
+    /**
+     * @param phiRandomMin the phiRandomMin to set
+     */
+    public void setPhiRandomMin(double phiRandomMin) {
+        this.phiRandomMin = phiRandomMin;
+    }
+
+    /**
+     * @return the phiRandomMax
+     */
+    public double getPhiRandomMax() {
+        return phiRandomMax;
+    }
+
+    /**
+     * @param phiRandomMax the phiRandomMax to set
+     */
+    public void setPhiRandomMax(double phiRandomMax) {
+        this.phiRandomMax = phiRandomMax;
     }
 
 }
