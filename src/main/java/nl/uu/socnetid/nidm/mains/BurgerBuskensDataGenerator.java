@@ -25,8 +25,10 @@
  */
 package nl.uu.socnetid.nidm.mains;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -116,6 +118,9 @@ public class BurgerBuskensDataGenerator {
 
         BurgerBuskensDataGenerator dataGenerator = new BurgerBuskensDataGenerator();
         dataGenerator.generateData();
+        if (PropertiesHandler.getInstance().isAnalyzeData()) {
+            dataGenerator.anaylzeData();
+        }
     }
 
 
@@ -156,41 +161,50 @@ public class BurgerBuskensDataGenerator {
      */
     public void generateData() {
 
-        // benefits and costs of triadic closure
-        double[] b2s = this.dgData.getUtilityModelParams().getB2s();
-        double[] c3s = this.dgData.getUtilityModelParams().getC3s();
-        if (this.dgData.getUtilityModelParams().isB2c3Random()) {
-            b2s = new double[1];
-            c3s = new double[1];
-        }
+        double[] b1s = this.dgData.getUtilityModelParams().isB1Random() ?
+                new double[1] : this.dgData.getUtilityModelParams().getB1s();
+        double[] c1s = this.dgData.getUtilityModelParams().isC1Random() ?
+                new double[1] : this.dgData.getUtilityModelParams().getC1s();
+        double[] c2s = this.dgData.getUtilityModelParams().isC2Random() ?
+                new double[1] : this.dgData.getUtilityModelParams().getC2s();
+        double[] b2s = this.dgData.getUtilityModelParams().isB2Random() ?
+                new double[1] : this.dgData.getUtilityModelParams().getB2s();
+        double[] c3s = this.dgData.getUtilityModelParams().isC3Random() ?
+                new double[1] : this.dgData.getUtilityModelParams().getC3s();
+        int[] Ns = this.dgData.getUtilityModelParams().isNRandom() ?
+                new int[1] : this.dgData.getUtilityModelParams().getNs();
+        boolean[] iotas = this.dgData.getUtilityModelParams().isIotaRandom() ?
+                new boolean[1] : this.dgData.getUtilityModelParams().getIotas();
+        double[] phis = this.dgData.getUtilityModelParams().isPhiRandom() ?
+                new double[1] : this.dgData.getUtilityModelParams().getPhis();
 
         // unique parameter combinations
         int upcs =
-                this.dgData.getUtilityModelParams().getB1s().length *
+                b1s.length *
                 b2s.length *
-                this.dgData.getUtilityModelParams().getC1s().length *
-                this.dgData.getUtilityModelParams().getC2s().length *
+                c1s.length *
+                c2s.length *
                 c3s.length *
-                this.dgData.getUtilityModelParams().getNs().length *
-                this.dgData.getUtilityModelParams().getIotas().length *
-                this.dgData.getUtilityModelParams().getPhis().length;
+                Ns.length *
+                iotas.length *
+                phis.length;
 
         // loop over all possible parameter combinations
-        for (double b1 : this.dgData.getUtilityModelParams().getB1s()) {
+        for (double b1 : b1s) {
             this.dgData.getUtilityModelParams().setCurrB1(b1);
             for (double b2 : b2s) {
                 this.dgData.getUtilityModelParams().setCurrB2(b2);
-                for (double c1 : this.dgData.getUtilityModelParams().getC1s()) {
+                for (double c1 : c1s) {
                     this.dgData.getUtilityModelParams().setCurrC1(c1);
-                    for (double c2 : this.dgData.getUtilityModelParams().getC2s()) {
+                    for (double c2 : c2s) {
                         this.dgData.getUtilityModelParams().setCurrC2(c2);
                         for (double c3 : c3s) {
                             this.dgData.getUtilityModelParams().setCurrC3(c3);
-                            for (int N : this.dgData.getUtilityModelParams().getNs()) {
+                            for (int N : Ns) {
                                 this.dgData.getUtilityModelParams().setCurrN(N);
-                                for (boolean iota : this.dgData.getUtilityModelParams().getIotas()) {
+                                for (boolean iota : iotas) {
                                     this.dgData.getUtilityModelParams().setCurrIota(iota);
-                                    for (double phi : this.dgData.getUtilityModelParams().getPhis()) {
+                                    for (double phi : phis) {
                                         this.dgData.getUtilityModelParams().setCurrPhi(phi);
 
                                         this.dgData.getSimStats().incUpc();
@@ -221,6 +235,10 @@ public class BurgerBuskensDataGenerator {
                                                 this.ssWriter.writeCurrentData();
                                             }
 
+                                            logger.debug("Simulation " + this.dgData.getSimStats().getSimPerUpc() +
+                                                    "/" + this.dgData.getUtilityModelParams().getSimsPerParameterCombination() +
+                                                    " of parameter combination " +
+                                                    this.dgData.getSimStats().getUpc() + "/" + upcs + " finished.");
                                             this.dgData.getSimStats().incSimPerUpc();
                                         }
                                     }
@@ -245,23 +263,63 @@ public class BurgerBuskensDataGenerator {
         // create network
         this.network = new Network();
 
-        // benefits/costs for triadic closures
-        double b2 = this.dgData.getUtilityModelParams().getCurrB2();
-        double c3 = this.dgData.getUtilityModelParams().getCurrC3();
-        if (this.dgData.getUtilityModelParams().isB2c3Random()) {
-            b2 = ThreadLocalRandom.current().nextDouble(0,1);
-            this.dgData.getUtilityModelParams().setCurrB2(b2);
-            c3 = ThreadLocalRandom.current().nextDouble(0,1);
-            this.dgData.getUtilityModelParams().setCurrC3(c3);
+
+
+        // setting parameters
+        // b1
+        if (this.dgData.getUtilityModelParams().isB1Random()) {
+            this.dgData.getUtilityModelParams().setCurrB1(ThreadLocalRandom.current().nextDouble(
+                    this.dgData.getUtilityModelParams().getB1RandomMin(),
+                    this.dgData.getUtilityModelParams().getB1RandomMax()));
+        }
+        // b2
+        if (this.dgData.getUtilityModelParams().isB2Random()) {
+            this.dgData.getUtilityModelParams().setCurrB2(ThreadLocalRandom.current().nextDouble(
+                    this.dgData.getUtilityModelParams().getB2RandomMin(),
+                    this.dgData.getUtilityModelParams().getB2RandomMax()));
+        }
+        // c1
+        if (this.dgData.getUtilityModelParams().isC1Random()) {
+            this.dgData.getUtilityModelParams().setCurrC1(ThreadLocalRandom.current().nextDouble(
+                    this.dgData.getUtilityModelParams().getC1RandomMin(),
+                    this.dgData.getUtilityModelParams().getC1RandomMax()));
+        }
+        // c2
+        if (this.dgData.getUtilityModelParams().isC2Random()) {
+            this.dgData.getUtilityModelParams().setCurrC2(ThreadLocalRandom.current().nextDouble(
+                    this.dgData.getUtilityModelParams().getC2RandomMin(),
+                    this.dgData.getUtilityModelParams().getC2RandomMax()));
+        }
+        // c3
+        if (this.dgData.getUtilityModelParams().isC3Random()) {
+            this.dgData.getUtilityModelParams().setCurrC3(ThreadLocalRandom.current().nextDouble(
+                    this.dgData.getUtilityModelParams().getC3RandomMin(),
+                    this.dgData.getUtilityModelParams().getC3RandomMax()));
+        }
+        // N
+        if (this.dgData.getUtilityModelParams().isNRandom()) {
+            this.dgData.getUtilityModelParams().setCurrN(ThreadLocalRandom.current().nextInt(
+                    this.dgData.getUtilityModelParams().getNRandomMin(),
+                    this.dgData.getUtilityModelParams().getNRandomMax()));
+        }
+        // iota
+        if (this.dgData.getUtilityModelParams().isIotaRandom()) {
+            this.dgData.getUtilityModelParams().setCurrIota(ThreadLocalRandom.current().nextBoolean());
+        }
+        // phi
+        if (this.dgData.getUtilityModelParams().isPhiRandom()) {
+            this.dgData.getUtilityModelParams().setCurrPhi(ThreadLocalRandom.current().nextDouble(
+                    this.dgData.getUtilityModelParams().getPhiRandomMin(),
+                    this.dgData.getUtilityModelParams().getPhiRandomMax()));
         }
 
         // create utility
         UtilityFunction uf = new BurgerBuskens(
                 this.dgData.getUtilityModelParams().getCurrB1(),
-                b2,
+                this.dgData.getUtilityModelParams().getCurrB2(),
                 this.dgData.getUtilityModelParams().getCurrC1(),
                 this.dgData.getUtilityModelParams().getCurrC2(),
-                c3);
+                this.dgData.getUtilityModelParams().getCurrC3());
 
         // create disease specs
         DiseaseSpecs ds = new DiseaseSpecs(
@@ -287,6 +345,48 @@ public class BurgerBuskensDataGenerator {
         // save data
         this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
 
+    }
+
+
+    /**
+     * Analyzes data.
+     */
+    private void anaylzeData() {
+        try {
+            // preparation of R-scripts
+            Path srcAnalysis = Paths.get(PropertiesHandler.getInstance().getRAnalysisBurgerBuskensTemplatePath());
+            String dstAnalysisPath = FULL_DATA_EXPORT_PATH + "burgerbuskens.R";
+            Path dstAnalysis = Paths.get(dstAnalysisPath);
+            Files.copy(srcAnalysis, dstAnalysis, StandardCopyOption.REPLACE_EXISTING);
+
+            // invocation of R-script
+            ProcessBuilder pb = new ProcessBuilder(PropertiesHandler.getInstance().getRscriptPath(),
+                    dstAnalysisPath, FULL_DATA_EXPORT_PATH);
+            logger.info("Starting analysis of simulated data. "
+                    + "Invoking R-script: "
+                    + pb.command().toString());
+            Process p = pb.start();
+
+            // status messages of R-script
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                logger.info(line);
+            }
+
+            // wait for analysis to finish (blocking)
+            int exitCode = p.waitFor();
+            if (exitCode == 0) {
+                logger.info("Analysis finished successfully.");
+            } else {
+                logger.error("Analysis finished with error code: " + exitCode);
+            }
+
+        } catch (IOException e) {
+            logger.error(e);
+        } catch (InterruptedException e) {
+            logger.error(e);
+        }
     }
 
 
