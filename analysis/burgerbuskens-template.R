@@ -69,7 +69,15 @@ EXPORT_PLOT_WIDTH           <- 250
 EXPORT_PLOT_HEIGHT          <- 400
 EXPORT_SIZE_UNITS           <- "mm"
 EXPORT_DPI                  <- 1200
-SCATTER_ALPHA               <- 0.2
+SCATTER_ALPHA               <- 0.1
+COLOR_STABLE_POINT          <- "grey50"
+COLOR_STABLE_SMOOTH         <- "grey30"
+COLOR_DEGREE_POINT          <- "green3"
+COLOR_DEGREE_SMOOTH         <- "green4"
+COLOR_CLUSTERING_POINT      <- "royalblue2"
+COLOR_CLUSTERING_SMOOTH     <- "royalblue3"
+COLOR_PATHLENGTH_POINT      <- "red3"
+COLOR_PATHLENGTH_SMOOTH     <- "red4"
 
 ##################################### IMPORTS / DATA PREPARATIONS ####################################
 #----------------------------------------------------------------------------------------------------#
@@ -202,8 +210,11 @@ getPlotRow <- function(ssData = loadSimulationSummaryData(),
     pStability <- pStability + geom_point(aes(y = ssData$net.stable),
                                           size = dotSize,
                                           alpha = SCATTER_ALPHA,
-                                          colour = "blue")
-    pStability <- pStability + geom_smooth(aes(y = ssData$net.stable), se=FALSE)
+                                          colour = COLOR_STABLE_POINT)
+    pStability <- pStability + geom_smooth(aes(y = ssData$net.stable),
+                                           method = "lm",
+                                           color = COLOR_STABLE_SMOOTH,
+                                           se=FALSE)
     pStability <- pStability + labs(y = "Network stability",
                                     x = xTitle)
   }
@@ -213,8 +224,11 @@ getPlotRow <- function(ssData = loadSimulationSummaryData(),
   pDegree <- pDegree + geom_point(aes(y = ssData$net.degree.av),
                                   size = dotSize,
                                   alpha = SCATTER_ALPHA,
-                                  colour = "blue")
-  pDegree <- pDegree + geom_smooth(aes(y = ssData$net.clustering.av), se=FALSE)
+                                  colour = COLOR_DEGREE_POINT)
+  pDegree <- pDegree + geom_smooth(aes(y = ssData$net.clustering.av),
+                                   method = "lm",
+                                   color = COLOR_DEGREE_SMOOTH,
+                                   se=FALSE)
   pDegree <- pDegree + labs(y = "Average degree",
                             x = xTitle)
 
@@ -223,8 +237,11 @@ getPlotRow <- function(ssData = loadSimulationSummaryData(),
   pClustering <- pClustering + geom_point(aes(y = ssData$net.clustering.av),
                                           size = dotSize,
                                           alpha = SCATTER_ALPHA,
-                                          colour = "blue")
-  pClustering <- pClustering + geom_smooth(aes(y = ssData$net.clustering.av), se=FALSE)
+                                          colour = COLOR_CLUSTERING_POINT)
+  pClustering <- pClustering + geom_smooth(aes(y = ssData$net.clustering.av),
+                                           method = "lm",
+                                           color = COLOR_CLUSTERING_SMOOTH,
+                                           se=FALSE)
   pClustering <- pClustering + labs(y = "Average clustering",
                                     x = xTitle)
 
@@ -233,8 +250,11 @@ getPlotRow <- function(ssData = loadSimulationSummaryData(),
   pPathLength <- pPathLength + geom_point(aes(y = ssData$net.pathlength.av),
                                           size = dotSize,
                                           alpha = SCATTER_ALPHA,
-                                          colour = "red")
-  pPathLength <- pPathLength + geom_smooth(aes(y = ssData$net.pathlength.av), color = "red", se=FALSE)
+                                          colour = COLOR_PATHLENGTH_POINT)
+  pPathLength <- pPathLength + geom_smooth(aes(y = ssData$net.pathlength.av),
+                                           method = "lm",
+                                           color = COLOR_PATHLENGTH_SMOOTH,
+                                           se=FALSE)
   pPathLength <- pPathLength + labs(y = "Average path length",
                                     x = xTitle)
 
@@ -247,7 +267,7 @@ getPlotRow <- function(ssData = loadSimulationSummaryData(),
 
 
 
-getPlots <- function(ssData = loadSimulationSummaryData(), includeStability = TRUE) {
+getPlots <- function(ssData = loadSimulationSummaryData(), includeStability = TRUE, includeN = TRUE) {
 
   plots <- getPlotRow(ssData,
                       ssData$bb.b1,
@@ -279,11 +299,13 @@ getPlots <- function(ssData = loadSimulationSummaryData(), includeStability = TR
                                ssData$bb.b2*2,
                                includeStability))
 
-  plots <- c(plots, getPlotRow(ssData,
-                               ssData$bb.N,
-                               "Network size (N)",
-                               1,
-                               includeStability))
+  if (includeN) {
+    plots <- c(plots, getPlotRow(ssData,
+                                 ssData$bb.N,
+                                 "Network size (N)",
+                                 1,
+                                 includeStability))
+  }
 
   plots <- c(plots, getPlotRow(ssData,
                                ssData$bb.iota,
@@ -309,7 +331,9 @@ exportPlots <- function(ssData = loadSimulationSummaryData(),
                "grid-complete",
                EXPORT_FILE_EXTENSION_PLOTS,
                sep = ""),
-         do.call("grid.arrange", c(getPlots(ssData = ssData), ncol=4)),
+         do.call("grid.arrange",
+                 c(getPlots(ssData = ssData),
+                   ncol=4)),
          width = plotWidth,
          height = plotHeight,
          units = EXPORT_SIZE_UNITS,
@@ -317,11 +341,41 @@ exportPlots <- function(ssData = loadSimulationSummaryData(),
          device = EXPORT_FILE_TYPE_PLOTS)
 
   ggsave(paste(EXPORT_PATH_PLOTS,
-               "grid-stable-only",
+               "grid-complete-stable-only",
                EXPORT_FILE_EXTENSION_PLOTS,
                sep = ""),
          do.call("grid.arrange",
-                 c(getPlots(ssData = subset(ssData, ssData$net.stable == 1), includeStability = FALSE),
+                 c(getPlots(ssData = subset(ssData, ssData$net.stable == 1),
+                            includeStability = FALSE),
+                   ncol=3)),
+         width = plotWidth,
+         height = plotHeight,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+
+  ggsave(paste(EXPORT_PATH_PLOTS,
+               "grid-N20",
+               EXPORT_FILE_EXTENSION_PLOTS,
+               sep = ""),
+         do.call("grid.arrange",
+                 c(getPlots(ssData = subset(ssData, ssData$bb.N == 20),
+                            includeN = FALSE),
+                   ncol=4)),
+         width = plotWidth,
+         height = plotHeight,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+
+  ggsave(paste(EXPORT_PATH_PLOTS,
+               "grid-N20-stable-only",
+               EXPORT_FILE_EXTENSION_PLOTS,
+               sep = ""),
+         do.call("grid.arrange",
+                 c(getPlots(ssData = subset(ssData, ssData$bb.N == 20 & ssData$net.stable == 1),
+                            includeN = FALSE,
+                            includeStability = FALSE),
                    ncol=3)),
          width = plotWidth,
          height = plotHeight,
