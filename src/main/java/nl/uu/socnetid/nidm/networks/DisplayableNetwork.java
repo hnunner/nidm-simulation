@@ -25,6 +25,9 @@
  */
 package nl.uu.socnetid.nidm.networks;
 
+import java.util.Collection;
+import java.util.Iterator;
+
 import org.apache.log4j.Logger;
 import org.graphstream.ui.graphicGraph.stylesheet.StyleConstants.Units;
 import org.graphstream.ui.spriteManager.Sprite;
@@ -82,6 +85,10 @@ public class DisplayableNetwork extends Network {
 
     // graphstream
     private Viewer viewer;
+    private ViewPanel viewPanel;
+
+    // flag for auto-layout
+    private boolean autoLayout;
 
     // sprite manager
     private SpriteManager spriteManager;
@@ -101,6 +108,11 @@ public class DisplayableNetwork extends Network {
 
         // sprite manager
         this.spriteManager = new SpriteManager(this);
+
+        // view
+        this.viewer = new Viewer(this, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+        enableAutoLayout();
+        this.viewPanel = viewer.addDefaultView(false);
     }
 
     /* (non-Javadoc)
@@ -112,6 +124,11 @@ public class DisplayableNetwork extends Network {
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi) {
         Agent agent = super.addAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi);
 
+        // re-position agents if auto-layout is disabled
+        if (!this.autoLayout) {
+            positionAgentsInCircle();
+        }
+
         // sprite
         Sprite sprite = this.spriteManager.addSprite(agent.getId());
         sprite.setPosition(Units.PX, 15, 0, -90);
@@ -121,6 +138,30 @@ public class DisplayableNetwork extends Network {
         return agent;
     }
 
+    /**
+     *
+     */
+    private void positionAgentsInCircle() {
+        Collection<Agent> agents = getAgents();
+        int n = agents.size();
+
+        Iterator<Agent> agentsIt = agents.iterator();
+        int i = 0;
+
+        while (agentsIt.hasNext()) {
+            Agent currAgent = agentsIt.next();
+            currAgent.setAttribute("xyz",
+                    // x-coordinate
+                    10 * Math.cos(i * 2 * Math.PI / n),
+                    // y-coordinate
+                    10 * Math.sin(i * 2 * Math.PI / n),
+                    // z-coordinate (0, as graph is 2-dimensional)
+                    0);
+
+            i++;
+        }
+    }
+
     /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.networks.Network#removeAgent()
      */
@@ -128,6 +169,10 @@ public class DisplayableNetwork extends Network {
     public String removeAgent() {
         String agentId = super.removeAgent();
         this.spriteManager.removeSprite(agentId);
+        // re-position agents if auto-layout is disabled
+        if (!this.autoLayout) {
+            positionAgentsInCircle();
+        }
         return agentId;
     }
 
@@ -141,14 +186,28 @@ public class DisplayableNetwork extends Network {
     }
 
     /**
-     * Creates a view for displaying networks that can be integrated into a frame manually.
+     * Gets the view panel for displaying networks that can be integrated into a frame manually.
      *
-     * @return the view for displaying networks that can be integrated into a frame manually
+     * @return the view panel for displaying networks that can be integrated into a frame manually
      */
-    public ViewPanel createView() {
-        this.viewer = new Viewer(this, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+    public ViewPanel getViewPanel() {
+        return this.viewPanel;
+    }
+
+    /**
+     * Enables auto layout of network view.
+     */
+    public void enableAutoLayout() {
         this.viewer.enableAutoLayout();
-        return viewer.addDefaultView(false);
+        this.autoLayout = true;
+    }
+
+    /**
+     * Disables auto layout of network view.
+     */
+    public void disableAutoLayout() {
+        this.viewer.disableAutoLayout();
+        this.autoLayout = false;
     }
 
     /**
