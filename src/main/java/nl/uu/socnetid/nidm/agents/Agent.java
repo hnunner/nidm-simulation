@@ -525,20 +525,12 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         while (it.hasNext()) {
             Agent randomCoAgent = it.next();
             if (this.hasDirectConnectionTo(randomCoAgent)) {
-                double currUtility = this.getUtility().getOverallUtility();
-                this.removeConnection(randomCoAgent);
-                double newUtility = this.getUtility().getOverallUtility();
-                this.addConnection(randomCoAgent);
-                if (newUtility > currUtility) {
+                if (existingConnectionTooCostly(randomCoAgent)) {
                     disconnectFrom(randomCoAgent);
                     satisfied = false;
                 }
             } else {
-                double currUtility = this.getUtility().getOverallUtility();
-                this.addConnection(randomCoAgent);
-                double newUtility = this.getUtility().getOverallUtility();
-                this.removeConnection(randomCoAgent);
-                if (newUtility >= currUtility) {
+                if (newConnectionValuable(randomCoAgent)) {
                     connectTo(randomCoAgent);
                     satisfied = false;
                 }
@@ -576,9 +568,12 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      * @return true if the new connection adds value to the overall utility of an agent
      */
     public boolean newConnectionValuable(Agent newConnection) {
-        List<Agent> potentialConnections = new ArrayList<Agent>(this.getConnections());
-        potentialConnections.add(newConnection);
-        return this.getUtility(potentialConnections).getOverallUtility() >= this.getUtility().getOverallUtility();
+        // TODO use deep copies of network and agents to avoid UI glitches
+        double currUtility = this.getUtility().getOverallUtility();
+        this.addConnection(newConnection);
+        double newUtility = this.getUtility().getOverallUtility();
+        this.removeConnection(newConnection);
+        return newUtility >= currUtility;
     }
 
     /**
@@ -611,9 +606,12 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      * @return true if the existing connection create more costs than it provides benefits
      */
     public boolean existingConnectionTooCostly(Agent existingConnection) {
-        List<Agent> potentialConnections = new ArrayList<Agent>(this.getConnections());
-        potentialConnections.remove(existingConnection);
-        return this.getUtility(potentialConnections).getOverallUtility() > this.getUtility().getOverallUtility();
+        // TODO use deep copies of network and agents to avoid UI glitches
+        double currUtility = this.getUtility().getOverallUtility();
+        this.removeConnection(existingConnection);
+        double newUtility = this.getUtility().getOverallUtility();
+        this.addConnection(existingConnection);
+        return newUtility > currUtility;
     }
 
     /**
