@@ -525,12 +525,20 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         while (it.hasNext()) {
             Agent randomCoAgent = it.next();
             if (this.hasDirectConnectionTo(randomCoAgent)) {
-                if (existingConnectionTooCostly(randomCoAgent)) {
+                double currUtility = this.getUtility().getOverallUtility();
+                this.removeConnection(randomCoAgent);
+                double newUtility = this.getUtility().getOverallUtility();
+                this.addConnection(randomCoAgent);
+                if (newUtility > currUtility) {
                     disconnectFrom(randomCoAgent);
                     satisfied = false;
                 }
             } else {
-                if (newConnectionValuable(randomCoAgent)) {
+                double currUtility = this.getUtility().getOverallUtility();
+                this.addConnection(randomCoAgent);
+                double newUtility = this.getUtility().getOverallUtility();
+                this.removeConnection(randomCoAgent);
+                if (newUtility >= currUtility) {
                     connectTo(randomCoAgent);
                     satisfied = false;
                 }
@@ -582,7 +590,11 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      */
     public boolean connectTo(Agent agent) {
         // other agent accepting connection?
-        if (agent.acceptConnection(this)) {
+        double currUtility = agent.getUtility().getOverallUtility();
+        agent.addConnection(this);
+        double newUtility = agent.getUtility().getOverallUtility();
+        agent.removeConnection(this);
+        if (newUtility >= currUtility) {
             addConnection(agent);
             trackAcceptedRequestOut();
             return true;
