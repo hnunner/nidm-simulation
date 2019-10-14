@@ -83,7 +83,6 @@ public class CarayolRoux extends UtilityFunction {
             if (gd != null) {
                 double benefit = this.omega * Math.pow(delta, gd);
                 benefits += benefit;
-                System.out.println("Benefits from " + agent.getId() + " to " + connection.getId() + ": " + benefit);
             }
         }
 
@@ -104,7 +103,6 @@ public class CarayolRoux extends UtilityFunction {
             double cost = this.c *
                     (agent.getGeographicDistanceTo(connection) * Math.pow(Math.ceil(agent.getNetwork().getN() / 2), -1));
             costs += cost;
-            System.out.println("Costs from " + agent.getId() + " to " + connection.getId() + ": " + cost);
         }
 
         return costs;
