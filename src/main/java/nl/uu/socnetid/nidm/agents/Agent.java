@@ -41,6 +41,7 @@ import org.graphstream.algorithm.Toolkit;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleNode;
+import org.graphstream.ui.graphicGraph.GraphPosLengthUtils;
 
 import nl.uu.socnetid.nidm.diseases.Disease;
 import nl.uu.socnetid.nidm.diseases.DiseaseFactory;
@@ -48,6 +49,7 @@ import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseGroup;
 import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.stats.AgentConnectionStats;
+import nl.uu.socnetid.nidm.stats.DijkstraShortestPath;
 import nl.uu.socnetid.nidm.stats.StatsComputer;
 import nl.uu.socnetid.nidm.utility.Utility;
 import nl.uu.socnetid.nidm.utility.UtilityFunction;
@@ -399,6 +401,32 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      */
     public double getClustering() {
         return Toolkit.clusteringCoefficient(this);
+    }
+
+    /**
+     * Gets the geographic distance to another agent.
+     *
+     * @param agent
+     *          the agent to get the geographic distance to
+     * @return the geographic distance to another agent
+     */
+    public double getGeographicDistanceTo(Agent agent) {
+        double[] p1 = GraphPosLengthUtils.nodePosition(this);
+        double[] p2 = GraphPosLengthUtils.nodePosition(agent);
+        return Math.sqrt(Math.pow(p1[0] - p2[0], 2) + Math.pow(p1[1] - p2[1], 2));
+    }
+
+    /**
+     * Gets the geodesic distance to another agent.
+     *
+     * @param agent
+     *          the agent to get the geographic distance to
+     * @return the geodesic distance to another agent
+     */
+    public Integer getGeodesicDistanceTo(Agent agent) {
+        DijkstraShortestPath dsp = new DijkstraShortestPath();
+        dsp.executeShortestPaths(this);
+        return dsp.getShortestPathLength(agent);
     }
 
 

@@ -56,13 +56,13 @@ import javax.swing.plaf.basic.BasicInternalFrameUI;
 
 import org.apache.log4j.Logger;
 import org.graphstream.graph.Edge;
-import org.graphstream.ui.swingViewer.ViewPanel;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.agents.AgentListener;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
 import nl.uu.socnetid.nidm.gui.BurgerBuskensPanel;
+import nl.uu.socnetid.nidm.gui.CarayolRouxPanel;
 import nl.uu.socnetid.nidm.gui.CidmPanel;
 import nl.uu.socnetid.nidm.gui.CumulativePanel;
 import nl.uu.socnetid.nidm.gui.DeactivatablePanel;
@@ -80,6 +80,7 @@ import nl.uu.socnetid.nidm.simulation.SimulationListener;
 import nl.uu.socnetid.nidm.stats.StatsComputer;
 import nl.uu.socnetid.nidm.system.PropertiesHandler;
 import nl.uu.socnetid.nidm.utility.BurgerBuskens;
+import nl.uu.socnetid.nidm.utility.CarayolRoux;
 import nl.uu.socnetid.nidm.utility.Cidm;
 import nl.uu.socnetid.nidm.utility.Cumulative;
 import nl.uu.socnetid.nidm.utility.UtilityFunction;
@@ -102,12 +103,16 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
     // UTILITY
     // selection
     private JComboBox<String> modelTypeCBox;
-    private final String[] utilityFunctions = {"CIDM", "Burger & Buskens (2009)"};
+    private final String[] utilityFunctions = {
+            "CIDM",
+            "Burger & Buskens (2009)",
+            "Carayol & Roux (2009)"};
     // panels
     private CumulativePanel cumulativePanel = new CumulativePanel();
     private CidmPanel cidmPanel = new CidmPanel();
     private BurgerBuskensPanel bbPanel = new BurgerBuskensPanel();
-    private final DeactivatablePanel[] utilityPanels = {cumulativePanel, cidmPanel, bbPanel};
+    private CarayolRouxPanel crPanel = new CarayolRouxPanel();
+    private final DeactivatablePanel[] utilityPanels = {cumulativePanel, cidmPanel, bbPanel, crPanel};
 
     // AGENT
     // network size
@@ -235,6 +240,9 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
         bbPanel.setBounds(3, 51, 312, 615);
         modelPane.add(bbPanel);
 
+        crPanel.setBounds(3, 51, 312, 615);
+        modelPane.add(crPanel);
+
         cumulativePanel.setBounds(3, 51, 312, 615);
         cumulativePanel.setVisible(false);
         modelPane.add(cumulativePanel);
@@ -262,19 +270,33 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
                     case 0:
                         cidmPanel.setVisible(true);
                         bbPanel.setVisible(false);
+                        crPanel.setVisible(false);
                         cumulativePanel.setVisible(false);
+                        network.enableAutoLayout();
                         break;
 
                     case 1:
                         cidmPanel.setVisible(false);
                         bbPanel.setVisible(true);
+                        crPanel.setVisible(false);
                         cumulativePanel.setVisible(false);
+                        network.enableAutoLayout();
                         break;
 
                     case 2:
                         cidmPanel.setVisible(false);
                         bbPanel.setVisible(false);
+                        crPanel.setVisible(true);
+                        cumulativePanel.setVisible(false);
+                        network.disableAutoLayout();
+                        break;
+
+                    case 3:
+                        cidmPanel.setVisible(false);
+                        bbPanel.setVisible(false);
+                        crPanel.setVisible(false);
                         cumulativePanel.setVisible(true);
+                        network.enableAutoLayout();
                         break;
 
                     default:
@@ -549,7 +571,6 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
 
         //////////// CREATE A UI REPRESENATION OF THE NETWORK ////////////
         // this.network.show();
-        ViewPanel view = this.network.createView();
         JInternalFrame netFrame = new JInternalFrame("");
         netFrame.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         netFrame.setResizable(false);
@@ -568,7 +589,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
                 netFrame.setBounds(351, 11, 698, 698);
                 break;
         }
-        netFrame.getContentPane().add(view);
+        netFrame.getContentPane().add(this.network.getViewPanel());
         controlsFrame.getContentPane().add(netFrame);
         netFrame.setVisible(true);
         // making network pane "undraggable"
@@ -696,6 +717,12 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
                         this.bbPanel.getC3());
 
             case 2:
+                return new CarayolRoux(
+                        this.crPanel.getOmega(),
+                        this.crPanel.getDelta(),
+                        this.crPanel.getC());
+
+            case 3:
                 return new Cumulative(
                         this.cumulativePanel.getDirectBenefit(),
                         this.cumulativePanel.getIndirectBenefit());
