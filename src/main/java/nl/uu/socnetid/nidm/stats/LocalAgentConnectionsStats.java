@@ -25,11 +25,16 @@
  */
 package nl.uu.socnetid.nidm.stats;
 
+import java.util.Collection;
+
+import nl.uu.socnetid.nidm.agents.Agent;
+
 /**
  * @author Hendrik Nunner
  */
 public class LocalAgentConnectionsStats {
 
+    private final Collection<Agent> connections;
     private final int n;
     private final int nS;
     private final int nI;
@@ -43,6 +48,8 @@ public class LocalAgentConnectionsStats {
     /**
      * Constructor.
      *
+     * @param connections
+     *          the direct connections
      * @param nS
      *          the amount of susceptible direct connections
      * @param nI
@@ -58,7 +65,8 @@ public class LocalAgentConnectionsStats {
      * @param z
      *          the amount of closed triads the agent is part of
      */
-    public LocalAgentConnectionsStats(int nS, int nI, int nR, int mS, int mI, int mR, int z) {
+    public LocalAgentConnectionsStats(Collection<Agent> connections, int nS, int nI, int nR, int mS, int mI, int mR, int z) {
+        this.connections = connections;
         this.n = nS + nI + nR;
         this.nS = nS;
         this.nI = nI;
@@ -68,6 +76,13 @@ public class LocalAgentConnectionsStats {
         this.mI = mI;
         this.mR = mR;
         this.z = z;
+    }
+
+    /**
+     * @return the connections
+     */
+    public Collection<Agent> getConnections() {
+        return connections;
     }
 
     /**
