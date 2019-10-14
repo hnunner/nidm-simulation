@@ -344,7 +344,7 @@ public final class StatsComputer {
                 consideredIndirectAgents.add(indirectConnection);
             }
         }
-        return new LocalAgentConnectionsStats(nS, nI, nR, mS, mI, mR, z);
+        return new LocalAgentConnectionsStats(connections, nS, nI, nR, mS, mI, mR, z);
     }
 
     /**
