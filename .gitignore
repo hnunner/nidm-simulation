@@ -23,3 +23,7 @@ network-exports/
 
 # bfg reports
 bfg-report*
+
+# R
+*.RData
+*.Rhistory
