@@ -29,28 +29,28 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import nl.uu.socnetid.nidm.data.BurgerBuskensDataGeneratorData;
+import nl.uu.socnetid.nidm.data.CarayolRouxDataGeneratorData;
 import nl.uu.socnetid.nidm.data.LogValues;
 
 /**
  * @author Hendrik Nunner
  */
-public class BurgerBuskensSimulationSummaryWriter extends BurgerBuskensCsvFileWriter {
+public class CarayolRouxSimulationSummaryWriter extends CarayolRouxCsvFileWriter {
 
     /**
      * Creates the writer.
      *
      * @param fileName
      *          the name of the file to store the data to
-     * @param dgData
+     * @param crData
      *          the data from the data generator to store
      * @throws IOException
      *          if the named file exists but is a directory rather
      *          than a regular file, does not exist but cannot be
      *          created, or cannot be opened for any other reason
      */
-    public BurgerBuskensSimulationSummaryWriter(String fileName, BurgerBuskensDataGeneratorData dgData) throws IOException {
-        super(fileName, dgData);
+    public CarayolRouxSimulationSummaryWriter(String fileName, CarayolRouxDataGeneratorData crData) throws IOException {
+        super(fileName, crData);
     }
 
 
@@ -67,15 +67,13 @@ public class BurgerBuskensSimulationSummaryWriter extends BurgerBuskensCsvFileWr
         cols.add(LogValues.IV_SIM_UID.toString());
         cols.add(LogValues.IV_SIM_UPC.toString());
         cols.add(LogValues.IV_SIM_CNT.toString());
-        // BurgerBuskens
-        cols.add(LogValues.IV_BB_B1.toString());
-        cols.add(LogValues.IV_BB_B2.toString());
-        cols.add(LogValues.IV_BB_C1.toString());
-        cols.add(LogValues.IV_BB_C2.toString());
-        cols.add(LogValues.IV_BB_C3.toString());
-        cols.add(LogValues.IV_BB_NET_SIZE.toString());
-        cols.add(LogValues.IV_BB_IOTA.toString());
-        cols.add(LogValues.IV_BB_PHI.toString());
+        // CarayolRoux
+        cols.add(LogValues.IV_CR_OMEGA.toString());
+        cols.add(LogValues.IV_CR_DELTA.toString());
+        cols.add(LogValues.IV_CR_C.toString());
+        cols.add(LogValues.IV_CR_NET_SIZE.toString());
+        cols.add(LogValues.IV_CR_IOTA.toString());
+        cols.add(LogValues.IV_CR_PHI.toString());
 
         // DEPENDENT VARIABLES (D)
         // network
@@ -98,26 +96,24 @@ public class BurgerBuskensSimulationSummaryWriter extends BurgerBuskensCsvFileWr
 
         // INDEPENDENT VARIABLES
         // simulation
-        currData.add(this.dgData.getSimStats().getUid());
-        currData.add(String.valueOf(this.dgData.getSimStats().getUpc()));
-        currData.add(String.valueOf(this.dgData.getSimStats().getSimPerUpc()));
-        // BurgerBuskens
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrB1()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrB2()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrC1()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrC2()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrC3()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrN()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().isCurrIota() ? 1 : 0));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrPhi()));
+        currData.add(this.crData.getSimStats().getUid());
+        currData.add(String.valueOf(this.crData.getSimStats().getUpc()));
+        currData.add(String.valueOf(this.crData.getSimStats().getSimPerUpc()));
+        // CarayolRoux
+        currData.add(String.valueOf(this.crData.getUtilityModelParams().getCurrOmega()));
+        currData.add(String.valueOf(this.crData.getUtilityModelParams().getCurrDelta()));
+        currData.add(String.valueOf(this.crData.getUtilityModelParams().getCurrC()));
+        currData.add(String.valueOf(this.crData.getUtilityModelParams().getCurrN()));
+        currData.add(String.valueOf(this.crData.getUtilityModelParams().isCurrIota() ? 1 : 0));
+        currData.add(String.valueOf(this.crData.getUtilityModelParams().getCurrPhi()));
 
         // DEPENDENT VARIABLES
         // network
-        currData.add(this.dgData.getNetStatsCurrent().isStable() ? "1" : "0");
-        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvDegree()));
-        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvClustering()));
-        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvPathLength()));
-        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getDensity()));
+        currData.add(this.crData.getNetStatsCurrent().isStable() ? "1" : "0");
+        currData.add(String.valueOf(this.crData.getNetStatsCurrent().getAvDegree()));
+        currData.add(String.valueOf(this.crData.getNetStatsCurrent().getAvClustering()));
+        currData.add(String.valueOf(this.crData.getNetStatsCurrent().getAvPathLength()));
+        currData.add(String.valueOf(this.crData.getNetStatsCurrent().getDensity()));
 
         writeLine(currData);
     }

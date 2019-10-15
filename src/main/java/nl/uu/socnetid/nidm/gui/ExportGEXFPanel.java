@@ -77,8 +77,7 @@ public class ExportGEXFPanel extends DeactivatablePanel {
     private boolean recording;
 
     // listeners
-    private final Set<ExportListener> exportListeners =
-            new CopyOnWriteArraySet<ExportListener>();
+    private final Set<ExportListener> exportListeners = new CopyOnWriteArraySet<ExportListener>();
     private JLabel lblNetworkType_1;
     private JSeparator separator;
 
