@@ -33,6 +33,7 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 
 import nl.uu.socnetid.nidm.data.BurgerBuskensParameters;
+import nl.uu.socnetid.nidm.data.CarayolRouxParameters;
 import nl.uu.socnetid.nidm.data.CidmParameters;
 import nl.uu.socnetid.nidm.data.LogValues;
 
@@ -65,10 +66,13 @@ public class PropertiesHandler {
     private String rAnalysisAutomatedTemplatePath;
     private String rAnalysisCompleteTemplatePath;
     private String rAnalysisBurgerBuskensTemplatePath;
+    private String rAnalysisCarayolRouxTemplatePath;
     // Cidm parameters
     private CidmParameters cidmParameters;
     // BurgerBuskens parameters
     private BurgerBuskensParameters bbParameters;
+    // CarayolRoux parameters
+    private CarayolRouxParameters crParameters;
     // DATA EXPORT
     // types of data export
     private boolean exportSummary;
@@ -162,6 +166,8 @@ public class PropertiesHandler {
                 configProps.getProperty("r.anlysis.complete.template.path")).toString();
         this.rAnalysisBurgerBuskensTemplatePath = new StringBuilder().append(this.userDir).append(
                 configProps.getProperty("r.anlysis.burgerbuskens.path")).toString();
+        this.rAnalysisCarayolRouxTemplatePath = new StringBuilder().append(this.userDir).append(
+                configProps.getProperty("r.anlysis.carayolroux.path")).toString();
 
         // Cidm parameters
         cidmParameters = new CidmParameters();
@@ -228,6 +234,40 @@ public class PropertiesHandler {
         // n
         bbParameters.setSimsPerParameterCombination(Integer.valueOf(configProps.getProperty(
                 LogValues.IV_BB_SIMS_PER_PC.toString())));
+
+        // CarayolRoux parameters
+        crParameters = new CarayolRouxParameters();
+        // omega
+        crParameters.setOmegaRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_CR_OMEGA_RANDOM.toString())));
+        crParameters.setOmegaRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_CR_OMEGA_RANDOM_MIN.toString())));
+        crParameters.setOmegaRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_CR_OMEGA_RANDOM_MAX.toString())));
+        crParameters.setOmegas(parseDoubleArray(configProps.getProperty(LogValues.IV_CR_OMEGA.toString())));
+        // delta
+        crParameters.setDeltaRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_CR_DELTA_RANDOM.toString())));
+        crParameters.setDeltaRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_CR_DELTA_RANDOM_MIN.toString())));
+        crParameters.setDeltaRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_CR_DELTA_RANDOM_MAX.toString())));
+        crParameters.setDeltas(parseDoubleArray(configProps.getProperty(LogValues.IV_CR_DELTA.toString())));
+        // c
+        crParameters.setCRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_CR_C_RANDOM.toString())));
+        crParameters.setCRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_CR_C_RANDOM_MIN.toString())));
+        crParameters.setCRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_CR_C_RANDOM_MAX.toString())));
+        crParameters.setCs(parseDoubleArray(configProps.getProperty(LogValues.IV_CR_C.toString())));
+        // N
+        crParameters.setNRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_CR_NET_SIZE_RANDOM.toString())));
+        crParameters.setNRandomMin(Integer.valueOf(configProps.getProperty(LogValues.IV_CR_NET_SIZE_RANDOM_MIN.toString())));
+        crParameters.setNRandomMax(Integer.valueOf(configProps.getProperty(LogValues.IV_CR_NET_SIZE_RANDOM_MAX.toString())));
+        crParameters.setNs(parseIntArray(configProps.getProperty(LogValues.IV_CR_NET_SIZE.toString())));
+        // iota
+        crParameters.setIotaRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_CR_IOTA_RANDOM.toString())));
+        crParameters.setIotas(parseBooleanArray(configProps.getProperty(LogValues.IV_CR_IOTA.toString())));
+        // phi
+        crParameters.setPhiRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_CR_PHI_RANDOM.toString())));
+        crParameters.setPhiRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_CR_PHI_RANDOM_MIN.toString())));
+        crParameters.setPhiRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_CR_PHI_RANDOM_MAX.toString())));
+        crParameters.setPhis(parseDoubleArray(configProps.getProperty(LogValues.IV_CR_PHI.toString())));
+        // n
+        crParameters.setSimsPerParameterCombination(Integer.valueOf(configProps.getProperty(
+                LogValues.IV_CR_SIMS_PER_PC.toString())));
 
         // types of data export
         this.exportSummary = Boolean.parseBoolean(configProps.getProperty("export.summary"));
@@ -402,6 +442,15 @@ public class PropertiesHandler {
     }
 
     /**
+     * Gets the CarayolRoux parameters as defined in the config.properties
+     *
+     * @return the CarayolRoux parameters as defined in the config.properties
+     */
+    public CarayolRouxParameters getCarayolRouxParameters() {
+        return crParameters;
+    }
+
+    /**
      * @return the analyzeData
      */
     public boolean isAnalyzeData() {
@@ -427,6 +476,13 @@ public class PropertiesHandler {
      */
     public String getRAnalysisBurgerBuskensTemplatePath() {
         return rAnalysisBurgerBuskensTemplatePath;
+    }
+
+    /**
+     * @return the rAnalysisCarayolRouxTemplatePath
+     */
+    public String getRAnalysisCarayolRouxTemplatePath() {
+        return rAnalysisCarayolRouxTemplatePath;
     }
 
 }

@@ -53,6 +53,7 @@ public class NetworkTest {
 
     // network
     private Network network;
+    private Network ringArrangedNetwork;
 
     // agents
     private Agent agent1;
@@ -61,6 +62,12 @@ public class NetworkTest {
     private Agent agent4;
     private Agent agent5;
     private Agent agent6;
+    private Agent ringAgent1;
+    private Agent ringAgent2;
+    private Agent ringAgent3;
+    private Agent ringAgent4;
+    private Agent ringAgent5;
+    private Agent ringAgent6;
 
     // utility
     private UtilityFunction uf;
@@ -96,6 +103,15 @@ public class NetworkTest {
         this.agent3.addConnection(this.agent4);
 
         this.agent6.infect(ds);
+
+        // ring arranged network
+        this.ringArrangedNetwork = new Network("Ring arranged Network Test", true);
+        this.ringAgent1 = this.ringArrangedNetwork.addAgent(uf, ds);
+        this.ringAgent2 = this.ringArrangedNetwork.addAgent(uf, ds);
+        this.ringAgent3 = this.ringArrangedNetwork.addAgent(uf, ds);
+        this.ringAgent4 = this.ringArrangedNetwork.addAgent(uf, ds);
+        this.ringAgent5 = this.ringArrangedNetwork.addAgent(uf, ds);
+        this.ringAgent6 = this.ringArrangedNetwork.addAgent(uf, ds);
 	}
 
 
@@ -457,6 +473,42 @@ public class NetworkTest {
     public void testGetAvPathLength() {
         assertEquals(6, this.network.getN());
         assertEquals(0.53, Precision.round(this.network.getAvPathLength(), 2), 0);
+    }
+
+    /**
+     * Test whether ring network is arranged correctly.
+     */
+    @Test
+    public void testRingArrangedNetwork() {
+        Iterator<Agent> aIt = this.network.getAgentIterator();
+        while (aIt.hasNext()) {
+            Agent agent = aIt.next();
+            assertEquals(0, agent.getX(), 0);
+            assertEquals(0, agent.getY(), 0);
+        }
+
+        assertEquals(1.0, this.ringAgent1.getX(), 0.01);
+        assertEquals(0.0, this.ringAgent1.getY(), 0.01);
+        assertEquals(0.5, this.ringAgent2.getX(), 0.01);
+        assertEquals(0.87, this.ringAgent2.getY(), 0.01);
+        assertEquals(-0.5, this.ringAgent3.getX(), 0.01);
+        assertEquals(0.87, this.ringAgent3.getY(), 0.01);
+        assertEquals(-1.0, this.ringAgent4.getX(), 0.01);
+        assertEquals(0.0, this.ringAgent4.getY(), 0.01);
+        assertEquals(-0.5, this.ringAgent5.getX(), 0.01);
+        assertEquals(-0.87, this.ringAgent5.getY(), 0.01);
+        assertEquals(0.5, this.ringAgent6.getX(), 0.01);
+        assertEquals(-0.87, this.ringAgent6.getY(), 0.01);
+
+        assertEquals(1, this.ringAgent1.getGeographicDistanceTo(this.ringAgent2), 0.01);
+        assertEquals(1, this.ringAgent2.getGeographicDistanceTo(this.ringAgent3), 0.01);
+        assertEquals(1, this.ringAgent3.getGeographicDistanceTo(this.ringAgent4), 0.01);
+        assertEquals(1, this.ringAgent4.getGeographicDistanceTo(this.ringAgent5), 0.01);
+        assertEquals(1, this.ringAgent5.getGeographicDistanceTo(this.ringAgent6), 0.01);
+        assertEquals(1, this.ringAgent6.getGeographicDistanceTo(this.ringAgent1), 0.01);
+        assertEquals(1.73, this.ringAgent1.getGeographicDistanceTo(this.ringAgent3), 0.01);
+        assertEquals(2, this.ringAgent1.getGeographicDistanceTo(this.ringAgent4), 0.01);
+        assertEquals(1.73, this.ringAgent1.getGeographicDistanceTo(this.ringAgent5), 0.01);
     }
 
 }
