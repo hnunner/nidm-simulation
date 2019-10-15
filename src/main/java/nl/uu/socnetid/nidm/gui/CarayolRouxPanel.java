@@ -28,23 +28,35 @@ package nl.uu.socnetid.nidm.gui;
 import java.awt.Color;
 import java.awt.Font;
 import java.text.NumberFormat;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.swing.InputVerifier;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JSeparator;
+import javax.swing.JSlider;
 import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * @author Hendrik Nunner
  */
-public class CarayolRouxPanel extends DeactivatablePanel {
+public class CarayolRouxPanel extends DeactivatablePanel implements ChangeListener {
 
     private static final long serialVersionUID = -2266756139159852784L;
 
-    private DoubleJFormattedTextField txtOmega;
-    private DoubleJFormattedTextField txtDelta;
-    private DoubleJFormattedTextField txtC;
+//    private DoubleJFormattedTextField txtOmega;
+    private JSlider sliderOmega;
+    private DoubleJFormattedTextField txtOmegaSlider;
+//    private DoubleJFormattedTextField txtDelta;
+    private JSlider sliderDelta;
+    private DoubleJFormattedTextField txtDeltaSlider;
+//    private DoubleJFormattedTextField txtC;
+    private JSlider sliderC;
+    private DoubleJFormattedTextField txtCSlider;
     private DoubleJFormattedTextField txtSigma;
     private DoubleJFormattedTextField txtGamma;
     private DoubleJFormattedTextField txtRSigma;
@@ -52,12 +64,13 @@ public class CarayolRouxPanel extends DeactivatablePanel {
     private DoubleJFormattedTextField txtPhi;
     private JFormattedTextField txtTau;
 
+
     // INPUT VALIDATION
     private static final NumberFormat NUM_FORMAT = NumberFormat.getNumberInstance();
     // benefit of direct connections (alpha), benefit of indirect connections (beta), maintenance costs (c)
-    private static final InputVerifier REAL_NUMBERS_VERIFIER = new DoubleInputVerifier();
-    // discounts for infected ties (kappa, lamda)
-    //private static final InputVerifier DISCOUNT_VERIFIER = new DoubleInputVerifier(0.0, 1.0);
+//    private static final InputVerifier REAL_NUMBERS_VERIFIER = new DoubleInputVerifier();
+    // discounts for delta
+//    private static final InputVerifier DELTA_VERIFIER = new DoubleInputVerifier(0.0, 1.0);
     // care factor for infected direct connections (mu)
     //private static final InputVerifier MU_VERIFIER = new DoubleInputVerifier(1.0, null);
     // disease severity (sigma)
@@ -71,6 +84,8 @@ public class CarayolRouxPanel extends DeactivatablePanel {
     // time steps to recover (tau)
     private static final InputVerifier TAU_VERIFIER = new IntegerInputVerifier(1, null);
 
+    // listeners
+    private final Set<ParameterChangeListener> parameterChangeListeners = new CopyOnWriteArraySet<ParameterChangeListener>();
 
     /**
      * Create the panel.
@@ -83,7 +98,7 @@ public class CarayolRouxPanel extends DeactivatablePanel {
         add(lblSocialBenefits);
         lblSocialBenefits.setFont(new Font("Lucida Grande", Font.BOLD, 13));
 
-        JLabel lblB11 = new JLabel("Direct ties");
+        JLabel lblB11 = new JLabel("Base value");
         lblB11.setBounds(36, 30, 86, 16);
         add(lblB11);
 
@@ -92,56 +107,56 @@ public class CarayolRouxPanel extends DeactivatablePanel {
         lblB12.setBounds(200, 30, 35, 16);
         add(lblB12);
 
-        txtOmega = new DoubleJFormattedTextField(NUM_FORMAT);
-        txtOmega.setBounds(245, 28, 50, 20);
-        add(txtOmega);
-        txtOmega.setHorizontalAlignment(SwingConstants.RIGHT);
-        txtOmega.setColumns(10);
-        txtOmega.setValue(new Double(1.0));
-        txtOmega.setInputVerifier(REAL_NUMBERS_VERIFIER);
+//        txtOmega = new DoubleJFormattedTextField(NUM_FORMAT);
+//        txtOmega.setBounds(245, 28, 50, 20);
+//        add(txtOmega);
+//        txtOmega.setHorizontalAlignment(SwingConstants.RIGHT);
+//        txtOmega.setColumns(10);
+//        txtOmega.setValue(new Double(1.0));
+//        txtOmega.setInputVerifier(REAL_NUMBERS_VERIFIER);
 
-        JLabel lblB21 = new JLabel("Triadic closure");
-        lblB21.setBounds(36, 55, 154, 16);
+        JLabel lblB21 = new JLabel("Geodesic discount");
+        lblB21.setBounds(37, 86, 154, 16);
         add(lblB21);
 
         JLabel lblB22 = new JLabel("(δ):");
         lblB22.setHorizontalAlignment(SwingConstants.RIGHT);
-        lblB22.setBounds(200, 55, 35, 16);
+        lblB22.setBounds(201, 86, 35, 16);
         add(lblB22);
 
-        txtDelta = new DoubleJFormattedTextField(NUM_FORMAT);
-        txtDelta.setBounds(245, 53, 50, 20);
-        add(txtDelta);
-        txtDelta.setHorizontalAlignment(SwingConstants.RIGHT);
-        txtDelta.setColumns(10);
-        txtDelta.setValue(new Double(0.1));
-        txtDelta.setInputVerifier(REAL_NUMBERS_VERIFIER);
+//        txtDelta = new DoubleJFormattedTextField(NUM_FORMAT);
+//        txtDelta.setBounds(245, 53, 50, 20);
+//        add(txtDelta);
+//        txtDelta.setHorizontalAlignment(SwingConstants.RIGHT);
+//        txtDelta.setColumns(10);
+//        txtDelta.setValue(new Double(0.1));
+//        txtDelta.setInputVerifier(DELTA_VERIFIER);
 
-        JLabel lblC11 = new JLabel("Standard");
-        lblC11.setBounds(36, 125, 86, 16);
+        JLabel lblC11 = new JLabel("Geographic costs");
+        lblC11.setBounds(37, 180, 154, 16);
         add(lblC11);
 
         JLabel lblC12 = new JLabel("(c):");
         lblC12.setHorizontalAlignment(SwingConstants.RIGHT);
-        lblC12.setBounds(200, 125, 35, 16);
+        lblC12.setBounds(201, 180, 35, 16);
         add(lblC12);
 
-        txtC = new DoubleJFormattedTextField(NUM_FORMAT);
-        txtC.setBounds(245, 123, 50, 20);
-        add(txtC);
-        txtC.setHorizontalAlignment(SwingConstants.RIGHT);
-        txtC.setColumns(10);
-        txtC.setValue(new Double(1.0));
-        txtC.setInputVerifier(REAL_NUMBERS_VERIFIER);
+//        txtC = new DoubleJFormattedTextField(NUM_FORMAT);
+//        txtC.setBounds(245, 123, 50, 20);
+//        add(txtC);
+//        txtC.setHorizontalAlignment(SwingConstants.RIGHT);
+//        txtC.setColumns(10);
+//        txtC.setValue(new Double(1.0));
+        //txtC.setInputVerifier(REAL_NUMBERS_VERIFIER);
 
         JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
         separator.setForeground(Color.LIGHT_GRAY);
-        separator.setBounds(0, 85, 312, 10);
+        separator.setBounds(1, 140, 312, 10);
         add(separator);
 
         JLabel lblSocialCostsHeader = new JLabel("Social maintenance costs:");
         lblSocialCostsHeader.setFont(new Font("Lucida Grande", Font.BOLD, 13));
-        lblSocialCostsHeader.setBounds(13, 95, 242, 16);
+        lblSocialCostsHeader.setBounds(14, 150, 242, 16);
         add(lblSocialCostsHeader);
 
         JSeparator separator_3 = new JSeparator(SwingConstants.HORIZONTAL);
@@ -303,6 +318,48 @@ public class CarayolRouxPanel extends DeactivatablePanel {
         add(txtTau);
         txtTau.setValue(new Integer(10));
         txtTau.setInputVerifier(TAU_VERIFIER);
+
+        sliderOmega = new JSlider();
+        sliderOmega.setBounds(36, 43, 199, 29);
+        sliderOmega.setMaximum(200);
+        sliderOmega.setMinimum(0);
+        sliderOmega.setValue(20);
+        add(sliderOmega);
+        sliderOmega.addChangeListener(this);
+
+        txtOmegaSlider = new DoubleJFormattedTextField((NumberFormat) null);
+        txtOmegaSlider.setHorizontalAlignment(SwingConstants.RIGHT);
+        txtOmegaSlider.setBounds(245, 28, 50, 20);
+        txtOmegaSlider.setText(Double.toString(sliderOmega.getValue() / 100.0));
+        add(txtOmegaSlider);
+
+        sliderDelta = new JSlider();
+        sliderDelta.setBounds(37, 99, 199, 29);
+        sliderDelta.setMaximum(100);
+        sliderDelta.setMinimum(0);
+        sliderDelta.setValue(15);
+        add(sliderDelta);
+        sliderDelta.addChangeListener(this);
+
+        txtDeltaSlider = new DoubleJFormattedTextField((NumberFormat) null);
+        txtDeltaSlider.setHorizontalAlignment(SwingConstants.RIGHT);
+        txtDeltaSlider.setBounds(246, 84, 50, 20);
+        txtDeltaSlider.setText(Double.toString(sliderDelta.getValue() / 100.0));
+        add(txtDeltaSlider);
+
+        sliderC = new JSlider();
+        sliderC.setBounds(36, 195, 199, 29);
+        sliderC.setMaximum(200);
+        sliderC.setMinimum(0);
+        sliderC.setValue(100);
+        add(sliderC);
+        sliderC.addChangeListener(this);
+
+        txtCSlider = new DoubleJFormattedTextField((NumberFormat) null);
+        txtCSlider.setHorizontalAlignment(SwingConstants.RIGHT);
+        txtCSlider.setBounds(245, 180, 50, 20);
+        txtCSlider.setText(Double.toString(sliderC.getValue() / 100.0));
+        add(txtCSlider);
     }
 
     /**
@@ -311,7 +368,7 @@ public class CarayolRouxPanel extends DeactivatablePanel {
      * @return the benefits of direct connections (omega)
      */
     public double getOmega() {
-        return this.txtOmega.getDouble();
+        return this.txtOmegaSlider.getDouble();
     }
 
     /**
@@ -320,7 +377,7 @@ public class CarayolRouxPanel extends DeactivatablePanel {
      * @return the distance dependent decay of benefits of connections (delta)
      */
     public double getDelta() {
-        return this.txtDelta.getDouble();
+        return this.txtDeltaSlider.getDouble();
     }
 
     /**
@@ -329,7 +386,7 @@ public class CarayolRouxPanel extends DeactivatablePanel {
      * @return the costs of connections (c)
      */
     public double getC() {
-        return this.txtC.getDouble();
+        return this.txtCSlider.getDouble();
     }
 
     /**
@@ -391,11 +448,11 @@ public class CarayolRouxPanel extends DeactivatablePanel {
      */
     @Override
     public void enableComponents() {
-        this.txtOmega.setEnabled(true);
-        this.txtDelta.setEnabled(true);
-        this.txtC.setEnabled(true);
-        this.txtSigma.setEnabled(true);
-        this.txtGamma.setEnabled(true);
+//        this.txtOmega.setEnabled(true);
+//        this.txtDelta.setEnabled(true);
+//        this.txtC.setEnabled(true);
+//        this.txtSigma.setEnabled(true);
+//        this.txtGamma.setEnabled(true);
     }
 
     /* (non-Javadoc)
@@ -403,10 +460,84 @@ public class CarayolRouxPanel extends DeactivatablePanel {
      */
     @Override
     public void diseableComponents() {
-        this.txtOmega.setEnabled(false);
-        this.txtDelta.setEnabled(false);
-        this.txtC.setEnabled(false);
-        this.txtSigma.setEnabled(false);
-        this.txtGamma.setEnabled(false);
+//        this.txtOmega.setEnabled(false);
+//        this.txtDelta.setEnabled(false);
+//        this.txtC.setEnabled(false);
+//        this.txtSigma.setEnabled(false);
+//        this.txtGamma.setEnabled(false);
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        JSlider source = (JSlider) e.getSource();
+
+        if (source.equals(this.sliderOmega)) {
+            System.out.println("slider omega");
+            txtOmegaSlider.setText(Double.toString(source.getValue() / 100.0));
+            notifyOmegaChanged();
+        }
+
+        if (source.equals(this.sliderDelta)) {
+            System.out.println("slider delta");
+            txtDeltaSlider.setText(Double.toString(source.getValue() / 100.0));
+            notifyDeltaChanged();
+        }
+
+        if (source.equals(this.sliderC)) {
+            System.out.println("slider c");
+            txtCSlider.setText(Double.toString(source.getValue() / 100.0));
+            notifyCChanged();
+        }
+    }
+
+
+    /**
+     * Adds a listener for parameter change notifications.
+     *
+     * @param parameterChangeListener
+     *          the listener to be added
+     */
+    public void addParameterChangeListener(ParameterChangeListener parameterChangeListener) {
+        this.parameterChangeListeners.add(parameterChangeListener);
+    }
+
+    /**
+     * Removes a listener for parameter change notifications.
+     *
+     * @param parameterChangeListener
+     *          the listener to be removed
+     */
+    public void removeParameterChangeListener(ParameterChangeListener parameterChangeListener) {
+        this.parameterChangeListeners.remove(parameterChangeListener);
+    }
+
+    /**
+     * Notifies listeners of changed omega.
+     */
+    private final void notifyOmegaChanged() {
+        Iterator<ParameterChangeListener> listenersIt = this.parameterChangeListeners.iterator();
+        while (listenersIt.hasNext()) {
+            listenersIt.next().notifyOmegaChanged();
+        }
+    }
+
+    /**
+     * Notifies listeners of changed delta.
+     */
+    private final void notifyDeltaChanged() {
+        Iterator<ParameterChangeListener> listenersIt = this.parameterChangeListeners.iterator();
+        while (listenersIt.hasNext()) {
+            listenersIt.next().notifyDeltaChanged();
+        }
+    }
+
+    /**
+     * Notifies listeners of changed c.
+     */
+    private final void notifyCChanged() {
+        Iterator<ParameterChangeListener> listenersIt = this.parameterChangeListeners.iterator();
+        while (listenersIt.hasNext()) {
+            listenersIt.next().notifyCChanged();
+        }
     }
 }

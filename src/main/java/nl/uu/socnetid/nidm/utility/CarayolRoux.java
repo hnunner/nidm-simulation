@@ -36,11 +36,11 @@ import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
 public class CarayolRoux extends UtilityFunction {
 
     // benefits of connections
-    private final double omega;
+    private double omega;
     // distance dependent decay of benefits of connections
-    private final double delta;
+    private double delta;
     // costs of connections
-    private final double c;
+    private double c;
 
 
     /**
@@ -76,13 +76,15 @@ public class CarayolRoux extends UtilityFunction {
     protected double getSocialBenefits(LocalAgentConnectionsStats lacs, Agent agent) {
         double benefits = 0.0;
 
-        Iterator<Agent> connectionsIt = lacs.getConnections().iterator();
-        while (connectionsIt.hasNext()) {
-            Agent connection = connectionsIt.next();
-            Integer gd = agent.getGeodesicDistanceTo(connection);
+        Iterator<Agent> agentsIt = agent.getNetwork().getAgentIterator();
+        while (agentsIt.hasNext()) {
+            Agent other = agentsIt.next();
+            if (agent.getId() == other.getId()) {
+                continue;
+            }
+            Integer gd = agent.getGeodesicDistanceTo(other);
             if (gd != null) {
-                double benefit = this.omega * Math.pow(delta, gd);
-                benefits += benefit;
+                benefits += this.omega * Math.pow(delta, gd);
             }
         }
 
@@ -97,12 +99,11 @@ public class CarayolRoux extends UtilityFunction {
     protected double getSocialCosts(LocalAgentConnectionsStats lacs, Agent agent) {
         double costs = 0.0;
 
-        Iterator<Agent> connectionsIt = lacs.getConnections().iterator();
+        Iterator<Agent> connectionsIt = agent.getConnections().iterator();
         while (connectionsIt.hasNext()) {
             Agent connection = connectionsIt.next();
-            double cost = this.c *
-                    (agent.getGeographicDistanceTo(connection) * Math.pow(Math.ceil(agent.getNetwork().getN() / 2), -1));
-            costs += cost;
+            costs += this.c *
+                    (agent.getGeographicDistanceTo(connection) * Math.pow(Math.ceil(agent.getNetwork().getN() / 2.0), -1));
         }
 
         return costs;
@@ -139,6 +140,13 @@ public class CarayolRoux extends UtilityFunction {
     }
 
     /**
+     * @param omega the omega to set
+     */
+    public void setOmega(double omega) {
+        this.omega = omega;
+    }
+
+    /**
      * @return the delta
      */
     public double getDelta() {
@@ -146,10 +154,24 @@ public class CarayolRoux extends UtilityFunction {
     }
 
     /**
+     * @param delta the delta to set
+     */
+    public void setDelta(double delta) {
+        this.delta = delta;
+    }
+
+    /**
      * @return the c
      */
     public double getC() {
         return c;
+    }
+
+    /**
+     * @param c the c to set
+     */
+    public void setC(double c) {
+        this.c = c;
     }
 
 }
