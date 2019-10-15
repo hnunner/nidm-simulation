@@ -25,8 +25,6 @@
  */
 package nl.uu.socnetid.nidm.utility;
 
-import java.util.Collection;
-
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
 import nl.uu.socnetid.nidm.stats.StatsComputer;
@@ -42,13 +40,11 @@ public abstract class UtilityFunction {
      *
      * @param agent
      *          the agent to compute the utility for
-     * @param connections
-     *          the agent's connections
      * @return the agent's utility based on the connections
      */
-    public Utility getUtility(Agent agent, Collection<Agent> connections) {
+    public Utility getUtility(Agent agent) {
 
-        LocalAgentConnectionsStats lacs = StatsComputer.computeLocalAgentConnectionsStats(agent, connections);
+        LocalAgentConnectionsStats lacs = StatsComputer.computeLocalAgentConnectionsStats(agent);
 
         return new Utility(
                 getSocialBenefits(lacs, agent),
