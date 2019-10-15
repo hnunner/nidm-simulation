@@ -63,12 +63,15 @@ public class Network extends SingleGraph {
     private final Set<NetworkListener> networkListeners =
             new CopyOnWriteArraySet<NetworkListener>();
 
+    // flag for arranging agents in circle
+    protected boolean arrangeInCircle;
+
 
     /**
      * Constructor.
      */
     public Network() {
-        this("Network of the Infectious Kind");
+        this("Network of the Infectious Kind", false);
     }
 
     /**
@@ -78,7 +81,20 @@ public class Network extends SingleGraph {
      *          the network's unique identifier
      */
     public Network(String id) {
+        this(id, false);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param id
+     *          the network's unique identifier
+     * @param arrangeInCircle
+     *          flag whether agents to arrange in circle or not
+     */
+    public Network(String id, boolean arrangeInCircle) {
         super(id);
+        this.arrangeInCircle = arrangeInCircle;
         this.setNodeFactory(new AgentFactory());
     }
 
@@ -117,9 +133,14 @@ public class Network extends SingleGraph {
         Agent agent = this.addNode(String.valueOf(this.getNodeCount() + 1));
         agent.initAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi);
         notifyAgentAdded(agent);
+
+        // re-position agents if auto-layout is disabled
+        if (this.arrangeInCircle) {
+            arrangeAgentsInCircle();
+        }
+
         return agent;
     }
-
 
     /**
      * Removes a agent from the network.
@@ -133,7 +154,33 @@ public class Network extends SingleGraph {
         String agentId = this.getLastAgent().getId();
         this.removeNode(String.valueOf(agentId));
         notifyAgentRemoved(agentId);
+
+        // re-position agents if auto-layout is disabled
+        if (!this.arrangeInCircle) {
+            arrangeAgentsInCircle();
+        }
+
         return agentId;
+    }
+
+    /**
+     * Arranges all agent in a circle.
+     */
+    private void arrangeAgentsInCircle() {
+        Collection<Agent> agents = getAgents();
+        int n = agents.size();
+
+        Iterator<Agent> agentsIt = agents.iterator();
+        int i = 0;
+
+        while (agentsIt.hasNext()) {
+            Agent currAgent = agentsIt.next();
+            currAgent.setXY(
+                    1 * Math.cos(i * 2 * Math.PI / n),
+                    1 * Math.sin(i * 2 * Math.PI / n));
+
+            i++;
+        }
     }
 
     /**

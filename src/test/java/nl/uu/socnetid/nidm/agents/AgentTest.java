@@ -29,6 +29,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
@@ -94,6 +95,10 @@ public class AgentTest {
         this.agent1.addConnection(this.agent3);
         this.agent1.addConnection(this.agent4);
         this.agent3.addConnection(this.agent4);
+
+        this.agent1.setXY(0, 0);
+        this.agent2.setXY(1, 1);
+        this.agent3.setXY(3, 1);
     }
 
 
@@ -504,6 +509,26 @@ public class AgentTest {
         assertEquals(0.56, this.agent4.getCloseness(), 0.01);
         assertEquals(0, this.agent5.getCloseness(), 0.01);
         assertEquals(0, this.agent6.getCloseness(), 0.01);
+    }
+
+    /**
+     * Test whether geodesic distance is computed correctly.
+     */
+    @Test
+    public void testGetGeodesicDistance() {
+        assertEquals(1, this.agent4.getGeodesicDistanceTo(this.agent1), 0);
+        assertEquals(2, this.agent4.getGeodesicDistanceTo(this.agent2), 0);
+        assertNull(this.agent4.getGeodesicDistanceTo(this.agent5));
+    }
+
+    /**
+     * Test whether geographic distance is computed correctly.
+     */
+    @Test
+    public void testGetGeographicDistance() {
+        assertEquals(1.41, this.agent1.getGeographicDistanceTo(this.agent2), 0.01);
+        assertEquals(3.16, this.agent1.getGeographicDistanceTo(this.agent3), 0.01);
+        assertEquals(2, this.agent2.getGeographicDistanceTo(this.agent3), 0.01);
     }
 
 }
