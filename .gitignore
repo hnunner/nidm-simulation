@@ -26,6 +26,6 @@ bfg-report*
 
 # R
 # History files
-**/*.Rhistory
+analysis/*.Rhistory
 # Session Data files
 **/*.RData
