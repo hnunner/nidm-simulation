@@ -31,6 +31,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
+import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -73,6 +74,7 @@ import nl.uu.socnetid.nidm.gui.ExportListener;
 import nl.uu.socnetid.nidm.gui.IntegerInputVerifier;
 import nl.uu.socnetid.nidm.gui.NodeClick;
 import nl.uu.socnetid.nidm.gui.NodeClickListener;
+import nl.uu.socnetid.nidm.gui.ParameterChangeListener;
 import nl.uu.socnetid.nidm.gui.StatsFrame;
 import nl.uu.socnetid.nidm.networks.DisplayableNetwork;
 import nl.uu.socnetid.nidm.simulation.Simulation;
@@ -88,7 +90,8 @@ import nl.uu.socnetid.nidm.utility.UtilityFunction;
 /**
  * @author Hendrik Nunner
  */
-public class UserInterface implements NodeClickListener, SimulationListener, AgentListener, ExportListener {
+public class UserInterface implements NodeClickListener, SimulationListener, AgentListener, ExportListener,
+ParameterChangeListener {
 
     // LOGGER
     private static final Logger logger = Logger.getLogger(UserInterface.class);
@@ -242,6 +245,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
 
         crPanel.setBounds(3, 51, 312, 615);
         modelPane.add(crPanel);
+        crPanel.addParameterChangeListener(this);
 
         cumulativePanel.setBounds(3, 51, 312, 615);
         cumulativePanel.setVisible(false);
@@ -618,6 +622,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
 
         // add each agent with selected utility function and disease specs
         for (int i = 0; i < ((Number)txtAddAmount.getValue()).intValue(); i++) {
+            // TODO change sigma, pi, phi to correct panels
             Agent agent = this.network.addAgent(uf, ds, cidmPanel.getRSigma(), cidmPanel.getRPi(), cidmPanel.getPhi());
             agent.addAgentListener(this);
         }
@@ -717,6 +722,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
                         this.bbPanel.getC3());
 
             case 2:
+                System.out.println(this.crPanel.getDelta());
                 return new CarayolRoux(
                         this.crPanel.getOmega(),
                         this.crPanel.getDelta(),
@@ -936,5 +942,40 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
     @Override
     public void notifyRecordingStopped() {
         this.statsFrame.refreshSimulationRecording(false);
+    }
+
+
+    // TODO consider putting this directly into CarayolRoux utility class
+    @Override
+    public void notifyOmegaChanged() {
+        Iterator<Agent> agentIterator = this.simulation.getNetwork().getAgentIterator();
+        while (agentIterator.hasNext()) {
+            Agent agent = agentIterator.next();
+            CarayolRoux uf = (CarayolRoux) agent.getUtilityFunction();
+            uf.setOmega(this.crPanel.getOmega());
+        }
+    }
+
+    // TODO consider putting this directly into CarayolRoux utility class
+    @Override
+    public void notifyDeltaChanged() {
+        Iterator<Agent> agentIterator = this.simulation.getNetwork().getAgentIterator();
+        while (agentIterator.hasNext()) {
+            Agent agent = agentIterator.next();
+            CarayolRoux uf = (CarayolRoux) agent.getUtilityFunction();
+            uf.setDelta(this.crPanel.getDelta());
+        }
+    }
+
+    // TODO consider putting this directly into CarayolRoux utility class
+    @Override
+    public void notifyCChanged() {
+        System.out.println("called c change notification");
+        Iterator<Agent> agentIterator = this.simulation.getNetwork().getAgentIterator();
+        while (agentIterator.hasNext()) {
+            Agent agent = agentIterator.next();
+            CarayolRoux uf = (CarayolRoux) agent.getUtilityFunction();
+            uf.setC(this.crPanel.getC());
+        }
     }
 }

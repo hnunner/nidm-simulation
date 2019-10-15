@@ -267,18 +267,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      * @return the agent's utility
      */
     public Utility getUtility() {
-        return this.getUtility(this.getConnections());
-    }
-
-    /**
-     * Gets the utility for a agent based on a list of connections.
-     *
-     * @param connections
-     *          the connections to compute the utility for
-     * @return the utility for a agent based on a list of connections
-     */
-    protected Utility getUtility(Collection<Agent> connections) {
-        return this.getUtilityFunction().getUtility(this, connections);
+        return this.getUtilityFunction().getUtility(this);
     }
 
     /**
@@ -404,6 +393,36 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
+     * Sets the 2-dimensional geographic coordinates of the agent.
+     *
+     * @param x
+     *          the x-coordinate
+     * @param y
+     *          the y-coordinate
+     */
+    public void setXY(double x, double y) {
+        this.setAttribute("xyz", x, y, 0);
+    }
+
+    /**
+     * Gets the x-coordinate of the agent.
+     *
+     * @return the x-coordinate of the agent
+     */
+    public double getX() {
+        return GraphPosLengthUtils.nodePosition(this)[0];
+    }
+
+    /**
+     * Gets the y-coordinate of the agent.
+     *
+     * @return the x-coordinate of the agent
+     */
+    public double getY() {
+        return GraphPosLengthUtils.nodePosition(this)[1];
+    }
+
+    /**
      * Gets the geographic distance to another agent.
      *
      * @param agent
@@ -411,9 +430,9 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      * @return the geographic distance to another agent
      */
     public double getGeographicDistanceTo(Agent agent) {
-        double[] p1 = GraphPosLengthUtils.nodePosition(this);
-        double[] p2 = GraphPosLengthUtils.nodePosition(agent);
-        return Math.sqrt(Math.pow(p1[0] - p2[0], 2) + Math.pow(p1[1] - p2[1], 2));
+        return Math.sqrt(
+                Math.pow(this.getX() - agent.getX(), 2) +
+                Math.pow(this.getY() - agent.getY(), 2));
     }
 
     /**
