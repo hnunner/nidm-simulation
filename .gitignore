@@ -23,9 +23,3 @@ network-exports/
 
 # bfg reports
 bfg-report*
-
-# R
-# History files
-analysis/*.Rhistory
-# Session Data files
-**/*.RData
