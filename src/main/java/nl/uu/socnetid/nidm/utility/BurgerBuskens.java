@@ -90,7 +90,9 @@ public class BurgerBuskens extends UtilityFunction implements BurgerBuskensChang
         this.c2 = c2;
         this.c3 = c3;
         this.bbPanel = bbPanel;
-        this.bbPanel.addParameterChangeListener(this);
+        if (this.bbPanel != null) {
+            this.bbPanel.addParameterChangeListener(this);
+        }
     }
 
 
