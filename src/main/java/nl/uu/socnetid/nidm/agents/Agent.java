@@ -261,6 +261,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         }
     }
 
+
     /**
      * Gets the agent's utility.
      *
@@ -268,6 +269,28 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      */
     public Utility getUtility() {
         return this.getUtilityFunction().getUtility(this);
+    }
+
+    /**
+     * Gets the utility for a agent including an additional agent as connection.
+     *
+     * @param with
+     *          the agent to include as direct connection
+     * @return the utility for a agent based on a list of connections
+     */
+    protected Utility getUtilityWith(Agent with) {
+        return this.getUtilityFunction().getUtilityWith(this, with);
+    }
+
+    /**
+     * Gets the utility for a agent excluding an agent as connection.
+     *
+     * @param without
+     *          the agent to exclude as direct connection
+     * @return the utility for a agent based on a list of connections
+     */
+    protected Utility getUtilityWithout(Agent without) {
+        return this.getUtilityFunction().getUtilityWithout(this, without);
     }
 
     /**
@@ -587,12 +610,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      * @return true if the new connection adds value to the overall utility of an agent
      */
     public boolean newConnectionValuable(Agent newConnection) {
-        // TODO use deep copies of network and agents to avoid UI glitches
-        double currUtility = this.getUtility().getOverallUtility();
-        this.addConnection(newConnection);
-        double newUtility = this.getUtility().getOverallUtility();
-        this.removeConnection(newConnection);
-        return newUtility >= currUtility;
+        return this.getUtilityWith(newConnection).getOverallUtility() >= this.getUtility().getOverallUtility();
     }
 
     /**
@@ -625,18 +643,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      * @return true if the existing connection create more costs than it provides benefits
      */
     public boolean existingConnectionTooCostly(Agent existingConnection) {
-        double currUtility = this.getUtility().getOverallUtility();
-
-
-
-        // TODO use deep copies of network and agents to avoid UI glitches
-        this.removeConnection(existingConnection);
-        double newUtility = this.getUtility().getOverallUtility();
-        this.addConnection(existingConnection);
-
-
-
-        return newUtility > currUtility;
+        return this.getUtilityWithout(existingConnection).getOverallUtility() > this.getUtility().getOverallUtility();
     }
 
     /**

@@ -26,13 +26,16 @@
 package nl.uu.socnetid.nidm.stats;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import nl.uu.socnetid.nidm.agents.Agent;
+import nl.uu.socnetid.nidm.diseases.types.DiseaseGroup;
 import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.simulation.Simulation;
 
@@ -233,118 +236,123 @@ public final class StatsComputer {
      * @return the stats for a single agent's connections.
      */
     public static LocalAgentConnectionsStats computeLocalAgentConnectionsStats(Agent agent) {
-        return StatsComputer.computeLocalAgentConnectionsStats(agent, agent.getConnections());
+        return StatsComputer.computeLocalAgentConnectionsStats(agent, null, null);
     }
 
     /**
-     * Computes the stats for a single agent's connections.
+     * Computes the stats for a single agent's connections with a potentially new connection.
      *
      * @param agent
      *          the agent
-     * @param connections
-     *          the connections - given explicitly and not used from the agent's existing connections,
-     *          because this might be used to compare the agent's current connections with potentially
-     *          altered connections
+     * @param with
+     *          the potentially new connection
      * @return the stats for a single agent's connections.
      */
-    public static LocalAgentConnectionsStats computeLocalAgentConnectionsStats(Agent agent,
-            Collection<Agent> connections) {
+    public static LocalAgentConnectionsStats computeLocalAgentConnectionsStatsWith(Agent agent, Agent with) {
+        return StatsComputer.computeLocalAgentConnectionsStats(agent, with, null);
+    }
 
-        // number of connections
-        int nS = 0;
-        int nI = 0;
-        int nR = 0;
-        int mS = 0;
-        int mI = 0;
-        int mR = 0;
-        int z  = 0;
+    /**
+     * Computes the stats for a single agent's connections without an existing connection.
+     *
+     * @param agent
+     *          the agent
+     * @param without
+     *          the existing connection not to consider
+     * @return the stats for a single agent's connections.
+     */
+    public static LocalAgentConnectionsStats computeLocalAgentConnectionsStatsWithout(Agent agent, Agent without) {
+        return StatsComputer.computeLocalAgentConnectionsStats(agent, null, without);
+    }
 
-        // consider indirect connections only once
-        List<Agent> consideredIndirectAgents = new LinkedList<Agent>();
-        // consider agents only once for triads
-        List<Agent> consideredTriadAgents = new LinkedList<Agent>();
+    /**
+     * Computes the stats for a single agent's connections with a potentially new connection and without an existing connection.
+     *
+     * @param agent
+     *          the agent
+     * @param with
+     *          the potentially new connection
+     * @param without
+     *          the existing connection not to consider
+     * @return the stats for a single agent's connections.
+     */
+    public static LocalAgentConnectionsStats computeLocalAgentConnectionsStats(Agent agent, Agent with, Agent without) {
 
-        // for every direct connection
-        Iterator<Agent> directIt = connections.iterator();
-        while (directIt.hasNext()) {
+        // initialize map of agents by disease group and distance
+        Map<DiseaseGroup, Map<Integer, Integer>> consByDiseaseGroupAtDistance = new HashMap<DiseaseGroup, Map<Integer, Integer>>();
+        for (DiseaseGroup dg : DiseaseGroup.values()) {
+            consByDiseaseGroupAtDistance.put(dg, new HashMap<Integer, Integer>());
+        }
 
-            // no direct connection? do nothing
-            Agent directConnection = directIt.next();
-            if (directConnection == null) {
-                continue;
+        // initialize list of direct connections
+        List<Agent> directConnections = new LinkedList<Agent>();
+
+        // fill map of agents by disease group and distance
+        Iterator<Agent> it = agent.getNetwork().getAgentIterator();
+        while (it.hasNext()) {
+            Agent otherAgent = it.next();
+
+            // get geodesic distance to other agent
+            Integer gd = null;
+            if ((with != null) && (otherAgent.getId() == with.getId())) {
+                gd = 1;
+            } else if ((without != null) && (otherAgent.getId() == without.getId())) {
+                // gd = null;
+            } else {
+                gd = agent.getGeodesicDistanceTo(otherAgent);
             }
 
-            // disease group of direct connection
-            switch (directConnection.getDiseaseGroup()) {
-                case SUSCEPTIBLE:
-                    nS++;
-                    break;
-
-                case INFECTED:
-                    nI++;
-                    break;
-
-                case RECOVERED:
-                    nR++;
-                    break;
-
-                default:
-                    logger.warn("Unhandled disease group: " + directConnection.getDiseaseGroup());
-            }
-
-            // no indirect connections --> go to next direct connection
-            Collection<Agent> indirectConnections = directConnection.getConnections();
-            if (indirectConnections == null) {
-                continue;
-            }
-
-            // for every indirect connection at distance 2
-            Iterator<Agent> indirectIt = indirectConnections.iterator();
-            while (indirectIt.hasNext()) {
-                Agent indirectConnection = indirectIt.next();
-
-                // ignore self
-                if (indirectConnection.equals(agent)) {
-                    continue;
-                }
-
-                // do not consider indirect connections that have been considered before
-                if (consideredIndirectAgents.contains(indirectConnection)) {
-                    continue;
-                }
-
-                // connections that are direct and indirect connections at the same time ...
-                if (connections.contains(indirectConnection)) {
-                    // ... form a closed triad with self, but count only once
-                    if (!consideredTriadAgents.contains(directConnection)) {
-                        z++;
-                        consideredTriadAgents.add(indirectConnection);
-                    }
-                    // ... must not be counted as indirect connections
-                    continue;
-                }
-
-                // disease group
-                switch (indirectConnection.getDiseaseGroup()) {
+            // if connection exists
+            if (gd != null) {
+                // store disease group and distance
+                switch (otherAgent.getDiseaseGroup()) {
                     case SUSCEPTIBLE:
-                        mS++;
+                        consByDiseaseGroupAtDistance.get(DiseaseGroup.SUSCEPTIBLE).put(gd,
+                                consByDiseaseGroupAtDistance.get(DiseaseGroup.SUSCEPTIBLE).get(gd) != null ?
+                                        consByDiseaseGroupAtDistance.get(DiseaseGroup.SUSCEPTIBLE).get(gd) + 1 : 1);
                         break;
 
                     case INFECTED:
-                        mI++;
+                        consByDiseaseGroupAtDistance.get(DiseaseGroup.INFECTED).put(gd,
+                                consByDiseaseGroupAtDistance.get(DiseaseGroup.INFECTED).get(gd) != null ?
+                                        consByDiseaseGroupAtDistance.get(DiseaseGroup.INFECTED).get(gd) + 1 : 1);
                         break;
 
                     case RECOVERED:
-                        mR++;
+                        consByDiseaseGroupAtDistance.get(DiseaseGroup.RECOVERED).put(gd,
+                                consByDiseaseGroupAtDistance.get(DiseaseGroup.RECOVERED).get(gd) != null ?
+                                        consByDiseaseGroupAtDistance.get(DiseaseGroup.RECOVERED).get(gd) + 1 : 1);
                         break;
 
                     default:
-                        logger.warn("Unhandled disease group: " + indirectConnection.getDiseaseGroup());
+                        logger.warn("Unhandled disease group: " + otherAgent.getDiseaseGroup());
                 }
-                consideredIndirectAgents.add(indirectConnection);
+
+                // store direct connections
+                if (gd == 1) {
+                    directConnections.add(otherAgent);
+                }
             }
         }
-        return new LocalAgentConnectionsStats(connections, nS, nI, nR, mS, mI, mR, z);
+
+        // determine number of triads agent belongs to
+        int z  = 0;
+        it = directConnections.iterator();
+        // consider direct connections only once for triads
+        List<Agent> consideredDirectConnections = new LinkedList<Agent>(directConnections);
+        while (it.hasNext()) {
+            Agent directConnection = it.next();
+            consideredDirectConnections.remove(directConnection);
+            Iterator<Agent> cit = consideredDirectConnections.iterator();
+            while (cit.hasNext()) {
+                Agent potentialTriad = cit.next();
+                if (directConnection.hasDirectConnectionTo(potentialTriad)) {
+                    z++;
+                }
+            }
+        }
+
+        return new LocalAgentConnectionsStats(consByDiseaseGroupAtDistance, z);
     }
 
     /**
