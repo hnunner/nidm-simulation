@@ -25,7 +25,8 @@
  */
 package nl.uu.socnetid.nidm.utility;
 
-import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.gui.CarayolRouxChangeListener;
@@ -98,18 +99,14 @@ public class CarayolRoux extends UtilityFunction implements CarayolRouxChangeLis
      */
     @Override
     protected double getSocialBenefits(LocalAgentConnectionsStats lacs, Agent agent) {
-        double benefits = 0.0;
 
-        Iterator<Agent> agentsIt = agent.getNetwork().getAgentIterator();
-        while (agentsIt.hasNext()) {
-            Agent other = agentsIt.next();
-            if (agent.getId() == other.getId()) {
-                continue;
-            }
-            Integer gd = agent.getGeodesicDistanceTo(other);
-            if (gd != null) {
-                benefits += this.omega * Math.pow(delta, gd);
-            }
+        double benefits = 0.0;
+        Map<Integer, Integer> connectionsByDistance = lacs.getConnectionsByGeodesicDistance();
+
+        for (Entry<Integer, Integer> entry : connectionsByDistance.entrySet()) {
+            Integer gdd = entry.getKey();
+            Integer cons = entry.getValue();
+            benefits += cons * (this.omega * Math.pow(delta, gdd));
         }
 
         return benefits;
@@ -121,16 +118,30 @@ public class CarayolRoux extends UtilityFunction implements CarayolRouxChangeLis
      */
     @Override
     protected double getSocialCosts(LocalAgentConnectionsStats lacs, Agent agent) {
-        double costs = 0.0;
 
-        Iterator<Agent> connectionsIt = agent.getConnections().iterator();
-        while (connectionsIt.hasNext()) {
-            Agent connection = connectionsIt.next();
-            costs += this.c *
-                    (agent.getGeographicDistanceTo(connection) * Math.pow(Math.ceil(agent.getNetwork().getN() / 2.0), -1));
+        double costs = 0.0;
+        Map<Double, Integer> connectionsByDistance = lacs.getDirectConnectionsByGeographicDistance();
+
+        for (Entry<Double, Integer> entry : connectionsByDistance.entrySet()) {
+            Double ggd = entry.getKey();
+            Integer cons = entry.getValue();
+            costs += cons * (this.c * ggd * Math.pow(Math.ceil(lacs.getNetSize() / 2.0), -1));
         }
 
         return costs;
+
+
+
+//        double costs = 0.0;
+//
+//        Iterator<Agent> connectionsIt = agent.getConnections().iterator();
+//        while (connectionsIt.hasNext()) {
+//            Agent connection = connectionsIt.next();
+//            costs += this.c *
+//                    (agent.getGeographicDistanceTo(connection) * Math.pow(Math.ceil(agent.getNetwork().getN() / 2.0), -1));
+//        }
+//
+//        return costs;
     }
 
     /* (non-Javadoc)
