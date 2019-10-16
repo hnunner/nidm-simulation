@@ -28,12 +28,14 @@ package nl.uu.socnetid.nidm.utility;
 import java.util.Iterator;
 
 import nl.uu.socnetid.nidm.agents.Agent;
+import nl.uu.socnetid.nidm.gui.CarayolRouxChangeListener;
+import nl.uu.socnetid.nidm.gui.CarayolRouxPanel;
 import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
 
 /**
  * @author Hendrik Nunner
  */
-public class CarayolRoux extends UtilityFunction {
+public class CarayolRoux extends UtilityFunction implements CarayolRouxChangeListener {
 
     // benefits of connections
     private double omega;
@@ -41,6 +43,8 @@ public class CarayolRoux extends UtilityFunction {
     private double delta;
     // costs of connections
     private double c;
+    // the panel to track GUI parameter changes from
+    private CarayolRouxPanel crPanel;
 
 
     /**
@@ -54,9 +58,27 @@ public class CarayolRoux extends UtilityFunction {
      *          the costs of connections
      */
     public CarayolRoux(double omega, double delta, double c) {
+        this(omega, delta, c, null);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param omega
+     *          the benefits of connections
+     * @param delta
+     *          the distance dependent decay of benefits of connections
+     * @param c
+     *          the costs of connections
+     * @param crPanel
+     *          the panel to track GUI parameter changes from
+     */
+    public CarayolRoux(double omega, double delta, double c, CarayolRouxPanel crPanel) {
         this.omega = omega;
         this.delta = delta;
         this.c = c;
+        this.crPanel = crPanel;
+        this.crPanel.addParameterChangeListener(this);
     }
 
 
@@ -126,52 +148,35 @@ public class CarayolRoux extends UtilityFunction {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("type:").append(getStatsName());
-        sb.append(" | omega:").append(this.getOmega());
-        sb.append(" | delta:").append(this.getDelta());
-        sb.append(" | c:").append(this.getC());
+        sb.append(" | omega:").append(this.omega);
+        sb.append(" | delta:").append(this.delta);
+        sb.append(" | c:").append(this.c);
         return sb.toString();
     }
 
-    /**
-     * @return the omega
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.gui.CarayolRouxChangeListener#notifyOmegaChanged()
      */
-    public double getOmega() {
-        return omega;
+    @Override
+    public void notifyOmegaChanged() {
+        this.omega = this.crPanel.getOmega();
     }
 
-    /**
-     * @param omega the omega to set
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.gui.CarayolRouxChangeListener#notifyDeltaChanged()
      */
-    public void setOmega(double omega) {
-        this.omega = omega;
+    @Override
+    public void notifyDeltaChanged() {
+        this.delta = this.crPanel.getDelta();
     }
 
-    /**
-     * @return the delta
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.gui.CarayolRouxChangeListener#notifyCChanged()
      */
-    public double getDelta() {
-        return delta;
-    }
-
-    /**
-     * @param delta the delta to set
-     */
-    public void setDelta(double delta) {
-        this.delta = delta;
-    }
-
-    /**
-     * @return the c
-     */
-    public double getC() {
-        return c;
-    }
-
-    /**
-     * @param c the c to set
-     */
-    public void setC(double c) {
-        this.c = c;
+    @Override
+    public void notifyCChanged() {
+        this.c = this.crPanel.getC();
     }
 
 }

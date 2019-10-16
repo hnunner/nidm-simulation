@@ -31,7 +31,6 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
-import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -74,7 +73,6 @@ import nl.uu.socnetid.nidm.gui.ExportListener;
 import nl.uu.socnetid.nidm.gui.IntegerInputVerifier;
 import nl.uu.socnetid.nidm.gui.NodeClick;
 import nl.uu.socnetid.nidm.gui.NodeClickListener;
-import nl.uu.socnetid.nidm.gui.ParameterChangeListener;
 import nl.uu.socnetid.nidm.gui.StatsFrame;
 import nl.uu.socnetid.nidm.networks.DisplayableNetwork;
 import nl.uu.socnetid.nidm.simulation.Simulation;
@@ -90,8 +88,7 @@ import nl.uu.socnetid.nidm.utility.UtilityFunction;
 /**
  * @author Hendrik Nunner
  */
-public class UserInterface implements NodeClickListener, SimulationListener, AgentListener, ExportListener,
-ParameterChangeListener {
+public class UserInterface implements NodeClickListener, SimulationListener, AgentListener, ExportListener {
 
     // LOGGER
     private static final Logger logger = Logger.getLogger(UserInterface.class);
@@ -245,7 +242,6 @@ ParameterChangeListener {
 
         crPanel.setBounds(3, 51, 312, 615);
         modelPane.add(crPanel);
-        crPanel.addParameterChangeListener(this);
 
         cumulativePanel.setBounds(3, 51, 312, 615);
         cumulativePanel.setVisible(false);
@@ -719,14 +715,15 @@ ParameterChangeListener {
                         this.bbPanel.getB2(),
                         this.bbPanel.getC1(),
                         this.bbPanel.getC2(),
-                        this.bbPanel.getC3());
+                        this.bbPanel.getC3(),
+                        this.bbPanel);
 
             case 2:
-                System.out.println(this.crPanel.getDelta());
                 return new CarayolRoux(
                         this.crPanel.getOmega(),
                         this.crPanel.getDelta(),
-                        this.crPanel.getC());
+                        this.crPanel.getC(),
+                        this.crPanel);
 
             case 3:
                 return new Cumulative(
@@ -944,38 +941,4 @@ ParameterChangeListener {
         this.statsFrame.refreshSimulationRecording(false);
     }
 
-
-    // TODO consider putting this directly into CarayolRoux utility class
-    @Override
-    public void notifyOmegaChanged() {
-        Iterator<Agent> agentIterator = this.simulation.getNetwork().getAgentIterator();
-        while (agentIterator.hasNext()) {
-            Agent agent = agentIterator.next();
-            CarayolRoux uf = (CarayolRoux) agent.getUtilityFunction();
-            uf.setOmega(this.crPanel.getOmega());
-        }
-    }
-
-    // TODO consider putting this directly into CarayolRoux utility class
-    @Override
-    public void notifyDeltaChanged() {
-        Iterator<Agent> agentIterator = this.simulation.getNetwork().getAgentIterator();
-        while (agentIterator.hasNext()) {
-            Agent agent = agentIterator.next();
-            CarayolRoux uf = (CarayolRoux) agent.getUtilityFunction();
-            uf.setDelta(this.crPanel.getDelta());
-        }
-    }
-
-    // TODO consider putting this directly into CarayolRoux utility class
-    @Override
-    public void notifyCChanged() {
-        System.out.println("called c change notification");
-        Iterator<Agent> agentIterator = this.simulation.getNetwork().getAgentIterator();
-        while (agentIterator.hasNext()) {
-            Agent agent = agentIterator.next();
-            CarayolRoux uf = (CarayolRoux) agent.getUtilityFunction();
-            uf.setC(this.crPanel.getC());
-        }
-    }
 }

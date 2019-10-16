@@ -85,7 +85,7 @@ public class CarayolRouxPanel extends DeactivatablePanel implements ChangeListen
     private static final InputVerifier TAU_VERIFIER = new IntegerInputVerifier(1, null);
 
     // listeners
-    private final Set<ParameterChangeListener> parameterChangeListeners = new CopyOnWriteArraySet<ParameterChangeListener>();
+    private final Set<CarayolRouxChangeListener> changeListeners = new CopyOnWriteArraySet<CarayolRouxChangeListener>();
 
     /**
      * Create the panel.
@@ -116,12 +116,12 @@ public class CarayolRouxPanel extends DeactivatablePanel implements ChangeListen
 //        txtOmega.setInputVerifier(REAL_NUMBERS_VERIFIER);
 
         JLabel lblB21 = new JLabel("Geodesic discount");
-        lblB21.setBounds(37, 86, 154, 16);
+        lblB21.setBounds(36, 68, 154, 16);
         add(lblB21);
 
         JLabel lblB22 = new JLabel("(δ):");
         lblB22.setHorizontalAlignment(SwingConstants.RIGHT);
-        lblB22.setBounds(201, 86, 35, 16);
+        lblB22.setBounds(200, 68, 35, 16);
         add(lblB22);
 
 //        txtDelta = new DoubleJFormattedTextField(NUM_FORMAT);
@@ -133,12 +133,12 @@ public class CarayolRouxPanel extends DeactivatablePanel implements ChangeListen
 //        txtDelta.setInputVerifier(DELTA_VERIFIER);
 
         JLabel lblC11 = new JLabel("Geographic costs");
-        lblC11.setBounds(37, 180, 154, 16);
+        lblC11.setBounds(36, 148, 154, 16);
         add(lblC11);
 
         JLabel lblC12 = new JLabel("(c):");
         lblC12.setHorizontalAlignment(SwingConstants.RIGHT);
-        lblC12.setBounds(201, 180, 35, 16);
+        lblC12.setBounds(200, 148, 35, 16);
         add(lblC12);
 
 //        txtC = new DoubleJFormattedTextField(NUM_FORMAT);
@@ -151,12 +151,12 @@ public class CarayolRouxPanel extends DeactivatablePanel implements ChangeListen
 
         JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
         separator.setForeground(Color.LIGHT_GRAY);
-        separator.setBounds(1, 140, 312, 10);
+        separator.setBounds(0, 108, 312, 10);
         add(separator);
 
         JLabel lblSocialCostsHeader = new JLabel("Social maintenance costs:");
         lblSocialCostsHeader.setFont(new Font("Lucida Grande", Font.BOLD, 13));
-        lblSocialCostsHeader.setBounds(14, 150, 242, 16);
+        lblSocialCostsHeader.setBounds(13, 118, 242, 16);
         add(lblSocialCostsHeader);
 
         JSeparator separator_3 = new JSeparator(SwingConstants.HORIZONTAL);
@@ -320,7 +320,7 @@ public class CarayolRouxPanel extends DeactivatablePanel implements ChangeListen
         txtTau.setInputVerifier(TAU_VERIFIER);
 
         sliderOmega = new JSlider();
-        sliderOmega.setBounds(36, 43, 199, 29);
+        sliderOmega.setBounds(22, 40, 285, 29);
         sliderOmega.setMaximum(200);
         sliderOmega.setMinimum(0);
         sliderOmega.setValue(20);
@@ -334,7 +334,7 @@ public class CarayolRouxPanel extends DeactivatablePanel implements ChangeListen
         add(txtOmegaSlider);
 
         sliderDelta = new JSlider();
-        sliderDelta.setBounds(37, 99, 199, 29);
+        sliderDelta.setBounds(22, 78, 285, 29);
         sliderDelta.setMaximum(100);
         sliderDelta.setMinimum(0);
         sliderDelta.setValue(15);
@@ -343,12 +343,12 @@ public class CarayolRouxPanel extends DeactivatablePanel implements ChangeListen
 
         txtDeltaSlider = new DoubleJFormattedTextField((NumberFormat) null);
         txtDeltaSlider.setHorizontalAlignment(SwingConstants.RIGHT);
-        txtDeltaSlider.setBounds(246, 84, 50, 20);
+        txtDeltaSlider.setBounds(245, 66, 50, 20);
         txtDeltaSlider.setText(Double.toString(sliderDelta.getValue() / 100.0));
         add(txtDeltaSlider);
 
         sliderC = new JSlider();
-        sliderC.setBounds(36, 195, 199, 29);
+        sliderC.setBounds(22, 158, 285, 29);
         sliderC.setMaximum(200);
         sliderC.setMinimum(0);
         sliderC.setValue(100);
@@ -357,7 +357,7 @@ public class CarayolRouxPanel extends DeactivatablePanel implements ChangeListen
 
         txtCSlider = new DoubleJFormattedTextField((NumberFormat) null);
         txtCSlider.setHorizontalAlignment(SwingConstants.RIGHT);
-        txtCSlider.setBounds(245, 180, 50, 20);
+        txtCSlider.setBounds(245, 146, 50, 20);
         txtCSlider.setText(Double.toString(sliderC.getValue() / 100.0));
         add(txtCSlider);
     }
@@ -467,24 +467,24 @@ public class CarayolRouxPanel extends DeactivatablePanel implements ChangeListen
 //        this.txtGamma.setEnabled(false);
     }
 
+    /* (non-Javadoc)
+     * @see javax.swing.event.ChangeListener#stateChanged(ChangeEvent e)
+     */
     @Override
     public void stateChanged(ChangeEvent e) {
         JSlider source = (JSlider) e.getSource();
 
         if (source.equals(this.sliderOmega)) {
-            System.out.println("slider omega");
             txtOmegaSlider.setText(Double.toString(source.getValue() / 100.0));
             notifyOmegaChanged();
         }
 
         if (source.equals(this.sliderDelta)) {
-            System.out.println("slider delta");
             txtDeltaSlider.setText(Double.toString(source.getValue() / 100.0));
             notifyDeltaChanged();
         }
 
         if (source.equals(this.sliderC)) {
-            System.out.println("slider c");
             txtCSlider.setText(Double.toString(source.getValue() / 100.0));
             notifyCChanged();
         }
@@ -497,8 +497,8 @@ public class CarayolRouxPanel extends DeactivatablePanel implements ChangeListen
      * @param parameterChangeListener
      *          the listener to be added
      */
-    public void addParameterChangeListener(ParameterChangeListener parameterChangeListener) {
-        this.parameterChangeListeners.add(parameterChangeListener);
+    public void addParameterChangeListener(CarayolRouxChangeListener parameterChangeListener) {
+        this.changeListeners.add(parameterChangeListener);
     }
 
     /**
@@ -507,15 +507,15 @@ public class CarayolRouxPanel extends DeactivatablePanel implements ChangeListen
      * @param parameterChangeListener
      *          the listener to be removed
      */
-    public void removeParameterChangeListener(ParameterChangeListener parameterChangeListener) {
-        this.parameterChangeListeners.remove(parameterChangeListener);
+    public void removeParameterChangeListener(CarayolRouxChangeListener parameterChangeListener) {
+        this.changeListeners.remove(parameterChangeListener);
     }
 
     /**
      * Notifies listeners of changed omega.
      */
     private final void notifyOmegaChanged() {
-        Iterator<ParameterChangeListener> listenersIt = this.parameterChangeListeners.iterator();
+        Iterator<CarayolRouxChangeListener> listenersIt = this.changeListeners.iterator();
         while (listenersIt.hasNext()) {
             listenersIt.next().notifyOmegaChanged();
         }
@@ -525,7 +525,7 @@ public class CarayolRouxPanel extends DeactivatablePanel implements ChangeListen
      * Notifies listeners of changed delta.
      */
     private final void notifyDeltaChanged() {
-        Iterator<ParameterChangeListener> listenersIt = this.parameterChangeListeners.iterator();
+        Iterator<CarayolRouxChangeListener> listenersIt = this.changeListeners.iterator();
         while (listenersIt.hasNext()) {
             listenersIt.next().notifyDeltaChanged();
         }
@@ -535,9 +535,10 @@ public class CarayolRouxPanel extends DeactivatablePanel implements ChangeListen
      * Notifies listeners of changed c.
      */
     private final void notifyCChanged() {
-        Iterator<ParameterChangeListener> listenersIt = this.parameterChangeListeners.iterator();
+        Iterator<CarayolRouxChangeListener> listenersIt = this.changeListeners.iterator();
         while (listenersIt.hasNext()) {
             listenersIt.next().notifyCChanged();
         }
     }
+
 }
