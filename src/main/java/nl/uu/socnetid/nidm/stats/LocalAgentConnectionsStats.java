@@ -25,127 +25,128 @@
  */
 package nl.uu.socnetid.nidm.stats;
 
-import java.util.Collection;
+import java.util.Map;
 
-import nl.uu.socnetid.nidm.agents.Agent;
+import nl.uu.socnetid.nidm.diseases.types.DiseaseGroup;
 
 /**
  * @author Hendrik Nunner
  */
 public class LocalAgentConnectionsStats {
 
-    private final Collection<Agent> connections;
-    private final int n;
-    private final int nS;
-    private final int nI;
-    private final int nR;
-    private final int m;
-    private final int mS;
-    private final int mI;
-    private final int mR;
+    private final Map<DiseaseGroup, Map<Integer, Integer>> consByDiseaseGroupAtDistance;
     private final int z;
 
     /**
      * Constructor.
      *
-     * @param connections
-     *          the direct connections
-     * @param nS
-     *          the amount of susceptible direct connections
-     * @param nI
-     *          the amount of infected direct connections
-     * @param nR
-     *          the amount of recovered direct connections
-     * @param mS
-     *          the amount of susceptible indirect connections
-     * @param mI
-     *          the amount of infected indirect connections
-     * @param mR
-     *          the amount of recovered indirect connections
+     * @param consByDiseaseGroupAtDistance
+     *          map of amount of connections grouped by distance and disease group (map<distance, map<disease_group, amount>>)
      * @param z
      *          the amount of closed triads the agent is part of
      */
-    public LocalAgentConnectionsStats(Collection<Agent> connections, int nS, int nI, int nR, int mS, int mI, int mR, int z) {
-        this.connections = connections;
-        this.n = nS + nI + nR;
-        this.nS = nS;
-        this.nI = nI;
-        this.nR = nR;
-        this.m = mS + mI + mR;
-        this.mS = mS;
-        this.mI = mI;
-        this.mR = mR;
+    public LocalAgentConnectionsStats(Map<DiseaseGroup, Map<Integer, Integer>> consByDiseaseGroupAtDistance, int z) {
+        this.consByDiseaseGroupAtDistance = consByDiseaseGroupAtDistance;
         this.z = z;
     }
 
+
     /**
-     * @return the connections
+     * @return the consAtDistanceByDiseaseGroup
      */
-    public Collection<Agent> getConnections() {
-        return connections;
+    public Map<DiseaseGroup, Map<Integer, Integer>> consByDiseaseGroupAtDistance() {
+        return consByDiseaseGroupAtDistance;
     }
 
     /**
-     * @return the n
+     * @return the z
+     */
+    public int getZ() {
+        return z;
+    }
+
+    /**
+     * Gets the number of direct connections by disease group and distance.
+     *
+     * @param dg
+     *          the disease group
+     * @param dist
+     *          the distance
+     * @return the number of direct connections by disease group and distance
+     */
+    public int getConnectionsByDiseaseGroupAndDistance(DiseaseGroup dg, Integer dist) {
+        Map<Integer, Integer> consByDiseaseGroup = this.consByDiseaseGroupAtDistance.get(dg);
+        if (consByDiseaseGroup != null) {
+            Integer consByDistance = consByDiseaseGroup.get(dist);
+            if (consByDistance != null) {
+                return consByDistance;
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * @return the number of direct connections
      */
     public int getN() {
+        int n = 0;
+        for (DiseaseGroup dg : DiseaseGroup.values()) {
+            n += getConnectionsByDiseaseGroupAndDistance(dg, 1);
+        }
         return n;
     }
 
     /**
-     * @return the nS
+     * @return the number of susceptible direct connections
      */
     public int getnS() {
-        return nS;
+        return getConnectionsByDiseaseGroupAndDistance(DiseaseGroup.SUSCEPTIBLE, 1);
     }
 
     /**
-     * @return the nI
+     * @return the number of infected direct connections
      */
     public int getnI() {
-        return nI;
+        return getConnectionsByDiseaseGroupAndDistance(DiseaseGroup.INFECTED, 1);
     }
 
     /**
-     * @return the nR
+     * @return the number of recovered direct connections
      */
     public int getnR() {
-        return nR;
+        return getConnectionsByDiseaseGroupAndDistance(DiseaseGroup.RECOVERED, 1);
     }
 
     /**
-     * @return the m
+     * @return the number of indirect connections
      */
     public int getM() {
+        int m = 0;
+        for (DiseaseGroup dg : DiseaseGroup.values()) {
+            m += getConnectionsByDiseaseGroupAndDistance(dg, 2);
+        }
         return m;
     }
 
     /**
-     * @return the mS
+     * @return the number of susceptible indirect connections
      */
     public int getmS() {
-        return mS;
+        return getConnectionsByDiseaseGroupAndDistance(DiseaseGroup.SUSCEPTIBLE, 2);
     }
 
     /**
-     * @return the mI
+     * @return the number of infected indirect connections
      */
     public int getmI() {
-        return mI;
+        return getConnectionsByDiseaseGroupAndDistance(DiseaseGroup.INFECTED, 2);
     }
 
     /**
-     * @return the mR
+     * @return the number of recovered indirect connections
      */
     public int getmR() {
-        return mR;
-    }
-
-    /**
-     * @return the number of closed triads
-     */
-    public int getZ() {
-        return z;
+        return getConnectionsByDiseaseGroupAndDistance(DiseaseGroup.RECOVERED, 2);
     }
 
 }
