@@ -25,6 +25,7 @@
  */
 package nl.uu.socnetid.nidm.stats;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import nl.uu.socnetid.nidm.diseases.types.DiseaseGroup;
@@ -34,28 +35,39 @@ import nl.uu.socnetid.nidm.diseases.types.DiseaseGroup;
  */
 public class LocalAgentConnectionsStats {
 
-    private final Map<DiseaseGroup, Map<Integer, Integer>> consByDiseaseGroupAtDistance;
+    private final Map<DiseaseGroup, Map<Integer, Integer>> consByDiseaseGroupAtGeodesicDistance;
+    private final Map<DiseaseGroup, Map<Double, Integer>> directConsByDiseaseGroupAtGeographicDistance;
     private final int z;
+    private final int netSize;
 
     /**
      * Constructor.
      *
-     * @param consByDiseaseGroupAtDistance
-     *          map of amount of connections grouped by distance and disease group (map<distance, map<disease_group, amount>>)
+     * @param consByDiseaseGroupAtGeodesicDistance
+     *          map of amount of connections grouped by geodesic distance and disease group:
+     *          (map<geodesic_distance, map<disease_group, amount>>)
+     * @param directConsByDiseaseGroupAtGeographicDistance
+     *          map of amount of connections grouped by geographic distance and disease group:
+     *          (map<geographic_distance, map<disease_group, amount>>)
      * @param z
      *          the amount of closed triads the agent is part of
+     * @param netSize
+     *          the network size
      */
-    public LocalAgentConnectionsStats(Map<DiseaseGroup, Map<Integer, Integer>> consByDiseaseGroupAtDistance, int z) {
-        this.consByDiseaseGroupAtDistance = consByDiseaseGroupAtDistance;
+    public LocalAgentConnectionsStats(Map<DiseaseGroup, Map<Integer, Integer>> consByDiseaseGroupAtGeodesicDistance,
+            Map<DiseaseGroup, Map<Double, Integer>> directConsByDiseaseGroupAtGeographicDistance, int z, int netSize) {
+        this.consByDiseaseGroupAtGeodesicDistance = consByDiseaseGroupAtGeodesicDistance;
+        this.directConsByDiseaseGroupAtGeographicDistance = directConsByDiseaseGroupAtGeographicDistance;
         this.z = z;
+        this.netSize = netSize;
     }
 
 
     /**
      * @return the consAtDistanceByDiseaseGroup
      */
-    public Map<DiseaseGroup, Map<Integer, Integer>> consByDiseaseGroupAtDistance() {
-        return consByDiseaseGroupAtDistance;
+    public Map<DiseaseGroup, Map<Integer, Integer>> getConsByDiseaseGroupAtGeodesicDistance() {
+        return consByDiseaseGroupAtGeodesicDistance;
     }
 
     /**
@@ -66,6 +78,14 @@ public class LocalAgentConnectionsStats {
     }
 
     /**
+     * @return the netSize
+     */
+    public int getNetSize() {
+        return netSize;
+    }
+
+
+    /**
      * Gets the number of direct connections by disease group and distance.
      *
      * @param dg
@@ -74,8 +94,8 @@ public class LocalAgentConnectionsStats {
      *          the distance
      * @return the number of direct connections by disease group and distance
      */
-    public int getConnectionsByDiseaseGroupAndDistance(DiseaseGroup dg, Integer dist) {
-        Map<Integer, Integer> consByDiseaseGroup = this.consByDiseaseGroupAtDistance.get(dg);
+    public int getConnectionsByDiseaseGroupAndGeodesicDistance(DiseaseGroup dg, Integer dist) {
+        Map<Integer, Integer> consByDiseaseGroup = this.consByDiseaseGroupAtGeodesicDistance.get(dg);
         if (consByDiseaseGroup != null) {
             Integer consByDistance = consByDiseaseGroup.get(dist);
             if (consByDistance != null) {
@@ -86,12 +106,61 @@ public class LocalAgentConnectionsStats {
     }
 
     /**
+     * Gets the number of connections by distance (irrespective of disease group):
+     * map<distance, number>.
+     *
+     * @return the number of direct connections by disease group and distance
+     */
+    public Map<Integer, Integer> getConnectionsByGeodesicDistance() {
+
+        Map<Integer, Integer> consByDist = new HashMap<Integer, Integer>();
+
+        for (DiseaseGroup dg : DiseaseGroup.values()) {
+             for (Map.Entry<Integer, Integer> entry : this.consByDiseaseGroupAtGeodesicDistance.get(dg).entrySet()) {
+                 Integer dist = entry.getKey();
+                 Integer cons = entry.getValue();
+                 consByDist.put(dist,
+                         consByDist.get(dist) != null ?
+                                 consByDist.get(dist) + cons :
+                                     cons);
+             }
+        }
+
+        return consByDist;
+    }
+
+    /**
+     * Gets the number of connections by distance (irrespective of disease group):
+     * map<distance, number>.
+     *
+     * @return the number of direct connections by disease group and distance
+     */
+    public Map<Double, Integer> getDirectConnectionsByGeographicDistance() {
+
+        Map<Double, Integer> consByDist = new HashMap<Double, Integer>();
+
+        for (DiseaseGroup dg : DiseaseGroup.values()) {
+             for (Map.Entry<Double, Integer> entry : this.directConsByDiseaseGroupAtGeographicDistance.get(dg).entrySet()) {
+                 Double dist = entry.getKey();
+                 Integer cons = entry.getValue();
+                 consByDist.put(dist,
+                         consByDist.get(dist) != null ?
+                                 consByDist.get(dist) + cons :
+                                     cons);
+             }
+        }
+
+        return consByDist;
+    }
+
+
+    /**
      * @return the number of direct connections
      */
     public int getN() {
         int n = 0;
         for (DiseaseGroup dg : DiseaseGroup.values()) {
-            n += getConnectionsByDiseaseGroupAndDistance(dg, 1);
+            n += getConnectionsByDiseaseGroupAndGeodesicDistance(dg, 1);
         }
         return n;
     }
@@ -100,21 +169,21 @@ public class LocalAgentConnectionsStats {
      * @return the number of susceptible direct connections
      */
     public int getnS() {
-        return getConnectionsByDiseaseGroupAndDistance(DiseaseGroup.SUSCEPTIBLE, 1);
+        return getConnectionsByDiseaseGroupAndGeodesicDistance(DiseaseGroup.SUSCEPTIBLE, 1);
     }
 
     /**
      * @return the number of infected direct connections
      */
     public int getnI() {
-        return getConnectionsByDiseaseGroupAndDistance(DiseaseGroup.INFECTED, 1);
+        return getConnectionsByDiseaseGroupAndGeodesicDistance(DiseaseGroup.INFECTED, 1);
     }
 
     /**
      * @return the number of recovered direct connections
      */
     public int getnR() {
-        return getConnectionsByDiseaseGroupAndDistance(DiseaseGroup.RECOVERED, 1);
+        return getConnectionsByDiseaseGroupAndGeodesicDistance(DiseaseGroup.RECOVERED, 1);
     }
 
     /**
@@ -123,7 +192,7 @@ public class LocalAgentConnectionsStats {
     public int getM() {
         int m = 0;
         for (DiseaseGroup dg : DiseaseGroup.values()) {
-            m += getConnectionsByDiseaseGroupAndDistance(dg, 2);
+            m += getConnectionsByDiseaseGroupAndGeodesicDistance(dg, 2);
         }
         return m;
     }
@@ -132,21 +201,21 @@ public class LocalAgentConnectionsStats {
      * @return the number of susceptible indirect connections
      */
     public int getmS() {
-        return getConnectionsByDiseaseGroupAndDistance(DiseaseGroup.SUSCEPTIBLE, 2);
+        return getConnectionsByDiseaseGroupAndGeodesicDistance(DiseaseGroup.SUSCEPTIBLE, 2);
     }
 
     /**
      * @return the number of infected indirect connections
      */
     public int getmI() {
-        return getConnectionsByDiseaseGroupAndDistance(DiseaseGroup.INFECTED, 2);
+        return getConnectionsByDiseaseGroupAndGeodesicDistance(DiseaseGroup.INFECTED, 2);
     }
 
     /**
      * @return the number of recovered indirect connections
      */
     public int getmR() {
-        return getConnectionsByDiseaseGroupAndDistance(DiseaseGroup.RECOVERED, 2);
+        return getConnectionsByDiseaseGroupAndGeodesicDistance(DiseaseGroup.RECOVERED, 2);
     }
 
 }
