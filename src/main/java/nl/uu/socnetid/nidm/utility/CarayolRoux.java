@@ -78,7 +78,9 @@ public class CarayolRoux extends UtilityFunction implements CarayolRouxChangeLis
         this.delta = delta;
         this.c = c;
         this.crPanel = crPanel;
-        this.crPanel.addParameterChangeListener(this);
+        if (this.crPanel != null) {
+            this.crPanel.addParameterChangeListener(this);
+        }
     }
 
 
