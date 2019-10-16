@@ -625,11 +625,17 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      * @return true if the existing connection create more costs than it provides benefits
      */
     public boolean existingConnectionTooCostly(Agent existingConnection) {
-        // TODO use deep copies of network and agents to avoid UI glitches
         double currUtility = this.getUtility().getOverallUtility();
+
+
+
+        // TODO use deep copies of network and agents to avoid UI glitches
         this.removeConnection(existingConnection);
         double newUtility = this.getUtility().getOverallUtility();
         this.addConnection(existingConnection);
+
+
+
         return newUtility > currUtility;
     }
 

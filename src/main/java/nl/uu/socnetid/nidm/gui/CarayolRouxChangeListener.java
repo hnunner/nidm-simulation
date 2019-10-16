@@ -28,7 +28,7 @@ package nl.uu.socnetid.nidm.gui;
 /**
  * @author Hendrik Nunner
  */
-public interface ParameterChangeListener {
+public interface CarayolRouxChangeListener {
 
     /**
      * Entry point for changes in omega (Carayol & Roux, 2009).
