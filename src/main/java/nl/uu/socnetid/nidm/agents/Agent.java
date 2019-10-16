@@ -587,11 +587,24 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      * @return true if the new connection adds value to the overall utility of an agent
      */
     public boolean newConnectionValuable(Agent newConnection) {
-        // TODO use deep copies of network and agents to avoid UI glitches
+
         double currUtility = this.getUtility().getOverallUtility();
-        this.addConnection(newConnection);
-        double newUtility = this.getUtility().getOverallUtility();
-        this.removeConnection(newConnection);
+
+
+
+        // feasibility checks of alterations only on network copy!
+        Agent copy = this.getNetwork().getAgentCopy(this.getId());
+        Agent newConnectionCopy = this.getNetwork().getAgentCopy(newConnection.getId());
+        copy.addConnection(newConnectionCopy);
+        double newUtility = copy.getUtility().getOverallUtility();
+        copy.removeConnection(newConnectionCopy);
+
+
+//        this.addConnection(newConnection);
+//        double newUtility = this.getUtility().getOverallUtility();
+//        this.removeConnection(newConnection);
+
+
         return newUtility >= currUtility;
     }
 
@@ -625,16 +638,15 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      * @return true if the existing connection create more costs than it provides benefits
      */
     public boolean existingConnectionTooCostly(Agent existingConnection) {
+
         double currUtility = this.getUtility().getOverallUtility();
 
-
-
-        // TODO use deep copies of network and agents to avoid UI glitches
-        this.removeConnection(existingConnection);
-        double newUtility = this.getUtility().getOverallUtility();
-        this.addConnection(existingConnection);
-
-
+        // feasibility checks of alterations only on network copy!
+        Agent copy = this.getNetwork().getAgentCopy(this.getId());
+        Agent existingConnectionCopy = this.getNetwork().getAgentCopy(existingConnection.getId());
+        copy.removeConnection(existingConnectionCopy);
+        double newUtility = copy.getUtility().getOverallUtility();
+        copy.addConnection(existingConnectionCopy);
 
         return newUtility > currUtility;
     }
@@ -859,14 +871,11 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         }
 
         // edge id consistency
-        ArrayList<Agent> tmpAgents = new ArrayList<Agent>();
-        tmpAgents.add(this);
-        tmpAgents.add(connection);
-        Collections.sort(tmpAgents);
+        Connector connector = new Connector(this, connection);
+        String edgeId = connector.getEdgeId();
 
         // remove
         Network network = this.getNetwork();
-        String edgeId = String.valueOf(tmpAgents.get(0).getId()) + String.valueOf(tmpAgents.get(1).getId());
         Edge edge = network.getEdge(edgeId);
         if (edge != null) {
             network.removeEdge(edgeId);
