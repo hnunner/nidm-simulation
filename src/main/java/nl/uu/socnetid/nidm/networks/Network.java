@@ -60,8 +60,7 @@ public class Network extends SingleGraph {
     private static final double STANDARD_PHI = 0.4;
 
     // listener
-    private final Set<NetworkListener> networkListeners =
-            new CopyOnWriteArraySet<NetworkListener>();
+    private final Set<NetworkListener> networkListeners = new CopyOnWriteArraySet<NetworkListener>();
 
     // flag for arranging agents in circle
     protected boolean arrangeInCircle;

@@ -26,23 +26,27 @@
 package nl.uu.socnetid.nidm.utility;
 
 import nl.uu.socnetid.nidm.agents.Agent;
+import nl.uu.socnetid.nidm.gui.BurgerBuskensChangeListener;
+import nl.uu.socnetid.nidm.gui.BurgerBuskensPanel;
 import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
 
 /**
  * @author Hendrik Nunner
  */
-public class BurgerBuskens extends UtilityFunction {
+public class BurgerBuskens extends UtilityFunction implements BurgerBuskensChangeListener {
 
     // benefits of direct connections
-    private final double b1;
+    private double b1;
     // benefits of closed triads
-    private final double b2;
+    private double b2;
     // costs of direct connections
-    private final double c1;
+    private double c1;
     // quadratic costs of additional direct connections
-    private final double c2;
+    private double c2;
     // costs of closed triads
-    private final double c3;
+    private double c3;
+    // the panel to track GUI parameter changes from
+    private BurgerBuskensPanel bbPanel;
 
 
     /**
@@ -60,11 +64,33 @@ public class BurgerBuskens extends UtilityFunction {
      *          the costs of closed triads
      */
     public BurgerBuskens(double b1, double b2, double c1, double c2, double c3) {
+        this(b1, b2, c1, c2, c3, null);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param b1
+     *          the benefits of direct connections
+     * @param b2
+     *          the benefits of closed triads
+     * @param c1
+     *          the costs of direct connections
+     * @param c2
+     *          the quadratic costs of additional direct connections
+     * @param c3
+     *          the costs of closed triads
+     * @param bbPanel
+     *          the panel to track GUI parameter changes from
+     */
+    public BurgerBuskens(double b1, double b2, double c1, double c2, double c3, BurgerBuskensPanel bbPanel) {
         this.b1 = b1;
         this.b2 = b2;
         this.c1 = c1;
         this.c2 = c2;
         this.c3 = c3;
+        this.bbPanel = bbPanel;
+        this.bbPanel.addParameterChangeListener(this);
     }
 
 
@@ -85,9 +111,9 @@ public class BurgerBuskens extends UtilityFunction {
         // TODO add disease states
         return
                 // benefits of direct connections
-                this.getB1() * lacs.getN() +
+                this.b1 * lacs.getN() +
                 // benefits for closed triads
-                this.getB2() * lacs.getZ();
+                this.b2 * lacs.getZ();
     }
 
     /* (non-Javadoc)
@@ -99,11 +125,11 @@ public class BurgerBuskens extends UtilityFunction {
         // TODO add disease states
         return
                 // costs of direct connections
-                this.getC1() * lacs.getN() +
+                this.c1 * lacs.getN() +
                 // quadratic costs of direct connections
-                this.getC2() * (lacs.getN()*lacs.getN()) +
+                this.c2 * (lacs.getN()*lacs.getN()) +
                 // costs for closed triads
-                this.getC3() * lacs.getZ();
+                this.c3 * lacs.getZ();
     }
 
     /* (non-Javadoc)
@@ -123,47 +149,38 @@ public class BurgerBuskens extends UtilityFunction {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("type:").append(getStatsName());
-        sb.append(" | b1:").append(this.getB1());
-        sb.append(" | b2:").append(this.getB2());
-        sb.append(" | c1:").append(this.getC1());
-        sb.append(" | c2:").append(this.getC2());
-        sb.append(" | c3:").append(this.getC3());
+        sb.append(" | b1:").append(this.b1);
+        sb.append(" | b2:").append(this.b2);
+        sb.append(" | c1:").append(this.c1);
+        sb.append(" | c2:").append(this.c2);
+        sb.append(" | c3:").append(this.c3);
         return sb.toString();
     }
 
-    /**
-     * @return the b1
-     */
-    public double getB1() {
-        return b1;
+
+    @Override
+    public void notifyB1Changed() {
+        this.b1 = this.bbPanel.getB1();
     }
 
-    /**
-     * @return the b2
-     */
-    public double getB2() {
-        return b2;
+    @Override
+    public void notifyB2Changed() {
+        this.b2 = this.bbPanel.getB2();
     }
 
-    /**
-     * @return the c1
-     */
-    public double getC1() {
-        return c1;
+    @Override
+    public void notifyC1Changed() {
+        this.c1 = this.bbPanel.getC1();
     }
 
-    /**
-     * @return the c2
-     */
-    public double getC2() {
-        return c2;
+    @Override
+    public void notifyC2Changed() {
+        this.c2 = this.bbPanel.getC2();
     }
 
-    /**
-     * @return the c3
-     */
-    public double getC3() {
-        return c3;
+    @Override
+    public void notifyC3Changed() {
+        this.c3 = this.bbPanel.getC3();
     }
 
 }
