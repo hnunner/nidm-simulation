@@ -65,12 +65,15 @@ public class Network extends SingleGraph {
     // flag for arranging agents in circle
     protected boolean arrangeInCircle;
 
+    // network copy for testing alterations
+    private Network copy;
+
 
     /**
      * Constructor.
      */
     public Network() {
-        this("Network of the Infectious Kind", false);
+        this("Network of the Infectious Kind", false, false);
     }
 
     /**
@@ -80,7 +83,7 @@ public class Network extends SingleGraph {
      *          the network's unique identifier
      */
     public Network(String id) {
-        this(id, false);
+        this(id, false, false);
     }
 
     /**
@@ -92,9 +95,24 @@ public class Network extends SingleGraph {
      *          flag whether agents to arrange in circle or not
      */
     public Network(String id, boolean arrangeInCircle) {
+        super(id, arrangeInCircle, false);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param id
+     *          the network's unique identifier
+     * @param arrangeInCircle
+     *          flag whether agents to arrange in circle or not
+     */
+    private Network(String id, boolean arrangeInCircle, boolean isCopy) {
         super(id);
         this.arrangeInCircle = arrangeInCircle;
         this.setNodeFactory(new AgentFactory());
+        if (!isCopy) {
+            copy = new Network(id + " (copy)", arrangeInCircle, true);
+        }
     }
 
 
@@ -108,7 +126,8 @@ public class Network extends SingleGraph {
      * @return the newly added agent.
      */
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs) {
-        return this.addAgent(utilityFunction, diseaseSpecs, RISK_FACTOR_NEUTRAL, RISK_FACTOR_NEUTRAL, STANDARD_PHI);
+        Agent newAgent = this.addAgent(utilityFunction, diseaseSpecs, RISK_FACTOR_NEUTRAL, RISK_FACTOR_NEUTRAL, STANDARD_PHI);
+        return newAgent;
     }
 
     /**
@@ -138,6 +157,10 @@ public class Network extends SingleGraph {
             arrangeAgentsInCircle();
         }
 
+        if (this.copy != null) {
+            this.copy.addAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi);
+        }
+
         return agent;
     }
 
@@ -157,6 +180,10 @@ public class Network extends SingleGraph {
         // re-position agents if auto-layout is disabled
         if (!this.arrangeInCircle) {
             arrangeAgentsInCircle();
+        }
+
+        if (this.copy != null) {
+            this.copy.removeAgent();
         }
 
         return agentId;
@@ -195,6 +222,10 @@ public class Network extends SingleGraph {
             Agent agent = agentsIt.next();
             agent.connectToAll();
         }
+
+        if (this.copy != null) {
+            this.copy.createFullNetwork();
+        }
     }
 
     /**
@@ -206,6 +237,17 @@ public class Network extends SingleGraph {
      */
     public Agent getAgent(String id) {
         return (Agent) this.getNode(id);
+    }
+
+    /**
+     * Gets the agent with the corresponding identifier from the network copy.
+     *
+     * @param id
+     *          the identifier of the agent to get
+     * @return the agent with the corresponding identifier from the network copy
+     */
+    public Agent getAgentCopy(String id) {
+        return (Agent) this.copy.getNode(id);
     }
 
     /**
@@ -365,6 +407,10 @@ public class Network extends SingleGraph {
         while (agentsIt.hasNext()) {
             agentsIt.next().removeAllConnections();
         }
+
+        if (this.copy != null) {
+            this.copy.clearConnections();
+        }
     }
 
     /**
@@ -376,6 +422,10 @@ public class Network extends SingleGraph {
         while (agentsIt.hasNext()) {
             Agent agent = agentsIt.next();
             agent.makeSusceptible();
+        }
+
+        if (this.copy != null) {
+            this.copy.resetAgents();
         }
     }
 
@@ -400,9 +450,11 @@ public class Network extends SingleGraph {
             Agent agent = agentsIt.next();
             if (agent.isSusceptible()) {
                 agent.forceInfect(diseaseSpecs);
+                this.copy.getAgent(agent.getId()).forceInfect(diseaseSpecs);
                 return agent;
             }
         }
+
         logger.info("Unable to infect a random agent. No susceptible agent available.");
         return null;
     }
@@ -424,14 +476,17 @@ public class Network extends SingleGraph {
                 switch (agent.getDiseaseGroup()) {
                     case SUSCEPTIBLE:
                         agent.forceInfect(diseaseSpecs);
+                        this.copy.getAgent(agent.getId()).forceInfect(diseaseSpecs);
                         break;
 
                     case INFECTED:
                         agent.cure();
+                        this.copy.getAgent(agent.getId()).cure();
                         break;
 
                     case RECOVERED:
                         agent.makeSusceptible();
+                        this.copy.getAgent(agent.getId()).makeSusceptible();
                         break;
 
                     default:
