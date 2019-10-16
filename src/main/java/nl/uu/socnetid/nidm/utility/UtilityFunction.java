@@ -36,21 +36,64 @@ public abstract class UtilityFunction {
 
 
     /**
-     * Computes the utility for a agent based on the social connections.
+     * Computes the utility for a agent.
      *
      * @param agent
      *          the agent to compute the utility for
      * @return the agent's utility based on the connections
      */
     public Utility getUtility(Agent agent) {
+        return this.getUtility(agent, null, null);
+    }
 
-        LocalAgentConnectionsStats lacs = StatsComputer.computeLocalAgentConnectionsStats(agent);
+    /**
+     * Computes the utility for a agent including another agent as direct connection.
+     *
+     * @param agent
+     *          the agent to compute the utility for
+     * @param with
+     *          the agent to include as direct connection
+     * @return the agent's utility based on the connections
+     */
+    public Utility getUtilityWith(Agent agent, Agent with) {
+        return this.getUtility(agent, with, null);
+    }
+
+    /**
+     * Computes the utility for a agent excluding another agent as direct connection.
+     *
+     * @param agent
+     *          the agent to compute the utility for
+     * @param without
+     *          the agent to exclude as direct connection
+     * @return the agent's utility based on the connections
+     */
+    public Utility getUtilityWithout(Agent agent, Agent without) {
+        return this.getUtility(agent, null, without);
+    }
+
+    /**
+     * Computes the utility for a agent including another agent as direct connection and
+     * excluding another agent as direct connection.
+     *
+     * @param agent
+     *          the agent to compute the utility for
+     * @param with
+     *          the agent to include as direct connection
+     * @param without
+     *          the agent to exclude as direct connection
+     * @return the agent's utility based on the connections
+     */
+    public Utility getUtility(Agent agent, Agent with, Agent without) {
+
+        LocalAgentConnectionsStats lacs = StatsComputer.computeLocalAgentConnectionsStats(agent, with, without);
 
         return new Utility(
                 getSocialBenefits(lacs, agent),
                 getSocialCosts(lacs, agent),
                 getDiseaseCosts(lacs, agent));
     }
+
 
     /**
      * @return the name of the utility function to be used in the stats window
