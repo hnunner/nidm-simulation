@@ -194,6 +194,7 @@ public class StatsComputerTest {
         assertEquals(1, lacs.getnS());
         assertEquals(1, lacs.getnI());
         assertEquals(1, lacs.getnR());
+        assertEquals(1, lacs.getZ());
 
         lacs = StatsComputer.computeLocalAgentConnectionsStats(this.agent3);
         assertEquals(1, lacs.getN());
@@ -201,6 +202,7 @@ public class StatsComputerTest {
         assertEquals(1, lacs.getnS());
         assertEquals(0, lacs.getnI());
         assertEquals(0, lacs.getnR());
+        assertEquals(0, lacs.getZ());
     }
 
     /**
