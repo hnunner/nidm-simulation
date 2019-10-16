@@ -278,10 +278,14 @@ public final class StatsComputer {
      */
     public static LocalAgentConnectionsStats computeLocalAgentConnectionsStats(Agent agent, Agent with, Agent without) {
 
-        // initialize map of agents by disease group and distance
-        Map<DiseaseGroup, Map<Integer, Integer>> consByDiseaseGroupAtDistance = new HashMap<DiseaseGroup, Map<Integer, Integer>>();
+        // initialize maps of agents by disease group and distance
+        Map<DiseaseGroup, Map<Integer, Integer>> consByDiseaseGroupAtGeodesicDistance =
+                new HashMap<DiseaseGroup, Map<Integer, Integer>>();
+        Map<DiseaseGroup, Map<Double, Integer>> directConsByDiseaseGroupAtGeographicDistance =
+                new HashMap<DiseaseGroup, Map<Double, Integer>>();
         for (DiseaseGroup dg : DiseaseGroup.values()) {
-            consByDiseaseGroupAtDistance.put(dg, new HashMap<Integer, Integer>());
+            consByDiseaseGroupAtGeodesicDistance.put(dg, new HashMap<Integer, Integer>());
+            directConsByDiseaseGroupAtGeographicDistance.put(dg, new HashMap<Double, Integer>());
         }
 
         // initialize list of direct connections
@@ -292,51 +296,79 @@ public final class StatsComputer {
         while (it.hasNext()) {
             Agent otherAgent = it.next();
 
-            // get geodesic distance to other agent
-            Integer gd = null;
+            // geodesic distance to other agent
+            Integer gdd = null;
             if ((with != null) && (otherAgent.getId() == with.getId())) {
-                gd = 1;
+                gdd = 1;
             } else if ((without != null) && (otherAgent.getId() == without.getId())) {
                 // gd = null;
             } else {
-                gd = agent.getGeodesicDistanceTo(otherAgent);
+                gdd = agent.getGeodesicDistanceTo(otherAgent);
             }
 
-            // if connection exists
-            if (gd != null) {
-                // store disease group and distance
+            // if geodesic connection exists
+            if (gdd != null) {
+                // store disease group and geodesic distance
                 switch (otherAgent.getDiseaseGroup()) {
                     case SUSCEPTIBLE:
-                        consByDiseaseGroupAtDistance.get(DiseaseGroup.SUSCEPTIBLE).put(gd,
-                                consByDiseaseGroupAtDistance.get(DiseaseGroup.SUSCEPTIBLE).get(gd) != null ?
-                                        consByDiseaseGroupAtDistance.get(DiseaseGroup.SUSCEPTIBLE).get(gd) + 1 : 1);
+                        consByDiseaseGroupAtGeodesicDistance.get(DiseaseGroup.SUSCEPTIBLE).put(gdd,
+                                consByDiseaseGroupAtGeodesicDistance.get(DiseaseGroup.SUSCEPTIBLE).get(gdd) != null ?
+                                        consByDiseaseGroupAtGeodesicDistance.get(DiseaseGroup.SUSCEPTIBLE).get(gdd) + 1 : 1);
                         break;
 
                     case INFECTED:
-                        consByDiseaseGroupAtDistance.get(DiseaseGroup.INFECTED).put(gd,
-                                consByDiseaseGroupAtDistance.get(DiseaseGroup.INFECTED).get(gd) != null ?
-                                        consByDiseaseGroupAtDistance.get(DiseaseGroup.INFECTED).get(gd) + 1 : 1);
+                        consByDiseaseGroupAtGeodesicDistance.get(DiseaseGroup.INFECTED).put(gdd,
+                                consByDiseaseGroupAtGeodesicDistance.get(DiseaseGroup.INFECTED).get(gdd) != null ?
+                                        consByDiseaseGroupAtGeodesicDistance.get(DiseaseGroup.INFECTED).get(gdd) + 1 : 1);
                         break;
 
                     case RECOVERED:
-                        consByDiseaseGroupAtDistance.get(DiseaseGroup.RECOVERED).put(gd,
-                                consByDiseaseGroupAtDistance.get(DiseaseGroup.RECOVERED).get(gd) != null ?
-                                        consByDiseaseGroupAtDistance.get(DiseaseGroup.RECOVERED).get(gd) + 1 : 1);
+                        consByDiseaseGroupAtGeodesicDistance.get(DiseaseGroup.RECOVERED).put(gdd,
+                                consByDiseaseGroupAtGeodesicDistance.get(DiseaseGroup.RECOVERED).get(gdd) != null ?
+                                        consByDiseaseGroupAtGeodesicDistance.get(DiseaseGroup.RECOVERED).get(gdd) + 1 : 1);
                         break;
 
                     default:
                         logger.warn("Unhandled disease group: " + otherAgent.getDiseaseGroup());
                 }
 
-                // store direct connections
-                if (gd == 1) {
+                // direct connections
+                if (gdd == 1) {
+                    // store for triad checks
                     directConnections.add(otherAgent);
+
+                    // geographic distance to direct connections
+                    double ggd = agent.getGeographicDistanceTo(otherAgent);
+                    // store disease group and geographic distance
+                    switch (otherAgent.getDiseaseGroup()) {
+                        case SUSCEPTIBLE:
+                            directConsByDiseaseGroupAtGeographicDistance.get(DiseaseGroup.SUSCEPTIBLE).put(ggd,
+                                    directConsByDiseaseGroupAtGeographicDistance.get(DiseaseGroup.SUSCEPTIBLE).get(ggd) != null ?
+                                            directConsByDiseaseGroupAtGeographicDistance.get(DiseaseGroup.SUSCEPTIBLE).get(ggd) + 1 : 1);
+                            break;
+
+                        case INFECTED:
+                            directConsByDiseaseGroupAtGeographicDistance.get(DiseaseGroup.INFECTED).put(ggd,
+                                    directConsByDiseaseGroupAtGeographicDistance.get(DiseaseGroup.INFECTED).get(ggd) != null ?
+                                            directConsByDiseaseGroupAtGeographicDistance.get(DiseaseGroup.INFECTED).get(ggd) + 1 : 1);
+                            break;
+
+                        case RECOVERED:
+                            directConsByDiseaseGroupAtGeographicDistance.get(DiseaseGroup.RECOVERED).put(ggd,
+                                    directConsByDiseaseGroupAtGeographicDistance.get(DiseaseGroup.RECOVERED).get(ggd) != null ?
+                                            directConsByDiseaseGroupAtGeographicDistance.get(DiseaseGroup.RECOVERED).get(ggd) + 1 : 1);
+                            break;
+
+                        default:
+                            logger.warn("Unhandled disease group: " + otherAgent.getDiseaseGroup());
+                    }
                 }
             }
+
         }
 
         // determine number of triads agent belongs to
-        int z  = 0;
+        int z = 0;
         it = directConnections.iterator();
         // consider direct connections only once for triads
         List<Agent> consideredDirectConnections = new LinkedList<Agent>(directConnections);
@@ -352,7 +384,11 @@ public final class StatsComputer {
             }
         }
 
-        return new LocalAgentConnectionsStats(consByDiseaseGroupAtDistance, z);
+        return new LocalAgentConnectionsStats(
+                consByDiseaseGroupAtGeodesicDistance,
+                directConsByDiseaseGroupAtGeographicDistance,
+                z,
+                agent.getNetwork().getN());
     }
 
     /**
