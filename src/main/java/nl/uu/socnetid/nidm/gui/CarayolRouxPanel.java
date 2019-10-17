@@ -323,7 +323,7 @@ public class CarayolRouxPanel extends DeactivatablePanel implements ChangeListen
         sliderOmega.setBounds(22, 40, 285, 29);
         sliderOmega.setMaximum(200);
         sliderOmega.setMinimum(0);
-        sliderOmega.setValue(20);
+        sliderOmega.setValue(30);
         add(sliderOmega);
         sliderOmega.addChangeListener(this);
 
