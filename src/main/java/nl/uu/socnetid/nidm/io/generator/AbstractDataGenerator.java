@@ -25,8 +25,12 @@
  */
 package nl.uu.socnetid.nidm.io.generator;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+
+import org.apache.log4j.Logger;
 
 import nl.uu.socnetid.nidm.system.PropertiesHandler;
 
@@ -34,6 +38,9 @@ import nl.uu.socnetid.nidm.system.PropertiesHandler;
  * @author Hendrik Nunner
  */
 public abstract class AbstractDataGenerator {
+
+    // logger
+    private static final Logger logger = Logger.getLogger(AbstractDataGenerator.class);
 
     // paths
     private String rootExportPath;
@@ -97,7 +104,7 @@ public abstract class AbstractDataGenerator {
     public void launch() {
         generateData();
         if (PropertiesHandler.getInstance().isAnalyzeData()) {
-            analyzeData();
+            analyzeData(prepareAnalysis());
         }
     }
 
@@ -107,9 +114,49 @@ public abstract class AbstractDataGenerator {
     protected abstract void generateData();
 
     /**
-     * Analyzes the data.
+     * Prepares the data analysis by copying necessary file(s) to their locations.
+     *
+     * @return the path of the main analysis file
      */
-    protected abstract void analyzeData();
+    protected abstract String prepareAnalysis();
+
+    /**
+     * Analyzes the data.
+     *
+     * @param analysisPath
+     *          the path of the main analysis file
+     */
+    protected void analyzeData(String analysisPath) {
+        try {
+            // invocation of R-script
+            ProcessBuilder pb = new ProcessBuilder(PropertiesHandler.getInstance().getRscriptPath(),
+                    analysisPath, getExportPath());
+            logger.info("Starting analysis of simulated data. "
+                    + "Invoking R-script: "
+                    + pb.command().toString());
+            Process p = pb.start();
+
+            // status messages of R-script
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                logger.info(line);
+            }
+
+            // wait for analysis to finish (blocking)
+            int exitCode = p.waitFor();
+            if (exitCode == 0) {
+                logger.info("Analysis finished successfully.");
+            } else {
+                logger.error("Analysis finished with error code: " + exitCode);
+            }
+
+        } catch (IOException e) {
+            logger.error(e);
+        } catch (InterruptedException e) {
+            logger.error(e);
+        }
+    }
 
 
     /**

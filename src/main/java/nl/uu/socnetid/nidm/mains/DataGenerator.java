@@ -111,7 +111,7 @@ public class DataGenerator {
 
         // invoke data generators
         AbstractDataGenerator dataGenerator;
-        // CIDM
+        // CIDM (Nunner, Buskens & Kretzschmar, 2019)
         if (PropertiesHandler.getInstance().isGenerateCidm()) {
             dataGenerator = new CidmDataGenerator(rootExportPath);
             dataGenerator.launch();
