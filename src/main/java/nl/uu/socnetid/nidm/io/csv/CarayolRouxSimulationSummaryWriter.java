@@ -23,34 +23,35 @@
  *      Nunner, H., Buskens, V., & Kretzschmar, M. (2019). A model for the co-evolution of dynamic
  *      social networks and infectious diseases. Manuscript sumbitted for publication.
  */
-package nl.uu.socnetid.nidm.io.generator;
+package nl.uu.socnetid.nidm.io.csv;
 
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
 import nl.uu.socnetid.nidm.data.CarayolRouxDataGeneratorData;
+import nl.uu.socnetid.nidm.data.CarayolRouxParameters;
 import nl.uu.socnetid.nidm.data.LogValues;
 
 /**
  * @author Hendrik Nunner
  */
-public class CarayolRouxSimulationSummaryWriter extends CarayolRouxCsvFileWriter {
+public class CarayolRouxSimulationSummaryWriter extends CsvFileWriter<CarayolRouxParameters, CarayolRouxDataGeneratorData> {
 
     /**
      * Creates the writer.
      *
      * @param fileName
      *          the name of the file to store the data to
-     * @param crData
+     * @param dgData
      *          the data from the data generator to store
      * @throws IOException
      *          if the named file exists but is a directory rather
      *          than a regular file, does not exist but cannot be
      *          created, or cannot be opened for any other reason
      */
-    public CarayolRouxSimulationSummaryWriter(String fileName, CarayolRouxDataGeneratorData crData) throws IOException {
-        super(fileName, crData);
+    public CarayolRouxSimulationSummaryWriter(String fileName, CarayolRouxDataGeneratorData dgData) throws IOException {
+        super(fileName, dgData);
     }
 
 
@@ -96,24 +97,24 @@ public class CarayolRouxSimulationSummaryWriter extends CarayolRouxCsvFileWriter
 
         // INDEPENDENT VARIABLES
         // simulation
-        currData.add(this.crData.getSimStats().getUid());
-        currData.add(String.valueOf(this.crData.getSimStats().getUpc()));
-        currData.add(String.valueOf(this.crData.getSimStats().getSimPerUpc()));
+        currData.add(this.dgData.getSimStats().getUid());
+        currData.add(String.valueOf(this.dgData.getSimStats().getUpc()));
+        currData.add(String.valueOf(this.dgData.getSimStats().getSimPerUpc()));
         // CarayolRoux
-        currData.add(String.valueOf(this.crData.getUtilityModelParams().getCurrOmega()));
-        currData.add(String.valueOf(this.crData.getUtilityModelParams().getCurrDelta()));
-        currData.add(String.valueOf(this.crData.getUtilityModelParams().getCurrC()));
-        currData.add(String.valueOf(this.crData.getUtilityModelParams().getCurrN()));
-        currData.add(String.valueOf(this.crData.getUtilityModelParams().isCurrIota() ? 1 : 0));
-        currData.add(String.valueOf(this.crData.getUtilityModelParams().getCurrPhi()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrOmega()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrDelta()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrC()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrN()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().isCurrIota() ? 1 : 0));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrPhi()));
 
         // DEPENDENT VARIABLES
         // network
-        currData.add(this.crData.getNetStatsCurrent().isStable() ? "1" : "0");
-        currData.add(String.valueOf(this.crData.getNetStatsCurrent().getAvDegree()));
-        currData.add(String.valueOf(this.crData.getNetStatsCurrent().getAvClustering()));
-        currData.add(String.valueOf(this.crData.getNetStatsCurrent().getAvPathLength()));
-        currData.add(String.valueOf(this.crData.getNetStatsCurrent().getDensity()));
+        currData.add(this.dgData.getNetStatsCurrent().isStable() ? "1" : "0");
+        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvDegree()));
+        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvClustering()));
+        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvPathLength()));
+        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getDensity()));
 
         writeLine(currData);
     }

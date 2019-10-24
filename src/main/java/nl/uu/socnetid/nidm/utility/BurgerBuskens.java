@@ -110,7 +110,6 @@ public class BurgerBuskens extends UtilityFunction implements BurgerBuskensChang
      */
     @Override
     protected double getSocialBenefits(LocalAgentConnectionsStats lacs, Agent agent) {
-        // TODO add disease states
         return
                 // benefits of direct connections
                 this.b1 * lacs.getN() +
@@ -124,7 +123,6 @@ public class BurgerBuskens extends UtilityFunction implements BurgerBuskensChang
      */
     @Override
     protected double getSocialCosts(LocalAgentConnectionsStats lacs, Agent agent) {
-        // TODO add disease states
         return
                 // costs of direct connections
                 this.c1 * lacs.getN() +
