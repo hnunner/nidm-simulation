@@ -25,9 +25,7 @@
  */
 package nl.uu.socnetid.nidm.io.generator;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.LinkedList;
 
 import org.apache.log4j.Logger;
@@ -39,6 +37,9 @@ import nl.uu.socnetid.nidm.data.CidmDataGeneratorData;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
 import nl.uu.socnetid.nidm.io.analysis.RegressionParameterWriter;
+import nl.uu.socnetid.nidm.io.csv.CidmAgentDetailsWriter;
+import nl.uu.socnetid.nidm.io.csv.CidmRoundSummaryWriter;
+import nl.uu.socnetid.nidm.io.csv.CidmSimulationSummaryWriter;
 import nl.uu.socnetid.nidm.io.network.GEXFWriter;
 import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.simulation.Simulation;
@@ -322,44 +323,14 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
 
     }
 
-
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.io.generator.AbstractDataGenerator#anaylzeData()
+     * @see nl.uu.socnetid.nidm.io.generator.AbstractDataGenerator#prepareAnalysis()
      */
     @Override
-    protected void analyzeData() {
-        try {
-            // preparation of R-scripts
-            RegressionParameterWriter rpWriter = new RegressionParameterWriter();
-            String autoAnalysisFilePath = rpWriter.writeRegressionFiles(getExportPath());
-
-            // invocation of R-script
-            ProcessBuilder pb = new ProcessBuilder(PropertiesHandler.getInstance().getRscriptPath(),
-                    autoAnalysisFilePath, getExportPath());
-            logger.info("Starting analysis of simulated data. "
-                    + "Invoking R-script: "
-                    + pb.command().toString());
-            Process p = pb.start();
-
-            // status messages of R-script
-            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                logger.info(line);
-            }
-
-            // wait for analysis to finish (blocking)
-            int exitCode = p.waitFor();
-            if (exitCode == 0) {
-                logger.info("Analysis finished successfully.");
-            } else {
-                logger.error("Analysis finished with error code: " + exitCode);
-            }
-        } catch (IOException e) {
-            logger.error(e);
-        } catch (InterruptedException e) {
-            logger.error(e);
-        }
+    protected String prepareAnalysis() {
+        // preparation of R-scripts
+        RegressionParameterWriter rpWriter = new RegressionParameterWriter();
+        return rpWriter.writeRegressionFiles(getExportPath());
     }
 
 
