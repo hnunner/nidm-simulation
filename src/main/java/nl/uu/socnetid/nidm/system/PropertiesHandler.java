@@ -68,10 +68,13 @@ public class PropertiesHandler {
     private String rAnalysisBurgerBuskensTemplatePath;
     private String rAnalysisCarayolRouxTemplatePath;
     // Cidm parameters
+    private boolean generateCidm;
     private CidmParameters cidmParameters;
     // BurgerBuskens parameters
+    private boolean generateBurgerBuskens;
     private BurgerBuskensParameters bbParameters;
     // CarayolRoux parameters
+    private boolean generateCarayolRoux;
     private CarayolRouxParameters crParameters;
     // DATA EXPORT
     // types of data export
@@ -170,6 +173,7 @@ public class PropertiesHandler {
                 configProps.getProperty("r.anlysis.carayolroux.path")).toString();
 
         // Cidm parameters
+        generateCidm = Boolean.parseBoolean(configProps.getProperty("cidm.generate"));
         cidmParameters = new CidmParameters();
         cidmParameters.setAlphas(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_ALPHA.toString())));
         cidmParameters.setKappas(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_KAPPA.toString())));
@@ -191,7 +195,8 @@ public class PropertiesHandler {
         cidmParameters.setSimsPerParameterCombination(Integer.valueOf(configProps.getProperty(
                 LogValues.IV_CIDM_SIMS_PER_PC.toString())));
 
-        // BurgerBuskens parameters
+        // BurgerBuskens
+        generateBurgerBuskens = Boolean.parseBoolean(configProps.getProperty("bb.generate"));
         bbParameters = new BurgerBuskensParameters();
         // b1
         bbParameters.setB1Random(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_BB_B1_RANDOM.toString())));
@@ -235,7 +240,8 @@ public class PropertiesHandler {
         bbParameters.setSimsPerParameterCombination(Integer.valueOf(configProps.getProperty(
                 LogValues.IV_BB_SIMS_PER_PC.toString())));
 
-        // CarayolRoux parameters
+        // CarayolRoux
+        generateCarayolRoux = Boolean.parseBoolean(configProps.getProperty("cr.generate"));
         crParameters = new CarayolRouxParameters();
         // omega
         crParameters.setOmegaRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_CR_OMEGA_RANDOM.toString())));
@@ -424,6 +430,15 @@ public class PropertiesHandler {
     }
 
     /**
+     * Gets whether to generate data for the CIDM model or not.
+     *
+     * @return true if data ought to be generated, false otherwise
+     */
+    public boolean isGenerateCidm() {
+        return generateCidm;
+    }
+
+    /**
      * Gets the Cidm parameters as defined in the config.properties
      *
      * @return the Cidm parameters as defined in the config.properties
@@ -433,12 +448,30 @@ public class PropertiesHandler {
     }
 
     /**
+     * Gets whether to generate data for the BurgerBuskens model or not.
+     *
+     * @return true if data ought to be generated, false otherwise
+     */
+    public boolean isGenerateBurgerBuskens() {
+        return generateBurgerBuskens;
+    }
+
+    /**
      * Gets the BurgerBuskens parameters as defined in the config.properties
      *
      * @return the BurgerBuskens parameters as defined in the config.properties
      */
     public BurgerBuskensParameters getBurgerBuskensParameters() {
         return bbParameters;
+    }
+
+    /**
+     * Gets whether to generate data for the CarayolRoux model or not.
+     *
+     * @return true if data ought to be generated, false otherwise
+     */
+    public boolean isGenerateCarayolRoux() {
+        return generateCarayolRoux;
     }
 
     /**
