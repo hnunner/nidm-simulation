@@ -25,9 +25,7 @@
  */
 package nl.uu.socnetid.nidm.io.generator;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -41,6 +39,7 @@ import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.data.BurgerBuskensDataGeneratorData;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
+import nl.uu.socnetid.nidm.io.csv.BurgerBuskensSimulationSummaryWriter;
 import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.simulation.Simulation;
 import nl.uu.socnetid.nidm.simulation.SimulationStage;
@@ -84,7 +83,7 @@ public class BurgerBuskensDataGenerator extends AbstractDataGenerator {
      */
     @Override
     protected String getFolderName() {
-        return "burger-buskens";
+        return "burgerbuskens";
     }
 
     /* (non-Javadoc)
@@ -214,8 +213,6 @@ public class BurgerBuskensDataGenerator extends AbstractDataGenerator {
         // create network
         Network network = new Network();
 
-
-
         // setting parameters
         // b1
         if (this.dgData.getUtilityModelParams().isB1Random()) {
@@ -298,49 +295,22 @@ public class BurgerBuskensDataGenerator extends AbstractDataGenerator {
 
     }
 
-
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.io.generator.AbstractDataGenerator#anaylzeData()
+     * @see nl.uu.socnetid.nidm.io.generator.AbstractDataGenerator#prepareAnalysis()
      */
     @Override
-    protected void analyzeData() {
+    protected String prepareAnalysis() {
+        // preparation of R-scripts
+        Path srcAnalysis = Paths.get(PropertiesHandler.getInstance().getRAnalysisBurgerBuskensTemplatePath());
+        String dstAnalysisPath = getExportPath() + "burgerbuskens.R";
+        Path dstAnalysis = Paths.get(dstAnalysisPath);
         try {
-            // preparation of R-scripts
-            Path srcAnalysis = Paths.get(PropertiesHandler.getInstance().getRAnalysisBurgerBuskensTemplatePath());
-            String dstAnalysisPath = getExportPath() + "burgerbuskens.R";
-            Path dstAnalysis = Paths.get(dstAnalysisPath);
             Files.copy(srcAnalysis, dstAnalysis, StandardCopyOption.REPLACE_EXISTING);
-
-            // invocation of R-script
-            ProcessBuilder pb = new ProcessBuilder(PropertiesHandler.getInstance().getRscriptPath(),
-                    dstAnalysisPath, getExportPath());
-            logger.info("Starting analysis of simulated data. "
-                    + "Invoking R-script: "
-                    + pb.command().toString());
-            Process p = pb.start();
-
-            // status messages of R-script
-            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                logger.info(line);
-            }
-
-            // wait for analysis to finish (blocking)
-            int exitCode = p.waitFor();
-            if (exitCode == 0) {
-                logger.info("Analysis finished successfully.");
-            } else {
-                logger.error("Analysis finished with error code: " + exitCode);
-            }
-
         } catch (IOException e) {
             logger.error(e);
-        } catch (InterruptedException e) {
-            logger.error(e);
         }
+        return dstAnalysisPath;
     }
-
 
     /**
      * Finalizes the export of data files.

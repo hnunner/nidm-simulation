@@ -31,10 +31,20 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import nl.uu.socnetid.nidm.data.DataGeneratorData;
+import nl.uu.socnetid.nidm.data.UtilityModelParameters;
+
 /**
  * @author Hendrik Nunner
+ *
+ * @param <UMP>
+ *          the type of {@link UtilityModelParameters}
+ * @param <DGD>
+ *          the type of {@link DataGeneratorData}
  */
-public abstract class CsvFileWriter extends FileWriter {
+public abstract class CsvFileWriter<UMP extends UtilityModelParameters, DGD extends DataGeneratorData<UMP>> extends FileWriter {
+
+    protected DGD dgData;
 
     private static final Logger logger = Logger.getLogger(CsvFileWriter.class);
     private static final char DEFAULT_SEPARATOR = ',';
@@ -45,14 +55,29 @@ public abstract class CsvFileWriter extends FileWriter {
      *
      * @param fileName
      *          the name of the file to store the nl.uu.socnetid.nidm.io.csv data in
+     * @param dgData
+     *          the data generator data
      * @throws IOException
      *          if the named file exists but is a directory rather
      *          than a regular file, does not exist but cannot be
      *          created, or cannot be opened for any other reason
      */
-    public CsvFileWriter(String fileName) throws IOException {
+    public CsvFileWriter(String fileName, DGD dgData) throws IOException {
         super(fileName);
+        this.dgData = dgData;
+        initCols();
     }
+
+
+    /**
+     * Initializes the CSV by writing the column names.
+     */
+    protected abstract void initCols();
+
+    /**
+     * Writes a line of data as currently stored in dgData.
+     */
+    public abstract void writeCurrentData();
 
 
     //https://tools.ietf.org/html/rfc4180
