@@ -23,19 +23,11 @@
  *      Nunner, H., Buskens, V., & Kretzschmar, M. (2019). A model for the co-evolution of dynamic
  *      social networks and infectious diseases. Manuscript sumbitted for publication.
  */
-package nl.uu.socnetid.nidm.mains;
+package nl.uu.socnetid.nidm.io.generator;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.LinkedList;
 
 import org.apache.log4j.Logger;
@@ -47,9 +39,6 @@ import nl.uu.socnetid.nidm.data.CidmDataGeneratorData;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
 import nl.uu.socnetid.nidm.io.analysis.RegressionParameterWriter;
-import nl.uu.socnetid.nidm.io.generator.CidmAgentDetailsWriter;
-import nl.uu.socnetid.nidm.io.generator.CidmRoundSummaryWriter;
-import nl.uu.socnetid.nidm.io.generator.CidmSimulationSummaryWriter;
 import nl.uu.socnetid.nidm.io.network.GEXFWriter;
 import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.simulation.Simulation;
@@ -65,13 +54,13 @@ import nl.uu.socnetid.nidm.utility.UtilityFunction;
 /**
  * @author Hendrik Nunner
  */
-public class CidmDataGenerator implements AgentListener, SimulationListener {
+public class CidmDataGenerator extends AbstractDataGenerator implements AgentListener, SimulationListener {
 
     // logger
     private static final Logger logger = Logger.getLogger(CidmDataGenerator.class);
 
     // stats
-    private CidmDataGeneratorData dgData = new CidmDataGeneratorData();
+    private CidmDataGeneratorData dgData;
 
     // network
     private Network network;
@@ -81,8 +70,6 @@ public class CidmDataGenerator implements AgentListener, SimulationListener {
     private Simulation simulation;
 
     // data export
-    private static final String FULL_DATA_EXPORT_PATH = PropertiesHandler.getInstance().getDataExportPath() +
-            (new SimpleDateFormat("yyyyMMdd-HHmmss")).format(new Date()) + "/";
     private CidmSimulationSummaryWriter ssWriter;
     private CidmRoundSummaryWriter rsWriter;
     private CidmAgentDetailsWriter adWriter;
@@ -90,95 +77,61 @@ public class CidmDataGenerator implements AgentListener, SimulationListener {
 
 
     /**
-     * Launches the data generation.
+     * Constructor.
      *
-     * @param args
-     *          command line arguments
+     * @param rootExportPath
+     *          the root export path
      * @throws IOException
      *          if the export file(s) exist(s) but is a directory rather
      *          than a regular file, do(es) not exist but cannot be
      *          created, or cannot be opened for any other reason
      */
-    public static void main(String[] args) throws IOException {
-        logger.info("\n::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::\n" +
-                ":: Copyright (C) 2017 - 2019\n" +
-                "::     Hendrik Nunner    <h.nunner@gmail.com>\n" +
-                "::\n" +
-                ":: This file is part of the NIDM-Simulation project <https://github.com/hnunner/NIDM-simulation>.\n" +
-                "::\n" +
-                ":: This project is a stand-alone Java program of the Networking during Infectious Diseases Model\n" +
-                ":: (NIDM; Nunner, Buskens, & Kretzschmar, 2019) to simulate the dynamic interplay of social network\n" +
-                ":: formation and infectious diseases.\n" +
-                "::\n" +
-                ":: This program is free software: you can redistribute it and/or modify it under the\n" +
-                ":: terms of the GNU General Public License as published by the Free Software Foundation,\n" +
-                ":: either version 3 of the License, or (at your option) any later version.\n" +
-                "::\n" +
-                ":: This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;\n" +
-                ":: without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n" +
-                ":: See the GNU General Public License for more details.\n" +
-                "::\n" +
-                ":: You should have received a copy of the GNU General Public License along with this program.\n" +
-                ":: If not, see <http://www.gnu.org/licenses/>.\n" +
-                "::\n" +
-                ":: References:\n" +
-                "::     Nunner, H., Buskens, V., & Kretzschmar, M. (2019). A model for the co-evolution of dynamic\n" +
-                "::     social networks and infectious diseases. Manuscript sumbitted for publication.\n"
-                + "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::\n");
-
-        CidmDataGenerator dataGenerator = new CidmDataGenerator();
-        dataGenerator.generateData();
-        if (PropertiesHandler.getInstance().isAnalyzeData()) {
-            dataGenerator.anaylzeData();
-        }
+    public CidmDataGenerator(String rootExportPath) throws IOException {
+        super(rootExportPath);
     }
 
 
-    /**
-     * Constructor.
-     *
-     * @throws IOException
-     *          if the export file(s) exist(s) but is a directory rather
-     *          than a regular file, do(es) not exist but cannot be
-     *          created, or cannot be opened for any other reason
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.io.generator.AbstractDataGenerator#getFolderName()
      */
-    public CidmDataGenerator() throws IOException {
-        // initializations
-        // create export directory if it does not exist
-        File directory = new File(FULL_DATA_EXPORT_PATH);
-        if (!directory.exists()){
-            directory.mkdirs();
-        }
+    @Override
+    protected String getFolderName() {
+        return "cidm";
+    }
 
-        // copy properties file to output folder
-        try {
-            Path srcProperties = Paths.get(CidmDataGenerator.class.getClassLoader().getResource("config.properties").toURI());
-            Path dstProperties = Paths.get(FULL_DATA_EXPORT_PATH + "config.properties");
-            Files.copy(srcProperties, dstProperties, StandardCopyOption.REPLACE_EXISTING);
-        } catch (URISyntaxException e) {
-            logger.error(e);
-        }
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.io.generator.AbstractDataGenerator#initData()
+     */
+    @Override
+    protected void initData() {
+        this.dgData = new CidmDataGeneratorData();
+    }
 
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.io.generator.AbstractDataGenerator#initWriters()
+     */
+    @Override
+    protected void initWriters() throws IOException {
         // summary CSV
         if (PropertiesHandler.getInstance().isExportSummary()) {
-            this.ssWriter = new CidmSimulationSummaryWriter(FULL_DATA_EXPORT_PATH + "simulation-summary.csv", this.dgData);
+            this.ssWriter = new CidmSimulationSummaryWriter(getExportPath() + "simulation-summary.csv", this.dgData);
         }
         // round summary CSV
         if (PropertiesHandler.getInstance().isExportSummaryEachRound()) {
-            this.rsWriter = new CidmRoundSummaryWriter(FULL_DATA_EXPORT_PATH + "round-summary.csv", this.dgData);
+            this.rsWriter = new CidmRoundSummaryWriter(getExportPath() + "round-summary.csv", this.dgData);
         }
         // agent details
         if (PropertiesHandler.getInstance().isExportAgentDetails() ||
                 PropertiesHandler.getInstance().isExportAgentDetailsReduced()) {
-            this.adWriter = new CidmAgentDetailsWriter(FULL_DATA_EXPORT_PATH + "agent-details.csv", this.dgData);
+            this.adWriter = new CidmAgentDetailsWriter(getExportPath() + "agent-details.csv", this.dgData);
         }
     }
 
-
-    /**
-     * Generates data.
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.io.generator.AbstractDataGenerator#generateData()
      */
-    public void generateData() {
+    @Override
+    protected void generateData() {
 
         // risk perceptions the same with regards to susceptibility (pi) and diseases severity (sigma)?
         double[] rSigmas = this.dgData.getUtilityModelParams().getRSigmas();
@@ -300,7 +253,7 @@ public class CidmDataGenerator implements AgentListener, SimulationListener {
         // begin: GEXF export
         if (PropertiesHandler.getInstance().isExportGexf()) {
             this.gexfWriter = new GEXFWriter();
-            this.dgData.setGexfExportFile(FULL_DATA_EXPORT_PATH + this.dgData.getSimStats().getUid() + ".gexf");
+            this.dgData.setGexfExportFile(getExportPath() + this.dgData.getSimStats().getUid() + ".gexf");
             gexfWriter.startRecording(network, this.dgData.getGexfExportFile());
         }
 
@@ -370,18 +323,19 @@ public class CidmDataGenerator implements AgentListener, SimulationListener {
     }
 
 
-    /**
-     * Analyzes data.
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.io.generator.AbstractDataGenerator#anaylzeData()
      */
-    private void anaylzeData() {
+    @Override
+    protected void analyzeData() {
         try {
             // preparation of R-scripts
             RegressionParameterWriter rpWriter = new RegressionParameterWriter();
-            String autoAnalysisFilePath = rpWriter.writeRegressionFiles(FULL_DATA_EXPORT_PATH);
+            String autoAnalysisFilePath = rpWriter.writeRegressionFiles(getExportPath());
 
             // invocation of R-script
             ProcessBuilder pb = new ProcessBuilder(PropertiesHandler.getInstance().getRscriptPath(),
-                    autoAnalysisFilePath, FULL_DATA_EXPORT_PATH);
+                    autoAnalysisFilePath, getExportPath());
             logger.info("Starting analysis of simulated data. "
                     + "Invoking R-script: "
                     + pb.command().toString());
