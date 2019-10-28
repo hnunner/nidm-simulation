@@ -26,27 +26,27 @@
 package nl.uu.socnetid.nidm.utility;
 
 import nl.uu.socnetid.nidm.agents.Agent;
-import nl.uu.socnetid.nidm.gui.BurgerBuskensChangeListener;
-import nl.uu.socnetid.nidm.gui.BurgerBuskensPanel;
+import nl.uu.socnetid.nidm.gui.NunnerBuskensChangeListener;
+import nl.uu.socnetid.nidm.gui.NunnerBuskensPanel;
 import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
 
 /**
  * @author Hendrik Nunner
  */
-public class BurgerBuskens extends UtilityFunction implements BurgerBuskensChangeListener {
+public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChangeListener {
 
     // benefits of direct connections
     private double b1;
-    // benefits of closed triads
-    private double b2;
     // costs of direct connections
     private double c1;
     // quadratic costs of additional direct connections
     private double c2;
-    // costs of closed triads
-    private double c3;
+    // weight of benefits for triads
+    private double b2;
+    // preference shift between open and closed triads
+    private double alpha;
     // the panel to track GUI parameter changes from
-    private BurgerBuskensPanel bbPanel;
+    private NunnerBuskensPanel nbPanel;
 
 
     /**
@@ -54,17 +54,17 @@ public class BurgerBuskens extends UtilityFunction implements BurgerBuskensChang
      *
      * @param b1
      *          the benefits of direct connections
-     * @param b2
-     *          the benefits of closed triads
      * @param c1
      *          the costs of direct connections
      * @param c2
      *          the quadratic costs of additional direct connections
-     * @param c3
-     *          the costs of closed triads
+     * @param b2
+     *          the weight of benefits for triads
+     * @param alpha
+     *          the preference shift between open and closed triads
      */
-    public BurgerBuskens(double b1, double b2, double c1, double c2, double c3) {
-        this(b1, b2, c1, c2, c3, null);
+    public NunnerBuskens(double b1, double c1, double c2, double b2, double alpha) {
+        this(b1, b2, c1, c2, alpha, null);
     }
 
     /**
@@ -72,26 +72,26 @@ public class BurgerBuskens extends UtilityFunction implements BurgerBuskensChang
      *
      * @param b1
      *          the benefits of direct connections
-     * @param b2
-     *          the benefits of closed triads
      * @param c1
      *          the costs of direct connections
      * @param c2
      *          the quadratic costs of additional direct connections
-     * @param c3
-     *          the costs of closed triads
-     * @param bbPanel
+     * @param b2
+     *          the weight of benefits for triads
+     * @param alpha
+     *          the preference shift between open and closed triads
+     * @param nbPanel
      *          the panel to track GUI parameter changes from
      */
-    public BurgerBuskens(double b1, double b2, double c1, double c2, double c3, BurgerBuskensPanel bbPanel) {
+    public NunnerBuskens(double b1, double c1, double c2, double b2, double alpha, NunnerBuskensPanel nbPanel) {
         this.b1 = b1;
-        this.b2 = b2;
         this.c1 = c1;
         this.c2 = c2;
-        this.c3 = c3;
-        this.bbPanel = bbPanel;
-        if (this.bbPanel != null) {
-            this.bbPanel.addParameterChangeListener(this);
+        this.b2 = b2;
+        this.alpha = alpha;
+        this.nbPanel = nbPanel;
+        if (this.nbPanel != null) {
+            this.nbPanel.addParameterChangeListener(this);
         }
     }
 
@@ -101,7 +101,7 @@ public class BurgerBuskens extends UtilityFunction implements BurgerBuskensChang
      */
     @Override
     public String getStatsName() {
-        return "BB";
+        return "NB";
     }
 
     /* (non-Javadoc)
@@ -110,11 +110,8 @@ public class BurgerBuskens extends UtilityFunction implements BurgerBuskensChang
      */
     @Override
     protected double getSocialBenefits(LocalAgentConnectionsStats lacs, Agent agent) {
-        return
-                // benefits of direct connections
-                this.b1 * lacs.getN() +
-                // benefits for closed triads
-                this.b2 * lacs.getZ();
+        // TODO implement
+        return 0;
     }
 
     /* (non-Javadoc)
@@ -123,13 +120,8 @@ public class BurgerBuskens extends UtilityFunction implements BurgerBuskensChang
      */
     @Override
     protected double getSocialCosts(LocalAgentConnectionsStats lacs, Agent agent) {
-        return
-                // costs of direct connections
-                this.c1 * lacs.getN() +
-                // quadratic costs of direct connections
-                this.c2 * (lacs.getN()*lacs.getN()) +
-                // costs for closed triads
-                this.c3 * lacs.getZ();
+        // TODO implement
+        return 0;
     }
 
     /* (non-Javadoc)
@@ -153,49 +145,49 @@ public class BurgerBuskens extends UtilityFunction implements BurgerBuskensChang
         sb.append(" | b2:").append(this.b2);
         sb.append(" | c1:").append(this.c1);
         sb.append(" | c2:").append(this.c2);
-        sb.append(" | c3:").append(this.c3);
+        sb.append(" | alpha:").append(this.alpha);
         return sb.toString();
     }
 
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.gui.BurgerBuskensChangeListener#notifyB1Changed()
+     * @see nl.uu.socnetid.nidm.gui.NunnerBuskensChangeListener#notifyB1Changed()
      */
     @Override
     public void notifyB1Changed() {
-        this.b1 = this.bbPanel.getB1();
+        this.b1 = this.nbPanel.getB1();
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.gui.BurgerBuskensChangeListener#notifyB2Changed()
-     */
-    @Override
-    public void notifyB2Changed() {
-        this.b2 = this.bbPanel.getB2();
-    }
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.gui.BurgerBuskensChangeListener#notifyC1Changed()
+     * @see nl.uu.socnetid.nidm.gui.NunnerBuskensChangeListener#notifyC1Changed()
      */
     @Override
     public void notifyC1Changed() {
-        this.c1 = this.bbPanel.getC1();
+        this.c1 = this.nbPanel.getC1();
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.gui.BurgerBuskensChangeListener#notifyC2Changed()
+     * @see nl.uu.socnetid.nidm.gui.NunnerBuskensChangeListener#notifyC2Changed()
      */
     @Override
     public void notifyC2Changed() {
-        this.c2 = this.bbPanel.getC2();
+        this.c2 = this.nbPanel.getC2();
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.gui.BurgerBuskensChangeListener#notifyC3Changed()
+     * @see nl.uu.socnetid.nidm.gui.NunnerBuskensChangeListener#notifyB2Changed()
      */
     @Override
-    public void notifyC3Changed() {
-        this.c3 = this.bbPanel.getC3();
+    public void notifyB2Changed() {
+        this.b2 = this.nbPanel.getB2();
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.gui.NunnerBuskensChangeListener#notifyAlphaChanged()
+     */
+    @Override
+    public void notifyAlphaChanged() {
+        this.alpha = this.nbPanel.getAlpha();
     }
 
 }
