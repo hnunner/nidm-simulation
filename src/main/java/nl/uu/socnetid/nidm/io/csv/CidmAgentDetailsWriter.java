@@ -31,8 +31,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import nl.uu.socnetid.nidm.agents.Agent;
-import nl.uu.socnetid.nidm.data.CidmDataGeneratorData;
 import nl.uu.socnetid.nidm.data.CidmParameters;
+import nl.uu.socnetid.nidm.data.DataGeneratorData;
 import nl.uu.socnetid.nidm.data.LogValues;
 import nl.uu.socnetid.nidm.stats.AgentStats;
 import nl.uu.socnetid.nidm.utility.Cidm;
@@ -40,7 +40,7 @@ import nl.uu.socnetid.nidm.utility.Cidm;
 /**
  * @author Hendrik Nunner
  */
-public class CidmAgentDetailsWriter extends CsvFileWriter<CidmParameters, CidmDataGeneratorData> {
+public class CidmAgentDetailsWriter extends CsvFileWriter<CidmParameters> {
 
     /**
      * Creates the writer.
@@ -54,7 +54,7 @@ public class CidmAgentDetailsWriter extends CsvFileWriter<CidmParameters, CidmDa
      *          than a regular file, does not exist but cannot be
      *          created, or cannot be opened for any other reason
      */
-    public CidmAgentDetailsWriter(String fileName, CidmDataGeneratorData dgData) throws IOException {
+    public CidmAgentDetailsWriter(String fileName, DataGeneratorData<CidmParameters> dgData) throws IOException {
         super(fileName, dgData);
     }
 
