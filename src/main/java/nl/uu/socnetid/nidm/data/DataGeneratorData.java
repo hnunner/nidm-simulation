@@ -38,8 +38,10 @@ import nl.uu.socnetid.nidm.stats.SimulationStats;
  * @param <UMP>
  *          the type of utility model parameters
  */
-public abstract class DataGeneratorData<UMP extends UtilityModelParameters> {
+public class DataGeneratorData<UMP extends UtilityModelParameters> {
 
+    // utility model parameters
+    private final UMP utilityModelParams;
     // simulation
     private SimulationStats simStats;
     // network stats
@@ -56,8 +58,12 @@ public abstract class DataGeneratorData<UMP extends UtilityModelParameters> {
 
     /**
      * Constructor.
+     *
+     * @param utilityModelParams
+     *          the utility model parameters
      */
-    public DataGeneratorData() {
+    public DataGeneratorData(UMP utilityModelParams) {
+        this.utilityModelParams = utilityModelParams;
         this.simStats = new SimulationStats();
     }
 
@@ -163,6 +169,9 @@ public abstract class DataGeneratorData<UMP extends UtilityModelParameters> {
     /**
      * @return the utilityModelParams
      */
-    public abstract UMP getUtilityModelParams();
+    public UMP getUtilityModelParams() {
+        return utilityModelParams;
+    }
 
 }
+

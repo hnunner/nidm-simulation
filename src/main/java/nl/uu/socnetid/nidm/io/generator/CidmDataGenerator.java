@@ -27,13 +27,15 @@ package nl.uu.socnetid.nidm.io.generator;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.log4j.Logger;
 import org.graphstream.graph.Edge;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.agents.AgentListener;
-import nl.uu.socnetid.nidm.data.CidmDataGeneratorData;
+import nl.uu.socnetid.nidm.data.CidmParameters;
+import nl.uu.socnetid.nidm.data.DataGeneratorData;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
 import nl.uu.socnetid.nidm.io.analysis.RegressionParameterWriter;
@@ -61,7 +63,7 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
     private static final Logger logger = Logger.getLogger(CidmDataGenerator.class);
 
     // stats
-    private CidmDataGeneratorData dgData;
+    private DataGeneratorData<CidmParameters> dgData;
 
     // network
     private Network network;
@@ -105,7 +107,7 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
      */
     @Override
     protected void initData() {
-        this.dgData = new CidmDataGeneratorData();
+        this.dgData = new DataGeneratorData<CidmParameters>(PropertiesHandler.getInstance().getCidmParameters());
     }
 
     /* (non-Javadoc)
@@ -141,6 +143,14 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
             rPis = new double[1];
         }
 
+        int[] Ns = this.dgData.getUtilityModelParams().isNRandom() ?
+                new int[1] : this.dgData.getUtilityModelParams().getNs();
+        boolean[] iotas = this.dgData.getUtilityModelParams().isIotaRandom() ?
+                new boolean[1] : this.dgData.getUtilityModelParams().getIotas();
+        double[] phis = this.dgData.getUtilityModelParams().isPhiRandom() ?
+                new double[1] : this.dgData.getUtilityModelParams().getPhis();
+
+
         // unique parameter combinations
         int upcs = this.dgData.getUtilityModelParams().getAlphas().length *
                 this.dgData.getUtilityModelParams().getKappas().length *
@@ -152,9 +162,9 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
                 this.dgData.getUtilityModelParams().getGammas().length *
                 rSigmas.length *
                 rPis.length *
-                this.dgData.getUtilityModelParams().getNs().length *
-                this.dgData.getUtilityModelParams().getIotas().length *
-                this.dgData.getUtilityModelParams().getPhis().length *
+                Ns.length *
+                iotas.length *
+                phis.length *
                 this.dgData.getUtilityModelParams().getTaus().length;
 
         // loop over all possible parameter combinations
@@ -182,11 +192,11 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
                                                 } else {
                                                     this.dgData.getUtilityModelParams().setCurrRPi(rPi);
                                                 }
-                                                for (int N : this.dgData.getUtilityModelParams().getNs()) {
+                                                for (int N : Ns) {
                                                     this.dgData.getUtilityModelParams().setCurrN(N);
-                                                    for (boolean iota : this.dgData.getUtilityModelParams().getIotas()) {
+                                                    for (boolean iota : iotas) {
                                                         this.dgData.getUtilityModelParams().setCurrIota(iota);
-                                                        for (double phi : this.dgData.getUtilityModelParams().getPhis()) {
+                                                        for (double phi : phis) {
                                                             this.dgData.getUtilityModelParams().setCurrPhi(phi);
                                                             for (int tau : this.dgData.getUtilityModelParams().getTaus()) {
                                                                 this.dgData.getUtilityModelParams().setCurrTau(tau);
@@ -250,6 +260,24 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
 
         // create network
         this.network = new Network();
+
+        // setting parameters
+        // N
+        if (this.dgData.getUtilityModelParams().isNRandom()) {
+            this.dgData.getUtilityModelParams().setCurrN(ThreadLocalRandom.current().nextInt(
+                    this.dgData.getUtilityModelParams().getNRandomMin(),
+                    this.dgData.getUtilityModelParams().getNRandomMax()));
+        }
+        // iota
+        if (this.dgData.getUtilityModelParams().isIotaRandom()) {
+            this.dgData.getUtilityModelParams().setCurrIota(ThreadLocalRandom.current().nextBoolean());
+        }
+        // phi
+        if (this.dgData.getUtilityModelParams().isPhiRandom()) {
+            this.dgData.getUtilityModelParams().setCurrPhi(ThreadLocalRandom.current().nextDouble(
+                    this.dgData.getUtilityModelParams().getPhiRandomMin(),
+                    this.dgData.getUtilityModelParams().getPhiRandomMax()));
+        }
 
         // begin: GEXF export
         if (PropertiesHandler.getInstance().isExportGexf()) {
