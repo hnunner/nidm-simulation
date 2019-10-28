@@ -36,7 +36,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.apache.log4j.Logger;
 
 import nl.uu.socnetid.nidm.agents.Agent;
-import nl.uu.socnetid.nidm.data.BurgerBuskensDataGeneratorData;
+import nl.uu.socnetid.nidm.data.BurgerBuskensParameters;
+import nl.uu.socnetid.nidm.data.DataGeneratorData;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
 import nl.uu.socnetid.nidm.io.csv.BurgerBuskensSimulationSummaryWriter;
@@ -59,7 +60,7 @@ public class BurgerBuskensDataGenerator extends AbstractDataGenerator {
     private static final Logger logger = Logger.getLogger(BurgerBuskensDataGenerator.class);
 
     // stats & writer
-    private BurgerBuskensDataGeneratorData dgData;
+    private DataGeneratorData<BurgerBuskensParameters> dgData;
     private BurgerBuskensSimulationSummaryWriter ssWriter;
 
 
@@ -91,7 +92,7 @@ public class BurgerBuskensDataGenerator extends AbstractDataGenerator {
      */
     @Override
     protected void initData() {
-        this.dgData = new BurgerBuskensDataGeneratorData();
+        this.dgData = new DataGeneratorData<BurgerBuskensParameters>(PropertiesHandler.getInstance().getBurgerBuskensParameters());
     }
 
     /* (non-Javadoc)
