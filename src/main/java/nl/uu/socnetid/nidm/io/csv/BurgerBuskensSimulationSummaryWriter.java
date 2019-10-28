@@ -29,14 +29,14 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import nl.uu.socnetid.nidm.data.BurgerBuskensDataGeneratorData;
 import nl.uu.socnetid.nidm.data.BurgerBuskensParameters;
+import nl.uu.socnetid.nidm.data.DataGeneratorData;
 import nl.uu.socnetid.nidm.data.LogValues;
 
 /**
  * @author Hendrik Nunner
  */
-public class BurgerBuskensSimulationSummaryWriter extends CsvFileWriter<BurgerBuskensParameters, BurgerBuskensDataGeneratorData> {
+public class BurgerBuskensSimulationSummaryWriter extends CsvFileWriter<BurgerBuskensParameters> {
 
     /**
      * Creates the writer.
@@ -50,7 +50,8 @@ public class BurgerBuskensSimulationSummaryWriter extends CsvFileWriter<BurgerBu
      *          than a regular file, does not exist but cannot be
      *          created, or cannot be opened for any other reason
      */
-    public BurgerBuskensSimulationSummaryWriter(String fileName, BurgerBuskensDataGeneratorData dgData) throws IOException {
+    public BurgerBuskensSimulationSummaryWriter(String fileName, DataGeneratorData<BurgerBuskensParameters> dgData)
+            throws IOException {
         super(fileName, dgData);
     }
 

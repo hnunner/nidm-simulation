@@ -39,12 +39,10 @@ import nl.uu.socnetid.nidm.data.UtilityModelParameters;
  *
  * @param <UMP>
  *          the type of {@link UtilityModelParameters}
- * @param <DGD>
- *          the type of {@link DataGeneratorData}
  */
-public abstract class CsvFileWriter<UMP extends UtilityModelParameters, DGD extends DataGeneratorData<UMP>> extends FileWriter {
+public abstract class CsvFileWriter<UMP extends UtilityModelParameters> extends FileWriter {
 
-    protected DGD dgData;
+    protected DataGeneratorData<UMP> dgData;
 
     private static final Logger logger = Logger.getLogger(CsvFileWriter.class);
     private static final char DEFAULT_SEPARATOR = ',';
@@ -62,7 +60,7 @@ public abstract class CsvFileWriter<UMP extends UtilityModelParameters, DGD exte
      *          than a regular file, does not exist but cannot be
      *          created, or cannot be opened for any other reason
      */
-    public CsvFileWriter(String fileName, DGD dgData) throws IOException {
+    public CsvFileWriter(String fileName, DataGeneratorData<UMP> dgData) throws IOException {
         super(fileName);
         this.dgData = dgData;
         initCols();
