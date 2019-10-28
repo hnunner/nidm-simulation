@@ -108,50 +108,50 @@ public class NunnerBuskensPanel extends DeactivatablePanel implements ChangeList
         lblB12.setBounds(200, 30, 35, 16);
         add(lblB12);
 
-        JLabel lblB21 = new JLabel("Triadic closure");
-        lblB21.setBounds(37, 68, 154, 16);
+        JLabel lblB21 = new JLabel("Benefit");
+        lblB21.setBounds(27, 224, 154, 16);
         add(lblB21);
 
         JLabel lblB22 = new JLabel("(b  ):");
         lblB22.setHorizontalAlignment(SwingConstants.RIGHT);
-        lblB22.setBounds(201, 68, 35, 16);
+        lblB22.setBounds(191, 224, 35, 16);
         add(lblB22);
 
         JLabel lblC11 = new JLabel("Standard");
-        lblC11.setBounds(37, 158, 86, 16);
+        lblC11.setBounds(36, 111, 86, 16);
         add(lblC11);
 
         JLabel lblC12 = new JLabel("(c  ):");
         lblC12.setHorizontalAlignment(SwingConstants.RIGHT);
-        lblC12.setBounds(201, 158, 35, 16);
+        lblC12.setBounds(200, 111, 35, 16);
         add(lblC12);
 
         JLabel lblC21 = new JLabel("Quadratic");
-        lblC21.setBounds(37, 196, 154, 16);
+        lblC21.setBounds(36, 149, 154, 16);
         add(lblC21);
 
         JLabel lblC22 = new JLabel("(c  ):");
         lblC22.setHorizontalAlignment(SwingConstants.RIGHT);
-        lblC22.setBounds(201, 196, 35, 16);
+        lblC22.setBounds(200, 149, 35, 16);
         add(lblC22);
 
-        JLabel lblC31 = new JLabel("Triadic closure");
-        lblC31.setBounds(37, 236, 100, 16);
-        add(lblC31);
+        JLabel lblAlpha1 = new JLabel("Open vs. closed preference");
+        lblAlpha1.setBounds(28, 258, 170, 16);
+        add(lblAlpha1);
 
-        JLabel lblC32 = new JLabel("(c  ):");
-        lblC32.setHorizontalAlignment(SwingConstants.RIGHT);
-        lblC32.setBounds(201, 236, 35, 16);
-        add(lblC32);
+        JLabel lblAlpha2 = new JLabel("(α):");
+        lblAlpha2.setHorizontalAlignment(SwingConstants.RIGHT);
+        lblAlpha2.setBounds(192, 258, 35, 16);
+        add(lblAlpha2);
 
         JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
         separator.setForeground(Color.LIGHT_GRAY);
-        separator.setBounds(1, 118, 312, 10);
+        separator.setBounds(0, 72, 312, 10);
         add(separator);
 
         JLabel lblSocialCostsHeader = new JLabel("Social maintenance costs:");
         lblSocialCostsHeader.setFont(new Font("Lucida Grande", Font.BOLD, 13));
-        lblSocialCostsHeader.setBounds(14, 128, 242, 16);
+        lblSocialCostsHeader.setBounds(13, 81, 242, 16);
         add(lblSocialCostsHeader);
 
         JSeparator separator_3 = new JSeparator(SwingConstants.HORIZONTAL);
@@ -323,26 +323,20 @@ public class NunnerBuskensPanel extends DeactivatablePanel implements ChangeList
         JLabel label_7 = new JLabel("1");
         label_7.setHorizontalAlignment(SwingConstants.LEFT);
         label_7.setFont(new Font("Lucida Grande", Font.PLAIN, 8));
-        label_7.setBounds(221, 165, 13, 16);
+        label_7.setBounds(220, 118, 13, 16);
         add(label_7);
 
-        JLabel label_8 = new JLabel("2");
-        label_8.setHorizontalAlignment(SwingConstants.LEFT);
-        label_8.setFont(new Font("Lucida Grande", Font.PLAIN, 8));
-        label_8.setBounds(221, 75, 13, 16);
-        add(label_8);
+        JLabel lblB22_sub = new JLabel("2");
+        lblB22_sub.setHorizontalAlignment(SwingConstants.LEFT);
+        lblB22_sub.setFont(new Font("Lucida Grande", Font.PLAIN, 8));
+        lblB22_sub.setBounds(211, 231, 13, 16);
+        add(lblB22_sub);
 
         JLabel label_11 = new JLabel("2");
         label_11.setHorizontalAlignment(SwingConstants.LEFT);
         label_11.setFont(new Font("Lucida Grande", Font.PLAIN, 8));
-        label_11.setBounds(221, 203, 13, 16);
+        label_11.setBounds(220, 156, 13, 16);
         add(label_11);
-
-        JLabel label_12 = new JLabel("3");
-        label_12.setHorizontalAlignment(SwingConstants.LEFT);
-        label_12.setFont(new Font("Lucida Grande", Font.PLAIN, 8));
-        label_12.setBounds(221, 243, 13, 16);
-        add(label_12);
 
         sliderB1 = new JSlider();
         sliderB1.setBounds(22, 40, 285, 29);
@@ -360,7 +354,7 @@ public class NunnerBuskensPanel extends DeactivatablePanel implements ChangeList
         add(txtSliderB1);
 
         sliderB2 = new JSlider();
-        sliderB2.setBounds(22, 78, 285, 29);
+        sliderB2.setBounds(13, 234, 285, 29);
         sliderB2.setMaximum(100);
         sliderB2.setMinimum(0);
         sliderB2.setValue(20);
@@ -369,13 +363,13 @@ public class NunnerBuskensPanel extends DeactivatablePanel implements ChangeList
 
         txtSliderB2 = new DoubleJFormattedTextField((NumberFormat) null);
         txtSliderB2.setHorizontalAlignment(SwingConstants.RIGHT);
-        txtSliderB2.setBounds(246, 66, 50, 20);
+        txtSliderB2.setBounds(236, 222, 50, 20);
         txtSliderB2.setValue(Double.toString(sliderB2.getValue() / 100.0));
         txtSliderB2.setEnabled(false);
         add(txtSliderB2);
 
         sliderC1 = new JSlider();
-        sliderC1.setBounds(22, 168, 285, 29);
+        sliderC1.setBounds(21, 121, 285, 29);
         sliderC1.setMaximum(100);
         sliderC1.setMinimum(0);
         sliderC1.setValue(20);
@@ -384,13 +378,13 @@ public class NunnerBuskensPanel extends DeactivatablePanel implements ChangeList
 
         txtSliderC1 = new DoubleJFormattedTextField((NumberFormat) null);
         txtSliderC1.setHorizontalAlignment(SwingConstants.RIGHT);
-        txtSliderC1.setBounds(246, 156, 50, 20);
+        txtSliderC1.setBounds(246, 109, 50, 20);
         txtSliderC1.setValue(Double.toString(sliderC1.getValue() / 100.0));
         txtSliderC1.setEnabled(false);
         add(txtSliderC1);
 
         sliderC2 = new JSlider();
-        sliderC2.setBounds(22, 208, 285, 29);
+        sliderC2.setBounds(21, 161, 285, 29);
         sliderC2.setMaximum(100);
         sliderC2.setMinimum(0);
         sliderC2.setValue(20);
@@ -399,13 +393,13 @@ public class NunnerBuskensPanel extends DeactivatablePanel implements ChangeList
 
         txtSliderC2 = new DoubleJFormattedTextField((NumberFormat) null);
         txtSliderC2.setHorizontalAlignment(SwingConstants.RIGHT);
-        txtSliderC2.setBounds(246, 196, 50, 20);
+        txtSliderC2.setBounds(245, 149, 50, 20);
         txtSliderC2.setValue(Double.toString(sliderC2.getValue() / 100.0));
         txtSliderC2.setEnabled(false);
         add(txtSliderC2);
 
         sliderAlpha = new JSlider();
-        sliderAlpha.setBounds(22, 246, 285, 29);
+        sliderAlpha.setBounds(13, 271, 285, 29);
         sliderAlpha.setMaximum(100);
         sliderAlpha.setMinimum(0);
         sliderAlpha.setValue(20);
@@ -414,10 +408,20 @@ public class NunnerBuskensPanel extends DeactivatablePanel implements ChangeList
 
         txtSliderAlpha = new DoubleJFormattedTextField((NumberFormat) null);
         txtSliderAlpha.setHorizontalAlignment(SwingConstants.RIGHT);
-        txtSliderAlpha.setBounds(246, 236, 50, 20);
+        txtSliderAlpha.setBounds(237, 256, 50, 20);
         txtSliderAlpha.setValue(Double.toString(sliderAlpha.getValue() / 100.0));
         txtSliderAlpha.setEnabled(false);
         add(txtSliderAlpha);
+
+        JLabel lblTriadicClosure = new JLabel("Triadic closure:");
+        lblTriadicClosure.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+        lblTriadicClosure.setBounds(13, 202, 242, 16);
+        add(lblTriadicClosure);
+
+        JSeparator separator_1 = new JSeparator(SwingConstants.HORIZONTAL);
+        separator_1.setForeground(Color.LIGHT_GRAY);
+        separator_1.setBounds(0, 194, 312, 10);
+        add(separator_1);
     }
 
     /**
