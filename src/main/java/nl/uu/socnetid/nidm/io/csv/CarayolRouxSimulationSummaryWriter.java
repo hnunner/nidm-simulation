@@ -29,14 +29,14 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import nl.uu.socnetid.nidm.data.CarayolRouxDataGeneratorData;
 import nl.uu.socnetid.nidm.data.CarayolRouxParameters;
+import nl.uu.socnetid.nidm.data.DataGeneratorData;
 import nl.uu.socnetid.nidm.data.LogValues;
 
 /**
  * @author Hendrik Nunner
  */
-public class CarayolRouxSimulationSummaryWriter extends CsvFileWriter<CarayolRouxParameters, CarayolRouxDataGeneratorData> {
+public class CarayolRouxSimulationSummaryWriter extends CsvFileWriter<CarayolRouxParameters> {
 
     /**
      * Creates the writer.
@@ -50,7 +50,8 @@ public class CarayolRouxSimulationSummaryWriter extends CsvFileWriter<CarayolRou
      *          than a regular file, does not exist but cannot be
      *          created, or cannot be opened for any other reason
      */
-    public CarayolRouxSimulationSummaryWriter(String fileName, CarayolRouxDataGeneratorData dgData) throws IOException {
+    public CarayolRouxSimulationSummaryWriter(String fileName, DataGeneratorData<CarayolRouxParameters> dgData)
+            throws IOException {
         super(fileName, dgData);
     }
 

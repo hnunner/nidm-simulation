@@ -36,7 +36,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.apache.log4j.Logger;
 
 import nl.uu.socnetid.nidm.agents.Agent;
-import nl.uu.socnetid.nidm.data.CarayolRouxDataGeneratorData;
+import nl.uu.socnetid.nidm.data.CarayolRouxParameters;
+import nl.uu.socnetid.nidm.data.DataGeneratorData;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
 import nl.uu.socnetid.nidm.io.csv.CarayolRouxSimulationSummaryWriter;
@@ -59,7 +60,7 @@ public class CarayolRouxDataGenerator extends AbstractDataGenerator {
     private static final Logger logger = Logger.getLogger(CarayolRouxDataGenerator.class);
 
     // stats & writer
-    private CarayolRouxDataGeneratorData dgData;
+    private DataGeneratorData<CarayolRouxParameters> dgData;
     private CarayolRouxSimulationSummaryWriter ssWriter;
 
 
@@ -91,7 +92,7 @@ public class CarayolRouxDataGenerator extends AbstractDataGenerator {
      */
     @Override
     protected void initData() {
-        this.dgData = new CarayolRouxDataGeneratorData();
+        this.dgData = new DataGeneratorData<CarayolRouxParameters>(PropertiesHandler.getInstance().getCarayolRouxParameters());
     }
 
     /* (non-Javadoc)
