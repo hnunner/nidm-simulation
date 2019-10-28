@@ -29,14 +29,14 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import nl.uu.socnetid.nidm.data.CidmDataGeneratorData;
 import nl.uu.socnetid.nidm.data.CidmParameters;
+import nl.uu.socnetid.nidm.data.DataGeneratorData;
 import nl.uu.socnetid.nidm.data.LogValues;
 
 /**
  * @author Hendrik Nunner
  */
-public class CidmSimulationSummaryWriter extends CsvFileWriter<CidmParameters, CidmDataGeneratorData> {
+public class CidmSimulationSummaryWriter extends CsvFileWriter<CidmParameters> {
 
     /**
      * Creates the writer.
@@ -50,7 +50,7 @@ public class CidmSimulationSummaryWriter extends CsvFileWriter<CidmParameters, C
      *          than a regular file, does not exist but cannot be
      *          created, or cannot be opened for any other reason
      */
-    public CidmSimulationSummaryWriter(String fileName, CidmDataGeneratorData dgData) throws IOException {
+    public CidmSimulationSummaryWriter(String fileName, DataGeneratorData<CidmParameters> dgData) throws IOException {
         super(fileName, dgData);
     }
 

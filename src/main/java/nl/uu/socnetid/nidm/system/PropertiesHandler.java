@@ -186,8 +186,18 @@ public class PropertiesHandler {
         cidmParameters.setRsEqual(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_CIDM_RS_EQUAL.toString())));
         cidmParameters.setRSigmas(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_R_SIGMA.toString())));
         cidmParameters.setRPis(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_R_PI.toString())));
+        // N
+        cidmParameters.setNRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_CIDM_NET_SIZE_RANDOM.toString())));
+        cidmParameters.setNRandomMin(Integer.valueOf(configProps.getProperty(LogValues.IV_CIDM_NET_SIZE_RANDOM_MIN.toString())));
+        cidmParameters.setNRandomMax(Integer.valueOf(configProps.getProperty(LogValues.IV_CIDM_NET_SIZE_RANDOM_MAX.toString())));
         cidmParameters.setNs(parseIntArray(configProps.getProperty(LogValues.IV_CIDM_NET_SIZE.toString())));
+        // iota
+        cidmParameters.setIotaRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_CIDM_IOTA_RANDOM.toString())));
         cidmParameters.setIotas(parseBooleanArray(configProps.getProperty(LogValues.IV_CIDM_IOTA.toString())));
+        // phi
+        cidmParameters.setPhiRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_CIDM_PHI_RANDOM.toString())));
+        cidmParameters.setPhiRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_CIDM_PHI_RANDOM_MIN.toString())));
+        cidmParameters.setPhiRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_CIDM_PHI_RANDOM_MAX.toString())));
         cidmParameters.setPhis(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_PHI.toString())));
         cidmParameters.setZeta(Integer.valueOf(configProps.getProperty(LogValues.IV_CIDM_ZETA.toString())));
         cidmParameters.setEpsilon(Integer.valueOf(configProps.getProperty(LogValues.IV_CIDM_EPSILON.toString())));

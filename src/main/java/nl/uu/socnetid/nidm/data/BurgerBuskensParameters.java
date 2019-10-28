@@ -28,7 +28,7 @@ package nl.uu.socnetid.nidm.data;
 /**
  * @author Hendrik Nunner
  */
-public class BurgerBuskensParameters implements UtilityModelParameters {
+public class BurgerBuskensParameters extends UtilityModelParameters {
 
     // social benefits
     private boolean b1Random;
@@ -60,22 +60,6 @@ public class BurgerBuskensParameters implements UtilityModelParameters {
     private double c3RandomMax;
     private double[] c3s;
     private double currC3;
-    // network
-    private boolean NRandom;
-    private int NRandomMin;
-    private int NRandomMax;
-    private int[] Ns;
-    private int currN;
-    private boolean iotaRandom;
-    private boolean[] iotas;
-    private boolean currIota;
-    private boolean phiRandom;
-    private double phiRandomMin;
-    private double phiRandomMax;
-    private double[] phis;
-    private double currPhi;
-    // simulation
-    private int simsPerParameterCombination;
 
 
     /**
@@ -219,90 +203,6 @@ public class BurgerBuskensParameters implements UtilityModelParameters {
     }
 
     /**
-     * @return the ns
-     */
-    public int[] getNs() {
-        return Ns;
-    }
-
-    /**
-     * @param ns the ns to set
-     */
-    public void setNs(int[] ns) {
-        Ns = ns;
-    }
-
-    /**
-     * @return the iotas
-     */
-    public boolean[] getIotas() {
-        return iotas;
-    }
-
-    /**
-     * @param iotas the iotas to set
-     */
-    public void setIotas(boolean[] iotas) {
-        this.iotas = iotas;
-    }
-
-    /**
-     * @return the currIota
-     */
-    public boolean isCurrIota() {
-        return currIota;
-    }
-
-    /**
-     * @param currIota the currIota to set
-     */
-    public void setCurrIota(boolean currIota) {
-        this.currIota = currIota;
-    }
-
-    /**
-     * @return the phis
-     */
-    public double[] getPhis() {
-        return phis;
-    }
-
-    /**
-     * @param phis the phis to set
-     */
-    public void setPhis(double[] phis) {
-        this.phis = phis;
-    }
-
-    /**
-     * @return the currPhi
-     */
-    public double getCurrPhi() {
-        return currPhi;
-    }
-
-    /**
-     * @param currPhi the currPhi to set
-     */
-    public void setCurrPhi(double currPhi) {
-        this.currPhi = currPhi;
-    }
-
-    /**
-     * @return the simsPerParameterCombination
-     */
-    public int getSimsPerParameterCombination() {
-        return simsPerParameterCombination;
-    }
-
-    /**
-     * @param simsPerParameterCombination the simsPerParameterCombination to set
-     */
-    public void setSimsPerParameterCombination(int simsPerParameterCombination) {
-        this.simsPerParameterCombination = simsPerParameterCombination;
-    }
-
-    /**
      * @return the b1Random
      */
     public boolean isB1Random() {
@@ -370,48 +270,6 @@ public class BurgerBuskensParameters implements UtilityModelParameters {
      */
     public void setC3Random(boolean c3Random) {
         this.c3Random = c3Random;
-    }
-
-    /**
-     * @return the iotaRandom
-     */
-    public boolean isIotaRandom() {
-        return iotaRandom;
-    }
-
-    /**
-     * @param iotaRandom the iotaRandom to set
-     */
-    public void setIotaRandom(boolean iotaRandom) {
-        this.iotaRandom = iotaRandom;
-    }
-
-    /**
-     * @return the phiRandom
-     */
-    public boolean isPhiRandom() {
-        return phiRandom;
-    }
-
-    /**
-     * @param phiRandom the phiRandom to set
-     */
-    public void setPhiRandom(boolean phiRandom) {
-        this.phiRandom = phiRandom;
-    }
-
-    /**
-     * @return the nRandom
-     */
-    public boolean isNRandom() {
-        return NRandom;
-    }
-
-    /**
-     * @param nRandom the nRandom to set
-     */
-    public void setNRandom(boolean nRandom) {
-        NRandom = nRandom;
     }
 
     /**
@@ -552,76 +410,6 @@ public class BurgerBuskensParameters implements UtilityModelParameters {
      */
     public void setC3RandomMax(double c3RandomMax) {
         this.c3RandomMax = c3RandomMax;
-    }
-
-    /**
-     * @return the nRandomMin
-     */
-    public int getNRandomMin() {
-        return NRandomMin;
-    }
-
-    /**
-     * @param nRandomMin the nRandomMin to set
-     */
-    public void setNRandomMin(int nRandomMin) {
-        NRandomMin = nRandomMin;
-    }
-
-    /**
-     * @return the nRandomMax
-     */
-    public int getNRandomMax() {
-        return NRandomMax;
-    }
-
-    /**
-     * @param nRandomMax the nRandomMax to set
-     */
-    public void setNRandomMax(int nRandomMax) {
-        NRandomMax = nRandomMax;
-    }
-
-    /**
-     * @return the currN
-     */
-    public int getCurrN() {
-        return currN;
-    }
-
-    /**
-     * @param currN the currN to set
-     */
-    public void setCurrN(int currN) {
-        this.currN = currN;
-    }
-
-    /**
-     * @return the phiRandomMin
-     */
-    public double getPhiRandomMin() {
-        return phiRandomMin;
-    }
-
-    /**
-     * @param phiRandomMin the phiRandomMin to set
-     */
-    public void setPhiRandomMin(double phiRandomMin) {
-        this.phiRandomMin = phiRandomMin;
-    }
-
-    /**
-     * @return the phiRandomMax
-     */
-    public double getPhiRandomMax() {
-        return phiRandomMax;
-    }
-
-    /**
-     * @param phiRandomMax the phiRandomMax to set
-     */
-    public void setPhiRandomMax(double phiRandomMax) {
-        this.phiRandomMax = phiRandomMax;
     }
 
 }
