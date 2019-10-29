@@ -355,9 +355,9 @@ public class NunnerBuskensPanel extends DeactivatablePanel implements ChangeList
 
         sliderB2 = new JSlider();
         sliderB2.setBounds(13, 234, 285, 29);
-        sliderB2.setMaximum(100);
-        sliderB2.setMinimum(0);
-        sliderB2.setValue(20);
+        sliderB2.setMaximum(500);
+        sliderB2.setMinimum(-500);
+        sliderB2.setValue(0);
         add(sliderB2);
         sliderB2.addChangeListener(this);
 
@@ -387,7 +387,7 @@ public class NunnerBuskensPanel extends DeactivatablePanel implements ChangeList
         sliderC2.setBounds(21, 161, 285, 29);
         sliderC2.setMaximum(100);
         sliderC2.setMinimum(0);
-        sliderC2.setValue(20);
+        sliderC2.setValue(10);
         add(sliderC2);
         sliderC2.addChangeListener(this);
 
@@ -402,7 +402,7 @@ public class NunnerBuskensPanel extends DeactivatablePanel implements ChangeList
         sliderAlpha.setBounds(13, 271, 285, 29);
         sliderAlpha.setMaximum(100);
         sliderAlpha.setMinimum(0);
-        sliderAlpha.setValue(20);
+        sliderAlpha.setValue(50);
         add(sliderAlpha);
         sliderAlpha.addChangeListener(this);
 
@@ -654,4 +654,5 @@ public class NunnerBuskensPanel extends DeactivatablePanel implements ChangeList
             listenersIt.next().notifyAlphaChanged();
         }
     }
+
 }
