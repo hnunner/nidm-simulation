@@ -37,6 +37,8 @@ public class LocalAgentConnectionsStats {
 
     private final Map<DiseaseGroup, Map<Integer, Integer>> consByDiseaseGroupAtGeodesicDistance;
     private final Map<DiseaseGroup, Map<Double, Integer>> directConsByDiseaseGroupAtGeographicDistance;
+    private final int yGlobal;
+    private final int yLocal;
     private final int z;
     private final int netSize;
 
@@ -49,15 +51,22 @@ public class LocalAgentConnectionsStats {
      * @param directConsByDiseaseGroupAtGeographicDistance
      *          map of amount of connections grouped by geographic distance and disease group:
      *          (map<geographic_distance, map<disease_group, amount>>)
+     * @param yGlobal
+     *          the amount of global open triads the agent is part of (n*(n-1)/2)
+     * @param yLocal
+     *          the amount of local open triads the agent is part of (ties of agent that do not share a tie between each other)
      * @param z
      *          the amount of closed triads the agent is part of
      * @param netSize
      *          the network size
      */
     public LocalAgentConnectionsStats(Map<DiseaseGroup, Map<Integer, Integer>> consByDiseaseGroupAtGeodesicDistance,
-            Map<DiseaseGroup, Map<Double, Integer>> directConsByDiseaseGroupAtGeographicDistance, int z, int netSize) {
+            Map<DiseaseGroup, Map<Double, Integer>> directConsByDiseaseGroupAtGeographicDistance,
+            int yGlobal, int yLocal, int z, int netSize) {
         this.consByDiseaseGroupAtGeodesicDistance = consByDiseaseGroupAtGeodesicDistance;
         this.directConsByDiseaseGroupAtGeographicDistance = directConsByDiseaseGroupAtGeographicDistance;
+        this.yGlobal = yGlobal;
+        this.yLocal = yLocal;
         this.z = z;
         this.netSize = netSize;
     }
@@ -68,6 +77,20 @@ public class LocalAgentConnectionsStats {
      */
     public Map<DiseaseGroup, Map<Integer, Integer>> getConsByDiseaseGroupAtGeodesicDistance() {
         return consByDiseaseGroupAtGeodesicDistance;
+    }
+
+    /**
+     * @return the yGlobal
+     */
+    public int getYGlobal() {
+        return yGlobal;
+    }
+
+    /**
+     * @return the yLocal
+     */
+    public int getYLocal() {
+        return yLocal;
     }
 
     /**
