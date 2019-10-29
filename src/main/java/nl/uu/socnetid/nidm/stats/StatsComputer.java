@@ -368,6 +368,11 @@ public final class StatsComputer {
         }
 
         // determine number of triads agent belongs to
+        int n = agent.getNetwork().getN();
+        // open triads
+        int yGlobal = (n*(n-1))/2;
+        int yLocal = 0;
+        // closed triads
         int z = 0;
         it = directConnections.iterator();
         // consider direct connections only once for triads
@@ -380,6 +385,8 @@ public final class StatsComputer {
                 Agent potentialTriad = cit.next();
                 if (directConnection.hasDirectConnectionTo(potentialTriad)) {
                     z++;
+                } else {
+                    yLocal++;
                 }
             }
         }
@@ -387,8 +394,10 @@ public final class StatsComputer {
         return new LocalAgentConnectionsStats(
                 consByDiseaseGroupAtGeodesicDistance,
                 directConsByDiseaseGroupAtGeographicDistance,
+                yGlobal,
+                yLocal,
                 z,
-                agent.getNetwork().getN());
+                n);
     }
 
     /**
