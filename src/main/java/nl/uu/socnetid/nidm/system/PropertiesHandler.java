@@ -36,6 +36,7 @@ import nl.uu.socnetid.nidm.data.BurgerBuskensParameters;
 import nl.uu.socnetid.nidm.data.CarayolRouxParameters;
 import nl.uu.socnetid.nidm.data.CidmParameters;
 import nl.uu.socnetid.nidm.data.LogValues;
+import nl.uu.socnetid.nidm.data.NunnerBuskensParameters;
 
 
 /**
@@ -67,6 +68,7 @@ public class PropertiesHandler {
     private String rAnalysisCompleteTemplatePath;
     private String rAnalysisBurgerBuskensTemplatePath;
     private String rAnalysisCarayolRouxTemplatePath;
+    private String rAnalysisNunnerBuskensTemplatePath;
     // Cidm parameters
     private boolean generateCidm;
     private CidmParameters cidmParameters;
@@ -76,6 +78,9 @@ public class PropertiesHandler {
     // CarayolRoux parameters
     private boolean generateCarayolRoux;
     private CarayolRouxParameters crParameters;
+    // NunnerBuskens parameters
+    private boolean generateNunnerBuskens;
+    private NunnerBuskensParameters nbParameters;
     // DATA EXPORT
     // types of data export
     private boolean exportSummary;
@@ -171,6 +176,8 @@ public class PropertiesHandler {
                 configProps.getProperty("r.anlysis.burgerbuskens.path")).toString();
         this.rAnalysisCarayolRouxTemplatePath = new StringBuilder().append(this.userDir).append(
                 configProps.getProperty("r.anlysis.carayolroux.path")).toString();
+        this.rAnalysisNunnerBuskensTemplatePath = new StringBuilder().append(this.userDir).append(
+                configProps.getProperty("r.anlysis.nunnerbuskens.path")).toString();
 
         // Cidm parameters
         generateCidm = Boolean.parseBoolean(configProps.getProperty("cidm.generate"));
@@ -284,6 +291,54 @@ public class PropertiesHandler {
         // n
         crParameters.setSimsPerParameterCombination(Integer.valueOf(configProps.getProperty(
                 LogValues.IV_CR_SIMS_PER_PC.toString())));
+
+        // NunnerBuskens
+        generateNunnerBuskens = Boolean.parseBoolean(configProps.getProperty("nb.generate"));
+        nbParameters = new NunnerBuskensParameters();
+        // b1
+        nbParameters.setB1Random(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_B1_RANDOM.toString())));
+        nbParameters.setB1RandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_B1_RANDOM_MIN.toString())));
+        nbParameters.setB1RandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_B1_RANDOM_MAX.toString())));
+        nbParameters.setB1s(parseDoubleArray(configProps.getProperty(LogValues.IV_NB_B1.toString())));
+        // c1
+        nbParameters.setC1Random(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_C1_RANDOM.toString())));
+        nbParameters.setC1RandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_C1_RANDOM_MIN.toString())));
+        nbParameters.setC1RandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_C1_RANDOM_MAX.toString())));
+        nbParameters.setC1s(parseDoubleArray(configProps.getProperty(LogValues.IV_NB_C1.toString())));
+        // c2
+        nbParameters.setC2Random(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_C2_RANDOM.toString())));
+        nbParameters.setC2RandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_C2_RANDOM_MIN.toString())));
+        nbParameters.setC2RandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_C2_RANDOM_MAX.toString())));
+        nbParameters.setC2s(parseDoubleArray(configProps.getProperty(LogValues.IV_NB_C2.toString())));
+        // b2
+        nbParameters.setB2Random(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_B2_RANDOM.toString())));
+        nbParameters.setB2RandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_B2_RANDOM_MIN.toString())));
+        nbParameters.setB2RandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_B2_RANDOM_MAX.toString())));
+        nbParameters.setB2s(parseDoubleArray(configProps.getProperty(LogValues.IV_NB_B2.toString())));
+        // yglobal
+        nbParameters.setYGlobalRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_YGLOBAL_RANDOM.toString())));
+        nbParameters.setYGlobals(parseBooleanArray(configProps.getProperty(LogValues.IV_NB_YGLOBAL.toString())));
+        // alpha
+        nbParameters.setAlphaRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_ALPHA_RANDOM.toString())));
+        nbParameters.setAlphaRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_ALPHA_RANDOM_MIN.toString())));
+        nbParameters.setAlphaRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_ALPHA_RANDOM_MAX.toString())));
+        nbParameters.setAlphas(parseDoubleArray(configProps.getProperty(LogValues.IV_NB_ALPHA.toString())));
+        // N
+        nbParameters.setNRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_NET_SIZE_RANDOM.toString())));
+        nbParameters.setNRandomMin(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_NET_SIZE_RANDOM_MIN.toString())));
+        nbParameters.setNRandomMax(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_NET_SIZE_RANDOM_MAX.toString())));
+        nbParameters.setNs(parseIntArray(configProps.getProperty(LogValues.IV_NB_NET_SIZE.toString())));
+        // iota
+        nbParameters.setIotaRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_IOTA_RANDOM.toString())));
+        nbParameters.setIotas(parseBooleanArray(configProps.getProperty(LogValues.IV_NB_IOTA.toString())));
+        // phi
+        nbParameters.setPhiRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_PHI_RANDOM.toString())));
+        nbParameters.setPhiRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PHI_RANDOM_MIN.toString())));
+        nbParameters.setPhiRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PHI_RANDOM_MAX.toString())));
+        nbParameters.setPhis(parseDoubleArray(configProps.getProperty(LogValues.IV_NB_PHI.toString())));
+        // n
+        nbParameters.setSimsPerParameterCombination(Integer.valueOf(configProps.getProperty(
+                LogValues.IV_NB_SIMS_PER_PC.toString())));
 
         // types of data export
         this.exportSummary = Boolean.parseBoolean(configProps.getProperty("export.summary"));
@@ -494,6 +549,24 @@ public class PropertiesHandler {
     }
 
     /**
+     * Gets whether to generate data for the NunnerBuskens model or not.
+     *
+     * @return true if data ought to be generated, false otherwise
+     */
+    public boolean isGenerateNunnerBuskens() {
+        return generateNunnerBuskens;
+    }
+
+    /**
+     * Gets the NunnerBuskens parameters as defined in the config.properties
+     *
+     * @return the NunnerBuskens parameters as defined in the config.properties
+     */
+    public NunnerBuskensParameters getNunnerBuskensParameters() {
+        return nbParameters;
+    }
+
+    /**
      * @return the analyzeData
      */
     public boolean isAnalyzeData() {
@@ -526,6 +599,13 @@ public class PropertiesHandler {
      */
     public String getRAnalysisCarayolRouxTemplatePath() {
         return rAnalysisCarayolRouxTemplatePath;
+    }
+
+    /**
+     * @return the rAnalysisNunnerBuskensTemplatePath
+     */
+    public String getRAnalysisNunnerBuskensTemplatePath() {
+        return rAnalysisNunnerBuskensTemplatePath;
     }
 
 }
