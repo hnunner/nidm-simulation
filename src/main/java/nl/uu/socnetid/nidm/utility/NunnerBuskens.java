@@ -37,14 +37,16 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
 
     // benefits of direct connections
     private double b1;
-    // costs of direct connections
-    private double c1;
-    // quadratic costs of additional direct connections
-    private double c2;
     // weight of benefits for triads
     private double b2;
     // preference shift between open and closed triads
     private double alpha;
+    // costs of direct connections
+    private double c1;
+    // quadratic costs of additional direct connections
+    private double c2;
+    // whether y is computed globally (n*(n-1)/2) or locally (ties of agent that do not share a tie between each other)
+    private boolean yGlobal;
     // the panel to track GUI parameter changes from
     private NunnerBuskensPanel nbPanel;
 
@@ -62,9 +64,11 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
      *          the weight of benefits for triads
      * @param alpha
      *          the preference shift between open and closed triads
+     * @param yGlobal
+     *           whether y is computed globally (n*(n-1)/2) or locally (ties of agent that do not share a tie between each other)
      */
-    public NunnerBuskens(double b1, double c1, double c2, double b2, double alpha) {
-        this(b1, b2, c1, c2, alpha, null);
+    public NunnerBuskens(double b1, double b2, double alpha, double c1, double c2, boolean yGlobal) {
+        this(b1, b2, alpha, c1, c2, yGlobal, null);
     }
 
     /**
@@ -80,15 +84,18 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
      *          the weight of benefits for triads
      * @param alpha
      *          the preference shift between open and closed triads
+     * @param yGlobal
+     *           whether y is computed globally (n*(n-1)/2) or locally (ties of agent that do not share a tie between each other)
      * @param nbPanel
      *          the panel to track GUI parameter changes from
      */
-    public NunnerBuskens(double b1, double c1, double c2, double b2, double alpha, NunnerBuskensPanel nbPanel) {
+    public NunnerBuskens(double b1, double b2, double alpha, double c1, double c2, boolean yGlobal, NunnerBuskensPanel nbPanel) {
         this.b1 = b1;
-        this.c1 = c1;
-        this.c2 = c2;
         this.b2 = b2;
         this.alpha = alpha;
+        this.c1 = c1;
+        this.c2 = c2;
+        this.yGlobal = yGlobal;
         this.nbPanel = nbPanel;
         if (this.nbPanel != null) {
             this.nbPanel.addParameterChangeListener(this);
@@ -110,8 +117,10 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
      */
     @Override
     protected double getSocialBenefits(LocalAgentConnectionsStats lacs, Agent agent) {
-        // TODO implement
-        return 0;
+        return
+                this.b1 * lacs.getN() +
+                this.b2 * (Math.pow(lacs.getZ(), this.alpha) *
+                        Math.pow(this.yGlobal ? lacs.getYGlobal() : lacs.getYLocal(), 1-this.alpha));
     }
 
     /* (non-Javadoc)
@@ -120,8 +129,9 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
      */
     @Override
     protected double getSocialCosts(LocalAgentConnectionsStats lacs, Agent agent) {
-        // TODO implement
-        return 0;
+        return
+                this.c1 * lacs.getN() +
+                this.c2 * Math.pow(lacs.getN(), 2);
     }
 
     /* (non-Javadoc)

@@ -748,10 +748,11 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
             case 3:
                 return new NunnerBuskens(
                         this.nbPanel.getB1(),
-                        this.nbPanel.getC1(),
-                        this.nbPanel.getC2(),
                         this.nbPanel.getB2(),
                         this.nbPanel.getAlpha(),
+                        this.nbPanel.getC1(),
+                        this.nbPanel.getC2(),
+                        false,
                         this.nbPanel);
 
             case 4:
