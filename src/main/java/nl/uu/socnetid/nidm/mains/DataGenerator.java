@@ -41,6 +41,7 @@ import nl.uu.socnetid.nidm.io.generator.AbstractDataGenerator;
 import nl.uu.socnetid.nidm.io.generator.BurgerBuskensDataGenerator;
 import nl.uu.socnetid.nidm.io.generator.CarayolRouxDataGenerator;
 import nl.uu.socnetid.nidm.io.generator.CidmDataGenerator;
+import nl.uu.socnetid.nidm.io.generator.NunnerBuskensDataGenerator;
 import nl.uu.socnetid.nidm.system.PropertiesHandler;
 
 /**
@@ -124,6 +125,11 @@ public class DataGenerator {
         // Carayol & Roux (2009)
         if (PropertiesHandler.getInstance().isGenerateCarayolRoux()) {
             dataGenerator = new CarayolRouxDataGenerator(rootExportPath);
+            dataGenerator.launch();
+        }
+        // Nunner & Buskens (2019)
+        if (PropertiesHandler.getInstance().isGenerateNunnerBuskens()) {
+            dataGenerator = new NunnerBuskensDataGenerator(rootExportPath);
             dataGenerator.launch();
         }
     }
