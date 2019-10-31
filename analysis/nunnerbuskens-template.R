@@ -284,7 +284,7 @@ getPlots <- function(ssData = loadSimulationSummaryData(), includeStability = TR
 
   plots <- c(plots, getPlotRow(ssData,
                                ssData$nb.alpha,
-                               expression(paste("Open vs. closed triads (", α,")",sep="")),
+                               expression(paste("Open vs. closed triads (", alpha,")",sep="")),
                                1,
                                includeStability))
 

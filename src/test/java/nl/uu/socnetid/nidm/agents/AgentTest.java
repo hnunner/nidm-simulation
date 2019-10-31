@@ -449,41 +449,41 @@ public class AgentTest {
      */
     @Test
     public void testHasDirectConnectionTo() {
-        assertTrue(this.agent1.hasDirectConnectionTo(this.agent2));
-        assertTrue(this.agent1.hasDirectConnectionTo(this.agent3));
-        assertTrue(this.agent1.hasDirectConnectionTo(this.agent4));
-        assertFalse(this.agent1.hasDirectConnectionTo(this.agent5));
-        assertFalse(this.agent1.hasDirectConnectionTo(this.agent6));
+        assertTrue(this.agent1.isDirectlyConnectedTo(this.agent2));
+        assertTrue(this.agent1.isDirectlyConnectedTo(this.agent3));
+        assertTrue(this.agent1.isDirectlyConnectedTo(this.agent4));
+        assertFalse(this.agent1.isDirectlyConnectedTo(this.agent5));
+        assertFalse(this.agent1.isDirectlyConnectedTo(this.agent6));
 
-        assertTrue(this.agent2.hasDirectConnectionTo(this.agent1));
-        assertFalse(this.agent2.hasDirectConnectionTo(this.agent3));
-        assertFalse(this.agent2.hasDirectConnectionTo(this.agent4));
-        assertFalse(this.agent2.hasDirectConnectionTo(this.agent5));
-        assertFalse(this.agent2.hasDirectConnectionTo(this.agent6));
+        assertTrue(this.agent2.isDirectlyConnectedTo(this.agent1));
+        assertFalse(this.agent2.isDirectlyConnectedTo(this.agent3));
+        assertFalse(this.agent2.isDirectlyConnectedTo(this.agent4));
+        assertFalse(this.agent2.isDirectlyConnectedTo(this.agent5));
+        assertFalse(this.agent2.isDirectlyConnectedTo(this.agent6));
 
-        assertTrue(this.agent3.hasDirectConnectionTo(this.agent1));
-        assertFalse(this.agent3.hasDirectConnectionTo(this.agent2));
-        assertTrue(this.agent3.hasDirectConnectionTo(this.agent4));
-        assertFalse(this.agent3.hasDirectConnectionTo(this.agent5));
-        assertFalse(this.agent3.hasDirectConnectionTo(this.agent6));
+        assertTrue(this.agent3.isDirectlyConnectedTo(this.agent1));
+        assertFalse(this.agent3.isDirectlyConnectedTo(this.agent2));
+        assertTrue(this.agent3.isDirectlyConnectedTo(this.agent4));
+        assertFalse(this.agent3.isDirectlyConnectedTo(this.agent5));
+        assertFalse(this.agent3.isDirectlyConnectedTo(this.agent6));
 
-        assertTrue(this.agent4.hasDirectConnectionTo(this.agent1));
-        assertFalse(this.agent4.hasDirectConnectionTo(this.agent2));
-        assertTrue(this.agent4.hasDirectConnectionTo(this.agent3));
-        assertFalse(this.agent4.hasDirectConnectionTo(this.agent5));
-        assertFalse(this.agent4.hasDirectConnectionTo(this.agent6));
+        assertTrue(this.agent4.isDirectlyConnectedTo(this.agent1));
+        assertFalse(this.agent4.isDirectlyConnectedTo(this.agent2));
+        assertTrue(this.agent4.isDirectlyConnectedTo(this.agent3));
+        assertFalse(this.agent4.isDirectlyConnectedTo(this.agent5));
+        assertFalse(this.agent4.isDirectlyConnectedTo(this.agent6));
 
-        assertFalse(this.agent5.hasDirectConnectionTo(this.agent1));
-        assertFalse(this.agent5.hasDirectConnectionTo(this.agent2));
-        assertFalse(this.agent5.hasDirectConnectionTo(this.agent3));
-        assertFalse(this.agent5.hasDirectConnectionTo(this.agent4));
-        assertFalse(this.agent5.hasDirectConnectionTo(this.agent6));
+        assertFalse(this.agent5.isDirectlyConnectedTo(this.agent1));
+        assertFalse(this.agent5.isDirectlyConnectedTo(this.agent2));
+        assertFalse(this.agent5.isDirectlyConnectedTo(this.agent3));
+        assertFalse(this.agent5.isDirectlyConnectedTo(this.agent4));
+        assertFalse(this.agent5.isDirectlyConnectedTo(this.agent6));
 
-        assertFalse(this.agent6.hasDirectConnectionTo(this.agent1));
-        assertFalse(this.agent6.hasDirectConnectionTo(this.agent2));
-        assertFalse(this.agent6.hasDirectConnectionTo(this.agent3));
-        assertFalse(this.agent6.hasDirectConnectionTo(this.agent4));
-        assertFalse(this.agent6.hasDirectConnectionTo(this.agent5));
+        assertFalse(this.agent6.isDirectlyConnectedTo(this.agent1));
+        assertFalse(this.agent6.isDirectlyConnectedTo(this.agent2));
+        assertFalse(this.agent6.isDirectlyConnectedTo(this.agent3));
+        assertFalse(this.agent6.isDirectlyConnectedTo(this.agent4));
+        assertFalse(this.agent6.isDirectlyConnectedTo(this.agent5));
     }
 
     /**
@@ -491,11 +491,11 @@ public class AgentTest {
      */
     @Test
     public void testHasConnectionTo() {
-        assertTrue(this.agent2.hasConnectionTo(this.agent1));
-        assertTrue(this.agent2.hasConnectionTo(this.agent3));
-        assertTrue(this.agent2.hasConnectionTo(this.agent4));
-        assertFalse(this.agent2.hasConnectionTo(this.agent5));
-        assertFalse(this.agent2.hasConnectionTo(this.agent6));
+        assertTrue(this.agent2.isSomehowConnectedTo(this.agent1));
+        assertTrue(this.agent2.isSomehowConnectedTo(this.agent3));
+        assertTrue(this.agent2.isSomehowConnectedTo(this.agent4));
+        assertFalse(this.agent2.isSomehowConnectedTo(this.agent5));
+        assertFalse(this.agent2.isSomehowConnectedTo(this.agent6));
     }
 
     /**

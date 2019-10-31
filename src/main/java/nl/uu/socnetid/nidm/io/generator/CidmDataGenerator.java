@@ -426,6 +426,13 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
     }
 
     /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.simulation.SimulationListener#notifySimulationStarted(
+     * nl.uu.socnetid.nidm.simulation.Simulation)
+     */
+    @Override
+    public void notifySimulationStarted(Simulation simulation) { }
+
+    /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.agents.AgentListener#notifyRoundFinished(
      * nl.uu.socnetid.nidm.agents.Agent)
      */
@@ -433,7 +440,6 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
     public void notifyRoundFinished(Agent agent) {
         this.dgData.getSimStats().setRounds(this.simulation.getRounds());
     }
-
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.simulation.SimulationListener#notifyRoundFinished(

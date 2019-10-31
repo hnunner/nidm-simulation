@@ -119,7 +119,7 @@ public final class StatsComputer {
 
         Collection<Agent> agents = network.getAgents();
 
-        boolean stable = true;
+        boolean stable = network.isStable();
         int connections = 0;
         double avDegree = 0.0;
 
@@ -130,7 +130,6 @@ public final class StatsComputer {
         Iterator<Agent> agentsIt = agents.iterator();
         while (agentsIt.hasNext()) {
             Agent agent = agentsIt.next();
-            stable &= agent.isSatisfied();
             connections += agent.getConnections().size();
         }
         avDegree = agents.size() == 0 ? 0.0 : (double) connections / agents.size();
@@ -383,7 +382,7 @@ public final class StatsComputer {
             Iterator<Agent> cit = consideredDirectConnections.iterator();
             while (cit.hasNext()) {
                 Agent potentialTriad = cit.next();
-                if (directConnection.hasDirectConnectionTo(potentialTriad)) {
+                if (directConnection.isDirectlyConnectedTo(potentialTriad)) {
                     z++;
                 } else {
                     yLocal++;
