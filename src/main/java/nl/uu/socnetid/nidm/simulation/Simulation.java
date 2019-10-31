@@ -71,6 +71,7 @@ public class Simulation implements Runnable {
      */
     public Simulation(Network network) {
         this.network = network;
+        this.addSimulationListener(network);
     }
 
     /**
