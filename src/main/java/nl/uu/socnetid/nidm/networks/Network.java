@@ -42,13 +42,15 @@ import org.graphstream.graph.implementations.SingleGraph;
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.agents.AgentFactory;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
+import nl.uu.socnetid.nidm.simulation.Simulation;
+import nl.uu.socnetid.nidm.simulation.SimulationListener;
 import nl.uu.socnetid.nidm.stats.DijkstraShortestPath;
 import nl.uu.socnetid.nidm.utility.UtilityFunction;
 
 /**
  * @author Hendrik Nunner
  */
-public class Network extends SingleGraph {
+public class Network extends SingleGraph implements SimulationListener {
 
     // logger
     private static final Logger logger = Logger.getLogger(Network.class);
@@ -65,6 +67,9 @@ public class Network extends SingleGraph {
     // flag for arranging agents in circle
     protected boolean arrangeInCircle;
 
+    // stability
+    private int timestepsStable = 0;
+    private static final int TIMESTEPS_REQUIRED_FOR_STABILITY = 1;
 
     /**
      * Constructor.
@@ -365,6 +370,7 @@ public class Network extends SingleGraph {
         while (agentsIt.hasNext()) {
             agentsIt.next().removeAllConnections();
         }
+        this.timestepsStable = 0;
     }
 
     /**
@@ -400,6 +406,7 @@ public class Network extends SingleGraph {
             Agent agent = agentsIt.next();
             if (agent.isSusceptible()) {
                 agent.forceInfect(diseaseSpecs);
+                this.timestepsStable = 0;
                 return agent;
             }
         }
@@ -437,26 +444,59 @@ public class Network extends SingleGraph {
                     default:
                         break;
                 }
+
+                this.timestepsStable = 0;
+
             }
         }
     }
 
     /**
-     * Checks whether the network is stable. That is, all agents are satisfied.
-     * An agent is satisfied if (s)he does not prefer to add a non-existing tie,
-     * or remove an existing tie.
-     *
-     * @return true if the network is stable, false otherwise
+     * Checks whether the network is pairwise stable: there are no two players that
+     * want to create a link and where neither one of them wants to delete a link.
      */
-    public boolean isStable() {
+    private void computeStability() {
+
+        Collection<String> checkedIds = new ArrayList<String>();
+
         Iterator<Agent> agentIt = this.getAgentIterator();
         while (agentIt.hasNext()) {
             Agent agent = agentIt.next();
-            if (!agent.isSatisfied()) {
-                return false;
+
+            Collection<Agent> others = new ArrayList<Agent>(this.getAgents());
+            Iterator<Agent> othersIt = others.iterator();
+            while (othersIt.hasNext()) {
+                Agent other = othersIt.next();
+
+                if (agent.getId() == other.getId() || checkedIds.contains(other.getId())) {
+                    continue;
+                }
+
+                if (agent.isDirectlyConnectedTo(other)) {
+                    if (agent.existingConnectionTooCostly(other)) {
+                        this.timestepsStable = 0;
+                        return;
+                    }
+                } else {
+                    if (agent.newConnectionValuable(other) && other.newConnectionValuable(agent)) {
+                        this.timestepsStable = 0;
+                        return;
+                    }
+                }
             }
+            checkedIds.add(agent.getId());
         }
-        return true;
+        this.timestepsStable++;
+    }
+
+    /**
+     * Gets whether the network is pairwise stable or not: there are no two players that
+     * want to create a link and where neither one of them wants to delete a link.
+     *
+     * @return true if network is pairwise stable, false otherwise
+     */
+    public boolean isStable() {
+        return this.timestepsStable >= TIMESTEPS_REQUIRED_FOR_STABILITY;
     }
 
     /**
@@ -553,7 +593,7 @@ public class Network extends SingleGraph {
             if (firstAgent == null) {
                 firstAgent = agent;
             } else {
-                ring = ring && firstAgent.hasConnectionTo(agent);
+                ring = ring && firstAgent.isSomehowConnectedTo(agent);
             }
         }
 
@@ -786,5 +826,37 @@ public class Network extends SingleGraph {
         return (avCostsDisease / this.getAgents().size());
     }
 
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.simulation.SimulationListener#notifySimulationStarted(
+     * nl.uu.socnetid.nidm.simulation.Simulation)
+     */
+    @Override
+    public void notifySimulationStarted(Simulation simulation) {
+        computeStability();
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.simulation.SimulationListener#notifyRoundFinished(
+     * nl.uu.socnetid.nidm.simulation.Simulation)
+     */
+    @Override
+    public void notifyRoundFinished(Simulation simulation) {
+        computeStability();
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.simulation.SimulationListener#notifyInfectionDefeated(
+     * nl.uu.socnetid.nidm.simulation.Simulation)
+     */
+    @Override
+    public void notifyInfectionDefeated(Simulation simulation) { }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.simulation.SimulationListener#notifySimulationFinished(
+     * nl.uu.socnetid.nidm.simulation.Simulation)
+     */
+    @Override
+    public void notifySimulationFinished(Simulation simulation) { }
 
 }
