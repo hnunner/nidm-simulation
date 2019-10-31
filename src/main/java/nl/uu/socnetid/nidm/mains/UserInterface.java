@@ -789,7 +789,6 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
             // this.simulation = new ThreadedSimulation(this.network);
             this.simulation = new Simulation(this.network);
             this.simulation.addSimulationListener(this);
-            this.simulation.addSimulationListener(this.network);
         }
         this.simulation.setDelay((Integer) this.simulationDelay.getValue());
 
