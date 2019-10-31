@@ -566,7 +566,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         Iterator<Agent> it = randomCoAgents.iterator();
         while (it.hasNext()) {
             Agent randomCoAgent = it.next();
-            if (this.hasDirectConnectionTo(randomCoAgent)) {
+            if (this.isDirectlyConnectedTo(randomCoAgent)) {
                 if (existingConnectionTooCostly(randomCoAgent)) {
                     disconnectFrom(randomCoAgent);
                     satisfied = false;
@@ -797,7 +797,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      *          the other agent to check the connection to
      * @return true if there is a connection, false otherwise
      */
-    public boolean hasDirectConnectionTo(Agent agent) {
+    public boolean isDirectlyConnectedTo(Agent agent) {
         Connector connector = new Connector(this, agent);
         return this.getNetwork().getEdge(connector.getEdgeId()) != null;
     }
@@ -809,7 +809,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      *          the agent to check for an existing connection
      * @return true if the agents are somehow connected, false otherwise
      */
-    public boolean hasConnectionTo(Agent agent) {
+    public boolean isSomehowConnectedTo(Agent agent) {
         Iterator<Node> bfIt = this.getBreadthFirstIterator();
         while (bfIt.hasNext()) {
             Node node = bfIt.next();

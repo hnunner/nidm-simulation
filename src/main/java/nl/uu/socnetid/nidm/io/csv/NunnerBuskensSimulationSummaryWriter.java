@@ -113,6 +113,7 @@ public class NunnerBuskensSimulationSummaryWriter extends CsvFileWriter<NunnerBu
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrN()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().isCurrIota() ? 1 : 0));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrPhi()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().isCurrYGlobal() ? 1 : 0));
 
         // DEPENDENT VARIABLES
         // network
