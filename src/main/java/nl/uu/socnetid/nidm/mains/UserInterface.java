@@ -752,7 +752,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
                         this.nbPanel.getAlpha(),
                         this.nbPanel.getC1(),
                         this.nbPanel.getC2(),
-                        false,
+                        this.nbPanel.isYGlobal(),
                         this.nbPanel);
 
             case 4:
@@ -788,6 +788,8 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
         if (this.simulation == null) {
             // this.simulation = new ThreadedSimulation(this.network);
             this.simulation = new Simulation(this.network);
+            this.simulation.addSimulationListener(this);
+            this.simulation.addSimulationListener(this.network);
         }
         this.simulation.setDelay((Integer) this.simulationDelay.getValue());
 
@@ -909,6 +911,13 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
     public void notifyAttributeRemoved(Agent agent, String attribute) {
         updateStats();
     }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.simulation.SimulationListener#notifySimulationStarted(
+     * nl.uu.socnetid.nidm.simulation.Simulation)
+     */
+    @Override
+    public void notifySimulationStarted(Simulation simulation) { }
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.agents.listeners.AgentRoundFinishedListener#notifyRoundFinished(

@@ -49,10 +49,14 @@ public interface NunnerBuskensChangeListener {
      */
     void notifyB2Changed();
 
-
     /**
      * Entry point for changes in alpha (Nunner & Buskens, 2019).
      */
     void notifyAlphaChanged();
+
+    /**
+     * Entry point for changes in computation of y (Nunner & Buskens, 2019).
+     */
+    void notifyYComputationChanged();
 
 }

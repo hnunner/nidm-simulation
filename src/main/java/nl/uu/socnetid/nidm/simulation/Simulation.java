@@ -139,6 +139,8 @@ public class Simulation implements Runnable {
      */
     public void simulate(int rounds) {
 
+        notifySimulationStarted();
+
         this.activeInfection = false;
 
         for (int i = 0; i < rounds; i++) {
@@ -313,6 +315,16 @@ public class Simulation implements Runnable {
      */
     public void removeSimulationListener(SimulationListener simulationListener) {
         this.simulationListeners.remove(simulationListener);
+    }
+
+    /**
+     * Notifies listeners of simulation start.
+     */
+    private final void notifySimulationStarted() {
+        Iterator<SimulationListener> listenersIt = this.simulationListeners.iterator();
+        while (listenersIt.hasNext()) {
+            listenersIt.next().notifySimulationStarted(this);
+        }
     }
 
     /**

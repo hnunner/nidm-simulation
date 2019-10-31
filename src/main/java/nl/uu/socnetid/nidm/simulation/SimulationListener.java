@@ -31,6 +31,14 @@ package nl.uu.socnetid.nidm.simulation;
 public interface SimulationListener {
 
     /**
+     * Entry point for simulation being started notifications.
+     *
+     * @param simulation
+     *          the simulation that has started
+     */
+    void notifySimulationStarted(final Simulation simulation);
+
+    /**
      * Entry point for rounds being finished notifications.
      *
      * @param simulation

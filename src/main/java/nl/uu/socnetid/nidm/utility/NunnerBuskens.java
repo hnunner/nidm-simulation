@@ -200,4 +200,12 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
         this.alpha = this.nbPanel.getAlpha();
     }
 
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.gui.NunnerBuskensChangeListener#notifyYComputationChanged()
+     */
+    @Override
+    public void notifyYComputationChanged() {
+        this.yGlobal = this.nbPanel.isYGlobal();
+    }
+
 }
