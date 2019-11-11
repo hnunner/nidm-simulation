@@ -117,10 +117,26 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
      */
     @Override
     protected double getSocialBenefits(LocalAgentConnectionsStats lacs, Agent agent) {
-        return
-                this.b1 * lacs.getN() +
-                this.b2 * (Math.pow(lacs.getZ(), this.alpha) *
-                        Math.pow(this.yGlobal ? lacs.getYGlobal() : lacs.getYLocal(), 1-this.alpha));
+
+        // BENEFIT OF DIRECT TIES
+        double benefitTies = this.b1 * lacs.getN();
+        System.out.println("benefit of direct ties: " + benefitTies);
+
+        // BENEFIT OF TRIADS
+        // open triads
+        double y = this.yGlobal ? lacs.getYGlobal() : lacs.getYLocal();
+        System.out.println("open triads: " + y);
+        // closed triads
+        double z = lacs.getZ();
+        System.out.println("closed triads: " + z);
+        // proportion of open triads
+        double yProp = z / (y + z);
+        System.out.println("proportion of open triads: " + yProp);
+        double benefitTriads = this.b2 * (1 - 2 * (Math.abs(yProp - this.alpha) / Math.max(this.alpha, 1-this.alpha)));
+        System.out.println("benefit of triads: " + benefitTriads);
+
+        // assembly
+        return benefitTies + benefitTriads;
     }
 
     /* (non-Javadoc)

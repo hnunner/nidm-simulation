@@ -168,14 +168,14 @@ public class NunnerBuskensTest {
     public void testGetUtility() {
 
         // with global y = (n*(n-1))/2
-        assertEquals(12.1, Precision.round(this.agent1YGlobal.getUtility().getOverallUtility(), 1), 0);
-        assertEquals(11.6, Precision.round(this.agent3YGlobal.getUtility().getOverallUtility(), 1), 0);
-        assertEquals( 8.8, Precision.round(this.agent8YGlobal.getUtility().getOverallUtility(), 1), 0);
+        assertEquals(1.4, Precision.round(this.agent1YGlobal.getUtility().getOverallUtility(), 1), 0);
+        assertEquals(1.8, Precision.round(this.agent3YGlobal.getUtility().getOverallUtility(), 1), 0);
+        assertEquals(1.7, Precision.round(this.agent8YGlobal.getUtility().getOverallUtility(), 1), 0);
 
         // with local y = number of direct ties that do not share a tie between each other
-        assertEquals(5.3, Precision.round(this.agent1YLocal.getUtility().getOverallUtility(), 1), 0);
-        assertEquals(3.1, Precision.round(this.agent3YLocal.getUtility().getOverallUtility(), 1), 0);
-        assertEquals(3.1, Precision.round(this.agent8YLocal.getUtility().getOverallUtility(), 1), 0);
+        assertEquals(1.7, Precision.round(this.agent1YLocal.getUtility().getOverallUtility(), 1), 0);
+        assertEquals(1.8, Precision.round(this.agent3YLocal.getUtility().getOverallUtility(), 1), 0);
+        assertEquals(1.9, Precision.round(this.agent8YLocal.getUtility().getOverallUtility(), 1), 0);
     }
 
 }
