@@ -120,20 +120,17 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
 
         // BENEFIT OF DIRECT TIES
         double benefitTies = this.b1 * lacs.getN();
-        System.out.println("benefit of direct ties: " + benefitTies);
 
         // BENEFIT OF TRIADS
         // open triads
         double y = this.yGlobal ? lacs.getYGlobal() : lacs.getYLocal();
-        System.out.println("open triads: " + y);
         // closed triads
         double z = lacs.getZ();
-        System.out.println("closed triads: " + z);
         // proportion of open triads
-        double yProp = z / (y + z);
-        System.out.println("proportion of open triads: " + yProp);
+        double yProp = (y+z) == 0 ? 0 : z / (y + z);
         double benefitTriads = this.b2 * (1 - 2 * (Math.abs(yProp - this.alpha) / Math.max(this.alpha, 1-this.alpha)));
-        System.out.println("benefit of triads: " + benefitTriads);
+        //double benefitTriads = this.b2 * ( - (Math.abs(yProp - this.alpha) / Math.max(this.alpha, 1-this.alpha)));
+        //double benefitTriads = this.b2 * (0.5 - (Math.abs(yProp - this.alpha) / Math.max(this.alpha, 1-this.alpha)));
 
         // assembly
         return benefitTies + benefitTriads;
