@@ -62,8 +62,8 @@ public class NunnerBuskensPanel extends SharedUtilityPanel implements ChangeList
 
     private JComboBox<String> yComputationCBox;
     private final String[] yComputations = {
-            "global",
-            "local"};
+            "local",
+            "global"};
 
     // listeners
     private final Set<NunnerBuskensChangeListener> changeListeners = new CopyOnWriteArraySet<NunnerBuskensChangeListener>();
@@ -171,8 +171,8 @@ public class NunnerBuskensPanel extends SharedUtilityPanel implements ChangeList
 
         sliderB2 = new JSlider();
         sliderB2.setBounds(22, 78, 285, 29);
-        sliderB2.setMaximum(500);
-        sliderB2.setMinimum(-500);
+        sliderB2.setMaximum(200);
+        sliderB2.setMinimum(0);
         sliderB2.setValue(0);
         add(sliderB2);
         sliderB2.addChangeListener(this);
@@ -203,7 +203,7 @@ public class NunnerBuskensPanel extends SharedUtilityPanel implements ChangeList
         sliderC2.setBounds(27, 261, 285, 29);
         sliderC2.setMaximum(100);
         sliderC2.setMinimum(0);
-        sliderC2.setValue(10);
+        sliderC2.setValue(5);
         add(sliderC2);
         sliderC2.addChangeListener(this);
 
@@ -218,7 +218,7 @@ public class NunnerBuskensPanel extends SharedUtilityPanel implements ChangeList
         sliderAlpha.setBounds(22, 116, 285, 29);
         sliderAlpha.setMaximum(100);
         sliderAlpha.setMinimum(0);
-        sliderAlpha.setValue(50);
+        sliderAlpha.setValue(80);
         add(sliderAlpha);
         sliderAlpha.addChangeListener(this);
 
@@ -306,7 +306,7 @@ public class NunnerBuskensPanel extends SharedUtilityPanel implements ChangeList
      * @return the computation of open triads (y)
      */
     public boolean isYGlobal() {
-        return this.yComputationCBox.getSelectedIndex() == 0;
+        return this.yComputationCBox.getSelectedIndex() == 1;
     }
 
     /* (non-Javadoc)

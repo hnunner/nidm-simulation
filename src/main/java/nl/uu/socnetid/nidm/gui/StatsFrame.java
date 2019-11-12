@@ -1196,5 +1196,12 @@ public class StatsFrame extends JFrame {
         this.lblAgentDeclinedTiesOut.setText(Integer.toString(agent.getConnectionStats().getDeclinedRequestsOut()));
         this.lblAgentAcceptedTiesIn.setText(Integer.toString(agent.getConnectionStats().getAcceptedRequestsIn()));
         this.lblAgentDeclinedTiesIn.setText(Integer.toString(agent.getConnectionStats().getDeclinedRequestsIn()));
+
+
+        // TODO implement status on StatsFrame
+//        LocalAgentConnectionsStats lacs = StatsComputer.computeLocalAgentConnectionsStats(agent);
+//        System.out.println("open triads: " + lacs.getZ());
+//        System.out.println("closed triads: " + lacs.getYLocal());
+
     }
 }
