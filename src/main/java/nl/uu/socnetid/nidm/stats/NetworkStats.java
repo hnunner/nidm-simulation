@@ -41,6 +41,8 @@ public class NetworkStats {
     private double density;
     private double avDegree;
     private double avDegree2;
+    private double avDegreeSatisfied;
+    private double avDegreeUnsatisfied;
     private double avCloseness;
     private double avClustering;
     private Double avPathLength = null;     // lazy initialization (very costly operations)
@@ -51,9 +53,13 @@ public class NetworkStats {
     private int susceptiblesTotal;
     private int infectedTotal;
     private int recoveredTotal;
+    private int satisfiedTotal;
+    private int unsatisfiedTotal;
     private double susceptiblePercent;
     private double infectedPercent;
     private double recoveredPercent;
+    private double satisfiedPercent;
+    private double unsatisfiedPercent;
     private boolean tiesBrokenWithInfectionPresent;
 
 
@@ -63,6 +69,8 @@ public class NetworkStats {
         this.density = network.getDensity();
         this.avDegree = network.getAvDegree();
         this.avDegree2 = network.getAvDegree2();
+        this.avDegreeSatisfied = network.getAvDegreeSatisfied();
+        this.avDegreeUnsatisfied = network.getAvDegreeUnsatisfied();
         this.avCloseness = network.getAvCloseness();
         this.avClustering = network.getAvClustering();
         this.avUtility = network.getAvUtility();
@@ -72,10 +80,14 @@ public class NetworkStats {
         this.susceptiblesTotal = network.getSusceptibles().size();
         this.infectedTotal = network.getInfected().size();
         this.recoveredTotal = network.getRecovered().size();
+        this.satisfiedTotal = network.getSatisfied().size();
+        this.unsatisfiedTotal = network.getUnsatisfied().size();
         double pct = 100D / network.getAgents().size();
         this.susceptiblePercent = pct * this.susceptiblesTotal;
         this.infectedPercent = pct * this.infectedTotal;
         this.recoveredPercent = pct * this.recoveredTotal;
+        this.satisfiedPercent = pct * this.satisfiedTotal;
+        this.unsatisfiedPercent = pct * this.unsatisfiedTotal;
     }
 
     /**
@@ -277,6 +289,8 @@ public class NetworkStats {
         this.recoveredTotal = recoveredTotal;
     }
 
+
+
     /**
      * @return the susceptiblePercent
      */
@@ -331,6 +345,90 @@ public class NetworkStats {
      */
     public void setTiesBrokenWithInfectionPresent(boolean tiesBrokenWithInfectionPresent) {
         this.tiesBrokenWithInfectionPresent = tiesBrokenWithInfectionPresent;
+    }
+
+    /**
+     * @return the avDegreeSatisfied
+     */
+    public double getAvDegreeSatisfied() {
+        return avDegreeSatisfied;
+    }
+
+    /**
+     * @param avDegreeSatisfied the avDegreeSatisfied to set
+     */
+    public void setAvDegreeSatisfied(double avDegreeSatisfied) {
+        this.avDegreeSatisfied = avDegreeSatisfied;
+    }
+
+    /**
+     * @return the avDegreeUnsatisfied
+     */
+    public double getAvDegreeUnsatisfied() {
+        return avDegreeUnsatisfied;
+    }
+
+    /**
+     * @param avDegreeUnsatisfied the avDegreeUnsatisfied to set
+     */
+    public void setAvDegreeUnsatisfied(double avDegreeUnsatisfied) {
+        this.avDegreeUnsatisfied = avDegreeUnsatisfied;
+    }
+
+    /**
+     * @return the satisfiedPercent
+     */
+    public double getSatisfiedPercent() {
+        return satisfiedPercent;
+    }
+
+    /**
+     * @param satisfiedPercent the satisfiedPercent to set
+     */
+    public void setSatisfiedPercent(double satisfiedPercent) {
+        this.satisfiedPercent = satisfiedPercent;
+    }
+
+    /**
+     * @return the unsatisfiedPercent
+     */
+    public double getUnsatisfiedPercent() {
+        return unsatisfiedPercent;
+    }
+
+    /**
+     * @param unsatisfiedPercent the unsatisfiedPercent to set
+     */
+    public void setUnsatisfiedPercent(double unsatisfiedPercent) {
+        this.unsatisfiedPercent = unsatisfiedPercent;
+    }
+
+    /**
+     * @return the satisfiedTotal
+     */
+    public int getSatisfiedTotal() {
+        return satisfiedTotal;
+    }
+
+    /**
+     * @param satisfiedTotal the satisfiedTotal to set
+     */
+    public void setSatisfiedTotal(int satisfiedTotal) {
+        this.satisfiedTotal = satisfiedTotal;
+    }
+
+    /**
+     * @return the unsatisfiedTotal
+     */
+    public int getUnsatisfiedTotal() {
+        return unsatisfiedTotal;
+    }
+
+    /**
+     * @param unsatisfiedTotal the unsatisfiedTotal to set
+     */
+    public void setUnsatisfiedTotal(int unsatisfiedTotal) {
+        this.unsatisfiedTotal = unsatisfiedTotal;
     }
 
 }
