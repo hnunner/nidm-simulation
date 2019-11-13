@@ -354,6 +354,44 @@ public class Network extends SingleGraph implements SimulationListener {
     }
 
     /**
+     * Gets all satisfied agents within the network.
+     *
+     * @return all satisfied agents within the network.
+     */
+    public Collection<Agent> getSatisfied() {
+        List<Agent> satisfied = new LinkedList<Agent>();
+
+        Iterator<Agent> agentIt = getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            if (agent.isSatisfied()) {
+                satisfied.add(agent);
+            }
+        }
+
+        return satisfied;
+    }
+
+    /**
+     * Gets all unsatisfied agents within the network.
+     *
+     * @return all unsatisfied agents within the network.
+     */
+    public Collection<Agent> getUnsatisfied() {
+        List<Agent> unsatisfied = new LinkedList<Agent>();
+
+        Iterator<Agent> agentIt = getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            if (!agent.isSatisfied()) {
+                unsatisfied.add(agent);
+            }
+        }
+
+        return unsatisfied;
+    }
+
+    /**
      * Gets an iterator over all agents in an undefined order.
      *
      * @return an iterator over all agents in an undefined order
@@ -696,6 +734,44 @@ public class Network extends SingleGraph implements SimulationListener {
             avDegree2 += agent.getSecondOrderDegree();
         }
         return avDegree2/this.getAgents().size();
+    }
+
+    /**
+     * Gets the average degree of satisfied agents.
+     *
+     * @return the average degree of satisfied agents
+     */
+    public double getAvDegreeSatisfied() {
+        double avDegree = 0;
+        int satisfiedAgents = 0;
+        Iterator<Agent> agentsIt = this.getAgents().iterator();
+        while (agentsIt.hasNext()) {
+            Agent agent = agentsIt.next();
+            if (agent.isSatisfied()) {
+                avDegree += agent.getDegree();
+                satisfiedAgents++;
+            }
+        }
+        return avDegree/satisfiedAgents;
+    }
+
+    /**
+     * Gets the average degree of unsatisfied agents.
+     *
+     * @return the average degree of unsatisfied agents
+     */
+    public double getAvDegreeUnsatisfied() {
+        double avDegree = 0;
+        int unsatisfiedAgents = 0;
+        Iterator<Agent> agentsIt = this.getAgents().iterator();
+        while (agentsIt.hasNext()) {
+            Agent agent = agentsIt.next();
+            if (!agent.isSatisfied()) {
+                avDegree += agent.getDegree();
+                unsatisfiedAgents++;
+            }
+        }
+        return avDegree/unsatisfiedAgents;
     }
 
     /**

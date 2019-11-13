@@ -198,59 +198,6 @@ exportSummary <- function(ssData = loadSimulationSummaryData()) {
   write.csv(do.call("rbind",(describeBy(ssData, group = ssData$nb.N))), filepathByN)
 }
 
-
-exportOverviewParameters <- function(ssData = loadSimulationSummaryData()) {
-
-  b1 <- c()
-  alpha <- c()
-  observations <- c()
-  exclusions <- c()
-  average.degree <- c()
-  clustering <- c()
-  average.path.length <- c()
-
-  for (currB1 in seq(1.00, 1.20, 0.01)) {
-    for (currAlpha in seq(0.5, 0.95, 0.01)) {
-
-      ssDataSub  <- subset(ssData,
-                           ssData$nb.b1 >= currB1
-                           & ssData$nb.b1 < (currB1 + 0.01)
-                           & ssData$nb.alpha >= currAlpha
-                           & ssData$nb.alpha < (currAlpha + 0.01))
-
-      ssDataSub2 <- subset(ssDataSub, ssDataSub$net.pathlength.av > 1.0)
-
-      obs <- nrow(ssDataSub2)
-      exc <- nrow(ssDataSub) - nrow(ssDataSub2)
-
-      if (obs + exc > 0) {
-        b1                    <- c(b1, currB1)
-        alpha                 <- c(alpha, currAlpha)
-        observations          <- c(observations, obs)
-        exclusions            <- c(exclusions, exc)
-        average.degree        <- c(average.degree, mean(ssDataSub2$net.degree.av))
-        clustering            <- c(clustering, mean(ssDataSub2$net.clustering.av))
-        average.path.length   <- c(average.path.length, mean(ssDataSub2$net.pathlength.av))
-      }
-    }
-  }
-
-  overviewParams <- data.frame(b1,
-                               alpha,
-                               observations,
-                               exclusions,
-                               average.degree,
-                               clustering,
-                               average.path.length)
-
-  # csv
-  filepathTotal <- paste(EXPORT_PATH_NUMERIC,
-                         "overview-parameters",
-                         EXPORT_FILE_EXTENSION_SUMMARY,
-                         sep = "")
-  write.csv(overviewParams, filepathTotal)
-}
-
 ################################################ PLOTS ###############################################
 getPlotRow <- function(ssData = loadSimulationSummaryData(),
                        xAxis,
@@ -279,7 +226,7 @@ getPlotRow <- function(ssData = loadSimulationSummaryData(),
                                   size = dotSize,
                                   alpha = SCATTER_ALPHA,
                                   colour = COLOR_DEGREE_POINT)
-  pDegree <- pDegree + geom_smooth(aes(y = ssData$net.degree.av),
+  pDegree <- pDegree + geom_smooth(aes(y = ssData$net.clustering.av),
                                    method = "lm",
                                    color = COLOR_DEGREE_SMOOTH,
                                    se=FALSE)
@@ -463,3 +410,115 @@ if (length(args) >= 1) {
   print(":: ANALYSIS FINISHED SUCCESSFULLY!")
   print("::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
 }
+
+
+
+
+exportOverviewParameters <- function(ssData = loadSimulationSummaryData()) {
+
+  ssDataObs <- subset(ssData, ssData$net.pathlength.av > 1.0)
+
+  b1 <- 1.0
+  alpha <- 0.0
+  observations <- nrow(ssDataObs)
+  exclusions <- nrow(ssData) - nrow(ssDataObs)
+  average.degree <- mean(ssDataObs$net.degree.av)
+  clustering <- mean(ssDataObs$net.clustering.av)
+  average.path.length <- mean(ssDataObs$net.pathlength.av)
+
+  overviewParams <- data.frame(b1,
+                               alpha,
+                               observations,
+                               exclusions,
+                               average.degree,
+                               clustering,
+                               average.path.length)
+
+  # csv
+  filepathTotal <- paste(EXPORT_PATH_NUMERIC,
+                         "overview-parameters",
+                         EXPORT_FILE_EXTENSION_SUMMARY,
+                         sep = "")
+  write.csv(overviewParams, filepathTotal)
+}
+
+
+fct <- function() {
+
+  data1 <- loadCSV(paste(DATA_PATH, "simulation-summary-b1-1.00-random.csv", sep = ""))
+  nrow(subset(data1, data1$net.pathlength.av < 1))
+  nrow(subset(data1, data1$net.pathlength.av > 1))
+  summary(subset(data1, data1$net.pathlength.av > 1))
+
+  data2 <- loadCSV(paste(DATA_PATH, "simulation-summary-b1-1.07.csv", sep = ""))
+  data2.1 <- subset(data2, data2$nb.alpha == 0.52)
+  nrow(subset(data2.1, data2.1$net.pathlength.av < 1))
+  nrow(subset(data2.1, data2.1$net.pathlength.av > 1))
+  summary(subset(data2.1, data2.1$net.pathlength.av > 1))
+  data2.2 <- subset(data2, data2$nb.alpha == 0.55)
+  nrow(subset(data2.2, data2.2$net.pathlength.av < 1))
+  nrow(subset(data2.2, data2.2$net.pathlength.av > 1))
+  summary(subset(data2.2, data2.2$net.pathlength.av > 1))
+
+  data3 <- loadCSV(paste(DATA_PATH, "simulation-summary-b1-1.08.csv", sep = ""))
+  data3.1 <- subset(data3, data3$nb.alpha == 0.52)
+  nrow(subset(data3.1, data3.1$net.pathlength.av < 1))
+  nrow(subset(data3.1, data3.1$net.pathlength.av > 1))
+  summary(subset(data3.1, data3.1$net.pathlength.av > 1))
+  data3.2 <- subset(data3, data3$nb.alpha == 0.69)
+  nrow(subset(data3.2, data3.2$net.pathlength.av < 1))
+  nrow(subset(data3.2, data3.2$net.pathlength.av > 1))
+  summary(subset(data3.2, data3.2$net.pathlength.av > 1))
+  data3.3 <- subset(data3, data3$nb.alpha == 0.70)
+  nrow(subset(data3.3, data3.3$net.pathlength.av < 1))
+  nrow(subset(data3.3, data3.3$net.pathlength.av > 1))
+  summary(subset(data3.3, data3.3$net.pathlength.av > 1))
+  data3.4 <- subset(data3, data3$nb.alpha == 0.82)
+  nrow(subset(data3.4, data3.4$net.pathlength.av < 1))
+  nrow(subset(data3.4, data3.4$net.pathlength.av > 1))
+  summary(subset(data3.4, data3.4$net.pathlength.av > 1))
+
+  data4 <- loadCSV(paste(DATA_PATH, "simulation-summary-b1-1.10.csv", sep = ""))
+  data4.1 <- subset(data4, data4$nb.alpha == 0.80)
+  nrow(subset(data4.1, data4.1$net.pathlength.av < 1))
+  nrow(subset(data4.1, data4.1$net.pathlength.av > 1))
+  summary(subset(data4.1, data4.1$net.pathlength.av > 1))
+  data4.2 <- subset(data4, data4$nb.alpha == 0.89)
+  nrow(subset(data4.2, data4.2$net.pathlength.av < 1))
+  nrow(subset(data4.2, data4.2$net.pathlength.av > 1))
+  summary(subset(data4.2, data4.2$net.pathlength.av > 1))
+
+  data5 <- loadCSV(paste(DATA_PATH, "simulation-summary-b1-1.11.csv", sep = ""))
+  data5.1 <- subset(data5, data5$nb.alpha == 0.81)
+  nrow(subset(data5.1, data5.1$net.pathlength.av < 1))
+  nrow(subset(data5.1, data5.1$net.pathlength.av > 1))
+  summary(subset(data5.1, data5.1$net.pathlength.av > 1))
+  data5.2 <- subset(data5, data5$nb.alpha == 0.87)
+  nrow(subset(data5.2, data5.2$net.pathlength.av < 1))
+  nrow(subset(data5.2, data5.2$net.pathlength.av > 1))
+  summary(subset(data5.2, data5.2$net.pathlength.av > 1))
+
+
+  # conditions
+  # 1. random             :: data1
+  rnd       <- subset(data1, data1$net.pathlength.av > 1)
+  # 2. small-world_weak   :: data3.1
+  sw.weak   <- subset(data3.1, data3.1$net.pathlength.av > 1)
+  # 3. small-world_strong :: data4.1
+  sw.strong <- subset(data4.1, data4.1$net.pathlength.av > 1)
+
+  # t-tests
+  # average degree
+  t.test(rnd$net.degree.av, sw.weak$net.degree.av)
+  t.test(rnd$net.degree.av, sw.strong$net.degree.av)
+  # clustering
+  t.test(rnd$net.clustering.av, sw.weak$net.clustering.av)
+  t.test(rnd$net.clustering.av, sw.strong$net.clustering.av)
+  # average path length
+  t.test(rnd$net.pathlength.av, sw.weak$net.pathlength.av)
+  t.test(rnd$net.pathlength.av, sw.strong$net.pathlength.av)
+
+}
+
+
+
