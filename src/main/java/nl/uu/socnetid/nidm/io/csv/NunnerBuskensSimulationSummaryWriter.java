@@ -88,6 +88,11 @@ public class NunnerBuskensSimulationSummaryWriter extends CsvFileWriter<NunnerBu
         cols.add(LogValues.DV_NET_AV_PATHLENGTH.toString());
         cols.add(LogValues.DV_NET_DENSITY.toString());
 
+        cols.add(LogValues.DV_NET_PERCENTAGE_SATISFIED.toString());
+        cols.add(LogValues.DV_NET_PERCENTAGE_UNSATISFIED.toString());
+        cols.add(LogValues.DV_NET_AV_DEGREE_SATISFIED.toString());
+        cols.add(LogValues.DV_NET_AV_DEGREE_UNSATISFIED.toString());
+
         writeLine(cols);
     }
 
@@ -122,6 +127,11 @@ public class NunnerBuskensSimulationSummaryWriter extends CsvFileWriter<NunnerBu
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvClustering()));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvPathLength()));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getDensity()));
+
+        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getSatisfiedPercent()));
+        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getUnsatisfiedPercent()));
+        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvDegreeSatisfied()));
+        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvDegreeUnsatisfied()));
 
         writeLine(currData);
     }
