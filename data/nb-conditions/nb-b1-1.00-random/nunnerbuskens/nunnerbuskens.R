@@ -198,59 +198,6 @@ exportSummary <- function(ssData = loadSimulationSummaryData()) {
   write.csv(do.call("rbind",(describeBy(ssData, group = ssData$nb.N))), filepathByN)
 }
 
-
-exportOverviewParameters <- function(ssData = loadSimulationSummaryData()) {
-
-  b1 <- c()
-  alpha <- c()
-  observations <- c()
-  exclusions <- c()
-  average.degree <- c()
-  clustering <- c()
-  average.path.length <- c()
-
-  for (currB1 in seq(1.00, 1.20, 0.01)) {
-    for (currAlpha in seq(0.5, 0.95, 0.01)) {
-
-      ssDataSub  <- subset(ssData,
-                           ssData$nb.b1 >= currB1
-                           & ssData$nb.b1 < (currB1 + 0.01)
-                           & ssData$nb.alpha >= currAlpha
-                           & ssData$nb.alpha < (currAlpha + 0.01))
-
-      ssDataSub2 <- subset(ssDataSub, ssDataSub$net.pathlength.av > 1.0)
-
-      obs <- nrow(ssDataSub2)
-      exc <- nrow(ssDataSub) - nrow(ssDataSub2)
-
-      if (obs + exc > 0) {
-        b1                    <- c(b1, currB1)
-        alpha                 <- c(alpha, currAlpha)
-        observations          <- c(observations, obs)
-        exclusions            <- c(exclusions, exc)
-        average.degree        <- c(average.degree, mean(ssDataSub2$net.degree.av))
-        clustering            <- c(clustering, mean(ssDataSub2$net.clustering.av))
-        average.path.length   <- c(average.path.length, mean(ssDataSub2$net.pathlength.av))
-      }
-    }
-  }
-
-  overviewParams <- data.frame(b1,
-                               alpha,
-                               observations,
-                               exclusions,
-                               average.degree,
-                               clustering,
-                               average.path.length)
-
-  # csv
-  filepathTotal <- paste(EXPORT_PATH_NUMERIC,
-                         "overview-parameters",
-                         EXPORT_FILE_EXTENSION_SUMMARY,
-                         sep = "")
-  write.csv(overviewParams, filepathTotal)
-}
-
 ################################################ PLOTS ###############################################
 getPlotRow <- function(ssData = loadSimulationSummaryData(),
                        xAxis,
@@ -279,7 +226,7 @@ getPlotRow <- function(ssData = loadSimulationSummaryData(),
                                   size = dotSize,
                                   alpha = SCATTER_ALPHA,
                                   colour = COLOR_DEGREE_POINT)
-  pDegree <- pDegree + geom_smooth(aes(y = ssData$net.degree.av),
+  pDegree <- pDegree + geom_smooth(aes(y = ssData$net.clustering.av),
                                    method = "lm",
                                    color = COLOR_DEGREE_SMOOTH,
                                    se=FALSE)
@@ -463,3 +410,38 @@ if (length(args) >= 1) {
   print(":: ANALYSIS FINISHED SUCCESSFULLY!")
   print("::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
 }
+
+
+
+
+exportOverviewParameters <- function(ssData = loadSimulationSummaryData()) {
+
+  ssDataObs <- subset(ssData, ssData$net.pathlength.av > 1.0)
+
+  b1 <- 1.0
+  alpha <- 0.0
+  observations <- nrow(ssDataObs)
+  exclusions <- nrow(ssData) - nrow(ssDataObs)
+  average.degree <- mean(ssDataObs$net.degree.av)
+  clustering <- mean(ssDataObs$net.clustering.av)
+  average.path.length <- mean(ssDataObs$net.pathlength.av)
+
+  overviewParams <- data.frame(b1,
+                               alpha,
+                               observations,
+                               exclusions,
+                               average.degree,
+                               clustering,
+                               average.path.length)
+
+  # csv
+  filepathTotal <- paste(EXPORT_PATH_NUMERIC,
+                         "overview-parameters",
+                         EXPORT_FILE_EXTENSION_SUMMARY,
+                         sep = "")
+  write.csv(overviewParams, filepathTotal)
+}
+
+
+
+
