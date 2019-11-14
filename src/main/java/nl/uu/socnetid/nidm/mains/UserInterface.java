@@ -73,6 +73,7 @@ import nl.uu.socnetid.nidm.gui.ExportListener;
 import nl.uu.socnetid.nidm.gui.IntegerInputVerifier;
 import nl.uu.socnetid.nidm.gui.NodeClick;
 import nl.uu.socnetid.nidm.gui.NodeClickListener;
+import nl.uu.socnetid.nidm.gui.NunnerBuskens2Panel;
 import nl.uu.socnetid.nidm.gui.NunnerBuskensPanel;
 import nl.uu.socnetid.nidm.gui.StatsFrame;
 import nl.uu.socnetid.nidm.networks.DisplayableNetwork;
@@ -85,6 +86,7 @@ import nl.uu.socnetid.nidm.utility.CarayolRoux;
 import nl.uu.socnetid.nidm.utility.Cidm;
 import nl.uu.socnetid.nidm.utility.Cumulative;
 import nl.uu.socnetid.nidm.utility.NunnerBuskens;
+import nl.uu.socnetid.nidm.utility.NunnerBuskens2;
 import nl.uu.socnetid.nidm.utility.UtilityFunction;
 
 /**
@@ -109,14 +111,16 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
             "CIDM",
             "Burger & Buskens (2009)",
             "Carayol & Roux (2009)",
-            "Nunner & Buskens (2019)"};
+            "Nunner & Buskens (2019)",
+            "Nunner & Buskens 2 (2019)"};
     // panels
     private CumulativePanel cumulativePanel = new CumulativePanel();
     private CidmPanel cidmPanel = new CidmPanel();
     private BurgerBuskensPanel bbPanel = new BurgerBuskensPanel();
     private CarayolRouxPanel crPanel = new CarayolRouxPanel();
     private NunnerBuskensPanel nbPanel = new NunnerBuskensPanel();
-    private final DeactivatablePanel[] utilityPanels = {cumulativePanel, cidmPanel, bbPanel, crPanel, nbPanel};
+    private NunnerBuskens2Panel nb2Panel = new NunnerBuskens2Panel();
+    private final DeactivatablePanel[] utilityPanels = {cumulativePanel, cidmPanel, bbPanel, crPanel, nbPanel, nb2Panel};
 
     // AGENT
     // network size
@@ -250,6 +254,9 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
         nbPanel.setBounds(3, 51, 312, 615);
         modelPane.add(nbPanel);
 
+        nb2Panel.setBounds(3, 51, 312, 615);
+        modelPane.add(nb2Panel);
+
         cumulativePanel.setBounds(3, 51, 312, 615);
         cumulativePanel.setVisible(false);
         modelPane.add(cumulativePanel);
@@ -279,6 +286,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
                         bbPanel.setVisible(false);
                         crPanel.setVisible(false);
                         nbPanel.setVisible(false);
+                        nb2Panel.setVisible(false);
                         cumulativePanel.setVisible(false);
                         network.enableAutoLayout();
                         break;
@@ -288,6 +296,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
                         bbPanel.setVisible(true);
                         crPanel.setVisible(false);
                         nbPanel.setVisible(false);
+                        nb2Panel.setVisible(false);
                         cumulativePanel.setVisible(false);
                         network.enableAutoLayout();
                         break;
@@ -297,6 +306,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
                         bbPanel.setVisible(false);
                         crPanel.setVisible(true);
                         nbPanel.setVisible(false);
+                        nb2Panel.setVisible(false);
                         cumulativePanel.setVisible(false);
                         network.disableAutoLayout();
                         break;
@@ -306,6 +316,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
                         bbPanel.setVisible(false);
                         crPanel.setVisible(false);
                         nbPanel.setVisible(true);
+                        nb2Panel.setVisible(false);
                         cumulativePanel.setVisible(true);
                         network.enableAutoLayout();
                         break;
@@ -315,6 +326,17 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
                         bbPanel.setVisible(false);
                         crPanel.setVisible(false);
                         nbPanel.setVisible(false);
+                        nb2Panel.setVisible(true);
+                        cumulativePanel.setVisible(false);
+                        network.enableAutoLayout();
+                        break;
+
+                    case 5:
+                        cidmPanel.setVisible(false);
+                        bbPanel.setVisible(false);
+                        crPanel.setVisible(false);
+                        nbPanel.setVisible(false);
+                        nb2Panel.setVisible(false);
                         cumulativePanel.setVisible(true);
                         network.enableAutoLayout();
                         break;
@@ -756,6 +778,13 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
                         this.nbPanel);
 
             case 4:
+                return new NunnerBuskens2(
+                        this.nb2Panel.getTPref(),
+                        this.nb2Panel.isConsiderTriads(),
+                        this.nb2Panel.getAlpha(),
+                        this.nb2Panel);
+
+            case 5:
                 return new Cumulative(
                         this.cumulativePanel.getDirectBenefit(),
                         this.cumulativePanel.getIndirectBenefit());
