@@ -129,8 +129,6 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
         // proportion of open triads
         double yProp = (y+z) == 0 ? 0 : z / (y + z);
         double benefitTriads = this.b2 * (1 - 2 * (Math.abs(yProp - this.alpha) / Math.max(this.alpha, 1-this.alpha)));
-        //double benefitTriads = this.b2 * ( - (Math.abs(yProp - this.alpha) / Math.max(this.alpha, 1-this.alpha)));
-        //double benefitTriads = this.b2 * (0.5 - (Math.abs(yProp - this.alpha) / Math.max(this.alpha, 1-this.alpha)));
 
         // assembly
         return benefitTies + benefitTriads;
