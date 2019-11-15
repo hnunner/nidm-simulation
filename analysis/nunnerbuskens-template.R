@@ -38,7 +38,8 @@ sourceLibs(c("ggplot2",     # plots
              "lme4",        # regression analyses
              "sjstats",     # "icc" function
              "texreg",      # html export
-             "psych"        # summary statistics
+             "psych",       # summary statistics
+             "ggpubr"       # arranging a list of plots with one common legend
 ))
 
 
@@ -446,6 +447,225 @@ exportPlots <- function(ssData = loadSimulationSummaryData(),
 
 
 
+
+
+plot_exclusions = function(data) {
+  ggplot(data, aes(x = factor(data$alpha),
+                   y = data$exclusions,
+                   fill = factor(data$alpha))) +
+    geom_bar(stat = "identity", colour="black", alpha=.6) +
+    labs(fill = "alpha",
+         x = "alpha",
+         y = paste("exclusions (b2 = ", data$b2[1], ")", sep = "")) +
+    scale_y_continuous(limits=c(0,1.0)) +
+    theme_minimal()
+}
+
+plot_densities_degrees = function(data) {
+  ggplot(data, aes(x=data$degrees, fill=factor(data$alpha))) +
+    geom_density(alpha=.4) +
+    labs(fill = "alpha",
+         x = "av. degree",
+         y = paste("density (b2 = ", data$b2[1], ")", sep = ""))
+  #scale_y_continuous(limits=c(0,1.0))
+}
+
+plot_densities_clustering = function(data) {
+  ggplot(data, aes(x=data$clusters, fill=factor(data$alpha))) +
+    geom_density(alpha=.4) +
+    labs(fill = "alpha",
+         x = "clustering",
+         y = paste("density (b2 = ", data$b2[1], ")", sep = ""))
+  #scale_y_continuous(limits=c(0,1.0))
+}
+
+plot_densities_path_length = function(data) {
+  ggplot(data, aes(x=data$path.lengths, fill=factor(data$alpha))) +
+    geom_density(alpha=.4) +
+    labs(fill = "alpha",
+         x = "av. path length",
+         y = paste("density (b2 = ", data$b2[1], ")", sep = ""))
+  #scale_y_continuous(limits=c(0,1.0))
+}
+
+plot_densities_density = function(data) {
+  ggplot(data, aes(x=data$densities, fill=factor(data$alpha))) +
+    geom_density(alpha=.4) +
+    labs(fill = "alpha",
+         x = "network density",
+         y = paste("density (b2 = ", data$b2[1], ")", sep = ""))
+  #scale_y_continuous(limits=c(0,1.0))
+}
+
+
+exportAlphaAnalyses <- function() {
+
+  data <- loadSimulationSummaryData()
+
+  ###### DATA PREPARATION ######
+  data.summary  <- data.frame()
+  data.plots    <- data.frame()
+
+  for (b2 in unique(data$nb.b2)) {
+
+    data.by.b2        <- subset(data, data$nb.b2 == b2)
+
+    for (alpha in unique(data.by.b2$nb.alpha)) {
+
+      data.by.b2.alpha  <- subset(data.by.b2, data.by.b2$nb.alpha == alpha)
+      n                 <- nrow(data.by.b2.alpha)
+
+      data.by.b2.alpha  <- subset(data.by.b2.alpha, data.by.b2.alpha$net.pathlength.av > 1 & data.by.b2.alpha$net.stable == 1)
+      exclusions        <- (n - nrow(data.by.b2.alpha)) / n
+
+      b2s               <- rep(b2, nrow(data.by.b2.alpha))
+      alphas            <- rep(alpha, nrow(data.by.b2.alpha))
+
+      degrees           <- data.by.b2.alpha$net.degree.av
+      degrees.mean      <- mean(degrees)
+      degrees.sd        <- sd(degrees)
+
+      clusters          <- data.by.b2.alpha$net.clustering.av
+      clusters.mean     <- mean(clusters)
+      clusters.sd       <- sd(clusters)
+
+      path.lengths      <- data.by.b2.alpha$net.pathlength.av
+      path.lengths.mean <- mean(path.lengths)
+      path.lengths.sd   <- sd(path.lengths)
+
+      densities         <- data.by.b2.alpha$net.density
+      densities.mean    <- mean(densities)
+      densities.sd      <- sd(densities)
+
+      data.summary      <- rbind(data.summary, data.frame(
+        b2 = unique(b2s), alpha = unique(alphas),
+        n, exclusions,
+        degrees.mean, degrees.sd,
+        clusters.mean, clusters.sd,
+        path.lengths.mean, path.lengths.sd,
+        densities.mean, densities.sd
+      ))
+
+      data.plots        <- rbind(data.plots, data.frame(
+        b2s, alphas,
+        degrees, clusters, path.lengths, densities
+      ))
+    }
+  }
+
+  ###### SUMMARY ######
+  filepath.summary <- paste(EXPORT_PATH_NUMERIC,
+                            "alpha-summary",
+                            EXPORT_FILE_EXTENSION_SUMMARY,
+                            sep = "")
+  write.csv(data.summary, filepath.summary)
+
+  ###### PLOTS ######
+  ### EXCLUSIONS
+  p.exclusions <- do.call("ggarrange",
+                          c(lapply(X = split(data.summary, data.summary$b2),
+                                   FUN = plot_exclusions),
+                            nrow=1, common.legend = TRUE, legend = "right"))
+  ggsave(paste(EXPORT_PATH_PLOTS,
+               "alpha-exclusions",
+               EXPORT_FILE_EXTENSION_PLOTS,
+               sep = ""),
+         p.exclusions,
+         width = 300,
+         height = 100,
+         units = EXPORT_SIZE_UNITS,
+         dpi = 300,
+         device = EXPORT_FILE_TYPE_PLOTS)
+
+
+  data.plots.split <- split(data.plots, data.plots$b2)
+  ### AVERAGE DEGREES
+  p.degrees <- do.call("ggarrange",
+                       c(lapply(X = data.plots.split,
+                                FUN = plot_densities_degrees),
+                         nrow=1, common.legend = TRUE, legend = "right"))
+  ggsave(paste(EXPORT_PATH_PLOTS,
+               "alpha-degrees",
+               EXPORT_FILE_EXTENSION_PLOTS,
+               sep = ""),
+         p.degrees,
+         width = 300,
+         height = 100,
+         units = EXPORT_SIZE_UNITS,
+         dpi = 300,
+         device = EXPORT_FILE_TYPE_PLOTS)
+
+  ### CLUSTERING
+  p.clusters <- do.call("ggarrange",
+                        c(lapply(X = data.plots.split,
+                                 FUN = plot_densities_clustering),
+                          nrow=1, common.legend = TRUE, legend = "right"))
+  ggsave(paste(EXPORT_PATH_PLOTS,
+               "alpha-clusters",
+               EXPORT_FILE_EXTENSION_PLOTS,
+               sep = ""),
+         p.clusters,
+         width = 300,
+         height = 100,
+         units = EXPORT_SIZE_UNITS,
+         dpi = 300,
+         device = EXPORT_FILE_TYPE_PLOTS)
+
+  ### AVERAGE PATH LENGTH
+  p.path.length <- do.call("ggarrange",
+                           c(lapply(X = data.plots.split,
+                                    FUN = plot_densities_path_length),
+                             nrow=1, common.legend = TRUE, legend = "right"))
+  ggsave(paste(EXPORT_PATH_PLOTS,
+               "alpha-pat-length",
+               EXPORT_FILE_EXTENSION_PLOTS,
+               sep = ""),
+         p.path.length,
+         width = 300,
+         height = 100,
+         units = EXPORT_SIZE_UNITS,
+         dpi = 300,
+         device = EXPORT_FILE_TYPE_PLOTS)
+
+  ### DENSITY
+  p.density <- do.call("ggarrange",
+                       c(lapply(X = data.plots.split,
+                                FUN = plot_densities_density),
+                         nrow=1, common.legend = TRUE, legend = "right"))
+  ggsave(paste(EXPORT_PATH_PLOTS,
+               "alpha-density",
+               EXPORT_FILE_EXTENSION_PLOTS,
+               sep = ""),
+         p.density,
+         width = 300,
+         height = 100,
+         units = EXPORT_SIZE_UNITS,
+         dpi = 300,
+         device = EXPORT_FILE_TYPE_PLOTS)
+
+  ### COMBINED
+  p.combined <- ggarrange(p.exclusions, p.degrees, p.clusters, p.path.length, p.density, ncol = 1)
+  ggsave(paste(EXPORT_PATH_PLOTS,
+               "alpha-combined",
+               EXPORT_FILE_EXTENSION_PLOTS,
+               sep = ""),
+         p.combined,
+         width = 300,
+         height = 500,
+         units = EXPORT_SIZE_UNITS,
+         dpi = 300,
+         device = EXPORT_FILE_TYPE_PLOTS)
+
+  ### alternative: histograms
+  # p.histogram.density  <- ggplot(data.plots, aes(x=densities, fill=groups)) +
+  #   geom_histogram(binwidth=.1, alpha=0.6, position = 'dodge')  #, position = 'identity')
+  # p.histogram.density
+
+
+}
+
+
+
 ####################################### COMMAND LINE EXECUTION #######################################
 if (length(args) >= 1) {
   print("::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
@@ -460,6 +680,8 @@ if (length(args) >= 1) {
   exportRegressionModels(ssData = ssData)
   print(":::::: Exporting plots..")
   exportPlots()
+  print(":::::: Exporting alpha analyses..")
+  exportAlphaAnalyses()
   print(":: ANALYSIS FINISHED SUCCESSFULLY!")
   print("::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
 }
