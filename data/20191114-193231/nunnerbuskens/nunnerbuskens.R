@@ -38,7 +38,8 @@ sourceLibs(c("ggplot2",     # plots
              "lme4",        # regression analyses
              "sjstats",     # "icc" function
              "texreg",      # html export
-             "psych"        # summary statistics
+             "psych",       # summary statistics
+             "ggpubr"       # arranging a list of plots with one common legend
 ))
 
 
@@ -446,86 +447,214 @@ exportPlots <- function(ssData = loadSimulationSummaryData(),
 
 
 
-fct <- function() {
 
-  ssData <- loadSimulationSummaryData()
-  ssData <- subset(ssData, ssData$nb.b2 == 1.0)
 
-  ###### EXCLUSIONS ######
-  exclusions        <- c()
-  exclusion.groups  <- unique(ssData$nb.alpha)
-
-  for (alpha in exclusion.groups) {
-    ssDataByAlpha   <- subset(ssData, ssData$nb.alpha == alpha)
-    exclusions      <- c(exclusions,
-                         nrow(subset(ssDataByAlpha, ssDataByAlpha$net.pathlength.av < 1)) /
-                           nrow(ssDataByAlpha)
-                         )
-  }
-
-  data.exclusions <- data.frame(exclusion.groups, exclusions)
-  # bar plot
-  p.density.exclusions  <- ggplot(data.exclusions, aes(x=factor(exclusion.groups),
-                                                       y = exclusions,
-                                                       fill=factor(exclusion.groups))) +
-    geom_bar(stat = "identity", alpha=.8) +
+plot_exclusions = function(data) {
+  ggplot(data, aes(x = factor(data$alpha),
+                   y = data$exclusions,
+                   fill = factor(data$alpha))) +
+    geom_bar(stat = "identity", colour="black", alpha=.6) +
+    labs(fill = "alpha",
+         x = "alpha",
+         y = paste("exclusions (b2 = ", data$b2[1], ")", sep = "")) +
+    scale_y_continuous(limits=c(0,1.0)) +
     theme_minimal()
-  p.density.exclusions
-  # summary
-  describeBy(data.exclusions, group = data.exclusions$exclusion.groups)
+}
 
+plot_densities_degrees = function(data) {
+  ggplot(data, aes(x=data$degrees, fill=factor(data$alpha))) +
+    geom_density(alpha=.4) +
+    labs(fill = "alpha",
+         x = "av. degree",
+         y = paste("density (b2 = ", data$b2[1], ")", sep = ""))
+  #scale_y_continuous(limits=c(0,1.0))
+}
+
+plot_densities_clustering = function(data) {
+  ggplot(data, aes(x=data$clusters, fill=factor(data$alpha))) +
+    geom_density(alpha=.4) +
+    labs(fill = "alpha",
+         x = "clustering",
+         y = paste("density (b2 = ", data$b2[1], ")", sep = ""))
+  #scale_y_continuous(limits=c(0,1.0))
+}
+
+plot_densities_path_length = function(data) {
+  ggplot(data, aes(x=data$path.lengths, fill=factor(data$alpha))) +
+    geom_density(alpha=.4) +
+    labs(fill = "alpha",
+         x = "av. path length",
+         y = paste("density (b2 = ", data$b2[1], ")", sep = ""))
+  #scale_y_continuous(limits=c(0,1.0))
+}
+
+plot_densities_density = function(data) {
+  ggplot(data, aes(x=data$densities, fill=factor(data$alpha))) +
+    geom_density(alpha=.4) +
+    labs(fill = "alpha",
+         x = "network density",
+         y = paste("density (b2 = ", data$b2[1], ")", sep = ""))
+  #scale_y_continuous(limits=c(0,1.0))
+}
+
+
+exportAlphaAnalyses <- function() {
+
+  data <- loadSimulationSummaryData()
 
   ###### DATA PREPARATION ######
-  ssDataNoExclusions <- subset(ssData, ssData$net.pathlength.av > 1)
-  groups          <- c()
-  n               <- c()
-  degrees         <- c()
-  degrees.mean    <- c()
-  clusters        <- c()
-  path.lengths    <- c()
-  densities       <- c()
+  data.summary  <- data.frame()
+  data.plots    <- data.frame()
 
-  for (alpha in unique(ssDataNoExclusions$nb.alpha)) {
-    ssDataByAlpha <- subset(ssDataNoExclusions, ssDataNoExclusions$nb.alpha == alpha)
-    groups        <- c(groups, rep(paste("alpha", alpha), nrow(ssDataByAlpha)))
-    n             <- c()
+  for (b2 in unique(data$nb.b2)) {
 
-    degrees       <- c(degrees, ssDataByAlpha$net.degree.av)
-    degrees.mean  <- c(degrees.mean, mean(ssDataByAlpha$net.degree.av))
-    clusters      <- c(clusters, ssDataByAlpha$net.clustering.av)
-    path.lengths  <- c(path.lengths, ssDataByAlpha$net.pathlength.av)
-    densities     <- c(densities, ssDataByAlpha$net.density)
+    data.by.b2        <- subset(data, data$nb.b2 == b2)
+
+    for (alpha in unique(data.by.b2$nb.alpha)) {
+
+      data.by.b2.alpha  <- subset(data.by.b2, data.by.b2$nb.alpha == alpha)
+      n                 <- nrow(data.by.b2.alpha)
+
+      data.by.b2.alpha  <- subset(data.by.b2.alpha, data.by.b2.alpha$net.pathlength.av > 1 & data.by.b2.alpha$net.stable == 1)
+      exclusions        <- (n - nrow(data.by.b2.alpha)) / n
+
+      b2s               <- rep(b2, nrow(data.by.b2.alpha))
+      alphas            <- rep(alpha, nrow(data.by.b2.alpha))
+
+      degrees           <- data.by.b2.alpha$net.degree.av
+      degrees.mean      <- mean(degrees)
+      degrees.sd        <- sd(degrees)
+
+      clusters          <- data.by.b2.alpha$net.clustering.av
+      clusters.mean     <- mean(clusters)
+      clusters.sd       <- sd(clusters)
+
+      path.lengths      <- data.by.b2.alpha$net.pathlength.av
+      path.lengths.mean <- mean(path.lengths)
+      path.lengths.sd   <- sd(path.lengths)
+
+      densities         <- data.by.b2.alpha$net.density
+      densities.mean    <- mean(densities)
+      densities.sd      <- sd(densities)
+
+      data.summary      <- rbind(data.summary, data.frame(
+        b2 = unique(b2s), alpha = unique(alphas),
+        n, exclusions,
+        degrees.mean, degrees.sd,
+        clusters.mean, clusters.sd,
+        path.lengths.mean, path.lengths.sd,
+        densities.mean, densities.sd
+      ))
+
+      data.plots        <- rbind(data.plots, data.frame(
+        b2s, alphas,
+        degrees, clusters, path.lengths, densities
+      ))
+    }
   }
 
   ###### SUMMARY ######
-  data.summary <- data.frame(
-    alpha = unique(ssDataNoExclusions$nb.alpha),
-    n =
-    degrees.mean)
-  data.summary
-
+  filepath.summary <- paste(EXPORT_PATH_NUMERIC,
+                            "alpha-summary",
+                            EXPORT_FILE_EXTENSION_SUMMARY,
+                            sep = "")
+  write.csv(data.summary, filepath.summary)
 
   ###### PLOTS ######
-  data.plots <- data.frame(groups, degrees, clusters, path.lengths, densities)
+  ### EXCLUSIONS
+  p.exclusions <- do.call("ggarrange",
+                          c(lapply(X = split(data.summary, data.summary$b2),
+                                   FUN = plot_exclusions),
+                            nrow=1, common.legend = TRUE, legend = "right"))
+  ggsave(paste(EXPORT_PATH_PLOTS,
+               "alpha-exclusions",
+               EXPORT_FILE_EXTENSION_PLOTS,
+               sep = ""),
+         p.exclusions,
+         width = 300,
+         height = 100,
+         units = EXPORT_SIZE_UNITS,
+         dpi = 300,
+         device = EXPORT_FILE_TYPE_PLOTS)
+
+
+  data.plots.split <- split(data.plots, data.plots$b2)
   ### AVERAGE DEGREES
-  p.density.degrees   <- ggplot(data.plots, aes(x=degrees, fill=groups)) +
-    geom_density(alpha=.4)
-  p.density.degrees
+  p.degrees <- do.call("ggarrange",
+                       c(lapply(X = data.plots.split,
+                                FUN = plot_densities_degrees),
+                         nrow=1, common.legend = TRUE, legend = "right"))
+  ggsave(paste(EXPORT_PATH_PLOTS,
+               "alpha-degrees",
+               EXPORT_FILE_EXTENSION_PLOTS,
+               sep = ""),
+         p.degrees,
+         width = 300,
+         height = 100,
+         units = EXPORT_SIZE_UNITS,
+         dpi = 300,
+         device = EXPORT_FILE_TYPE_PLOTS)
 
   ### CLUSTERING
-  p.density.clusters    <- ggplot(data.plots, aes(x=clusters, fill=groups)) +
-    geom_density(alpha=.4)
-  p.density.clusters
+  p.clusters <- do.call("ggarrange",
+                        c(lapply(X = data.plots.split,
+                                 FUN = plot_densities_clustering),
+                          nrow=1, common.legend = TRUE, legend = "right"))
+  ggsave(paste(EXPORT_PATH_PLOTS,
+               "alpha-clusters",
+               EXPORT_FILE_EXTENSION_PLOTS,
+               sep = ""),
+         p.clusters,
+         width = 300,
+         height = 100,
+         units = EXPORT_SIZE_UNITS,
+         dpi = 300,
+         device = EXPORT_FILE_TYPE_PLOTS)
 
   ### AVERAGE PATH LENGTH
-  p.density.path.length    <- ggplot(data.plots, aes(x=path.lengths, fill=groups)) +
-    geom_density(alpha=.4)
-  p.density.path.length
+  p.path.length <- do.call("ggarrange",
+                           c(lapply(X = data.plots.split,
+                                    FUN = plot_densities_path_length),
+                             nrow=1, common.legend = TRUE, legend = "right"))
+  ggsave(paste(EXPORT_PATH_PLOTS,
+               "alpha-pat-length",
+               EXPORT_FILE_EXTENSION_PLOTS,
+               sep = ""),
+         p.path.length,
+         width = 300,
+         height = 100,
+         units = EXPORT_SIZE_UNITS,
+         dpi = 300,
+         device = EXPORT_FILE_TYPE_PLOTS)
 
   ### DENSITY
-  p.density.density    <- ggplot(data.plots, aes(x=densities, fill=groups)) +
-    geom_density(alpha=.4)
-  p.density.density
+  p.density <- do.call("ggarrange",
+                       c(lapply(X = data.plots.split,
+                                FUN = plot_densities_density),
+                         nrow=1, common.legend = TRUE, legend = "right"))
+  ggsave(paste(EXPORT_PATH_PLOTS,
+               "alpha-density",
+               EXPORT_FILE_EXTENSION_PLOTS,
+               sep = ""),
+         p.density,
+         width = 300,
+         height = 100,
+         units = EXPORT_SIZE_UNITS,
+         dpi = 300,
+         device = EXPORT_FILE_TYPE_PLOTS)
+
+  ### COMBINED
+  p.combined <- ggarrange(p.exclusions, p.degrees, p.clusters, p.path.length, p.density, ncol = 1)
+  ggsave(paste(EXPORT_PATH_PLOTS,
+               "alpha-combined",
+               EXPORT_FILE_EXTENSION_PLOTS,
+               sep = ""),
+         p.combined,
+         width = 300,
+         height = 500,
+         units = EXPORT_SIZE_UNITS,
+         dpi = 300,
+         device = EXPORT_FILE_TYPE_PLOTS)
 
   ### alternative: histograms
   # p.histogram.density  <- ggplot(data.plots, aes(x=densities, fill=groups)) +
@@ -551,6 +680,8 @@ if (length(args) >= 1) {
   exportRegressionModels(ssData = ssData)
   print(":::::: Exporting plots..")
   exportPlots()
+  print(":::::: Exporting alpha analyses..")
+  exportAlphaAnalyses()
   print(":: ANALYSIS FINISHED SUCCESSFULLY!")
   print("::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
 }
