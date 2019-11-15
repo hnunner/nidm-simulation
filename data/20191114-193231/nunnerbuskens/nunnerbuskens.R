@@ -449,28 +449,20 @@ exportPlots <- function(ssData = loadSimulationSummaryData(),
 fct <- function() {
 
   ssData <- loadSimulationSummaryData()
-
-  ###### DATA PREPARATION ######
-  exclusions        <- c()
-  exclusion.groups  <- unique(ssData$nb.alpha)
-  for (alpha in exclusion.groups) {
-    exclusions      <- c(exclusions, nrow(subset(ssData, subset(ssData, ssData$nb.alpha == alpha)$net.pathlength.av < 1)))
-  }
-
-  ssDataNoExclusions <- subset(ssData, ssData$net.pathlength.av > 1)
-  groups        <- c()
-  degrees       <- c()
-  clusters      <- c()
-  path.lengths  <- c()
-  for (alpha in unique(ssDataNoExclusions$nb.alpha)) {
-    ssDataByAlpha <- subset(ssDataNoExclusions, ssDataNoExclusions$nb.alpha == alpha)
-    groups        <- c(groups, rep(paste("alpha", alpha), nrow(ssDataByAlpha)))
-    degrees       <- c(degrees, ssDataByAlpha$net.degree.av)
-    clusters      <- c(clusters, ssDataByAlpha$net.clustering.av)
-    path.lengths  <- c(path.lengths, ssDataByAlpha$net.pathlength.av)
-  }
+  ssData <- subset(ssData, ssData$nb.b2 == 1.0)
 
   ###### EXCLUSIONS ######
+  exclusions        <- c()
+  exclusion.groups  <- unique(ssData$nb.alpha)
+
+  for (alpha in exclusion.groups) {
+    ssDataByAlpha   <- subset(ssData, ssData$nb.alpha == alpha)
+    exclusions      <- c(exclusions,
+                         nrow(subset(ssDataByAlpha, ssDataByAlpha$net.pathlength.av < 1)) /
+                           nrow(ssDataByAlpha)
+                         )
+  }
+
   data.exclusions <- data.frame(exclusion.groups, exclusions)
   # bar plot
   p.density.exclusions  <- ggplot(data.exclusions, aes(x=factor(exclusion.groups),
@@ -479,39 +471,67 @@ fct <- function() {
     geom_bar(stat = "identity", alpha=.8) +
     theme_minimal()
   p.density.exclusions
+  # summary
+  describeBy(data.exclusions, group = data.exclusions$exclusion.groups)
 
-  ###### AVERAGE DEGREES ######
-  data.degrees <- data.frame(groups, degrees)
-  # density
-  p.density.degrees   <- ggplot(data.degrees, aes(x=degrees, fill=groups)) +
+
+  ###### DATA PREPARATION ######
+  ssDataNoExclusions <- subset(ssData, ssData$net.pathlength.av > 1)
+  groups          <- c()
+  n               <- c()
+  degrees         <- c()
+  degrees.mean    <- c()
+  clusters        <- c()
+  path.lengths    <- c()
+  densities       <- c()
+
+  for (alpha in unique(ssDataNoExclusions$nb.alpha)) {
+    ssDataByAlpha <- subset(ssDataNoExclusions, ssDataNoExclusions$nb.alpha == alpha)
+    groups        <- c(groups, rep(paste("alpha", alpha), nrow(ssDataByAlpha)))
+    n             <- c()
+
+    degrees       <- c(degrees, ssDataByAlpha$net.degree.av)
+    degrees.mean  <- c(degrees.mean, mean(ssDataByAlpha$net.degree.av))
+    clusters      <- c(clusters, ssDataByAlpha$net.clustering.av)
+    path.lengths  <- c(path.lengths, ssDataByAlpha$net.pathlength.av)
+    densities     <- c(densities, ssDataByAlpha$net.density)
+  }
+
+  ###### SUMMARY ######
+  data.summary <- data.frame(
+    alpha = unique(ssDataNoExclusions$nb.alpha),
+    n =
+    degrees.mean)
+  data.summary
+
+
+  ###### PLOTS ######
+  data.plots <- data.frame(groups, degrees, clusters, path.lengths, densities)
+  ### AVERAGE DEGREES
+  p.density.degrees   <- ggplot(data.plots, aes(x=degrees, fill=groups)) +
     geom_density(alpha=.4)
   p.density.degrees
-  # histogram
-  p.histogram.degrees <- ggplot(data.degrees, aes(x=degrees, fill=groups)) +
-    geom_histogram(binwidth=.1, alpha=0.6, position = 'dodge')  #, position = 'identity')
-  p.histogram.degrees
 
-  ###### CLUSTERING ######
-  data.clusters <- data.frame(groups, clusters)
-  # density
-  p.density.clusters    <- ggplot(data.clusters, aes(x=clusters, fill=groups)) +
+  ### CLUSTERING
+  p.density.clusters    <- ggplot(data.plots, aes(x=clusters, fill=groups)) +
     geom_density(alpha=.4)
   p.density.clusters
-  # histogram
-  p.histogram.clusters  <- ggplot(data.clusters, aes(x=clusters, fill=groups)) +
-    geom_histogram(binwidth=.05, alpha=0.6, position = 'dodge')  #, position = 'identity')
-  p.histogram.clusters
 
-  ###### CLUSTERING ######
-  data.path.length  <- data.frame(groups, path.lengths)
-  # density
-  p.density.path.length    <- ggplot(data.path.length, aes(x=path.lengths, fill=groups)) +
+  ### AVERAGE PATH LENGTH
+  p.density.path.length    <- ggplot(data.plots, aes(x=path.lengths, fill=groups)) +
     geom_density(alpha=.4)
   p.density.path.length
-  # histogram
-  p.histogram.path.length  <- ggplot(data.path.length, aes(x=path.lengths, fill=groups)) +
-    geom_histogram(binwidth=.1, alpha=0.6, position = 'dodge')  #, position = 'identity')
-  p.histogram.path.length
+
+  ### DENSITY
+  p.density.density    <- ggplot(data.plots, aes(x=densities, fill=groups)) +
+    geom_density(alpha=.4)
+  p.density.density
+
+  ### alternative: histograms
+  # p.histogram.density  <- ggplot(data.plots, aes(x=densities, fill=groups)) +
+  #   geom_histogram(binwidth=.1, alpha=0.6, position = 'dodge')  #, position = 'identity')
+  # p.histogram.density
+
 
 }
 
