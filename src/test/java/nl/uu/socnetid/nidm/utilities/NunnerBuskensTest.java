@@ -62,6 +62,7 @@ public class NunnerBuskensTest {
     private static final double rSigma  = 1.2;
     private static final double rPi     = 0.5;
     private static final double phi     = 0.4;
+    private static final double omega   = 0.0;
     private static final int    tau     = 10;
 
     // agents
@@ -98,16 +99,16 @@ public class NunnerBuskensTest {
         UtilityFunction ufYGlobal = new NunnerBuskens(b1, b2, alpha, c1, c2, true);
 
         // agetns
-        this.agent1YGlobal  = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi);
-        this.agent2YGlobal  = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi);
-        this.agent3YGlobal  = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi);
-        this.agent4YGlobal  = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi);
-        this.agent5YGlobal  = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi);
-        this.agent6YGlobal  = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi);
-        this.agent7YGlobal  = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi);
-        this.agent8YGlobal  = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi);
-        this.agent9YGlobal  = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi);
-        this.agent10YGlobal = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi);
+        this.agent1YGlobal  = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi, omega);
+        this.agent2YGlobal  = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi, omega);
+        this.agent3YGlobal  = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi, omega);
+        this.agent4YGlobal  = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi, omega);
+        this.agent5YGlobal  = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi, omega);
+        this.agent6YGlobal  = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi, omega);
+        this.agent7YGlobal  = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi, omega);
+        this.agent8YGlobal  = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi, omega);
+        this.agent9YGlobal  = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi, omega);
+        this.agent10YGlobal = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi, omega);
 
         // connections
         this.agent1YGlobal.addConnection(this.agent2YGlobal);
@@ -131,16 +132,16 @@ public class NunnerBuskensTest {
         UtilityFunction ufYLocal = new NunnerBuskens(b1, b2, alpha, c1, c2, false);
 
         // agetns
-        this.agent1YLocal  = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi);
-        this.agent2YLocal  = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi);
-        this.agent3YLocal  = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi);
-        this.agent4YLocal  = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi);
-        this.agent5YLocal  = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi);
-        this.agent6YLocal  = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi);
-        this.agent7YLocal  = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi);
-        this.agent8YLocal  = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi);
-        this.agent9YLocal  = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi);
-        this.agent10YLocal = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi);
+        this.agent1YLocal  = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
+        this.agent2YLocal  = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
+        this.agent3YLocal  = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
+        this.agent4YLocal  = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
+        this.agent5YLocal  = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
+        this.agent6YLocal  = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
+        this.agent7YLocal  = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
+        this.agent8YLocal  = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
+        this.agent9YLocal  = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
+        this.agent10YLocal = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
 
         // connections
         this.agent1YLocal.addConnection(this.agent2YLocal);

@@ -34,6 +34,7 @@ import java.text.NumberFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -75,6 +76,7 @@ import nl.uu.socnetid.nidm.gui.NodeClick;
 import nl.uu.socnetid.nidm.gui.NodeClickListener;
 import nl.uu.socnetid.nidm.gui.NunnerBuskens2Panel;
 import nl.uu.socnetid.nidm.gui.NunnerBuskensPanel;
+import nl.uu.socnetid.nidm.gui.SharedUtilityPanel;
 import nl.uu.socnetid.nidm.gui.StatsFrame;
 import nl.uu.socnetid.nidm.networks.DisplayableNetwork;
 import nl.uu.socnetid.nidm.simulation.Simulation;
@@ -660,8 +662,37 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
 
         // add each agent with selected utility function and disease specs
         for (int i = 0; i < ((Number)txtAddAmount.getValue()).intValue(); i++) {
-            // TODO change sigma, pi, phi to correct panels
-            Agent agent = this.network.addAgent(uf, ds, cidmPanel.getRSigma(), cidmPanel.getRPi(), cidmPanel.getPhi());
+            SharedUtilityPanel suPanel;
+            switch (modelTypeCBox.getSelectedIndex()) {
+                case 0:
+                    suPanel = this.cidmPanel;
+                    break;
+                case 1:
+                    suPanel = this.bbPanel;
+                    break;
+                case 2:
+                    suPanel = this.crPanel;
+                    break;
+                case 3:
+                    suPanel = this.nbPanel;
+                    break;
+                case 4:
+                    suPanel = this.nb2Panel;
+                    break;
+                case 5:
+                default:
+                    throw new RuntimeException("Undefined utility function!");
+            }
+
+            double rSigma = suPanel.getRSigma();
+            double rPi = suPanel.getRPi();
+            if (suPanel.isRRandom()) {
+                double rRandom = ThreadLocalRandom.current().nextDouble(0.0, 2.0);
+                rSigma = rRandom;
+                rPi = rRandom;
+            }
+            Agent agent = this.network.addAgent(uf, ds, rSigma, rPi, suPanel.getPhi(),
+                    suPanel.getOmega());
             agent.addAgentListener(this);
         }
 
@@ -762,7 +793,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
 
             case 2:
                 return new CarayolRoux(
-                        this.crPanel.getOmega(),
+                        this.crPanel.getCrOmega(),
                         this.crPanel.getDelta(),
                         this.crPanel.getC(),
                         this.crPanel);

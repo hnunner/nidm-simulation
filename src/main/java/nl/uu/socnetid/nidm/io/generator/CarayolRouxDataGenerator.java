@@ -112,8 +112,8 @@ public class CarayolRouxDataGenerator extends AbstractDataGenerator {
     @Override
     protected void generateData() {
 
-        double[] omegas = this.dgData.getUtilityModelParams().isOmegaRandom() ?
-                new double[1] : this.dgData.getUtilityModelParams().getOmegas();
+        double[] crOmegas = this.dgData.getUtilityModelParams().isCrOmegaRandom() ?
+                new double[1] : this.dgData.getUtilityModelParams().getCrOmegas();
         double[] deltas = this.dgData.getUtilityModelParams().isDeltaRandom() ?
                 new double[1] : this.dgData.getUtilityModelParams().getDeltas();
         double[] cs = this.dgData.getUtilityModelParams().isCRandom() ?
@@ -127,7 +127,7 @@ public class CarayolRouxDataGenerator extends AbstractDataGenerator {
 
         // unique parameter combinations
         int upcs =
-                omegas.length *
+                crOmegas.length *
                 deltas.length *
                 cs.length *
                 Ns.length *
@@ -135,8 +135,8 @@ public class CarayolRouxDataGenerator extends AbstractDataGenerator {
                 phis.length;
 
         // loop over all possible parameter combinations
-        for (double omega : omegas) {
-            this.dgData.getUtilityModelParams().setCurrOmega(omega);
+        for (double crOmega : crOmegas) {
+            this.dgData.getUtilityModelParams().setCurrCrOmega(crOmega);
             for (double delta : deltas) {
                 this.dgData.getUtilityModelParams().setCurrDelta(delta);
                 for (double c : cs) {
@@ -203,11 +203,11 @@ public class CarayolRouxDataGenerator extends AbstractDataGenerator {
         Network network = new Network();
 
         // setting parameters
-        // omega
-        if (this.dgData.getUtilityModelParams().isOmegaRandom()) {
-            this.dgData.getUtilityModelParams().setCurrOmega(ThreadLocalRandom.current().nextDouble(
-                    this.dgData.getUtilityModelParams().getOmegaRandomMin(),
-                    this.dgData.getUtilityModelParams().getOmegaRandomMax()));
+        // CarayolRoux omega
+        if (this.dgData.getUtilityModelParams().isCrOmegaRandom()) {
+            this.dgData.getUtilityModelParams().setCurrCrOmega(ThreadLocalRandom.current().nextDouble(
+                    this.dgData.getUtilityModelParams().getCrOmegaRandomMin(),
+                    this.dgData.getUtilityModelParams().getCrOmegaRandomMax()));
         }
         // delta
         if (this.dgData.getUtilityModelParams().isDeltaRandom()) {
@@ -237,10 +237,18 @@ public class CarayolRouxDataGenerator extends AbstractDataGenerator {
                     this.dgData.getUtilityModelParams().getPhiRandomMin(),
                     this.dgData.getUtilityModelParams().getPhiRandomMax()));
         }
+        // omega
+        // assortative mixing not feasible for CarayolRoux due to geographic distance
+        this.dgData.getUtilityModelParams().setCurrOmega(0.0);
+//        if (this.dgData.getUtilityModelParams().isOmegaRandom()) {
+//            this.dgData.getUtilityModelParams().setCurrOmega(ThreadLocalRandom.current().nextDouble(
+//                    this.dgData.getUtilityModelParams().getOmegaRandomMin(),
+//                    this.dgData.getUtilityModelParams().getOmegaRandomMax()));
+//        }
 
         // create utility
         UtilityFunction uf = new CarayolRoux(
-                this.dgData.getUtilityModelParams().getCurrOmega(),
+                this.dgData.getUtilityModelParams().getCurrCrOmega(),
                 this.dgData.getUtilityModelParams().getCurrDelta(),
                 this.dgData.getUtilityModelParams().getCurrC());
 
@@ -250,7 +258,8 @@ public class CarayolRouxDataGenerator extends AbstractDataGenerator {
 
         // add agents
         for (int i = 0; i < this.dgData.getUtilityModelParams().getCurrN(); i++) {
-            network.addAgent(uf, ds, 0, 0, this.dgData.getUtilityModelParams().getCurrPhi());
+            network.addAgent(uf, ds, 0, 0, this.dgData.getUtilityModelParams().getCurrPhi(),
+                    this.dgData.getUtilityModelParams().getCurrPhi());
         }
         this.dgData.setAgents(new LinkedList<Agent>(network.getAgents()));
 

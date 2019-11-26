@@ -149,6 +149,8 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
                 new boolean[1] : this.dgData.getUtilityModelParams().getIotas();
         double[] phis = this.dgData.getUtilityModelParams().isPhiRandom() ?
                 new double[1] : this.dgData.getUtilityModelParams().getPhis();
+        double[] omegas = this.dgData.getUtilityModelParams().isOmegaRandom() ?
+                new double[1] : this.dgData.getUtilityModelParams().getOmegas();
 
 
         // unique parameter combinations
@@ -165,6 +167,7 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
                 Ns.length *
                 iotas.length *
                 phis.length *
+                omegas.length *
                 this.dgData.getUtilityModelParams().getTaus().length;
 
         // loop over all possible parameter combinations
@@ -198,41 +201,43 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
                                                         this.dgData.getUtilityModelParams().setCurrIota(iota);
                                                         for (double phi : phis) {
                                                             this.dgData.getUtilityModelParams().setCurrPhi(phi);
-                                                            for (int tau : this.dgData.getUtilityModelParams().getTaus()) {
-                                                                this.dgData.getUtilityModelParams().setCurrTau(tau);
+                                                            for (double omega : omegas) {
+                                                                this.dgData.getUtilityModelParams().setCurrOmega(omega);
+                                                                for (int tau : this.dgData.getUtilityModelParams().getTaus()) {
+                                                                    this.dgData.getUtilityModelParams().setCurrTau(tau);
 
-                                                                this.dgData.getSimStats().incUpc();
-                                                                logger.info("Starting to compute "
-                                                                        + this.dgData.getUtilityModelParams().
-                                                                        getSimsPerParameterCombination()
-                                                                        + " simulations for parameter combination: "
-                                                                        + this.dgData.getSimStats().getUpc() + " / "
-                                                                        + upcs);
+                                                                    this.dgData.getSimStats().incUpc();
+                                                                    logger.info("Starting to compute "
+                                                                            + this.dgData.getUtilityModelParams().
+                                                                            getSimsPerParameterCombination()
+                                                                            + " simulations for parameter combination: "
+                                                                            + this.dgData.getSimStats().getUpc() + " / "
+                                                                            + upcs);
 
-                                                                // multiple simulations for same parameter combination
-                                                                this.dgData.getSimStats().setSimPerUpc(1);
-                                                                while (this.dgData.getSimStats().getSimPerUpc()
-                                                                        <= this.dgData.getUtilityModelParams().
-                                                                        getSimsPerParameterCombination()) {
+                                                                    // multiple simulations for same parameter combination
+                                                                    this.dgData.getSimStats().setSimPerUpc(1);
+                                                                    while (this.dgData.getSimStats().getSimPerUpc()
+                                                                            <= this.dgData.getUtilityModelParams().
+                                                                            getSimsPerParameterCombination()) {
 
-                                                                    // uid = "upc-sim"
-                                                                    this.dgData.getSimStats().setUid(
-                                                                            String.valueOf(this.dgData.getSimStats().getUpc()) +
-                                                                            "-" + String.valueOf(
-                                                                                    this.dgData.getSimStats().getSimPerUpc()));
+                                                                        // uid = "upc-sim"
+                                                                        this.dgData.getSimStats().setUid(
+                                                                                String.valueOf(this.dgData.getSimStats().getUpc()) +
+                                                                                "-" + String.valueOf(
+                                                                                        this.dgData.getSimStats().getSimPerUpc()));
 
-                                                                    // simulate
-                                                                    performSingleSimulation();
+                                                                        // simulate
+                                                                        performSingleSimulation();
 
-                                                                    // log simulation summary
-                                                                    if (PropertiesHandler.getInstance().isExportSummary()) {
-                                                                        this.ssWriter.writeCurrentData();
+                                                                        // log simulation summary
+                                                                        if (PropertiesHandler.getInstance().isExportSummary()) {
+                                                                            this.ssWriter.writeCurrentData();
+                                                                        }
+
+                                                                        this.dgData.getSimStats().incSimPerUpc();
+
                                                                     }
-
-                                                                    this.dgData.getSimStats().incSimPerUpc();
-
                                                                 }
-
                                                             }
                                                         }
                                                     }
@@ -278,6 +283,12 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
                     this.dgData.getUtilityModelParams().getPhiRandomMin(),
                     this.dgData.getUtilityModelParams().getPhiRandomMax()));
         }
+        // omega
+        if (this.dgData.getUtilityModelParams().isOmegaRandom()) {
+            this.dgData.getUtilityModelParams().setCurrOmega(ThreadLocalRandom.current().nextDouble(
+                    this.dgData.getUtilityModelParams().getOmegaRandomMin(),
+                    this.dgData.getUtilityModelParams().getOmegaRandomMax()));
+        }
 
         // begin: GEXF export
         if (PropertiesHandler.getInstance().isExportGexf()) {
@@ -303,7 +314,8 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
             Agent agent = network.addAgent(uf, ds,
                     this.dgData.getUtilityModelParams().getCurrRSigma(),
                     this.dgData.getUtilityModelParams().getCurrRPi(),
-                    this.dgData.getUtilityModelParams().getCurrPhi());
+                    this.dgData.getUtilityModelParams().getCurrPhi(),
+                    this.dgData.getUtilityModelParams().getCurrOmega());
             agent.addAgentListener(this);
         }
         this.dgData.setAgents(new LinkedList<Agent>(network.getAgents()));
