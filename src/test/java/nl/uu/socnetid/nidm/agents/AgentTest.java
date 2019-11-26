@@ -33,6 +33,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -69,6 +71,10 @@ public class AgentTest {
     private static final double s     = 8.4;
     private static final double gamma = 0.1;
     private static final double mu    = 2.5;
+
+    private static final double phi     = 0.4;
+    private static final double omega   = 1.0;
+
     private UtilityFunction uf;
     private DiseaseSpecs ds;
 
@@ -84,12 +90,18 @@ public class AgentTest {
         this.uf = new Cumulative();
         this.ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
 
-        this.agent1 = this.network.addAgent(uf, this.ds);
-        this.agent2 = this.network.addAgent(uf, this.ds);
-        this.agent3 = this.network.addAgent(uf, this.ds);
-        this.agent4 = this.network.addAgent(uf, this.ds);
-        this.agent5 = this.network.addAgent(uf, this.ds);
-        this.agent6 = this.network.addAgent(uf, this.ds);
+        double r1 = ThreadLocalRandom.current().nextDouble(0.0, 2.0);
+        this.agent1 = this.network.addAgent(uf, this.ds, r1, r1, phi, omega);
+        double r2 = ThreadLocalRandom.current().nextDouble(0.0, 2.0);
+        this.agent2 = this.network.addAgent(uf, this.ds, r2, r2, phi, omega);
+        double r3 = ThreadLocalRandom.current().nextDouble(0.0, 2.0);
+        this.agent3 = this.network.addAgent(uf, this.ds, r3, r3, phi, omega);
+        double r4 = ThreadLocalRandom.current().nextDouble(0.0, 2.0);
+        this.agent4 = this.network.addAgent(uf, this.ds, r4, r4, phi, omega);
+        double r5 = ThreadLocalRandom.current().nextDouble(0.0, 2.0);
+        this.agent5 = this.network.addAgent(uf, this.ds, r5, r5, phi, omega);
+        double r6 = ThreadLocalRandom.current().nextDouble(0.0, 2.0);
+        this.agent6 = this.network.addAgent(uf, this.ds, r6, r6, phi, omega);
 
         this.agent1.addConnection(this.agent2);
         this.agent1.addConnection(this.agent3);
@@ -438,9 +450,21 @@ public class AgentTest {
      */
     @Test
     public void testGetRandomCoagents() {
+
         for (int i = 1; i < this.network.getAgents().size(); i++) {
+
             Collection<Agent> randomListOfCoagents = this.agent1.getRandomListOfCoAgents(i);
             assertEquals(i, randomListOfCoagents.size());
+
+            Iterator<Agent> it = randomListOfCoagents.iterator();
+            double prevDiff = 0;
+            while (it.hasNext()) {
+                Agent coAgent = it.next();
+                double currDiff = Math.abs((this.agent1.getRPi() + this.agent1.getRSigma()) -
+                        (coAgent.getRPi() + coAgent.getRSigma()));
+                assertTrue(prevDiff <= currDiff);
+                prevDiff = currDiff;
+            }
         }
     }
 
