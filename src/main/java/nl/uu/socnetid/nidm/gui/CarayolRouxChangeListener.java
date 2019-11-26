@@ -33,7 +33,7 @@ public interface CarayolRouxChangeListener {
     /**
      * Entry point for changes in omega (Carayol & Roux, 2009).
      */
-    void notifyOmegaChanged();
+    void notifyCrOmegaChanged();
 
     /**
      * Entry point for changes in delta (Carayol & Roux, 2009).

@@ -87,6 +87,7 @@ public class CidmAgentDetailsWriter extends CsvFileWriter<CidmParameters> {
         cols.add(LogValues.IV_CIDM_NET_SIZE.toString());
         cols.add(LogValues.IV_CIDM_IOTA.toString());
         cols.add(LogValues.IV_CIDM_PHI_AV.toString());
+        cols.add(LogValues.IV_CIDM_OMEGA_AV.toString());
         cols.add(LogValues.IV_CIDM_TAU_AV.toString());
 
         // INDEPENDENT VARIABLES
@@ -155,6 +156,7 @@ public class CidmAgentDetailsWriter extends CsvFileWriter<CidmParameters> {
             currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrN()));
             currData.add(String.valueOf(this.dgData.getUtilityModelParams().isCurrIota() ? 1 : 0));
             currData.add(String.valueOf(agent.getPhi()));
+            currData.add(String.valueOf(agent.getOmega()));
             currData.add(String.valueOf(agent.getDiseaseSpecs().getTau()));
 
             // PROPERTIES

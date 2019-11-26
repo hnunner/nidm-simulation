@@ -115,8 +115,9 @@ public class DisplayableNetwork extends Network {
      * double)
      */
     @Override
-    public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi) {
-        Agent agent = super.addAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi);
+    public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
+            double omega) {
+        Agent agent = super.addAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, omega);
 
         // sprite
         Sprite sprite = this.spriteManager.addSprite(agent.getId());

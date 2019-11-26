@@ -78,6 +78,7 @@ public class BurgerBuskensSimulationSummaryWriter extends CsvFileWriter<BurgerBu
         cols.add(LogValues.IV_BB_NET_SIZE.toString());
         cols.add(LogValues.IV_BB_IOTA.toString());
         cols.add(LogValues.IV_BB_PHI.toString());
+        cols.add(LogValues.IV_BB_OMEGA.toString());
 
         // DEPENDENT VARIABLES (D)
         // network
@@ -112,6 +113,7 @@ public class BurgerBuskensSimulationSummaryWriter extends CsvFileWriter<BurgerBu
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrN()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().isCurrIota() ? 1 : 0));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrPhi()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrOmega()));
 
         // DEPENDENT VARIABLES
         // network
