@@ -59,6 +59,7 @@ public class StatsComputerTest {
 
     //
     private static final double phi   = 0.4;
+    private static final double omega = 0.0;
     // disease
     private static final int    tau   = 10;
     private static final double s     = 8.4;
@@ -78,15 +79,15 @@ public class StatsComputerTest {
         this.ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
 
         // sigma: risk neutral, pi: risk seeking
-        this.agent1 = this.network.addAgent(uf, ds, 1.0, 0.9, phi);
-        this.agent2 = this.network.addAgent(uf, ds, 1.0, 0.33, phi);
+        this.agent1 = this.network.addAgent(uf, ds, 1.0, 0.9, phi, omega);
+        this.agent2 = this.network.addAgent(uf, ds, 1.0, 0.33, phi, omega);
         // sigma: risk seeking, pi: risk averse
-        this.agent3 = this.network.addAgent(uf, ds, 0.25, 1.5, phi);
-        this.agent4 = this.network.addAgent(uf, ds, 0.8, 1.4, phi);
-        this.agent5 = this.network.addAgent(uf, ds, 0.9, 1.3, phi);
+        this.agent3 = this.network.addAgent(uf, ds, 0.25, 1.5, phi, omega);
+        this.agent4 = this.network.addAgent(uf, ds, 0.8, 1.4, phi, omega);
+        this.agent5 = this.network.addAgent(uf, ds, 0.9, 1.3, phi, omega);
         // sigma: risk averse; pi: risk neutral
-        this.agent6 = this.network.addAgent(uf, ds, 1.5, 1.0, phi);
-        this.agent7 = this.network.addAgent(uf, ds, 2.0, 1.0, phi);
+        this.agent6 = this.network.addAgent(uf, ds, 1.5, 1.0, phi, omega);
+        this.agent7 = this.network.addAgent(uf, ds, 2.0, 1.0, phi, omega);
 
         this.agent1.addConnection(this.agent2);
         this.agent1.addConnection(this.agent3);

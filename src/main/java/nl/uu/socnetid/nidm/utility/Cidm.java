@@ -27,7 +27,6 @@ package nl.uu.socnetid.nidm.utility;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
-import nl.uu.socnetid.nidm.stats.StatsComputer;
 
 /**
  * @author Hendrik Nunner
@@ -96,42 +95,6 @@ public class Cidm extends UtilityFunction {
     @Override
     protected double getSocialCosts(LocalAgentConnectionsStats lacs, Agent agent) {
         return this.getC() * (lacs.getnS() + agent.getDiseaseSpecs().getMu() * lacs.getnI() + lacs.getnR());
-    }
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getDiseaseCosts(
-     * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats, nl.uu.socnetid.nidm.agents.Agent)
-     */
-    @Override
-    protected double getDiseaseCosts(LocalAgentConnectionsStats lacs, Agent agent) {
-        int nI = lacs.getnI();
-        double p;
-        double s;
-        double rSigma = agent.getRSigma();
-        double rPi = agent.getRPi();
-
-        // depending own agent's own risk group
-        switch (agent.getDiseaseGroup()) {
-            case SUSCEPTIBLE:
-                p = Math.pow(StatsComputer.computeProbabilityOfInfection(agent, nI), (2 - rPi));
-                s = Math.pow(agent.getDiseaseSpecs().getSigma(), rSigma) ;
-                break;
-
-            case INFECTED:
-                p = 1;
-                s = agent.getDiseaseSpecs().getSigma();
-                break;
-
-            case RECOVERED:
-                p = 0;
-                s = 0;
-                break;
-
-            default:
-                throw new RuntimeException("Unknown disease group: " + agent.getDiseaseGroup());
-        }
-
-        return p * s;
     }
 
     /* (non-Javadoc)

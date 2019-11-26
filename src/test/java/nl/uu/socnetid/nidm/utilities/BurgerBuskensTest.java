@@ -60,6 +60,7 @@ public class BurgerBuskensTest {
     private static final double rSigma  = 1.2;
     private static final double rPi     = 0.5;
     private static final double phi     = 0.4;
+    private static final double omega   = 0.0;
     private static final int    tau     = 10;
 
     // agents
@@ -84,16 +85,16 @@ public class BurgerBuskensTest {
         UtilityFunction uf = new BurgerBuskens(b1, b2, c1, c2, c3);
         DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
 
-        this.agent1  = this.network.addAgent(uf, ds, rSigma, rPi, phi);
-        this.agent2  = this.network.addAgent(uf, ds, rSigma, rPi, phi);
-        this.agent3  = this.network.addAgent(uf, ds, rSigma, rPi, phi);
-        this.agent4  = this.network.addAgent(uf, ds, rSigma, rPi, phi);
-        this.agent5  = this.network.addAgent(uf, ds, rSigma, rPi, phi);
-        this.agent6  = this.network.addAgent(uf, ds, rSigma, rPi, phi);
-        this.agent7  = this.network.addAgent(uf, ds, rSigma, rPi, phi);
-        this.agent8  = this.network.addAgent(uf, ds, rSigma, rPi, phi);
-        this.agent9  = this.network.addAgent(uf, ds, rSigma, rPi, phi);
-        this.agent10 = this.network.addAgent(uf, ds, rSigma, rPi, phi);
+        this.agent1  = this.network.addAgent(uf, ds, rSigma, rPi, phi, omega);
+        this.agent2  = this.network.addAgent(uf, ds, rSigma, rPi, phi, omega);
+        this.agent3  = this.network.addAgent(uf, ds, rSigma, rPi, phi, omega);
+        this.agent4  = this.network.addAgent(uf, ds, rSigma, rPi, phi, omega);
+        this.agent5  = this.network.addAgent(uf, ds, rSigma, rPi, phi, omega);
+        this.agent6  = this.network.addAgent(uf, ds, rSigma, rPi, phi, omega);
+        this.agent7  = this.network.addAgent(uf, ds, rSigma, rPi, phi, omega);
+        this.agent8  = this.network.addAgent(uf, ds, rSigma, rPi, phi, omega);
+        this.agent9  = this.network.addAgent(uf, ds, rSigma, rPi, phi, omega);
+        this.agent10 = this.network.addAgent(uf, ds, rSigma, rPi, phi, omega);
 
         // infections
         //this.agent1.infect(ds);

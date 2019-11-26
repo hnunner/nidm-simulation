@@ -39,7 +39,7 @@ import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
 public class CarayolRoux extends UtilityFunction implements CarayolRouxChangeListener {
 
     // benefits of connections
-    private double omega;
+    private double crOmega;
     // distance dependent decay of benefits of connections
     private double delta;
     // costs of connections
@@ -65,7 +65,7 @@ public class CarayolRoux extends UtilityFunction implements CarayolRouxChangeLis
     /**
      * Constructor.
      *
-     * @param omega
+     * @param crOmega
      *          the benefits of connections
      * @param delta
      *          the distance dependent decay of benefits of connections
@@ -74,8 +74,8 @@ public class CarayolRoux extends UtilityFunction implements CarayolRouxChangeLis
      * @param crPanel
      *          the panel to track GUI parameter changes from
      */
-    public CarayolRoux(double omega, double delta, double c, CarayolRouxPanel crPanel) {
-        this.omega = omega;
+    public CarayolRoux(double crOmega, double delta, double c, CarayolRouxPanel crPanel) {
+        this.crOmega = crOmega;
         this.delta = delta;
         this.c = c;
         this.crPanel = crPanel;
@@ -106,7 +106,7 @@ public class CarayolRoux extends UtilityFunction implements CarayolRouxChangeLis
         for (Entry<Integer, Integer> entry : connectionsByDistance.entrySet()) {
             Integer gdd = entry.getKey();
             Integer cons = entry.getValue();
-            benefits += cons * (this.omega * Math.pow(delta, gdd));
+            benefits += cons * (this.crOmega * Math.pow(delta, gdd));
         }
 
         return benefits;
@@ -145,23 +145,13 @@ public class CarayolRoux extends UtilityFunction implements CarayolRouxChangeLis
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getDiseaseCosts(
-     * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats, nl.uu.socnetid.nidm.agents.Agent)
-     */
-    @Override
-    protected double getDiseaseCosts(LocalAgentConnectionsStats lacs, Agent agent) {
-        // TODO add costs for disease
-        return 0;
-    }
-
-    /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.utility.UtilityFunction#toString()
      */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("type:").append(getStatsName());
-        sb.append(" | omega:").append(this.omega);
+        sb.append(" | omega:").append(this.crOmega);
         sb.append(" | delta:").append(this.delta);
         sb.append(" | c:").append(this.c);
         return sb.toString();
@@ -172,8 +162,8 @@ public class CarayolRoux extends UtilityFunction implements CarayolRouxChangeLis
      * @see nl.uu.socnetid.nidm.gui.CarayolRouxChangeListener#notifyOmegaChanged()
      */
     @Override
-    public void notifyOmegaChanged() {
-        this.omega = this.crPanel.getOmega();
+    public void notifyCrOmegaChanged() {
+        this.crOmega = this.crPanel.getCrOmega();
     }
 
     /* (non-Javadoc)

@@ -47,6 +47,12 @@ public abstract class UtilityModelParameters {
     private double phiRandomMax;
     private double[] phis;
     private double currPhi;
+    // phi - share of agents to select assortatively
+    private boolean omegaRandom;
+    private double omegaRandomMin;
+    private double omegaRandomMax;
+    private double[] omegas;
+    private double currOmega;
 
     // INFECTIONS
     // sigma - severity
@@ -254,6 +260,76 @@ public abstract class UtilityModelParameters {
      */
     public void setCurrPhi(double currPhi) {
         this.currPhi = currPhi;
+    }
+
+    /**
+     * @return the omegaRandom
+     */
+    public boolean isOmegaRandom() {
+        return omegaRandom;
+    }
+
+    /**
+     * @param omegaRandom the omegaRandom to set
+     */
+    public void setOmegaRandom(boolean omegaRandom) {
+        this.omegaRandom = omegaRandom;
+    }
+
+    /**
+     * @return the omegaRandomMin
+     */
+    public double getOmegaRandomMin() {
+        return omegaRandomMin;
+    }
+
+    /**
+     * @param omegaRandomMin the omegaRandomMin to set
+     */
+    public void setOmegaRandomMin(double omegaRandomMin) {
+        this.omegaRandomMin = omegaRandomMin;
+    }
+
+    /**
+     * @return the omegaRandomMax
+     */
+    public double getOmegaRandomMax() {
+        return omegaRandomMax;
+    }
+
+    /**
+     * @param omegaRandomMax the omegaRandomMax to set
+     */
+    public void setOmegaRandomMax(double omegaRandomMax) {
+        this.omegaRandomMax = omegaRandomMax;
+    }
+
+    /**
+     * @return the omegas
+     */
+    public double[] getOmegas() {
+        return omegas;
+    }
+
+    /**
+     * @param omegas the omegas to set
+     */
+    public void setOmegas(double[] omegas) {
+        this.omegas = omegas;
+    }
+
+    /**
+     * @return the currOmega
+     */
+    public double getCurrOmega() {
+        return currOmega;
+    }
+
+    /**
+     * @param currOmega the currOmega to set
+     */
+    public void setCurrOmega(double currOmega) {
+        this.currOmega = currOmega;
     }
 
     /**

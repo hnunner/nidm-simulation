@@ -46,7 +46,7 @@ public class CarayolRouxPanel extends SharedUtilityPanel implements ChangeListen
 
     private static final long serialVersionUID = -2266756139159852784L;
 
-    private JSlider sliderOmega;
+    private JSlider sliderCrOmega;
     private DoubleJFormattedTextField txtOmegaSlider;
     private JSlider sliderDelta;
     private DoubleJFormattedTextField txtDeltaSlider;
@@ -128,18 +128,18 @@ public class CarayolRouxPanel extends SharedUtilityPanel implements ChangeListen
         lblSocialCostsHeader.setBounds(13, 118, 242, 16);
         add(lblSocialCostsHeader);
 
-        sliderOmega = new JSlider();
-        sliderOmega.setBounds(22, 40, 285, 29);
-        sliderOmega.setMaximum(200);
-        sliderOmega.setMinimum(0);
-        sliderOmega.setValue(30);
-        add(sliderOmega);
-        sliderOmega.addChangeListener(this);
+        sliderCrOmega = new JSlider();
+        sliderCrOmega.setBounds(22, 40, 285, 29);
+        sliderCrOmega.setMaximum(200);
+        sliderCrOmega.setMinimum(0);
+        sliderCrOmega.setValue(30);
+        add(sliderCrOmega);
+        sliderCrOmega.addChangeListener(this);
 
         txtOmegaSlider = new DoubleJFormattedTextField((NumberFormat) null);
         txtOmegaSlider.setHorizontalAlignment(SwingConstants.RIGHT);
         txtOmegaSlider.setBounds(245, 28, 50, 20);
-        txtOmegaSlider.setText(Double.toString(sliderOmega.getValue() / 100.0));
+        txtOmegaSlider.setText(Double.toString(sliderCrOmega.getValue() / 100.0));
         add(txtOmegaSlider);
 
         sliderDelta = new JSlider();
@@ -169,6 +169,8 @@ public class CarayolRouxPanel extends SharedUtilityPanel implements ChangeListen
         txtCSlider.setBounds(245, 146, 50, 20);
         txtCSlider.setText(Double.toString(sliderC.getValue() / 100.0));
         add(txtCSlider);
+
+        disableAssortativity();
     }
 
     /**
@@ -176,7 +178,7 @@ public class CarayolRouxPanel extends SharedUtilityPanel implements ChangeListen
      *
      * @return the benefits of direct connections (omega)
      */
-    public double getOmega() {
+    public double getCrOmega() {
         return this.txtOmegaSlider.getDouble();
     }
 
@@ -228,7 +230,7 @@ public class CarayolRouxPanel extends SharedUtilityPanel implements ChangeListen
     public void stateChanged(ChangeEvent e) {
         JSlider source = (JSlider) e.getSource();
 
-        if (source.equals(this.sliderOmega)) {
+        if (source.equals(this.sliderCrOmega)) {
             txtOmegaSlider.setText(Double.toString(source.getValue() / 100.0));
             notifyOmegaChanged();
         }
@@ -271,7 +273,7 @@ public class CarayolRouxPanel extends SharedUtilityPanel implements ChangeListen
     private final void notifyOmegaChanged() {
         Iterator<CarayolRouxChangeListener> listenersIt = this.changeListeners.iterator();
         while (listenersIt.hasNext()) {
-            listenersIt.next().notifyOmegaChanged();
+            listenersIt.next().notifyCrOmegaChanged();
         }
     }
 
