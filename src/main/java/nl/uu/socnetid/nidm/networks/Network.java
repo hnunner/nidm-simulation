@@ -61,6 +61,9 @@ public class Network extends SingleGraph implements SimulationListener {
     // standard share to evaluate per agent
     private static final double STANDARD_PHI = 0.4;
 
+    // standard share to select assortatively
+    private static final double STANDARD_OMEGA = 0.0;
+
     // listener
     private final Set<NetworkListener> networkListeners = new CopyOnWriteArraySet<NetworkListener>();
 
@@ -113,7 +116,7 @@ public class Network extends SingleGraph implements SimulationListener {
      * @return the newly added agent.
      */
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs) {
-        return this.addAgent(utilityFunction, diseaseSpecs, RISK_FACTOR_NEUTRAL, RISK_FACTOR_NEUTRAL, STANDARD_PHI);
+        return this.addAgent(utilityFunction, diseaseSpecs, RISK_FACTOR_NEUTRAL, RISK_FACTOR_NEUTRAL, STANDARD_PHI, STANDARD_OMEGA);
     }
 
     /**
@@ -131,11 +134,14 @@ public class Network extends SingleGraph implements SimulationListener {
      *          <1: risk seeking, =1: risk neutral; >1: risk averse
      * @param phi
      *          the share of peers an agent evaluates per round
+     * @param omega
+     *          the share of peers to select assortatively
      * @return the newly added agent.
      */
-    public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi) {
+    public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
+            double omega) {
         Agent agent = this.addNode(String.valueOf(this.getNodeCount() + 1));
-        agent.initAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi);
+        agent.initAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, omega);
         notifyAgentAdded(agent);
 
         // re-position agents if auto-layout is disabled

@@ -31,7 +31,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.locks.Lock;
@@ -97,9 +99,11 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      *          the risk factor for probability of infections (<1: risk seeking, =1: risk neutral; >1: risk averse)
      * @param phi
      *          the share of peers to evaluate per round
+     * @param omega
+     *          the share of peers to select assortatively
      */
     public void initAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs,
-            Double riskFactorSigma, Double riskFactorPi, Double phi) {
+            Double riskFactorSigma, Double riskFactorPi, Double phi, Double omega) {
         this.addAttribute(AgentAttributes.UTILITY_FUNCTION, utilityFunction);
         this.addAttribute(AgentAttributes.DISEASE_SPECS, diseaseSpecs);
         DiseaseGroup diseaseGroup = DiseaseGroup.SUSCEPTIBLE;
@@ -112,6 +116,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         this.addAttribute(AgentAttributes.RISK_MEANING_SIGMA, getRiskMeaning(riskFactorSigma));
         this.addAttribute(AgentAttributes.RISK_MEANING_PI, getRiskMeaning(riskFactorPi));
         this.addAttribute(AgentAttributes.PHI, phi);
+        this.addAttribute(AgentAttributes.OMEGA, omega);
         this.addAttribute(AgentAttributes.SATISFIED, false);
         this.addAttribute(AgentAttributes.CONNECTION_STATS, new AgentConnectionStats());
         this.addAttribute("ui.label", this.getId());
@@ -337,6 +342,15 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
+     * Gets the agent's share of assortatively selected peers.
+     *
+     * @return the agent's share of assortatively selected peers
+     */
+    public double getOmega() {
+        return (double) this.getAttribute(AgentAttributes.OMEGA);
+    }
+
+    /**
      * Gets the agent's utility function.
      *
      * @return the agent's utility function
@@ -364,8 +378,8 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      *
      * @return the agent's co-agents
      */
-    public Collection<Agent> getCoAgents() {
-        Collection<Agent> coAgents = new ArrayList<Agent>(getNetwork().getAgents());
+    public List<Agent> getCoAgents() {
+        List<Agent> coAgents = new ArrayList<Agent>(getNetwork().getAgents());
         coAgents.remove(this);
         return coAgents;
     }
@@ -685,6 +699,52 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         trackBrokenTiePassive();
     }
 
+
+
+
+    /**
+     * Sorts the given list of agents by absolute difference of risk perceptions.
+     *
+     * @param agents
+     *          the list of agents to sort
+     * @param rPi
+     *          the rPi to create the absolute difference for
+     * @param rSigma
+     *          the rSigma to create the absolute difference for
+     */
+    void sortByRDiff(List<Agent> agents, double rPi, double rSigma) {
+
+            TreeMap<Double, ArrayList<Agent>> map = new TreeMap<>();
+
+            // store values in map with difference as key
+            for (int i = 0; i < agents.size(); i++) {
+
+                Agent agent = agents.get(i);
+                double diff = Math.abs((rPi + rSigma) - (agent.getRPi() + agent.getRSigma()));
+
+                if (map.containsKey(diff)) {
+                    ArrayList<Agent> list = map.get(diff);
+                    list.add(agent);
+                    map.put(diff, list);
+                } else {
+                    ArrayList<Agent> list = new ArrayList<Agent>();
+                    list.add(agents.get(i));
+                    map.put(diff, list);
+                }
+            }
+
+            // Update the values of array
+            int index = 0;
+            for (Map.Entry<Double, ArrayList<Agent>> entry : map.entrySet()) {
+                ArrayList<Agent> list = map.get(entry.getKey());
+                for (int i = 0; i < list.size(); i++) {
+                        agents.set(index++, list.get(i));
+                }
+            }
+    }
+
+
+
     /**
      * Creates a collection of randomly selected co-agents.
      *
@@ -694,10 +754,19 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      */
     public List<Agent> getRandomListOfCoAgents(int amount) {
         List<Agent> collect = new ArrayList<Agent>(amount);
-        Collection<Agent> coAgents = getCoAgents();
+        List<Agent> coAgents = getCoAgents();
+
+        sortByRDiff(coAgents, this.getRPi(), this.getRSigma());
+
+        for (int i = 0; i < amount * this.getOmega(); i++) {
+            collect.add((Agent) coAgents.toArray()[i]);
+        }
         while (collect.size() < amount) {
-            int index = ThreadLocalRandom.current().nextInt(coAgents.size());
-            collect.add((Agent) coAgents.toArray()[index]);
+            int i = ThreadLocalRandom.current().nextInt(coAgents.size());
+            Object coAgent = coAgents.toArray()[i];
+            if (!collect.contains(coAgent)) {
+                collect.add((Agent) coAgent);
+            }
         }
         return collect;
     }
