@@ -70,12 +70,13 @@ public class CarayolRouxSimulationSummaryWriter extends CsvFileWriter<CarayolRou
         cols.add(LogValues.IV_SIM_UPC.toString());
         cols.add(LogValues.IV_SIM_CNT.toString());
         // CarayolRoux
-        cols.add(LogValues.IV_CR_OMEGA.toString());
+        cols.add(LogValues.IV_CR_CROMEGA.toString());
         cols.add(LogValues.IV_CR_DELTA.toString());
         cols.add(LogValues.IV_CR_C.toString());
         cols.add(LogValues.IV_CR_NET_SIZE.toString());
         cols.add(LogValues.IV_CR_IOTA.toString());
         cols.add(LogValues.IV_CR_PHI.toString());
+        cols.add(LogValues.IV_CR_OMEGA.toString());
 
         // DEPENDENT VARIABLES (D)
         // network
@@ -102,12 +103,13 @@ public class CarayolRouxSimulationSummaryWriter extends CsvFileWriter<CarayolRou
         currData.add(String.valueOf(this.dgData.getSimStats().getUpc()));
         currData.add(String.valueOf(this.dgData.getSimStats().getSimPerUpc()));
         // CarayolRoux
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrOmega()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrCrOmega()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrDelta()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrC()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrN()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().isCurrIota() ? 1 : 0));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrPhi()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrOmega()));
 
         // DEPENDENT VARIABLES
         // network

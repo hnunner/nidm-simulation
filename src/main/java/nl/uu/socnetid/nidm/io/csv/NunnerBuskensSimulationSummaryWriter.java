@@ -78,6 +78,7 @@ public class NunnerBuskensSimulationSummaryWriter extends CsvFileWriter<NunnerBu
         cols.add(LogValues.IV_NB_NET_SIZE.toString());
         cols.add(LogValues.IV_NB_IOTA.toString());
         cols.add(LogValues.IV_NB_PHI.toString());
+        cols.add(LogValues.IV_NB_OMEGA.toString());
         cols.add(LogValues.IV_NB_YGLOBAL.toString());
 
         // DEPENDENT VARIABLES (D)
@@ -118,6 +119,7 @@ public class NunnerBuskensSimulationSummaryWriter extends CsvFileWriter<NunnerBu
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrN()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().isCurrIota() ? 1 : 0));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrPhi()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrOmega()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().isCurrYGlobal() ? 1 : 0));
 
         // DEPENDENT VARIABLES

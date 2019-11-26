@@ -131,7 +131,36 @@ public abstract class UtilityFunction {
      *          the agent to compute the effect for
      * @return the benefit of a disease
      */
-    protected abstract double getDiseaseCosts(LocalAgentConnectionsStats lacs, Agent agent);
+    protected double getDiseaseCosts(LocalAgentConnectionsStats lacs, Agent agent) {
+        int nI = lacs.getnI();
+        double p;
+        double s;
+        double rSigma = agent.getRSigma();
+        double rPi = agent.getRPi();
+
+        // depending own agent's own risk group
+        switch (agent.getDiseaseGroup()) {
+            case SUSCEPTIBLE:
+                p = Math.pow(StatsComputer.computeProbabilityOfInfection(agent, nI), (2 - rPi));
+                s = Math.pow(agent.getDiseaseSpecs().getSigma(), rSigma) ;
+                break;
+
+            case INFECTED:
+                p = 1;
+                s = agent.getDiseaseSpecs().getSigma();
+                break;
+
+            case RECOVERED:
+                p = 0;
+                s = 0;
+                break;
+
+            default:
+                throw new RuntimeException("Unknown disease group: " + agent.getDiseaseGroup());
+        }
+
+        return p * s;
+    }
 
 
     /* (non-Javadoc)
