@@ -49,7 +49,7 @@ public class CarayolRouxTest {
     private Network network;
 
     // constants
-    private static final double omega   = 1;
+    private static final double crOmega = 1;
     private static final double delta   = 0.5;
     private static final double c       = 1;
     private static final double s       = 8.4;
@@ -58,6 +58,7 @@ public class CarayolRouxTest {
     private static final double rSigma  = 1.2;
     private static final double rPi     = 0.5;
     private static final double phi     = 0.4;
+    private static final double omega   = 0.0;
     private static final int    tau     = 10;
 
     // agents
@@ -74,14 +75,14 @@ public class CarayolRouxTest {
     public void initAgent() {
         this.network = new Network("CarayolRoux Test");
 
-        UtilityFunction uf = new CarayolRoux(omega, delta, c);
+        UtilityFunction uf = new CarayolRoux(crOmega, delta, c);
         DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
 
-        this.agent1  = this.network.addAgent(uf, ds, rSigma, rPi, phi);
-        this.agent2  = this.network.addAgent(uf, ds, rSigma, rPi, phi);
-        this.agent3  = this.network.addAgent(uf, ds, rSigma, rPi, phi);
-        this.agent4  = this.network.addAgent(uf, ds, rSigma, rPi, phi);
-        this.agent5  = this.network.addAgent(uf, ds, rSigma, rPi, phi);
+        this.agent1  = this.network.addAgent(uf, ds, rSigma, rPi, phi, omega);
+        this.agent2  = this.network.addAgent(uf, ds, rSigma, rPi, phi, omega);
+        this.agent3  = this.network.addAgent(uf, ds, rSigma, rPi, phi, omega);
+        this.agent4  = this.network.addAgent(uf, ds, rSigma, rPi, phi, omega);
+        this.agent5  = this.network.addAgent(uf, ds, rSigma, rPi, phi, omega);
 
         // infections
         //this.agent1.infect(ds);

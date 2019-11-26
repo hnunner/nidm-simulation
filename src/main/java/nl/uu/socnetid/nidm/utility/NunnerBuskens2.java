@@ -145,16 +145,6 @@ public class NunnerBuskens2 extends UtilityFunction implements NunnerBuskens2Cha
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getDiseaseCosts(
-     * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats, nl.uu.socnetid.nidm.agents.Agent)
-     */
-    @Override
-    protected double getDiseaseCosts(LocalAgentConnectionsStats lacs, Agent agent) {
-        // TODO add costs for disease
-        return 0;
-    }
-
-    /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.utility.UtilityFunction#toString()
      */
     @Override

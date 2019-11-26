@@ -40,6 +40,7 @@ public enum AgentAttributes {
     RISK_MEANING_SIGMA("risk.meaning.sigma"),
     RISK_MEANING_PI("risk.meaning.pi"),
     PHI("phi"),
+    OMEGA("omega"),
     SATISFIED("satisfied"),
     CONNECTION_STATS("connection.stats");
 

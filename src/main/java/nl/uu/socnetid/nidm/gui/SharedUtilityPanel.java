@@ -27,11 +27,15 @@ package nl.uu.socnetid.nidm.gui;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.NumberFormat;
 
+import javax.swing.ButtonGroup;
 import javax.swing.InputVerifier;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JRadioButton;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
@@ -44,9 +48,13 @@ public abstract class SharedUtilityPanel extends DeactivatablePanel {
 
     private DoubleJFormattedTextField txtSigma;
     private DoubleJFormattedTextField txtGamma;
+    private boolean rRandom;
+    private JRadioButton rdbtnRRandomYes;
+    private JRadioButton rdbtnRRandomNo;
     private DoubleJFormattedTextField txtRSigma;
     private DoubleJFormattedTextField txtRPi;
     private DoubleJFormattedTextField txtPhi;
+    protected DoubleJFormattedTextField txtOmega;
     private JFormattedTextField txtTau;
 
     // INPUT VALIDATION
@@ -57,8 +65,8 @@ public abstract class SharedUtilityPanel extends DeactivatablePanel {
     private static final InputVerifier GAMMA_VERIFIER = new DoubleInputVerifier(0.0, 1.0);
     // risk perceptions (r_sigma, r_pi)
     private static final InputVerifier R_VERIFIER = new DoubleInputVerifier(0.0, 2.0);
-    // share of peers to evaluate per time step (phi)
-    private static final InputVerifier PHI_VERIFIER = new DoubleInputVerifier(0.001, 1.0);
+    // percentages
+    private static final InputVerifier PERCENT_VERIFIER = new DoubleInputVerifier(0.001, 1.0);
     // time steps to recover (tau)
     private static final InputVerifier TAU_VERIFIER = new IntegerInputVerifier(1, null);
 
@@ -113,7 +121,6 @@ public abstract class SharedUtilityPanel extends DeactivatablePanel {
         add(txtGamma);
         txtGamma.setValue(new Double(0.1));
         txtGamma.setInputVerifier(GAMMA_VERIFIER);
-
 
         JLabel lblRiskPerception = new JLabel("Risk perception:");
         lblRiskPerception.setFont(new Font("Lucida Grande", Font.BOLD, 13));
@@ -193,7 +200,7 @@ public abstract class SharedUtilityPanel extends DeactivatablePanel {
         txtPhi.setBounds(245, 564, 50, 20);
         add(txtPhi);
         txtPhi.setValue(new Double(0.4));
-        txtPhi.setInputVerifier(PHI_VERIFIER);
+        txtPhi.setInputVerifier(PERCENT_VERIFIER);
 
         JSeparator separator_5 = new JSeparator(SwingConstants.HORIZONTAL);
         separator_5.setForeground(Color.LIGHT_GRAY);
@@ -229,10 +236,42 @@ public abstract class SharedUtilityPanel extends DeactivatablePanel {
         label_7.setBounds(201, 591, 35, 16);
         add(label_7);
 
-        DoubleJFormattedTextField txtOmega = new DoubleJFormattedTextField((NumberFormat) null);
+        txtOmega = new DoubleJFormattedTextField(NUM_FORMAT);
         txtOmega.setHorizontalAlignment(SwingConstants.RIGHT);
+        txtOmega.setColumns(10);
         txtOmega.setBounds(245, 589, 50, 20);
         add(txtOmega);
+        txtOmega.setValue(new Double(0.8));
+        txtOmega.setInputVerifier(PERCENT_VERIFIER);
+
+        rdbtnRRandomNo = new JRadioButton("manual");
+        rdbtnRRandomNo.setBounds(150, 441, 75, 23);
+        add(rdbtnRRandomNo);
+
+        rdbtnRRandomYes = new JRadioButton("random");
+        rdbtnRRandomYes.setSelected(true);
+        rdbtnRRandomYes.setBounds(225, 441, 75, 23);
+        add(rdbtnRRandomYes);
+
+        ButtonGroup rRandomGroup = new ButtonGroup();
+        rRandomGroup.add(rdbtnRRandomNo);
+        rRandomGroup.add(rdbtnRRandomYes);
+
+        rdbtnRRandomNo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateRRandom();
+            }
+        });
+
+        rdbtnRRandomYes.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateRRandom();
+            }
+        });
+
+        updateRRandom();
 
     }
 
@@ -253,6 +292,13 @@ public abstract class SharedUtilityPanel extends DeactivatablePanel {
      */
     public double getGamma() {
         return this.txtGamma.getDouble();
+    }
+
+    /**
+     * @return the rRandom
+     */
+    public boolean isRRandom() {
+        return this.rRandom;
     }
 
     /**
@@ -283,6 +329,15 @@ public abstract class SharedUtilityPanel extends DeactivatablePanel {
     }
 
     /**
+     * Gets the share of peers to select assortatively (omega).
+     *
+     * @return the share of peers to select assortatively (omega)
+     */
+    public double getOmega() {
+        return this.txtOmega.getDouble();
+    }
+
+    /**
      * Gets the number of time step to recover (tau).
      *
      * @return the number of time step to recover (tau)
@@ -302,6 +357,7 @@ public abstract class SharedUtilityPanel extends DeactivatablePanel {
         this.txtRSigma.setEnabled(true);
         this.txtRPi.setEnabled(true);
         this.txtPhi.setEnabled(true);
+        this.txtOmega.setEnabled(true);
         this.txtTau.setEnabled(true);
     }
 
@@ -315,6 +371,32 @@ public abstract class SharedUtilityPanel extends DeactivatablePanel {
         this.txtRSigma.setEnabled(false);
         this.txtRPi.setEnabled(false);
         this.txtPhi.setEnabled(false);
+        this.txtOmega.setEnabled(false);
         this.txtTau.setEnabled(false);
     }
+
+    /**
+     * Enables the selection of omega for share of peers selected assortatively.
+     */
+    public void enableAssortativity() {
+        this.txtOmega.setEnabled(true);
+    }
+
+    /**
+     * Disables the selection of omega for share of peers selected assortatively.
+     */
+    public void disableAssortativity() {
+        this.txtOmega.setValue(new Double(0.0));
+        this.txtOmega.setEnabled(false);
+    }
+
+    /**
+     * Updates whether risk perception is added randomly.
+     */
+    private void updateRRandom() {
+        this.rRandom = this.rdbtnRRandomYes.isSelected();
+        this.txtRPi.setEnabled(!this.rRandom);
+        this.txtRSigma.setEnabled(!this.rRandom);
+    }
+
 }
