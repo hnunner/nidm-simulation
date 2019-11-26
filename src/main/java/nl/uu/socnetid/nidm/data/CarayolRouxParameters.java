@@ -31,11 +31,11 @@ package nl.uu.socnetid.nidm.data;
 public class CarayolRouxParameters extends UtilityModelParameters {
 
     // social benefits
-    private boolean omegaRandom;
-    private double omegaRandomMin;
-    private double omegaRandomMax;
-    private double[] omegas;
-    private double currOmega;
+    private boolean crOmegaRandom;
+    private double crOmegaRandomMin;
+    private double crOmegaRandomMax;
+    private double[] crOmegas;
+    private double currCrOmega;
     private boolean deltaRandom;
     private double deltaRandomMin;
     private double deltaRandomMax;
@@ -50,73 +50,73 @@ public class CarayolRouxParameters extends UtilityModelParameters {
 
 
     /**
-     * @return the omegaRandom
+     * @return the crOmegaRandom
      */
-    public boolean isOmegaRandom() {
-        return omegaRandom;
+    public boolean isCrOmegaRandom() {
+        return crOmegaRandom;
     }
 
     /**
-     * @param omegaRandom the omegaRandom to set
+     * @param crOmegaRandom the crOmegaRandom to set
      */
-    public void setOmegaRandom(boolean omegaRandom) {
-        this.omegaRandom = omegaRandom;
+    public void setCrOmegaRandom(boolean crOmegaRandom) {
+        this.crOmegaRandom = crOmegaRandom;
     }
 
     /**
-     * @return the omegaRandomMin
+     * @return the crOmegaRandomMin
      */
-    public double getOmegaRandomMin() {
-        return omegaRandomMin;
+    public double getCrOmegaRandomMin() {
+        return crOmegaRandomMin;
     }
 
     /**
-     * @param omegaRandomMin the omegaRandomMin to set
+     * @param crOmegaRandomMin the omegaRandomMin to set
      */
-    public void setOmegaRandomMin(double omegaRandomMin) {
-        this.omegaRandomMin = omegaRandomMin;
+    public void setCrOmegaRandomMin(double crOmegaRandomMin) {
+        this.crOmegaRandomMin = crOmegaRandomMin;
     }
 
     /**
-     * @return the omegaRandomMax
+     * @return the crOmegaRandomMax
      */
-    public double getOmegaRandomMax() {
-        return omegaRandomMax;
+    public double getCrOmegaRandomMax() {
+        return crOmegaRandomMax;
     }
 
     /**
-     * @param omegaRandomMax the omegaRandomMax to set
+     * @param crOmegaRandomMax the crOmegaRandomMax to set
      */
-    public void setOmegaRandomMax(double omegaRandomMax) {
-        this.omegaRandomMax = omegaRandomMax;
+    public void setCrOmegaRandomMax(double crOmegaRandomMax) {
+        this.crOmegaRandomMax = crOmegaRandomMax;
     }
 
     /**
-     * @return the omegas
+     * @return the crOmegas
      */
-    public double[] getOmegas() {
-        return omegas;
+    public double[] getCrOmegas() {
+        return crOmegas;
     }
 
     /**
-     * @param omegas the omegas to set
+     * @param crOmegas the omegas to set
      */
-    public void setOmegas(double[] omegas) {
-        this.omegas = omegas;
+    public void setCrOmegas(double[] crOmegas) {
+        this.crOmegas = crOmegas;
     }
 
     /**
-     * @return the currOmega
+     * @return the currCrOmega
      */
-    public double getCurrOmega() {
-        return currOmega;
+    public double getCurrCrOmega() {
+        return currCrOmega;
     }
 
     /**
-     * @param currOmega the currOmega to set
+     * @param currCrOmega the currOmega to set
      */
-    public void setCurrOmega(double currOmega) {
-        this.currOmega = currOmega;
+    public void setCurrCrOmega(double currCrOmega) {
+        this.currCrOmega = currCrOmega;
     }
 
     /**

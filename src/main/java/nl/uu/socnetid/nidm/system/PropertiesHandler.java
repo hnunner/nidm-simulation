@@ -206,6 +206,12 @@ public class PropertiesHandler {
         cidmParameters.setPhiRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_CIDM_PHI_RANDOM_MIN.toString())));
         cidmParameters.setPhiRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_CIDM_PHI_RANDOM_MAX.toString())));
         cidmParameters.setPhis(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_PHI.toString())));
+        // omega
+        cidmParameters.setOmegaRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_CIDM_OMEGA_RANDOM.toString())));
+        cidmParameters.setOmegaRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_CIDM_OMEGA_RANDOM_MIN.toString())));
+        cidmParameters.setOmegaRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_CIDM_OMEGA_RANDOM_MAX.toString())));
+        cidmParameters.setOmegas(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_OMEGA.toString())));
+        // rest
         cidmParameters.setZeta(Integer.valueOf(configProps.getProperty(LogValues.IV_CIDM_ZETA.toString())));
         cidmParameters.setEpsilon(Integer.valueOf(configProps.getProperty(LogValues.IV_CIDM_EPSILON.toString())));
         cidmParameters.setTaus(parseIntArray(configProps.getProperty(LogValues.IV_CIDM_TAU.toString())));
@@ -253,6 +259,11 @@ public class PropertiesHandler {
         bbParameters.setPhiRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_BB_PHI_RANDOM_MIN.toString())));
         bbParameters.setPhiRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_BB_PHI_RANDOM_MAX.toString())));
         bbParameters.setPhis(parseDoubleArray(configProps.getProperty(LogValues.IV_BB_PHI.toString())));
+        // omega
+        bbParameters.setOmegaRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_BB_OMEGA_RANDOM.toString())));
+        bbParameters.setOmegaRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_BB_OMEGA_RANDOM_MIN.toString())));
+        bbParameters.setOmegaRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_BB_OMEGA_RANDOM_MAX.toString())));
+        bbParameters.setOmegas(parseDoubleArray(configProps.getProperty(LogValues.IV_BB_OMEGA.toString())));
         // n
         bbParameters.setSimsPerParameterCombination(Integer.valueOf(configProps.getProperty(
                 LogValues.IV_BB_SIMS_PER_PC.toString())));
@@ -260,11 +271,11 @@ public class PropertiesHandler {
         // CarayolRoux
         generateCarayolRoux = Boolean.parseBoolean(configProps.getProperty("cr.generate"));
         crParameters = new CarayolRouxParameters();
-        // omega
-        crParameters.setOmegaRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_CR_OMEGA_RANDOM.toString())));
-        crParameters.setOmegaRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_CR_OMEGA_RANDOM_MIN.toString())));
-        crParameters.setOmegaRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_CR_OMEGA_RANDOM_MAX.toString())));
-        crParameters.setOmegas(parseDoubleArray(configProps.getProperty(LogValues.IV_CR_OMEGA.toString())));
+        // cromega
+        crParameters.setCrOmegaRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_CR_CROMEGA_RANDOM.toString())));
+        crParameters.setCrOmegaRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_CR_CROMEGA_RANDOM_MIN.toString())));
+        crParameters.setCrOmegaRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_CR_CROMEGA_RANDOM_MAX.toString())));
+        crParameters.setCrOmegas(parseDoubleArray(configProps.getProperty(LogValues.IV_CR_CROMEGA.toString())));
         // delta
         crParameters.setDeltaRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_CR_DELTA_RANDOM.toString())));
         crParameters.setDeltaRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_CR_DELTA_RANDOM_MIN.toString())));
@@ -288,6 +299,11 @@ public class PropertiesHandler {
         crParameters.setPhiRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_CR_PHI_RANDOM_MIN.toString())));
         crParameters.setPhiRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_CR_PHI_RANDOM_MAX.toString())));
         crParameters.setPhis(parseDoubleArray(configProps.getProperty(LogValues.IV_CR_PHI.toString())));
+        // omega
+        crParameters.setOmegaRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_CR_OMEGA_RANDOM.toString())));
+        crParameters.setOmegaRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_CR_OMEGA_RANDOM_MIN.toString())));
+        crParameters.setOmegaRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_CR_OMEGA_RANDOM_MAX.toString())));
+        crParameters.setOmegas(parseDoubleArray(configProps.getProperty(LogValues.IV_CR_OMEGA.toString())));
         // n
         crParameters.setSimsPerParameterCombination(Integer.valueOf(configProps.getProperty(
                 LogValues.IV_CR_SIMS_PER_PC.toString())));
@@ -336,6 +352,11 @@ public class PropertiesHandler {
         nbParameters.setPhiRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PHI_RANDOM_MIN.toString())));
         nbParameters.setPhiRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PHI_RANDOM_MAX.toString())));
         nbParameters.setPhis(parseDoubleArray(configProps.getProperty(LogValues.IV_NB_PHI.toString())));
+        // omega
+        nbParameters.setOmegaRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_OMEGA_RANDOM.toString())));
+        nbParameters.setOmegaRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_OMEGA_RANDOM_MIN.toString())));
+        nbParameters.setOmegaRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_OMEGA_RANDOM_MAX.toString())));
+        nbParameters.setOmegas(parseDoubleArray(configProps.getProperty(LogValues.IV_NB_OMEGA.toString())));
         // n
         nbParameters.setSimsPerParameterCombination(Integer.valueOf(configProps.getProperty(
                 LogValues.IV_NB_SIMS_PER_PC.toString())));
