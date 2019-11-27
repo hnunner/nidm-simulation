@@ -41,6 +41,8 @@ import nl.uu.socnetid.nidm.utility.UtilityFunction;
  */
 public class DisplayableNetwork extends Network {
 
+    private static final int STANDARD_NODE_SIZE = 10;
+
     private static final String GS_CSS = ""
             + "graph {"
             + "     fill-color: #FFFFFF;"
@@ -48,7 +50,8 @@ public class DisplayableNetwork extends Network {
             + "node {"
             + "     shape: circle;"
             + "     fill-color: #FECD0A;"
-            + "     size: 15px;"
+            + "     size-mode: dyn-size;"
+            + "     size: " + STANDARD_NODE_SIZE + "px;"
             + "     stroke-mode: plain;"
             + "     stroke-color: black;"
             + "     stroke-width: 1px;"
@@ -118,6 +121,7 @@ public class DisplayableNetwork extends Network {
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
             double omega) {
         Agent agent = super.addAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, omega);
+        agent.setAttribute("ui.size", STANDARD_NODE_SIZE + (STANDARD_NODE_SIZE * ((agent.getRPi() + agent.getRSigma()) / 2)));
 
         // sprite
         Sprite sprite = this.spriteManager.addSprite(agent.getId());
