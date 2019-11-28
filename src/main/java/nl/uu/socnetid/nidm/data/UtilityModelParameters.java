@@ -47,7 +47,7 @@ public abstract class UtilityModelParameters {
     private double phiRandomMax;
     private double[] phis;
     private double currPhi;
-    // phi - share of agents to select assortatively
+    // omega - share of agents to select assortatively
     private boolean omegaRandom;
     private double omegaRandomMin;
     private double omegaRandomMax;
@@ -56,18 +56,39 @@ public abstract class UtilityModelParameters {
 
     // INFECTIONS
     // sigma - severity
+    private boolean sigmaRandom;
+    private double sigmaRandomMin;
+    private double sigmaRandomMax;
     private double[] sigmas;
     private double currSigma;
     // gamma - probability of getting infected per contact
+    private boolean gammaRandom;
+    private double gammaRandomMin;
+    private double gammaRandomMax;
     private double[] gammas;
     private double currGamma;
     // r - risk perception (rSigma - perceived disease severity, rPi - perceived susceptibility)
     private boolean rsEqual;
+    private boolean rSigmaRandom;
+    private boolean[] rSigmaRandomHomogeneous;
+    private boolean currRSigmaRandomHomogeneous;
+    private double rSigmaRandomMin;
+    private double rSigmaRandomMax;
     private double[] rSigmas;
     private double currRSigma;
+    private double[] currRSigmas;
+    private boolean rPiRandom;
+    private boolean[] rPiRandomHomogeneous;
+    private boolean currRPiRandomHomogeneous;
+    private double rPiRandomMin;
+    private double rPiRandomMax;
     private double[] rPis;
     private double currRPi;
+    private double[] currRPis;
     // recovery time in timesteps
+    private boolean tauRandom;
+    private int tauRandomMin;
+    private int tauRandomMax;
     private int[] taus;
     private int currTau;
 
@@ -333,6 +354,48 @@ public abstract class UtilityModelParameters {
     }
 
     /**
+     * @return the sigmaRandom
+     */
+    public boolean isSigmaRandom() {
+        return sigmaRandom;
+    }
+
+    /**
+     * @param sigmaRandom the sigmaRandom to set
+     */
+    public void setSigmaRandom(boolean sigmaRandom) {
+        this.sigmaRandom = sigmaRandom;
+    }
+
+    /**
+     * @return the sigmaRandomMin
+     */
+    public double getSigmaRandomMin() {
+        return sigmaRandomMin;
+    }
+
+    /**
+     * @param sigmaRandomMin the sigmaRandomMin to set
+     */
+    public void setSigmaRandomMin(double sigmaRandomMin) {
+        this.sigmaRandomMin = sigmaRandomMin;
+    }
+
+    /**
+     * @return the sigmaRandomMax
+     */
+    public double getSigmaRandomMax() {
+        return sigmaRandomMax;
+    }
+
+    /**
+     * @param sigmaRandomMax the sigmaRandomMax to set
+     */
+    public void setSigmaRandomMax(double sigmaRandomMax) {
+        this.sigmaRandomMax = sigmaRandomMax;
+    }
+
+    /**
      * @return the sigmas
      */
     public double[] getSigmas() {
@@ -358,6 +421,48 @@ public abstract class UtilityModelParameters {
      */
     public void setCurrSigma(double currSigma) {
         this.currSigma = currSigma;
+    }
+
+    /**
+     * @return the gammaRandom
+     */
+    public boolean isGammaRandom() {
+        return gammaRandom;
+    }
+
+    /**
+     * @param gammaRandom the gammaRandom to set
+     */
+    public void setGammaRandom(boolean gammaRandom) {
+        this.gammaRandom = gammaRandom;
+    }
+
+    /**
+     * @return the gammaRandomMin
+     */
+    public double getGammaRandomMin() {
+        return gammaRandomMin;
+    }
+
+    /**
+     * @param gammaRandomMin the gammaRandomMin to set
+     */
+    public void setGammaRandomMin(double gammaRandomMin) {
+        this.gammaRandomMin = gammaRandomMin;
+    }
+
+    /**
+     * @return the gammaRandomMax
+     */
+    public double getGammaRandomMax() {
+        return gammaRandomMax;
+    }
+
+    /**
+     * @param gammaRandomMax the gammaRandomMax to set
+     */
+    public void setGammaRandomMax(double gammaRandomMax) {
+        this.gammaRandomMax = gammaRandomMax;
     }
 
     /**
@@ -403,6 +508,48 @@ public abstract class UtilityModelParameters {
     }
 
     /**
+     * @return the rSigmaRandom
+     */
+    public boolean isRSigmaRandom() {
+        return rSigmaRandom;
+    }
+
+    /**
+     * @param rSigmaRandom the rSigmaRandom to set
+     */
+    public void setRSigmaRandom(boolean rSigmaRandom) {
+        this.rSigmaRandom = rSigmaRandom;
+    }
+
+    /**
+     * @return the rSigmaRandomMin
+     */
+    public double getRSigmaRandomMin() {
+        return rSigmaRandomMin;
+    }
+
+    /**
+     * @param rSigmaRandomMin the rSigmaRandomMin to set
+     */
+    public void setRSigmaRandomMin(double rSigmaRandomMin) {
+        this.rSigmaRandomMin = rSigmaRandomMin;
+    }
+
+    /**
+     * @return the rSigmaRandomMax
+     */
+    public double getRSigmaRandomMax() {
+        return rSigmaRandomMax;
+    }
+
+    /**
+     * @param rSigmaRandomMax the rSigmaRandomMax to set
+     */
+    public void setRSigmaRandomMax(double rSigmaRandomMax) {
+        this.rSigmaRandomMax = rSigmaRandomMax;
+    }
+
+    /**
      * @return the rSigmas
      */
     public double[] getRSigmas() {
@@ -431,6 +578,48 @@ public abstract class UtilityModelParameters {
     }
 
     /**
+     * @return the rPiRandom
+     */
+    public boolean isRPiRandom() {
+        return rPiRandom;
+    }
+
+    /**
+     * @param rPiRandom the rPiRandom to set
+     */
+    public void setRPiRandom(boolean rPiRandom) {
+        this.rPiRandom = rPiRandom;
+    }
+
+    /**
+     * @return the rPiRandomMin
+     */
+    public double getRPiRandomMin() {
+        return rPiRandomMin;
+    }
+
+    /**
+     * @param rPiRandomMin the rPiRandomMin to set
+     */
+    public void setRPiRandomMin(double rPiRandomMin) {
+        this.rPiRandomMin = rPiRandomMin;
+    }
+
+    /**
+     * @return the rPiRandomMax
+     */
+    public double getRPiRandomMax() {
+        return rPiRandomMax;
+    }
+
+    /**
+     * @param rPiRandomMax the rPiRandomMax to set
+     */
+    public void setRPiRandomMax(double rPiRandomMax) {
+        this.rPiRandomMax = rPiRandomMax;
+    }
+
+    /**
      * @return the rPis
      */
     public double[] getRPis() {
@@ -456,6 +645,48 @@ public abstract class UtilityModelParameters {
      */
     public void setCurrRPi(double currRPi) {
         this.currRPi = currRPi;
+    }
+
+    /**
+     * @return the tauRandom
+     */
+    public boolean isTauRandom() {
+        return tauRandom;
+    }
+
+    /**
+     * @param tauRandom the tauRandom to set
+     */
+    public void setTauRandom(boolean tauRandom) {
+        this.tauRandom = tauRandom;
+    }
+
+    /**
+     * @return the tauRandomMin
+     */
+    public int getTauRandomMin() {
+        return tauRandomMin;
+    }
+
+    /**
+     * @param tauRandomMin the tauRandomMin to set
+     */
+    public void setTauRandomMin(int tauRandomMin) {
+        this.tauRandomMin = tauRandomMin;
+    }
+
+    /**
+     * @return the tauRandomMax
+     */
+    public int getTauRandomMax() {
+        return tauRandomMax;
+    }
+
+    /**
+     * @param tauRandomMax the tauRandomMax to set
+     */
+    public void setTauRandomMax(int tauRandomMax) {
+        this.tauRandomMax = tauRandomMax;
     }
 
     /**
@@ -526,6 +757,129 @@ public abstract class UtilityModelParameters {
      */
     public void setSimsPerParameterCombination(int simsPerParameterCombination) {
         this.simsPerParameterCombination = simsPerParameterCombination;
+    }
+
+    /**
+     * @return the currRSigmas
+     */
+    public double[] getCurrRSigmas() {
+        return currRSigmas;
+    }
+
+    /**
+     * @param currRSigmas the currRSigmas to set
+     */
+    public void setCurrRSigmas(double[] currRSigmas) {
+        this.currRSigmas = currRSigmas;
+    }
+
+
+    /**
+     * @return the currRPis
+     */
+    public double[] getCurrRPis() {
+        return currRPis;
+    }
+
+    /**
+     * @param currRPis the currRPis to set
+     */
+    public void setCurrRPis(double[] currRPis) {
+        this.currRPis = currRPis;
+    }
+
+    /**
+     * @return the rSigmaRandomHomogeneous
+     */
+    public boolean[] getRSigmaRandomHomogeneous() {
+        return rSigmaRandomHomogeneous;
+    }
+
+    /**
+     * @param rSigmaRandomHomogeneous the rSigmaRandomHomogeneous to set
+     */
+    public void setRSigmaRandomHomogeneous(boolean[] rSigmaRandomHomogeneous) {
+        this.rSigmaRandomHomogeneous = rSigmaRandomHomogeneous;
+    }
+
+    /**
+     * @return the currRSigmaRandomHomogeneous
+     */
+    public boolean isCurrRSigmaRandomHomogeneous() {
+        return currRSigmaRandomHomogeneous;
+    }
+
+    /**
+     * @param currRSigmaRandomHomogeneous the currRSigmaRandomHomogeneous to set
+     */
+    public void setCurrRSigmaRandomHomogeneous(boolean currRSigmaRandomHomogeneous) {
+        this.currRSigmaRandomHomogeneous = currRSigmaRandomHomogeneous;
+    }
+
+    /**
+     * @return the rPiRandomHomogeneous
+     */
+    public boolean[] getRPiRandomHomogeneous() {
+        return rPiRandomHomogeneous;
+    }
+
+    /**
+     * @param rPiRandomHomogeneous the rPiRandomHomogeneous to set
+     */
+    public void setRPiRandomHomogeneous(boolean[] rPiRandomHomogeneous) {
+        this.rPiRandomHomogeneous = rPiRandomHomogeneous;
+    }
+
+    /**
+     * @return the currRPiRandomHomogeneous
+     */
+    public boolean isCurrRPiRandomHomogeneous() {
+        return currRPiRandomHomogeneous;
+    }
+
+    /**
+     * @param currRPiRandomHomogeneous the currRPiRandomHomogeneous to set
+     */
+    public void setCurrRPiRandomHomogeneous(boolean currRPiRandomHomogeneous) {
+        this.currRPiRandomHomogeneous = currRPiRandomHomogeneous;
+    }
+
+    /**
+     * Gets the avergae r_sigma
+     *
+     * @return the avergae r_sigma
+     */
+    public double getRSigmaAv() {
+
+        if (this.currRSigmas == null || this.currRSigmas.length == 0) {
+            return this.currRSigma;
+        }
+
+        double rSigmaTotal = 0;
+        int length = this.currRSigmas.length;
+        for (int i = 0; i < length; i++) {
+            rSigmaTotal += this.currRSigmas[i];
+        }
+        return rSigmaTotal/length;
+    }
+
+    /**
+     * Gets the avergae r_pi
+     *
+     * @return the avergae r_pi
+     */
+    public double getRPiAv() {
+
+        if (this.currRPis == null || this.currRPis.length == 0) {
+            return this.currRPi;
+        }
+
+        double rPiTotal = 0;
+        int length = this.currRPis.length;
+        for (int i = 0; i < length; i++) {
+            rPiTotal += this.currRPis[i];
+        }
+        return rPiTotal/length;
     }
 
 }
