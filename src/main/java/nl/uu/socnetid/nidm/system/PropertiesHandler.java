@@ -339,6 +339,35 @@ public class PropertiesHandler {
         nbParameters.setAlphaRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_ALPHA_RANDOM_MIN.toString())));
         nbParameters.setAlphaRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_ALPHA_RANDOM_MAX.toString())));
         nbParameters.setAlphas(parseDoubleArray(configProps.getProperty(LogValues.IV_NB_ALPHA.toString())));
+        // sigma
+        nbParameters.setSigmaRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_SIGMA_RANDOM.toString())));
+        nbParameters.setSigmaRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_SIGMA_RANDOM_MIN.toString())));
+        nbParameters.setSigmaRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_SIGMA_RANDOM_MAX.toString())));
+        nbParameters.setSigmas(parseDoubleArray(configProps.getProperty(LogValues.IV_NB_SIGMA.toString())));
+        // gamma
+        nbParameters.setGammaRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_GAMMA_RANDOM.toString())));
+        nbParameters.setGammaRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GAMMA_RANDOM_MIN.toString())));
+        nbParameters.setGammaRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GAMMA_RANDOM_MAX.toString())));
+        nbParameters.setGammas(parseDoubleArray(configProps.getProperty(LogValues.IV_NB_GAMMA.toString())));
+        // tau
+        nbParameters.setTauRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_TAU_RANDOM.toString())));
+        nbParameters.setTauRandomMin(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_TAU_RANDOM_MIN.toString())));
+        nbParameters.setTauRandomMax(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_TAU_RANDOM_MAX.toString())));
+        nbParameters.setTaus(parseIntArray(configProps.getProperty(LogValues.IV_NB_TAU.toString())));
+        // r_sigma / r_pi
+        nbParameters.setRsEqual(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_RS_EQUAL.toString())));
+        nbParameters.setRSigmaRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_R_SIGMA_RANDOM.toString())));
+        nbParameters.setRSigmaRandomHomogeneous(parseBooleanArray(configProps.getProperty(
+                LogValues.IV_NB_R_SIGMA_RANDOM_HOMOGENEOUS.toString())));
+        nbParameters.setRSigmaRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_R_SIGMA_RANDOM_MIN.toString())));
+        nbParameters.setRSigmaRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_R_SIGMA_RANDOM_MAX.toString())));
+        nbParameters.setRSigmas(parseDoubleArray(configProps.getProperty(LogValues.IV_NB_R_SIGMA.toString())));
+        nbParameters.setRPiRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_R_PI_RANDOM.toString())));
+        nbParameters.setRPiRandomHomogeneous(parseBooleanArray(configProps.getProperty(
+                LogValues.IV_NB_R_PI_RANDOM_HOMOGENEOUS.toString())));
+        nbParameters.setRPiRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_R_PI_RANDOM_MIN.toString())));
+        nbParameters.setRPiRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_R_PI_RANDOM_MAX.toString())));
+        nbParameters.setRPis(parseDoubleArray(configProps.getProperty(LogValues.IV_NB_R_PI.toString())));
         // N
         nbParameters.setNRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_NET_SIZE_RANDOM.toString())));
         nbParameters.setNRandomMin(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_NET_SIZE_RANDOM_MIN.toString())));
@@ -357,6 +386,10 @@ public class PropertiesHandler {
         nbParameters.setOmegaRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_OMEGA_RANDOM_MIN.toString())));
         nbParameters.setOmegaRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_OMEGA_RANDOM_MAX.toString())));
         nbParameters.setOmegas(parseDoubleArray(configProps.getProperty(LogValues.IV_NB_OMEGA.toString())));
+        // time steps
+        nbParameters.setZeta(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_ZETA.toString())));
+        nbParameters.setEpsilon(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_EPSILON.toString())));
+        nbParameters.setTaus(parseIntArray(configProps.getProperty(LogValues.IV_NB_TAU.toString())));
         // n
         nbParameters.setSimsPerParameterCombination(Integer.valueOf(configProps.getProperty(
                 LogValues.IV_NB_SIMS_PER_PC.toString())));
