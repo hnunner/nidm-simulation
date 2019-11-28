@@ -209,4 +209,47 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
         this.yGlobal = this.nbPanel.isYGlobal();
     }
 
+
+    /**
+     * @return the b1
+     */
+    public double getB1() {
+        return b1;
+    }
+
+    /**
+     * @return the b2
+     */
+    public double getB2() {
+        return b2;
+    }
+
+    /**
+     * @return the alpha
+     */
+    public double getAlpha() {
+        return alpha;
+    }
+
+    /**
+     * @return the c1
+     */
+    public double getC1() {
+        return c1;
+    }
+
+    /**
+     * @return the c2
+     */
+    public double getC2() {
+        return c2;
+    }
+
+    /**
+     * @return the yGlobal
+     */
+    public boolean isyGlobal() {
+        return yGlobal;
+    }
+
 }
