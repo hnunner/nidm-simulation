@@ -555,4 +555,30 @@ public class AgentTest {
         assertEquals(2, this.agent2.getGeographicDistanceTo(this.agent3), 0.01);
     }
 
+    /**
+     * Test whether betweenness is computed correctly.
+     */
+    @Test
+    public void testGetBetweenness() {
+        assertEquals(4, this.agent1.getBetweenness(), 0.01);
+        assertEquals(0, this.agent2.getBetweenness(), 0.01);
+        assertEquals(0, this.agent3.getBetweenness(), 0.01);
+        assertEquals(0, this.agent4.getBetweenness(), 0.01);
+        assertEquals(0, this.agent5.getBetweenness(), 0.01);
+        assertEquals(0, this.agent6.getBetweenness(), 0.01);
+    }
+
+    /**
+     * Test whether normalized betweenness is computed correctly.
+     */
+    @Test
+    public void testGetNormalizedBetweenness() {
+        assertEquals(0.4, this.agent1.getBetweennessNormalized(), 0.01);
+        assertEquals(0, this.agent2.getBetweennessNormalized(), 0.01);
+        assertEquals(0, this.agent3.getBetweennessNormalized(), 0.01);
+        assertEquals(0, this.agent4.getBetweennessNormalized(), 0.01);
+        assertEquals(0, this.agent5.getBetweennessNormalized(), 0.01);
+        assertEquals(0, this.agent6.getBetweennessNormalized(), 0.01);
+    }
+
 }
