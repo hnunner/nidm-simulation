@@ -28,14 +28,14 @@ package nl.uu.socnetid.nidm.io.csv;
 import java.io.IOException;
 import java.util.List;
 
-import nl.uu.socnetid.nidm.data.CidmParameters;
 import nl.uu.socnetid.nidm.data.DataGeneratorData;
 import nl.uu.socnetid.nidm.data.LogValues;
+import nl.uu.socnetid.nidm.data.NunnerBuskensParameters;
 
 /**
  * @author Hendrik Nunner
  */
-public class CidmSimulationSummaryWriter extends SimulationSummaryWriter<CidmParameters> {
+public class NunnerBuskensRoundSummaryWriter extends RoundSummaryWriter<NunnerBuskensParameters> {
 
     /**
      * Creates the writer.
@@ -49,58 +49,36 @@ public class CidmSimulationSummaryWriter extends SimulationSummaryWriter<CidmPar
      *          than a regular file, does not exist but cannot be
      *          created, or cannot be opened for any other reason
      */
-    public CidmSimulationSummaryWriter(String fileName, DataGeneratorData<CidmParameters> dgData) throws IOException {
+    public NunnerBuskensRoundSummaryWriter(String fileName, DataGeneratorData<NunnerBuskensParameters> dgData) throws IOException {
         super(fileName, dgData);
     }
 
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.io.SimulationSummaryWriter#addModelColumns(List<String> cols)
+     * @see nl.uu.socnetid.nidm.io.RoundSummaryWriter#addModelColumns(List<String> cols)
      */
     @Override
     protected List<String> addModelColumns(List<String> cols) {
-        cols.add(LogValues.IV_CIDM_ALPHA_AV.toString());
-        cols.add(LogValues.IV_CIDM_KAPPA_AV.toString());
-        cols.add(LogValues.IV_CIDM_BETA_AV.toString());
-        cols.add(LogValues.IV_CIDM_LAMDA_AV.toString());
-        cols.add(LogValues.IV_CIDM_C_AV.toString());
-        cols.add(LogValues.IV_CIDM_MU_AV.toString());
-        cols.add(LogValues.IV_CIDM_SIGMA_AV.toString());
-        cols.add(LogValues.IV_CIDM_GAMMA_AV.toString());
-        cols.add(LogValues.IV_CIDM_RS_EQUAL.toString());
-        cols.add(LogValues.IV_CIDM_R_SIGMA_AV.toString());
-        cols.add(LogValues.IV_CIDM_R_PI_AV.toString());
-        cols.add(LogValues.IV_CIDM_NET_SIZE.toString());
-        cols.add(LogValues.IV_CIDM_IOTA.toString());
-        cols.add(LogValues.IV_CIDM_PHI_AV.toString());
-        cols.add(LogValues.IV_CIDM_OMEGA_AV.toString());
-        cols.add(LogValues.IV_CIDM_TAU_AV.toString());
+        cols.add(LogValues.IV_NB_ALPHA.toString());
+        cols.add(LogValues.IV_NB_SIGMA.toString());
+        cols.add(LogValues.IV_NB_RS_EQUAL.toString());
+        cols.add(LogValues.IV_NB_R_SIGMA_AV.toString());
+        cols.add(LogValues.IV_NB_R_PI_AV.toString());
+        cols.add(LogValues.IV_NB_OMEGA.toString());
         return cols;
     }
 
-
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.io.SimulationSummaryWriter#addCurrModelData(List<String> currData)
+     * @see nl.uu.socnetid.nidm.io.RoundSummaryWriter#addCurrModelData(List<String> currData)
      */
     @Override
     protected List<String> addCurrModelData(List<String> currData) {
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrAlpha()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrKappa()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrBeta()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrLamda()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrC()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrMu()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrSigma()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrGamma()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().isRsEqual() ? 1 : 0));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrRSigma()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrRPi()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrN()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().isCurrIota() ? 1 : 0));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrPhi()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getRSigmaAv()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getRPiAv()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrOmega()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrTau()));
-
         return currData;
     }
 

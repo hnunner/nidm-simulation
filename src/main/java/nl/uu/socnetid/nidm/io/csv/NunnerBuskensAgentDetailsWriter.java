@@ -28,14 +28,16 @@ package nl.uu.socnetid.nidm.io.csv;
 import java.io.IOException;
 import java.util.List;
 
+import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.data.DataGeneratorData;
 import nl.uu.socnetid.nidm.data.LogValues;
 import nl.uu.socnetid.nidm.data.NunnerBuskensParameters;
+import nl.uu.socnetid.nidm.utility.NunnerBuskens;
 
 /**
  * @author Hendrik Nunner
  */
-public class NunnerBuskensSimulationSummaryWriter extends SimulationSummaryWriter<NunnerBuskensParameters> {
+public class NunnerBuskensAgentDetailsWriter extends AgentDetailsWriter<NunnerBuskensParameters> {
 
     /**
      * Creates the writer.
@@ -49,22 +51,31 @@ public class NunnerBuskensSimulationSummaryWriter extends SimulationSummaryWrite
      *          than a regular file, does not exist but cannot be
      *          created, or cannot be opened for any other reason
      */
-    public NunnerBuskensSimulationSummaryWriter(String fileName, DataGeneratorData<NunnerBuskensParameters> dgData)
-            throws IOException {
+    public NunnerBuskensAgentDetailsWriter(String fileName, DataGeneratorData<NunnerBuskensParameters> dgData) throws IOException {
         super(fileName, dgData);
     }
 
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.io.SimulationSummaryWriter#addModelColumns(List<String> cols)
+     * @see nl.uu.socnetid.nidm.io.AgentDetailsWriter#addModelColumns(List<String> cols)
      */
     @Override
     protected List<String> addModelColumns(List<String> cols) {
         cols.add(LogValues.IV_NB_B1.toString());
-        cols.add(LogValues.IV_NB_B2.toString());
-        cols.add(LogValues.IV_NB_ALPHA.toString());
         cols.add(LogValues.IV_NB_C1.toString());
         cols.add(LogValues.IV_NB_C2.toString());
+        cols.add(LogValues.IV_NB_B2.toString());
+        cols.add(LogValues.IV_NB_ALPHA.toString());
+        cols.add(LogValues.IV_NB_SIGMA.toString());
+        cols.add(LogValues.IV_NB_GAMMA.toString());
+        cols.add(LogValues.IV_NB_TAU.toString());
+        cols.add(LogValues.IV_NB_RS_EQUAL.toString());
+        cols.add(LogValues.IV_NB_R_SIGMA_RANDOM.toString());
+        cols.add(LogValues.IV_NB_R_SIGMA_RANDOM_HOMOGENEOUS.toString());
+        cols.add(LogValues.IV_NB_R_SIGMA.toString());
+        cols.add(LogValues.IV_NB_R_PI_RANDOM.toString());
+        cols.add(LogValues.IV_NB_R_PI_RANDOM_HOMOGENEOUS.toString());
+        cols.add(LogValues.IV_NB_R_PI.toString());
         cols.add(LogValues.IV_NB_NET_SIZE.toString());
         cols.add(LogValues.IV_NB_IOTA.toString());
         cols.add(LogValues.IV_NB_PHI.toString());
@@ -74,20 +85,33 @@ public class NunnerBuskensSimulationSummaryWriter extends SimulationSummaryWrite
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.io.SimulationSummaryWriter#addCurrModelData(List<String> currData)
+     * @see nl.uu.socnetid.nidm.io.AgentDetailsWriter#addCurrModelData(List<String> currData, Agent agent)
      */
     @Override
-    protected List<String> addCurrModelData(List<String> currData) {
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrB1()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrB2()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrAlpha()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrC1()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrC2()));
+    protected List<String> addCurrModelData(List<String> currData, Agent agent) {
+        NunnerBuskens uf = (NunnerBuskens) agent.getUtilityFunction();
+
+        currData.add(String.valueOf(uf.getB1()));
+        currData.add(String.valueOf(uf.getC1()));
+        currData.add(String.valueOf(uf.getC2()));
+        currData.add(String.valueOf(uf.getB2()));
+        currData.add(String.valueOf(uf.getAlpha()));
+        currData.add(String.valueOf(agent.getDiseaseSpecs().getSigma()));
+        currData.add(String.valueOf(agent.getDiseaseSpecs().getGamma()));
+        currData.add(String.valueOf(agent.getDiseaseSpecs().getTau()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().isRsEqual() ? 1 : 0));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().isRSigmaRandom() ? 1 : 0));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().isCurrRSigmaRandomHomogeneous() ? 1 : 0));
+        currData.add(String.valueOf(agent.getRSigma()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().isRPiRandom() ? 1 : 0));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().isCurrRPiRandomHomogeneous() ? 1 : 0));
+        currData.add(String.valueOf(agent.getRPi()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrN()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().isCurrIota() ? 1 : 0));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrPhi()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrOmega()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().isCurrYGlobal() ? 1 : 0));
+        currData.add(String.valueOf(agent.getPhi()));
+        currData.add(String.valueOf(agent.getOmega()));
+        currData.add(String.valueOf(uf.isyGlobal() ? 1 : 0));
+
         return currData;
     }
 
