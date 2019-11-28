@@ -26,7 +26,6 @@
 package nl.uu.socnetid.nidm.io.csv;
 
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 
 import nl.uu.socnetid.nidm.data.CidmParameters;
@@ -36,7 +35,7 @@ import nl.uu.socnetid.nidm.data.LogValues;
 /**
  * @author Hendrik Nunner
  */
-public class CidmRoundSummaryWriter extends CsvFileWriter<CidmParameters> {
+public class CidmRoundSummaryWriter extends RoundSummaryWriter<CidmParameters> {
 
     /**
      * Creates the writer.
@@ -54,20 +53,12 @@ public class CidmRoundSummaryWriter extends CsvFileWriter<CidmParameters> {
         super(fileName, dgData);
     }
 
+
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.io.CSVFileWriter#initCols()
+     * @see nl.uu.socnetid.nidm.io.RoundSummaryWriter#addModelColumns(List<String> cols)
      */
     @Override
-    protected void initCols() {
-        List<String> cols = new LinkedList<String>();
-
-        // PARAMETERS
-        // simulation
-        cols.add(LogValues.IV_SIM_UID.toString());
-        // cols.add(LogValues.IV_SIM_UPC.toString());
-        // cols.add(LogValues.IV_SIM_CNT.toString());
-        cols.add(LogValues.IV_SIM_ROUND.toString());
-        // Cidm - not all parameters to reduce export file size
+    protected List<String> addModelColumns(List<String> cols) {
         // cols.add(LogValues.IV_CIDM_ALPHA_AV.toString());
         // cols.add(LogValues.IV_CIDM_KAPPA_AV.toString());
         cols.add(LogValues.IV_CIDM_BETA_AV.toString());
@@ -84,37 +75,14 @@ public class CidmRoundSummaryWriter extends CsvFileWriter<CidmParameters> {
         // cols.add(LogValues.IV_CIDM_PHI_AV.toString());
         // cols.add(LogValues.IV_CIDM_OMEGA_AV.toString());
         // cols.add(LogValues.IV_CIDM_TAU_AV.toString());
-
-        // PROPERTIES
-        // simulation
-        cols.add(LogValues.DV_SIM_STAGE.toString());
-        // network
-        // cols.add(LogValues.DV_NET_STABLE.toString());
-        cols.add(LogValues.DV_NET_DENSITY.toString());
-        cols.add(LogValues.DV_NET_AV_DEGREE.toString());
-        // cols.add(LogValues.DV_NET_AV_CLUSTERING.toString());
-        cols.add(LogValues.DV_NET_PERCENTAGE_SUSCEPTIBLE.toString());
-        cols.add(LogValues.DV_NET_PERCENTAGE_INFECTED.toString());
-        cols.add(LogValues.DV_NET_PERCENTAGE_RECOVERED.toString());
-
-        // FILE SYSTEM
-        writeLine(cols);
+        return cols;
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.io.CSVFileWriter#writeCurrentData()
+     * @see nl.uu.socnetid.nidm.io.RoundSummaryWriter#addCurrModelData(List<String> currData)
      */
     @Override
-    public void writeCurrentData() {
-        List<String> currData = new LinkedList<String>();
-
-        // PARAMETERS
-        // simulation
-        currData.add(this.dgData.getSimStats().getUid());
-        // currData.add(String.valueOf(this.dgData.getUpc()));
-        // currData.add(String.valueOf(this.dgData.getSimPerUpc()));
-        currData.add(String.valueOf(this.dgData.getSimStats().getRounds()));
-        // Cidm
+    protected List<String> addCurrModelData(List<String> currData) {
         // currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrAlpha()));
         // currData.add(String.valueOf(this.dgDat.getUtilityModelParams().getCurrKappa()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrBeta()));
@@ -131,20 +99,7 @@ public class CidmRoundSummaryWriter extends CsvFileWriter<CidmParameters> {
         // currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrPhi()));
         // currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrOmega()));
         // currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrTau()));
-
-        // PROPERTIES
-        // simulation
-        currData.add(String.valueOf(this.dgData.getSimStats().getSimStage()));
-        // network
-        // currData.add(String.valueOf(this.dgData.getNetStatsCurrent().isStable()));
-        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getDensity()));
-        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvDegree()));
-        // currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvClustering()));
-        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getSusceptiblePercent()));
-        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getInfectedPercent()));
-        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getRecoveredPercent()));
-
-        writeLine(currData);
+        return currData;
     }
 
 }

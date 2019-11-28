@@ -38,6 +38,8 @@ public class AgentStats {
     private double degree2;
     private double closeness;
     private double clustering;
+    private double betweenness;
+    private double betweennessNormalized;
     private double utility;
     private double socialBenefits;
     private double socialCosts;
@@ -58,6 +60,8 @@ public class AgentStats {
         this.degree2 = agent.getSecondOrderDegree();
         this.closeness = agent.getCloseness();
         this.clustering = agent.getClustering();
+        this.betweenness = agent.getBetweenness();
+        this.betweennessNormalized = agent.getBetweennessNormalized();
         this.utility = agent.getUtility().getOverallUtility();
         this.socialBenefits = agent.getUtility().getSocialBenefits();
         this.socialCosts = agent.getUtility().getSocialCosts();
@@ -131,6 +135,34 @@ public class AgentStats {
      */
     public void setClustering(double clustering) {
         this.clustering = clustering;
+    }
+
+    /**
+     * @return the betweenness
+     */
+    public double getBetweenness() {
+        return betweenness;
+    }
+
+    /**
+     * @param betweenness the betweenness to set
+     */
+    public void setBetweenness(double betweenness) {
+        this.betweenness = betweenness;
+    }
+
+    /**
+     * @return the betweennessNormalized
+     */
+    public double getBetweennessNormalized() {
+        return betweennessNormalized;
+    }
+
+    /**
+     * @param betweennessNormalized the betweennessNormalized to set
+     */
+    public void setBetweennessNormalized(double betweennessNormalized) {
+        this.betweennessNormalized = betweennessNormalized;
     }
 
     /**
