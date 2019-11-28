@@ -39,6 +39,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.locks.Lock;
 
 import org.apache.log4j.Logger;
+import org.graphstream.algorithm.BetweennessCentrality;
 import org.graphstream.algorithm.Toolkit;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
@@ -427,6 +428,30 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      */
     public double getClustering() {
         return Toolkit.clusteringCoefficient(this);
+    }
+
+    /**
+     * Gets the betweenness.
+     *
+     * @return the betweenness
+     */
+    public double getBetweenness() {
+        BetweennessCentrality bc = new BetweennessCentrality();
+        bc.setUnweighted();
+        bc.init(this.getNetwork());
+        bc.compute();
+        return bc.centrality(this);
+    }
+
+    /**
+     * Gets the normalized betweenness.
+     *
+     * @return the normalized betweenness
+     */
+    public double getBetweennessNormalized() {
+        double onShortestPaths = this.getBetweenness();
+        double N = this.getNetwork().getN();
+        return onShortestPaths / (((N-1)/2) * (N-2));
     }
 
     /**
