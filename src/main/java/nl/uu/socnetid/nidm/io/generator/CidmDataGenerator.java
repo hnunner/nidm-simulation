@@ -56,6 +56,8 @@ import nl.uu.socnetid.nidm.utility.UtilityFunction;
 
 /**
  * @author Hendrik Nunner
+ *
+ * TODO unify data generators
  */
 public class CidmDataGenerator extends AbstractDataGenerator implements AgentListener, SimulationListener {
 
@@ -304,7 +306,7 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
                 this.dgData.getUtilityModelParams().getCurrLamda(),
                 this.dgData.getUtilityModelParams().getCurrC());
 
-        // add agents - with RPi == RSigma!!!
+        // add agents
         DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR,
                 this.dgData.getUtilityModelParams().getCurrTau(),
                 this.dgData.getUtilityModelParams().getCurrSigma(),

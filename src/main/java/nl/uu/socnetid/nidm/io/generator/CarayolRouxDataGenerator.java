@@ -52,7 +52,7 @@ import nl.uu.socnetid.nidm.utility.UtilityFunction;
 /**
  * @author Hendrik Nunner
  *
- * TODO generalize, as this class is very similar to {@link CidmDataGenerator}
+ * TODO unify data generators
  */
 public class CarayolRouxDataGenerator extends AbstractDataGenerator {
 
