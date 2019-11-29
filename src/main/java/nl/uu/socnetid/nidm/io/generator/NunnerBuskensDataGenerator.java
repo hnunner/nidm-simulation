@@ -345,15 +345,21 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
         }
         // sigma
         if (this.dgData.getUtilityModelParams().isSigmaRandom()) {
-            this.dgData.getUtilityModelParams().setCurrSigma(ThreadLocalRandom.current().nextDouble());
+            this.dgData.getUtilityModelParams().setCurrSigma(ThreadLocalRandom.current().nextDouble(
+                    this.dgData.getUtilityModelParams().getSigmaRandomMin(),
+                    this.dgData.getUtilityModelParams().getSigmaRandomMax()));
         }
         // gamma
         if (this.dgData.getUtilityModelParams().isGammaRandom()) {
-            this.dgData.getUtilityModelParams().setCurrGamma(ThreadLocalRandom.current().nextDouble());
+            this.dgData.getUtilityModelParams().setCurrGamma(ThreadLocalRandom.current().nextDouble(
+                    this.dgData.getUtilityModelParams().getGammaRandomMin(),
+                    this.dgData.getUtilityModelParams().getSigmaRandomMax()));
         }
         // tau
         if (this.dgData.getUtilityModelParams().isTauRandom()) {
-            this.dgData.getUtilityModelParams().setCurrTau(ThreadLocalRandom.current().nextInt());
+            this.dgData.getUtilityModelParams().setCurrTau(ThreadLocalRandom.current().nextInt(
+                    this.dgData.getUtilityModelParams().getTauRandomMin(),
+                    this.dgData.getUtilityModelParams().getTauRandomMax()));
         }
         // N
         if (this.dgData.getUtilityModelParams().isNRandom()) {
@@ -364,12 +370,16 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
         // rSigma
         if (this.dgData.getUtilityModelParams().isRSigmaRandom()) {
             if (this.dgData.getUtilityModelParams().isCurrRSigmaRandomHomogeneous()) {
-                this.dgData.getUtilityModelParams().setCurrRSigma(ThreadLocalRandom.current().nextDouble());
+                this.dgData.getUtilityModelParams().setCurrRSigma(ThreadLocalRandom.current().nextDouble(
+                        this.dgData.getUtilityModelParams().getRSigmaRandomMin(),
+                        this.dgData.getUtilityModelParams().getRSigmaRandomMax()));
             } else {
                 int currN = this.dgData.getUtilityModelParams().getCurrN();
                 double[] rSigmas = new double[currN];
                 for (int i = 0; i < currN; i++) {
-                    rSigmas[i] = ThreadLocalRandom.current().nextDouble();
+                    rSigmas[i] = ThreadLocalRandom.current().nextDouble(
+                            this.dgData.getUtilityModelParams().getRSigmaRandomMin(),
+                            this.dgData.getUtilityModelParams().getRSigmaRandomMax());
                 }
                 this.dgData.getUtilityModelParams().setCurrRSigmas(rSigmas);
             }
@@ -382,12 +392,16 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
             this.dgData.getUtilityModelParams().setCurrRPis(this.dgData.getUtilityModelParams().getCurrRSigmas());
         } else if (this.dgData.getUtilityModelParams().isRPiRandom()) {
             if (this.dgData.getUtilityModelParams().isCurrRPiRandomHomogeneous()) {
-                this.dgData.getUtilityModelParams().setCurrRPi(ThreadLocalRandom.current().nextDouble());
+                this.dgData.getUtilityModelParams().setCurrRPi(ThreadLocalRandom.current().nextDouble(
+                        this.dgData.getUtilityModelParams().getRSigmaRandomMin(),
+                        this.dgData.getUtilityModelParams().getRSigmaRandomMax()));
             } else {
                 int currN = this.dgData.getUtilityModelParams().getCurrN();
                 double[] rPis = new double[currN];
                 for (int i = 0; i < currN; i++) {
-                    rPis[i] = ThreadLocalRandom.current().nextDouble();
+                    rPis[i] = ThreadLocalRandom.current().nextDouble(
+                            this.dgData.getUtilityModelParams().getRSigmaRandomMin(),
+                            this.dgData.getUtilityModelParams().getRSigmaRandomMax());
                 }
                 this.dgData.getUtilityModelParams().setCurrRPis(rPis);
             }

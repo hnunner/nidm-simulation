@@ -53,7 +53,7 @@ public class DataGeneratorData<UMP extends UtilityModelParameters> {
     // index case
     private AgentStats indexCaseStats;
     // export
-    private String gexfExportFile;
+    private String gexfExportFile = "/";
 
 
     /**
