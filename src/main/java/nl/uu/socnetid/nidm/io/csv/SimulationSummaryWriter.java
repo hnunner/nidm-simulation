@@ -126,9 +126,8 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
         // index case
         cols.add(LogValues.DV_INDEX_SATISFIED.toString());
         cols.add(LogValues.DV_INDEX_UTIL.toString());
-        cols.add(LogValues.DV_INDEX_BENEFIT_DIST1.toString());
-        cols.add(LogValues.DV_INDEX_BENEFIT_DIST2.toString());
-        cols.add(LogValues.DV_INDEX_COSTS_DIST1.toString());
+        cols.add(LogValues.DV_INDEX_BENEFIT_SOCIAL.toString());
+        cols.add(LogValues.DV_INDEX_COSTS_SOCIAL.toString());
         cols.add(LogValues.DV_INDEX_COSTS_DISEASE.toString());
         cols.add(LogValues.DV_INDEX_DISEASE_STATE.toString());
         cols.add(LogValues.DV_INDEX_DISEASE_ROUNDS_REMAINING.toString());

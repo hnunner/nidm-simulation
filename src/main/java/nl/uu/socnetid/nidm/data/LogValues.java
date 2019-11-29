@@ -285,9 +285,8 @@ public enum LogValues {
     // index
     DV_INDEX_SATISFIED("index.satisfied"),
     DV_INDEX_UTIL("index.util"),
-    DV_INDEX_BENEFIT_DIST1("index.benefit.distance.1"),
-    DV_INDEX_BENEFIT_DIST2("index.benefit.distance.2"),
-    DV_INDEX_COSTS_DIST1("index.costs.distance.1"),
+    DV_INDEX_BENEFIT_SOCIAL("index.benefit.social"),
+    DV_INDEX_COSTS_SOCIAL("index.costs.social"),
     DV_INDEX_COSTS_DISEASE("index.costs.disease"),
     DV_INDEX_DISEASE_STATE("index.dis.state"),
     DV_INDEX_DISEASE_ROUNDS_REMAINING("index.dis.rounds.remaining"),
