@@ -89,7 +89,7 @@ public abstract class AgentDetailsWriter<UMP extends UtilityModelParameters> ext
     protected void initCols() {
         List<String> cols = new LinkedList<String>();
 
-        // DEPENDENT VARIABLES
+        // INDEPENDENT VARIABLES
         // simulation
         cols.add(LogValues.IV_SIM_UID.toString());
         cols.add(LogValues.IV_SIM_UPC.toString());
@@ -100,7 +100,7 @@ public abstract class AgentDetailsWriter<UMP extends UtilityModelParameters> ext
         // model specific columns
         cols = addModelColumns(cols);
 
-        // INDEPENDENT VARIABLES
+        // DEPENDENT VARIABLES
         // simulation
         cols.add(LogValues.DV_SIM_STAGE.toString());
         // network
@@ -108,6 +108,7 @@ public abstract class AgentDetailsWriter<UMP extends UtilityModelParameters> ext
         cols.add(LogValues.DV_NET_DENSITY.toString());
         cols.add(LogValues.DV_NET_AV_DEGREE.toString());
         cols.add(LogValues.DV_NET_AV_CLUSTERING.toString());
+        cols.add(LogValues.DV_NET_AV_PATHLENGTH.toString());
         // agent
         cols.add(LogValues.DV_AGENT_SATISFIED.toString());
         cols.add(LogValues.DV_AGENT_UTIL.toString());
@@ -165,6 +166,7 @@ public abstract class AgentDetailsWriter<UMP extends UtilityModelParameters> ext
             currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getDensity()));
             currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvDegree()));
             currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvClustering()));
+            currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvPathLength()));
             // agent
             AgentStats agentStats = new AgentStats(agent);
             currData.add(String.valueOf(agentStats.isSatisfied()));
