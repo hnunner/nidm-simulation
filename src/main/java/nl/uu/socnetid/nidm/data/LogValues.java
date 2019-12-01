@@ -30,6 +30,7 @@ import java.util.List;
 
 import nl.uu.socnetid.nidm.system.PropertiesHandler;
 
+
 /**
  * @author Hendrik Nunner
  */
@@ -235,6 +236,8 @@ public enum LogValues {
     DV_NET_PERCENTAGE_SATISFIED("net.pct.satisfied"),
     DV_NET_PERCENTAGE_UNSATISFIED("net.pct.unsatisfied"),
     DV_NET_STABLE("net.stable"),
+    DV_NET_STABLE_PRE("net.stable.pre"),
+    DV_NET_STABLE_POST("net.stable.post"),
     DV_NET_DENSITY("net.density"),
     DV_NET_DENSITY_PRE("net.density.pre.epidemic"),
     DV_NET_DENSITY_POST("net.density.post.epidemic"),
