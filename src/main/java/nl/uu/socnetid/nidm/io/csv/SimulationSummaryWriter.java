@@ -108,6 +108,7 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
         cols.add(LogValues.DV_NET_AV_COSTS_SOCIAL_PRE.toString());
         cols.add(LogValues.DV_NET_AV_COSTS_DISEASE_PRE.toString());
         cols.add(LogValues.DV_NET_DENSITY_PRE.toString());
+        cols.add(LogValues.DV_NET_STABLE_PRE.toString());
         // post-epidemic
         cols.add(LogValues.DV_NET_PERCENTAGE_SUSCEPTIBLE.toString());
         cols.add(LogValues.DV_NET_PERCENTAGE_INFECTED.toString());
@@ -123,6 +124,7 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
         cols.add(LogValues.DV_NET_AV_COSTS_SOCIAL_POST.toString());
         cols.add(LogValues.DV_NET_AV_COSTS_DISEASE_POST.toString());
         cols.add(LogValues.DV_NET_DENSITY_POST.toString());
+        cols.add(LogValues.DV_NET_STABLE_POST.toString());
         // index case
         cols.add(LogValues.DV_INDEX_SATISFIED.toString());
         cols.add(LogValues.DV_INDEX_UTIL.toString());
@@ -181,6 +183,7 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
         currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvSocialCosts()));
         currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvDiseaseCosts()));
         currData.add(String.valueOf(this.dgData.getNetStatsPre().getDensity()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPre().isStable() ? 1 : 0));
         currData.add(String.valueOf(this.dgData.getNetStatsPost().getSusceptiblePercent()));
         currData.add(String.valueOf(this.dgData.getNetStatsPost().getInfectedPercent()));
         currData.add(String.valueOf(this.dgData.getNetStatsPost().getRecoveredPercent()));
@@ -195,6 +198,7 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
         currData.add(String.valueOf(this.dgData.getNetStatsPost().getAvSocialCosts()));
         currData.add(String.valueOf(this.dgData.getNetStatsPost().getAvDiseaseCosts()));
         currData.add(String.valueOf(this.dgData.getNetStatsPost().getDensity()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPost().isStable() ? 1 : 0));
         // index case
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().isSatisfied()));
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().getUtility()));
