@@ -87,8 +87,8 @@ public abstract class RoundSummaryWriter<UMP extends UtilityModelParameters> ext
         // PARAMETERS
         // simulation
         cols.add(LogValues.IV_SIM_UID.toString());
-        // cols.add(LogValues.IV_SIM_UPC.toString());
-        // cols.add(LogValues.IV_SIM_CNT.toString());
+        cols.add(LogValues.IV_SIM_UPC.toString());
+        cols.add(LogValues.IV_SIM_CNT.toString());
         cols.add(LogValues.IV_SIM_ROUND.toString());
 
         // model specific columns
@@ -98,7 +98,7 @@ public abstract class RoundSummaryWriter<UMP extends UtilityModelParameters> ext
         // simulation
         cols.add(LogValues.DV_SIM_STAGE.toString());
         // network
-        // cols.add(LogValues.DV_NET_STABLE.toString());
+        cols.add(LogValues.DV_NET_STABLE.toString());
         cols.add(LogValues.DV_NET_DENSITY.toString());
         cols.add(LogValues.DV_NET_AV_DEGREE.toString());
         cols.add(LogValues.DV_NET_AV_CLUSTERING.toString());
@@ -121,8 +121,8 @@ public abstract class RoundSummaryWriter<UMP extends UtilityModelParameters> ext
         // PARAMETERS
         // simulation
         currData.add(this.dgData.getSimStats().getUid());
-        // currData.add(String.valueOf(this.dgData.getUpc()));
-        // currData.add(String.valueOf(this.dgData.getSimPerUpc()));
+        currData.add(String.valueOf(this.dgData.getSimStats().getUpc()));
+        currData.add(String.valueOf(this.dgData.getSimStats().getSimPerUpc()));
         currData.add(String.valueOf(this.dgData.getSimStats().getRounds()));
 
         // model specific data
@@ -132,7 +132,7 @@ public abstract class RoundSummaryWriter<UMP extends UtilityModelParameters> ext
         // simulation
         currData.add(String.valueOf(this.dgData.getSimStats().getSimStage()));
         // network
-        // currData.add(String.valueOf(this.dgData.getNetStatsCurrent().isStable()));
+        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().isStable()));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getDensity()));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvDegree()));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvClustering()));
