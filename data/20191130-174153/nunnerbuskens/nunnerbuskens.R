@@ -98,14 +98,55 @@ load_agent_details_data <- function() {
   return(load_csv(CSV_AGENT_DETAILS_PATH))
 }
 
-get_descriptives <- function(data.ss = load_simulation_summary_data()) {
+print_descriptives <- function(data.ss = load_simulation_summary_data()) {
+  print("----------------------------------------------------------------")
+  print(paste("observations:", nrow(data.ss)))
+  print(paste("exlcusions (unstable):", nrow(subset(data.ss, data.ss$net.stable.pre == 0))))
+  print(paste("exlcusions (disconnected):", nrow(subset(data.ss, data.ss$net.pathlength.pre.epidemic.av < 1))))
+  print("----------------------------------------------------------------")
+  print(paste("av. degree (network): ", round(mean(data.ss$net.degree.pre.epidemic.av), digits = 2),
+              " (", round(sd(data.ss$net.degree.pre.epidemic.av), digits = 2), ")", sep = ""))
+  print(paste("av. clustering (network): ", round(mean(data.ss$net.clustering.pre.epidemic.av), digits = 2),
+              " (", round(sd(data.ss$net.clustering.pre.epidemic.av), digits = 2), ")", sep = ""))
+  print(paste("av. path length (network): ", round(mean(data.ss$net.pathlength.pre.epidemic.av), digits = 2),
+              " (", round(sd(data.ss$net.pathlength.pre.epidemic.av), digits = 2), ")", sep = ""))
+  print("----------------------------------------------------------------")
+  print(paste("av. degree (patient-0): ", round(mean(data.ss$index.degree), digits = 2),
+              " (", round(sd(data.ss$index.degree), digits = 2), ")", sep = ""))
+  print(paste("av. clustering (patient-0): ", round(mean(data.ss$index.clustering), digits = 2),
+              " (", round(sd(data.ss$index.clustering), digits = 2), ")", sep = ""))
+  print(paste("av. betweenness (patient-0): ", round(mean(data.ss$index.betweenness.normalized), digits = 2),
+              " (", round(sd(data.ss$index.betweenness.normalized), digits = 2), ")", sep = ""))
+  print("----------------------------------------------------------------")
+  print(paste("av. attack rate: ", round(mean(data.ss$net.pct.rec), digits = 2),
+              " (", round(sd(data.ss$net.pct.rec), digits = 2), ")", sep = ""))
+}
 
-  data.rrm <- subset(data.ss, data.ss$nb.alpha == 0.15 & data.ss$nb.omega == 0.0 & data.ss$)
-
+print_descriptives_per_condition <- function(data.ss = load_simulation_summary_data()) {
+  print("RRM:")
+  print_descriptives(subset(data.ss, data.ss$nb.alpha == 0.15 & data.ss$nb.omega == 0.0 & data.ss$nb.sigma == 2.0))
+  print("RRS:")
+  print_descriptives(subset(data.ss, data.ss$nb.alpha == 0.15 & data.ss$nb.omega == 0.0 & data.ss$nb.sigma == 50.0))
+  print("RAM:")
+  print_descriptives(subset(data.ss, data.ss$nb.alpha == 0.15 & data.ss$nb.omega == 0.8 & data.ss$nb.sigma ==  2.0))
+  print("RAS:")
+  print_descriptives(subset(data.ss, data.ss$nb.alpha == 0.15 & data.ss$nb.omega == 0.8 & data.ss$nb.sigma == 50.0))
+  print("SRM:")
+  print_descriptives(subset(data.ss, data.ss$nb.alpha == 0.85 & data.ss$nb.omega == 0.0 & data.ss$nb.sigma ==  2.0))
+  print("SRS:")
+  print_descriptives(subset(data.ss, data.ss$nb.alpha == 0.85 & data.ss$nb.omega == 0.0 & data.ss$nb.sigma == 50.0))
+  print("SAM:")
+  print_descriptives(subset(data.ss, data.ss$nb.alpha == 0.85 & data.ss$nb.omega == 0.8 & data.ss$nb.sigma ==  2.0))
+  print("SAS:")
+  print_descriptives(subset(data.ss, data.ss$nb.alpha == 0.85 & data.ss$nb.omega == 0.8 & data.ss$nb.sigma == 50.0))
 }
 
 manual_analyses <- function() {
   data.ss <-load_simulation_summary_data()
+  print_descriptives_per_condition(subset(data.ss, data.ss$nb.N == 20))
+  print_descriptives_per_condition(subset(data.ss, data.ss$nb.N == 24))
+
+
   data.rs <- load_round_summary_data()
   data.ad <- load_agent_details_data()
 
