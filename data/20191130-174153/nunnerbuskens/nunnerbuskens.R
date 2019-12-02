@@ -98,7 +98,11 @@ load_agent_details_data <- function() {
   return(load_csv(CSV_AGENT_DETAILS_PATH))
 }
 
+get_descriptives <- function(data.ss = load_simulation_summary_data()) {
 
+  data.rrm <- subset(data.ss, data.ss$nb.alpha == 0.15 & data.ss$nb.omega == 0.0 & data.ss$)
+
+}
 
 manual_analyses <- function() {
   data.ss <-load_simulation_summary_data()
