@@ -70,6 +70,13 @@ public class NunnerBuskensSimulationSummaryWriter extends SimulationSummaryWrite
         cols.add(LogValues.IV_NB_PHI.toString());
         cols.add(LogValues.IV_NB_OMEGA.toString());
         cols.add(LogValues.IV_NB_YGLOBAL.toString());
+
+        cols.add(LogValues.IV_NB_SIGMA.toString());
+        cols.add(LogValues.IV_NB_GAMMA.toString());
+        cols.add(LogValues.IV_NB_TAU.toString());
+        cols.add(LogValues.IV_NB_RS_EQUAL.toString());
+        cols.add(LogValues.IV_NB_R_SIGMA_AV.toString());
+        cols.add(LogValues.IV_NB_R_PI_AV.toString());
         return cols;
     }
 
@@ -88,6 +95,12 @@ public class NunnerBuskensSimulationSummaryWriter extends SimulationSummaryWrite
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrPhi()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrOmega()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().isCurrYGlobal() ? 1 : 0));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrSigma()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrGamma()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrTau()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().isRsEqual() ? 1 : 0));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getRSigmaAv()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getRPiAv()));
         return currData;
     }
 
