@@ -64,6 +64,9 @@ public class Network extends SingleGraph implements SimulationListener {
     // standard share to select assortatively
     private static final double STANDARD_OMEGA = 0.0;
 
+    // standard shuffling of assortatively selected co-agents
+    private static final boolean STANDARD_OMEGA_SHUFFLE = true;
+
     // listener
     private final Set<NetworkListener> networkListeners = new CopyOnWriteArraySet<NetworkListener>();
 
@@ -116,7 +119,8 @@ public class Network extends SingleGraph implements SimulationListener {
      * @return the newly added agent.
      */
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs) {
-        return this.addAgent(utilityFunction, diseaseSpecs, RISK_FACTOR_NEUTRAL, RISK_FACTOR_NEUTRAL, STANDARD_PHI, STANDARD_OMEGA);
+        return this.addAgent(utilityFunction, diseaseSpecs, RISK_FACTOR_NEUTRAL, RISK_FACTOR_NEUTRAL, STANDARD_PHI, STANDARD_OMEGA,
+                STANDARD_OMEGA_SHUFFLE);
     }
 
     /**
@@ -140,8 +144,34 @@ public class Network extends SingleGraph implements SimulationListener {
      */
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
             double omega) {
+        return this.addAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, omega, STANDARD_OMEGA_SHUFFLE);
+    }
+
+    /**
+     * Creates and adds an agent to the network.
+     *
+     * @param utilityFunction
+     *          the agent's utility function
+     * @param diseaseSpecs
+     *          the disease specs
+     * @param rSigma
+     *          the factor describing how the agent perceives severity of diseases:
+     *          <1: risk seeking, =1: risk neutral; >1: risk averse
+     * @param rPi
+     *          the factor describing how the agent perceives the risk of an infection:
+     *          <1: risk seeking, =1: risk neutral; >1: risk averse
+     * @param phi
+     *          the share of peers an agent evaluates per round
+     * @param omega
+     *          the share of peers to select assortatively
+     * @param omegaShuffle
+     *          whether assortatively selected co-agents ought to be shuffled before processing
+     * @return the newly added agent.
+     */
+    public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
+            double omega, boolean omegaShuffle) {
         Agent agent = this.addNode(String.valueOf(this.getNodeCount() + 1));
-        agent.initAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, omega);
+        agent.initAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, omega, omegaShuffle);
         notifyAgentAdded(agent);
 
         // re-position agents if auto-layout is disabled

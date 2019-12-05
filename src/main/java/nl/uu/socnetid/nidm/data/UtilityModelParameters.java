@@ -53,6 +53,9 @@ public abstract class UtilityModelParameters {
     private double omegaRandomMax;
     private double[] omegas;
     private double currOmega;
+    private boolean omegaShuffleRandom;
+    private boolean[] omegaShuffles;
+    private boolean currOmegaShuffle;
 
     // INFECTIONS
     // sigma - severity
@@ -880,6 +883,48 @@ public abstract class UtilityModelParameters {
             rPiTotal += this.currRPis[i];
         }
         return rPiTotal/length;
+    }
+
+    /**
+     * @return the omegaShuffleRandom
+     */
+    public boolean isOmegaShuffleRandom() {
+        return omegaShuffleRandom;
+    }
+
+    /**
+     * @param omegaShuffleRandom the omegaShuffleRandom to set
+     */
+    public void setOmegaShuffleRandom(boolean omegaShuffleRandom) {
+        this.omegaShuffleRandom = omegaShuffleRandom;
+    }
+
+    /**
+     * @return the omegaShuffles
+     */
+    public boolean[] getOmegaShuffles() {
+        return omegaShuffles;
+    }
+
+    /**
+     * @param omegaShuffles the omegaShuffles to set
+     */
+    public void setOmegaShuffles(boolean[] omegaShuffles) {
+        this.omegaShuffles = omegaShuffles;
+    }
+
+    /**
+     * @return the currOmegaShuffle
+     */
+    public boolean isCurrOmegaShuffle() {
+        return currOmegaShuffle;
+    }
+
+    /**
+     * @param currOmegaShuffle the currOmegaShuffle to set
+     */
+    public void setCurrOmegaShuffle(boolean currOmegaShuffle) {
+        this.currOmegaShuffle = currOmegaShuffle;
     }
 
 }

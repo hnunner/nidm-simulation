@@ -180,6 +180,8 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
                 new double[1] : this.dgData.getUtilityModelParams().getPhis();
         double[] omegas = this.dgData.getUtilityModelParams().isOmegaRandom() ?
                 new double[1] : this.dgData.getUtilityModelParams().getOmegas();
+        boolean[] omegaShuffles = this.dgData.getUtilityModelParams().isOmegaShuffleRandom() ?
+                new boolean[1] : this.dgData.getUtilityModelParams().getOmegaShuffles();
 
         // unique parameter combinations
         int upcs =
@@ -199,7 +201,8 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
                 Ns.length *
                 iotas.length *
                 phis.length *
-                omegas.length;
+                omegas.length *
+                omegaShuffles.length;
 
         // loop over all possible parameter combinations
         for (double b1 : b1s) {
@@ -236,46 +239,49 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
                                                                         this.dgData.getUtilityModelParams().setCurrPhi(phi);
                                                                         for (double omega : omegas) {
                                                                             this.dgData.getUtilityModelParams().setCurrOmega(omega);
+                                                                            for (boolean omegaShuffle : omegaShuffles) {
+                                                                                this.dgData.getUtilityModelParams().setCurrOmegaShuffle(omegaShuffle);
 
-                                                                            this.dgData.getSimStats().incUpc();
-                                                                            logger.info("Starting to compute "
-                                                                                    + this.dgData.getUtilityModelParams().
-                                                                                    getSimsPerParameterCombination()
-                                                                                    + " simulations for parameter combination: "
-                                                                                    + this.dgData.getSimStats().getUpc() + " / "
-                                                                                    + upcs);
+                                                                                this.dgData.getSimStats().incUpc();
+                                                                                logger.info("Starting to compute "
+                                                                                        + this.dgData.getUtilityModelParams().
+                                                                                        getSimsPerParameterCombination()
+                                                                                        + " simulations for parameter combination: "
+                                                                                        + this.dgData.getSimStats().getUpc() + " / "
+                                                                                        + upcs);
 
-                                                                            // multiple simulations for same parameter combination
-                                                                            this.dgData.getSimStats().setSimPerUpc(1);
-                                                                            while (this.dgData.getSimStats().getSimPerUpc()
-                                                                                    <= this.dgData.getUtilityModelParams().
-                                                                                    getSimsPerParameterCombination()) {
+                                                                                // multiple simulations for same parameter combination
+                                                                                this.dgData.getSimStats().setSimPerUpc(1);
+                                                                                while (this.dgData.getSimStats().getSimPerUpc()
+                                                                                        <= this.dgData.getUtilityModelParams().
+                                                                                        getSimsPerParameterCombination()) {
 
-                                                                                // uid = "upc-sim"
-                                                                                this.dgData.getSimStats().setUid(
-                                                                                        String.valueOf(this.dgData.getSimStats().getUpc()) +
-                                                                                        "-" + String.valueOf(
-                                                                                                this.dgData.getSimStats().getSimPerUpc()));
+                                                                                    // uid = "upc-sim"
+                                                                                    this.dgData.getSimStats().setUid(
+                                                                                            String.valueOf(this.dgData.getSimStats().getUpc()) +
+                                                                                            "-" + String.valueOf(
+                                                                                                    this.dgData.getSimStats().getSimPerUpc()));
 
-                                                                                // simulate
-                                                                                performSingleSimulation();
+                                                                                    // simulate
+                                                                                    performSingleSimulation();
 
-                                                                                // log simulation summary
-                                                                                if (PropertiesHandler.getInstance().isExportSummary()) {
-                                                                                    this.ssWriter.writeCurrentData();
+                                                                                    // log simulation summary
+                                                                                    if (PropertiesHandler.getInstance().isExportSummary()) {
+                                                                                        this.ssWriter.writeCurrentData();
+                                                                                    }
+
+                                                                                    logger.debug("Simulation " +
+                                                                                    this.dgData.getSimStats().getSimPerUpc() +
+                                                                                    "/" +
+                                                                                    this.dgData.getUtilityModelParams().getSimsPerParameterCombination() +
+                                                                                    " of parameter combination " +
+                                                                                    this.dgData.getSimStats().getUpc() +
+                                                                                    "/" +
+                                                                                    upcs +
+                                                                                    " finished.");
+
+                                                                                    this.dgData.getSimStats().incSimPerUpc();
                                                                                 }
-
-                                                                                logger.debug("Simulation " +
-                                                                                this.dgData.getSimStats().getSimPerUpc() +
-                                                                                "/" +
-                                                                                this.dgData.getUtilityModelParams().getSimsPerParameterCombination() +
-                                                                                " of parameter combination " +
-                                                                                this.dgData.getSimStats().getUpc() +
-                                                                                "/" +
-                                                                                upcs +
-                                                                                " finished.");
-
-                                                                                this.dgData.getSimStats().incSimPerUpc();
                                                                             }
                                                                         }
                                                                     }
@@ -422,6 +428,10 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
                     this.dgData.getUtilityModelParams().getOmegaRandomMin(),
                     this.dgData.getUtilityModelParams().getOmegaRandomMax()));
         }
+        // omegaShuffle
+        if (this.dgData.getUtilityModelParams().isOmegaShuffleRandom()) {
+            this.dgData.getUtilityModelParams().setCurrOmegaShuffle(ThreadLocalRandom.current().nextBoolean());
+        }
 
         // begin: GEXF export
         if (PropertiesHandler.getInstance().isExportGexf()) {
@@ -460,7 +470,8 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
                     rSigma,
                     rPi,
                     this.dgData.getUtilityModelParams().getCurrPhi(),
-                    this.dgData.getUtilityModelParams().getCurrOmega());
+                    this.dgData.getUtilityModelParams().getCurrOmega(),
+                    this.dgData.getUtilityModelParams().isCurrOmegaShuffle());
             agent.addAgentListener(this);
         }
         this.dgData.setAgents(new LinkedList<Agent>(network.getAgents()));
