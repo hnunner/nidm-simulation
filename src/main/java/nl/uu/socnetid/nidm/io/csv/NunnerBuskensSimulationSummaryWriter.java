@@ -69,6 +69,7 @@ public class NunnerBuskensSimulationSummaryWriter extends SimulationSummaryWrite
         cols.add(LogValues.IV_NB_IOTA.toString());
         cols.add(LogValues.IV_NB_PHI.toString());
         cols.add(LogValues.IV_NB_OMEGA.toString());
+        cols.add(LogValues.IV_NB_OMEGA_SHUFFLE.toString());
         cols.add(LogValues.IV_NB_YGLOBAL.toString());
 
         cols.add(LogValues.IV_NB_SIGMA.toString());
@@ -94,6 +95,7 @@ public class NunnerBuskensSimulationSummaryWriter extends SimulationSummaryWrite
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().isCurrIota() ? 1 : 0));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrPhi()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrOmega()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().isCurrOmegaShuffle() ? 1 : 0));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().isCurrYGlobal() ? 1 : 0));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrSigma()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrGamma()));
