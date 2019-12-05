@@ -386,6 +386,9 @@ public class PropertiesHandler {
         nbParameters.setOmegaRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_OMEGA_RANDOM_MIN.toString())));
         nbParameters.setOmegaRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_OMEGA_RANDOM_MAX.toString())));
         nbParameters.setOmegas(parseDoubleArray(configProps.getProperty(LogValues.IV_NB_OMEGA.toString())));
+        nbParameters.setOmegaShuffleRandom(Boolean.parseBoolean(
+                configProps.getProperty(LogValues.IV_NB_OMEGA_SHUFFLE_RANDOM.toString())));
+        nbParameters.setOmegaShuffles(parseBooleanArray(configProps.getProperty(LogValues.IV_NB_OMEGA_SHUFFLE.toString())));
         // time steps
         nbParameters.setZeta(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_ZETA.toString())));
         nbParameters.setEpsilon(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_EPSILON.toString())));
