@@ -102,9 +102,11 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      *          the share of peers to evaluate per round
      * @param omega
      *          the share of peers to select assortatively
+     * @param omegaShuffle
+     *          whether assortatively selected agents ought to be shuffled before processing
      */
     public void initAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs,
-            Double riskFactorSigma, Double riskFactorPi, Double phi, Double omega) {
+            Double riskFactorSigma, Double riskFactorPi, Double phi, Double omega, boolean omegaShuffle) {
         this.addAttribute(AgentAttributes.UTILITY_FUNCTION, utilityFunction);
         this.addAttribute(AgentAttributes.DISEASE_SPECS, diseaseSpecs);
         DiseaseGroup diseaseGroup = DiseaseGroup.SUSCEPTIBLE;
@@ -118,6 +120,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         this.addAttribute(AgentAttributes.RISK_MEANING_PI, getRiskMeaning(riskFactorPi));
         this.addAttribute(AgentAttributes.PHI, phi);
         this.addAttribute(AgentAttributes.OMEGA, omega);
+        this.addAttribute(AgentAttributes.OMEGA_SHUFFLE, omegaShuffle);
         this.addAttribute(AgentAttributes.SATISFIED, false);
         this.addAttribute(AgentAttributes.CONNECTION_STATS, new AgentConnectionStats());
         this.addAttribute("ui.label", this.getId());
@@ -349,6 +352,15 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      */
     public double getOmega() {
         return (double) this.getAttribute(AgentAttributes.OMEGA);
+    }
+
+    /**
+     * Gets the whether assortatively selected co-agents ought to be shuffled before processing.
+     *
+     * @return true if assortatively selected co-agents ought to be shuffled before processing, false otherwise
+     */
+    public boolean isOmegaShuffle() {
+        return (boolean) this.getAttribute(AgentAttributes.OMEGA_SHUFFLE);
     }
 
     /**
