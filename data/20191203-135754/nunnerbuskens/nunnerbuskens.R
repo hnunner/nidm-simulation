@@ -212,7 +212,7 @@ exportModels <- function(models, filename) {
 # param:  data.ss
 #     simulation summary data to get regression models for
 #----------------------------------------------------------------------------------------------------#
-export_regression_models_complete <- function(data.ss = load_simulation_summary_data()) {
+export_regression_models_complete <- function(data.ss = load_simulation_summary_data(), name.extension = "") {
 
   # MAIN EFFECTS
   # SWIDM parameters
@@ -393,7 +393,7 @@ export_regression_models_complete <- function(data.ss = load_simulation_summary_
                       (1 | sim.upc),
                     family = binomial,
                     data = data.ss)
-  exportModels(list(reg00,reg.main,reg.main.net,reg.int), "reg-attackrate-complete")
+  exportModels(list(reg00,reg.main,reg.main.net,reg.int), paste("reg-attackrate-complete", name.extension, sep = ""))
 }
 
 #----------------------------------------------------------------------------------------------------#
@@ -421,8 +421,8 @@ export_all <- function() {
   print_descriptives_per_condition(subset(data.ss, data.ss$nb.N == 24))
 
   print("################################## EXPORTING REGRESSION ANALYSES #################################")
-  export_regression_models_complete(subset(data.ss, data.ss$nb.N == 20))
-  export_regression_models_complete(subset(data.ss, data.ss$nb.N == 24))
+  export_regression_models_complete(subset(data.ss, data.ss$nb.N == 20), "-N20")
+  export_regression_models_complete(subset(data.ss, data.ss$nb.N == 24), "-N24")
 }
 
 ####################################### COMMAND LINE EXECUTION #######################################
