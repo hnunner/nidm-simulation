@@ -793,6 +793,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
                 collect.add((Agent) coAgent);
             }
         }
+        Collections.shuffle(collect);
         return collect;
     }
 
