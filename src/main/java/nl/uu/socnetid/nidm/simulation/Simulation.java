@@ -49,6 +49,8 @@ public class Simulation implements Runnable {
 
     // the network
     private Network network;
+    // whether the network structure remains static while infection is present in network
+    private boolean epStatic;
     // switch used to stop the simulation
     private boolean paused = false;
     // simulation delay
@@ -70,7 +72,20 @@ public class Simulation implements Runnable {
      *          the network as basis for the simulation
      */
     public Simulation(Network network) {
+        this(network, true);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param network
+     *          the network as basis for the simulation
+     * @param epStatic
+     *          whether the network structure remains static while infection is present in network
+     */
+    public Simulation(Network network, boolean epStatic) {
         this.network = network;
+        this.epStatic = epStatic;
         this.addSimulationListener(network);
     }
 
@@ -177,7 +192,10 @@ public class Simulation implements Runnable {
     private void computeSingleRound() {
 
         computeDiseaseDynamics();
-        computeAgentDynamics();
+        // TODO add radio buttons for epStatic on GUI
+        if (!this.network.hasActiveInfection() || (this.network.hasActiveInfection() && !this.epStatic)) {
+            computeAgentDynamics();
+        }
 
         this.rounds++;
 
