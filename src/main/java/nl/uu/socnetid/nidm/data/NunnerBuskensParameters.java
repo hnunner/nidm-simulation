@@ -30,6 +30,10 @@ package nl.uu.socnetid.nidm.data;
  */
 public class NunnerBuskensParameters extends UtilityModelParameters {
 
+    // network structure static during epidemics
+    private boolean epStaticRandom;
+    private boolean[] epStatics;
+    private boolean currEpStatic;
     // direct ties - benefit weight
     private boolean b1Random;
     private double b1RandomMin;
@@ -457,6 +461,76 @@ public class NunnerBuskensParameters extends UtilityModelParameters {
      */
     public void setCurrYGlobal(boolean currYGlobal) {
         this.currYGlobal = currYGlobal;
+    }
+
+    /**
+     * @return the epStaticRandom
+     */
+    public boolean isEpStaticRandom() {
+        return epStaticRandom;
+    }
+
+    /**
+     * @param epStaticRandom the epStaticRandom to set
+     */
+    public void setEpStaticRandom(boolean epStaticRandom) {
+        this.epStaticRandom = epStaticRandom;
+    }
+
+    /**
+     * @return the epStatics
+     */
+    public boolean[] getEpStatics() {
+        return epStatics;
+    }
+
+    /**
+     * @param epStatics the epStatics to set
+     */
+    public void setEpStatics(boolean[] epStatics) {
+        this.epStatics = epStatics;
+    }
+
+    /**
+     * @return the currEpStatic
+     */
+    public boolean isCurrEpStatic() {
+        return currEpStatic;
+    }
+
+    /**
+     * @param currEpStatic the currEpStatic to set
+     */
+    public void setCurrEpStatic(boolean currEpStatic) {
+        this.currEpStatic = currEpStatic;
+    }
+
+    /**
+     * @return the yGlobalRandom
+     */
+    public boolean isyGlobalRandom() {
+        return yGlobalRandom;
+    }
+
+    /**
+     * @param yGlobalRandom the yGlobalRandom to set
+     */
+    public void setyGlobalRandom(boolean yGlobalRandom) {
+        this.yGlobalRandom = yGlobalRandom;
+    }
+
+    /**
+     * @return the yGlobals
+     */
+    public boolean[] getyGlobals() {
+        return yGlobals;
+    }
+
+    /**
+     * @param yGlobals the yGlobals to set
+     */
+    public void setyGlobals(boolean[] yGlobals) {
+        this.yGlobals = yGlobals;
     }
 
 }

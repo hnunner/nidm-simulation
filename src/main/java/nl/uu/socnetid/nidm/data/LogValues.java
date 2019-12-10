@@ -158,6 +158,8 @@ public enum LogValues {
     IV_CR_OMEGA("cr.omega"),
     IV_CR_SIMS_PER_PC("cr.n"),
     // NunnerBuskens
+    IV_NB_EPSTATIC_RANDOM("nb.ep.static.random"),
+    IV_NB_EPSTATIC("nb.ep.static"),
     IV_NB_B1_RANDOM("nb.b1.random"),
     IV_NB_B1_RANDOM_MIN("nb.b1.random.min"),
     IV_NB_B1_RANDOM_MAX("nb.b1.random.max"),
