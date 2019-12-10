@@ -61,6 +61,7 @@ public class NunnerBuskensAgentDetailsWriter extends AgentDetailsWriter<NunnerBu
      */
     @Override
     protected List<String> addModelColumns(List<String> cols) {
+        cols.add(LogValues.IV_NB_EPSTATIC.toString());
         cols.add(LogValues.IV_NB_B1.toString());
         cols.add(LogValues.IV_NB_C1.toString());
         cols.add(LogValues.IV_NB_C2.toString());
@@ -92,6 +93,7 @@ public class NunnerBuskensAgentDetailsWriter extends AgentDetailsWriter<NunnerBu
     protected List<String> addCurrModelData(List<String> currData, Agent agent) {
         NunnerBuskens uf = (NunnerBuskens) agent.getUtilityFunction();
 
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().isCurrEpStatic() ? 1 : 0));
         currData.add(String.valueOf(uf.getB1()));
         currData.add(String.valueOf(uf.getC1()));
         currData.add(String.valueOf(uf.getC2()));
