@@ -311,6 +311,9 @@ public class PropertiesHandler {
         // NunnerBuskens
         generateNunnerBuskens = Boolean.parseBoolean(configProps.getProperty("nb.generate"));
         nbParameters = new NunnerBuskensParameters();
+        // network structure static during epidemics
+        nbParameters.setEpStaticRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_EPSTATIC_RANDOM.toString())));
+        nbParameters.setEpStatics(parseBooleanArray(configProps.getProperty(LogValues.IV_NB_EPSTATIC.toString())));
         // b1
         nbParameters.setB1Random(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_B1_RANDOM.toString())));
         nbParameters.setB1RandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_B1_RANDOM_MIN.toString())));
