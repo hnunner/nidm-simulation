@@ -33,7 +33,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.LinkedList;
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.data.BurgerBuskensParameters;
@@ -57,7 +58,7 @@ import nl.uu.socnetid.nidm.utility.UtilityFunction;
 public class BurgerBuskensDataGenerator extends AbstractDataGenerator {
 
     // logger
-    private static final Logger logger = Logger.getLogger(BurgerBuskensDataGenerator.class);
+    private static final Logger logger = LogManager.getLogger(BurgerBuskensDataGenerator.class);
 
     // stats & writer
     private DataGeneratorData<BurgerBuskensParameters> dgData;

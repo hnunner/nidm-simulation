@@ -30,7 +30,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import nl.uu.socnetid.nidm.system.PropertiesHandler;
 
@@ -40,7 +41,7 @@ import nl.uu.socnetid.nidm.system.PropertiesHandler;
 public abstract class AbstractDataGenerator {
 
     // logger
-    private static final Logger logger = Logger.getLogger(AbstractDataGenerator.class);
+    private static final Logger logger = LogManager.getLogger(AbstractDataGenerator.class);
 
     // paths
     private String rootExportPath;

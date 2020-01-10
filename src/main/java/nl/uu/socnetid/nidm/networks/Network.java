@@ -36,7 +36,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.commons.math.stat.correlation.PearsonsCorrelation;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.graphstream.algorithm.Toolkit;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.implementations.SingleGraph;
@@ -56,7 +57,7 @@ import nl.uu.socnetid.nidm.utility.UtilityFunction;
 public class Network extends SingleGraph implements SimulationListener {
 
     // logger
-    private static final Logger logger = Logger.getLogger(Network.class);
+    private static final Logger logger = LogManager.getLogger(Network.class);
 
     // risk factor for risk neutral agents
     private static final double RISK_FACTOR_NEUTRAL = 1.0;

@@ -29,7 +29,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.networks.Network;
@@ -41,7 +42,7 @@ public class ThreadedSimulation extends Simulation {
 
     // logger
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(ThreadedSimulation.class);
+    private static final Logger logger = LogManager.getLogger(ThreadedSimulation.class);
 
     // the executor agentExecutor used for the agent threads
     private ExecutorService agentExecutor;

@@ -55,7 +55,8 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.graphstream.graph.Edge;
 
 import nl.uu.socnetid.nidm.agents.Agent;
@@ -97,7 +98,7 @@ import nl.uu.socnetid.nidm.utility.UtilityFunction;
 public class UserInterface implements NodeClickListener, SimulationListener, AgentListener, ExportListener {
 
     // LOGGER
-    private static final Logger logger = Logger.getLogger(UserInterface.class);
+    private static final Logger logger = LogManager.getLogger(UserInterface.class);
 
     // NETWORK
     private final DisplayableNetwork network = new DisplayableNetwork();

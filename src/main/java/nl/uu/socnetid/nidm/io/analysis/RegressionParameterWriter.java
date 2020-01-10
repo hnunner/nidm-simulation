@@ -35,7 +35,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import nl.uu.socnetid.nidm.data.LogValues;
 import nl.uu.socnetid.nidm.system.PropertiesHandler;
@@ -48,7 +49,7 @@ import nl.uu.socnetid.nidm.system.PropertiesHandler;
 public class RegressionParameterWriter {
 
     // logger
-    private static final Logger logger = Logger.getLogger(RegressionParameterWriter.class);
+    private static final Logger logger = LogManager.getLogger(RegressionParameterWriter.class);
 
     /**
      * Writes regression analyses based on templates (/analysis/) and copies them into the data path.
