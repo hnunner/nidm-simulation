@@ -30,7 +30,8 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import nl.uu.socnetid.nidm.data.BurgerBuskensParameters;
 import nl.uu.socnetid.nidm.data.CarayolRouxParameters;
@@ -45,7 +46,7 @@ import nl.uu.socnetid.nidm.data.NunnerBuskensParameters;
 public class PropertiesHandler {
 
     // logger
-    private static final Logger logger = Logger.getLogger(PropertiesHandler.class);
+    private static final Logger logger = LogManager.getLogger(PropertiesHandler.class);
 
     // singleton of PropertiesHandler
     private static PropertiesHandler pHandler = new PropertiesHandler();

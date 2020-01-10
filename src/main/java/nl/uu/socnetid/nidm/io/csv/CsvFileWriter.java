@@ -29,7 +29,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import nl.uu.socnetid.nidm.data.DataGeneratorData;
 import nl.uu.socnetid.nidm.data.UtilityModelParameters;
@@ -44,7 +45,7 @@ public abstract class CsvFileWriter<UMP extends UtilityModelParameters> extends 
 
     protected DataGeneratorData<UMP> dgData;
 
-    private static final Logger logger = Logger.getLogger(CsvFileWriter.class);
+    private static final Logger logger = LogManager.getLogger(CsvFileWriter.class);
     private static final char DEFAULT_SEPARATOR = ',';
 
 

@@ -35,7 +35,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 
@@ -54,7 +55,7 @@ public class DijkstraShortestPath {
 
     // logger
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(DijkstraShortestPath.class);
+    private static final Logger logger = LogManager.getLogger(DijkstraShortestPath.class);
 
     // computation queues for settled and unsettled nodes
     private Set<Agent> settledNodes;
