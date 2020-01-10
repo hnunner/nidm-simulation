@@ -29,7 +29,8 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.graphstream.graph.Edge;
 
 import nl.uu.socnetid.nidm.agents.Agent;
@@ -62,7 +63,7 @@ import nl.uu.socnetid.nidm.utility.UtilityFunction;
 public class CidmDataGenerator extends AbstractDataGenerator implements AgentListener, SimulationListener {
 
     // logger
-    private static final Logger logger = Logger.getLogger(CidmDataGenerator.class);
+    private static final Logger logger = LogManager.getLogger(CidmDataGenerator.class);
 
     // stats
     private DataGeneratorData<CidmParameters> dgData;
