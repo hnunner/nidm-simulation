@@ -38,7 +38,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.locks.Lock;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.graphstream.algorithm.BetweennessCentrality;
 import org.graphstream.algorithm.Toolkit;
 import org.graphstream.graph.Edge;
@@ -65,7 +66,7 @@ import nl.uu.socnetid.nidm.utility.UtilityFunction;
 public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
 
     // logger
-    private final static Logger logger = Logger.getLogger(Agent.class);
+    private final static Logger logger = LogManager.getLogger(Agent.class);
 
     // concurrency lock
     private Lock lock;
