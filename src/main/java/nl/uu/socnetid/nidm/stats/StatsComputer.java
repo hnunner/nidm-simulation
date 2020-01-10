@@ -32,7 +32,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseGroup;
@@ -44,7 +45,7 @@ import nl.uu.socnetid.nidm.simulation.Simulation;
  */
 public final class StatsComputer {
 
-    private static final Logger logger = Logger.getLogger(StatsComputer.class);
+    private static final Logger logger = LogManager.getLogger(StatsComputer.class);
 
     /** Private construtor. Inhibits unwanted instantiation of class. */
     private StatsComputer() { }

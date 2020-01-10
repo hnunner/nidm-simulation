@@ -32,7 +32,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.networks.Network;
@@ -43,7 +44,7 @@ import nl.uu.socnetid.nidm.networks.Network;
 public class Simulation implements Runnable {
 
     // logger
-    private static final Logger logger = Logger.getLogger(Simulation.class);
+    private static final Logger logger = LogManager.getLogger(Simulation.class);
     // maximum number of rounds
     private static final int MAX_ROUNDS = 1000;
 
