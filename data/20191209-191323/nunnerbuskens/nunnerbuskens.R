@@ -37,10 +37,11 @@ source_libs(c("ggplot2",      # plots
               "sjstats",      # "icc" function
               "texreg",       # html export
               "QuantPsyc",    # 'meanCenter' function
+              "ggpubr",       # correlation analysis
+              "ggpubr",       # plot functions
               "dplyr"         # 'select' function
               # "gridExtra",   # side-by-side plots
               # "psych",       # summary statistics
-              # "ggpubr"       # arranging a list of plots with one common legend
 ))
 
 
@@ -324,7 +325,7 @@ export_regression_models_complete <- function(data.ss = load_simulation_summary_
                        (1 | sim.upc),
                      family = binomial,
                      data = data.ss)
-  # main effects: varied SWIDM parameters
+  # varied SWIDM parameters
   reg.param <- glmer(data.ss$net.pct.rec/100 ~
                        #  model parameters
                        alpha +
@@ -334,24 +335,25 @@ export_regression_models_complete <- function(data.ss = load_simulation_summary_
                        (1 | sim.upc),
                      family = binomial,
                      data = data.ss)
-  # network properties
-  reg.net.macro <- glmer(data.ss$net.pct.rec/100 ~
-                           #  network properties
-                           net.degree +
-                           net.clustering +
-                           net.pathlength +
-                           (1 | sim.upc),
-                         family = binomial,
-                         data = data.ss)
-  # network properties
-  reg.net.micro <- glmer(data.ss$net.pct.rec/100 ~
-                           #  network properties
-                           index.degree +
-                           index.clustering +
-                           index.betweenness +
-                           (1 | sim.upc),
-                         family = binomial,
-                         data = data.ss)
+  # conjectures
+  reg.conjectures <- glmer(data.ss$net.pct.rec/100 ~
+                             net.clustering +
+                             net.pathlength +
+                             index.betweenness +
+                             (1 | sim.upc),
+                           family = binomial,
+                           data = data.ss)
+  # conjectures with interactions
+  reg.conjectures.int <- glmer(data.ss$net.pct.rec/100 ~
+                                 net.clustering +
+                                 net.pathlength +
+                                 index.betweenness +
+                                 net.clustering.X.net.pathlength +
+                                 net.clustering.X.index.betweenness +
+                                 net.pathlength.X.index.betweenness +
+                                 (1 | sim.upc),
+                               family = binomial,
+                               data = data.ss)
   # network properties
   reg.net.all <- glmer(data.ss$net.pct.rec/100 ~
                          #  network properties
@@ -446,8 +448,8 @@ export_regression_models_complete <- function(data.ss = load_simulation_summary_
                     data = data.ss)
   exportModels(list(reg.00,
                     reg.param,
-                    reg.net.macro,
-                    reg.net.micro,
+                    reg.conjectures,
+                    reg.conjectures.int,
                     reg.net.all,
                     reg.all,
                     reg.int), paste("reg-attackrate-complete", name.extension, sep = ""))
@@ -463,8 +465,107 @@ export_regression_models_complete <- function(data.ss = load_simulation_summary_
 # param:  data.ss
 #     simulation summary data to get regression models for
 #----------------------------------------------------------------------------------------------------#
-export_regression_models_selected <- function(data.ss = load_simulation_summary_data()) {
-  ### COPY MODELS FROM ABOVE AND COMMENT OUT INSIGNIFICANT OR IMPLAUSIBLE PARAMETERS
+export_regression_models_selected <- function(data.ss = load_simulation_summary_data(), name.extension = "") {
+  # remove exclusions
+  data.ss <- subset(data.ss,
+                    data.ss$net.stable.pre == 1
+                    & data.ss$net.pathlength.pre.epidemic.av >= 1)
+
+  # MAIN EFFECTS
+  # SWIDM parameters
+  alpha                                 <- meanCenter(data.ss$nb.alpha)
+  omega                                 <- meanCenter(data.ss$nb.omega)
+  sigma                                 <- meanCenter(data.ss$nb.sigma)
+  r.av                                  <- meanCenter(data.ss$nb.r.sigma.av)    # rs.equal = true
+  # network properties (macro)
+  net.degree                            <- meanCenter(data.ss$net.degree.pre.epidemic.av)
+  net.clustering                        <- meanCenter(data.ss$net.clustering.pre.epidemic.av)
+  net.pathlength                        <- meanCenter(data.ss$net.pathlength.pre.epidemic.av)
+  # network properties (macro)
+  index.degree                          <- meanCenter(data.ss$index.degree)
+  index.clustering                      <- meanCenter(data.ss$index.clustering)
+  index.betweenness                     <- meanCenter(data.ss$index.betweenness)
+
+  # INTERACTION EFFECTS
+  net.clustering.X.net.pathlength       <- (net.clustering - mean(net.clustering))      *  (net.pathlength - mean(net.pathlength))
+  net.clustering.X.index.betweenness    <- (net.clustering - mean(net.clustering))      *  (index.betweenness - mean(index.betweenness))
+  net.pathlength.X.index.betweenness    <- (net.pathlength - mean(net.pathlength))      *  (index.betweenness - mean(index.betweenness))
+
+
+  ### 2-LEVEL LOGISTIC REGRESSIONS (attack rate)  ###
+  ### level 2: parameters combination             ###
+  ### level 1: simulation runs                    ###
+  # null-model
+  reg.00    <- glmer(data.ss$net.pct.rec/100 ~
+                       1 +
+                       (1 | sim.upc),
+                     family = binomial,
+                     data = data.ss)
+  # varied SWIDM parameters
+  reg.param <- glmer(data.ss$net.pct.rec/100 ~
+                       #  model parameters
+                       alpha +
+                       omega +
+                       sigma +
+                       r.av +
+                       (1 | sim.upc),
+                     family = binomial,
+                     data = data.ss)
+  # conjectures
+  reg.conjectures <- glmer(data.ss$net.pct.rec/100 ~
+                             net.clustering +
+                             net.pathlength +
+                             index.betweenness +
+                             (1 | sim.upc),
+                           family = binomial,
+                           data = data.ss)
+  # conjectures with interactions
+  reg.conjectures.int <- glmer(data.ss$net.pct.rec/100 ~
+                                 net.clustering +
+                                 net.pathlength +
+                                 index.betweenness +
+                                 net.clustering.X.net.pathlength +
+                                 net.clustering.X.index.betweenness +
+                                 net.pathlength.X.index.betweenness +
+                                 (1 | sim.upc),
+                               family = binomial,
+                               data = data.ss)
+  # network properties
+  reg.net.all <- glmer(data.ss$net.pct.rec/100 ~
+                         #  network properties
+                         net.degree +
+                         net.clustering +
+                         net.pathlength +
+                         index.degree +
+                         index.clustering +
+                         index.betweenness +
+                         (1 | sim.upc),
+                       family = binomial,
+                       data = data.ss)
+  # network properties
+  reg.all <- glmer(data.ss$net.pct.rec/100 ~
+                     #  model parameters
+                     alpha +
+                     omega +
+                     sigma +
+                     r.av +
+                     #  network properties
+                     net.degree +
+                     net.clustering +
+                     net.pathlength +
+                     index.degree +
+                     index.clustering +
+                     index.betweenness +
+                     (1 | sim.upc),
+                   family = binomial,
+                   data = data.ss)
+  exportModels(list(reg.00,
+                    reg.param,
+                    reg.conjectures,
+                    reg.conjectures.int,
+                    reg.net.all,
+                    reg.all), paste("reg-attackrate", name.extension, sep = ""))
+
 }
 
 
@@ -584,6 +685,207 @@ export_compare_dyn_stat <- function() {
          device = EXPORT_FILE_TYPE_PLOTS)
 
   print(paste(":::::::: Export of ", filepath, " succesful.", sep = ""))
+}
+
+
+manual_plots <- function() {
+  data.ss <- load_simulation_summary_data()
+  data.ss <- subset(data.ss, data.ss$nb.ep.static == 0)
+
+  # remove exclusions
+  data.ss <- subset(data.ss,
+                    data.ss$net.stable.pre == 1
+                    & data.ss$net.pathlength.pre.epidemic.av >= 1)
+
+
+  data.ss$Submodel[data.ss$nb.alpha == 0.15 &
+                    data.ss$nb.omega == 0.0 &
+                    data.ss$nb.sigma == 2.0] <- "RRM"
+  data.ss$Submodel[data.ss$nb.alpha == 0.15 &
+                    data.ss$nb.omega == 0.0 &
+                    data.ss$nb.sigma == 50.0] <- "RRS"
+  data.ss$Submodel[data.ss$nb.alpha == 0.15 &
+                    data.ss$nb.omega == 0.8 &
+                    data.ss$nb.sigma == 2.0] <- "RAM"
+  data.ss$Submodel[data.ss$nb.alpha == 0.15 &
+                    data.ss$nb.omega == 0.8 &
+                    data.ss$nb.sigma == 50.0] <- "RAS"
+  data.ss$Submodel[data.ss$nb.alpha == 0.85 &
+                    data.ss$nb.omega == 0.0 &
+                    data.ss$nb.sigma == 2.0] <- "SRM"
+  data.ss$Submodel[data.ss$nb.alpha == 0.85 &
+                    data.ss$nb.omega == 0.0 &
+                    data.ss$nb.sigma == 50.0] <- "SRS"
+  data.ss$Submodel[data.ss$nb.alpha == 0.85 &
+                    data.ss$nb.omega == 0.8 &
+                    data.ss$nb.sigma == 2.0] <- "SAM"
+  data.ss$Submodel[data.ss$nb.alpha == 0.85 &
+                    data.ss$nb.omega == 0.8 &
+                    data.ss$nb.sigma == 50.0] <- "SAS"
+  data.ss$Submodel <- factor(data.ss$Submodel, c("RRM", "RRS", "RAM", "RAS", "SRM", "SRS", "SAM", "SAS"))
+
+  # conjecture 3.a.: clustering - attack rate
+  cor.test(data.ss$net.clustering.pre.epidemic.av,
+           data.ss$net.pct.rec,
+           method = "pearson")
+  plot.3a <- ggplot(data.ss, aes(x=net.clustering.pre.epidemic.av,
+                                 y=net.pct.rec)) +
+    geom_point(position = "jitter",
+               aes(color=Submodel),
+               alpha = 0.3, stat = "identity") +
+    geom_smooth(method=lm) +
+    guides(colour = guide_legend(override.aes = list(alpha = 1))) +
+    xlab("Av. clustering           [Pearson: r(790) = -0.33, p < 0.001]") +
+    ylab("Attack rate") +
+    scale_fill_discrete(name = "Submodel")
+  plot.3a
+  # conjecture 3.b.: path length - attack rate
+  cor.test(data.ss$net.pathlength.pre.epidemic.av,
+           data.ss$net.pct.rec,
+           method = "pearson")
+  plot.3b <- ggplot(data.ss, aes(x=net.pathlength.pre.epidemic.av,
+                                 y=net.pct.rec)) +
+    geom_point(position = "jitter",
+               aes(color=Submodel),
+               alpha = 0.3, stat = "identity") +
+    geom_smooth(method=lm) +
+    guides(colour = guide_legend(override.aes = list(alpha = 1))) +
+    xlab("Av. path length           [Pearson: r(790) = -0.28, p < 0.001]") +
+    ylab("Attack rate") +
+    scale_fill_discrete(name = "Submodel")
+  plot.3b
+  # conjecture 3.c.i.: betweenness (index case) - attack rate
+  cor.test(data.ss$index.betweenness.normalized,
+           data.ss$net.pct.rec,
+           method = "pearson")
+  plot.3ci <- ggplot(data.ss, aes(x=index.betweenness.normalized,
+                                  y=net.pct.rec)) +
+    geom_point(position = "jitter",
+               aes(color=Submodel),
+               alpha = 0.3, stat = "identity") +
+    geom_smooth(method=lm) +
+    guides(colour = guide_legend(override.aes = list(alpha = 1))) +
+    xlab("Betweenness (patient-0)           [Pearson: r(790) = -0.05, p = 0.16]") +
+    ylab("Attack rate") +
+    scale_fill_discrete(name = "Submodel")
+  plot.3ci
+
+
+  filepath <- paste(EXPORT_PATH_PLOTS,
+                    "conjectures-3",
+                    EXPORT_FILE_EXTENSION_PLOTS,
+                    sep = "")
+
+  ggsave(filepath,
+         ggarrange(plot.3a, plot.3b, plot.3ci, ncol = 1, legend = "right", common.legend = TRUE),
+         width = EXPORT_PLOT_WIDTH,
+         height = 2*EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+
+
+
+  # conjecture 2.a.: clustering - attack rate
+  cor.test(data.ss$net.clustering.pre.epidemic.av,
+           data.ss$net.pct.rec,
+           method = "pearson")
+  plot.3a <- ggplot(data.ss, aes(x=net.clustering.pre.epidemic.av,
+                                 y=net.pct.rec)) +
+    geom_point(position = "jitter",
+               aes(color=Submodel),
+               alpha = 0.3, stat = "identity") +
+    geom_smooth(method=lm) +
+    guides(colour = guide_legend(override.aes = list(alpha = 1))) +
+    xlab("Av. clustering           [Pearson: r(790) = -0.33, p < 0.001]") +
+    ylab("Attack rate") +
+    scale_fill_discrete(name = "Submodel")
+  plot.3a
+  # conjecture 3.b.: path length - attack rate
+  cor.test(data.ss$net.pathlength.pre.epidemic.av,
+           data.ss$net.pct.rec,
+           method = "pearson")
+  plot.3b <- ggplot(data.ss, aes(x=net.pathlength.pre.epidemic.av,
+                                 y=net.pct.rec)) +
+    geom_point(position = "jitter",
+               aes(color=Submodel),
+               alpha = 0.3, stat = "identity") +
+    geom_smooth(method=lm) +
+    guides(colour = guide_legend(override.aes = list(alpha = 1))) +
+    xlab("Av. path length           [Pearson: r(790) = -0.28, p < 0.001]") +
+    ylab("Attack rate") +
+    scale_fill_discrete(name = "Submodel")
+  plot.3b
+  # conjecture 3.c.i.: betweenness (index case) - attack rate
+  cor.test(data.ss$index.betweenness.normalized,
+           data.ss$net.pct.rec,
+           method = "pearson")
+  plot.3ci <- ggplot(data.ss, aes(x=index.betweenness.normalized,
+                                  y=net.pct.rec)) +
+    geom_point(position = "jitter",
+               aes(color=Submodel),
+               alpha = 0.3, stat = "identity") +
+    geom_smooth(method=lm) +
+    guides(colour = guide_legend(override.aes = list(alpha = 1))) +
+    xlab("Betweenness (patient-0)           [Pearson: r(790) = -0.05, p = 0.16]") +
+    ylab("Attack rate") +
+    scale_fill_discrete(name = "Submodel")
+  plot.3ci
+
+
+  filepath <- paste(EXPORT_PATH_PLOTS,
+                    "conjectures-3",
+                    EXPORT_FILE_EXTENSION_PLOTS,
+                    sep = "")
+
+  ggsave(filepath,
+         ggarrange(plot.3a, plot.3b, plot.3ci, ncol = 1, legend = "right", common.legend = TRUE),
+         width = EXPORT_PLOT_WIDTH,
+         height = 2*EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+
+
+
+
+  # data.ad <- load_agent_details_data()
+  # data.ad <- subset(data.ad, data.ad$nb.ep.static == 0)
+  # data.ad.prep <- data.frame("upc" = subset(data.ad, sim.round == 99)$sim.upc,
+  #                            "agent" = subset(data.ad, sim.round == 99)$agent.id,
+  #                            "betweenness" = subset(data.ad, sim.round == 99)$agent.betweenness.normalized,
+  #                            "dis.state" = subset(data.ad, sim.round == 219)$agent.dis.state)
+  #
+  # # conjecture 3.c.ii.: betweenness - probability of infection
+  # upc.labs <- c("susceptible", "recovered")
+  # names(upc.labs) <- c(0, 1)
+  # plot.3cii <- ggplot(data.ad.prep, aes(x=dis.state,
+  #                                       y=betweenness,
+  #                                       fill=as.factor(upc)))+
+  #   geom_boxplot() +
+  #   facet_wrap(~upc) +
+  #              #labeller = labeller(static = static.labs)) +
+  #   xlab("Disease state") +
+  #   ylab("Betweenness") +
+  #   scale_fill_discrete(name = "Submodel")
+  # plot.3cii
+  #
+  #
+  # cor.test(data.ss$index.betweenness.normalized,
+  #          data.ss$net.pct.rec,
+  #          method = "pearson")
+  # plot.3cii <- ggplot(data.ad, aes(x=betweenness,
+  #                                  y=net.pct.rec)) +
+  #   geom_point(position = "jitter",
+  #              aes(color=Submodel),
+  #              alpha = 0.3, stat = "identity") +
+  #   geom_smooth(method=lm) +
+  #   guides(colour = guide_legend(override.aes = list(alpha = 1))) +
+  #   xlab("Betweenness (patient-0)") +
+  #   ylab("Attack rate") +
+  #   scale_fill_discrete(name = "Submodel")
+  # plot.3cii
+
 }
 
 
