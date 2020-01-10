@@ -35,11 +35,14 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.apache.commons.math.stat.correlation.PearsonsCorrelation;
 import org.apache.log4j.Logger;
 import org.graphstream.algorithm.Toolkit;
+import org.graphstream.graph.Edge;
 import org.graphstream.graph.implementations.SingleGraph;
 
 import nl.uu.socnetid.nidm.agents.Agent;
+import nl.uu.socnetid.nidm.agents.AgentAttributes;
 import nl.uu.socnetid.nidm.agents.AgentFactory;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.simulation.Simulation;
@@ -832,6 +835,57 @@ public class Network extends SingleGraph implements SimulationListener {
      */
     public double getDensity() {
         return Toolkit.density(this);
+    }
+
+    /**
+     * Gets the assortativity of the network.
+     *
+     * @param a
+     *          the agent attribute to get the assortativity for
+     * @return the assortativity of the network
+     */
+    public double getAssortativity(AgentAttributes a) {
+
+        // collect attributes of all node pairs
+        double[] attributes1 = new double[this.getEdgeCount()];
+        double[] attributes2 = new double[this.getEdgeCount()];
+
+        Iterator<Edge> eIt = this.getEdgeIterator();
+        int i = 0;
+        while (eIt.hasNext()) {
+            Edge edge = eIt.next();
+            switch (a) {
+                case RISK_FACTOR_SIGMA:
+                    attributes1[i] = ((Agent) edge.getNode0()).getRSigma();
+                    attributes2[i] = ((Agent) edge.getNode1()).getRSigma();
+                    break;
+
+                case RISK_FACTOR_PI:
+                    attributes1[i] = ((Agent) edge.getNode0()).getRPi();
+                    attributes2[i] = ((Agent) edge.getNode1()).getRPi();
+                    break;
+
+                case CONNECTION_STATS:
+                case DISEASE_GROUP:
+                case DISEASE_INFECTION:
+                case DISEASE_SPECS:
+                case OMEGA:
+                case OMEGA_SHUFFLE:
+                case PHI:
+                case RISK_MEANING_PI:
+                case RISK_MEANING_SIGMA:
+                case SATISFIED:
+                case UI_CLASS:
+                case UTILITY_FUNCTION:
+                default:
+                    logger.warn("assortativity not available for: " + a);
+                    break;
+            }
+            i++;
+        }
+
+        // Pearson correlation coefficient
+        return new PearsonsCorrelation().correlation(attributes1, attributes2);
     }
 
     /**

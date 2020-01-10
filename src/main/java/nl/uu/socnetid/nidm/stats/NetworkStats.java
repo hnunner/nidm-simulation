@@ -25,6 +25,7 @@
  */
 package nl.uu.socnetid.nidm.stats;
 
+import nl.uu.socnetid.nidm.agents.AgentAttributes;
 import nl.uu.socnetid.nidm.networks.Network;
 
 /**
@@ -35,10 +36,11 @@ public class NetworkStats {
     private Network network;
 
     // TODO make all initializations lazy
-    // TODO remove setters
 
     private boolean stable;
     private double density;
+    private double assortativityRSigma;
+    private double assortativityRPi;
     private double avDegree;
     private double avDegree2;
     private double avDegreeSatisfied;
@@ -67,6 +69,8 @@ public class NetworkStats {
         this.network = network;
         this.stable = network.isStable();
         this.density = network.getDensity();
+        this.assortativityRSigma = network.getAssortativity(AgentAttributes.RISK_FACTOR_SIGMA);
+        this.assortativityRPi = network.getAssortativity(AgentAttributes.RISK_FACTOR_SIGMA);
         this.avDegree = network.getAvDegree();
         this.avDegree2 = network.getAvDegree2();
         this.avDegreeSatisfied = network.getAvDegreeSatisfied();
@@ -116,6 +120,34 @@ public class NetworkStats {
      */
     public void setDensity(double density) {
         this.density = density;
+    }
+
+    /**
+     * @return the assortativityRSigma
+     */
+    public double getAssortativityRSigma() {
+        return assortativityRSigma;
+    }
+
+    /**
+     * @param assortativityRSigma the assortativityRSigma to set
+     */
+    public void setAssortativityRSigma(double assortativityRSigma) {
+        this.assortativityRSigma = assortativityRSigma;
+    }
+
+    /**
+     * @return the assortativityRPi
+     */
+    public double getAssortativityRPi() {
+        return assortativityRPi;
+    }
+
+    /**
+     * @param assortativityRPi the assortativityRPi to set
+     */
+    public void setAssortativityRPi(double assortativityRPi) {
+        this.assortativityRPi = assortativityRPi;
     }
 
     /**
