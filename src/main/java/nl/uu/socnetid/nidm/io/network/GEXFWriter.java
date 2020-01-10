@@ -40,7 +40,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.graphstream.graph.Edge;
 import org.graphstream.stream.file.FileSinkGEXF;
 import org.graphstream.stream.file.FileSinkGEXF2;
@@ -61,7 +62,7 @@ import nl.uu.socnetid.nidm.networks.NetworkListener;
 public class GEXFWriter implements AgentListener, NetworkListener {
 
     // logger
-    private static final Logger logger = Logger.getLogger(GEXFWriter.class);
+    private static final Logger logger = LogManager.getLogger(GEXFWriter.class);
 
     // unique time identifier
     private static final AtomicLong TIME = new AtomicLong(1);

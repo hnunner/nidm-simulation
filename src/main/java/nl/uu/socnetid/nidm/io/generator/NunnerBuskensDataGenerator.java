@@ -33,7 +33,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.LinkedList;
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.graphstream.graph.Edge;
 
 import nl.uu.socnetid.nidm.agents.Agent;
@@ -64,7 +65,7 @@ import nl.uu.socnetid.nidm.utility.UtilityFunction;
 public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements AgentListener, SimulationListener {
 
     // logger
-    private static final Logger logger = Logger.getLogger(NunnerBuskensDataGenerator.class);
+    private static final Logger logger = LogManager.getLogger(NunnerBuskensDataGenerator.class);
 
     // network
     private Network network;

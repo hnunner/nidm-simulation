@@ -25,7 +25,8 @@
  */
 package nl.uu.socnetid.nidm.stats;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Hendrik Nunner
@@ -33,7 +34,7 @@ import org.apache.log4j.Logger;
 public class AgentConnectionStats implements Cloneable {
 
     // logger
-    private static final Logger logger = Logger.getLogger(AgentConnectionStats.class);
+    private static final Logger logger = LogManager.getLogger(AgentConnectionStats.class);
 
     // stats
     private int brokenTiesActive = 0;
