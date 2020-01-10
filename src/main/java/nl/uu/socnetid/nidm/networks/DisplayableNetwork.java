@@ -25,7 +25,8 @@
  */
 package nl.uu.socnetid.nidm.networks;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.graphstream.ui.graphicGraph.stylesheet.StyleConstants.Units;
 import org.graphstream.ui.spriteManager.Sprite;
 import org.graphstream.ui.spriteManager.SpriteManager;
@@ -81,7 +82,7 @@ public class DisplayableNetwork extends Network {
 
     // logger
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(DisplayableNetwork.class);
+    private static final Logger logger = LogManager.getLogger(DisplayableNetwork.class);
 
     // graphstream
     private Viewer viewer;

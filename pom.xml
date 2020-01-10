@@ -15,7 +15,7 @@
 		<!-- JUnit version -->
 		<junit.version>4.11</junit.version>
 		<!-- log4j version -->
-		<log4j.version>1.2.17</log4j.version>
+		<log4j.version>2.13.0</log4j.version>
 		<!-- GraphStream version -->
 		<gs.version>1.3</gs.version>
 		<!-- Git commit ID Maven plugin version -->
@@ -150,8 +150,13 @@
 	<!-- dependency search at https://mvnrepository.com -->
 	<dependencies>
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
 			<version>${log4j.version}</version>
 		</dependency>
 		<dependency>
@@ -181,9 +186,9 @@
 			<version>${maven-model.version}</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.apache.commons</groupId>
-		    <artifactId>commons-math3</artifactId>
-		    <version>${commons-math3.version}</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>${commons-math3.version}</version>
 		</dependency>
 	</dependencies>
 </project>
