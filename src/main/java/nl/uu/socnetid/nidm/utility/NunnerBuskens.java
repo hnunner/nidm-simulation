@@ -126,7 +126,7 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
         double y = this.yGlobal ? lacs.getYGlobal() : lacs.getYLocal();
         // closed triads
         double z = lacs.getZ();
-        // proportion of open triads
+        // proportion of closed triads
         double yProp = (y+z) == 0 ? 0 : z / (y + z);
         double benefitTriads = this.b2 * (1 - 2 * (Math.abs(yProp - this.alpha) / Math.max(this.alpha, 1-this.alpha)));
 
