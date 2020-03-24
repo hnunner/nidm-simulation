@@ -193,7 +193,6 @@ public class Simulation implements Runnable {
     private void computeSingleRound() {
 
         computeDiseaseDynamics();
-        // TODO add radio buttons for epStatic on GUI
         if (!this.network.hasActiveInfection() || (this.network.hasActiveInfection() && !this.epStatic)) {
             computeAgentDynamics();
         }
