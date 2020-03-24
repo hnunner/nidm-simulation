@@ -37,6 +37,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.InputVerifier;
 import javax.swing.JButton;
@@ -47,6 +48,7 @@ import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
@@ -134,6 +136,9 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
     private ExecutorService nodeClickExecutor = Executors.newSingleThreadExecutor();
     private JCheckBox chckbxShowAgentStats;
     private JCheckBox chckbxToggleInfection;
+    // behavior during epidemics
+    private JRadioButton rbEpDynamic;
+    private JRadioButton rbEpStatic;
 
     // SIMULATION
     private Simulation simulation;
@@ -495,11 +500,6 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
         simulationPane.add(chckbxToggleInfection);
         chckbxToggleInfection.setSelected(false);
 
-        JSeparator separator_4 = new JSeparator(SwingConstants.HORIZONTAL);
-        separator_4.setForeground(Color.LIGHT_GRAY);
-        separator_4.setBounds(3, 332, 312, 10);
-        simulationPane.add(separator_4);
-
         JSeparator separator_1 = new JSeparator(SwingConstants.HORIZONTAL);
         separator_1.setForeground(Color.LIGHT_GRAY);
         separator_1.setBounds(3, 500, 312, 10);
@@ -509,6 +509,36 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
         separator_2.setForeground(Color.LIGHT_GRAY);
         separator_2.setBounds(3, 504, 312, 10);
         simulationPane.add(separator_2);
+
+        JSeparator separator_6 = new JSeparator(SwingConstants.HORIZONTAL);
+        separator_6.setForeground(Color.LIGHT_GRAY);
+        separator_6.setBounds(3, 332, 312, 10);
+        simulationPane.add(separator_6);
+
+        JLabel lblBehaviorDuringEpidemics = new JLabel("Behavior during epidemics:");
+        lblBehaviorDuringEpidemics.setToolTipText("Risk behavior of the agent - r<1: risk seeking, r=1: risk neutral, r>1: risk averse");
+        lblBehaviorDuringEpidemics.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+        lblBehaviorDuringEpidemics.setBounds(16, 342, 238, 16);
+        simulationPane.add(lblBehaviorDuringEpidemics);
+
+        rbEpDynamic = new JRadioButton("Dynamic");
+        rbEpDynamic.setSelected(true);
+        rbEpDynamic.setBounds(38, 367, 141, 23);
+        simulationPane.add(rbEpDynamic);
+
+        rbEpStatic = new JRadioButton("Static");
+        rbEpStatic.setSelected(false);
+        rbEpStatic.setBounds(38, 392, 141, 23);
+        simulationPane.add(rbEpStatic);
+
+        ButtonGroup group = new ButtonGroup();
+        group.add(rbEpDynamic);
+        group.add(rbEpStatic);
+
+        JSeparator separator_7 = new JSeparator(SwingConstants.HORIZONTAL);
+        separator_7.setForeground(Color.LIGHT_GRAY);
+        separator_7.setBounds(3, 427, 312, 10);
+        simulationPane.add(separator_7);
 
 
         btnInfectRandomAgent.addActionListener(new ActionListener() {
@@ -846,11 +876,9 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
     private void startSimulation() {
 
         // initializations
-        if (this.simulation == null) {
-            // this.simulation = new ThreadedSimulation(this.network);
-            this.simulation = new Simulation(this.network);
-            this.simulation.addSimulationListener(this);
-        }
+        // this.simulation = new ThreadedSimulation(this.network);
+        this.simulation = new Simulation(this.network, this.rbEpStatic.isSelected());
+        this.simulation.addSimulationListener(this);
         this.simulation.setDelay((Integer) this.simulationDelay.getValue());
 
         if (this.simulationTask != null) {
@@ -1039,5 +1067,4 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
     public void notifyRecordingStopped() {
         this.statsFrame.refreshSimulationRecording(false);
     }
-
 }
