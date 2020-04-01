@@ -69,7 +69,7 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
 
     // network
     private Network network;
-    private boolean tiesBrokenWithInfectionPresent;
+    private double tiesBrokenWithInfectionPresent;
 
     // simulation
     private Simulation simulation;
@@ -370,7 +370,7 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
         if (this.dgData.getUtilityModelParams().isGammaRandom()) {
             this.dgData.getUtilityModelParams().setCurrGamma(ThreadLocalRandom.current().nextDouble(
                     this.dgData.getUtilityModelParams().getGammaRandomMin(),
-                    this.dgData.getUtilityModelParams().getSigmaRandomMax()));
+                    this.dgData.getUtilityModelParams().getGammaRandomMax()));
         }
         // tau
         if (this.dgData.getUtilityModelParams().isTauRandom()) {
@@ -403,6 +403,8 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
         }
         // rPi
         if (this.dgData.getUtilityModelParams().isRsEqual()) {
+            this.dgData.getUtilityModelParams().setRPiRandom(
+                    this.dgData.getUtilityModelParams().isRSigmaRandom());
             this.dgData.getUtilityModelParams().setCurrRPiRandomHomogeneous(
                     this.dgData.getUtilityModelParams().isCurrRSigmaRandomHomogeneous());
             this.dgData.getUtilityModelParams().setCurrRPi(this.dgData.getUtilityModelParams().getCurrRSigma());
@@ -499,10 +501,10 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
         this.simulation = new Simulation(network, this.dgData.getUtilityModelParams().isCurrEpStatic());
         this.simulation.addSimulationListener(this);
         // simulate
-        simulation.simulate(this.dgData.getUtilityModelParams().getZeta());
+        simulation.simulateUntilStable(this.dgData.getUtilityModelParams().getZeta());
         // save data of last round of pre-epidemic stage
         this.dgData.setNetStatsPre(new NetworkStats(this.network));
-        this.dgData.getNetStatsPre().setTiesBrokenWithInfectionPresent(false);
+        this.dgData.getNetStatsPre().setTiesBrokenWithInfectionPresent(0.0);
         // write agent detail data if necessary
         if (!PropertiesHandler.getInstance().isExportAgentDetails() &&
                 PropertiesHandler.getInstance().isExportAgentDetailsReduced()) {
@@ -511,14 +513,14 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
         }
 
         // EPIDEMIC AND POST-EPIDEMIC STAGES
-        this.tiesBrokenWithInfectionPresent = false;
+        this.tiesBrokenWithInfectionPresent = 0.0;
         Agent indexCase = this.network.infectRandomAgent(ds);
         this.dgData.getSimStats().setSimStage(SimulationStage.ACTIVE_EPIDEMIC);
         // save index case properties of pre-epidemic stage
         this.dgData.setIndexCaseStats(new AgentStats(indexCase));
         this.dgData.getSimStats().setRoundStartInfection(this.simulation.getRounds());
         // simulate
-        this.simulation.simulate(this.dgData.getUtilityModelParams().getEpsilon());
+        this.simulation.simulateUntilStable(this.dgData.getUtilityModelParams().getEpsilon());
         // save data of last round of post-epidemic stage
         this.dgData.setNetStatsPost(new NetworkStats(this.network));
         this.dgData.getNetStatsPost().setTiesBrokenWithInfectionPresent(this.tiesBrokenWithInfectionPresent);
@@ -605,7 +607,7 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
     @Override
     public void notifyConnectionRemoved(Agent agent, Edge edge) {
         if (this.dgData.getSimStats().getSimStage() == SimulationStage.ACTIVE_EPIDEMIC) {
-            this.tiesBrokenWithInfectionPresent = true;
+            this.tiesBrokenWithInfectionPresent++;
         }
     }
 
