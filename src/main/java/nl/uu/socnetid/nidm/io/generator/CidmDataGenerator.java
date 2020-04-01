@@ -70,7 +70,7 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
 
     // network
     private Network network;
-    private boolean tiesBrokenWithInfectionPresent;
+    private double tiesBrokenWithInfectionPresent;
 
     // simulation
     private Simulation simulation;
@@ -338,7 +338,7 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
         this.simulation.simulate(this.dgData.getUtilityModelParams().getZeta());
         // save data of last round of pre-epidemic stage
         this.dgData.setNetStatsPre(new NetworkStats(this.network));
-        this.dgData.getNetStatsPre().setTiesBrokenWithInfectionPresent(false);
+        this.dgData.getNetStatsPre().setTiesBrokenWithInfectionPresent(0.0);
         // write agent detail data if necessary
         if (!PropertiesHandler.getInstance().isExportAgentDetails() &&
                 PropertiesHandler.getInstance().isExportAgentDetailsReduced()) {
@@ -347,7 +347,7 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
         }
 
         // EPIDEMIC AND POST-EPIDEMIC STAGES
-        this.tiesBrokenWithInfectionPresent = false;
+        this.tiesBrokenWithInfectionPresent = 0.0;
         Agent indexCase = this.network.infectRandomAgent(ds);
         this.dgData.getSimStats().setSimStage(SimulationStage.ACTIVE_EPIDEMIC);
         // save index case properties of pre-epidemic stage
@@ -436,7 +436,7 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
     @Override
     public void notifyConnectionRemoved(Agent agent, Edge edge) {
         if (this.dgData.getSimStats().getSimStage() == SimulationStage.ACTIVE_EPIDEMIC) {
-            this.tiesBrokenWithInfectionPresent = true;
+            this.tiesBrokenWithInfectionPresent++;
         }
     }
 
