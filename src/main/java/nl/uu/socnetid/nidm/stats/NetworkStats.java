@@ -62,7 +62,7 @@ public class NetworkStats {
     private double recoveredPercent;
     private double satisfiedPercent;
     private double unsatisfiedPercent;
-    private boolean tiesBrokenWithInfectionPresent;
+    private double tiesBrokenWithInfectionPresent;
 
 
     public NetworkStats(Network network) {
@@ -368,14 +368,14 @@ public class NetworkStats {
     /**
      * @return the tiesBrokenWithInfectionPresent
      */
-    public boolean isTiesBrokenWithInfectionPresent() {
+    public double getTiesBrokenWithInfectionPresent() {
         return tiesBrokenWithInfectionPresent;
     }
 
     /**
      * @param tiesBrokenWithInfectionPresent the tiesBrokenWithInfectionPresent to set
      */
-    public void setTiesBrokenWithInfectionPresent(boolean tiesBrokenWithInfectionPresent) {
+    public void setTiesBrokenWithInfectionPresent(double tiesBrokenWithInfectionPresent) {
         this.tiesBrokenWithInfectionPresent = tiesBrokenWithInfectionPresent;
     }
 

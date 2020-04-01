@@ -187,6 +187,48 @@ public class Simulation implements Runnable {
     }
 
     /**
+     * Simulates the network dynamics (disease and agents) until the network is stable.
+     *
+     * @param maxRounds
+     *          the maximum number of rounds
+     *
+     * TODO: generalize with method above
+     */
+    public void simulateUntilStable(int maxRounds) {
+
+        notifySimulationStarted();
+
+        this.activeInfection = false;
+
+        int i = 0;
+        while ((!this.network.isStable() || this.network.hasActiveInfection()) && i < maxRounds) {
+            computeSingleRound();
+            i++;
+        }
+
+        // status message
+        StringBuilder sb = new StringBuilder();
+        sb.append("Simulation finished after " + i + " time steps.");
+        boolean unfinished = false;
+        if (!this.network.isStable()) {
+            sb.append(" Network was unstable.");
+            unfinished = true;
+        }
+        if (this.network.hasActiveInfection()) {
+            sb.append(" Network had active infection.");
+            unfinished = true;
+        }
+        if (unfinished) {
+            logger.warn(sb.toString());
+        } else {
+            logger.debug(sb.toString());
+        }
+
+        // notify simulation finished
+        this.notifySimulationFinished();
+    }
+
+    /**
      * Computes a single round,
      * composed of disease and agent dynamics.
      */
