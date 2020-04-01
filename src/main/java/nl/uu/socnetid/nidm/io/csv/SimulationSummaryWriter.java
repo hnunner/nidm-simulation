@@ -194,7 +194,7 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
         currData.add(String.valueOf(this.dgData.getNetStatsPost().getSusceptiblePercent()));
         currData.add(String.valueOf(this.dgData.getNetStatsPost().getInfectedPercent()));
         currData.add(String.valueOf(this.dgData.getNetStatsPost().getRecoveredPercent()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPost().isTiesBrokenWithInfectionPresent() ? 1 : 0));
+        currData.add(String.valueOf(this.dgData.getNetStatsPost().getTiesBrokenWithInfectionPresent()));
         currData.add(String.valueOf(this.dgData.getNetStatsPost().getAvDegree()));
         currData.add(String.valueOf(this.dgData.getNetStatsPost().getAvDegree2()));
         currData.add(String.valueOf(this.dgData.getNetStatsPost().getAvCloseness()));
