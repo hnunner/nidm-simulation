@@ -23,30 +23,25 @@
  *      Nunner, H., Buskens, V., & Kretzschmar, M. (2019). A model for the co-evolution of dynamic
  *      social networks and infectious diseases. Manuscript sumbitted for publication.
  */
-package nl.uu.socnetid.nidm.io.generator;
+package nl.uu.socnetid.nidm.io.generator.data;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import nl.uu.socnetid.nidm.io.generator.AbstractGenerator;
 import nl.uu.socnetid.nidm.system.PropertiesHandler;
 
 /**
  * @author Hendrik Nunner
  */
-public abstract class AbstractDataGenerator {
+public abstract class AbstractDataGenerator extends AbstractGenerator {
 
     // logger
     private static final Logger logger = LogManager.getLogger(AbstractDataGenerator.class);
-
-    // paths
-    private String rootExportPath;
-    private String exportPath;
-
 
     /**
      * Constructor.
@@ -59,60 +54,19 @@ public abstract class AbstractDataGenerator {
      *          created, or cannot be opened for any other reason
      */
     public AbstractDataGenerator(String rootExportPath) throws IOException {
-        this.rootExportPath = rootExportPath;
-        this.exportPath = this.rootExportPath + this.getFolderName() + "/";
-        initPaths();
-        initData();
-        initWriters();
+        super(rootExportPath);
     }
 
-
-    /**
-     * Gets the name of the folder to store generator specific data in.
-     *
-     * @return the name of the folder to store generator specific data in
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.io.generator.AbstractGenerator#generate()
      */
-    protected abstract String getFolderName();
-
-    /**
-     * Initializes the required paths.
-     */
-    private void initPaths() {
-        File directory = new File(getExportPath());
-        if (!directory.exists()){
-            directory.mkdirs();
-        }
-    }
-
-    /**
-     * Initializes the required data.
-     */
-    protected abstract void initData();
-
-    /**
-     * Initializes the required writers.
-     *
-     * @throws IOException
-     *          if the export file(s) exist(s) but is a directory rather
-     *          than a regular file, do(es) not exist but cannot be
-     *          created, or cannot be opened for any other reason
-     */
-    protected abstract void initWriters() throws IOException;
-
-    /**
-     * Launches the data generation.
-     */
+    @Override
     public void launch() {
-        generateData();
+        super.launch();
         if (PropertiesHandler.getInstance().isAnalyzeData()) {
             analyzeData(prepareAnalysis());
         }
     }
-
-    /**
-     * Generates the data.
-     */
-    protected abstract void generateData();
 
     /**
      * Prepares the data analysis by copying necessary file(s) to their locations.
@@ -157,21 +111,6 @@ public abstract class AbstractDataGenerator {
         } catch (InterruptedException e) {
             logger.error(e);
         }
-    }
-
-
-    /**
-     * @return the rootExportPath
-     */
-    protected String getRootExportPath() {
-        return rootExportPath;
-    }
-
-    /**
-     * @return the exportPath
-     */
-    protected String getExportPath() {
-        return this.exportPath;
     }
 
 }
