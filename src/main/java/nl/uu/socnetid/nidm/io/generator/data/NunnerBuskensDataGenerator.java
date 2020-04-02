@@ -23,7 +23,7 @@
  *      Nunner, H., Buskens, V., & Kretzschmar, M. (2019). A model for the co-evolution of dynamic
  *      social networks and infectious diseases. Manuscript sumbitted for publication.
  */
-package nl.uu.socnetid.nidm.io.generator;
+package nl.uu.socnetid.nidm.io.generator.data;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -137,7 +137,7 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
      * @see nl.uu.socnetid.nidm.io.generator.AbstractDataGenerator#generateData()
      */
     @Override
-    protected void generateData() {
+    protected void generate() {
 
         boolean[] epStatics = this.dgData.getUtilityModelParams().isEpStaticRandom() ?
                 new boolean[1] : this.dgData.getUtilityModelParams().getEpStatics();
