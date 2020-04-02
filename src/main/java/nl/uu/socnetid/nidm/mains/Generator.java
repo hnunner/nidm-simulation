@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 - 2019
+ * Copyright (C) 2017 - 2020
  *      Hendrik Nunner    <h.nunner@gmail.com>
  *
  * This file is part of the NIDM-Simulation project <https://github.com/hnunner/NIDM-simulation>.
@@ -38,21 +38,24 @@ import java.util.Date;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import nl.uu.socnetid.nidm.io.generator.AbstractDataGenerator;
-import nl.uu.socnetid.nidm.io.generator.BurgerBuskensDataGenerator;
-import nl.uu.socnetid.nidm.io.generator.CarayolRouxDataGenerator;
-import nl.uu.socnetid.nidm.io.generator.CidmDataGenerator;
-import nl.uu.socnetid.nidm.io.generator.NunnerBuskensDataGenerator;
+import nl.uu.socnetid.nidm.io.generator.AbstractGenerator;
+import nl.uu.socnetid.nidm.io.generator.data.BurgerBuskensDataGenerator;
+import nl.uu.socnetid.nidm.io.generator.data.CarayolRouxDataGenerator;
+import nl.uu.socnetid.nidm.io.generator.data.CidmDataGenerator;
+import nl.uu.socnetid.nidm.io.generator.data.NunnerBuskensDataGenerator;
+import nl.uu.socnetid.nidm.io.generator.network.NunnerBuskensNetworkGenerator;
 import nl.uu.socnetid.nidm.system.PropertiesHandler;
 
 /**
  * @author Hendrik Nunner
  */
-public class DataGenerator {
+public class Generator {
 
     // logger
-    private static final Logger logger = LogManager.getLogger(DataGenerator.class);
+    private static final Logger logger = LogManager.getLogger(Generator.class);
 
+    // time of invocation
+    private static final String TIME_OF_INVOCATION = (new SimpleDateFormat("yyyyMMdd-HHmmss")).format(new Date());
 
     /**
      * Launches the data generation.
@@ -65,8 +68,19 @@ public class DataGenerator {
      *          created, or cannot be opened for any other reason
      */
     public static void main(String[] args) throws IOException {
+        Generator generator = new Generator();
+        generator.generate();
+    }
+
+
+    /**
+     * Initializes the data generation, by logging the copyright agreement, preparing the export path,
+     * and copying the properties file.
+     */
+    protected void initialize() {
+
         logger.info("\n::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::\n" +
-                ":: Copyright (C) 2017 - 2019\n" +
+                ":: Copyright (C) 2017 - 2020\n" +
                 "::     Hendrik Nunner    <h.nunner@gmail.com>\n" +
                 "::\n" +
                 ":: This file is part of the NIDM-Simulation project <https://github.com/hnunner/NIDM-simulation>.\n" +
@@ -91,47 +105,91 @@ public class DataGenerator {
                 "::     social networks and infectious diseases. Manuscript sumbitted for publication.\n"
                 + "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::\n");
 
-
-
         // initializations
         // create root export directory if it does not exist
-        String rootExportPath = PropertiesHandler.getInstance().getDataExportPath() +
-                (new SimpleDateFormat("yyyyMMdd-HHmmss")).format(new Date()) + "/";
-        File directory = new File(rootExportPath);
+        String datedExportPath = getDatedExportPath();
+        File directory = new File(datedExportPath);
         if (!directory.exists()){
             directory.mkdirs();
         }
 
         // copy properties file to root export directory
         try {
-            Path srcProperties = Paths.get(DataGenerator.class.getClassLoader().getResource("config.properties").toURI());
-            Path dstProperties = Paths.get(rootExportPath + "config.properties");
+            Path srcProperties = Paths.get(Generator.class.getClassLoader().getResource("config.properties").toURI());
+            Path dstProperties = Paths.get(datedExportPath + "/config.properties");
             Files.copy(srcProperties, dstProperties, StandardCopyOption.REPLACE_EXISTING);
         } catch (URISyntaxException e) {
             logger.error(e);
+        } catch (IOException e) {
+            logger.error(e);
         }
 
+    }
+
+    /**
+     * @return the path for data exports
+     */
+    private String getDatedExportPath() {
+        return PropertiesHandler.getInstance().getRootExportPath() + TIME_OF_INVOCATION;
+    }
+
+    /**
+     * @return the path for data exports
+     */
+    private String getDataExportPath() {
+        return PropertiesHandler.getInstance().getRootExportPath() +
+                TIME_OF_INVOCATION + "/data/";
+    }
+
+    /**
+     * @return the path for network exports
+     */
+    private String getNetworkExportPath() {
+        return PropertiesHandler.getInstance().getRootExportPath() +
+                TIME_OF_INVOCATION + "/networks/";
+    }
+
+
+    /**
+     * Performs generation of data, networks, ...
+     *
+     * @throws IOException
+     *          if the export file(s) exist(s) but is a directory rather
+     *          than a regular file, do(es) not exist but cannot be
+     *          created, or cannot be opened for any other reason
+     */
+    private void generate() throws IOException {
+
+        // initialization
+        this.initialize();
+
         // invoke data generators
-        AbstractDataGenerator dataGenerator;
+        AbstractGenerator dataGenerator;
         // CIDM (Nunner, Buskens & Kretzschmar, 2019)
-        if (PropertiesHandler.getInstance().isGenerateCidm()) {
-            dataGenerator = new CidmDataGenerator(rootExportPath);
+        if (PropertiesHandler.getInstance().isGenerateCidmData()) {
+            dataGenerator = new CidmDataGenerator(getDataExportPath());
             dataGenerator.launch();
         }
         // Burger & Buskens (2009)
-        if (PropertiesHandler.getInstance().isGenerateBurgerBuskens()) {
-            dataGenerator = new BurgerBuskensDataGenerator(rootExportPath);
+        if (PropertiesHandler.getInstance().isGenerateBurgerBuskensData()) {
+            dataGenerator = new BurgerBuskensDataGenerator(getDataExportPath());
             dataGenerator.launch();
         }
         // Carayol & Roux (2009)
-        if (PropertiesHandler.getInstance().isGenerateCarayolRoux()) {
-            dataGenerator = new CarayolRouxDataGenerator(rootExportPath);
+        if (PropertiesHandler.getInstance().isGenerateCarayolRouxData()) {
+            dataGenerator = new CarayolRouxDataGenerator(getDataExportPath());
             dataGenerator.launch();
         }
         // Nunner & Buskens (2019)
-        if (PropertiesHandler.getInstance().isGenerateNunnerBuskens()) {
-            dataGenerator = new NunnerBuskensDataGenerator(rootExportPath);
+        if (PropertiesHandler.getInstance().isGenerateNunnerBuskensData()) {
+            dataGenerator = new NunnerBuskensDataGenerator(getDataExportPath());
+            dataGenerator.launch();
+        }
+        // Nunner & Buskens (2019)
+        if (PropertiesHandler.getInstance().isGenerateNunnerBuskensNetworks()) {
+            dataGenerator = new NunnerBuskensNetworkGenerator(getNetworkExportPath());
             dataGenerator.launch();
         }
     }
+
 }

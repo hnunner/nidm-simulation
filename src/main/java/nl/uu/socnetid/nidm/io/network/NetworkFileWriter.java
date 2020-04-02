@@ -58,7 +58,7 @@ public class NetworkFileWriter {
      */
     public NetworkFileWriter(String path, String file, NetworkWriter networkWriter, Network network) {
         this.path = path;
-        this.file = file;
+        this.file = path + file;
         this.networkWriter = networkWriter;
         this.network = network;
     }
