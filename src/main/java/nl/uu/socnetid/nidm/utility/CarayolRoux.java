@@ -32,6 +32,7 @@ import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.gui.CarayolRouxChangeListener;
 import nl.uu.socnetid.nidm.gui.CarayolRouxPanel;
 import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
+import nl.uu.socnetid.nidm.stats.StatsComputer;
 
 /**
  * @author Hendrik Nunner
@@ -101,7 +102,7 @@ public class CarayolRoux extends UtilityFunction implements CarayolRouxChangeLis
     protected double getSocialBenefits(LocalAgentConnectionsStats lacs, Agent agent) {
 
         double benefits = 0.0;
-        Map<Integer, Integer> connectionsByDistance = lacs.getConnectionsByGeodesicDistance();
+        Map<Integer, Integer> connectionsByDistance = StatsComputer.getConnectionsByGeodesicDistance(agent);
 
         for (Entry<Integer, Integer> entry : connectionsByDistance.entrySet()) {
             Integer gdd = entry.getKey();
@@ -120,7 +121,7 @@ public class CarayolRoux extends UtilityFunction implements CarayolRouxChangeLis
     protected double getSocialCosts(LocalAgentConnectionsStats lacs, Agent agent) {
 
         double costs = 0.0;
-        Map<Double, Integer> connectionsByDistance = lacs.getDirectConnectionsByGeographicDistance();
+        Map<Double, Integer> connectionsByDistance = StatsComputer.getDirectConnectionsByGeographicDistance(agent);
 
         for (Entry<Double, Integer> entry : connectionsByDistance.entrySet()) {
             Double ggd = entry.getKey();
