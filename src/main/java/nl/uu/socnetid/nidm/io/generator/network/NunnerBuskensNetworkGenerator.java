@@ -23,13 +23,9 @@
  *      Nunner, H., Buskens, V., & Kretzschmar, M. (2019). A model for the co-evolution of dynamic
  *      social networks and infectious diseases. Manuscript sumbitted for publication.
  */
-package nl.uu.socnetid.nidm.io.generator;
+package nl.uu.socnetid.nidm.io.generator.network;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.LinkedList;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -37,17 +33,21 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import nl.uu.socnetid.nidm.agents.Agent;
-import nl.uu.socnetid.nidm.data.BurgerBuskensParameters;
 import nl.uu.socnetid.nidm.data.DataGeneratorData;
+import nl.uu.socnetid.nidm.data.NunnerBuskensParameters;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
-import nl.uu.socnetid.nidm.io.csv.BurgerBuskensSimulationSummaryWriter;
+import nl.uu.socnetid.nidm.io.csv.NunnerBuskensNetworkSummaryWriter;
+import nl.uu.socnetid.nidm.io.generator.AbstractGenerator;
+import nl.uu.socnetid.nidm.io.network.AdjacencyMatrixWriter;
+import nl.uu.socnetid.nidm.io.network.EdgeListWriter;
+import nl.uu.socnetid.nidm.io.network.GEXFWriter;
+import nl.uu.socnetid.nidm.io.network.NetworkFileWriter;
 import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.simulation.Simulation;
-import nl.uu.socnetid.nidm.simulation.SimulationStage;
 import nl.uu.socnetid.nidm.stats.NetworkStats;
 import nl.uu.socnetid.nidm.system.PropertiesHandler;
-import nl.uu.socnetid.nidm.utility.BurgerBuskens;
+import nl.uu.socnetid.nidm.utility.NunnerBuskens;
 import nl.uu.socnetid.nidm.utility.UtilityFunction;
 
 /**
@@ -55,14 +55,20 @@ import nl.uu.socnetid.nidm.utility.UtilityFunction;
  *
  * TODO unify data generators
  */
-public class BurgerBuskensDataGenerator extends AbstractDataGenerator {
+public class NunnerBuskensNetworkGenerator extends AbstractGenerator {
 
     // logger
-    private static final Logger logger = LogManager.getLogger(BurgerBuskensDataGenerator.class);
+    private static final Logger logger = LogManager.getLogger(NunnerBuskensNetworkGenerator.class);
+
+    // network
+    private Network network;
+
+    // simulation
+    private Simulation simulation;
 
     // stats & writer
-    private DataGeneratorData<BurgerBuskensParameters> dgData;
-    private BurgerBuskensSimulationSummaryWriter ssWriter;
+    private DataGeneratorData<NunnerBuskensParameters> dgData;
+    private NunnerBuskensNetworkSummaryWriter nsWriter;
 
 
     /**
@@ -75,7 +81,7 @@ public class BurgerBuskensDataGenerator extends AbstractDataGenerator {
      *          than a regular file, do(es) not exist but cannot be
      *          created, or cannot be opened for any other reason
      */
-    public BurgerBuskensDataGenerator(String rootExportPath) throws IOException {
+    public NunnerBuskensNetworkGenerator(String rootExportPath) throws IOException {
         super(rootExportPath);
     }
 
@@ -85,7 +91,7 @@ public class BurgerBuskensDataGenerator extends AbstractDataGenerator {
      */
     @Override
     protected String getFolderName() {
-        return "burgerbuskens";
+        return "nunnerbuskens";
     }
 
     /* (non-Javadoc)
@@ -93,17 +99,17 @@ public class BurgerBuskensDataGenerator extends AbstractDataGenerator {
      */
     @Override
     protected void initData() {
-        this.dgData = new DataGeneratorData<BurgerBuskensParameters>(PropertiesHandler.getInstance().getBurgerBuskensParameters());
+        this.dgData = new DataGeneratorData<NunnerBuskensParameters>(PropertiesHandler.getInstance().getNunnerBuskensParameters());
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.io.generator.AbstractDataGenerator#initWriters()
+     * @see nl.uu.socnetid.nidm.io.generator.AbstractGenerator#initWriters()
      */
     @Override
     protected void initWriters() throws IOException {
         // summary CSV
         if (PropertiesHandler.getInstance().isExportSummary()) {
-            this.ssWriter = new BurgerBuskensSimulationSummaryWriter(getExportPath() + "simulation-summary.csv", this.dgData);
+            this.nsWriter = new NunnerBuskensNetworkSummaryWriter(getExportPath() + "network-summary.csv", this.dgData);
         }
     }
 
@@ -111,64 +117,70 @@ public class BurgerBuskensDataGenerator extends AbstractDataGenerator {
      * @see nl.uu.socnetid.nidm.io.generator.AbstractDataGenerator#generateData()
      */
     @Override
-    protected void generateData() {
+    protected void generate() {
+
+        // TODO generalize:
+        //          - create a list of parameter combinations
+        //          - list objects are unique parameter combinations for model type (e.g., NunnerBuskens)
+        //          - iterate over that list, rather than nested loops
 
         double[] b1s = this.dgData.getUtilityModelParams().isB1Random() ?
                 new double[1] : this.dgData.getUtilityModelParams().getB1s();
+        double[] b2s = this.dgData.getUtilityModelParams().isB2Random() ?
+                new double[1] : this.dgData.getUtilityModelParams().getB2s();
+        double[] alphas = this.dgData.getUtilityModelParams().isAlphaRandom() ?
+                new double[1] : this.dgData.getUtilityModelParams().getAlphas();
         double[] c1s = this.dgData.getUtilityModelParams().isC1Random() ?
                 new double[1] : this.dgData.getUtilityModelParams().getC1s();
         double[] c2s = this.dgData.getUtilityModelParams().isC2Random() ?
                 new double[1] : this.dgData.getUtilityModelParams().getC2s();
-        double[] b2s = this.dgData.getUtilityModelParams().isB2Random() ?
-                new double[1] : this.dgData.getUtilityModelParams().getB2s();
-        double[] c3s = this.dgData.getUtilityModelParams().isC3Random() ?
-                new double[1] : this.dgData.getUtilityModelParams().getC3s();
+        boolean[] yGlobals = this.dgData.getUtilityModelParams().isYGlobalRandom() ?
+                new boolean[1] : this.dgData.getUtilityModelParams().getYGlobals();
+
         int[] Ns = this.dgData.getUtilityModelParams().isNRandom() ?
                 new int[1] : this.dgData.getUtilityModelParams().getNs();
         boolean[] iotas = this.dgData.getUtilityModelParams().isIotaRandom() ?
                 new boolean[1] : this.dgData.getUtilityModelParams().getIotas();
         double[] phis = this.dgData.getUtilityModelParams().isPhiRandom() ?
                 new double[1] : this.dgData.getUtilityModelParams().getPhis();
-        double[] omegas = this.dgData.getUtilityModelParams().isOmegaRandom() ?
-                new double[1] : this.dgData.getUtilityModelParams().getOmegas();
 
         // unique parameter combinations
         int upcs =
                 b1s.length *
                 b2s.length *
+                alphas.length *
                 c1s.length *
                 c2s.length *
-                c3s.length *
+                yGlobals.length *
                 Ns.length *
                 iotas.length *
-                phis.length *
-                omegas.length;
+                phis.length;
 
         // loop over all possible parameter combinations
         for (double b1 : b1s) {
             this.dgData.getUtilityModelParams().setCurrB1(b1);
             for (double b2 : b2s) {
                 this.dgData.getUtilityModelParams().setCurrB2(b2);
-                for (double c1 : c1s) {
-                    this.dgData.getUtilityModelParams().setCurrC1(c1);
-                    for (double c2 : c2s) {
-                        this.dgData.getUtilityModelParams().setCurrC2(c2);
-                        for (double c3 : c3s) {
-                            this.dgData.getUtilityModelParams().setCurrC3(c3);
-                            for (int N : Ns) {
-                                this.dgData.getUtilityModelParams().setCurrN(N);
-                                for (boolean iota : iotas) {
-                                    this.dgData.getUtilityModelParams().setCurrIota(iota);
-                                    for (double phi : phis) {
-                                        this.dgData.getUtilityModelParams().setCurrPhi(phi);
-                                        for (double omega : omegas) {
-                                            this.dgData.getUtilityModelParams().setCurrOmega(omega);
+                for (double alpha : alphas) {
+                    this.dgData.getUtilityModelParams().setCurrAlpha(alpha);
+                    for (double c1 : c1s) {
+                        this.dgData.getUtilityModelParams().setCurrC1(c1);
+                        for (double c2 : c2s) {
+                            this.dgData.getUtilityModelParams().setCurrC2(c2);
+                            for (boolean yGlobal : yGlobals) {
+                                this.dgData.getUtilityModelParams().setCurrYGlobal(yGlobal);
+                                for (int N : Ns) {
+                                    this.dgData.getUtilityModelParams().setCurrN(N);
+                                    for (boolean iota : iotas) {
+                                        this.dgData.getUtilityModelParams().setCurrIota(iota);
+                                        for (double phi : phis) {
+                                            this.dgData.getUtilityModelParams().setCurrPhi(phi);
 
                                             this.dgData.getSimStats().incUpc();
-                                            logger.info("Starting to compute "
+                                            logger.info("Starting to generate "
                                                     + this.dgData.getUtilityModelParams().
                                                     getSimsPerParameterCombination()
-                                                    + " simulations for parameter combination: "
+                                                    + " networks for parameter combination: "
                                                     + this.dgData.getSimStats().getUpc() + " / "
                                                     + upcs);
 
@@ -187,15 +199,16 @@ public class BurgerBuskensDataGenerator extends AbstractDataGenerator {
                                                 // simulate
                                                 performSingleSimulation();
 
-                                                // log simulation summary
-                                                if (PropertiesHandler.getInstance().isExportSummary()) {
-                                                    this.ssWriter.writeCurrentData();
-                                                }
-
-                                                logger.debug("Simulation " + this.dgData.getSimStats().getSimPerUpc() +
-                                                        "/" + this.dgData.getUtilityModelParams().getSimsPerParameterCombination() +
+                                                logger.debug("Network generation " +
+                                                        this.dgData.getSimStats().getSimPerUpc() +
+                                                        "/" +
+                                                        this.dgData.getUtilityModelParams().getSimsPerParameterCombination() +
                                                         " of parameter combination " +
-                                                        this.dgData.getSimStats().getUpc() + "/" + upcs + " finished.");
+                                                        this.dgData.getSimStats().getUpc() +
+                                                        "/" +
+                                                        upcs +
+                                                        " finished.");
+
                                                 this.dgData.getSimStats().incSimPerUpc();
                                             }
                                         }
@@ -207,8 +220,6 @@ public class BurgerBuskensDataGenerator extends AbstractDataGenerator {
                 }
             }
         }
-
-        // finish data generation
         finalizeDataExportFiles();
     }
 
@@ -219,7 +230,7 @@ public class BurgerBuskensDataGenerator extends AbstractDataGenerator {
     private void performSingleSimulation() {
 
         // create network
-        Network network = new Network();
+        this.network = new Network();
 
         // setting parameters
         // b1
@@ -234,6 +245,12 @@ public class BurgerBuskensDataGenerator extends AbstractDataGenerator {
                     this.dgData.getUtilityModelParams().getB2RandomMin(),
                     this.dgData.getUtilityModelParams().getB2RandomMax()));
         }
+        // alpha
+        if (this.dgData.getUtilityModelParams().isAlphaRandom()) {
+            this.dgData.getUtilityModelParams().setCurrAlpha(ThreadLocalRandom.current().nextDouble(
+                    this.dgData.getUtilityModelParams().getAlphaRandomMin(),
+                    this.dgData.getUtilityModelParams().getAlphaRandomMax()));
+        }
         // c1
         if (this.dgData.getUtilityModelParams().isC1Random()) {
             this.dgData.getUtilityModelParams().setCurrC1(ThreadLocalRandom.current().nextDouble(
@@ -246,11 +263,9 @@ public class BurgerBuskensDataGenerator extends AbstractDataGenerator {
                     this.dgData.getUtilityModelParams().getC2RandomMin(),
                     this.dgData.getUtilityModelParams().getC2RandomMax()));
         }
-        // c3
-        if (this.dgData.getUtilityModelParams().isC3Random()) {
-            this.dgData.getUtilityModelParams().setCurrC3(ThreadLocalRandom.current().nextDouble(
-                    this.dgData.getUtilityModelParams().getC3RandomMin(),
-                    this.dgData.getUtilityModelParams().getC3RandomMax()));
+        // yGlobal
+        if (this.dgData.getUtilityModelParams().isYGlobalRandom()) {
+            this.dgData.getUtilityModelParams().setCurrYGlobal(ThreadLocalRandom.current().nextBoolean());
         }
         // N
         if (this.dgData.getUtilityModelParams().isNRandom()) {
@@ -268,29 +283,20 @@ public class BurgerBuskensDataGenerator extends AbstractDataGenerator {
                     this.dgData.getUtilityModelParams().getPhiRandomMin(),
                     this.dgData.getUtilityModelParams().getPhiRandomMax()));
         }
-        // omega
-        if (this.dgData.getUtilityModelParams().isOmegaRandom()) {
-            this.dgData.getUtilityModelParams().setCurrOmega(ThreadLocalRandom.current().nextDouble(
-                    this.dgData.getUtilityModelParams().getOmegaRandomMin(),
-                    this.dgData.getUtilityModelParams().getOmegaRandomMax()));
-        }
 
         // create utility
-        UtilityFunction uf = new BurgerBuskens(
+        UtilityFunction uf = new NunnerBuskens(
                 this.dgData.getUtilityModelParams().getCurrB1(),
                 this.dgData.getUtilityModelParams().getCurrB2(),
+                this.dgData.getUtilityModelParams().getCurrAlpha(),
                 this.dgData.getUtilityModelParams().getCurrC1(),
                 this.dgData.getUtilityModelParams().getCurrC2(),
-                this.dgData.getUtilityModelParams().getCurrC3());
-
-        // create disease specs
-        DiseaseSpecs ds = new DiseaseSpecs(
-                DiseaseType.SIR, 10, 10, 0.1, 1.0);
+                this.dgData.getUtilityModelParams().isCurrYGlobal());
 
         // add agents
+        DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, 0, 0, 0, 0);
         for (int i = 0; i < this.dgData.getUtilityModelParams().getCurrN(); i++) {
-            network.addAgent(uf, ds, 0, 0, this.dgData.getUtilityModelParams().getCurrPhi(),
-                    this.dgData.getUtilityModelParams().getCurrOmega());
+            network.addAgent(uf, ds, 1.0, 1.0, this.dgData.getUtilityModelParams().getCurrPhi(), 0.0);
         }
         this.dgData.setAgents(new LinkedList<Agent>(network.getAgents()));
 
@@ -299,32 +305,30 @@ public class BurgerBuskensDataGenerator extends AbstractDataGenerator {
             network.createFullNetwork();
         }
 
-        // set up general stats
-        this.dgData.getSimStats().setSimStage(SimulationStage.PRE_EPIDEMIC);
         // create simulation
-        Simulation simulation = new Simulation(network);
+        this.simulation = new Simulation(network);
         // simulate
-        simulation.simulate();
-        // save data
-        this.dgData.setNetStatsCurrent(new NetworkStats(network));
+        simulation.simulateUntilStable(this.dgData.getUtilityModelParams().getZeta());
+        // save data of last round of pre-epidemic stage
+        this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
 
-    }
+        NetworkFileWriter amWriter = new NetworkFileWriter(getExportPath(),
+                this.dgData.getSimStats().getUid() + ".am",
+                new AdjacencyMatrixWriter(),
+                this.network);
+        amWriter.write();
 
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.io.generator.AbstractDataGenerator#prepareAnalysis()
-     */
-    @Override
-    protected String prepareAnalysis() {
-        // preparation of R-scripts
-        Path srcAnalysis = Paths.get(PropertiesHandler.getInstance().getRAnalysisBurgerBuskensTemplatePath());
-        String dstAnalysisPath = getExportPath() + "burgerbuskens.R";
-        Path dstAnalysis = Paths.get(dstAnalysisPath);
-        try {
-            Files.copy(srcAnalysis, dstAnalysis, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            logger.error(e);
-        }
-        return dstAnalysisPath;
+        NetworkFileWriter elWriter = new NetworkFileWriter(getExportPath(),
+                this.dgData.getSimStats().getUid() + ".el",
+                new EdgeListWriter(),
+                this.network);
+        elWriter.write();
+
+        GEXFWriter gexfWriter = new GEXFWriter();
+        gexfWriter.writeStaticNetwork(this.network, getExportPath() + this.dgData.getSimStats().getUid() + ".gexf");
+
+        this.nsWriter.writeCurrentData();
+
     }
 
     /**
@@ -332,10 +336,8 @@ public class BurgerBuskensDataGenerator extends AbstractDataGenerator {
      */
     private void finalizeDataExportFiles() {
         try {
-            if (PropertiesHandler.getInstance().isExportSummary()) {
-                this.ssWriter.flush();
-                this.ssWriter.close();
-            }
+            this.nsWriter.flush();
+            this.nsWriter.close();
         } catch (IOException e) {
             logger.error(e);
         }
