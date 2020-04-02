@@ -60,7 +60,7 @@ public class PropertiesHandler {
     private String javaVendor;
     private String javaVendorUrl;
     private String userDir;
-    private String dataExportPath;
+    private String rootExportPath;
 
     // CONFIG PROPERTIES
     // file system
@@ -71,16 +71,17 @@ public class PropertiesHandler {
     private String rAnalysisCarayolRouxTemplatePath;
     private String rAnalysisNunnerBuskensTemplatePath;
     // Cidm parameters
-    private boolean generateCidm;
+    private boolean generateCidmData;
     private CidmParameters cidmParameters;
     // BurgerBuskens parameters
-    private boolean generateBurgerBuskens;
+    private boolean generateBurgerBuskensData;
     private BurgerBuskensParameters bbParameters;
     // CarayolRoux parameters
-    private boolean generateCarayolRoux;
+    private boolean generateCarayolRouxData;
     private CarayolRouxParameters crParameters;
     // NunnerBuskens parameters
-    private boolean generateNunnerBuskens;
+    private boolean generateNunnerBuskensData;
+    private boolean generateNunnerBuskensNetworks;
     private NunnerBuskensParameters nbParameters;
     // DATA EXPORT
     // types of data export
@@ -138,7 +139,7 @@ public class PropertiesHandler {
         this.javaVendor = System.getProperty("java.vendor");
         this.javaVendorUrl = System.getProperty("java.vendor.url");
         this.userDir = System.getProperty("user.dir");
-        this.dataExportPath = new StringBuilder().append(this.userDir).append("/data/").toString();
+        this.rootExportPath = new StringBuilder().append(this.userDir).append("/exports/").toString();
     }
 
     private void readConfigProperties() {
@@ -181,7 +182,7 @@ public class PropertiesHandler {
                 configProps.getProperty("r.anlysis.nunnerbuskens.path")).toString();
 
         // Cidm parameters
-        generateCidm = Boolean.parseBoolean(configProps.getProperty("cidm.generate"));
+        generateCidmData = Boolean.parseBoolean(configProps.getProperty("cidm.generate.data"));
         cidmParameters = new CidmParameters();
         cidmParameters.setAlphas(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_ALPHA.toString())));
         cidmParameters.setKappas(parseDoubleArray(configProps.getProperty(LogValues.IV_CIDM_KAPPA.toString())));
@@ -220,7 +221,7 @@ public class PropertiesHandler {
                 LogValues.IV_CIDM_SIMS_PER_PC.toString())));
 
         // BurgerBuskens
-        generateBurgerBuskens = Boolean.parseBoolean(configProps.getProperty("bb.generate"));
+        generateBurgerBuskensData = Boolean.parseBoolean(configProps.getProperty("bb.generate.data"));
         bbParameters = new BurgerBuskensParameters();
         // b1
         bbParameters.setB1Random(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_BB_B1_RANDOM.toString())));
@@ -270,7 +271,7 @@ public class PropertiesHandler {
                 LogValues.IV_BB_SIMS_PER_PC.toString())));
 
         // CarayolRoux
-        generateCarayolRoux = Boolean.parseBoolean(configProps.getProperty("cr.generate"));
+        generateCarayolRouxData = Boolean.parseBoolean(configProps.getProperty("cr.generate.data"));
         crParameters = new CarayolRouxParameters();
         // cromega
         crParameters.setCrOmegaRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_CR_CROMEGA_RANDOM.toString())));
@@ -310,7 +311,8 @@ public class PropertiesHandler {
                 LogValues.IV_CR_SIMS_PER_PC.toString())));
 
         // NunnerBuskens
-        generateNunnerBuskens = Boolean.parseBoolean(configProps.getProperty("nb.generate"));
+        generateNunnerBuskensData = Boolean.parseBoolean(configProps.getProperty("nb.generate.data"));
+        generateNunnerBuskensNetworks = Boolean.parseBoolean(configProps.getProperty("nb.generate.networks"));
         nbParameters = new NunnerBuskensParameters();
         // network structure static during epidemics
         nbParameters.setEpStaticRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_EPSTATIC_RANDOM.toString())));
@@ -500,10 +502,10 @@ public class PropertiesHandler {
 
 
     /**
-     * @return the dataExportPath
+     * @return the rootExportPath
      */
-    public String getDataExportPath() {
-        return dataExportPath;
+    public String getRootExportPath() {
+        return rootExportPath;
     }
 
     /**
@@ -560,8 +562,8 @@ public class PropertiesHandler {
      *
      * @return true if data ought to be generated, false otherwise
      */
-    public boolean isGenerateCidm() {
-        return generateCidm;
+    public boolean isGenerateCidmData() {
+        return generateCidmData;
     }
 
     /**
@@ -578,8 +580,8 @@ public class PropertiesHandler {
      *
      * @return true if data ought to be generated, false otherwise
      */
-    public boolean isGenerateBurgerBuskens() {
-        return generateBurgerBuskens;
+    public boolean isGenerateBurgerBuskensData() {
+        return generateBurgerBuskensData;
     }
 
     /**
@@ -596,8 +598,8 @@ public class PropertiesHandler {
      *
      * @return true if data ought to be generated, false otherwise
      */
-    public boolean isGenerateCarayolRoux() {
-        return generateCarayolRoux;
+    public boolean isGenerateCarayolRouxData() {
+        return generateCarayolRouxData;
     }
 
     /**
@@ -614,8 +616,17 @@ public class PropertiesHandler {
      *
      * @return true if data ought to be generated, false otherwise
      */
-    public boolean isGenerateNunnerBuskens() {
-        return generateNunnerBuskens;
+    public boolean isGenerateNunnerBuskensData() {
+        return generateNunnerBuskensData;
+    }
+
+    /**
+     * Gets whether to generate networks for the NunnerBuskens model or not.
+     *
+     * @return true if networks ought to be generated, false otherwise
+     */
+    public boolean isGenerateNunnerBuskensNetworks() {
+        return generateNunnerBuskensNetworks;
     }
 
     /**
