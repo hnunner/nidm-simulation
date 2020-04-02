@@ -117,7 +117,7 @@ public class ExportGEXFPanel extends DeactivatablePanel {
         btnStartRecording.setBounds(37, 95, 258, 30);
         btnStartRecording.setToolTipText("If no explicit output file is selected, "
                 + "a default file will be generated in folder: "
-                + PropertiesHandler.getInstance().getDataExportPath());
+                + PropertiesHandler.getInstance().getRootExportPath());
         add(btnStartRecording);
 
         btnStopRecording = new JButton("Stop recording");
@@ -228,7 +228,7 @@ public class ExportGEXFPanel extends DeactivatablePanel {
             this.file = null;
 
         } else {
-            StringBuilder sb = new StringBuilder(PropertiesHandler.getInstance().getDataExportPath());
+            StringBuilder sb = new StringBuilder(PropertiesHandler.getInstance().getRootExportPath());
             SimpleDateFormat sdfDate = new SimpleDateFormat("yyyyMMdd-HHmmss");
             sb.append("sim-").
             append(sdfDate.format(new Date())).

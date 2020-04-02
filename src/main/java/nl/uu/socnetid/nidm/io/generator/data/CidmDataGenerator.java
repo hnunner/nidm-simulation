@@ -23,7 +23,7 @@
  *      Nunner, H., Buskens, V., & Kretzschmar, M. (2019). A model for the co-evolution of dynamic
  *      social networks and infectious diseases. Manuscript sumbitted for publication.
  */
-package nl.uu.socnetid.nidm.io.generator;
+package nl.uu.socnetid.nidm.io.generator.data;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -137,7 +137,7 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
      * @see nl.uu.socnetid.nidm.io.generator.AbstractDataGenerator#generateData()
      */
     @Override
-    protected void generateData() {
+    protected void generate() {
 
         // risk perceptions the same with regards to susceptibility (pi) and diseases severity (sigma)?
         double[] rSigmas = this.dgData.getUtilityModelParams().getRSigmas();
