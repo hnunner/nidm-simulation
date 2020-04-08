@@ -44,6 +44,17 @@ public class AdjacencyMatrixWriter implements NetworkWriter {
      */
     @Override
     public String write(Network network) {
+        // TODO improve, as this is dodgy
+        return this.write(network, -1);
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.networks.NetworkWriter#write()
+     */
+    @Override
+    public String write(Network network, int numAgents) {
+
+        // TODO consider number of agents
 
         StringBuilder sb = new StringBuilder();
 

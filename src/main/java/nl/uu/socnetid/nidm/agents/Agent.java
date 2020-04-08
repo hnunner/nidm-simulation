@@ -26,10 +26,8 @@
 package nl.uu.socnetid.nidm.agents;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -101,13 +99,15 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      *          the risk factor for probability of infections (<1: risk seeking, =1: risk neutral; >1: risk averse)
      * @param phi
      *          the share of peers to evaluate per round
+     * @param psi
+     *          the proportion of ties to evaluate per round
      * @param omega
      *          the share of peers to select assortatively
      * @param omegaShuffle
      *          whether assortatively selected agents ought to be shuffled before processing
      */
     public void initAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs,
-            Double riskFactorSigma, Double riskFactorPi, Double phi, Double omega, boolean omegaShuffle) {
+            Double riskFactorSigma, Double riskFactorPi, Double phi, Double psi, Double omega, boolean omegaShuffle) {
         this.addAttribute(AgentAttributes.UTILITY_FUNCTION, utilityFunction);
         this.addAttribute(AgentAttributes.DISEASE_SPECS, diseaseSpecs);
         DiseaseGroup diseaseGroup = DiseaseGroup.SUSCEPTIBLE;
@@ -120,6 +120,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         this.addAttribute(AgentAttributes.RISK_MEANING_SIGMA, getRiskMeaning(riskFactorSigma));
         this.addAttribute(AgentAttributes.RISK_MEANING_PI, getRiskMeaning(riskFactorPi));
         this.addAttribute(AgentAttributes.PHI, phi);
+        this.addAttribute(AgentAttributes.PSI, psi);
         this.addAttribute(AgentAttributes.OMEGA, omega);
         this.addAttribute(AgentAttributes.OMEGA_SHUFFLE, omegaShuffle);
         this.addAttribute(AgentAttributes.SATISFIED, false);
@@ -347,6 +348,15 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
+     * Gets the agent's proportion of direct ties to evaluate per round.
+     *
+     * @return the agent's proportion of direct ties to evaluate per round
+     */
+    public double getPsi() {
+        return (double) this.getAttribute(AgentAttributes.PSI);
+    }
+
+    /**
      * Gets the agent's share of assortatively selected peers.
      *
      * @return the agent's share of assortatively selected peers
@@ -378,8 +388,8 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      *
      * @return the agent's connections
      */
-    public Collection<Agent> getConnections() {
-        List<Agent> connections = new LinkedList<Agent>();
+    public List<Agent> getConnections() {
+        List<Agent> connections = new ArrayList<Agent>();
         Iterator<Agent> neighborIt = getNeighborNodeIterator();
         while (neighborIt.hasNext()) {
             connections.add(neighborIt.next());
@@ -608,6 +618,9 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      *          the delay in ms to wait in between network decisions
      */
     public void computeRound(int delay) {
+
+        // logger.debug("Started computing round for agent " + this.getId());
+
         // starting assumption: current connections are not satisfactory
         boolean satisfied = true;
 
@@ -644,6 +657,9 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         updateSatisfaction(satisfied);
         // round finished
         notifyRoundFinished();
+
+
+       // logger.debug("Finished computing round for agent " + this.getId());
     }
 
     /**
@@ -675,6 +691,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     public boolean connectTo(Agent agent) {
         // other agent accepting connection?
         double currUtility = agent.getUtility().getOverallUtility();
+        // TODO use connectionValuableWith to avoid GUI glitches
         agent.addConnection(this);
         double newUtility = agent.getUtility().getOverallUtility();
         agent.removeConnection(this);
@@ -782,6 +799,26 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
 
+    private List<Agent> getRandomListOfAgents(List<Agent> agents, int amount) {
+        List<Agent> res = new ArrayList<Agent>(amount);
+
+        if (agents != null && !agents.isEmpty()) {
+            //sortByRDiff(agents, this.getRPi(), this.getRSigma());
+
+//            for (int i = 0; i < amount * this.getOmega(); i++) {
+//                res.add((Agent) agents.toArray()[i]);
+//            }
+            while (res.size() < amount && res.size() < agents.size()) {
+                int i = ThreadLocalRandom.current().nextInt(agents.size());
+                Object agent = agents.toArray()[i];
+                if (!res.contains(agent)) {
+                    res.add((Agent) agent);
+                }
+            }
+        }
+
+        return res;
+    }
 
     /**
      * Creates a collection of randomly selected co-agents.
@@ -791,23 +828,17 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      * @return a random collection of co-agents
      */
     public List<Agent> getRandomListOfCoAgents(int amount) {
-        List<Agent> collect = new ArrayList<Agent>(amount);
-        List<Agent> coAgents = getCoAgents();
+        List<Agent> res = new ArrayList<Agent>(amount);
 
-        sortByRDiff(coAgents, this.getRPi(), this.getRSigma());
-
-        for (int i = 0; i < amount * this.getOmega(); i++) {
-            collect.add((Agent) coAgents.toArray()[i]);
-        }
-        while (collect.size() < amount) {
-            int i = ThreadLocalRandom.current().nextInt(coAgents.size());
-            Object coAgent = coAgents.toArray()[i];
-            if (!collect.contains(coAgent)) {
-                collect.add((Agent) coAgent);
-            }
-        }
-        Collections.shuffle(collect);
-        return collect;
+        // 1. random share of direct ties
+        int amountTies = (int) (Math.round(amount * this.getPsi()));
+        res.addAll(this.getRandomListOfAgents(this.getConnections(), amountTies));
+        // 2. random agents
+        List<Agent> coAgents = this.getCoAgents();
+        coAgents.removeAll(res);
+        res.addAll(this.getRandomListOfAgents(coAgents, amount - res.size()));
+        Collections.shuffle(res);
+        return res;
     }
 
     /**

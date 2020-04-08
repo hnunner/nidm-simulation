@@ -45,7 +45,7 @@ public class NetworkStats {
     private double avDegree2;
     private double avDegreeSatisfied;
     private double avDegreeUnsatisfied;
-    private double avCloseness;
+    private Double avCloseness = null;     // lazy initialization (very costly operations)
     private double avClustering;
     private Double avPathLength = null;     // lazy initialization (very costly operations)
     private double avUtility;
@@ -75,7 +75,6 @@ public class NetworkStats {
         this.avDegree2 = network.getAvDegree2();
         this.avDegreeSatisfied = network.getAvDegreeSatisfied();
         this.avDegreeUnsatisfied = network.getAvDegreeUnsatisfied();
-        this.avCloseness = network.getAvCloseness();
         this.avClustering = network.getAvClustering();
         this.avUtility = network.getAvUtility();
         this.avSocialBenefits = network.getAvSocialBenefits();
@@ -182,6 +181,9 @@ public class NetworkStats {
      * @return the avCloseness
      */
     public double getAvCloseness() {
+        if (this.avCloseness == null) {
+            this.avCloseness = network.getAvCloseness();
+        }
         return avCloseness;
     }
 
