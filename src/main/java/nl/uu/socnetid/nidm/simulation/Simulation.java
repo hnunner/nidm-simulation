@@ -165,22 +165,22 @@ public class Simulation implements Runnable {
         }
 
         // status message
-        StringBuilder sb = new StringBuilder();
-        sb.append("Simulation finished after " + rounds + " time steps.");
-        boolean unfinished = false;
-        if (!this.network.isStable()) {
-            sb.append(" Network was unstable.");
-            unfinished = true;
-        }
-        if (this.network.hasActiveInfection()) {
-            sb.append(" Network had active infection.");
-            unfinished = true;
-        }
-        if (unfinished) {
-            logger.warn(sb.toString());
-        } else {
-            logger.debug(sb.toString());
-        }
+//        StringBuilder sb = new StringBuilder();
+//        sb.append("Simulation finished after " + rounds + " time steps.");
+//        boolean unfinished = false;
+//        if (!this.network.isStable()) {
+//            sb.append(" Network was unstable.");
+//            unfinished = true;
+//        }
+//        if (this.network.hasActiveInfection()) {
+//            sb.append(" Network had active infection.");
+//            unfinished = true;
+//        }
+//        if (unfinished) {
+//            logger.warn(sb.toString());
+//        } else {
+//            logger.debug(sb.toString());
+//        }
 
         // notify simulation finished
         this.notifySimulationFinished();
@@ -202,7 +202,10 @@ public class Simulation implements Runnable {
 
         int i = 0;
         while ((!this.network.isStable() || this.network.hasActiveInfection()) && i < maxRounds) {
+//            logger.debug("round " + (i+1) + ": started");
             computeSingleRound();
+            logger.debug("round " + (i+1) + ": finished");
+//            logger.debug("-----------------");
             i++;
         }
 
@@ -234,7 +237,9 @@ public class Simulation implements Runnable {
      */
     private void computeSingleRound() {
 
-        computeDiseaseDynamics();
+        if (this.network.hasActiveInfection()) {
+            computeDiseaseDynamics();
+        }
         if (!this.network.hasActiveInfection() || (this.network.hasActiveInfection() && !this.epStatic)) {
             computeAgentDynamics();
         }
@@ -295,6 +300,7 @@ public class Simulation implements Runnable {
         Collections.shuffle(agents);
 
         Iterator<Agent> agentsIt = agents.iterator();
+        int i = 0;
         while (agentsIt.hasNext()) {
             if (this.paused) {
                 return;
@@ -307,7 +313,10 @@ public class Simulation implements Runnable {
                     return;
                 }
             }
-            computeAgentRound(agentsIt.next());
+            Agent agent = agentsIt.next();
+            computeAgentRound(agent);
+//            logger.debug("finished computing agent " + agent.getId() + ".\t\t"  +
+//                    (agents.size() - ++i) + " remaining in round " + (this.getRounds() + 1) + ".");
         }
     }
 

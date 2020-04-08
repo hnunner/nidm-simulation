@@ -26,7 +26,6 @@
 package nl.uu.socnetid.nidm.io.network;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -42,6 +41,8 @@ public class EdgeListWriter implements NetworkWriter {
     private static final String SOURCE_COLUMN = "Source";
     private static final String TARGET_COLUMN = "Target";
 
+    private Iterator<Agent> agentsIt = null;
+
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.networks.writer.NetworkWriter#
@@ -49,31 +50,43 @@ public class EdgeListWriter implements NetworkWriter {
      */
     @Override
     public String write(Network network) {
+        // TODO improve, as this is dodgy
+        return this.write(network, -1);
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.networks.writer.NetworkWriter#
+     *              write(nl.uu.socnetid.nidm.networks.Network)
+     */
+    @Override
+    public String write(Network network, int numAgents) {
 
         StringBuilder sb = new StringBuilder();
 
-        // first column
-        sb.append(SOURCE_COLUMN).append(VALUE_SEPERATOR).append(TARGET_COLUMN);
-        sb.append(System.getProperty("line.separator"));
+        if (agentsIt == null) {
+            // first row
+            sb.append(SOURCE_COLUMN).append(VALUE_SEPERATOR).append(TARGET_COLUMN);
+            sb.append(System.getProperty("line.separator"));
 
-        List<Agent> agents = new ArrayList<Agent>(network.getAgents());
-        Collections.sort(agents);
+            // prepare iterator
+            List<Agent> agents = new ArrayList<Agent>(network.getAgents());
+            Collections.sort(agents);
+            this.agentsIt = agents.iterator();
+        }
 
-        // first row = all agents
-        Iterator<Agent> agentsIt = agents.iterator();
-        while (agentsIt.hasNext()) {
+        int currNumAgents = 0;
+        while (agentsIt.hasNext() && currNumAgents <= numAgents) {
             Agent currAgent = agentsIt.next();
 
-            Collection<Agent> connections = currAgent.getConnections();
-            Iterator<Agent> connectionsIt = agents.iterator();
+            List<Agent> connections = currAgent.getConnections();
+            Collections.sort(connections);
+            Iterator<Agent> connectionsIt = connections.iterator();
             while (connectionsIt.hasNext()) {
                 Agent currConnection = connectionsIt.next();
-
-                if (connections.contains(currConnection)) {
-                    sb.append(currAgent.getId()).append(VALUE_SEPERATOR).append(currConnection.getId());
-                    sb.append(System.getProperty("line.separator"));
-                }
+                sb.append(currAgent.getId()).append(VALUE_SEPERATOR).append(currConnection.getId());
+                sb.append(System.getProperty("line.separator"));
             }
+            currNumAgents++;
         }
 
         return sb.toString();
