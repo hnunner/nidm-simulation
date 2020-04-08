@@ -484,7 +484,8 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
                     rPi,
                     this.dgData.getUtilityModelParams().getCurrPhi(),
                     this.dgData.getUtilityModelParams().getCurrOmega(),
-                    this.dgData.getUtilityModelParams().isCurrOmegaShuffle());
+                    this.dgData.getUtilityModelParams().isCurrOmegaShuffle(),
+                    this.dgData.getUtilityModelParams().getCurrPsi());
             agent.addAgentListener(this);
         }
         this.dgData.setAgents(new LinkedList<Agent>(network.getAgents()));
