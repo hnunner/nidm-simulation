@@ -82,6 +82,7 @@ public class PropertiesHandler {
     // NunnerBuskens parameters
     private boolean generateNunnerBuskensData;
     private boolean generateNunnerBuskensNetworks;
+    private boolean generateNunnerBuskensNetworksSimple;
     private NunnerBuskensParameters nbParameters;
     // DATA EXPORT
     // types of data export
@@ -313,6 +314,7 @@ public class PropertiesHandler {
         // NunnerBuskens
         generateNunnerBuskensData = Boolean.parseBoolean(configProps.getProperty("nb.generate.data"));
         generateNunnerBuskensNetworks = Boolean.parseBoolean(configProps.getProperty("nb.generate.networks"));
+        generateNunnerBuskensNetworksSimple = Boolean.parseBoolean(configProps.getProperty("nb.generate.networks.simple"));
         nbParameters = new NunnerBuskensParameters();
         // network structure static during epidemics
         nbParameters.setEpStaticRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_EPSTATIC_RANDOM.toString())));
@@ -387,6 +389,11 @@ public class PropertiesHandler {
         nbParameters.setPhiRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PHI_RANDOM_MIN.toString())));
         nbParameters.setPhiRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PHI_RANDOM_MAX.toString())));
         nbParameters.setPhis(parseDoubleArray(configProps.getProperty(LogValues.IV_NB_PHI.toString())));
+        // psi
+        nbParameters.setPsiRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_PSI_RANDOM.toString())));
+        nbParameters.setPsiRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PSI_RANDOM_MIN.toString())));
+        nbParameters.setPsiRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PSI_RANDOM_MAX.toString())));
+        nbParameters.setPsis(parseDoubleArray(configProps.getProperty(LogValues.IV_NB_PSI.toString())));
         // omega
         nbParameters.setOmegaRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_OMEGA_RANDOM.toString())));
         nbParameters.setOmegaRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_OMEGA_RANDOM_MIN.toString())));
@@ -627,6 +634,15 @@ public class PropertiesHandler {
      */
     public boolean isGenerateNunnerBuskensNetworks() {
         return generateNunnerBuskensNetworks;
+    }
+
+    /**
+     * Gets whether to generate simple networks for the NunnerBuskens model or not.
+     *
+     * @return true if networks ought to be generated, false otherwise
+     */
+    public boolean isGenerateNunnerBuskensNetworksSimple() {
+        return generateNunnerBuskensNetworksSimple;
     }
 
     /**

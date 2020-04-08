@@ -47,4 +47,15 @@ public interface NetworkWriter {
      */
     String write(Network network);
 
+    /**
+     * Creates a string representation of the network.
+     *
+     * @param network
+     *          the network to write
+     * @param numAgents
+     *          the number of agents to write
+     * @return a string representation of the network
+     */
+    String write(Network network, int numAgents);
+
 }
