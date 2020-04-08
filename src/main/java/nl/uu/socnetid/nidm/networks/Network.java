@@ -65,6 +65,9 @@ public class Network extends SingleGraph implements SimulationListener {
     // standard share to evaluate per agent
     private static final double STANDARD_PHI = 0.4;
 
+    // standard proportion of direct ties to evaluate per agent
+    private static final double STANDARD_PSI = 0.25;
+
     // standard share to select assortatively
     private static final double STANDARD_OMEGA = 0.0;
 
@@ -123,8 +126,8 @@ public class Network extends SingleGraph implements SimulationListener {
      * @return the newly added agent.
      */
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs) {
-        return this.addAgent(utilityFunction, diseaseSpecs, RISK_FACTOR_NEUTRAL, RISK_FACTOR_NEUTRAL, STANDARD_PHI, STANDARD_OMEGA,
-                STANDARD_OMEGA_SHUFFLE);
+        return this.addAgent(utilityFunction, diseaseSpecs, RISK_FACTOR_NEUTRAL, RISK_FACTOR_NEUTRAL, STANDARD_PHI,
+                STANDARD_OMEGA, STANDARD_OMEGA_SHUFFLE, STANDARD_PSI);
     }
 
     /**
@@ -148,7 +151,33 @@ public class Network extends SingleGraph implements SimulationListener {
      */
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
             double omega) {
-        return this.addAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, omega, STANDARD_OMEGA_SHUFFLE);
+        return this.addAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, omega, STANDARD_OMEGA_SHUFFLE, STANDARD_PSI);
+    }
+
+    /**
+     * Creates and adds an agent to the network.
+     *
+     * @param utilityFunction
+     *          the agent's utility function
+     * @param diseaseSpecs
+     *          the disease specs
+     * @param rSigma
+     *          the factor describing how the agent perceives severity of diseases:
+     *          <1: risk seeking, =1: risk neutral; >1: risk averse
+     * @param rPi
+     *          the factor describing how the agent perceives the risk of an infection:
+     *          <1: risk seeking, =1: risk neutral; >1: risk averse
+     * @param phi
+     *          the share of peers an agent evaluates per round
+     * @param omega
+     *          the share of peers to select assortatively
+     * @param psi
+     *          the proportion of direct ties an agent evaluates per round
+     * @return the newly added agent.
+     */
+    public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
+            double omega, double psi) {
+        return this.addAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, omega, STANDARD_OMEGA_SHUFFLE, psi);
     }
 
     /**
@@ -170,12 +199,14 @@ public class Network extends SingleGraph implements SimulationListener {
      *          the share of peers to select assortatively
      * @param omegaShuffle
      *          whether assortatively selected co-agents ought to be shuffled before processing
+     * @param psi
+     *          the proportion of direct ties an agent evaluates per round
      * @return the newly added agent.
      */
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
-            double omega, boolean omegaShuffle) {
+            double omega, boolean omegaShuffle, double psi) {
         Agent agent = this.addNode(String.valueOf(this.getNodeCount() + 1));
-        agent.initAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, omega, omegaShuffle);
+        agent.initAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, psi, omega, omegaShuffle);
         notifyAgentAdded(agent);
 
         // re-position agents if auto-layout is disabled
@@ -886,6 +917,9 @@ public class Network extends SingleGraph implements SimulationListener {
         }
 
         // Pearson correlation coefficient
+        if (attributes1.length == 0 || attributes2.length == 0) {
+            return 0;
+        }
         return new PearsonsCorrelation().correlation(attributes1, attributes2);
     }
 

@@ -78,7 +78,13 @@ public class NetworkFileWriter {
         }
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(this.file))) {
-            bw.write(this.networkWriter.write(this.network));
+            String netString = "";
+            int numAgents = 10;
+            do {
+                netString = this.networkWriter.write(this.network, numAgents);
+                bw.write(netString);
+                bw.flush();
+            } while (netString.length() >= numAgents);
         } catch (IOException e) {
             e.printStackTrace();
         }
