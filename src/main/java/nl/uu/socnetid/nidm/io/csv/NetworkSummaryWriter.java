@@ -89,6 +89,7 @@ public abstract class NetworkSummaryWriter<UMP extends UtilityModelParameters> e
         cols.add(LogValues.IV_SIM_UID.toString());
         cols.add(LogValues.IV_SIM_UPC.toString());
         cols.add(LogValues.IV_SIM_CNT.toString());
+        cols.add(LogValues.IV_SIM_ROUND.toString());
 
         // model specific columns
         cols = addModelColumns(cols);
@@ -96,7 +97,6 @@ public abstract class NetworkSummaryWriter<UMP extends UtilityModelParameters> e
         // DEPENDENT VARIABLES (D)
         // network
         cols.add(LogValues.DV_NET_AV_DEGREE.toString());
-        cols.add(LogValues.DV_NET_AV_DEGREE2.toString());
         cols.add(LogValues.DV_NET_AV_CLOSENESS.toString());
         cols.add(LogValues.DV_NET_AV_CLUSTERING.toString());
         cols.add(LogValues.DV_NET_AV_PATHLENGTH.toString());
@@ -119,6 +119,7 @@ public abstract class NetworkSummaryWriter<UMP extends UtilityModelParameters> e
         currData.add(this.dgData.getSimStats().getUid());
         currData.add(String.valueOf(this.dgData.getSimStats().getUpc()));
         currData.add(String.valueOf(this.dgData.getSimStats().getSimPerUpc()));
+        currData.add(String.valueOf(this.dgData.getSimStats().getCurrRound()));
 
         // model specific data
         currData = addCurrModelData(currData);
@@ -126,15 +127,13 @@ public abstract class NetworkSummaryWriter<UMP extends UtilityModelParameters> e
         // DEPENDENT VARIABLES
         // network - pre epidemic
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvDegree()));
-        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvDegree2()));
-        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvCloseness()));
+//        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvCloseness()));
+        currData.add("NA");
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvClustering()));
-        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvPathLength()));
+//        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvPathLength()));
+        currData.add("NA");
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getDensity()));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().isStable() ? 1 : 0));
-
-        // RELATED EXPORTS
-        currData.add(this.dgData.getGexfExportFile());
 
         writeLine(currData);
     }

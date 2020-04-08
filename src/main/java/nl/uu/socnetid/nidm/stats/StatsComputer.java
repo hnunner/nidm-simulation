@@ -25,10 +25,10 @@
  */
 package nl.uu.socnetid.nidm.stats;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -486,8 +486,8 @@ public final class StatsComputer {
             yGlobal = (n*(n-1))/2;
 
             Iterator<Agent> it = directConnections.iterator();
-            List<Agent> consideredAtDistance2 = new LinkedList<Agent>();
-            List<Agent> consideredDirectConnections = new LinkedList<Agent>(directConnections);
+            //List<Agent> consideredAtDistance2 = new ArrayList<Agent>();
+            List<Agent> consideredDirectConnections = new ArrayList<Agent>(directConnections);
             while (it.hasNext()) {
                 Agent directConnection = it.next();
 
@@ -506,32 +506,34 @@ public final class StatsComputer {
                         logger.warn("Unknown disease state: " + directConnection.getDiseaseGroup());
                 }
 
-                // connections at distance 2
-                Collection<Agent> connectionsAtDistance2 = directConnection.getConnections();
-                Iterator<Agent> cDist2It = connectionsAtDistance2.iterator();
-                while (cDist2It.hasNext()) {
-                    Agent connectionAtDistance2 = cDist2It.next();
-                    if (consideredAtDistance2.contains(connectionAtDistance2) ||
-                            directConnections.contains(connectionAtDistance2) ||
-                            agent.equals(connectionAtDistance2)) {
-                        continue;
-                    }
-                    m++;
-                    switch(connectionAtDistance2.getDiseaseGroup()) {
-                        case SUSCEPTIBLE:
-                            mS++;
-                            break;
-                        case INFECTED:
-                            mI++;
-                            break;
-                        case RECOVERED:
-                            mR++;
-                            break;
-                        default:
-                            logger.warn("Unknown disease state: " + directConnection.getDiseaseGroup());
-                    }
-                    consideredAtDistance2.add(connectionAtDistance2);
-                }
+                // TODO implement distance 2 in different method and call only if needed
+//                // connections at distance 2
+//                Collection<Agent> connectionsAtDistance2 = directConnection.getConnections();
+//                Iterator<Agent> cDist2It = connectionsAtDistance2.iterator();
+//                while (cDist2It.hasNext()) {
+//                    Agent connectionAtDistance2 = cDist2It.next();
+//                    if (consideredAtDistance2.contains(connectionAtDistance2) ||
+//                            directConnections.contains(connectionAtDistance2) ||
+//                            agent.equals(connectionAtDistance2)) {
+//                        continue;
+//                    }
+//                    m++;
+//                    switch(connectionAtDistance2.getDiseaseGroup()) {
+//                        case SUSCEPTIBLE:
+//                            mS++;
+//                            break;
+//                        case INFECTED:
+//                            mI++;
+//                            break;
+//                        case RECOVERED:
+//                            mR++;
+//                            break;
+//                        default:
+//                            logger.warn("Unknown disease state: " + directConnection.getDiseaseGroup());
+//                    }
+//                    consideredAtDistance2.add(connectionAtDistance2);
+//                }
+//                connectionsAtDistance2 = null;
 
                 // counting open and closed triads
                 consideredDirectConnections.remove(directConnection);
@@ -545,7 +547,11 @@ public final class StatsComputer {
                     }
                 }
             }
+            //consideredAtDistance2 = null;
+            consideredDirectConnections = null;
         }
+
+        directConnections = null;
 
         return new LocalAgentConnectionsStats(n, nS, nI, nR, m, mS, mI, mR, yGlobal, yLocal, z, netSize);
     }
