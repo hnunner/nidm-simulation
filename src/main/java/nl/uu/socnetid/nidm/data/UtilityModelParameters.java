@@ -47,6 +47,12 @@ public abstract class UtilityModelParameters {
     private double phiRandomMax;
     private double[] phis;
     private double currPhi;
+    // psi - proportion of direct ties to evaluate per time step
+    private boolean psiRandom;
+    private double psiRandomMin;
+    private double psiRandomMax;
+    private double[] psis;
+    private double currPsi;
     // omega - share of agents to select assortatively
     private boolean omegaRandom;
     private double omegaRandomMin;
@@ -284,6 +290,76 @@ public abstract class UtilityModelParameters {
      */
     public void setCurrPhi(double currPhi) {
         this.currPhi = currPhi;
+    }
+
+    /**
+     * @return the psiRandom
+     */
+    public boolean isPsiRandom() {
+        return psiRandom;
+    }
+
+    /**
+     * @param psiRandom the psiRandom to set
+     */
+    public void setPsiRandom(boolean psiRandom) {
+        this.psiRandom = psiRandom;
+    }
+
+    /**
+     * @return the psiRandomMin
+     */
+    public double getPsiRandomMin() {
+        return psiRandomMin;
+    }
+
+    /**
+     * @param psiRandomMin the psiRandomMin to set
+     */
+    public void setPsiRandomMin(double psiRandomMin) {
+        this.psiRandomMin = psiRandomMin;
+    }
+
+    /**
+     * @return the psiRandomMax
+     */
+    public double getPsiRandomMax() {
+        return psiRandomMax;
+    }
+
+    /**
+     * @param psiRandomMax the psiRandomMax to set
+     */
+    public void setPsiRandomMax(double psiRandomMax) {
+        this.psiRandomMax = psiRandomMax;
+    }
+
+    /**
+     * @return the psis
+     */
+    public double[] getPsis() {
+        return psis;
+    }
+
+    /**
+     * @param psis the psis to set
+     */
+    public void setPsis(double[] psis) {
+        this.psis = psis;
+    }
+
+    /**
+     * @return the currPsi
+     */
+    public double getCurrPsi() {
+        return currPsi;
+    }
+
+    /**
+     * @param currPsi the currPsi to set
+     */
+    public void setCurrPsi(double currPsi) {
+        this.currPsi = currPsi;
     }
 
     /**

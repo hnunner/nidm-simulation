@@ -232,6 +232,13 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
     }
 
     /**
+     * @param alpha the alpha to set
+     */
+    public void setAlpha(double alpha) {
+        this.alpha = alpha;
+    }
+
+    /**
      * @return the c1
      */
     public double getC1() {
@@ -243,6 +250,13 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
      */
     public double getC2() {
         return c2;
+    }
+
+    /**
+     * @param c2 the c2 to set
+     */
+    public void setC2(double c2) {
+        this.c2 = c2;
     }
 
     /**

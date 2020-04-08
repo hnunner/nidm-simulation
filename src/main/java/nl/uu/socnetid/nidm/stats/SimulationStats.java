@@ -40,6 +40,7 @@ public class SimulationStats {
     private int roundLastInfection;
     private SimulationStage simStage;
     private int rounds;
+    private int currRound = 1;
 
 
     /**
@@ -145,6 +146,27 @@ public class SimulationStats {
      */
     public void incSimPerUpc() {
         ++this.simPerUpc;
+    }
+
+    /**
+     * @return the currRound
+     */
+    public int getCurrRound() {
+        return currRound;
+    }
+
+    /**
+     * increases the currRound
+     */
+    public void incCurrRound() {
+        ++this.currRound;
+    }
+
+    /**
+     * increases the currRound
+     */
+    public void resetCurrRound() {
+        this.currRound = 1;
     }
 
 }

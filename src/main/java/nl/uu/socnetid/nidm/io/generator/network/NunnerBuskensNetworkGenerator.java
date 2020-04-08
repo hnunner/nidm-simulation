@@ -39,12 +39,12 @@ import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
 import nl.uu.socnetid.nidm.io.csv.NunnerBuskensNetworkSummaryWriter;
 import nl.uu.socnetid.nidm.io.generator.AbstractGenerator;
-import nl.uu.socnetid.nidm.io.network.AdjacencyMatrixWriter;
 import nl.uu.socnetid.nidm.io.network.EdgeListWriter;
 import nl.uu.socnetid.nidm.io.network.GEXFWriter;
 import nl.uu.socnetid.nidm.io.network.NetworkFileWriter;
 import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.simulation.Simulation;
+import nl.uu.socnetid.nidm.simulation.SimulationListener;
 import nl.uu.socnetid.nidm.stats.NetworkStats;
 import nl.uu.socnetid.nidm.system.PropertiesHandler;
 import nl.uu.socnetid.nidm.utility.NunnerBuskens;
@@ -55,7 +55,7 @@ import nl.uu.socnetid.nidm.utility.UtilityFunction;
  *
  * TODO unify data generators
  */
-public class NunnerBuskensNetworkGenerator extends AbstractGenerator {
+public class NunnerBuskensNetworkGenerator extends AbstractGenerator implements SimulationListener {
 
     // logger
     private static final Logger logger = LogManager.getLogger(NunnerBuskensNetworkGenerator.class);
@@ -143,6 +143,8 @@ public class NunnerBuskensNetworkGenerator extends AbstractGenerator {
                 new boolean[1] : this.dgData.getUtilityModelParams().getIotas();
         double[] phis = this.dgData.getUtilityModelParams().isPhiRandom() ?
                 new double[1] : this.dgData.getUtilityModelParams().getPhis();
+        double[] psis = this.dgData.getUtilityModelParams().isPsiRandom() ?
+                new double[1] : this.dgData.getUtilityModelParams().getPsis();
 
         // unique parameter combinations
         int upcs =
@@ -154,7 +156,8 @@ public class NunnerBuskensNetworkGenerator extends AbstractGenerator {
                 yGlobals.length *
                 Ns.length *
                 iotas.length *
-                phis.length;
+                phis.length *
+                psis.length;
 
         // loop over all possible parameter combinations
         for (double b1 : b1s) {
@@ -175,41 +178,44 @@ public class NunnerBuskensNetworkGenerator extends AbstractGenerator {
                                         this.dgData.getUtilityModelParams().setCurrIota(iota);
                                         for (double phi : phis) {
                                             this.dgData.getUtilityModelParams().setCurrPhi(phi);
+                                            for (double psi : psis) {
+                                                this.dgData.getUtilityModelParams().setCurrPsi(psi);
 
-                                            this.dgData.getSimStats().incUpc();
-                                            logger.info("Starting to generate "
-                                                    + this.dgData.getUtilityModelParams().
-                                                    getSimsPerParameterCombination()
-                                                    + " networks for parameter combination: "
-                                                    + this.dgData.getSimStats().getUpc() + " / "
-                                                    + upcs);
+                                                this.dgData.getSimStats().incUpc();
+                                                logger.info("Starting to generate "
+                                                        + this.dgData.getUtilityModelParams().
+                                                        getSimsPerParameterCombination()
+                                                        + " networks for parameter combination: "
+                                                        + this.dgData.getSimStats().getUpc() + " / "
+                                                        + upcs);
 
-                                            // multiple simulations for same parameter combination
-                                            this.dgData.getSimStats().setSimPerUpc(1);
-                                            while (this.dgData.getSimStats().getSimPerUpc()
-                                                    <= this.dgData.getUtilityModelParams().
-                                                    getSimsPerParameterCombination()) {
+                                                // multiple simulations for same parameter combination
+                                                this.dgData.getSimStats().setSimPerUpc(1);
+                                                while (this.dgData.getSimStats().getSimPerUpc()
+                                                        <= this.dgData.getUtilityModelParams().
+                                                        getSimsPerParameterCombination()) {
 
-                                                // uid = "upc-sim"
-                                                this.dgData.getSimStats().setUid(
-                                                        String.valueOf(this.dgData.getSimStats().getUpc()) +
-                                                        "-" + String.valueOf(
-                                                                this.dgData.getSimStats().getSimPerUpc()));
+                                                    // uid = "upc-sim"
+                                                    this.dgData.getSimStats().setUid(
+                                                            String.valueOf(this.dgData.getSimStats().getUpc()) +
+                                                            "-" + String.valueOf(
+                                                                    this.dgData.getSimStats().getSimPerUpc()));
 
-                                                // simulate
-                                                performSingleSimulation();
+                                                    // simulate
+                                                    performSingleSimulation();
 
-                                                logger.debug("Network generation " +
-                                                        this.dgData.getSimStats().getSimPerUpc() +
-                                                        "/" +
-                                                        this.dgData.getUtilityModelParams().getSimsPerParameterCombination() +
-                                                        " of parameter combination " +
-                                                        this.dgData.getSimStats().getUpc() +
-                                                        "/" +
-                                                        upcs +
-                                                        " finished.");
+                                                    logger.debug("Network generation " +
+                                                            this.dgData.getSimStats().getSimPerUpc() +
+                                                            "/" +
+                                                            this.dgData.getUtilityModelParams().getSimsPerParameterCombination() +
+                                                            " of parameter combination " +
+                                                            this.dgData.getSimStats().getUpc() +
+                                                            "/" +
+                                                            upcs +
+                                                            " finished.");
 
-                                                this.dgData.getSimStats().incSimPerUpc();
+                                                    this.dgData.getSimStats().incSimPerUpc();
+                                                }
                                             }
                                         }
                                     }
@@ -283,6 +289,14 @@ public class NunnerBuskensNetworkGenerator extends AbstractGenerator {
                     this.dgData.getUtilityModelParams().getPhiRandomMin(),
                     this.dgData.getUtilityModelParams().getPhiRandomMax()));
         }
+        // psi
+        if (this.dgData.getUtilityModelParams().isPsiRandom()) {
+            this.dgData.getUtilityModelParams().setCurrPsi(ThreadLocalRandom.current().nextDouble(
+                    this.dgData.getUtilityModelParams().getPsiRandomMin(),
+                    this.dgData.getUtilityModelParams().getPsiRandomMax()));
+        }
+        // reset rounds for current simulation
+        this.dgData.getSimStats().resetCurrRound();
 
         // create utility
         UtilityFunction uf = new NunnerBuskens(
@@ -296,7 +310,8 @@ public class NunnerBuskensNetworkGenerator extends AbstractGenerator {
         // add agents
         DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, 0, 0, 0, 0);
         for (int i = 0; i < this.dgData.getUtilityModelParams().getCurrN(); i++) {
-            network.addAgent(uf, ds, 1.0, 1.0, this.dgData.getUtilityModelParams().getCurrPhi(), 0.0);
+            network.addAgent(uf, ds, 1.0, 1.0,
+                    this.dgData.getUtilityModelParams().getCurrPhi(), 0.0, this.dgData.getUtilityModelParams().getCurrPsi());
         }
         this.dgData.setAgents(new LinkedList<Agent>(network.getAgents()));
 
@@ -307,28 +322,34 @@ public class NunnerBuskensNetworkGenerator extends AbstractGenerator {
 
         // create simulation
         this.simulation = new Simulation(network);
+        this.simulation.addSimulationListener(this);
         // simulate
         simulation.simulateUntilStable(this.dgData.getUtilityModelParams().getZeta());
-        // save data of last round of pre-epidemic stage
+    }
+
+
+    /**
+     * Amends the summary file by writing a row with the current state of the network.
+     */
+    private void amendSummary() {
         this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
+        this.nsWriter.writeCurrentData();
+    }
 
-        NetworkFileWriter amWriter = new NetworkFileWriter(getExportPath(),
-                this.dgData.getSimStats().getUid() + ".am",
-                new AdjacencyMatrixWriter(),
-                this.network);
-        amWriter.write();
 
+    /**
+     * Exports the network as adjacency matrix, edge list, and Gephi files.
+     */
+    private void exportNetworks(String nameAppendix) {
         NetworkFileWriter elWriter = new NetworkFileWriter(getExportPath(),
-                this.dgData.getSimStats().getUid() + ".el",
+                this.dgData.getSimStats().getUid() + "-" + nameAppendix + ".el",
                 new EdgeListWriter(),
                 this.network);
         elWriter.write();
 
         GEXFWriter gexfWriter = new GEXFWriter();
-        gexfWriter.writeStaticNetwork(this.network, getExportPath() + this.dgData.getSimStats().getUid() + ".gexf");
-
-        this.nsWriter.writeCurrentData();
-
+        gexfWriter.writeStaticNetwork(this.network, getExportPath() + this.dgData.getSimStats().getUid() +
+                "-" + nameAppendix + ".gexf");
     }
 
     /**
@@ -341,6 +362,28 @@ public class NunnerBuskensNetworkGenerator extends AbstractGenerator {
         } catch (IOException e) {
             logger.error(e);
         }
+    }
+
+
+    @Override
+    public void notifyRoundFinished(Simulation simulation) {
+        if (simulation.getRounds() % 1 == 0) {
+            exportNetworks("round_" + simulation.getRounds());
+            amendSummary();
+        }
+        this.dgData.getSimStats().incCurrRound();
+    }
+
+    @Override
+    public void notifySimulationStarted(Simulation simulation) {}
+
+    @Override
+    public void notifyInfectionDefeated(Simulation simulation) {}
+
+    @Override
+    public void notifySimulationFinished(Simulation simulation) {
+        exportNetworks("final");
+        amendSummary();
     }
 
 }
