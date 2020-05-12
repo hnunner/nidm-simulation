@@ -103,11 +103,11 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
     protected void initData() {
         this.dgData = new DataGeneratorData<NunnerBuskensParameters>(PropertiesHandler.getInstance().getNunnerBuskensParameters());
         this.dgData.getSimStats().setUpc(0);
-        this.dgData.getUtilityModelParams().setCurrN(16000);
+        this.dgData.getUtilityModelParams().setCurrN(100);
         this.dgData.getUtilityModelParams().setCurrB1(1.0);
         this.dgData.getUtilityModelParams().setCurrB2(0.5);
         this.dgData.getUtilityModelParams().setCurrC1(0.2);
-        this.dgData.getUtilityModelParams().setCurrPhi(0.004);
+        this.dgData.getUtilityModelParams().setCurrPhi(0.60);
         this.dgData.getUtilityModelParams().setCurrPsi(0.6);
 
     }
@@ -143,15 +143,15 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
     @Override
     protected void generate() {
         // settings for clustering of 0.21: 0.625 <= alpha <= 0.630
-        for (double alpha = 0.625; alpha <= 0.630; alpha = Math.round((alpha + 0.005) * 1000.0) / 1000.0) {
+        for (double alpha = 0.9; alpha <= 0.9; alpha = Math.round((alpha + 0.1) * 1000.0) / 1000.0) {
             this.dgData.getUtilityModelParams().setCurrAlpha(alpha);
             // settings for av. degree of 5.44:  5.56 <= tMean <= 5.57
-            for (double targetMean = 5.56; targetMean <= 5.57; targetMean = Math.round((targetMean + 0.01) * 100.0) / 100.0) {
+            for (double targetMean = 6; targetMean <= 6; targetMean = Math.round((targetMean + 2) * 100.0) / 100.0) {
 
-                logger.debug("starting to simulate 10 run(s) for alpha: " + alpha + " and target mean: " + targetMean);
+                logger.debug("starting to simulate 20 run(s) for alpha: " + alpha + " and target mean: " + targetMean);
 
                 this.dgData.getSimStats().incUpc();
-                for (int run = 1; run <= 10; run++) {
+                for (int run = 1; run <= 20; run++) {
                     logger.debug("run " + run + ": started.");
                     this.dgData.getSimStats().setSimPerUpc(run);
                     // uid = "upc-sim"
@@ -224,26 +224,24 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
                     this.simulation.addSimulationListener(this);
                     // simulate
                     this.dgData.getSimStats().resetCurrRound();
-                    logger.debug("Trying to approximate av. clustering (0.21) and av. degree (5.44).");
-                    approximate(0.21, 100.0, 5.44, 100.0);
+                    logger.debug("Trying to approximate av. clustering (" + alpha
+                            + ") and av. degree (" + targetMean + ").");
+                    approximate(alpha, 100.0, targetMean, 100.0, 10);
 
+                    double newAlpha = alpha;
+                    double newTargetMean = targetMean;
                     // MUNICIPALITY
-                    logger.debug("Preparing social distancing on municipality level.");
-                    // settings for clustering of 0.2: alpha = 0.625
-                    lowerAlpha(0.625);
-                    // settings for av. degree of 3.0: tMean = 3.00
-                    lowerC2s(3.00);
-                    logger.debug("Trying to approximate clustering (0.20) and av. degree (3.0).");
-                    approximate(0.20, 100.0, 3.00, 10.0);
-
-                    // CITY
-                    logger.debug("Preparing social distancing on city level.");
-                    // settings for clustering of 0.3: alpha = 0.85
-                    lowerAlpha(0.85);
-                    // settings for av. degree of 2.0: tMean = 2.16
-                    lowerC2s(2.16);
-                    logger.debug("Trying to approximate clustering (0.30) and av. degree (2.0).");
-                    approximate(0.30, 100.0, 2.0, 10.0);
+                    for (int i = 0; i < 15; i++) {
+                        logger.debug("Preparing lower clustering.");
+                        newAlpha = Math.round((newAlpha - 0.05) * 1000.0) / 1000.0;
+                        lowerAlpha(newAlpha);
+                        double newC = Math.round((this.network.getAvClustering()-0.05) * 100.0) / 100.0;
+                        newTargetMean = 5.53  + (0.0453 * Math.pow(Math.E, 2.589 * newAlpha));
+                        lowerC2s(newTargetMean);
+                        logger.debug("Trying to approximate av. clustering (" + newC
+                                + ") and av. degree (" + newTargetMean + ").");
+                        approximate(newC, 100.0, newTargetMean, 100.0, 10);
+                    }
 
                     logger.debug("run " + run + ": finished.");
                 }
@@ -290,21 +288,14 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
     }
 
 
-    /**
-     * @param round
-     * @param maxRounds
-     * @param avC
-     * @param avD
-     */
-    private void approximate(double appC, double cPrecision, double appD, double dPrecision) {
+    private void approximate(double appC, double cPrecision, double appD, double dPrecision, int maxRounds) {
 
         int round = 0;
-        int maxRounds = 20;
 
         double avC = Math.round(this.network.getAvClustering() * cPrecision) / cPrecision;
         double avD = Math.round(this.network.getAvDegree() * dPrecision) / dPrecision;
 
-        while (!(avC == appC && avD == appD)) {
+        while (true) {//!(avC == appC && avD == appD)) {
             this.simulation.simulate(1);
             avC = Math.round(this.network.getAvClustering() * cPrecision) / cPrecision;
             avD = Math.round(this.network.getAvDegree() * dPrecision) / dPrecision;
@@ -312,7 +303,7 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
             logger.debug("round: " + round +
                     "\t clustering: " + avC +
                     "\t av. degree: " + avD);
-            if (round > maxRounds) {
+            if (round >= maxRounds) {
                 break;
             }
         }
@@ -361,8 +352,8 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
 
     @Override
     public void notifyRoundFinished(Simulation simulation) {
-        amendSummary();
-        if (simulation.getRounds() % 1 == 0) {
+        if (simulation.getRounds() % 10 == 0) {
+            amendSummary();
             exportNetworks("round_" + simulation.getRounds());
         }
         this.dgData.getSimStats().incCurrRound();
