@@ -1,0 +1,7 @@
+Sources:
+	- Age assortativity
+		- GBR, pooled: Polymod (physical contact) - (Mossong et al., 2008)
+		- SPA: Polymod projection study (all) - (Prem, Cook & Jit, 2017)
+	- Age distribution
+		- NLD: https://www.populationpyramid.net/netherlands/2019/
+		- SPA: https://www.populationpyramid.net/spain/2019/
