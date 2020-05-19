@@ -307,8 +307,7 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
                                 this.dgData.getUtilityModelParams().getCurrB2(),
                                 this.dgData.getUtilityModelParams().getCurrAlpha(),
                                 this.dgData.getUtilityModelParams().getCurrC1(),
-                                c2s[i],
-                                false);
+                                c2s[i]);
                         // add agents
                         network.addAgent(uf,
                                 ds,

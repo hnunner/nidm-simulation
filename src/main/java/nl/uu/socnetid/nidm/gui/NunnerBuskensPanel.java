@@ -27,14 +27,11 @@ package nl.uu.socnetid.nidm.gui;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.text.NumberFormat;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JSeparator;
 import javax.swing.JSlider;
@@ -59,11 +56,6 @@ public class NunnerBuskensPanel extends SharedUtilityPanel implements ChangeList
     private DoubleJFormattedTextField txtSliderB2;
     private JSlider sliderAlpha;
     private DoubleJFormattedTextField txtSliderAlpha;
-
-    private JComboBox<String> yComputationCBox;
-    private final String[] yComputations = {
-            "local",
-            "global"};
 
     // listeners
     private final Set<NunnerBuskensChangeListener> changeListeners = new CopyOnWriteArraySet<NunnerBuskensChangeListener>();
@@ -234,24 +226,6 @@ public class NunnerBuskensPanel extends SharedUtilityPanel implements ChangeList
         separator_1.setBounds(0, 173, 312, 10);
         add(separator_1);
 
-        JLabel lblOpenTriads = new JLabel("Open triad computation:");
-        lblOpenTriads.setBounds(37, 144, 170, 16);
-        add(lblOpenTriads);
-
-        this.yComputationCBox = new JComboBox<String>();
-        for (int i = 0; i < this.yComputations.length; i++) {
-            this.yComputationCBox.addItem(this.yComputations[i]);
-        }
-        this.yComputationCBox.setBounds(197, 140, 100, 27);
-        add(this.yComputationCBox);
-        this.yComputationCBox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    notifyYComputationChanged();
-                }
-            }
-        });
     }
 
     /**
@@ -297,16 +271,6 @@ public class NunnerBuskensPanel extends SharedUtilityPanel implements ChangeList
      */
     public double getAlpha() {
         return this.txtSliderAlpha.getDouble();
-    }
-
-
-    /**
-     * Gets the computation of open triads (y).
-     *
-     * @return the computation of open triads (y)
-     */
-    public boolean isYGlobal() {
-        return this.yComputationCBox.getSelectedIndex() == 1;
     }
 
     /* (non-Javadoc)
@@ -439,13 +403,4 @@ public class NunnerBuskensPanel extends SharedUtilityPanel implements ChangeList
         }
     }
 
-    /**
-     * Notifies listeners of changed yComputation.
-     */
-    private final void notifyYComputationChanged() {
-        Iterator<NunnerBuskensChangeListener> listenersIt = this.changeListeners.iterator();
-        while (listenersIt.hasNext()) {
-            listenersIt.next().notifyYComputationChanged();
-        }
-    }
 }

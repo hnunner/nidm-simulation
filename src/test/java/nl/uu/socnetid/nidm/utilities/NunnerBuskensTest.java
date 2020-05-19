@@ -47,8 +47,7 @@ import nl.uu.socnetid.nidm.utility.UtilityFunction;
 public class NunnerBuskensTest {
 
     // networks
-    private Network networkYGlobal;
-    private Network networkYLocal;
+    private Network network;
 
     // constants
     private static final double b1      = 1;
@@ -66,26 +65,16 @@ public class NunnerBuskensTest {
     private static final int    tau     = 10;
 
     // agents
-    private Agent agent1YGlobal;
-    private Agent agent2YGlobal;
-    private Agent agent3YGlobal;
-    private Agent agent4YGlobal;
-    private Agent agent5YGlobal;
-    private Agent agent6YGlobal;
-    private Agent agent7YGlobal;
-    private Agent agent8YGlobal;
-    private Agent agent9YGlobal;
-    private Agent agent10YGlobal;
-    private Agent agent1YLocal;
-    private Agent agent2YLocal;
-    private Agent agent3YLocal;
-    private Agent agent4YLocal;
-    private Agent agent5YLocal;
-    private Agent agent6YLocal;
-    private Agent agent7YLocal;
-    private Agent agent8YLocal;
-    private Agent agent9YLocal;
-    private Agent agent10YLocal;
+    private Agent agent1;
+    private Agent agent2;
+    private Agent agent3;
+    private Agent agent4;
+    private Agent agent5;
+    private Agent agent6;
+    private Agent agent7;
+    private Agent agent8;
+    private Agent agent9;
+    private Agent agent10;
 
     /**
      * Performed before each test: Initialization of the network.
@@ -94,71 +83,38 @@ public class NunnerBuskensTest {
     public void initAgent() {
         DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
 
-        // y global
-        this.networkYGlobal = new Network("NunnerBuskens Y-Global Test");
-        UtilityFunction ufYGlobal = new NunnerBuskens(b1, b2, alpha, c1, c2, true);
-
-        // agetns
-        this.agent1YGlobal  = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi, omega);
-        this.agent2YGlobal  = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi, omega);
-        this.agent3YGlobal  = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi, omega);
-        this.agent4YGlobal  = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi, omega);
-        this.agent5YGlobal  = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi, omega);
-        this.agent6YGlobal  = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi, omega);
-        this.agent7YGlobal  = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi, omega);
-        this.agent8YGlobal  = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi, omega);
-        this.agent9YGlobal  = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi, omega);
-        this.agent10YGlobal = this.networkYGlobal.addAgent(ufYGlobal, ds, rSigma, rPi, phi, omega);
-
-        // connections
-        this.agent1YGlobal.addConnection(this.agent2YGlobal);
-        this.agent1YGlobal.addConnection(this.agent3YGlobal);
-        this.agent1YGlobal.addConnection(this.agent4YGlobal);
-        this.agent1YGlobal.addConnection(this.agent6YGlobal);
-        this.agent1YGlobal.addConnection(this.agent7YGlobal);
-        this.agent1YGlobal.addConnection(this.agent8YGlobal);
-        this.agent2YGlobal.addConnection(this.agent3YGlobal);
-        this.agent3YGlobal.addConnection(this.agent4YGlobal);
-        this.agent3YGlobal.addConnection(this.agent5YGlobal);
-        this.agent4YGlobal.addConnection(this.agent5YGlobal);
-        this.agent5YGlobal.addConnection(this.agent6YGlobal);
-        this.agent6YGlobal.addConnection(this.agent7YGlobal);
-        this.agent7YGlobal.addConnection(this.agent8YGlobal);
-        this.agent8YGlobal.addConnection(this.agent9YGlobal);
-        this.agent8YGlobal.addConnection(this.agent10YGlobal);
-
         // y local
-        this.networkYLocal = new Network("NunnerBuskens Y-Local Test");
-        UtilityFunction ufYLocal = new NunnerBuskens(b1, b2, alpha, c1, c2, false);
+        this.network = new Network("NunnerBuskens Test");
+        UtilityFunction ufYLocal = new NunnerBuskens(b1, b2, alpha, c1, c2);
 
         // agetns
-        this.agent1YLocal  = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
-        this.agent2YLocal  = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
-        this.agent3YLocal  = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
-        this.agent4YLocal  = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
-        this.agent5YLocal  = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
-        this.agent6YLocal  = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
-        this.agent7YLocal  = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
-        this.agent8YLocal  = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
-        this.agent9YLocal  = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
-        this.agent10YLocal = this.networkYLocal.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
+        this.agent1  = this.network.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
+        this.agent2  = this.network.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
+        this.agent3  = this.network.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
+        this.agent4  = this.network.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
+        this.agent5  = this.network.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
+        this.agent6  = this.network.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
+        this.agent7  = this.network.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
+        this.agent8  = this.network.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
+        this.agent9  = this.network.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
+        this.agent10 = this.network.addAgent(ufYLocal, ds, rSigma, rPi, phi, omega);
 
         // connections
-        this.agent1YLocal.addConnection(this.agent2YLocal);
-        this.agent1YLocal.addConnection(this.agent3YLocal);
-        this.agent1YLocal.addConnection(this.agent4YLocal);
-        this.agent1YLocal.addConnection(this.agent6YLocal);
-        this.agent1YLocal.addConnection(this.agent7YLocal);
-        this.agent1YLocal.addConnection(this.agent8YLocal);
-        this.agent2YLocal.addConnection(this.agent3YLocal);
-        this.agent3YLocal.addConnection(this.agent4YLocal);
-        this.agent3YLocal.addConnection(this.agent5YLocal);
-        this.agent4YLocal.addConnection(this.agent5YLocal);
-        this.agent5YLocal.addConnection(this.agent6YLocal);
-        this.agent6YLocal.addConnection(this.agent7YLocal);
-        this.agent7YLocal.addConnection(this.agent8YLocal);
-        this.agent8YLocal.addConnection(this.agent9YLocal);
-        this.agent8YLocal.addConnection(this.agent10YLocal);
+        this.agent1.addConnection(this.agent2);
+        this.agent1.addConnection(this.agent3);
+        this.agent1.addConnection(this.agent4);
+        this.agent1.addConnection(this.agent6);
+        this.agent1.addConnection(this.agent7);
+        this.agent1.addConnection(this.agent8);
+        this.agent2.addConnection(this.agent3);
+        this.agent3.addConnection(this.agent4);
+        this.agent3.addConnection(this.agent5);
+        this.agent4.addConnection(this.agent5);
+        this.agent5.addConnection(this.agent6);
+        this.agent6.addConnection(this.agent7);
+        this.agent7.addConnection(this.agent8);
+        this.agent8.addConnection(this.agent9);
+        this.agent8.addConnection(this.agent10);
     }
 
 
@@ -167,9 +123,9 @@ public class NunnerBuskensTest {
      */
     @Test
     public void testGetUtility() {
-        assertEquals(1.7, Precision.round(this.agent1YLocal.getUtility().getOverallUtility(), 1), 0);
-        assertEquals(1.8, Precision.round(this.agent3YLocal.getUtility().getOverallUtility(), 1), 0);
-        assertEquals(1.9, Precision.round(this.agent8YLocal.getUtility().getOverallUtility(), 1), 0);
+        assertEquals(1.7, Precision.round(this.agent1.getUtility().getOverallUtility(), 1), 0);
+        assertEquals(1.8, Precision.round(this.agent3.getUtility().getOverallUtility(), 1), 0);
+        assertEquals(1.9, Precision.round(this.agent8.getUtility().getOverallUtility(), 1), 0);
     }
 
 }

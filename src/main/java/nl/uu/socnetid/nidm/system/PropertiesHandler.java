@@ -339,9 +339,6 @@ public class PropertiesHandler {
         nbParameters.setB2RandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_B2_RANDOM_MIN.toString())));
         nbParameters.setB2RandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_B2_RANDOM_MAX.toString())));
         nbParameters.setB2s(parseDoubleArray(configProps.getProperty(LogValues.IV_NB_B2.toString())));
-        // yglobal
-        nbParameters.setYGlobalRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_YGLOBAL_RANDOM.toString())));
-        nbParameters.setYGlobals(parseBooleanArray(configProps.getProperty(LogValues.IV_NB_YGLOBAL.toString())));
         // alpha
         nbParameters.setAlphaRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_ALPHA_RANDOM.toString())));
         nbParameters.setAlphaRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_ALPHA_RANDOM_MIN.toString())));
