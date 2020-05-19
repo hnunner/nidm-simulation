@@ -29,9 +29,9 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import nl.uu.socnetid.nidm.data.DataGeneratorData;
-import nl.uu.socnetid.nidm.data.LogValues;
-import nl.uu.socnetid.nidm.data.UtilityModelParameters;
+import nl.uu.socnetid.nidm.data.out.DataGeneratorData;
+import nl.uu.socnetid.nidm.data.out.LogValues;
+import nl.uu.socnetid.nidm.data.out.UtilityModelParameters;
 
 /**
  * @author Hendrik Nunner
