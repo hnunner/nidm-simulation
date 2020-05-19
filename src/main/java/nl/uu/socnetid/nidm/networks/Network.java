@@ -25,13 +25,6 @@
  */
 package nl.uu.socnetid.nidm.networks;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -51,6 +44,7 @@ import org.graphstream.graph.implementations.SingleGraph;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.agents.AgentFactory;
+import nl.uu.socnetid.nidm.data.in.AgeStructure;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.simulation.Simulation;
 import nl.uu.socnetid.nidm.simulation.SimulationListener;
@@ -92,9 +86,6 @@ public class Network extends SingleGraph implements SimulationListener {
     // stability
     private int timestepsStable = 0;
     private static final int TIMESTEPS_REQUIRED_FOR_STABILITY = 1;
-
-    // age composition
-    private List<Integer> ageDistribution;
 
     // assortativity condition
     private AssortativityConditions ac;
@@ -144,71 +135,6 @@ public class Network extends SingleGraph implements SimulationListener {
         this.arrangeInCircle = arrangeInCircle;
         this.ac = ac;
         this.setNodeFactory(new AgentFactory());
-        this.initAgeDistribution();
-    }
-
-
-    /**
-     * Initializes the age structure of the agents: a list of random ageDistribution is stored into this.ages (to be randomly drawn from)
-     * according to the age distribution stored in /resources/age-dist.csv.
-     *
-     * TODO add age selection in GUI
-     * TODO move parsing of file into system package
-     */
-    private void initAgeDistribution() {
-        this.ageDistribution = new ArrayList<Integer>();
-
-        try {
-            // TODO move path into properties file
-            Path pathToFile = Paths.get(getClass().getClassLoader()
-                    .getResource("age-dist-populationpyramid.net(spain-2019).csv").toURI());
-
-            BufferedReader br = null;
-            try {
-                br = Files.newBufferedReader(pathToFile, StandardCharsets.UTF_8);
-                String line = br.readLine();    // skip column names
-                line = br.readLine();
-
-                while (line != null) {
-                    String[] attributes = line.split(";");
-                    int min = Integer.valueOf(attributes[0]);
-                    int max = Integer.valueOf(attributes[1]);
-                    int totalNorm = Integer.valueOf(attributes[3]);
-
-                    for (int i = 0; i < totalNorm; i++) {
-                        // store a random age within the year ranges of the age group
-                        this.ageDistribution.add(ThreadLocalRandom.current().nextInt(min, max+1));
-                    }
-
-                    line = br.readLine();
-                }
-
-            } catch (IOException ioe) {
-                logger.error("Error while parsing age distribution.", ioe);
-            }
-            finally {
-                if (br != null) {
-                    try {
-                        br.close();
-                    } catch (IOException ioe) {
-                        logger.error("Error while closing BufferedReader.", ioe);
-                    }
-                }
-            }
-
-        } catch (URISyntaxException use) {
-            logger.error("Error while loading age distribution.", use);
-        }
-
-    }
-
-    /**
-     * Draws a random age from the previously initialized age distribution (see initAgeDistribution).
-     *
-     * @return a randomly drawn age from the age distribution
-     */
-    private int getRandomAge() {
-        return this.ageDistribution.get(ThreadLocalRandom.current().nextInt(0, this.ageDistribution.size()));
     }
 
 
@@ -304,7 +230,8 @@ public class Network extends SingleGraph implements SimulationListener {
         Agent agent = this.addNode(String.valueOf(this.getNodeCount() + 1));
 
         // age randomly drawn from /resources/age-dist.csv
-        agent.initAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, psi, omega, omegaShuffle, this.getRandomAge());
+        agent.initAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, psi, omega, omegaShuffle,
+                AgeStructure.getInstance().getRandomAge());
         notifyAgentAdded(agent);
 
         // re-position agents if auto-layout is disabled

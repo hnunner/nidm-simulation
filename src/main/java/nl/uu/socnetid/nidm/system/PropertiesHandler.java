@@ -27,17 +27,20 @@ package nl.uu.socnetid.nidm.system;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import nl.uu.socnetid.nidm.data.BurgerBuskensParameters;
-import nl.uu.socnetid.nidm.data.CarayolRouxParameters;
-import nl.uu.socnetid.nidm.data.CidmParameters;
-import nl.uu.socnetid.nidm.data.LogValues;
-import nl.uu.socnetid.nidm.data.NunnerBuskensParameters;
+import nl.uu.socnetid.nidm.data.out.BurgerBuskensParameters;
+import nl.uu.socnetid.nidm.data.out.CarayolRouxParameters;
+import nl.uu.socnetid.nidm.data.out.CidmParameters;
+import nl.uu.socnetid.nidm.data.out.LogValues;
+import nl.uu.socnetid.nidm.data.out.NunnerBuskensParameters;
 
 
 /**
@@ -84,6 +87,7 @@ public class PropertiesHandler {
     private boolean generateNunnerBuskensNetworks;
     private boolean generateNunnerBuskensNetworksSimple;
     private NunnerBuskensParameters nbParameters;
+
     // DATA EXPORT
     // types of data export
     private boolean exportSummary;
@@ -100,6 +104,10 @@ public class PropertiesHandler {
     private String gitBuildTime;
     private String gitBuildUserName;
     private String gitRemoteOriginUrl;
+
+    // DATA IMPORT
+    private Path ageDistributionImportPath;
+    private Path ageAssortativityImportPath;
 
 
     /**
@@ -416,6 +424,17 @@ public class PropertiesHandler {
 
         // analyze data?
         this.analyzeData = Boolean.parseBoolean(configProps.getProperty("analyze.data"));
+
+        // data import
+        try {
+            this.ageDistributionImportPath = Paths.get(getClass().getClassLoader()
+                    .getResource(configProps.getProperty("import.age.distribution.path")).toURI());
+            this.ageAssortativityImportPath = Paths.get(getClass().getClassLoader()
+                    .getResource(configProps.getProperty("import.age.assortativity.path")).toURI());
+        } catch (URISyntaxException use) {
+            logger.error("Error while retrieving age structure paths: ", use);
+        }
+
     }
 
     private void readGitProperties() {
@@ -691,6 +710,20 @@ public class PropertiesHandler {
      */
     public String getRAnalysisNunnerBuskensTemplatePath() {
         return rAnalysisNunnerBuskensTemplatePath;
+    }
+
+    /**
+     * @return the ageDistributionImportPath
+     */
+    public Path getAgeDistributionImportPath() {
+        return ageDistributionImportPath;
+    }
+
+    /**
+     * @return the ageAssortativityImportPath
+     */
+    public Path getAgeAssortativityImportPath() {
+        return ageAssortativityImportPath;
     }
 
 }
