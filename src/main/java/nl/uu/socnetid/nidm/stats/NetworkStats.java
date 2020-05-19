@@ -25,7 +25,7 @@
  */
 package nl.uu.socnetid.nidm.stats;
 
-import nl.uu.socnetid.nidm.agents.AgentAttributes;
+import nl.uu.socnetid.nidm.networks.AssortativityConditions;
 import nl.uu.socnetid.nidm.networks.Network;
 
 /**
@@ -39,8 +39,8 @@ public class NetworkStats {
 
     private boolean stable;
     private double density;
-    private double assortativityRSigma;
-    private double assortativityRPi;
+    private AssortativityConditions ac;
+    private double assortativity;
     private double avDegree;
     private double avDegree2;
     private double avDegreeSatisfied;
@@ -69,8 +69,8 @@ public class NetworkStats {
         this.network = network;
         this.stable = network.isStable();
         this.density = network.getDensity();
-        this.assortativityRSigma = network.getAssortativity(AgentAttributes.RISK_FACTOR_SIGMA);
-        this.assortativityRPi = network.getAssortativity(AgentAttributes.RISK_FACTOR_SIGMA);
+        this.ac = network.getAssortativityCondition();
+        this.assortativity = network.getAssortativity();
         this.avDegree = network.getAvDegree();
         this.avDegree2 = network.getAvDegree2();
         this.avDegreeSatisfied = network.getAvDegreeSatisfied();
@@ -122,31 +122,24 @@ public class NetworkStats {
     }
 
     /**
-     * @return the assortativityRSigma
+     * @return the assortativity condition
      */
-    public double getAssortativityRSigma() {
-        return assortativityRSigma;
+    public AssortativityConditions getAssortativityCondition() {
+        return ac;
     }
 
     /**
-     * @param assortativityRSigma the assortativityRSigma to set
+     * @return the assortativity
      */
-    public void setAssortativityRSigma(double assortativityRSigma) {
-        this.assortativityRSigma = assortativityRSigma;
+    public double getAssortativity() {
+        return assortativity;
     }
 
     /**
-     * @return the assortativityRPi
+     * @param assortativity the assortativity to set
      */
-    public double getAssortativityRPi() {
-        return assortativityRPi;
-    }
-
-    /**
-     * @param assortativityRPi the assortativityRPi to set
-     */
-    public void setAssortativityRPi(double assortativityRPi) {
-        this.assortativityRPi = assortativityRPi;
+    public void setAssortativity(double assortativity) {
+        this.assortativity = assortativity;
     }
 
     /**
