@@ -30,8 +30,6 @@ package nl.uu.socnetid.nidm.stats;
  */
 public class LocalAgentConnectionsStats {
 
-    // TODO !!!remove yGlobal entirely!!!
-
     private final int n;
     private final int nS;
     private final int nI;
@@ -40,8 +38,7 @@ public class LocalAgentConnectionsStats {
     private final int mS;
     private final int mI;
     private final int mR;
-    private final int yGlobal;
-    private final int yLocal;
+    private final int y;
     private final int z;
     private final int netSize;
 
@@ -64,17 +61,14 @@ public class LocalAgentConnectionsStats {
      *          the number of infected ties at distance 2
      * @param mR
      *          the number of recovered ties at distance 2
-     * @param yGlobal
-     *          the amount of global open triads the agent is part of (n*(n-1)/2)
-     * @param yLocal
-     *          the amount of local open triads the agent is part of (ties of agent that do not share a tie between each other)
+     * @param y
+     *          the amount of open triads the agent is part of (ties of agent that do not share a tie between each other)
      * @param z
      *          the amount of closed triads the agent is part of
      * @param netSize
      *          the network size
      */
-    public LocalAgentConnectionsStats(int n, int nS, int nI, int nR, int m, int mS, int mI, int mR,
-            int yGlobal, int yLocal, int z, int netSize) {
+    public LocalAgentConnectionsStats(int n, int nS, int nI, int nR, int m, int mS, int mI, int mR, int y, int z, int netSize) {
         this.n = n;
         this.nS = nS;
         this.nI = nI;
@@ -83,25 +77,17 @@ public class LocalAgentConnectionsStats {
         this.mS = mS;
         this.mI = mI;
         this.mR = mR;
-        this.yGlobal = yGlobal;
-        this.yLocal = yLocal;
+        this.y = y;
         this.z = z;
         this.netSize = netSize;
     }
 
 
     /**
-     * @return the yGlobal
-     */
-    public int getYGlobal() {
-        return yGlobal;
-    }
-
-    /**
      * @return the yLocal
      */
-    public int getYLocal() {
-        return yLocal;
+    public int getY() {
+        return y;
     }
 
     /**

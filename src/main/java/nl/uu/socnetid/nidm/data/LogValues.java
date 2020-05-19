@@ -227,8 +227,6 @@ public enum LogValues {
     IV_NB_OMEGA("nb.omega"),
     IV_NB_OMEGA_SHUFFLE_RANDOM("nb.omega.shuffle.random"),
     IV_NB_OMEGA_SHUFFLE("nb.omega.shuffle"),
-    IV_NB_YGLOBAL_RANDOM("nb.yglobal.random"),
-    IV_NB_YGLOBAL("nb.yglobal"),
     IV_NB_ZETA("nb.zeta"),
     IV_NB_EPSILON("nb.epsilon"),
     IV_NB_SIMS_PER_PC("nb.n"),

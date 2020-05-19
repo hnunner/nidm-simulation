@@ -105,7 +105,7 @@ public class NunnerBuskens2 extends UtilityFunction implements NunnerBuskens2Cha
 
         // shared parameters
         int t           = lacs.getN();                  // number of direct ties
-        double y        = lacs.getYLocal();             // number of open triads
+        double y        = lacs.getY();                  // number of open triads
         double z        = lacs.getZ();                  // number of closed triads
         double x        = (y+z) == 0 ? 0 : z/(y+z);     // proportion of closed triads
 
