@@ -463,8 +463,7 @@ public final class StatsComputer {
         int mI = 0;
         int mR = 0;
         // open triads
-        int yGlobal = 0;
-        int yLocal = 0;
+        int y = 0;
         // closed triads
         int z = 0;
         // network size
@@ -482,7 +481,6 @@ public final class StatsComputer {
         if (!directConnections.isEmpty()) {
 
             n = directConnections.size();
-            yGlobal = (n*(n-1))/2;
 
             Iterator<Agent> it = directConnections.iterator();
             //List<Agent> consideredAtDistance2 = new ArrayList<Agent>();
@@ -542,7 +540,7 @@ public final class StatsComputer {
                     if (directConnection.isDirectlyConnectedTo(potentialTriad)) {
                         z++;
                     } else {
-                        yLocal++;
+                        y++;
                     }
                 }
             }
@@ -552,7 +550,7 @@ public final class StatsComputer {
 
         directConnections = null;
 
-        return new LocalAgentConnectionsStats(n, nS, nI, nR, m, mS, mI, mR, yGlobal, yLocal, z, netSize);
+        return new LocalAgentConnectionsStats(n, nS, nI, nR, m, mS, mI, mR, y, z, netSize);
     }
 
     /**

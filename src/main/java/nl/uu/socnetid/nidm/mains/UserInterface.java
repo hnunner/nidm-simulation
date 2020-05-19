@@ -836,7 +836,6 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
                         this.nbPanel.getAlpha(),
                         this.nbPanel.getC1(),
                         this.nbPanel.getC2(),
-                        this.nbPanel.isYGlobal(),
                         this.nbPanel);
 
             case 4:

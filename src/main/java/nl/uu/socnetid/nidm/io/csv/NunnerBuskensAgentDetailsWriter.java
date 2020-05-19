@@ -82,7 +82,6 @@ public class NunnerBuskensAgentDetailsWriter extends AgentDetailsWriter<NunnerBu
         cols.add(LogValues.IV_NB_PHI.toString());
         cols.add(LogValues.IV_NB_OMEGA.toString());
         cols.add(LogValues.IV_NB_OMEGA_SHUFFLE.toString());
-        cols.add(LogValues.IV_NB_YGLOBAL.toString());
         return cols;
     }
 
@@ -114,7 +113,6 @@ public class NunnerBuskensAgentDetailsWriter extends AgentDetailsWriter<NunnerBu
         currData.add(String.valueOf(agent.getPhi()));
         currData.add(String.valueOf(agent.getOmega()));
         currData.add(String.valueOf(agent.isOmegaShuffle() ? 1 : 0));
-        currData.add(String.valueOf(uf.isyGlobal() ? 1 : 0));
 
         return currData;
     }
