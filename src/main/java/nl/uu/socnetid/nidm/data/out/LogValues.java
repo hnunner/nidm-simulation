@@ -23,7 +23,7 @@
  *      Nunner, H., Buskens, V., & Kretzschmar, M. (2019). A model for the co-evolution of dynamic
  *      social networks and infectious diseases. Manuscript sumbitted for publication.
  */
-package nl.uu.socnetid.nidm.data;
+package nl.uu.socnetid.nidm.data.out;
 
 import java.util.LinkedList;
 import java.util.List;
