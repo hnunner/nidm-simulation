@@ -35,6 +35,7 @@ public class GlobalNetworkStats {
     private final double avDegree;
     private final int diameter;
     private final double avDistance;
+    private final double assortativity;
 
     /**
      * Constructor
@@ -49,13 +50,17 @@ public class GlobalNetworkStats {
      *          the diameter of the network
      * @param avDistance
      *          the average distance of the network
+     * @param assortativity
+     *          the assortativity of the network
      */
-    public GlobalNetworkStats(boolean stable, int connections, double avDegree, int diameter, double avDistance) {
+    public GlobalNetworkStats(boolean stable, int connections, double avDegree, int diameter, double avDistance,
+            double assortativity) {
         this.stable = stable;
         this.connections = connections;
         this.avDegree = avDegree;
         this.diameter = diameter;
         this.avDistance = avDistance;
+        this.assortativity = assortativity;
     }
 
 
@@ -92,6 +97,13 @@ public class GlobalNetworkStats {
      */
     public double getAvDistance() {
         return avDistance;
+    }
+
+    /**
+     * @return the assortativity
+     */
+    public double getAssortativity() {
+        return assortativity;
     }
 
 }

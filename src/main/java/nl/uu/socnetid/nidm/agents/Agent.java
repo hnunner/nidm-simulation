@@ -105,9 +105,12 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      *          the share of peers to select assortatively
      * @param omegaShuffle
      *          whether assortatively selected agents ought to be shuffled before processing
+     * @param age
+     *          the age of the agent
      */
     public void initAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs,
-            Double riskFactorSigma, Double riskFactorPi, Double phi, Double psi, Double omega, boolean omegaShuffle) {
+            Double riskFactorSigma, Double riskFactorPi, Double phi, Double psi, Double omega, boolean omegaShuffle,
+            Integer age) {
         this.addAttribute(AgentAttributes.UTILITY_FUNCTION, utilityFunction);
         this.addAttribute(AgentAttributes.DISEASE_SPECS, diseaseSpecs);
         DiseaseGroup diseaseGroup = DiseaseGroup.SUSCEPTIBLE;
@@ -125,6 +128,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         this.addAttribute(AgentAttributes.OMEGA_SHUFFLE, omegaShuffle);
         this.addAttribute(AgentAttributes.SATISFIED, false);
         this.addAttribute(AgentAttributes.CONNECTION_STATS, new AgentConnectionStats());
+        this.addAttribute(AgentAttributes.AGE, age);
         this.addAttribute("ui.label", this.getId());
     }
 
@@ -427,6 +431,15 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
+     * Gets the agent's age.
+     *
+     * @return the agent's age
+     */
+    public int getAge() {
+        return (int) this.getAttribute(AgentAttributes.AGE);
+    }
+
+    /**
      * Gets the second order degree.
      *
      * @return the second order degree
@@ -531,6 +544,50 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         DijkstraShortestPath dsp = new DijkstraShortestPath();
         dsp.executeShortestPaths(this);
         return dsp.getShortestPathLength(agent);
+    }
+
+    /**
+     * Gets the value used for assortativity comparisons.
+     *
+     * @return the value used for assortativity comparisons
+     */
+    private double getAssortativityComparativeValue() {
+        switch (this.getNetwork().getAssortativityCondition()) {
+            case AGE:
+                return this.getAge();
+
+            case RISK_PERCEPTION:
+                return (this.getRPi() + this.getRSigma());
+
+            default:
+                logger.warn("Unknown assortativity condition: " + this.getNetwork().getAssortativityCondition());
+                break;
+        }
+        return 0.0;
+    }
+
+    /**
+     * Gets the absolute difference between the comp(aritive) value and the actual value,
+     * according to the assortativity condition.
+     *
+     * @param comp
+     *          the value to compare to
+     * @return the absolute difference between the value to compare to and the actual value,
+     *         according to the assortativity condition
+     */
+    private double getAssortDiff(double comp) {
+        switch (this.getNetwork().getAssortativityCondition()) {
+            case AGE:
+                return Math.abs((comp) - this.getAge());
+
+            case RISK_PERCEPTION:
+                return Math.abs((comp) - (this.getRPi() + this.getRSigma()));
+
+            default:
+                logger.warn("Unknown assortativity condition: " + this.getNetwork().getAssortativityCondition());
+                break;
+        }
+        return 0.0;
     }
 
 
@@ -762,12 +819,10 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      *
      * @param agents
      *          the list of agents to sort
-     * @param rPi
-     *          the rPi to create the absolute difference for
-     * @param rSigma
-     *          the rSigma to create the absolute difference for
+     * @param comp
+     *          the comparative value to create the absolute difference for
      */
-    void sortByRDiff(List<Agent> agents, double rPi, double rSigma) {
+    private void sortByRDiff(List<Agent> agents, double comp) {
 
             TreeMap<Double, ArrayList<Agent>> map = new TreeMap<>();
 
@@ -775,7 +830,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
             for (int i = 0; i < agents.size(); i++) {
 
                 Agent agent = agents.get(i);
-                double diff = Math.abs((rPi + rSigma) - (agent.getRPi() + agent.getRSigma()));
+                double diff = agent.getAssortDiff(comp);
 
                 if (map.containsKey(diff)) {
                     ArrayList<Agent> list = map.get(diff);
@@ -803,14 +858,19 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         List<Agent> res = new ArrayList<Agent>(amount);
 
         if (agents != null && !agents.isEmpty()) {
-            //sortByRDiff(agents, this.getRPi(), this.getRSigma());
 
-//            for (int i = 0; i < amount * this.getOmega(); i++) {
-//                res.add((Agent) agents.toArray()[i]);
-//            }
+            // fill (omega share) according assortativity condition
+            sortByRDiff(agents, this.getAssortativityComparativeValue());
+            Iterator<Agent> it = agents.iterator();
+            long amountAss = Math.round(amount * this.getOmega());
+            while (it.hasNext() && res.size() < amountAss) {
+                res.add(it.next());
+            }
+
+            // fill rest with randomly drawn agents
             while (res.size() < amount && res.size() < agents.size()) {
                 int i = ThreadLocalRandom.current().nextInt(agents.size());
-                Object agent = agents.toArray()[i];
+                Object agent = agents.get(i);
                 if (!res.contains(agent)) {
                     res.add((Agent) agent);
                 }
@@ -830,13 +890,15 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     public List<Agent> getRandomListOfCoAgents(int amount) {
         List<Agent> res = new ArrayList<Agent>(amount);
 
-        // 1. random share of direct ties
+        // 1. share (psi) of randomly selected direct ties
         int amountTies = (int) (Math.round(amount * this.getPsi()));
         res.addAll(this.getRandomListOfAgents(this.getConnections(), amountTies));
-        // 2. random agents
+
+        // 2. rest taken from untied random agents
         List<Agent> coAgents = this.getCoAgents();
-        coAgents.removeAll(res);
+        coAgents.removeAll(this.getConnections());
         res.addAll(this.getRandomListOfAgents(coAgents, amount - res.size()));
+
         Collections.shuffle(res);
         return res;
     }

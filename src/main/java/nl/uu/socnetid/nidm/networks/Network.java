@@ -25,6 +25,13 @@
  */
 package nl.uu.socnetid.nidm.networks;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -43,7 +50,6 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.implementations.SingleGraph;
 
 import nl.uu.socnetid.nidm.agents.Agent;
-import nl.uu.socnetid.nidm.agents.AgentAttributes;
 import nl.uu.socnetid.nidm.agents.AgentFactory;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.simulation.Simulation;
@@ -74,6 +80,9 @@ public class Network extends SingleGraph implements SimulationListener {
     // standard shuffling of assortatively selected co-agents
     private static final boolean STANDARD_OMEGA_SHUFFLE = true;
 
+    // standard shuffling of assortatively selected co-agents
+    private static final AssortativityConditions STANDARD_AC = AssortativityConditions.RISK_PERCEPTION;
+
     // listener
     private final Set<NetworkListener> networkListeners = new CopyOnWriteArraySet<NetworkListener>();
 
@@ -84,11 +93,18 @@ public class Network extends SingleGraph implements SimulationListener {
     private int timestepsStable = 0;
     private static final int TIMESTEPS_REQUIRED_FOR_STABILITY = 1;
 
+    // age composition
+    private List<Integer> ageDistribution;
+
+    // assortativity condition
+    private AssortativityConditions ac;
+
+
     /**
      * Constructor.
      */
     public Network() {
-        this("Network of the Infectious Kind", false);
+        this("Network of the Infectious Kind", false, STANDARD_AC);
     }
 
     /**
@@ -98,7 +114,7 @@ public class Network extends SingleGraph implements SimulationListener {
      *          the network's unique identifier
      */
     public Network(String id) {
-        this(id, false);
+        this(id, false, STANDARD_AC);
     }
 
     /**
@@ -110,9 +126,89 @@ public class Network extends SingleGraph implements SimulationListener {
      *          flag whether agents to arrange in circle or not
      */
     public Network(String id, boolean arrangeInCircle) {
+        this(id, arrangeInCircle, STANDARD_AC);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param id
+     *          the network's unique identifier
+     * @param arrangeInCircle
+     *          flag whether agents to arrange in circle or not
+     * @param ac
+     *          the condition to realize assortativity for
+     */
+    public Network(String id, boolean arrangeInCircle, AssortativityConditions ac) {
         super(id);
         this.arrangeInCircle = arrangeInCircle;
+        this.ac = ac;
         this.setNodeFactory(new AgentFactory());
+        this.initAgeDistribution();
+    }
+
+
+    /**
+     * Initializes the age structure of the agents: a list of random ageDistribution is stored into this.ages (to be randomly drawn from)
+     * according to the age distribution stored in /resources/age-dist.csv.
+     *
+     * TODO add age selection in GUI
+     * TODO move parsing of file into system package
+     */
+    private void initAgeDistribution() {
+        this.ageDistribution = new ArrayList<Integer>();
+
+        try {
+            // TODO move path into properties file
+            Path pathToFile = Paths.get(getClass().getClassLoader()
+                    .getResource("age-dist-populationpyramid.net(spain-2019).csv").toURI());
+
+            BufferedReader br = null;
+            try {
+                br = Files.newBufferedReader(pathToFile, StandardCharsets.UTF_8);
+                String line = br.readLine();    // skip column names
+                line = br.readLine();
+
+                while (line != null) {
+                    String[] attributes = line.split(";");
+                    int min = Integer.valueOf(attributes[0]);
+                    int max = Integer.valueOf(attributes[1]);
+                    int totalNorm = Integer.valueOf(attributes[3]);
+
+                    for (int i = 0; i < totalNorm; i++) {
+                        // store a random age within the year ranges of the age group
+                        this.ageDistribution.add(ThreadLocalRandom.current().nextInt(min, max+1));
+                    }
+
+                    line = br.readLine();
+                }
+
+            } catch (IOException ioe) {
+                logger.error("Error while parsing age distribution.", ioe);
+            }
+            finally {
+                if (br != null) {
+                    try {
+                        br.close();
+                    } catch (IOException ioe) {
+                        logger.error("Error while closing BufferedReader.", ioe);
+                    }
+                }
+            }
+
+        } catch (URISyntaxException use) {
+            logger.error("Error while loading age distribution.", use);
+        }
+
+    }
+
+    /**
+     * Draws a random age from the previously initialized age distribution (see initAgeDistribution).
+     *
+     * @return a randomly drawn age from the age distribution
+     */
+    private int getRandomAge() {
+        return this.ageDistribution.get(ThreadLocalRandom.current().nextInt(0, this.ageDistribution.size()));
     }
 
 
@@ -206,7 +302,9 @@ public class Network extends SingleGraph implements SimulationListener {
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
             double omega, boolean omegaShuffle, double psi) {
         Agent agent = this.addNode(String.valueOf(this.getNodeCount() + 1));
-        agent.initAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, psi, omega, omegaShuffle);
+
+        // age randomly drawn from /resources/age-dist.csv
+        agent.initAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, psi, omega, omegaShuffle, this.getRandomAge());
         notifyAgentAdded(agent);
 
         // re-position agents if auto-layout is disabled
@@ -870,13 +968,22 @@ public class Network extends SingleGraph implements SimulationListener {
     }
 
     /**
+     * Gets the assortativity condition of the network.
+     *
+     * @return the assortativity condition of the network
+     */
+    public AssortativityConditions getAssortativityCondition() {
+        return this.ac;
+    }
+
+    /**
      * Gets the assortativity of the network.
      *
-     * @param a
-     *          the agent attribute to get the assortativity for
      * @return the assortativity of the network
      */
-    public double getAssortativity(AgentAttributes a) {
+    public double getAssortativity() {
+
+        double a = 0.0;
 
         // collect attributes of all node pairs
         double[] attributes1 = new double[this.getEdgeCount()];
@@ -886,41 +993,37 @@ public class Network extends SingleGraph implements SimulationListener {
         int i = 0;
         while (eIt.hasNext()) {
             Edge edge = eIt.next();
-            switch (a) {
-                case RISK_FACTOR_SIGMA:
-                    attributes1[i] = ((Agent) edge.getNode0()).getRSigma();
-                    attributes2[i] = ((Agent) edge.getNode1()).getRSigma();
+            switch (this.getAssortativityCondition()) {
+                case AGE:
+                    attributes1[i] = ((Agent) edge.getNode0()).getAge();
+                    attributes2[i] = ((Agent) edge.getNode1()).getAge();
                     break;
 
-                case RISK_FACTOR_PI:
-                    attributes1[i] = ((Agent) edge.getNode0()).getRPi();
-                    attributes2[i] = ((Agent) edge.getNode1()).getRPi();
+                case RISK_PERCEPTION:
+                    attributes1[i] = ((Agent) edge.getNode0()).getRSigma() + ((Agent) edge.getNode0()).getRPi();
+                    attributes2[i] = ((Agent) edge.getNode1()).getRSigma() + ((Agent) edge.getNode1()).getRPi();
                     break;
 
-                case CONNECTION_STATS:
-                case DISEASE_GROUP:
-                case DISEASE_INFECTION:
-                case DISEASE_SPECS:
-                case OMEGA:
-                case OMEGA_SHUFFLE:
-                case PHI:
-                case RISK_MEANING_PI:
-                case RISK_MEANING_SIGMA:
-                case SATISFIED:
-                case UI_CLASS:
-                case UTILITY_FUNCTION:
                 default:
-                    logger.warn("assortativity not available for: " + a);
+                    logger.warn("assortativity not available for: " + this.getAssortativityCondition());
                     break;
             }
             i++;
         }
 
         // Pearson correlation coefficient
-        if (attributes1.length == 0 || attributes2.length == 0) {
-            return 0;
+        if (attributes1.length > 1 || attributes2.length > 1) {
+            try {
+                a = new PearsonsCorrelation().correlation(attributes1, attributes2);
+                if (Double.isNaN(a)) {
+                    a = 0.0;
+                }
+            } catch (Exception e) {
+                logger.error("Computation of Pearson's correlation coefficient failed: ", e);
+                a = 0.0;
+            }
         }
-        return new PearsonsCorrelation().correlation(attributes1, attributes2);
+        return a;
     }
 
     /**
