@@ -101,6 +101,8 @@ public abstract class NetworkSummaryWriter<UMP extends UtilityModelParameters> e
         cols.add(LogValues.DV_NET_AV_CLUSTERING.toString());
         cols.add(LogValues.DV_NET_AV_PATHLENGTH.toString());
         cols.add(LogValues.DV_NET_DENSITY.toString());
+        cols.add(LogValues.DV_NET_ASSORTATIVITY_CONDITION.toString());
+        cols.add(LogValues.DV_NET_ASSORTATIVITY.toString());
         cols.add(LogValues.DV_NET_STABLE.toString());
 
         writeLine(cols);
@@ -128,11 +130,11 @@ public abstract class NetworkSummaryWriter<UMP extends UtilityModelParameters> e
         // network - pre epidemic
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvDegree()));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvCloseness()));
-//        currData.add("NA");
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvClustering()));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvPathLength()));
-//        currData.add("NA");
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getDensity()));
+        currData.add(this.dgData.getNetStatsCurrent().getAssortativityCondition().toString());
+        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAssortativity()));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().isStable() ? 1 : 0));
 
         writeLine(currData);

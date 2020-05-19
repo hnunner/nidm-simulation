@@ -120,7 +120,6 @@ public final class StatsComputer {
 
         Collection<Agent> agents = network.getAgents();
 
-        boolean stable = network.isStable();
         int connections = 0;
         double avDegree = 0.0;
 
@@ -136,7 +135,7 @@ public final class StatsComputer {
         avDegree = agents.size() == 0 ? 0.0 : (double) connections / agents.size();
         connections /= 2;
 
-        return new GlobalNetworkStats(stable, connections, avDegree, diameter, avDistance);
+        return new GlobalNetworkStats(network.isStable(), connections, avDegree, diameter, avDistance, network.getAssortativity());
     }
 
     /**
