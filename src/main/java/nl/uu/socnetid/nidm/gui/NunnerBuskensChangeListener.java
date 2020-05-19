@@ -54,9 +54,4 @@ public interface NunnerBuskensChangeListener {
      */
     void notifyAlphaChanged();
 
-    /**
-     * Entry point for changes in computation of y (Nunner & Buskens, 2019).
-     */
-    void notifyYComputationChanged();
-
 }

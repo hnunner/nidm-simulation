@@ -65,11 +65,6 @@ public class NunnerBuskensParameters extends UtilityModelParameters {
     private double[] c2s;
     private double currC2;
 
-    // yGlobal
-    private boolean yGlobalRandom;
-    private boolean[] yGlobals;
-    private boolean currYGlobal;
-
 
     /**
      * @return the b1s
@@ -422,48 +417,6 @@ public class NunnerBuskensParameters extends UtilityModelParameters {
     }
 
     /**
-     * @return the yGlobalRandom
-     */
-    public boolean isYGlobalRandom() {
-        return yGlobalRandom;
-    }
-
-    /**
-     * @param yGlobalRandom the yGlobalRandom to set
-     */
-    public void setYGlobalRandom(boolean yGlobalRandom) {
-        this.yGlobalRandom = yGlobalRandom;
-    }
-
-    /**
-     * @return the yGlobals
-     */
-    public boolean[] getYGlobals() {
-        return yGlobals;
-    }
-
-    /**
-     * @param yGlobals the yGlobals to set
-     */
-    public void setYGlobals(boolean[] yGlobals) {
-        this.yGlobals = yGlobals;
-    }
-
-    /**
-     * @return the currYGlobal
-     */
-    public boolean isCurrYGlobal() {
-        return currYGlobal;
-    }
-
-    /**
-     * @param currYGlobal the currYGlobal to set
-     */
-    public void setCurrYGlobal(boolean currYGlobal) {
-        this.currYGlobal = currYGlobal;
-    }
-
-    /**
      * @return the epStaticRandom
      */
     public boolean isEpStaticRandom() {
@@ -503,34 +456,6 @@ public class NunnerBuskensParameters extends UtilityModelParameters {
      */
     public void setCurrEpStatic(boolean currEpStatic) {
         this.currEpStatic = currEpStatic;
-    }
-
-    /**
-     * @return the yGlobalRandom
-     */
-    public boolean isyGlobalRandom() {
-        return yGlobalRandom;
-    }
-
-    /**
-     * @param yGlobalRandom the yGlobalRandom to set
-     */
-    public void setyGlobalRandom(boolean yGlobalRandom) {
-        this.yGlobalRandom = yGlobalRandom;
-    }
-
-    /**
-     * @return the yGlobals
-     */
-    public boolean[] getyGlobals() {
-        return yGlobals;
-    }
-
-    /**
-     * @param yGlobals the yGlobals to set
-     */
-    public void setyGlobals(boolean[] yGlobals) {
-        this.yGlobals = yGlobals;
     }
 
 }
