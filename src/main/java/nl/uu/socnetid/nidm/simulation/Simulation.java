@@ -300,7 +300,6 @@ public class Simulation implements Runnable {
         Collections.shuffle(agents);
 
         Iterator<Agent> agentsIt = agents.iterator();
-        int i = 0;
         while (agentsIt.hasNext()) {
             if (this.paused) {
                 return;
@@ -315,8 +314,6 @@ public class Simulation implements Runnable {
             }
             Agent agent = agentsIt.next();
             computeAgentRound(agent);
-//            logger.debug("finished computing agent " + agent.getId() + ".\t\t"  +
-//                    (agents.size() - ++i) + " remaining in round " + (this.getRounds() + 1) + ".");
         }
     }
 
