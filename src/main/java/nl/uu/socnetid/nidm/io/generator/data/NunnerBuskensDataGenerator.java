@@ -151,8 +151,6 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
                 new double[1] : this.dgData.getUtilityModelParams().getC1s();
         double[] c2s = this.dgData.getUtilityModelParams().isC2Random() ?
                 new double[1] : this.dgData.getUtilityModelParams().getC2s();
-        boolean[] yGlobals = this.dgData.getUtilityModelParams().isYGlobalRandom() ?
-                new boolean[1] : this.dgData.getUtilityModelParams().getYGlobals();
         double[] sigmas = this.dgData.getUtilityModelParams().isSigmaRandom() ?
                 new double[1] : this.dgData.getUtilityModelParams().getSigmas();
         double[] gammas = this.dgData.getUtilityModelParams().isGammaRandom() ?
@@ -194,7 +192,6 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
                 alphas.length *
                 c1s.length *
                 c2s.length *
-                yGlobals.length *
                 sigmas.length *
                 gammas.length *
                 taus.length *
@@ -221,73 +218,70 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
                             this.dgData.getUtilityModelParams().setCurrC1(c1);
                             for (double c2 : c2s) {
                                 this.dgData.getUtilityModelParams().setCurrC2(c2);
-                                for (boolean yGlobal : yGlobals) {
-                                    this.dgData.getUtilityModelParams().setCurrYGlobal(yGlobal);
-                                    for (double sigma : sigmas) {
-                                        this.dgData.getUtilityModelParams().setCurrSigma(sigma);
-                                        for (double gamma : gammas) {
-                                            this.dgData.getUtilityModelParams().setCurrGamma(gamma);
-                                            for (int tau : taus) {
-                                                this.dgData.getUtilityModelParams().setCurrTau(tau);
-                                                for (double rSigma : rSigmas) {
-                                                    this.dgData.getUtilityModelParams().setCurrRSigma(rSigma);
-                                                    for (boolean rSigmaRandomHomogeneous : rSigmaRandomHomogeneouses) {
-                                                        this.dgData.getUtilityModelParams().setCurrRSigmaRandomHomogeneous(rSigmaRandomHomogeneous);
-                                                        for (double rPi : rPis) {
-                                                            this.dgData.getUtilityModelParams().setCurrRPi(rPi);
-                                                            for (boolean rPiRandomHomogeneous : rPiRandomHomogeneouses) {
-                                                                this.dgData.getUtilityModelParams().setCurrRPiRandomHomogeneous(rPiRandomHomogeneous);
-                                                                for (int N : Ns) {
-                                                                    this.dgData.getUtilityModelParams().setCurrN(N);
-                                                                    for (boolean iota : iotas) {
-                                                                        this.dgData.getUtilityModelParams().setCurrIota(iota);
-                                                                        for (double phi : phis) {
-                                                                            this.dgData.getUtilityModelParams().setCurrPhi(phi);
-                                                                            for (double omega : omegas) {
-                                                                                this.dgData.getUtilityModelParams().setCurrOmega(omega);
-                                                                                for (boolean omegaShuffle : omegaShuffles) {
-                                                                                    this.dgData.getUtilityModelParams().setCurrOmegaShuffle(omegaShuffle);
+                                for (double sigma : sigmas) {
+                                    this.dgData.getUtilityModelParams().setCurrSigma(sigma);
+                                    for (double gamma : gammas) {
+                                        this.dgData.getUtilityModelParams().setCurrGamma(gamma);
+                                        for (int tau : taus) {
+                                            this.dgData.getUtilityModelParams().setCurrTau(tau);
+                                            for (double rSigma : rSigmas) {
+                                                this.dgData.getUtilityModelParams().setCurrRSigma(rSigma);
+                                                for (boolean rSigmaRandomHomogeneous : rSigmaRandomHomogeneouses) {
+                                                    this.dgData.getUtilityModelParams().setCurrRSigmaRandomHomogeneous(rSigmaRandomHomogeneous);
+                                                    for (double rPi : rPis) {
+                                                        this.dgData.getUtilityModelParams().setCurrRPi(rPi);
+                                                        for (boolean rPiRandomHomogeneous : rPiRandomHomogeneouses) {
+                                                            this.dgData.getUtilityModelParams().setCurrRPiRandomHomogeneous(rPiRandomHomogeneous);
+                                                            for (int N : Ns) {
+                                                                this.dgData.getUtilityModelParams().setCurrN(N);
+                                                                for (boolean iota : iotas) {
+                                                                    this.dgData.getUtilityModelParams().setCurrIota(iota);
+                                                                    for (double phi : phis) {
+                                                                        this.dgData.getUtilityModelParams().setCurrPhi(phi);
+                                                                        for (double omega : omegas) {
+                                                                            this.dgData.getUtilityModelParams().setCurrOmega(omega);
+                                                                            for (boolean omegaShuffle : omegaShuffles) {
+                                                                                this.dgData.getUtilityModelParams().setCurrOmegaShuffle(omegaShuffle);
 
-                                                                                    this.dgData.getSimStats().incUpc();
-                                                                                    logger.info("Starting to compute "
-                                                                                            + this.dgData.getUtilityModelParams().
-                                                                                            getSimsPerParameterCombination()
-                                                                                            + " simulations for parameter combination: "
-                                                                                            + this.dgData.getSimStats().getUpc() + " / "
-                                                                                            + upcs);
+                                                                                this.dgData.getSimStats().incUpc();
+                                                                                logger.info("Starting to compute "
+                                                                                        + this.dgData.getUtilityModelParams().
+                                                                                        getSimsPerParameterCombination()
+                                                                                        + " simulations for parameter combination: "
+                                                                                        + this.dgData.getSimStats().getUpc() + " / "
+                                                                                        + upcs);
 
-                                                                                    // multiple simulations for same parameter combination
-                                                                                    this.dgData.getSimStats().setSimPerUpc(1);
-                                                                                    while (this.dgData.getSimStats().getSimPerUpc()
-                                                                                            <= this.dgData.getUtilityModelParams().
-                                                                                            getSimsPerParameterCombination()) {
+                                                                                // multiple simulations for same parameter combination
+                                                                                this.dgData.getSimStats().setSimPerUpc(1);
+                                                                                while (this.dgData.getSimStats().getSimPerUpc()
+                                                                                        <= this.dgData.getUtilityModelParams().
+                                                                                        getSimsPerParameterCombination()) {
 
-                                                                                        // uid = "upc-sim"
-                                                                                        this.dgData.getSimStats().setUid(
-                                                                                                String.valueOf(this.dgData.getSimStats().getUpc()) +
-                                                                                                "-" + String.valueOf(
-                                                                                                        this.dgData.getSimStats().getSimPerUpc()));
+                                                                                    // uid = "upc-sim"
+                                                                                    this.dgData.getSimStats().setUid(
+                                                                                            String.valueOf(this.dgData.getSimStats().getUpc()) +
+                                                                                            "-" + String.valueOf(
+                                                                                                    this.dgData.getSimStats().getSimPerUpc()));
 
-                                                                                        // simulate
-                                                                                        performSingleSimulation();
+                                                                                    // simulate
+                                                                                    performSingleSimulation();
 
-                                                                                        // log simulation summary
-                                                                                        if (PropertiesHandler.getInstance().isExportSummary()) {
-                                                                                            this.ssWriter.writeCurrentData();
-                                                                                        }
-
-                                                                                        logger.debug("Simulation " +
-                                                                                        this.dgData.getSimStats().getSimPerUpc() +
-                                                                                        "/" +
-                                                                                        this.dgData.getUtilityModelParams().getSimsPerParameterCombination() +
-                                                                                        " of parameter combination " +
-                                                                                        this.dgData.getSimStats().getUpc() +
-                                                                                        "/" +
-                                                                                        upcs +
-                                                                                        " finished.");
-
-                                                                                        this.dgData.getSimStats().incSimPerUpc();
+                                                                                    // log simulation summary
+                                                                                    if (PropertiesHandler.getInstance().isExportSummary()) {
+                                                                                        this.ssWriter.writeCurrentData();
                                                                                     }
+
+                                                                                    logger.debug("Simulation " +
+                                                                                            this.dgData.getSimStats().getSimPerUpc() +
+                                                                                            "/" +
+                                                                                            this.dgData.getUtilityModelParams().getSimsPerParameterCombination() +
+                                                                                            " of parameter combination " +
+                                                                                            this.dgData.getSimStats().getUpc() +
+                                                                                            "/" +
+                                                                                            upcs +
+                                                                                            " finished.");
+
+                                                                                    this.dgData.getSimStats().incSimPerUpc();
                                                                                 }
                                                                             }
                                                                         }
@@ -355,10 +349,6 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
             this.dgData.getUtilityModelParams().setCurrC2(ThreadLocalRandom.current().nextDouble(
                     this.dgData.getUtilityModelParams().getC2RandomMin(),
                     this.dgData.getUtilityModelParams().getC2RandomMax()));
-        }
-        // yGlobal
-        if (this.dgData.getUtilityModelParams().isYGlobalRandom()) {
-            this.dgData.getUtilityModelParams().setCurrYGlobal(ThreadLocalRandom.current().nextBoolean());
         }
         // sigma
         if (this.dgData.getUtilityModelParams().isSigmaRandom()) {
@@ -459,8 +449,7 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
                 this.dgData.getUtilityModelParams().getCurrB2(),
                 this.dgData.getUtilityModelParams().getCurrAlpha(),
                 this.dgData.getUtilityModelParams().getCurrC1(),
-                this.dgData.getUtilityModelParams().getCurrC2(),
-                this.dgData.getUtilityModelParams().isCurrYGlobal());
+                this.dgData.getUtilityModelParams().getCurrC2());
 
         // add agents - with RPi == RSigma!!!
         DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR,

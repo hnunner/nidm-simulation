@@ -45,8 +45,6 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
     private double c1;
     // quadratic costs of additional direct connections
     private double c2;
-    // whether y is computed globally (n*(n-1)/2) or locally (ties of agent that do not share a tie between each other)
-    private boolean yGlobal;
     // the panel to track GUI parameter changes from
     private NunnerBuskensPanel nbPanel;
 
@@ -64,11 +62,9 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
      *          the weight of benefits for triads
      * @param alpha
      *          the preference shift between open and closed triads
-     * @param yGlobal
-     *           whether y is computed globally (n*(n-1)/2) or locally (ties of agent that do not share a tie between each other)
      */
-    public NunnerBuskens(double b1, double b2, double alpha, double c1, double c2, boolean yGlobal) {
-        this(b1, b2, alpha, c1, c2, yGlobal, null);
+    public NunnerBuskens(double b1, double b2, double alpha, double c1, double c2) {
+        this(b1, b2, alpha, c1, c2, null);
     }
 
     /**
@@ -84,18 +80,15 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
      *          the weight of benefits for triads
      * @param alpha
      *          the preference shift between open and closed triads
-     * @param yGlobal
-     *           whether y is computed globally (n*(n-1)/2) or locally (ties of agent that do not share a tie between each other)
      * @param nbPanel
      *          the panel to track GUI parameter changes from
      */
-    public NunnerBuskens(double b1, double b2, double alpha, double c1, double c2, boolean yGlobal, NunnerBuskensPanel nbPanel) {
+    public NunnerBuskens(double b1, double b2, double alpha, double c1, double c2, NunnerBuskensPanel nbPanel) {
         this.b1 = b1;
         this.b2 = b2;
         this.alpha = alpha;
         this.c1 = c1;
         this.c2 = c2;
-        this.yGlobal = yGlobal;
         this.nbPanel = nbPanel;
         if (this.nbPanel != null) {
             this.nbPanel.addParameterChangeListener(this);
@@ -123,7 +116,7 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
 
         // BENEFIT OF TRIADS
         // open triads
-        double y = this.yGlobal ? lacs.getYGlobal() : lacs.getYLocal();
+        double y = lacs.getY();
         // closed triads
         double z = lacs.getZ();
         // proportion of closed triads
@@ -201,14 +194,6 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
         this.alpha = this.nbPanel.getAlpha();
     }
 
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.gui.NunnerBuskensChangeListener#notifyYComputationChanged()
-     */
-    @Override
-    public void notifyYComputationChanged() {
-        this.yGlobal = this.nbPanel.isYGlobal();
-    }
-
 
     /**
      * @return the b1
@@ -257,13 +242,6 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
      */
     public void setC2(double c2) {
         this.c2 = c2;
-    }
-
-    /**
-     * @return the yGlobal
-     */
-    public boolean isyGlobal() {
-        return yGlobal;
     }
 
 }
