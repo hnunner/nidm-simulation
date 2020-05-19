@@ -38,7 +38,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import nl.uu.socnetid.nidm.data.LogValues;
+import nl.uu.socnetid.nidm.data.out.LogValues;
 import nl.uu.socnetid.nidm.system.PropertiesHandler;
 
 /**
