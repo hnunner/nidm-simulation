@@ -25,11 +25,19 @@
  */
 package nl.uu.socnetid.nidm.io.generator.network;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
+import org.apache.commons.math.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,9 +49,11 @@ import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
 import nl.uu.socnetid.nidm.io.csv.NunnerBuskensNetworkSummaryWriter;
 import nl.uu.socnetid.nidm.io.generator.AbstractGenerator;
+import nl.uu.socnetid.nidm.io.network.AgentPropertiesWriter;
 import nl.uu.socnetid.nidm.io.network.EdgeListWriter;
 import nl.uu.socnetid.nidm.io.network.GEXFWriter;
 import nl.uu.socnetid.nidm.io.network.NetworkFileWriter;
+import nl.uu.socnetid.nidm.networks.AssortativityConditions;
 import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.simulation.Simulation;
 import nl.uu.socnetid.nidm.simulation.SimulationListener;
@@ -109,8 +119,101 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
         this.dgData.getUtilityModelParams().setCurrC1(0.2);
         this.dgData.getUtilityModelParams().setCurrPhi(0.60);
         this.dgData.getUtilityModelParams().setCurrPsi(0.6);
+        this.dgData.getUtilityModelParams().setCurrOmega(0.8);
+        this.dgData.getUtilityModelParams().setAssortativityCondition(AssortativityConditions.AGE);
+
+        initAgeAssortativity();
+    }
+
+
+    private double[] lineToDoubles(String[] line) {
+        double[] doubles = new double[line.length];
+        for (int i=0; i<line.length; i++) {
+            doubles[i] = Double.parseDouble(line[i].trim().replaceAll("\\uFEFF", ""));
+        }
+        return doubles;
+    }
+
+
+    /**
+     * Initializes the age assortativity of the agents stored in /resources/age-ass.csv.
+     *
+     * TODO move parsing of file into system package and generalize with Network.initAgeDistribution()
+     * TODO generalize assortativity computation
+     */
+    private void initAgeAssortativity() {
+
+        try {
+            // TODO move path into properties file
+            Path pathToFile = Paths.get(getClass().getClassLoader().getResource("age-ass-polymod-SPA.csv").toURI());
+
+            BufferedReader br = null;
+            try {
+                br = Files.newBufferedReader(pathToFile, StandardCharsets.UTF_8);
+
+                // columns = age groups
+                String line = br.readLine();
+                double[] ageGroups = lineToDoubles(line.split(";"));
+
+                int i = 0;                  // running index for age source
+                List<Double> agesSrc = new ArrayList<Double>();
+                List<Double> agesDst = new ArrayList<Double>();
+                line = br.readLine();
+                while (line != null) {
+                    double ageSrc = ageGroups[i];
+                    double[] freqs = lineToDoubles(line.split(";"));
+                    int j = 0;          // running index for age destination
+
+                    for (int k=0; k<freqs.length; k++) {
+                        double freq = freqs[k];
+                        double ageDst = ageGroups[j];
+                        for (int l=0; l<freq; l++) {
+                            agesSrc.add(ageSrc);
+                            agesDst.add(ageDst);
+                        }
+                        j++;
+                    }
+                    i++;
+                    line = br.readLine();
+                }
+
+                double a = 0.0;
+                // Pearson correlation coefficient
+                if (agesSrc.size() > 1 || agesDst.size() > 1) {
+                    try {
+                        a = new PearsonsCorrelation().correlation(
+                                agesSrc.stream().mapToDouble(Double::doubleValue).toArray(),
+                                agesDst.stream().mapToDouble(Double::doubleValue).toArray());
+                        if (Double.isNaN(a)) {
+                            a = 0.0;
+                        }
+                    } catch (Exception e) {
+                        logger.error("Computation of Pearson's correlation coefficient failed: ", e);
+                        a = 0.0;
+                    }
+                }
+                logger.info("Age assortativity: " + Math.round(a*100.0)/100.0);
+
+            } catch (IOException ioe) {
+                logger.error("Error while parsing age assortativity.", ioe);
+            }
+            finally {
+                if (br != null) {
+                    try {
+                        br.close();
+                    } catch (IOException ioe) {
+                        logger.error("Error while closing BufferedReader", ioe);
+                    }
+                }
+            }
+
+        } catch (URISyntaxException use) {
+            logger.error("Error while loading age assortativtiy", use);
+        }
 
     }
+
+
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.io.generator.AbstractGenerator#initWriters()
@@ -148,10 +251,10 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
             // settings for av. degree of 5.44:  5.56 <= tMean <= 5.57
             for (double targetMean = 6; targetMean <= 6; targetMean = Math.round((targetMean + 2) * 100.0) / 100.0) {
 
-                logger.debug("starting to simulate 20 run(s) for alpha: " + alpha + " and target mean: " + targetMean);
+                logger.debug("starting to simulate 3 run(s) for alpha: " + alpha + " and target mean: " + targetMean);
 
                 this.dgData.getSimStats().incUpc();
-                for (int run = 1; run <= 20; run++) {
+                for (int run = 1; run <= 3; run++) {
                     logger.debug("run " + run + ": started.");
                     this.dgData.getSimStats().setSimPerUpc(run);
                     // uid = "upc-sim"
@@ -194,7 +297,7 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
                     this.dgData.getUtilityModelParams().setCurrC2(allC2s/this.dgData.getUtilityModelParams().getCurrN());
 
                     // create network
-                    this.network = new Network();
+                    this.network = new Network("Network of the infectious kind", false, AssortativityConditions.AGE);
                     // disease specs - same for all
                     DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, 0, 0, 0, 0);
                     for (int i = 0; i < c2s.length; i++) {
@@ -212,7 +315,7 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
                                 1.0,
                                 1.0,
                                 this.dgData.getUtilityModelParams().getCurrPhi(),
-                                0.0,
+                                this.dgData.getUtilityModelParams().getCurrOmega(),
                                 this.dgData.getUtilityModelParams().getCurrPsi());
                     }
                     this.dgData.setAgents(new ArrayList<Agent>(network.getAgents()));
@@ -265,10 +368,6 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
     }
 
 
-    /**
-     * @param allC2s
-     * @return
-     */
     private void lowerC2s(double targetDegree) {
         Iterator<Agent> aIt;
         double allC2s = 0.0;
@@ -331,6 +430,12 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
                 new EdgeListWriter(),
                 this.network);
         elWriter.write();
+
+        NetworkFileWriter ageWriter = new NetworkFileWriter(getExportPath(),
+                this.dgData.getSimStats().getUid() + "-" + nameAppendix + ".age",
+                new AgentPropertiesWriter(),
+                this.network);
+        ageWriter.write();
 
         GEXFWriter gexfWriter = new GEXFWriter();
         gexfWriter.writeStaticNetwork(this.network, getExportPath() + this.dgData.getSimStats().getUid() +

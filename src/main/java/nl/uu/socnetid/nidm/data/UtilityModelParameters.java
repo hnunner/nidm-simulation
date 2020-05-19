@@ -25,6 +25,8 @@
  */
 package nl.uu.socnetid.nidm.data;
 
+import nl.uu.socnetid.nidm.networks.AssortativityConditions;
+
 /**
  * @author Hendrik Nunner
  */
@@ -62,6 +64,8 @@ public abstract class UtilityModelParameters {
     private boolean omegaShuffleRandom;
     private boolean[] omegaShuffles;
     private boolean currOmegaShuffle;
+    // ac - assortativity condition
+    private AssortativityConditions ac;     // TODO move to a more appropriate place (not really a utility parameter)
 
     // INFECTIONS
     // sigma - severity
@@ -1001,6 +1005,20 @@ public abstract class UtilityModelParameters {
      */
     public void setCurrOmegaShuffle(boolean currOmegaShuffle) {
         this.currOmegaShuffle = currOmegaShuffle;
+    }
+
+    /**
+     * @return the ac
+     */
+    public AssortativityConditions getAssortativityCondition() {
+        return ac;
+    }
+
+    /**
+     * @param ac the ac to set
+     */
+    public void setAssortativityCondition(AssortativityConditions ac) {
+        this.ac = ac;
     }
 
 }

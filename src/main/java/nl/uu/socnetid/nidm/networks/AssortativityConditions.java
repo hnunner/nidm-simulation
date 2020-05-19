@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 - 2019
+ * Copyright (C) 2017 - 2020
  *      Hendrik Nunner    <h.nunner@gmail.com>
  *
  * This file is part of the NIDM-Simulation project <https://github.com/hnunner/NIDM-simulation>.
@@ -23,30 +23,15 @@
  *      Nunner, H., Buskens, V., & Kretzschmar, M. (2019). A model for the co-evolution of dynamic
  *      social networks and infectious diseases. Manuscript sumbitted for publication.
  */
-package nl.uu.socnetid.nidm.agents;
+package nl.uu.socnetid.nidm.networks;
 
 /**
  * @author Hendrik Nunner
  */
-public enum AgentAttributes {
+public enum AssortativityConditions {
 
-    UTILITY_FUNCTION("utility.function"),
-    DISEASE_SPECS("disease.specs"),
-    DISEASE_GROUP("disease.group"),
-    DISEASE_INFECTION("disease.infection"),
-    UI_CLASS("ui.class"),
-    RISK_FACTOR_SIGMA("risk.factor.sigma"),
-    RISK_FACTOR_PI("risk.factor.pi"),
-    RISK_MEANING_SIGMA("risk.meaning.sigma"),
-    RISK_MEANING_PI("risk.meaning.pi"),
-    PHI("phi"),
-    PSI("psi"),
-    OMEGA("omega"),
-    OMEGA_SHUFFLE("omega.shuffle"),
-    SATISFIED("satisfied"),
-    CONNECTION_STATS("connection.stats"),
-    AGE("age"),
-    ASSORTATIVITY_CONDITION("assortativity.condition");
+    RISK_PERCEPTION("ac.riskperception"),
+    AGE("ac.age");
 
     // the name
     private String name;
@@ -57,7 +42,7 @@ public enum AgentAttributes {
      * @param name
      *          the name of the enum
      */
-    AgentAttributes(String name) {
+    AssortativityConditions(String name) {
         this.name = name;
     }
 

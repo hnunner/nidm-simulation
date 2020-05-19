@@ -108,8 +108,8 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
         cols.add(LogValues.DV_NET_AV_COSTS_SOCIAL_PRE.toString());
         cols.add(LogValues.DV_NET_AV_COSTS_DISEASE_PRE.toString());
         cols.add(LogValues.DV_NET_DENSITY_PRE.toString());
-        cols.add(LogValues.DV_NET_ASSORTATIVITY_RSIGMA_PRE.toString());
-        cols.add(LogValues.DV_NET_ASSORTATIVITY_RPI_PRE.toString());
+        cols.add(LogValues.DV_NET_ASSORTATIVITY_CONDITION.toString());
+        cols.add(LogValues.DV_NET_ASSORTATIVITY_PRE.toString());
         cols.add(LogValues.DV_NET_STABLE_PRE.toString());
         // post-epidemic
         cols.add(LogValues.DV_NET_PERCENTAGE_SUSCEPTIBLE.toString());
@@ -126,8 +126,8 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
         cols.add(LogValues.DV_NET_AV_COSTS_SOCIAL_POST.toString());
         cols.add(LogValues.DV_NET_AV_COSTS_DISEASE_POST.toString());
         cols.add(LogValues.DV_NET_DENSITY_POST.toString());
-        cols.add(LogValues.DV_NET_ASSORTATIVITY_RSIGMA_POST.toString());
-        cols.add(LogValues.DV_NET_ASSORTATIVITY_RPI_POST.toString());
+        cols.add(LogValues.DV_NET_ASSORTATIVITY_CONDITION.toString());
+        cols.add(LogValues.DV_NET_ASSORTATIVITY_POST.toString());
         cols.add(LogValues.DV_NET_STABLE_POST.toString());
         // index case
         cols.add(LogValues.DV_INDEX_SATISFIED.toString());
@@ -187,8 +187,8 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
         currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvSocialCosts()));
         currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvDiseaseCosts()));
         currData.add(String.valueOf(this.dgData.getNetStatsPre().getDensity()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPre().getAssortativityRSigma()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPre().getAssortativityRPi()));
+        currData.add(this.dgData.getNetStatsPre().getAssortativityCondition().toString());
+        currData.add(String.valueOf(this.dgData.getNetStatsPre().getAssortativity()));
         currData.add(String.valueOf(this.dgData.getNetStatsPre().isStable() ? 1 : 0));
         // network - post epidemic
         currData.add(String.valueOf(this.dgData.getNetStatsPost().getSusceptiblePercent()));
@@ -205,8 +205,8 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
         currData.add(String.valueOf(this.dgData.getNetStatsPost().getAvSocialCosts()));
         currData.add(String.valueOf(this.dgData.getNetStatsPost().getAvDiseaseCosts()));
         currData.add(String.valueOf(this.dgData.getNetStatsPost().getDensity()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPost().getAssortativityRSigma()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPost().getAssortativityRPi()));
+        currData.add(this.dgData.getNetStatsPre().getAssortativityCondition().toString());
+        currData.add(String.valueOf(this.dgData.getNetStatsPost().getAssortativity()));
         currData.add(String.valueOf(this.dgData.getNetStatsPost().isStable() ? 1 : 0));
         // index case
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().isSatisfied()));
