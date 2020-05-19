@@ -28,9 +28,9 @@ package nl.uu.socnetid.nidm.io.csv;
 import java.io.IOException;
 import java.util.List;
 
-import nl.uu.socnetid.nidm.data.CidmParameters;
-import nl.uu.socnetid.nidm.data.DataGeneratorData;
-import nl.uu.socnetid.nidm.data.LogValues;
+import nl.uu.socnetid.nidm.data.out.CidmParameters;
+import nl.uu.socnetid.nidm.data.out.DataGeneratorData;
+import nl.uu.socnetid.nidm.data.out.LogValues;
 
 /**
  * @author Hendrik Nunner
