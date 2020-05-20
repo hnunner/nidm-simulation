@@ -125,6 +125,18 @@ public class Network extends SingleGraph implements SimulationListener {
      *
      * @param id
      *          the network's unique identifier
+     * @param ac
+     *          the condition to realize assortativity for
+     */
+    public Network(String id, AssortativityConditions ac) {
+        this(id, false, ac);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param id
+     *          the network's unique identifier
      * @param arrangeInCircle
      *          flag whether agents to arrange in circle or not
      * @param ac
@@ -815,6 +827,24 @@ public class Network extends SingleGraph implements SimulationListener {
      */
     public double getAvDegree() {
         return Toolkit.averageDegree(this);
+    }
+
+    /**
+     * Gets the the theoretic average degree of the network (dependent on the utility function of the agents).
+     *
+     * @return the theoretic average degree of the network
+     */
+    public double getTheoreticAvDegree() {
+        if (this.getN() == 0) {
+            return 0.0;
+        }
+
+        double allTheoreticDegrees = 0.0;
+        Iterator<Agent> aIt = this.getAgentIterator();
+        while (aIt.hasNext()) {
+            allTheoreticDegrees += aIt.next().getUtilityFunction().getTheoreticDegree();
+        }
+        return allTheoreticDegrees / this.getN();
     }
 
     /**

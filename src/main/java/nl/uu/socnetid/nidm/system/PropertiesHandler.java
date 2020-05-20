@@ -86,6 +86,7 @@ public class PropertiesHandler {
     private boolean generateNunnerBuskensData;
     private boolean generateNunnerBuskensNetworks;
     private boolean generateNunnerBuskensNetworksSimple;
+    private boolean generateNunnerBuskensNetworksGenetic;
     private NunnerBuskensParameters nbParameters;
 
     // DATA EXPORT
@@ -323,6 +324,7 @@ public class PropertiesHandler {
         generateNunnerBuskensData = Boolean.parseBoolean(configProps.getProperty("nb.generate.data"));
         generateNunnerBuskensNetworks = Boolean.parseBoolean(configProps.getProperty("nb.generate.networks"));
         generateNunnerBuskensNetworksSimple = Boolean.parseBoolean(configProps.getProperty("nb.generate.networks.simple"));
+        generateNunnerBuskensNetworksGenetic = Boolean.parseBoolean(configProps.getProperty("nb.generate.networks.genetic"));
         nbParameters = new NunnerBuskensParameters();
         // network structure static during epidemics
         nbParameters.setEpStaticRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_EPSTATIC_RANDOM.toString())));
@@ -659,6 +661,15 @@ public class PropertiesHandler {
      */
     public boolean isGenerateNunnerBuskensNetworksSimple() {
         return generateNunnerBuskensNetworksSimple;
+    }
+
+    /**
+     * Gets whether to generate genetic networks for the NunnerBuskens model or not.
+     *
+     * @return true if networks ought to be generated, false otherwise
+     */
+    public boolean isGenerateNunnerBuskensNetworksGenetic() {
+        return generateNunnerBuskensNetworksGenetic;
     }
 
     /**

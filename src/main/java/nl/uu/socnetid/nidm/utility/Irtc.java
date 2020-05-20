@@ -25,6 +25,9 @@
  */
 package nl.uu.socnetid.nidm.utility;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
 import nl.uu.socnetid.nidm.stats.StatsComputer;
@@ -33,6 +36,8 @@ import nl.uu.socnetid.nidm.stats.StatsComputer;
  * @author Hendrik Nunner
  */
 public class Irtc extends UtilityFunction {
+
+    private static final Logger logger = LogManager.getLogger(BurgerBuskens.class);
 
     // utility of direct connections
     private final double alpha;
@@ -126,6 +131,15 @@ public class Irtc extends UtilityFunction {
         }
 
         return p * s;
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getTheoreticDegree()
+     */
+    @Override
+    public double getTheoreticDegree() {
+        logger.warn("getTheoreticDegree not implemented for " + getClass().getName());
+        return 0.0;
     }
 
 
