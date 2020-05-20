@@ -139,6 +139,44 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
     }
 
     /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getTheoreticDegree()
+     */
+    @Override
+    public double getTheoreticDegree() {
+        return NunnerBuskens.getAvDegreeFromC2(this.getB1(), this.getC1(), this.getC2());
+    }
+
+    /**
+     * Gets the required parameter setting for average degree for a given b1, c1, and c2.
+     *
+     * @param b1
+     *          the benefit for social ties
+     * @param c1
+     *          the standard costs for social ties
+     * @param c2
+     *          the marginal costs
+     * @return the required parameter setting for average degree
+     */
+    public static double getAvDegreeFromC2(double b1, double c1, double c2) {
+        return ((b1 - c1) / (2 * c2));
+    }
+
+    /**
+     * Gets the required parameter setting for marginal costs for a given b1, c1, and average degree.
+     *
+     * @param b1
+     *          the benefit for social ties
+     * @param c1
+     *          the standard costs for social ties
+     * @param avDegree
+     *          the average degree
+     * @return the required parameter setting for marginal costs
+     */
+    public static double getC2FromAvDegree(double b1, double c1, double avDegree) {
+        return ((b1 - c1) / (2 * avDegree));
+    }
+
+    /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.utility.UtilityFunction#toString()
      */
     @Override
@@ -243,5 +281,7 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
     public void setC2(double c2) {
         this.c2 = c2;
     }
+
+
 
 }
