@@ -44,6 +44,7 @@ import nl.uu.socnetid.nidm.io.generator.data.CarayolRouxDataGenerator;
 import nl.uu.socnetid.nidm.io.generator.data.CidmDataGenerator;
 import nl.uu.socnetid.nidm.io.generator.data.NunnerBuskensDataGenerator;
 import nl.uu.socnetid.nidm.io.generator.network.NunnerBuskensNetworkGenerator;
+import nl.uu.socnetid.nidm.io.generator.network.NunnerBuskensNetworkGeneratorGenetic;
 import nl.uu.socnetid.nidm.io.generator.network.NunnerBuskensNetworkGeneratorSimple;
 import nl.uu.socnetid.nidm.system.PropertiesHandler;
 
@@ -194,6 +195,11 @@ public class Generator {
         // Nunner & Buskens (2019)
         if (PropertiesHandler.getInstance().isGenerateNunnerBuskensNetworksSimple()) {
             dataGenerator = new NunnerBuskensNetworkGeneratorSimple(getNetworkExportPath());
+            dataGenerator.launch();
+        }
+        // Nunner & Buskens (2019)
+        if (PropertiesHandler.getInstance().isGenerateNunnerBuskensNetworksGenetic()) {
+            dataGenerator = new NunnerBuskensNetworkGeneratorGenetic(getNetworkExportPath());
             dataGenerator.launch();
         }
     }

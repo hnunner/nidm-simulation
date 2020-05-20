@@ -25,6 +25,9 @@
  */
 package nl.uu.socnetid.nidm.utility;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.gui.NunnerBuskens2ChangeListener;
 import nl.uu.socnetid.nidm.gui.NunnerBuskens2Panel;
@@ -34,6 +37,8 @@ import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
  * @author Hendrik Nunner
  */
 public class NunnerBuskens2 extends UtilityFunction implements NunnerBuskens2ChangeListener {
+
+    private static final Logger logger = LogManager.getLogger(BurgerBuskens.class);
 
     // CONSTANTS
     // costs of direct connections
@@ -142,6 +147,15 @@ public class NunnerBuskens2 extends UtilityFunction implements NunnerBuskens2Cha
 
         // result
         return c;
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getTheoreticDegree()
+     */
+    @Override
+    public double getTheoreticDegree() {
+        logger.warn("getTheoreticDegree not implemented for " + getClass().getName());
+        return 0.0;
     }
 
     /* (non-Javadoc)

@@ -27,7 +27,6 @@ package nl.uu.socnetid.nidm.io.generator.network;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.commons.math3.distribution.ExponentialDistribution;
@@ -127,19 +126,6 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
     }
 
 
-    private double getTheoreticMeanDegree(Collection<Agent> agents) {
-        double allDegrees = 0.0;
-        Iterator<Agent> aIt = agents.iterator();
-        while (aIt.hasNext()) {
-            NunnerBuskens uf = (NunnerBuskens) aIt.next().getUtilityFunction();
-            double degree = (uf.getB1() - uf.getC1()) / (2 * uf.getC2());
-            allDegrees += degree;
-        }
-
-        return allDegrees / agents.size();
-    }
-
-
     /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.io.generator.AbstractDataGenerator#generateData()
      */
@@ -218,7 +204,7 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
                                 this.dgData.getUtilityModelParams().getCurrPsi());
                     }
                     this.dgData.setAgents(new ArrayList<Agent>(network.getAgents()));
-                    logger.debug("theoretic mean degree: " + getTheoreticMeanDegree(this.network.getAgents()));
+                    logger.debug("theoretic mean degree: " + this.network.getTheoreticAvDegree());
 
 
                     // create simulation
@@ -270,7 +256,7 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
     private void lowerC2s(double targetDegree) {
         Iterator<Agent> aIt;
         double allC2s = 0.0;
-        while (Math.round((getTheoreticMeanDegree(this.network.getAgents()) * 100.0)) / 100.0 > targetDegree) {
+        while (Math.round((this.network.getTheoreticAvDegree() * 100.0)) / 100.0 > targetDegree) {
             aIt = this.network.getAgentIterator();
             allC2s = 0.0;
             while (aIt.hasNext()) {
@@ -280,7 +266,8 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
                 uf.setC2(newC2);
                 allC2s += newC2;
             }
-            logger.debug("new mean degree: " + Math.round((getTheoreticMeanDegree(this.network.getAgents()) * 100.0)) / 100.0);
+            logger.debug("new mean degree: " +
+            Math.round((this.network.getTheoreticAvDegree() * 100.0)) / 100.0);
         }
         this.dgData.getUtilityModelParams().setCurrC2(allC2s/this.dgData.getUtilityModelParams().getCurrN());
     }
