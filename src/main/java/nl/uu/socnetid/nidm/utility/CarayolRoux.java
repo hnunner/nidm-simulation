@@ -28,6 +28,9 @@ package nl.uu.socnetid.nidm.utility;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.gui.CarayolRouxChangeListener;
 import nl.uu.socnetid.nidm.gui.CarayolRouxPanel;
@@ -38,6 +41,8 @@ import nl.uu.socnetid.nidm.stats.StatsComputer;
  * @author Hendrik Nunner
  */
 public class CarayolRoux extends UtilityFunction implements CarayolRouxChangeListener {
+
+    private static final Logger logger = LogManager.getLogger(BurgerBuskens.class);
 
     // benefits of connections
     private double crOmega;
@@ -143,6 +148,15 @@ public class CarayolRoux extends UtilityFunction implements CarayolRouxChangeLis
 //        }
 //
 //        return costs;
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getTheoreticDegree()
+     */
+    @Override
+    public double getTheoreticDegree() {
+        logger.warn("getTheoreticDegree not implemented for " + getClass().getName());
+        return 0.0;
     }
 
     /* (non-Javadoc)
