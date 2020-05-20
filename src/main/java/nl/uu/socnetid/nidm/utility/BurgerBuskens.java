@@ -25,6 +25,9 @@
  */
 package nl.uu.socnetid.nidm.utility;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.gui.BurgerBuskensChangeListener;
 import nl.uu.socnetid.nidm.gui.BurgerBuskensPanel;
@@ -34,6 +37,8 @@ import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
  * @author Hendrik Nunner
  */
 public class BurgerBuskens extends UtilityFunction implements BurgerBuskensChangeListener {
+
+    private static final Logger logger = LogManager.getLogger(BurgerBuskens.class);
 
     // benefits of direct connections
     private double b1;
@@ -130,6 +135,15 @@ public class BurgerBuskens extends UtilityFunction implements BurgerBuskensChang
                 this.c2 * (lacs.getN()*lacs.getN()) +
                 // costs for closed triads
                 this.c3 * lacs.getZ();
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getTheoreticDegree()
+     */
+    @Override
+    public double getTheoreticDegree() {
+        logger.warn("getTheoreticDegree not implemented for " + getClass().getName());
+        return 0.0;
     }
 
     /* (non-Javadoc)
