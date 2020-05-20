@@ -25,6 +25,9 @@
  */
 package nl.uu.socnetid.nidm.utility;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
 
@@ -32,6 +35,8 @@ import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
  * @author Hendrik Nunner
  */
 public final class Cumulative extends UtilityFunction {
+
+    private static final Logger logger = LogManager.getLogger(BurgerBuskens.class);
 
     // default values
     private static final double DEFAULT_DIRECT = 1.0;
@@ -102,6 +107,15 @@ public final class Cumulative extends UtilityFunction {
     @Override
     protected double getDiseaseCosts(LocalAgentConnectionsStats lacs, Agent agent) {
         // no costs
+        return 0.0;
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getTheoreticDegree()
+     */
+    @Override
+    public double getTheoreticDegree() {
+        logger.warn("getTheoreticDegree not implemented for " + getClass().getName());
         return 0.0;
     }
 
