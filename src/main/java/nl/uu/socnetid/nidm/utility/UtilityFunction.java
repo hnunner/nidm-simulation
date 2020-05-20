@@ -123,6 +123,13 @@ public abstract class UtilityFunction {
     protected abstract double getSocialCosts(LocalAgentConnectionsStats lacs, Agent agent);
 
     /**
+     * Gets the theoretic degree, dependent on the parameter settings.
+     *
+     * @return the theoretic degree
+     */
+    public abstract double getTheoreticDegree();
+
+    /**
      * Computes the costs of a disease.
      *
      * @param lacs
