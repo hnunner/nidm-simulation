@@ -230,6 +230,27 @@ public enum LogValues {
     IV_NB_ZETA("nb.zeta"),
     IV_NB_EPSILON("nb.epsilon"),
     IV_NB_SIMS_PER_PC("nb.n"),
+    // NunnerBuskens genetic
+    IV_NB_GEN_B1("nb.gen.b1"),
+    IV_NB_GEN_B2("nb.gen.b2"),
+    IV_NB_GEN_C1("nb.gen.c1"),
+    IV_NB_GEN_PHI("nb.gen.phi"),
+    IV_NB_GEN_PSI("nb.gen.psi"),
+    IV_NB_GEN_ROUNDS_MAX("nb.gen.rounds.max"),
+    IV_NB_GEN_MUTATION_SD("nb.gen.mutation.sd"),
+    IV_NB_GEN_PARENTS("nb.gen.parents"),
+    IV_NB_GEN_CHILDREN("nb.gen.children"),
+    IV_NB_GEN_GENERATIONS("nb.gen.generations"),
+    IV_NB_GEN_N("nb.gen.N"),
+    IV_NB_GEN_GENERATION("nb.gen.generation"),
+    IV_NB_GEN_SIMPLE_ID("nb.gen.id.simple"),
+    IV_NB_GEN_MOTHER("nb.gen.mother"),
+    IV_NB_GEN_FATHER("nb.gen.father"),
+    IV_NB_GEN_TARGET_AVDEGREE("nb.gen.target.avdegree"),
+    IV_NB_GEN_TARGET_CLUSTERING("nb.gen.target.clustering"),
+    IV_NB_GEN_TARGET_ASSORTATIVITY("nb.gen.target.assortativity"),
+    IV_NB_GEN_INITIAL_ALPHA("nb.gen.initial.alpha"),
+    IV_NB_GEN_INITIAL_OMEGA("nb.gen.initial.omega"),
 
     // PROPERTIES (dependent variables)
     // simulation
@@ -277,6 +298,10 @@ public enum LogValues {
     DV_NET_AV_COSTS_DISEASE_PRE("net.costs.disease.pre.epidemic.av"),
     DV_NET_AV_COSTS_DISEASE_POST("net.costs.disease.post.epidemic.av"),
     DV_NET_TIES_BROKEN_EPIDEMIC("net.ties.broken.epidemic"),
+    DV_NET_GEN_FITNESS_AV_DEGREE("net.gen.fitness.degree.av"),
+    DV_NET_GEN_FITNESS_CLUSTERING("net.gen.fitness.clustering"),
+    DV_NET_GEN_FITNESS_ASSORTATIVITY("net.gen.fitness.assortativity"),
+    DV_NET_GEN_FITNESS_OVERALL("net.gen.fitness.overall"),
     // agent
     DV_AGENT_SATISFIED("agent.satisfied"),
     DV_AGENT_UTIL("agent.util"),

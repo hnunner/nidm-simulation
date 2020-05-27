@@ -56,12 +56,13 @@ public class AgeStructure {
             while (line != null) {
                 String[] attributes = line.split(";");
                 int min = Integer.valueOf(attributes[0]);
-                int max = Integer.valueOf(attributes[1]);
+                //int max = Integer.valueOf(attributes[1]);
                 int totalNorm = Integer.valueOf(attributes[3]);
 
                 for (int i = 0; i < totalNorm; i++) {
                     // store a random age within the year ranges of the age group
-                    this.ageDistribution.add(ThreadLocalRandom.current().nextInt(min, max+1));
+                    //this.ageDistribution.add(ThreadLocalRandom.current().nextInt(min, max+1));
+                    this.ageDistribution.add(min);
                 }
 
                 line = br.readLine();

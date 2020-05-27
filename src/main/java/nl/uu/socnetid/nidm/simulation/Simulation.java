@@ -52,8 +52,10 @@ public class Simulation implements Runnable {
     private Network network;
     // whether the network structure remains static while infection is present in network
     private boolean epStatic;
-    // switch used to stop the simulation
+    // switch used to pause the simulation
     private boolean paused = false;
+    // switch used to stop the simulation
+    private boolean stopped = false;
     // simulation delay
     private int delay = 0;
     // rounds
@@ -122,7 +124,7 @@ public class Simulation implements Runnable {
 
         this.activeInfection = false;
 
-        while (!this.network.isStable() && this.rounds < MAX_ROUNDS) {
+        while (!this.network.isStable() && this.rounds < MAX_ROUNDS && !this.stopped) {
             computeSingleRound();
         }
 
@@ -160,7 +162,7 @@ public class Simulation implements Runnable {
 
         this.activeInfection = false;
 
-        for (int i = 0; i < rounds; i++) {
+        while (!this.network.isStable() && this.rounds < rounds && !this.stopped) {
             computeSingleRound();
         }
 
@@ -199,19 +201,18 @@ public class Simulation implements Runnable {
         notifySimulationStarted();
 
         this.activeInfection = false;
+        this.rounds = 0;
 
-        int i = 0;
-        while ((!this.network.isStable() || this.network.hasActiveInfection()) && i < maxRounds) {
-//            logger.debug("round " + (i+1) + ": started");
+        while ((!this.network.isStable() || this.network.hasActiveInfection())
+                && this.rounds < maxRounds
+                && !this.stopped) {
             computeSingleRound();
-            logger.debug("round " + (i+1) + ": finished");
-//            logger.debug("-----------------");
-            i++;
+            logger.debug("round " + (this.rounds) + ": finished");
         }
 
         // status message
         StringBuilder sb = new StringBuilder();
-        sb.append("Simulation finished after " + i + " time steps.");
+        sb.append("Simulation finished after " + this.rounds + " time steps.");
         boolean unfinished = false;
         if (!this.network.isStable()) {
             sb.append(" Network was unstable.");
@@ -266,6 +267,13 @@ public class Simulation implements Runnable {
      */
     public void pause() {
         this.paused = true;
+    }
+
+    /**
+     * Pauses the simulation
+     */
+    public void stop() {
+        this.stopped = true;
     }
 
     /**
@@ -345,7 +353,7 @@ public class Simulation implements Runnable {
      * @return true if the simulation is running, false otherwise
      */
     public boolean isRunning() {
-        return !this.paused;
+        return !this.paused && !this.stopped;
     }
 
     /**
