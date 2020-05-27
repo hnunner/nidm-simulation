@@ -40,7 +40,7 @@ public class SimulationStats {
     private int roundLastInfection;
     private SimulationStage simStage;
     private int rounds;
-    private int currRound = 1;
+    private int currRound = 0;
 
 
     /**
@@ -166,7 +166,7 @@ public class SimulationStats {
      * increases the currRound
      */
     public void resetCurrRound() {
-        this.currRound = 1;
+        this.currRound = 0;
     }
 
 }
