@@ -40,6 +40,7 @@ import nl.uu.socnetid.nidm.data.out.BurgerBuskensParameters;
 import nl.uu.socnetid.nidm.data.out.CarayolRouxParameters;
 import nl.uu.socnetid.nidm.data.out.CidmParameters;
 import nl.uu.socnetid.nidm.data.out.LogValues;
+import nl.uu.socnetid.nidm.data.out.NunnerBuskensGeneticParameters;
 import nl.uu.socnetid.nidm.data.out.NunnerBuskensParameters;
 
 
@@ -86,8 +87,10 @@ public class PropertiesHandler {
     private boolean generateNunnerBuskensData;
     private boolean generateNunnerBuskensNetworks;
     private boolean generateNunnerBuskensNetworksSimple;
-    private boolean generateNunnerBuskensNetworksGenetic;
     private NunnerBuskensParameters nbParameters;
+    // NunnerBuskens networks genetic parameters
+    private boolean generateNunnerBuskensNetworksGenetic;
+    private NunnerBuskensGeneticParameters nbgParameters;
 
     // DATA EXPORT
     // types of data export
@@ -417,6 +420,26 @@ public class PropertiesHandler {
         nbParameters.setSimsPerParameterCombination(Integer.valueOf(configProps.getProperty(
                 LogValues.IV_NB_SIMS_PER_PC.toString())));
 
+        // NunnerBuskens networks genetic
+        generateNunnerBuskensNetworksGenetic = Boolean.parseBoolean(configProps.getProperty("nb.generate.networks.genetic"));
+        nbgParameters = new NunnerBuskensGeneticParameters();
+        nbgParameters.setB1(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_B1.toString())));
+        nbgParameters.setB2(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_B2.toString())));
+        nbgParameters.setC1(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_C1.toString())));
+        nbgParameters.setPhi(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_PHI.toString())));
+        nbgParameters.setPsi(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_PSI.toString())));
+        nbgParameters.setRoundsMax(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_ROUNDS_MAX.toString())));
+        nbgParameters.setMutationSd(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_MUTATION_SD.toString())));
+        nbgParameters.setParents(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_PARENTS.toString())));
+        nbgParameters.setChildren(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_CHILDREN.toString())));
+        nbgParameters.setGenerations(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_GENERATIONS.toString())));
+        nbgParameters.setN(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_N.toString())));
+        nbgParameters.setTargetAvDegree(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_TARGET_AVDEGREE.toString())));
+        nbgParameters.setTargetClustering(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_TARGET_CLUSTERING.toString())));
+        nbgParameters.setTargetAssortativity(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_TARGET_ASSORTATIVITY.toString())));
+        nbgParameters.setInitialAlpha(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_INITIAL_ALPHA.toString())));
+        nbgParameters.setInitialOmega(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_INITIAL_OMEGA.toString())));
+
         // types of data export
         this.exportSummary = Boolean.parseBoolean(configProps.getProperty("export.summary"));
         this.exportSummaryEachRound = Boolean.parseBoolean(configProps.getProperty("export.summary.each.round"));
@@ -679,6 +702,15 @@ public class PropertiesHandler {
      */
     public NunnerBuskensParameters getNunnerBuskensParameters() {
         return nbParameters;
+    }
+
+    /**
+     * Gets the NunnerBuskensGenetic parameters as defined in the config.properties
+     *
+     * @return the NunnerBuskens parameters as defined in the config.properties
+     */
+    public NunnerBuskensGeneticParameters getNunnerBuskensGeneticParameters() {
+        return nbgParameters;
     }
 
     /**
