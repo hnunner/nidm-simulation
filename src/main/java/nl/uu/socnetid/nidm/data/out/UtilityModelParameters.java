@@ -178,10 +178,24 @@ public abstract class UtilityModelParameters {
     }
 
     /**
+     * @return the N
+     */
+    public int getN() {
+        return currN;
+    }
+
+    /**
      * @param currN the currN to set
      */
     public void setCurrN(int currN) {
         this.currN = currN;
+    }
+
+    /**
+     * @param n the n to set
+     */
+    public void setN(int n) {
+        this.currN = n;
     }
 
     /**
@@ -290,10 +304,24 @@ public abstract class UtilityModelParameters {
     }
 
     /**
+     * @return the phi
+     */
+    public double getPhi() {
+        return currPhi;
+    }
+
+    /**
      * @param currPhi the currPhi to set
      */
     public void setCurrPhi(double currPhi) {
         this.currPhi = currPhi;
+    }
+
+    /**
+     * @param phi the phi to set
+     */
+    public void setPhi(double phi) {
+        this.currPhi = phi;
     }
 
     /**
@@ -360,10 +388,24 @@ public abstract class UtilityModelParameters {
     }
 
     /**
+     * @return the psi
+     */
+    public double getPsi() {
+        return currPsi;
+    }
+
+    /**
      * @param currPsi the currPsi to set
      */
     public void setCurrPsi(double currPsi) {
         this.currPsi = currPsi;
+    }
+
+    /**
+     * @param psi the psi to set
+     */
+    public void setPsi(double psi) {
+        this.currPsi = psi;
     }
 
     /**
@@ -430,10 +472,24 @@ public abstract class UtilityModelParameters {
     }
 
     /**
+     * @return the omega
+     */
+    public double getOmega() {
+        return currOmega;
+    }
+
+    /**
      * @param currOmega the currOmega to set
      */
     public void setCurrOmega(double currOmega) {
         this.currOmega = currOmega;
+    }
+
+    /**
+     * @param omega the omega to set
+     */
+    public void setOmega(double omega) {
+        this.currOmega = omega;
     }
 
     /**
