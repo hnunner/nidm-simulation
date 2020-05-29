@@ -238,6 +238,7 @@ public enum LogValues {
     IV_NB_GEN_PSI("nb.gen.psi"),
     IV_NB_GEN_ROUNDS_MAX("nb.gen.rounds.max"),
     IV_NB_GEN_MUTATION_SD("nb.gen.mutation.sd"),
+    IV_NB_GEN_FIRST_GENERATION("nb.gen.first.generation"),
     IV_NB_GEN_PARENTS("nb.gen.parents"),
     IV_NB_GEN_CHILDREN("nb.gen.children"),
     IV_NB_GEN_GENERATIONS("nb.gen.generations"),
@@ -249,8 +250,10 @@ public enum LogValues {
     IV_NB_GEN_TARGET_AVDEGREE("nb.gen.target.avdegree"),
     IV_NB_GEN_TARGET_CLUSTERING("nb.gen.target.clustering"),
     IV_NB_GEN_TARGET_ASSORTATIVITY("nb.gen.target.assortativity"),
-    IV_NB_GEN_INITIAL_ALPHA("nb.gen.initial.alpha"),
-    IV_NB_GEN_INITIAL_OMEGA("nb.gen.initial.omega"),
+    IV_NB_GEN_INITIAL_ALPHA_MIN("nb.gen.initial.alpha.min"),
+    IV_NB_GEN_INITIAL_ALPHA_MAX("nb.gen.initial.alpha.max"),
+    IV_NB_GEN_INITIAL_OMEGA_MIN("nb.gen.initial.omega.min"),
+    IV_NB_GEN_INITIAL_OMEGA_MAX("nb.gen.initial.omega.max"),
 
     // PROPERTIES (dependent variables)
     // simulation
