@@ -77,7 +77,8 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
     private static final int NUMBER_OF_PARENTS =
             PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getParents();
     // size of first generation = iterations of number of parents
-    private static final int SIZE_OF_FIRST_GENERATION = (NUMBER_OF_PARENTS * (NUMBER_OF_PARENTS-1)) / 2 ;
+    private static final int SIZE_OF_FIRST_GENERATION =
+            PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getFirstGeneration();
     // number of children per pair of parents
     private static final int NUMBER_OF_CHILDREN =
             PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getChildren();
@@ -156,7 +157,7 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
         this.dgData.getUtilityModelParams().setPhi(
                 PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getPhi());
         this.dgData.getUtilityModelParams().setPsi(
-                PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getPhi());
+                PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getPsi());
         this.dgData.getUtilityModelParams().setAssortativityCondition(AssortativityConditions.AGE);
     }
 
@@ -254,29 +255,12 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
 
     private void simulateSingleGene(NunnerBuskensGene nbg) {
 
-        double avDegree = NunnerBuskens.getAvDegreeFromC2(
-                this.dgData.getUtilityModelParams().getB1(),
-                this.dgData.getUtilityModelParams().getC1(),
-                nbg.getAvC2());
-
-        NormalDistribution ndAvDegree = new NormalDistribution(avDegree, avDegree * MUTATION_SD);
-        double targetAvC2 = NunnerBuskens.getC2FromAvDegree(
-                this.dgData.getUtilityModelParams().getB1(),
-                this.dgData.getUtilityModelParams().getC1(),
-                ndAvDegree.sample());
-
-        NormalDistribution ndAlpha = new NormalDistribution(nbg.getAlpha(), nbg.getAlpha() * MUTATION_SD);
-        double targetAlpha = ndAlpha.sample();
-
-        NormalDistribution ndOmega = new NormalDistribution(nbg.getOmega(), nbg.getOmega() * MUTATION_SD);
-        double targetOmega = ndOmega.sample();
-
-        initNetwork(targetAvC2, targetAlpha, targetOmega);
+        initNetwork(nbg.getAvC2(), nbg.getAlpha(), nbg.getOmega());
 
         // simulate
         Simulation simulation = new Simulation(this.network);
         simulation.addSimulationListener(this);
-        simulation.simulateUntilStable(30);
+        simulation.simulateUntilStable(PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getRoundsMax());
     }
 
 
@@ -298,11 +282,16 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
             // first generation (based on target values)
             for (int progenitor = 1; progenitor <= SIZE_OF_FIRST_GENERATION; progenitor++) {
 
-                double avC2 = NunnerBuskens.getC2FromAvDegree(this.dgData.getUtilityModelParams().getB1(),
+                double avC2 = NunnerBuskens.getC2FromAvDegree(
+                        this.dgData.getUtilityModelParams().getB1(),
                         this.dgData.getUtilityModelParams().getC1(),
-                        TARGET_AV_DEGREE);
-                double alpha = this.dgData.getUtilityModelParams().getInitialAlpha();
-                double omega = this.dgData.getUtilityModelParams().getInitialOmega();
+                        new NormalDistribution(TARGET_AV_DEGREE, TARGET_AV_DEGREE * MUTATION_SD).sample());
+                double alpha = ThreadLocalRandom.current().nextDouble(
+                        this.dgData.getUtilityModelParams().getInitialAlphaMin(),
+                        this.dgData.getUtilityModelParams().getInitialAlphaMax());
+                double omega = ThreadLocalRandom.current().nextDouble(
+                        this.dgData.getUtilityModelParams().getInitialOmegaMin(),
+                        this.dgData.getUtilityModelParams().getInitialOmegaMax());
 
                 offspring.add(new NunnerBuskensGene(
                         generation,                                                                         // generation

@@ -903,68 +903,16 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         return res;
     }
 
-    /**
-     * Helper class to ensure edge consistency: lower index comes first.
-     *
-     * @author Hendrik Nunner
-     */
-    private class Connector {
-        private String edgeId;
-        private String idAgent1;
-        private String idAgent2;
+    private Agent getAgent1(Agent agent1, Agent agent2) {
+        return Long.valueOf(agent1.getId()) < Long.valueOf(agent2.getId()) ? agent1 : agent2;
+    }
 
-        private Agent agent1;
-        private Agent agent2;
+    private Agent getAgent2(Agent agent1, Agent agent2) {
+        return Long.valueOf(agent2.getId()) > Long.valueOf(agent1.getId()) ? agent2 : agent1;
+    }
 
-        protected Connector(Agent agent1, Agent agent2) {
-            // edge id consistency: lower index comes always first
-            ArrayList<Agent> agents = new ArrayList<Agent>();
-            agents.add(agent1);
-            agents.add(agent2);
-            Collections.sort(agents);
-
-            this.agent1 = agents.get(0);
-            this.agent2 = agents.get(1);
-
-            this.edgeId = String.valueOf(this.agent1.getId()) + String.valueOf(this.agent2.getId());
-            this.idAgent1 = String.valueOf(this.agent1.getId());
-            this.idAgent2 = String.valueOf(this.agent2.getId());
-        }
-
-        /**
-         * @return the edgeId
-         */
-        protected String getEdgeId() {
-            return edgeId;
-        }
-
-        /**
-         * @return the idAgent1
-         */
-        protected String getIdAgent1() {
-            return idAgent1;
-        }
-
-        /**
-         * @return the idAgent2
-         */
-        protected String getIdAgent2() {
-            return idAgent2;
-        }
-
-        /**
-         * @return the agent1
-         */
-        public Agent getAgent1() {
-            return agent1;
-        }
-
-        /**
-         * @return the agent2
-         */
-        public Agent getAgent2() {
-            return agent2;
-        }
+    private String getEdgeId(Agent agent1, Agent agent2) {
+        return this.getAgent1(agent1, agent2).getId().concat(this.getAgent2(agent1, agent2).getId());
     }
 
     /**
@@ -981,14 +929,15 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
             return;
         }
 
-        Connector connector = new Connector(this, newConnection);
-        String edgeId = connector.getEdgeId();
+        String edgeId = this.getEdgeId(this, newConnection);
 
         Network network = this.getNetwork();
         if (network.getEdge(edgeId) == null) {
-            network.addEdge(edgeId, connector.getIdAgent1(), connector.getIdAgent2());
+            Agent agent1 = this.getAgent1(this, newConnection);
+            Agent agent2 = this.getAgent2(this, newConnection);
+            network.addEdge(edgeId, agent1.getId(), agent2.getId());
+            notifyConnectionAdded(network.getEdge(edgeId), agent1, agent2);
         }
-        notifyConnectionAdded(network.getEdge(edgeId), connector.getAgent1(), connector.getAgent2());
     }
 
     /**
@@ -999,8 +948,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      * @return true if there is a connection, false otherwise
      */
     public boolean isDirectlyConnectedTo(Agent agent) {
-        Connector connector = new Connector(this, agent);
-        return this.getNetwork().getEdge(connector.getEdgeId()) != null;
+        return this.getNetwork().getEdge(this.getEdgeId(this, agent)) != null;
     }
 
     /**
