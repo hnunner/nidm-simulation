@@ -430,6 +430,7 @@ public class PropertiesHandler {
         nbgParameters.setPsi(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_PSI.toString())));
         nbgParameters.setRoundsMax(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_ROUNDS_MAX.toString())));
         nbgParameters.setMutationSd(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_MUTATION_SD.toString())));
+        nbgParameters.setFirstGeneration(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_FIRST_GENERATION.toString())));
         nbgParameters.setParents(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_PARENTS.toString())));
         nbgParameters.setChildren(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_CHILDREN.toString())));
         nbgParameters.setGenerations(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_GENERATIONS.toString())));
@@ -437,8 +438,10 @@ public class PropertiesHandler {
         nbgParameters.setTargetAvDegree(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_TARGET_AVDEGREE.toString())));
         nbgParameters.setTargetClustering(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_TARGET_CLUSTERING.toString())));
         nbgParameters.setTargetAssortativity(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_TARGET_ASSORTATIVITY.toString())));
-        nbgParameters.setInitialAlpha(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_INITIAL_ALPHA.toString())));
-        nbgParameters.setInitialOmega(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_INITIAL_OMEGA.toString())));
+        nbgParameters.setInitialAlphaMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_INITIAL_ALPHA_MIN.toString())));
+        nbgParameters.setInitialAlphaMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_INITIAL_ALPHA_MAX.toString())));
+        nbgParameters.setInitialOmegaMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_INITIAL_OMEGA_MIN.toString())));
+        nbgParameters.setInitialOmegaMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_INITIAL_OMEGA_MAX.toString())));
 
         // types of data export
         this.exportSummary = Boolean.parseBoolean(configProps.getProperty("export.summary"));

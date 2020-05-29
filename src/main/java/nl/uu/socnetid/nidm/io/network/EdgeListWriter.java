@@ -50,8 +50,7 @@ public class EdgeListWriter implements NetworkWriter {
      */
     @Override
     public String write(Network network) {
-        // TODO improve, as this is dodgy
-        return this.write(network, -1);
+        return this.write(network, network.getAgents().size());
     }
 
     /* (non-Javadoc)

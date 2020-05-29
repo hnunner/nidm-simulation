@@ -46,6 +46,7 @@ public class NunnerBuskensGeneticParameters extends UtilityModelParameters {
 
     // genetic
     private double mutationSd;
+    private int firstGeneration;
     private int parents;
     private int children;
     private int generations;
@@ -56,8 +57,10 @@ public class NunnerBuskensGeneticParameters extends UtilityModelParameters {
     private double targetAssortativity;
 
     // initial settings
-    private double initialAlpha;
-    private double initialOmega;
+    private double initialAlphaMin;
+    private double initialAlphaMax;
+    private double initialOmegaMin;
+    private double initialOmegaMax;
 
     // current offspring
     private NunnerBuskensGene offspring;
@@ -176,6 +179,20 @@ public class NunnerBuskensGeneticParameters extends UtilityModelParameters {
     }
 
     /**
+     * @return the firstGeneration
+     */
+    public int getFirstGeneration() {
+        return firstGeneration;
+    }
+
+    /**
+     * @param firstGeneration the firstGeneration to set
+     */
+    public void setFirstGeneration(int firstGeneration) {
+        this.firstGeneration = firstGeneration;
+    }
+
+    /**
      * @return the parents
      */
     public int getParents() {
@@ -260,31 +277,59 @@ public class NunnerBuskensGeneticParameters extends UtilityModelParameters {
     }
 
     /**
-     * @return the initialAlpha
+     * @return the initialAlphaMin
      */
-    public double getInitialAlpha() {
-        return initialAlpha;
+    public double getInitialAlphaMin() {
+        return initialAlphaMin;
     }
 
     /**
-     * @param initialAlpha the initialAlpha to set
+     * @param initialAlphaMin the initialAlphaMin to set
      */
-    public void setInitialAlpha(double initialAlpha) {
-        this.initialAlpha = initialAlpha;
+    public void setInitialAlphaMin(double initialAlphaMin) {
+        this.initialAlphaMin = initialAlphaMin;
     }
 
     /**
-     * @return the initialOmega
+     * @return the initialAlphaMax
      */
-    public double getInitialOmega() {
-        return initialOmega;
+    public double getInitialAlphaMax() {
+        return initialAlphaMax;
     }
 
     /**
-     * @param initialOmega the initialOmega to set
+     * @param initialAlphaMax the initialAlphaMax to set
      */
-    public void setInitialOmega(double initialOmega) {
-        this.initialOmega = initialOmega;
+    public void setInitialAlphaMax(double initialAlphaMax) {
+        this.initialAlphaMax = initialAlphaMax;
+    }
+
+    /**
+     * @return the initialOmegaMin
+     */
+    public double getInitialOmegaMin() {
+        return initialOmegaMin;
+    }
+
+    /**
+     * @param initialOmegaMin the initialOmegaMin to set
+     */
+    public void setInitialOmegaMin(double initialOmegaMin) {
+        this.initialOmegaMin = initialOmegaMin;
+    }
+
+    /**
+     * @return the initialOmegaMax
+     */
+    public double getInitialOmegaMax() {
+        return initialOmegaMax;
+    }
+
+    /**
+     * @param initialOmegaMax the initialOmegaMax to set
+     */
+    public void setInitialOmegaMax(double initialOmegaMax) {
+        this.initialOmegaMax = initialOmegaMax;
     }
 
 }
