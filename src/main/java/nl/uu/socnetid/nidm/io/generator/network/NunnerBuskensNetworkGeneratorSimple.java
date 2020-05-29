@@ -195,13 +195,15 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
                                 this.dgData.getUtilityModelParams().getCurrC1(),
                                 c2s[i]);
                         // add agents
-                        network.addAgent(uf,
+                        network.addAgent(
+                                uf,
                                 ds,
                                 1.0,
                                 1.0,
                                 this.dgData.getUtilityModelParams().getCurrPhi(),
                                 this.dgData.getUtilityModelParams().getCurrOmega(),
-                                this.dgData.getUtilityModelParams().getCurrPsi());
+                                this.dgData.getUtilityModelParams().getCurrPsi(),
+                                this.dgData.getUtilityModelParams().getXi());
                     }
                     this.dgData.setAgents(new ArrayList<Agent>(network.getAgents()));
                     logger.debug("theoretic mean degree: " + this.network.getTheoreticAvDegree());

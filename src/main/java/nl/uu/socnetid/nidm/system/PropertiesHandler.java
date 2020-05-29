@@ -404,6 +404,11 @@ public class PropertiesHandler {
         nbParameters.setPsiRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PSI_RANDOM_MIN.toString())));
         nbParameters.setPsiRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PSI_RANDOM_MAX.toString())));
         nbParameters.setPsis(parseDoubleArray(configProps.getProperty(LogValues.IV_NB_PSI.toString())));
+        // xi
+        nbParameters.setXiRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_XI_RANDOM.toString())));
+        nbParameters.setXiRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_XI_RANDOM_MIN.toString())));
+        nbParameters.setXiRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_XI_RANDOM_MAX.toString())));
+        nbParameters.setXis(parseDoubleArray(configProps.getProperty(LogValues.IV_NB_XI.toString())));
         // omega
         nbParameters.setOmegaRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_OMEGA_RANDOM.toString())));
         nbParameters.setOmegaRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_OMEGA_RANDOM_MIN.toString())));
@@ -428,6 +433,7 @@ public class PropertiesHandler {
         nbgParameters.setC1(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_C1.toString())));
         nbgParameters.setPhi(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_PHI.toString())));
         nbgParameters.setPsi(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_PSI.toString())));
+        nbgParameters.setXi(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_XI.toString())));
         nbgParameters.setRoundsMax(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_ROUNDS_MAX.toString())));
         nbgParameters.setMutationSd(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_MUTATION_SD.toString())));
         nbgParameters.setParents(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_PARENTS.toString())));

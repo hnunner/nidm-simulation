@@ -55,6 +55,12 @@ public abstract class UtilityModelParameters {
     private double psiRandomMax;
     private double[] psis;
     private double currPsi;
+    // psi - proportion of ties at distance 2 to evaluate per time step
+    private boolean xiRandom;
+    private double xiRandomMin;
+    private double xiRandomMax;
+    private double[] xis;
+    private double currXi;
     // omega - share of agents to select assortatively
     private boolean omegaRandom;
     private double omegaRandomMin;
@@ -406,6 +412,90 @@ public abstract class UtilityModelParameters {
      */
     public void setPsi(double psi) {
         this.currPsi = psi;
+    }
+
+    /**
+     * @return the xiRandom
+     */
+    public boolean isXiRandom() {
+        return xiRandom;
+    }
+
+    /**
+     * @param xiRandom the xiRandom to set
+     */
+    public void setXiRandom(boolean xiRandom) {
+        this.xiRandom = xiRandom;
+    }
+
+    /**
+     * @return the xiRandomMin
+     */
+    public double getXiRandomMin() {
+        return xiRandomMin;
+    }
+
+    /**
+     * @param xiRandomMin the xiRandomMin to set
+     */
+    public void setXiRandomMin(double xiRandomMin) {
+        this.xiRandomMin = xiRandomMin;
+    }
+
+    /**
+     * @return the xiRandomMax
+     */
+    public double getXiRandomMax() {
+        return xiRandomMax;
+    }
+
+    /**
+     * @param xiRandomMax the xiRandomMax to set
+     */
+    public void setXiRandomMax(double xiRandomMax) {
+        this.xiRandomMax = xiRandomMax;
+    }
+
+    /**
+     * @return the xis
+     */
+    public double[] getXis() {
+        return xis;
+    }
+
+    /**
+     * @param xis the xis to set
+     */
+    public void setXis(double[] xis) {
+        this.xis = xis;
+    }
+
+    /**
+     * @return the currXi
+     */
+    public double getCurrXi() {
+        return currXi;
+    }
+
+    /**
+     * @param currXi the currXi to set
+     */
+    public void setCurrXi(double currXi) {
+        this.currXi = currXi;
+    }
+
+    /**
+     * @return the xi
+     */
+    public double getXi() {
+        return currXi;
+    }
+
+    /**
+     * @param xi the xi to set
+     */
+    public void setXi(double xi) {
+        this.currXi = xi;
     }
 
     /**
