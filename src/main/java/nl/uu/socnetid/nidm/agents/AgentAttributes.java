@@ -41,6 +41,7 @@ public enum AgentAttributes {
     RISK_MEANING_PI("risk.meaning.pi"),
     PHI("phi"),
     PSI("psi"),
+    XI("xi"),
     OMEGA("omega"),
     OMEGA_SHUFFLE("omega.shuffle"),
     SATISFIED("satisfied"),
