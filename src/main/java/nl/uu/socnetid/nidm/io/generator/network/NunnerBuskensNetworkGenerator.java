@@ -299,8 +299,15 @@ public class NunnerBuskensNetworkGenerator extends AbstractGenerator implements 
         // add agents
         DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, 0, 0, 0, 0);
         for (int i = 0; i < this.dgData.getUtilityModelParams().getCurrN(); i++) {
-            network.addAgent(uf, ds, 1.0, 1.0,
-                    this.dgData.getUtilityModelParams().getCurrPhi(), 0.0, this.dgData.getUtilityModelParams().getCurrPsi());
+            network.addAgent(
+                    uf,
+                    ds,
+                    1.0,
+                    1.0,
+                    this.dgData.getUtilityModelParams().getCurrPhi(),
+                    0.0,
+                    this.dgData.getUtilityModelParams().getCurrPsi(),
+                    this.dgData.getUtilityModelParams().getXi());
         }
         this.dgData.setAgents(new LinkedList<Agent>(network.getAgents()));
 
