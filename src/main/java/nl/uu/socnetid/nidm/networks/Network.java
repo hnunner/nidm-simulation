@@ -68,6 +68,9 @@ public class Network extends SingleGraph implements SimulationListener {
     // standard proportion of direct ties to evaluate per agent
     private static final double STANDARD_PSI = 0.25;
 
+    // standard proportion of direct ties to evaluate per agent
+    private static final double STANDARD_XI = 0.25;
+
     // standard share to select assortatively
     private static final double STANDARD_OMEGA = 0.0;
 
@@ -161,7 +164,7 @@ public class Network extends SingleGraph implements SimulationListener {
      */
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs) {
         return this.addAgent(utilityFunction, diseaseSpecs, RISK_FACTOR_NEUTRAL, RISK_FACTOR_NEUTRAL, STANDARD_PHI,
-                STANDARD_OMEGA, STANDARD_OMEGA_SHUFFLE, STANDARD_PSI);
+                STANDARD_OMEGA, STANDARD_OMEGA_SHUFFLE, STANDARD_PSI, STANDARD_XI);
     }
 
     /**
@@ -185,7 +188,8 @@ public class Network extends SingleGraph implements SimulationListener {
      */
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
             double omega) {
-        return this.addAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, omega, STANDARD_OMEGA_SHUFFLE, STANDARD_PSI);
+        return this.addAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, omega, STANDARD_OMEGA_SHUFFLE, STANDARD_PSI,
+                STANDARD_XI);
     }
 
     /**
@@ -207,11 +211,13 @@ public class Network extends SingleGraph implements SimulationListener {
      *          the share of peers to select assortatively
      * @param psi
      *          the proportion of direct ties an agent evaluates per round
+     * @param xi
+     *          the proportion of ties at distance 2 an agent evaluates per round
      * @return the newly added agent.
      */
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
-            double omega, double psi) {
-        return this.addAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, omega, STANDARD_OMEGA_SHUFFLE, psi);
+            double omega, double psi, double xi) {
+        return this.addAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, omega, STANDARD_OMEGA_SHUFFLE, psi, xi);
     }
 
     /**
@@ -235,14 +241,16 @@ public class Network extends SingleGraph implements SimulationListener {
      *          whether assortatively selected co-agents ought to be shuffled before processing
      * @param psi
      *          the proportion of direct ties an agent evaluates per round
+     * @param xi
+     *          the proportion of ties at distance 2 an agent evaluates per round
      * @return the newly added agent.
      */
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
-            double omega, boolean omegaShuffle, double psi) {
+            double omega, boolean omegaShuffle, double psi, double xi) {
         Agent agent = this.addNode(String.valueOf(this.getNodeCount() + 1));
 
         // age randomly drawn from /resources/age-dist.csv
-        agent.initAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, psi, omega, omegaShuffle,
+        agent.initAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, psi, xi, omega, omegaShuffle,
                 AgeStructure.getInstance().getRandomAge());
         notifyAgentAdded(agent);
 
