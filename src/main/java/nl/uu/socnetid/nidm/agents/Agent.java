@@ -101,6 +101,8 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      *          the share of peers to evaluate per round
      * @param psi
      *          the proportion of ties to evaluate per round
+     * @param xi
+     *          the proportion of ties at distance 2 to evaluate per round
      * @param omega
      *          the share of peers to select assortatively
      * @param omegaShuffle
@@ -109,7 +111,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      *          the age of the agent
      */
     public void initAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs,
-            Double riskFactorSigma, Double riskFactorPi, Double phi, Double psi, Double omega, boolean omegaShuffle,
+            Double riskFactorSigma, Double riskFactorPi, Double phi, Double psi, Double xi, Double omega, boolean omegaShuffle,
             Integer age) {
         this.addAttribute(AgentAttributes.UTILITY_FUNCTION, utilityFunction);
         this.addAttribute(AgentAttributes.DISEASE_SPECS, diseaseSpecs);
@@ -124,6 +126,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         this.addAttribute(AgentAttributes.RISK_MEANING_PI, getRiskMeaning(riskFactorPi));
         this.addAttribute(AgentAttributes.PHI, phi);
         this.addAttribute(AgentAttributes.PSI, psi);
+        this.addAttribute(AgentAttributes.XI, xi);
         this.addAttribute(AgentAttributes.OMEGA, omega);
         this.addAttribute(AgentAttributes.OMEGA_SHUFFLE, omegaShuffle);
         this.addAttribute(AgentAttributes.SATISFIED, false);
@@ -361,6 +364,15 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
+     * Gets the agent's proportion of ties at distance 2 to evaluate per round.
+     *
+     * @return the agent's proportion of ties at distance 2 to evaluate per round
+     */
+    public double getXi() {
+        return (double) this.getAttribute(AgentAttributes.XI);
+    }
+
+    /**
      * Gets the agent's share of assortatively selected peers.
      *
      * @return the agent's share of assortatively selected peers
@@ -399,6 +411,31 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
             connections.add(neighborIt.next());
         }
         return connections;
+    }
+
+    /**
+     * Gets the agent's connections at distance 2.
+     *
+     * @return the agent's connections at distance 2
+     */
+    public List<Agent> getConnectionsAtDistance2() {
+        List<Agent> connectionsDist2 = new ArrayList<Agent>();
+
+        List<Agent> connections = new ArrayList<Agent>();
+        Iterator<Agent> connectionsIt = this.getNeighborNodeIterator();
+        while (connectionsIt.hasNext()) {
+            Agent connection = connectionsIt.next();
+            connections.add(connection);
+
+            Iterator<Agent> connectionsDist2It = connection.getNeighborNodeIterator();
+            while (connectionsDist2It.hasNext()) {
+                Agent connectionDist2 = connectionsDist2It.next();
+                connectionsDist2.add(connectionDist2);
+            }
+        }
+
+        connectionsDist2.removeAll(connections);
+        return connectionsDist2;
     }
 
     /**
@@ -894,9 +931,13 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         int amountTies = (int) (Math.round(amount * this.getPsi()));
         res.addAll(this.getRandomListOfAgents(this.getConnections(), amountTies));
 
-        // 2. rest taken from untied random agents
+        // 2. share (xi) of randomly selected ties at distance 2
+        int amountTiesAtDistance2 = (int) (Math.round(amount * this.getXi()));
+        res.addAll(this.getRandomListOfAgents(this.getConnectionsAtDistance2(), amountTiesAtDistance2));
+
+        // 3. rest taken from untied random agents
         List<Agent> coAgents = this.getCoAgents();
-        coAgents.removeAll(this.getConnections());
+        coAgents.removeAll(res);
         res.addAll(this.getRandomListOfAgents(coAgents, amount - res.size()));
 
         Collections.shuffle(res);
