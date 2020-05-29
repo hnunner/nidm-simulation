@@ -44,8 +44,7 @@ public class AdjacencyMatrixWriter implements NetworkWriter {
      */
     @Override
     public String write(Network network) {
-        // TODO improve, as this is dodgy
-        return this.write(network, -1);
+        return this.write(network, network.getAgents().size());
     }
 
     /* (non-Javadoc)
@@ -54,7 +53,7 @@ public class AdjacencyMatrixWriter implements NetworkWriter {
     @Override
     public String write(Network network, int numAgents) {
 
-        // TODO consider number of agents
+        // TODO consider number of agents as done in EdgeListWriter
 
         StringBuilder sb = new StringBuilder();
 
