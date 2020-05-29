@@ -213,7 +213,8 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
                         1.0,
                         this.dgData.getUtilityModelParams().getPhi(),
                         targetOmega,
-                        this.dgData.getUtilityModelParams().getPsi());
+                        this.dgData.getUtilityModelParams().getPsi(),
+                        this.dgData.getUtilityModelParams().getXi());
             }
 
             logger.info("Theoretic average degree: " + (Math.round(this.network.getTheoreticAvDegree() * 100.0) / 100.0));

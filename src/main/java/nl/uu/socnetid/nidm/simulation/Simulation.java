@@ -27,8 +27,10 @@ package nl.uu.socnetid.nidm.simulation;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -66,6 +68,11 @@ public class Simulation implements Runnable {
     // listeners
     private final Set<SimulationListener> simulationListeners =
             new CopyOnWriteArraySet<SimulationListener>();
+
+    // recursion
+    private Map<String, Agent> agentsRecToProcess;
+    private List<Agent> agentsRecProcessed;
+    private List<String> idsRec;
 
 
     /**
@@ -303,25 +310,61 @@ public class Simulation implements Runnable {
      */
     private void computeAgentDynamics() {
 
-        // random order
-        List<Agent> agents = new ArrayList<Agent>(this.network.getAgents());
-        Collections.shuffle(agents);
+        // create map of agents for quicker access
+        this.agentsRecToProcess = new HashMap<String, Agent>(this.network.getN());
+        Iterator<Agent> agentIt = this.network.getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            this.agentsRecToProcess.put(agent.getId(), agent);
+        }
+        this.agentsRecProcessed = new ArrayList<Agent>(this.network.getN());
 
-        Iterator<Agent> agentsIt = agents.iterator();
-        while (agentsIt.hasNext()) {
+        // iterate over agents in random order
+        this.idsRec = new ArrayList<String>(this.agentsRecToProcess.keySet());
+        Collections.shuffle(idsRec);
+        while (!this.agentsRecToProcess.isEmpty() && !this.idsRec.isEmpty()) {
             if (this.paused) {
                 return;
             }
-            if (this.delay > 0) {
-                // some delay before each agent moves (e.g., for animation processes)
-                try {
-                    Thread.sleep(this.delay * 10);
-                } catch (InterruptedException e) {
-                    return;
-                }
+            Agent agent = this.agentsRecToProcess.get(idsRec.get(0));
+            computeAgentDynamics(agent);
+        }
+    }
+
+    private void computeAgentDynamics(Agent agent) {
+
+        // do nothing if agent has been processed already
+        if (this.agentsRecToProcess.isEmpty() || !this.agentsRecToProcess.containsKey(agent.getId())) {
+            return;
+        }
+
+        // pause before processing
+        if (this.paused) {
+            return;
+        }
+        if (this.delay > 0) {
+            // some delay before each agent moves (e.g., for animation processes)
+            try {
+                Thread.sleep(this.delay * 10);
+            } catch (InterruptedException e) {
+                return;
             }
-            Agent agent = agentsIt.next();
-            computeAgentRound(agent);
+        }
+
+        // process agent
+        computeAgentRound(agent);
+        this.agentsRecToProcess.remove(agent.getId());
+        this.agentsRecProcessed.add(agent);
+        this.idsRec.remove(agent.getId());
+
+        // process connections
+        List<Agent> connections = agent.getConnections();
+        connections.removeAll(this.agentsRecProcessed);
+        Collections.shuffle(connections);
+        Iterator<Agent> connectionsIt = connections.iterator();
+        while (connectionsIt.hasNext()) {
+            Agent connection = connectionsIt.next();
+            computeAgentDynamics(connection);
         }
     }
 
