@@ -430,6 +430,9 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
             Iterator<Agent> connectionsDist2It = connection.getNeighborNodeIterator();
             while (connectionsDist2It.hasNext()) {
                 Agent connectionDist2 = connectionsDist2It.next();
+                if (connectionDist2.getId().equals(this.getId())) {
+                    continue;
+                }
                 connectionsDist2.add(connectionDist2);
             }
         }
@@ -900,16 +903,19 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
             sortByRDiff(agents, this.getAssortativityComparativeValue());
             Iterator<Agent> it = agents.iterator();
             long amountAss = Math.round(amount * this.getOmega());
-            while (it.hasNext() && res.size() < amountAss) {
+            while (it.hasNext() &&
+                    res.size() < amountAss) {
                 res.add(it.next());
             }
 
-            // fill rest with randomly drawn agents
-            while (res.size() < amount && res.size() < agents.size()) {
-                int i = ThreadLocalRandom.current().nextInt(agents.size());
-                Object agent = agents.get(i);
+            // fill rest with randomly drawn agent
+            Collections.shuffle(agents);
+            it = agents.iterator();
+            while (it.hasNext() &&
+                    res.size() < amount) {
+                Agent agent = it.next();
                 if (!res.contains(agent)) {
-                    res.add((Agent) agent);
+                    res.add(agent);
                 }
             }
         }

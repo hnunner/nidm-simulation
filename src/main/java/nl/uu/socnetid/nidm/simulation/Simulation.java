@@ -375,6 +375,7 @@ public class Simulation implements Runnable {
      *          the {@link Agent} to compute the single round of play for
      */
     protected void computeAgentRound(Agent agent) {
+        logger.info("Starting to compute round for agent " + agent.getId());
         agent.computeRound();
     }
 
