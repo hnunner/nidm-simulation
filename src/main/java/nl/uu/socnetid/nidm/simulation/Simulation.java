@@ -27,10 +27,8 @@ package nl.uu.socnetid.nidm.simulation;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -68,11 +66,6 @@ public class Simulation implements Runnable {
     // listeners
     private final Set<SimulationListener> simulationListeners =
             new CopyOnWriteArraySet<SimulationListener>();
-
-    // recursion
-    private Map<String, Agent> agentsRecToProcess;
-    private List<Agent> agentsRecProcessed;
-    private List<String> idsRec;
 
 
     /**
@@ -310,63 +303,91 @@ public class Simulation implements Runnable {
      */
     private void computeAgentDynamics() {
 
-        // create map of agents for quicker access
-        this.agentsRecToProcess = new HashMap<String, Agent>(this.network.getN());
-        Iterator<Agent> agentIt = this.network.getAgentIterator();
-        while (agentIt.hasNext()) {
-            Agent agent = agentIt.next();
-            this.agentsRecToProcess.put(agent.getId(), agent);
-        }
-        this.agentsRecProcessed = new ArrayList<Agent>(this.network.getN());
+        // INITIALIZATIONS
+        // map (quick access) of agents to process
+        List<Agent> agentsToProcess = new ArrayList<Agent>(this.network.getAgents());
+        // list of agents that have been processed
+        List<Agent> agentsProcessed = new ArrayList<Agent>(this.network.getN());
 
+        // PROCESSING
         // iterate over agents in random order
-        this.idsRec = new ArrayList<String>(this.agentsRecToProcess.keySet());
-        Collections.shuffle(idsRec);
-        while (!this.agentsRecToProcess.isEmpty() && !this.idsRec.isEmpty()) {
-            if (this.paused) {
+        while (!agentsToProcess.isEmpty()) {
+
+            // STOP PROCESSING if simulation is paused or stopped
+            if (this.paused || this.stopped) {
                 return;
             }
-            Agent agent = this.agentsRecToProcess.get(idsRec.get(0));
-            computeAgentDynamics(agent);
+
+            // AGENT
+            Collections.shuffle(agentsToProcess);
+            Agent agent = agentsToProcess.get(0);
+            computeAgentRound(agent);
+            // updating collections of agents
+            agentsToProcess.remove(0);
+            agentsProcessed.add(agent);
+
+            // AGENT'S CONNECTIONS
+            List<Agent> connectionsToProcess = new ArrayList<Agent>(agent.getConnections());
+            connectionsToProcess.removeAll(agentsProcessed);
+            while (!connectionsToProcess.isEmpty()) {
+
+                // STOP PROCESSING if simulation is paused or stopped
+                if (this.paused || this.stopped) {
+                    return;
+                }
+
+                // CONNECTION
+                Collections.shuffle(connectionsToProcess);
+                Agent connection = connectionsToProcess.get(0);
+                computeAgentRound(connection);
+                // updating collections of agents
+                connectionsToProcess.remove(0);
+                agentsToProcess.remove(connection);
+                agentsProcessed.add(connection);
+                connectionsToProcess.addAll(connection.getConnections());
+                connectionsToProcess.removeAll(agentsProcessed);
+            }
         }
     }
 
-    private void computeAgentDynamics(Agent agent) {
-
-        // do nothing if agent has been processed already
-        if (this.agentsRecToProcess.isEmpty() || !this.agentsRecToProcess.containsKey(agent.getId())) {
-            return;
-        }
-
-        // pause before processing
-        if (this.paused) {
-            return;
-        }
-        if (this.delay > 0) {
-            // some delay before each agent moves (e.g., for animation processes)
-            try {
-                Thread.sleep(this.delay * 10);
-            } catch (InterruptedException e) {
-                return;
-            }
-        }
-
-        // process agent
-        computeAgentRound(agent);
-        this.agentsRecToProcess.remove(agent.getId());
-        this.agentsRecProcessed.add(agent);
-        this.idsRec.remove(agent.getId());
-
-        // process connections
-        List<Agent> connections = agent.getConnections();
-        connections.removeAll(this.agentsRecProcessed);
-        Collections.shuffle(connections);
-        Iterator<Agent> connectionsIt = connections.iterator();
-        while (connectionsIt.hasNext()) {
-            Agent connection = connectionsIt.next();
-            computeAgentDynamics(connection);
-        }
-    }
+//    // for fun (but more expensive on memory and computationally) TODO: redo recursion using stack-safe Tail Call Elimination
+//    // (https://freecontent.manning.com/stack-safe-recursion-in-java/)
+//    private void computeAgentDynamics(Agent agent) {
+//
+//        // do nothing if agent has been processed already
+//        if (this.agentsRecToProcess.isEmpty() || !this.agentsRecToProcess.containsKey(agent.getId())) {
+//            return;
+//        }
+//
+//        // pause before processing
+//        if (this.paused) {
+//            return;
+//        }
+//        if (this.delay > 0) {
+//            // some delay before each agent moves (e.g., for animation processes)
+//            try {
+//                Thread.sleep(this.delay * 10);
+//            } catch (InterruptedException e) {
+//                return;
+//            }
+//        }
+//
+//        // process agent
+//        computeAgentRound(agent);
+//        this.agentsRecToProcess.remove(agent.getId());
+//        this.agentsRecProcessed.add(agent);
+//        this.idsRec.remove(agent.getId());
+//
+//        // process connections
+//        List<Agent> connections = agent.getConnections();
+//        connections.removeAll(this.agentsRecProcessed);
+//        Collections.shuffle(connections);
+//        Iterator<Agent> connectionsIt = connections.iterator();
+//        while (connectionsIt.hasNext()) {
+//            Agent connection = connectionsIt.next();
+//            computeAgentDynamics(connection);
+//        }
+//    }
 
     /**
      * Computes a single round of play for a given {@link Agent}.
@@ -375,7 +396,15 @@ public class Simulation implements Runnable {
      *          the {@link Agent} to compute the single round of play for
      */
     protected void computeAgentRound(Agent agent) {
-        logger.info("Starting to compute round for agent " + agent.getId());
+        // delay processing for GUI application
+        if (this.delay > 0) {
+            // some delay before each agent moves (e.g., for animation processes)
+            try {
+                Thread.sleep(this.delay * 10);
+            } catch (InterruptedException e) {
+                return;
+            }
+        }
         agent.computeRound();
     }
 
