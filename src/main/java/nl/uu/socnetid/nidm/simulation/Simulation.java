@@ -27,8 +27,11 @@ package nl.uu.socnetid.nidm.simulation;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -304,31 +307,57 @@ public class Simulation implements Runnable {
     private void computeAgentDynamics() {
 
         // INITIALIZATIONS
-        // map (quick access) of agents to process
-        List<Agent> agentsToProcess = new ArrayList<Agent>(this.network.getAgents());
-        // list of agents that have been processed
-        List<Agent> agentsProcessed = new ArrayList<Agent>(this.network.getN());
+        // agents to process
+        Map<String, Agent> agentsToProcess = new HashMap<String, Agent>(this.network.getN());
+        Iterator<Agent> agentIt = this.network.getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            agentsToProcess.put(agent.getId(), agent);
+        }
+        // ids of agents in random order
+        List<String> ids = new ArrayList<String>(agentsToProcess.keySet());
+        Collections.shuffle(ids);
+        // agents that have been processed
+        Set<String> agentsProcessed = new HashSet<String>(this.network.getN());
 
         // PROCESSING
-        // iterate over agents in random order
-        while (!agentsToProcess.isEmpty()) {
+        while (!agentsToProcess.isEmpty() && !ids.isEmpty()) {
 
             // STOP PROCESSING if simulation is paused or stopped
             if (this.paused || this.stopped) {
                 return;
             }
 
-            // AGENT
-            Collections.shuffle(agentsToProcess);
-            Agent agent = agentsToProcess.get(0);
+            // select next agent
+            Agent agent = null;
+            String id = null;
+            while (agent == null && !ids.isEmpty()) {
+                id = ids.get(0);
+                ids.remove(0);
+                agent = agentsToProcess.get(id);
+            }
+            if (agent == null) {
+                continue;
+            }
+
+            // process agent
             computeAgentRound(agent);
             // updating collections of agents
-            agentsToProcess.remove(0);
-            agentsProcessed.add(agent);
+            agentsToProcess.remove(id);
+            agentsProcessed.add(agent.getId());
 
             // AGENT'S CONNECTIONS
-            List<Agent> connectionsToProcess = new ArrayList<Agent>(agent.getConnections());
-            connectionsToProcess.removeAll(agentsProcessed);
+            // fast looping (see: https://bit.ly/2Mm1xPA) to add not yet processed connections
+            int size = agent.getConnections().size();
+            List<Agent> connectionsToProcess = new ArrayList<>(size);
+            Iterator<Agent> it = agent.getConnections().iterator();
+            for(int i = 0; i < size; i++) {
+                Agent connection = it.next();
+                if (!agentsProcessed.contains(connection.getId())) {
+                    connectionsToProcess.add(connection);
+                }
+            }
+
             while (!connectionsToProcess.isEmpty()) {
 
                 // STOP PROCESSING if simulation is paused or stopped
@@ -337,15 +366,21 @@ public class Simulation implements Runnable {
                 }
 
                 // CONNECTION
-                Collections.shuffle(connectionsToProcess);
                 Agent connection = connectionsToProcess.get(0);
                 computeAgentRound(connection);
                 // updating collections of agents
+                agentsProcessed.add(connection.getId());
                 connectionsToProcess.remove(0);
-                agentsToProcess.remove(connection);
-                agentsProcessed.add(connection);
-                connectionsToProcess.addAll(connection.getConnections());
-                connectionsToProcess.removeAll(agentsProcessed);
+                agentsToProcess.remove(connection.getId());
+                // fast looping (see: https://bit.ly/2Mm1xPA) to add not yet processed connections
+                // TODO extract to method
+//                it = connection.getConnections().iterator();
+//                for(int i = 0; i < connection.getConnections().size(); i++) {
+//                    Agent connectionsConnection = it.next();
+//                    if (!agentsProcessed.contains(connectionsConnection.getId())) {
+//                        connectionsToProcess.add(connectionsConnection);
+//                    }
+//                }
             }
         }
     }
