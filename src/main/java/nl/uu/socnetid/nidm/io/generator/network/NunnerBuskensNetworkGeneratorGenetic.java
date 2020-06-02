@@ -185,7 +185,7 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
         double targetAvDegree = NunnerBuskens.getAvDegreeFromC2(b1, c1, targetAvC2);
 
         // TODO change exponential distribution to something more grounded in theory (e.g. Danon et al. (2013))
-        ExponentialDistribution ed = new ExponentialDistribution(targetAvDegree);
+        ExponentialDistribution ed = new ExponentialDistribution(targetAvDegree); //*0.90);  // XXX think of better way for lowering
 
         while ((Math.round(this.network.getTheoreticAvDegree() * 100.0) / 100.0) != (Math.round(targetAvDegree * 100.0) / 100.0)) {
             this.network.clear();
