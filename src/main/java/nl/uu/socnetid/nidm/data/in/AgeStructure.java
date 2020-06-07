@@ -6,7 +6,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.commons.math.stat.correlation.PearsonsCorrelation;
@@ -24,6 +26,7 @@ public class AgeStructure {
     private static final Logger logger = LogManager.getLogger(AgeStructure.class);
 
     private List<Integer> ageDistribution;
+    private Map<Integer, Double> errorAvDegree;
     private double ageAssortativity;
 
 
@@ -31,7 +34,7 @@ public class AgeStructure {
      * Singleton: private instantiation.
      */
     private AgeStructure() {
-        initAgeDistribution();
+        initAgeDistributionAndErrorAvDegree();
         initAgeAssortativity();
     }
 
@@ -42,8 +45,9 @@ public class AgeStructure {
      *
      * TODO add age selection in GUI
      */
-    private void initAgeDistribution() {
+    private void initAgeDistributionAndErrorAvDegree() {
         this.ageDistribution = new ArrayList<Integer>();
+        this.errorAvDegree = new HashMap<Integer, Double>();
 
         Path pathToFile = PropertiesHandler.getInstance().getAgeDistributionImportPath();
 
@@ -55,15 +59,19 @@ public class AgeStructure {
 
             while (line != null) {
                 String[] attributes = line.split(";");
+
+                // age distribution
                 int min = Integer.valueOf(attributes[0]);
                 //int max = Integer.valueOf(attributes[1]);
-                int totalNorm = Integer.valueOf(attributes[3]);
-
-                for (int i = 0; i < totalNorm; i++) {
-                    // store a random age within the year ranges of the age group
+                // store the
+                for (int i = 0; i < Integer.valueOf(attributes[3]); i++) {
+                    //// store a random age within the year ranges of the age group
                     //this.ageDistribution.add(ThreadLocalRandom.current().nextInt(min, max+1));
                     this.ageDistribution.add(min);
                 }
+
+                // error average degree
+                this.errorAvDegree.put(min, Double.valueOf(attributes[4]));
 
                 line = br.readLine();
             }
@@ -196,6 +204,17 @@ public class AgeStructure {
      */
     public int getRandomAge() {
         return this.ageDistribution.get(ThreadLocalRandom.current().nextInt(0, this.ageDistribution.size()));
+    }
+
+    /**
+     * Gets the percent error from the average degree by age.
+     *
+     * @param age
+     *          the age to get the error for
+     * @return the percent error from the average degree by age
+     */
+    public double getErrorAvDegree(Integer age) {
+        return this.errorAvDegree.get(age);
     }
 
     /**
