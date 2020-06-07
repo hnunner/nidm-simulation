@@ -40,6 +40,7 @@ import org.apache.logging.log4j.Logger;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.data.genetic.NunnerBuskensGene;
+import nl.uu.socnetid.nidm.data.in.AgeStructure;
 import nl.uu.socnetid.nidm.data.out.DataGeneratorData;
 import nl.uu.socnetid.nidm.data.out.NunnerBuskensGeneticParameters;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
@@ -184,19 +185,26 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
 
         double targetAvDegree = NunnerBuskens.getAvDegreeFromC2(b1, c1, targetAvC2);
 
-        // TODO change exponential distribution to something more grounded in theory (e.g. Danon et al. (2013))
-        ExponentialDistribution ed = new ExponentialDistribution(targetAvDegree); //*0.90);  // XXX think of better way for lowering
-
         while ((Math.round(this.network.getTheoreticAvDegree() * 100.0) / 100.0) != (Math.round(targetAvDegree * 100.0) / 100.0)) {
             this.network.clear();
             logger.info("(Re-)sampling random degrees to achieve degree distribution with theoretic average degree of "
                     + (Math.round(targetAvDegree * 100.0) / 100.0));
             double allC2s = 0;
             for (int i = 0; i < this.dgData.getUtilityModelParams().getN(); i++) {
+                int age = AgeStructure.getInstance().getRandomAge();
+
+                // TODO consider changing exponential distribution to something more grounded in theory (e.g. Danon et al. (2013))
                 // TODO remove sample == 0 check once simple power law distribution has been replaced
+                // TODO remove corrected target average degree once simple power law distribution has been replaced
                 long targetDegree = 0;
+                // omitting isolates
                 while (targetDegree == 0) {
-                    targetDegree = Math.round(ed.sample());
+                    // corrected target average degree, due to omitting isolates
+                    double tadCorrected = targetAvDegree * 0.96;
+                    // target degree dependent on agent's age
+                    targetDegree = Math.round(
+                            new ExponentialDistribution(tadCorrected +
+                                    (tadCorrected * AgeStructure.getInstance().getErrorAvDegree(age))).sample());
                 }
 
                 double c2 = NunnerBuskens.getC2FromAvDegree(b1, c1, targetDegree);
@@ -214,7 +222,8 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
                         this.dgData.getUtilityModelParams().getPhi(),
                         targetOmega,
                         this.dgData.getUtilityModelParams().getPsi(),
-                        this.dgData.getUtilityModelParams().getXi());
+                        this.dgData.getUtilityModelParams().getXi(),
+                        age);
             }
 
             logger.info("Theoretic average degree: " + (Math.round(this.network.getTheoreticAvDegree() * 100.0) / 100.0));
