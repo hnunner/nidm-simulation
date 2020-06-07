@@ -164,7 +164,7 @@ public class Network extends SingleGraph implements SimulationListener {
      */
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs) {
         return this.addAgent(utilityFunction, diseaseSpecs, RISK_FACTOR_NEUTRAL, RISK_FACTOR_NEUTRAL, STANDARD_PHI,
-                STANDARD_OMEGA, STANDARD_OMEGA_SHUFFLE, STANDARD_PSI, STANDARD_XI);
+                STANDARD_OMEGA, STANDARD_OMEGA_SHUFFLE, STANDARD_PSI, STANDARD_XI, AgeStructure.getInstance().getRandomAge());
     }
 
     /**
@@ -189,7 +189,7 @@ public class Network extends SingleGraph implements SimulationListener {
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
             double omega) {
         return this.addAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, omega, STANDARD_OMEGA_SHUFFLE, STANDARD_PSI,
-                STANDARD_XI);
+                STANDARD_XI, AgeStructure.getInstance().getRandomAge());
     }
 
     /**
@@ -213,11 +213,13 @@ public class Network extends SingleGraph implements SimulationListener {
      *          the proportion of direct ties an agent evaluates per round
      * @param xi
      *          the proportion of ties at distance 2 an agent evaluates per round
+     * @param age
+     *          the agent's age
      * @return the newly added agent.
      */
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
-            double omega, double psi, double xi) {
-        return this.addAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, omega, STANDARD_OMEGA_SHUFFLE, psi, xi);
+            double omega, double psi, double xi, int age) {
+        return this.addAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, omega, STANDARD_OMEGA_SHUFFLE, psi, xi, age);
     }
 
     /**
@@ -243,15 +245,16 @@ public class Network extends SingleGraph implements SimulationListener {
      *          the proportion of direct ties an agent evaluates per round
      * @param xi
      *          the proportion of ties at distance 2 an agent evaluates per round
+     * @param age
+     *          the agents age
      * @return the newly added agent.
      */
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
-            double omega, boolean omegaShuffle, double psi, double xi) {
+            double omega, boolean omegaShuffle, double psi, double xi, int age) {
         Agent agent = this.addNode(String.valueOf(this.getNodeCount() + 1));
 
         // age randomly drawn from /resources/age-dist.csv
-        agent.initAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, psi, xi, omega, omegaShuffle,
-                AgeStructure.getInstance().getRandomAge());
+        agent.initAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, psi, xi, omega, omegaShuffle, age);
         notifyAgentAdded(agent);
 
         // re-position agents if auto-layout is disabled

@@ -39,6 +39,7 @@ import org.graphstream.graph.Edge;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.agents.AgentListener;
+import nl.uu.socnetid.nidm.data.in.AgeStructure;
 import nl.uu.socnetid.nidm.data.out.DataGeneratorData;
 import nl.uu.socnetid.nidm.data.out.NunnerBuskensParameters;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
@@ -475,7 +476,8 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
                     this.dgData.getUtilityModelParams().getCurrOmega(),
                     this.dgData.getUtilityModelParams().isCurrOmegaShuffle(),
                     this.dgData.getUtilityModelParams().getCurrPsi(),
-                    this.dgData.getUtilityModelParams().getCurrXi());
+                    this.dgData.getUtilityModelParams().getCurrXi(),
+                    AgeStructure.getInstance().getRandomAge());
             agent.addAgentListener(this);
         }
         this.dgData.setAgents(new LinkedList<Agent>(network.getAgents()));
