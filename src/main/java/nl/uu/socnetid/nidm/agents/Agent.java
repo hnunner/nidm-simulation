@@ -27,6 +27,7 @@ package nl.uu.socnetid.nidm.agents;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -710,61 +711,47 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     /**
      * Computes a single round for an agent. That is, an {@link Agent} tries to connect to
      * or disconnects from another {@link Agent} if it produces higher utility.
-     *
-     * @param delay
-     *          the delay in ms to wait in between network decisions
      */
-    public void computeRound(int delay) {
-
-        // logger.debug("Started computing round for agent " + this.getId());
+    public void computeRound() {
 
         // starting assumption: current connections are not satisfactory
         boolean satisfied = true;
 
-        // get random collection of co-agents
-        List<Agent> randomCoAgents = getRandomListOfCoAgents(getNumberOfNetworkDecisions());
-        Collections.shuffle(randomCoAgents);
+        int decisions = this.getNumberOfNetworkDecisions();
+        Set<Agent> agentsProcessed = new HashSet<Agent>(decisions);
+        while (agentsProcessed.size() < decisions) {
 
-        Iterator<Agent> it = randomCoAgents.iterator();
-        while (it.hasNext()) {
-            Agent randomCoAgent = it.next();
-            if (this.isDirectlyConnectedTo(randomCoAgent)) {
-                if (existingConnectionTooCostly(randomCoAgent)) {
-                    disconnectFrom(randomCoAgent);
+            double rand = ThreadLocalRandom.current().nextDouble();
+
+            Agent other = null;
+            if (rand <= this.getPsi()) {
+                other = this.getRandomConnection(agentsProcessed);
+            }
+            if (other == null && rand <= (this.getPsi() + this.getXi())) {
+                other = this.getRandomConnectionAtDistance2(agentsProcessed);
+            }
+            if (other == null) {
+                other = this.getRandomPeer(agentsProcessed);
+            }
+
+            if (this.isDirectlyConnectedTo(other)) {
+                if (existingConnectionTooCostly(other)) {
+                    disconnectFrom(other);
                     satisfied = false;
                 }
             } else {
-                if (newConnectionValuable(randomCoAgent)) {
-                    connectTo(randomCoAgent);
+                if (newConnectionValuable(other)) {
+                    connectTo(other);
                     satisfied = false;
                 }
             }
-
-            if (it.hasNext() && delay > 0) {
-                // some delay before each agent moves (e.g., for animation processes)
-                try {
-                    Thread.sleep(delay * 10);
-                } catch (InterruptedException e) {
-                    return;
-                }
-            }
+            agentsProcessed.add(other);
         }
 
         // update satisfaction
         updateSatisfaction(satisfied);
         // round finished
         notifyRoundFinished();
-
-
-       // logger.debug("Finished computing round for agent " + this.getId());
-    }
-
-    /**
-     * Computes a single round for an agent. That is, an {@link Agent} tries to connect to
-     * or disconnects from another {@link Agent} if it produces higher utility.
-     */
-    public void computeRound() {
-        this.computeRound(0);
     }
 
     /**
@@ -855,7 +842,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
 
 
     /**
-     * Sorts the given list of agents by absolute difference of risk perceptions.
+     * Sorts the given list of agents by absolute difference of a comparative value.
      *
      * @param agents
      *          the list of agents to sort
@@ -950,6 +937,57 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         return res;
     }
 
+    /**
+     * @param agents
+     * @return
+     */
+    private Agent drawRandomAgent(List<Agent> agents) {
+        // no feasible agent
+        if (agents.isEmpty()) {
+            return null;
+        }
+
+        // assortativity condition
+        if (ThreadLocalRandom.current().nextDouble() <= this.getOmega()) {
+            sortByRDiff(agents, this.getAssortativityComparativeValue());
+            return agents.get(0);
+        }
+
+        // random selection
+        return agents.get(ThreadLocalRandom.current().nextInt(agents.size()));
+    }
+
+    private Agent getRandomConnection(Set<Agent> exclusions) {
+        exclusions.add(this);
+        List<Agent> connections = this.getConnections();
+        connections.removeAll(exclusions);
+        return drawRandomAgent(connections);
+    }
+
+    private Agent getRandomConnectionAtDistance2(Set<Agent> exclusions) {
+        exclusions.add(this);
+        List<Agent> connectionsDist2 = this.getConnectionsAtDistance2();
+        connectionsDist2.removeAll(exclusions);
+        return drawRandomAgent(connectionsDist2);
+    }
+
+    private Agent getRandomPeer(Set<Agent> exclusions) {
+        exclusions.add(this);
+        exclusions.addAll(this.getConnections());
+        exclusions.addAll(this.getConnectionsAtDistance2());
+
+        List<Agent> peers = new ArrayList<Agent>();
+        Iterator<Agent> agentIt = this.getNetwork().getAgentIterator();
+        for (int i = 0; i < this.getNetwork().getN(); i++) {
+            Agent agent = agentIt.next();
+            if (exclusions.contains(agent)) {
+                continue;
+            }
+            peers.add(agent);
+        }
+        return drawRandomAgent(peers);
+    }
+
     private Agent getAgent1(Agent agent1, Agent agent2) {
         return Long.valueOf(agent1.getId()) < Long.valueOf(agent2.getId()) ? agent1 : agent2;
     }
@@ -996,6 +1034,24 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      */
     public boolean isDirectlyConnectedTo(Agent agent) {
         return this.getNetwork().getEdge(this.getEdgeId(this, agent)) != null;
+    }
+
+    /**
+     * Checks whether the agent has a connection at distance 2 to another agent.
+     *
+     * @param agent
+     *          the other agent to check the connection at distance 2 to
+     * @return true if there is a connection at distance 2, false otherwise
+     */
+    public boolean isConnectedToAtDistance2(Agent agent) {
+        Iterator<Agent> neighborIt = this.getNeighborNodeIterator();
+        while (neighborIt.hasNext()) {
+            Agent neighbor = neighborIt.next();
+            if (this.getNetwork().getEdge(this.getEdgeId(neighbor, agent)) != null) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
