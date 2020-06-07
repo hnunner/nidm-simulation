@@ -33,6 +33,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import nl.uu.socnetid.nidm.agents.Agent;
+import nl.uu.socnetid.nidm.data.in.AgeStructure;
 import nl.uu.socnetid.nidm.data.out.DataGeneratorData;
 import nl.uu.socnetid.nidm.data.out.NunnerBuskensParameters;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
@@ -307,7 +308,8 @@ public class NunnerBuskensNetworkGenerator extends AbstractGenerator implements 
                     this.dgData.getUtilityModelParams().getCurrPhi(),
                     0.0,
                     this.dgData.getUtilityModelParams().getCurrPsi(),
-                    this.dgData.getUtilityModelParams().getXi());
+                    this.dgData.getUtilityModelParams().getXi(),
+                    AgeStructure.getInstance().getRandomAge());
         }
         this.dgData.setAgents(new LinkedList<Agent>(network.getAgents()));
 
