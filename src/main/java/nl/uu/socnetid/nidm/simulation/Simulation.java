@@ -48,8 +48,6 @@ public class Simulation implements Runnable {
     private static final Logger logger = LogManager.getLogger(Simulation.class);
     // maximum number of rounds
     private static final int MAX_ROUNDS = 1000;
-    // maximum recursion depth for processing connections of connections of ...
-    private static final int MAX_RECURSION_DEPTH = 50;
 
     // the network
     private Network network;
@@ -69,9 +67,6 @@ public class Simulation implements Runnable {
     // listeners
     private final Set<SimulationListener> simulationListeners =
             new CopyOnWriteArraySet<SimulationListener>();
-
-    // recursion
-    private Set<String> agentsRecProcessed;
 
 
     /**
@@ -309,67 +304,52 @@ public class Simulation implements Runnable {
      */
     private void computeAgentDynamics() {
 
-        List<Agent> allAgents = new ArrayList<Agent>(this.network.getAgents());
-        Collections.shuffle(allAgents);
-        this.agentsRecProcessed = new HashSet<String>(this.network.getN());
+        List<Agent> agents = new ArrayList<Agent>(this.network.getAgents());
+        Collections.shuffle(agents);
+        Set<Agent> agentsAll = new HashSet<Agent>(agents);
+        Set<Agent> agentsToProcess = new HashSet<Agent>(this.network.getN());
+        Set<String> agentsProcessed = new HashSet<String>(this.network.getN());
 
-        int i = 0;
-        while (this.agentsRecProcessed.size() < this.network.getN()) {
-            Set<Agent> agents = new HashSet<Agent>(this.network.getN());
+        while (!agentsAll.isEmpty()) {
 
-            while (agents.isEmpty()) {
-                Agent agent = allAgents.get(i++);
-                if (!this.agentsRecProcessed.contains(agent.getId())) {
-                    agents.add(agent);
+            // pause before processing
+            if (this.paused || this.stopped) {
+                return;
+            }
+            // some delay before each agent moves (e.g., for animation processes)
+            if (this.delay > 0) {
+                try {
+                    Thread.sleep(this.delay * 10);
+                } catch (InterruptedException e) {
+                    return;
                 }
             }
 
-            this.computeAgentDynamics(agents, 0);
-        }
-    }
+            // randomly select an unconnected and unprocessed agent if no connected agents to process
+            if (agentsToProcess.isEmpty()) {
+                agentsToProcess.add(agentsAll.iterator().next());
+            }
 
-    private void computeAgentDynamics(Set<Agent> agents, int recDepth) {
+            // PROCESS AGENT
+            Agent agent = agentsToProcess.iterator().next();
+            computeAgentRound(agent);
+            // list updates
+            agentsProcessed.add(agent.getId());
+            agentsToProcess.remove(agent);
+            agentsAll.remove(agent);
 
-        // to avoid StackOverflows
-        // TODO make stack safe (https://freecontent.manning.com/stack-safe-recursion-in-java/)
-        if (recDepth > MAX_RECURSION_DEPTH) {
-            return;
-        }
-
-        // break condition
-        if (agents.isEmpty()) {
-            return;
-        }
-
-        // pause before processing
-        if (this.paused || this.stopped) {
-            return;
-        }
-        // some delay before each agent moves (e.g., for animation processes)
-        if (this.delay > 0) {
-            try {
-                Thread.sleep(this.delay * 10);
-            } catch (InterruptedException e) {
-                return;
+            // add connections
+            List<Agent> connections = agent.getConnections();
+            if (!connections.isEmpty()) {
+                Iterator<Agent> connectionsIt = connections.iterator();
+                for (int i = 0; i < connections.size(); i++) {
+                    Agent connection = connectionsIt.next();
+                    if (!agentsProcessed.contains(connection.getId())) {
+                        agentsToProcess.add(connection);
+                    }
+                }
             }
         }
-
-        // process agent
-        Agent agent = agents.iterator().next();
-        computeAgentRound(agent);
-        agents.remove(agent);
-        this.agentsRecProcessed.add(agent.getId());
-
-        // process connections
-        List<Agent> connections = agent.getConnections();
-        Iterator<Agent> connectionsIt = connections.iterator();
-        for (int i = 0; i < connections.size(); i++) {                  // speedy loop (see https://bit.ly/2BrvpIb)
-            Agent connection = connectionsIt.next();
-            if (!this.agentsRecProcessed.contains(connection.getId())) {
-                agents.add(connection);
-            }
-        }
-        this.computeAgentDynamics(agents, ++recDepth);
     }
 
     /**
