@@ -708,11 +708,18 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
 
 
     /////////////////////////////////////////////////// CONNECTIONS ///////////////////////////////////////////////////
+    public void computeRound() {
+        this.computeRound(0);
+    }
+
     /**
      * Computes a single round for an agent. That is, an {@link Agent} tries to connect to
      * or disconnects from another {@link Agent} if it produces higher utility.
+     *
+     * @param delay
+     *          animation delay between two network decisions
      */
-    public void computeRound() {
+    public void computeRound(int delay) {
 
         // starting assumption: current connections are not satisfactory
         boolean satisfied = true;
@@ -721,19 +728,37 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         Set<Agent> agentsProcessed = new HashSet<Agent>(decisions);
         while (agentsProcessed.size() < decisions) {
 
-            double rand = ThreadLocalRandom.current().nextDouble();
+            // some delay before processing of each other agent (e.g., for animation processes)
+            if (delay > 0) {
+                try {
+                    Thread.sleep(delay * 10);
+                } catch (InterruptedException e) {
+                    return;
+                }
+            }
 
+            // selecting an agent to process
             Agent other = null;
+            double rand = ThreadLocalRandom.current().nextDouble();
+            // direct connection
             if (rand <= this.getPsi()) {
                 other = this.getRandomConnection(agentsProcessed);
             }
+            // connection at distance 2
             if (other == null && rand <= (this.getPsi() + this.getXi())) {
                 other = this.getRandomConnectionAtDistance2(agentsProcessed);
             }
+            // random agent
             if (other == null) {
                 other = this.getRandomPeer(agentsProcessed);
             }
+            // no agent to process found (e.g., number of decisions ecxeeding population size)
+            if (other == null) {
+                logger.warn("No other agent found to process for agent " + this.getId());
+                return;
+            }
 
+            // processing other agent
             if (this.isDirectlyConnectedTo(other)) {
                 if (existingConnectionTooCostly(other)) {
                     disconnectFrom(other);
@@ -958,33 +983,26 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     private Agent getRandomConnection(Set<Agent> exclusions) {
-        exclusions.add(this);
+        HashSet<Agent> removals = new HashSet<Agent>(exclusions);
+        removals.add(this);
         List<Agent> connections = this.getConnections();
-        connections.removeAll(exclusions);
+        connections.removeAll(removals);
         return drawRandomAgent(connections);
     }
 
     private Agent getRandomConnectionAtDistance2(Set<Agent> exclusions) {
-        exclusions.add(this);
+        HashSet<Agent> removals = new HashSet<Agent>(exclusions);
+        removals.add(this);
         List<Agent> connectionsDist2 = this.getConnectionsAtDistance2();
-        connectionsDist2.removeAll(exclusions);
+        connectionsDist2.removeAll(removals);
         return drawRandomAgent(connectionsDist2);
     }
 
     private Agent getRandomPeer(Set<Agent> exclusions) {
-        exclusions.add(this);
-        exclusions.addAll(this.getConnections());
-        exclusions.addAll(this.getConnectionsAtDistance2());
-
-        List<Agent> peers = new ArrayList<Agent>();
-        Iterator<Agent> agentIt = this.getNetwork().getAgentIterator();
-        for (int i = 0; i < this.getNetwork().getN(); i++) {
-            Agent agent = agentIt.next();
-            if (exclusions.contains(agent)) {
-                continue;
-            }
-            peers.add(agent);
-        }
+        HashSet<Agent> removals = new HashSet<Agent>(exclusions);
+        removals.add(this);
+        List<Agent> peers = new ArrayList<Agent>(this.getNetwork().getAgents());
+        peers.removeAll(removals);
         return drawRandomAgent(peers);
     }
 

@@ -312,27 +312,20 @@ public class Simulation implements Runnable {
 
         while (!agentsAll.isEmpty()) {
 
-            // pause before processing
+            // external interrupts
             if (this.paused || this.stopped) {
                 return;
             }
-            // some delay before each agent moves (e.g., for animation processes)
-            if (this.delay > 0) {
-                try {
-                    Thread.sleep(this.delay * 10);
-                } catch (InterruptedException e) {
-                    return;
-                }
-            }
 
-            // randomly select an unconnected and unprocessed agent if no connected agents to process
+            // randomly select an unconnected and unprocessed agent
+            // if no connected agents (left) to process
             if (agentsToProcess.isEmpty()) {
                 agentsToProcess.add(agentsAll.iterator().next());
             }
 
             // PROCESS AGENT
             Agent agent = agentsToProcess.iterator().next();
-            computeAgentRound(agent);
+            computeAgentRound(agent, this.delay);
             // list updates
             agentsProcessed.add(agent.getId());
             agentsToProcess.remove(agent);
@@ -360,6 +353,18 @@ public class Simulation implements Runnable {
      */
     protected void computeAgentRound(Agent agent) {
         agent.computeRound();
+    }
+
+    /**
+     * Computes a single round of play for a given {@link Agent}.
+     *
+     * @param agent
+     *          the {@link Agent} to compute the single round of play for
+     * @param delay
+     *          the delay between each network decision
+     */
+    protected void computeAgentRound(Agent agent, int delay) {
+        agent.computeRound(delay);
     }
 
     /**
