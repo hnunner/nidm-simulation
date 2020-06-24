@@ -184,8 +184,16 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
         double c1 = this.dgData.getUtilityModelParams().getC1();
 
         double targetAvDegree = NunnerBuskens.getAvDegreeFromC2(b1, c1, targetAvC2);
+        double correction = 1.00;
 
         while ((Math.round(this.network.getTheoreticAvDegree() * 100.0) / 100.0) != (Math.round(targetAvDegree * 100.0) / 100.0)) {
+
+            if ((Math.round(this.network.getTheoreticAvDegree() * 100.0) / 100.0) < (Math.round(targetAvDegree * 100.0) / 100.0)) {
+                correction += 0.01;
+            } else {
+                correction -= 0.01;
+            }
+
             this.network.clear();
             logger.info("(Re-)sampling random degrees to achieve degree distribution with theoretic average degree of "
                     + (Math.round(targetAvDegree * 100.0) / 100.0));
@@ -200,7 +208,7 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
                 // omitting isolates
                 while (targetDegree == 0) {
                     // corrected target average degree, due to omitting isolates
-                    double tadCorrected = targetAvDegree * 0.96;
+                    double tadCorrected = targetAvDegree * correction;
                     // target degree dependent on agent's age
                     targetDegree = Math.round(
                             new ExponentialDistribution(tadCorrected +
