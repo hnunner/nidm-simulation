@@ -111,6 +111,7 @@ public class PropertiesHandler {
 
     // DATA IMPORT
     private Path ageDistributionImportPath;
+    private Path ageDegreesImportPath;
     private Path ageAssortativityImportPath;
 
 
@@ -463,6 +464,8 @@ public class PropertiesHandler {
         try {
             this.ageDistributionImportPath = Paths.get(getClass().getClassLoader()
                     .getResource(configProps.getProperty("import.age.distribution.path")).toURI());
+            this.ageDegreesImportPath = Paths.get(getClass().getClassLoader()
+                    .getResource(configProps.getProperty("import.age.degrees.path")).toURI());
             this.ageAssortativityImportPath = Paths.get(getClass().getClassLoader()
                     .getResource(configProps.getProperty("import.age.assortativity.path")).toURI());
         } catch (URISyntaxException use) {
@@ -769,6 +772,13 @@ public class PropertiesHandler {
      */
     public Path getAgeDistributionImportPath() {
         return ageDistributionImportPath;
+    }
+
+    /**
+     * @return the ageDegreesImportPath
+     */
+    public Path getAgeDegreesImportPath() {
+        return ageDegreesImportPath;
     }
 
     /**
