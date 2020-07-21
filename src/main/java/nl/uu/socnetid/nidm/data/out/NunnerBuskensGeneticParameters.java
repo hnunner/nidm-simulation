@@ -54,13 +54,10 @@ public class NunnerBuskensGeneticParameters extends UtilityModelParameters {
     // targets
     private double targetAvDegree;
     private double targetClustering;
-    private double targetAssortativity;
 
     // initial settings
     private double initialAlphaMin;
     private double initialAlphaMax;
-    private double initialOmegaMin;
-    private double initialOmegaMax;
 
     // current offspring
     private NunnerBuskensGene offspring;
@@ -249,13 +246,6 @@ public class NunnerBuskensGeneticParameters extends UtilityModelParameters {
     }
 
     /**
-     * @param targetAssortativity the targetAssortativity to set
-     */
-    public void setTargetAssortativity(double targetAssortativity) {
-        this.targetAssortativity = targetAssortativity;
-    }
-
-    /**
      * @return the targetAvDegree
      */
     public double getTargetAvDegree() {
@@ -267,13 +257,6 @@ public class NunnerBuskensGeneticParameters extends UtilityModelParameters {
      */
     public double getTargetClustering() {
         return targetClustering;
-    }
-
-    /**
-     * @return the targetAssortativity
-     */
-    public double getTargetAssortativity() {
-        return targetAssortativity;
     }
 
     /**
@@ -302,34 +285,6 @@ public class NunnerBuskensGeneticParameters extends UtilityModelParameters {
      */
     public void setInitialAlphaMax(double initialAlphaMax) {
         this.initialAlphaMax = initialAlphaMax;
-    }
-
-    /**
-     * @return the initialOmegaMin
-     */
-    public double getInitialOmegaMin() {
-        return initialOmegaMin;
-    }
-
-    /**
-     * @param initialOmegaMin the initialOmegaMin to set
-     */
-    public void setInitialOmegaMin(double initialOmegaMin) {
-        this.initialOmegaMin = initialOmegaMin;
-    }
-
-    /**
-     * @return the initialOmegaMax
-     */
-    public double getInitialOmegaMax() {
-        return initialOmegaMax;
-    }
-
-    /**
-     * @param initialOmegaMax the initialOmegaMax to set
-     */
-    public void setInitialOmegaMax(double initialOmegaMax) {
-        this.initialOmegaMax = initialOmegaMax;
     }
 
 }
