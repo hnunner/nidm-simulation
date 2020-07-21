@@ -477,7 +477,8 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
                     this.dgData.getUtilityModelParams().isCurrOmegaShuffle(),
                     this.dgData.getUtilityModelParams().getCurrPsi(),
                     this.dgData.getUtilityModelParams().getCurrXi(),
-                    AgeStructure.getInstance().getRandomAge());
+                    AgeStructure.getInstance().getRandomAge(),
+                    false);
             agent.addAgentListener(this);
         }
         this.dgData.setAgents(new LinkedList<Agent>(network.getAgents()));

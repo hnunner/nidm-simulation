@@ -163,8 +163,9 @@ public class Network extends SingleGraph implements SimulationListener {
      * @return the newly added agent.
      */
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs) {
+        // TODO clean up addAgent methods -- too many special cases!!!
         return this.addAgent(utilityFunction, diseaseSpecs, RISK_FACTOR_NEUTRAL, RISK_FACTOR_NEUTRAL, STANDARD_PHI,
-                STANDARD_OMEGA, STANDARD_OMEGA_SHUFFLE, STANDARD_PSI, STANDARD_XI, AgeStructure.getInstance().getRandomAge());
+                STANDARD_OMEGA, STANDARD_OMEGA_SHUFFLE, STANDARD_PSI, STANDARD_XI, AgeStructure.getInstance().getRandomAge(), false);
     }
 
     /**
@@ -189,7 +190,7 @@ public class Network extends SingleGraph implements SimulationListener {
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
             double omega) {
         return this.addAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, omega, STANDARD_OMEGA_SHUFFLE, STANDARD_PSI,
-                STANDARD_XI, AgeStructure.getInstance().getRandomAge());
+                STANDARD_XI, AgeStructure.getInstance().getRandomAge(), false);
     }
 
     /**
@@ -215,11 +216,14 @@ public class Network extends SingleGraph implements SimulationListener {
      *          the proportion of ties at distance 2 an agent evaluates per round
      * @param age
      *          the agent's age
+     * @param considerAge
+     *          whether age is considered for peer selection or not
      * @return the newly added agent.
      */
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
-            double omega, double psi, double xi, int age) {
-        return this.addAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, omega, STANDARD_OMEGA_SHUFFLE, psi, xi, age);
+            double omega, double psi, double xi, int age, boolean considerAge) {
+        return this.addAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, omega, STANDARD_OMEGA_SHUFFLE, psi, xi, age,
+                considerAge);
     }
 
     /**
@@ -247,14 +251,16 @@ public class Network extends SingleGraph implements SimulationListener {
      *          the proportion of ties at distance 2 an agent evaluates per round
      * @param age
      *          the agents age
+     * @param considerAge
+     *          whether age is considered for peer selection or not
      * @return the newly added agent.
      */
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
-            double omega, boolean omegaShuffle, double psi, double xi, int age) {
+            double omega, boolean omegaShuffle, double psi, double xi, int age, boolean considerAge) {
         Agent agent = this.addNode(String.valueOf(this.getNodeCount() + 1));
 
         // age randomly drawn from /resources/age-dist.csv
-        agent.initAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, psi, xi, omega, omegaShuffle, age);
+        agent.initAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, psi, xi, omega, omegaShuffle, age, considerAge);
         notifyAgentAdded(agent);
 
         // re-position agents if auto-layout is disabled
