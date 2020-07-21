@@ -46,6 +46,7 @@ import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleNode;
 import org.graphstream.ui.graphicGraph.GraphPosLengthUtils;
 
+import nl.uu.socnetid.nidm.data.in.AgeStructure;
 import nl.uu.socnetid.nidm.diseases.Disease;
 import nl.uu.socnetid.nidm.diseases.DiseaseFactory;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
@@ -110,10 +111,12 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      *          whether assortatively selected agents ought to be shuffled before processing
      * @param age
      *          the age of the agent
+     * @param considerAge
+     *          whether age is considered for peer selection or not
      */
     public void initAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs,
             Double riskFactorSigma, Double riskFactorPi, Double phi, Double psi, Double xi, Double omega, boolean omegaShuffle,
-            Integer age) {
+            Integer age, boolean considerAge) {
         this.addAttribute(AgentAttributes.UTILITY_FUNCTION, utilityFunction);
         this.addAttribute(AgentAttributes.DISEASE_SPECS, diseaseSpecs);
         DiseaseGroup diseaseGroup = DiseaseGroup.SUSCEPTIBLE;
@@ -133,6 +136,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         this.addAttribute(AgentAttributes.SATISFIED, false);
         this.addAttribute(AgentAttributes.CONNECTION_STATS, new AgentConnectionStats());
         this.addAttribute(AgentAttributes.AGE, age);
+        this.addAttribute(AgentAttributes.CONSIDER_AGE, considerAge);
         this.addAttribute("ui.label", this.getId());
     }
 
@@ -478,6 +482,15 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      */
     public int getAge() {
         return (int) this.getAttribute(AgentAttributes.AGE);
+    }
+
+    /**
+     * Gets whether the agent considers age when selecting a peer for network decisions.
+     *
+     * @return true when the agent considers age, false otherwise
+     */
+    public boolean considerAge() {
+        return (boolean) this.getAttribute(AgentAttributes.CONSIDER_AGE);
     }
 
     /**
@@ -972,14 +985,26 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
             return null;
         }
 
-        // assortativity condition
         if (ThreadLocalRandom.current().nextDouble() <= this.getOmega()) {
+            // assortativity condition
             sortByRDiff(agents, this.getAssortativityComparativeValue());
-            return agents.get(0);
+        } else {
+            // random selection
+            Collections.shuffle(agents);
         }
 
-        // random selection
-        return agents.get(ThreadLocalRandom.current().nextInt(agents.size()));
+        if (this.considerAge()) {
+            int targetAge = AgeStructure.getInstance().sampleAgeFromAgeDependentDegreeDistribution(this.getAge());
+            Iterator<Agent> it = agents.iterator();
+            while (it.hasNext()) {
+                Agent agent = it.next();
+                if (agent.getAge() == targetAge) {
+                    return agent;
+                }
+            }
+        }
+
+        return agents.get(0);
     }
 
     private Agent getRandomConnection(Set<Agent> exclusions) {

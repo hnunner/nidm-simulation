@@ -7,9 +7,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.commons.math.stat.correlation.PearsonsCorrelation;
@@ -23,36 +26,12 @@ import nl.uu.socnetid.nidm.system.PropertiesHandler;
  */
 public class AgeStructure {
 
-    class AgeDegree {
-        private int age;
-        private double probability;
-
-        protected AgeDegree(int age, double probability) {
-            this.age = age;
-            this.probability = probability;
-        }
-
-        /**
-         * @return the age
-         */
-        public int getAge() {
-            return age;
-        }
-
-        /**
-         * @return the probability
-         */
-        public double getProbability() {
-            return probability;
-        }
-    }
-
     // logger
     private static final Logger logger = LogManager.getLogger(AgeStructure.class);
 
     private List<Integer> ageDistribution;
     private Map<Integer, Double> errorAvDegree;
-    private Map<Integer, List<AgeDegree>> ageDegrees;
+    private Map<Integer, Map<Integer, Double>> ageDegrees;
     private double ageAssortativity;
 
 
@@ -117,8 +96,10 @@ public class AgeStructure {
         }
     }
 
+
+    // TODO comments
     private void initAgeDegrees() {
-        this.ageDegrees = new HashMap<Integer, List<AgeDegree>>();
+        this.ageDegrees = new HashMap<Integer, Map<Integer, Double>>();
 
         Path pathToFile = PropertiesHandler.getInstance().getAgeDegreesImportPath();
 
@@ -129,7 +110,7 @@ public class AgeStructure {
             // initialize age groups
             String[] columnNames = br.readLine().split(";");
             for (int i = 0; i < columnNames.length; i++) {
-                this.ageDegrees.put(Integer.valueOf(columnNames[i]), new ArrayList<AgeDegree>(columnNames.length));
+                this.ageDegrees.put(Integer.valueOf(columnNames[i]), new TreeMap<Integer, Double>());
             }
 
             String line = br.readLine();
@@ -138,9 +119,9 @@ public class AgeStructure {
                 String[] attributes = line.split(";");
 
                 for (int columnIndex = 0; columnIndex < attributes.length; columnIndex++) {
-                    this.ageDegrees.get(Integer.valueOf(columnNames[columnIndex])).add(new AgeDegree(
+                    this.ageDegrees.get(Integer.valueOf(columnNames[columnIndex])).put(
                             Integer.valueOf(columnNames[ageGroupIndex]),
-                            Double.valueOf(attributes[columnIndex])));
+                            Double.valueOf(attributes[columnIndex]));
                 }
 
                 line = br.readLine();
@@ -291,22 +272,34 @@ public class AgeStructure {
 
     // TODO comments
     // TODO Clean up/refactor
-    public int getAgeFromAgeDependentDegreeDistribution(int age) {
+    public int sampleAgeFromAgeDependentDegreeDistribution(int age) {
         double d = ThreadLocalRandom.current().nextDouble();
 
-        List<AgeDegree> ageDegreesByAge = this.ageDegrees.get(age);
-        Iterator<AgeDegree> it = ageDegreesByAge.iterator();
+        Map<Integer, Double> ageDegreesByAge = this.ageDegrees.get(age);
+        Iterator<Integer> it = ageDegreesByAge.keySet().iterator();
 
         while (it.hasNext()) {
-            AgeDegree ageDegree = it.next();
-            int currAge = ageDegree.getAge();
-            if (d < ageDegree.getProbability()) {
-                return currAge;
+            Integer ageDegree = it.next();
+            Double probability = ageDegreesByAge.get(ageDegree);
+            if (d < probability) {
+                return ageDegree;
             }
         }
 
         logger.warn("no appropriate age found");
         return -1;
+    }
+
+    // TODO comments
+    // used for only for unit tests
+    public Map<Integer, Double> getProbabilitiesFromAgeDependentDegreeDistribution(int age) {
+        return this.ageDegrees.get(age);
+    }
+
+    // TODO comments
+    // used for only for unit tests
+    public Set<Integer> getAvailableAges() {
+        return new HashSet<Integer>(this.ageDistribution);
     }
 
     /**
