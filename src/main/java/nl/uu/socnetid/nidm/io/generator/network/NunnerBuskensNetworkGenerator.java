@@ -309,7 +309,8 @@ public class NunnerBuskensNetworkGenerator extends AbstractGenerator implements 
                     0.0,
                     this.dgData.getUtilityModelParams().getCurrPsi(),
                     this.dgData.getUtilityModelParams().getXi(),
-                    AgeStructure.getInstance().getRandomAge());
+                    AgeStructure.getInstance().getRandomAge(),
+                    false);
         }
         this.dgData.setAgents(new LinkedList<Agent>(network.getAgents()));
 

@@ -72,6 +72,8 @@ public abstract class UtilityModelParameters {
     private boolean currOmegaShuffle;
     // ac - assortativity condition
     private AssortativityConditions ac;     // TODO move to a more appropriate place (not really a utility parameter)
+    // considering age
+    private boolean considerAge;
 
     // INFECTIONS
     // sigma - severity
@@ -1165,6 +1167,20 @@ public abstract class UtilityModelParameters {
      */
     public void setAssortativityCondition(AssortativityConditions ac) {
         this.ac = ac;
+    }
+
+    /**
+     * @return the considerAge
+     */
+    public boolean isConsiderAge() {
+        return considerAge;
+    }
+
+    /**
+     * @param considerAge the considerAge to set
+     */
+    public void setConsiderAge(boolean considerAge) {
+        this.considerAge = considerAge;
     }
 
 }

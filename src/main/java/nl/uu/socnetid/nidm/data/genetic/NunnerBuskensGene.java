@@ -15,15 +15,12 @@ public class NunnerBuskensGene implements Comparable<NunnerBuskensGene> {
 
     private double avC2;
     private double alpha;
-    private double omega;
 
     private final double targetAvDegree;
     private final double targetClustering;
-    private final double targetAssortativity;
 
     private double fitnessAvDegree;
     private double fitnessClustering;
-    private double fitnessAssortativity;
     private double fitnessOverall;
 
     /**
@@ -43,18 +40,14 @@ public class NunnerBuskensGene implements Comparable<NunnerBuskensGene> {
      *          the average marginal costs
      * @param alpha
      *          the proportion of closed triads
-     * @param omega
-     *          the proportion of similar peers selected for tie creation
      * @param targetAvDegree
      *          the target average degree
      * @param targetClustering
      *          the target clustering
-     * @param targetAssortativity
-     *          the target assortativity
      */
     public NunnerBuskensGene(int generation, String id, String simpleId, String mother, String father,
-            double avC2, double alpha, double omega,
-            double targetAvDegree, double targetClustering, double targetAssortativity) {
+            double avC2, double alpha,
+            double targetAvDegree, double targetClustering) {
 
         this.generation = generation;
         this.id = id;
@@ -64,11 +57,9 @@ public class NunnerBuskensGene implements Comparable<NunnerBuskensGene> {
 
         this.avC2 = avC2;
         this.alpha = alpha;
-        this.omega = omega;
 
         this.targetAvDegree = targetAvDegree;
         this.targetClustering = targetClustering;
-        this.targetAssortativity = targetAssortativity;
     }
 
     /**
@@ -121,13 +112,6 @@ public class NunnerBuskensGene implements Comparable<NunnerBuskensGene> {
     }
 
     /**
-     * @return the omega
-     */
-    public double getOmega() {
-        return omega;
-    }
-
-    /**
      * @return the targetAvDegree
      */
     public double getTargetAvDegree() {
@@ -142,13 +126,6 @@ public class NunnerBuskensGene implements Comparable<NunnerBuskensGene> {
     }
 
     /**
-     * @return the targetAssortativity
-     */
-    public double getTargetAssortativity() {
-        return targetAssortativity;
-    }
-
-    /**
      * @return the fitnessAvDegree
      */
     public double getFitnessAvDegree() {
@@ -160,13 +137,6 @@ public class NunnerBuskensGene implements Comparable<NunnerBuskensGene> {
      */
     public double getFitnessClustering() {
         return fitnessClustering;
-    }
-
-    /**
-     * @return the fitnessAssortativity
-     */
-    public double getFitnessAssortativity() {
-        return fitnessAssortativity;
     }
 
     /**
@@ -197,14 +167,11 @@ public class NunnerBuskensGene implements Comparable<NunnerBuskensGene> {
      *          the average degree
      * @param clustering
      *          the clustering
-     * @param assortativity
-     *          the assortativity
      * @return the fitness of the gene
      */
-    public double getFitnessOverall(double avDegree, double clustering, double assortativity) {
+    public double getFitnessOverall(double avDegree, double clustering) {
         return computePercentageError(avDegree, targetAvDegree) +
-                computePercentageError(clustering, targetClustering) +
-                computePercentageError(assortativity, targetAssortativity);
+                computePercentageError(clustering, targetClustering);
     }
 
     /**
@@ -214,14 +181,11 @@ public class NunnerBuskensGene implements Comparable<NunnerBuskensGene> {
      *          the average degree
      * @param clustering
      *          the clustering
-     * @param assortativity
-     *          the assortativity
      */
-    public void setFitness(double avDegree, double clustering, double assortativity) {
+    public void setFitness(double avDegree, double clustering) {
         this.fitnessAvDegree = computePercentageError(avDegree, targetAvDegree);
         this.fitnessClustering = computePercentageError(clustering, targetClustering);
-        this.fitnessAssortativity = computePercentageError(assortativity, targetAssortativity);
-        this.fitnessOverall = this.fitnessAvDegree + this.fitnessClustering + this.fitnessAssortativity;
+        this.fitnessOverall = this.fitnessAvDegree + this.fitnessClustering ;
     }
 
 
