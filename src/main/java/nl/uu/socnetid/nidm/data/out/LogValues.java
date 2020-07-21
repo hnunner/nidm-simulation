@@ -254,11 +254,9 @@ public enum LogValues {
     IV_NB_GEN_FATHER("nb.gen.father"),
     IV_NB_GEN_TARGET_AVDEGREE("nb.gen.target.avdegree"),
     IV_NB_GEN_TARGET_CLUSTERING("nb.gen.target.clustering"),
-    IV_NB_GEN_TARGET_ASSORTATIVITY("nb.gen.target.assortativity"),
     IV_NB_GEN_INITIAL_ALPHA_MIN("nb.gen.initial.alpha.min"),
     IV_NB_GEN_INITIAL_ALPHA_MAX("nb.gen.initial.alpha.max"),
-    IV_NB_GEN_INITIAL_OMEGA_MIN("nb.gen.initial.omega.min"),
-    IV_NB_GEN_INITIAL_OMEGA_MAX("nb.gen.initial.omega.max"),
+    IV_NB_GEN_CONSIDER_AGE("nb.gen.consider.age"),
 
     // PROPERTIES (dependent variables)
     // simulation
@@ -308,7 +306,6 @@ public enum LogValues {
     DV_NET_TIES_BROKEN_EPIDEMIC("net.ties.broken.epidemic"),
     DV_NET_GEN_FITNESS_AV_DEGREE("net.gen.fitness.degree.av"),
     DV_NET_GEN_FITNESS_CLUSTERING("net.gen.fitness.clustering"),
-    DV_NET_GEN_FITNESS_ASSORTATIVITY("net.gen.fitness.assortativity"),
     DV_NET_GEN_FITNESS_OVERALL("net.gen.fitness.overall"),
     // agent
     DV_AGENT_SATISFIED("agent.satisfied"),
