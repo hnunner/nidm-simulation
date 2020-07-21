@@ -25,6 +25,8 @@
  */
 package nl.uu.socnetid.nidm.io;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -39,33 +41,48 @@ import nl.uu.socnetid.nidm.data.in.AgeStructure;
 public class AgeStructureTest {
 
     // TODO comments
-    // TODO proper tests
     @Test
-    public void testDynamicWrite() throws Exception {
+    public void testSampleAgeFromAgeDependentDegreeDistribution() throws Exception {
 
-        Map<Integer, Integer> ages = new TreeMap<Integer, Integer>();
+        int precision = 1000000;
+        Iterator<Integer> it = AgeStructure.getInstance().getAvailableAges().iterator();
 
-        for (int i = 0; i < 1000000; i++) {
-            Integer age = AgeStructure.getInstance().getAgeFromAgeDependentDegreeDistribution(35);
-            Integer currAge = ages.get(age);
-            if (currAge == null) {
-                ages.put(age, 1);
-            } else {
-                ages.put(age, ++currAge);
+        while (it.hasNext()) {
+            Integer ageToSample = it.next();
+
+            Map<Integer, Integer> ages = new TreeMap<Integer, Integer>();
+
+            for (int i = 0; i < precision; i++) {
+                Integer age = AgeStructure.getInstance().sampleAgeFromAgeDependentDegreeDistribution(ageToSample);
+                Integer currAge = ages.get(age);
+                if (currAge == null) {
+                    ages.put(age, 1);
+                } else {
+                    ages.put(age, ++currAge);
+                }
             }
-        }
 
-        Iterator<Integer> keyIt = ages.keySet().iterator();
-        Double occsNormCum = 0.0;
-        while (keyIt.hasNext()) {
-            Integer age = keyIt.next();
-            Integer occs = ages.get(age);
-            Double occsNorm = occs/1000000.0;
-            occsNormCum += occsNorm;
-            System.out.println("Age: " + age +
-                    "\t\toccs:  " + occs +
-                    "\t\toccurences (normalized): " + Math.round(occsNorm * 10000.0) / 10000.0 +
-                    "\t\toccurences (cumulated): " + Math.round(occsNormCum * 10000.0) / 10000.0);
+            Iterator<Integer> keyIt = ages.keySet().iterator();
+            Double occsNormCum = 0.0;
+
+            Map<Integer, Double> comp = AgeStructure.getInstance().getProbabilitiesFromAgeDependentDegreeDistribution(ageToSample);
+
+            while (keyIt.hasNext()) {
+                Integer age = keyIt.next();
+                Integer occs = ages.get(age);
+                Double occsNorm = occs/Double.valueOf(precision);
+                occsNormCum += occsNorm;
+
+                assertEquals(comp.get(age), occsNormCum, 0.01);
+
+//                System.out.println(
+//                        "Sample age: " + ageToSample +
+//                        "\tAge: " + age +
+//                        "\t\toccs:  " + occs +
+//                        "\t\toccurences (normalized): " + Math.round(occsNorm * 10000.0) / 10000.0 +
+//                        "\t\toccurences (cumulated): " + Math.round(occsNormCum * 10000.0) / 10000.0);
+
+            }
         }
     }
 
