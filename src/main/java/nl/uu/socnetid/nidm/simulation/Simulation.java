@@ -393,6 +393,20 @@ public class Simulation implements Runnable {
     }
 
     /**
+     * @return the epStatic
+     */
+    public boolean isEpStatic() {
+        return epStatic;
+    }
+
+    /**
+     * @param epStatic the epStatic to set
+     */
+    public void setEpStatic(boolean epStatic) {
+        this.epStatic = epStatic;
+    }
+
+    /**
      * Adds a listener for simulation notifications.
      *
      * @param simulationListener
