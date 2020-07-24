@@ -187,7 +187,6 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
 
         // unique parameter combinations
         int upcs =
-                (this.dgData.getUtilityModelParams().getEpStructure() == EpidemicStructures.BOTH ? 2 : 1) *
                 b1s.length *
                 b2s.length *
                 alphas.length *
@@ -495,21 +494,19 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
             network.createFullNetwork();
         }
 
+        Agent indexCase = this.network.getRandomNotInfectedAgent();
+
         if (this.dgData.getUtilityModelParams().getEpStructure() == EpidemicStructures.BOTH) {
-            this.dgData.getUtilityModelParams().setCurrEpStructure(EpidemicStructures.BOTH);
-            this.simulatePreEpidemic();
-            Agent indexCase = this.network.getRandomNotInfectedAgent();
-
             this.dgData.getUtilityModelParams().setCurrEpStructure(EpidemicStructures.STATIC);
+            this.simulatePreEpidemic();
             this.simulateEpidemic(ds, indexCase);
-
             this.dgData.getUtilityModelParams().setCurrEpStructure(EpidemicStructures.DYNAMIC);
             this.simulateEpidemic(ds, indexCase);
 
         } else {
             this.dgData.getUtilityModelParams().setCurrEpStructure(this.dgData.getUtilityModelParams().getEpStructure());
             this.simulatePreEpidemic();
-            this.simulateEpidemic(ds, this.network.getRandomNotInfectedAgent());
+            this.simulateEpidemic(ds, indexCase);
         }
     }
 
@@ -548,14 +545,15 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
         indexCase.forceInfect(ds);
         this.dgData.getSimStats().setSimStage(SimulationStage.ACTIVE_EPIDEMIC);
 
-        // save index case properties of pre-epidemic stage
         switch (this.dgData.getUtilityModelParams().getCurrEpStructure()) {
             case STATIC:
                 this.dgData.setIndexCaseStatsStatic(new AgentStats(indexCase));
+                this.simulation.setEpStatic(true);
                 break;
 
             case DYNAMIC:
                 this.dgData.setIndexCaseStatsDynamic(new AgentStats(indexCase));
+                this.simulation.setEpStatic(false);
                 break;
 
             case BOTH:
