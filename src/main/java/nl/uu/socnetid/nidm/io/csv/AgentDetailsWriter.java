@@ -117,6 +117,7 @@ public abstract class AgentDetailsWriter<UMP extends UtilityModelParameters> ext
         cols.add(LogValues.DV_AGENT_COSTS_DISEASE.toString());
         cols.add(LogValues.DV_AGENT_DISEASE_STATE.toString());
         cols.add(LogValues.DV_AGENT_DISEASE_ROUNDS_REMAINING.toString());
+        cols.add(LogValues.DV_AGENT_FORCE_INFECTED.toString());
         cols.add(LogValues.DV_AGENT_DEGREE1.toString());
         cols.add(LogValues.DV_AGENT_DEGREE2.toString());
         cols.add(LogValues.DV_AGENT_CLOSENESS.toString());
@@ -129,6 +130,9 @@ public abstract class AgentDetailsWriter<UMP extends UtilityModelParameters> ext
         cols.add(LogValues.DV_AGENT_CONS_OUT_DECLINED.toString());
         cols.add(LogValues.DV_AGENT_CONS_IN_ACCEPTED.toString());
         cols.add(LogValues.DV_AGENT_CONS_IN_DECLINED.toString());
+        // neighborhood
+        cols.add(LogValues.DV_AGENT_NEIGHBORHOOD_R_SIGMA_AV.toString());
+        cols.add(LogValues.DV_AGENT_NEIGHBORHOOD_R_PI_AV.toString());
 
         writeLine(cols);
     }
@@ -176,6 +180,7 @@ public abstract class AgentDetailsWriter<UMP extends UtilityModelParameters> ext
             currData.add(String.valueOf(agentStats.getDiseaseCosts()));
             currData.add(agentStats.getDiseaseGroup().name());
             currData.add(String.valueOf(agentStats.getTimeToRecover()));
+            currData.add(String.valueOf(agentStats.isForceInfected()));
             currData.add(String.valueOf(agentStats.getDegree1()));
             currData.add(String.valueOf(agentStats.getDegree2()));
             currData.add(String.valueOf(agentStats.getCloseness()));
@@ -188,6 +193,9 @@ public abstract class AgentDetailsWriter<UMP extends UtilityModelParameters> ext
             currData.add(String.valueOf(agentStats.getDeclinedRequestsOut()));
             currData.add(String.valueOf(agentStats.getAcceptedRequestsIn()));
             currData.add(String.valueOf(agentStats.getDeclinedRequestsIn()));
+            // neighborhood
+            currData.add(String.valueOf(agentStats.getrSigmaNeighborhood()));
+            currData.add(String.valueOf(agentStats.getrPiNeighborhood()));
 
             writeLine(currData);
         }

@@ -63,6 +63,7 @@ public class NetworkStats {
     private double satisfiedPercent;
     private double unsatisfiedPercent;
     private double tiesBrokenWithInfectionPresent;
+    private double networkChangesWithInfectionPresent;
 
 
     public NetworkStats(Network network) {
@@ -372,6 +373,20 @@ public class NetworkStats {
      */
     public void setTiesBrokenWithInfectionPresent(double tiesBrokenWithInfectionPresent) {
         this.tiesBrokenWithInfectionPresent = tiesBrokenWithInfectionPresent;
+    }
+
+    /**
+     * @return the networkChangesWithInfectionPresent
+     */
+    public double getNetworkChangesWithInfectionPresent() {
+        return networkChangesWithInfectionPresent;
+    }
+
+    /**
+     * @param networkChangesWithInfectionPresent the networkChangesWithInfectionPresent to set
+     */
+    public void setNetworkChangesWithInfectionPresent(double networkChangesWithInfectionPresent) {
+        this.networkChangesWithInfectionPresent = networkChangesWithInfectionPresent;
     }
 
     /**
