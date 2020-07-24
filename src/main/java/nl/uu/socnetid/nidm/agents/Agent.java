@@ -137,6 +137,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         this.addAttribute(AgentAttributes.CONNECTION_STATS, new AgentConnectionStats());
         this.addAttribute(AgentAttributes.AGE, age);
         this.addAttribute(AgentAttributes.CONSIDER_AGE, considerAge);
+        this.addAttribute(AgentAttributes.FORCE_INFECTED, false);
         this.addAttribute("ui.label", this.getId());
     }
 
@@ -342,12 +343,52 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
+     * Gets the agent's neighborhood's risk factor for disease severity.
+     *
+     * @return the agent's neighborhood's risk factor for disease severity
+     */
+    public double getRSigmaNeighborhood() {
+
+        double rSigmaNeighbors = 0.0;
+
+        Iterator<Agent> it = this.getNeighborNodeIterator();
+        int neighbors = 0;
+        while (it.hasNext()) {
+            Agent neighbor = it.next();
+            rSigmaNeighbors += neighbor.getRSigma();
+            neighbors++;
+        }
+
+        return rSigmaNeighbors / neighbors;
+    }
+
+    /**
      * Gets the agent's risk factor for probability of infections.
      *
      * @return the agent's risk factor for probability of infections
      */
     public double getRPi() {
         return (double) this.getAttribute(AgentAttributes.RISK_FACTOR_PI);
+    }
+
+    /**
+     * Gets the agent's neighborhood's risk factor for probability of infections.
+     *
+     * @return the agent's neighborhood's risk factor for probability of infections
+     */
+    public double getRPiNeighborhood() {
+
+        double rPiNeighbors = 0.0;
+
+        Iterator<Agent> it = this.getNeighborNodeIterator();
+        int neighbors = 0;
+        while (it.hasNext()) {
+            Agent neighbor = it.next();
+            rPiNeighbors += neighbor.getRPi();
+            neighbors++;
+        }
+
+        return rPiNeighbors / neighbors;
     }
 
     /**
@@ -1254,6 +1295,15 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
+     * Checks whether the agent was infected from outside the network.
+     *
+     * @return true if the agent was infected from outside the network, false otherwise
+     */
+    public boolean isForceInfected() {
+        return (boolean) this.getAttribute(AgentAttributes.FORCE_INFECTED);
+    }
+
+    /**
      * Checks whether the agent is recovered.
      *
      * @return true if the agent is recovered, false otherwise
@@ -1336,6 +1386,9 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         // --> no listener notifications
         this.changeAttribute(AgentAttributes.UI_CLASS,
                 prevDiseaseGroup.toString(), DiseaseGroup.INFECTED.toString(), false);
+
+        // set force infected flag
+        this.changeAttribute(AgentAttributes.FORCE_INFECTED, false, true);
     }
 
     /**
