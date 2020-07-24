@@ -48,7 +48,8 @@ public enum AgentAttributes {
     CONNECTION_STATS("connection.stats"),
     AGE("age"),
     ASSORTATIVITY_CONDITION("assortativity.condition"),
-    CONSIDER_AGE("consider.age");
+    CONSIDER_AGE("consider.age"),
+    FORCE_INFECTED("force.infected");
 
     // the name
     private String name;
