@@ -31,9 +31,8 @@ package nl.uu.socnetid.nidm.data.out;
 public class NunnerBuskensParameters extends UtilityModelParameters {
 
     // network structure static during epidemics
-    private boolean epStaticRandom;
-    private boolean[] epStatics;
-    private boolean currEpStatic;
+    private EpidemicStructures epStructure;
+    private EpidemicStructures currEpStructure;
     // direct ties - benefit weight
     private boolean b1Random;
     private double b1RandomMin;
@@ -417,45 +416,31 @@ public class NunnerBuskensParameters extends UtilityModelParameters {
     }
 
     /**
-     * @return the epStaticRandom
+     * @return the epStructure
      */
-    public boolean isEpStaticRandom() {
-        return epStaticRandom;
+    public EpidemicStructures getEpStructure() {
+        return epStructure;
     }
 
     /**
-     * @param epStaticRandom the epStaticRandom to set
+     * @param epStructure the epStructure to set
      */
-    public void setEpStaticRandom(boolean epStaticRandom) {
-        this.epStaticRandom = epStaticRandom;
+    public void setEpStructure(EpidemicStructures epStructure) {
+        this.epStructure = epStructure;
     }
 
     /**
-     * @return the epStatics
+     * @return the currEpStructure
      */
-    public boolean[] getEpStatics() {
-        return epStatics;
+    public EpidemicStructures getCurrEpStructure() {
+        return currEpStructure;
     }
 
     /**
-     * @param epStatics the epStatics to set
+     * @param currEpStructure the currEpStructure to set
      */
-    public void setEpStatics(boolean[] epStatics) {
-        this.epStatics = epStatics;
-    }
-
-    /**
-     * @return the currEpStatic
-     */
-    public boolean isCurrEpStatic() {
-        return currEpStatic;
-    }
-
-    /**
-     * @param currEpStatic the currEpStatic to set
-     */
-    public void setCurrEpStatic(boolean currEpStatic) {
-        this.currEpStatic = currEpStatic;
+    public void setCurrEpStructure(EpidemicStructures currEpStructure) {
+        this.currEpStructure = currEpStructure;
     }
 
 }

@@ -541,6 +541,13 @@ public class Network extends SingleGraph implements SimulationListener {
      */
     public void resetAgents() {
         clearConnections();
+        this.resetDiseaseStates();
+    }
+
+    /**
+     * Resets all agents to being susceptible.
+     */
+    public void resetDiseaseStates() {
         Iterator<Agent> agentsIt = this.getAgents().iterator();
         while (agentsIt.hasNext()) {
             Agent agent = agentsIt.next();

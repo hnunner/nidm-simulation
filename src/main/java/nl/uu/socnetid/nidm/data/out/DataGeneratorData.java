@@ -46,12 +46,16 @@ public class DataGeneratorData<UMP extends UtilityModelParameters> {
     private SimulationStats simStats;
     // network stats
     private NetworkStats netStatsPre;
-    private NetworkStats netStatsPost;
+    private NetworkStats netStatsPostStatic;
+    private NetworkStats netStatsPostDynamic;
     private NetworkStats netStatsCurrent;
+
+
     // agents
     private List<Agent> agents;
     // index case
-    private AgentStats indexCaseStats;
+    private AgentStats indexCaseStatsStatic;
+    private AgentStats indexCaseStatsDynamic;
     // export
     private String gexfExportFile = "/";
 
@@ -83,18 +87,36 @@ public class DataGeneratorData<UMP extends UtilityModelParameters> {
     }
 
     /**
-     * @return the netStatsPost
+     * @return the netStatsPostStatic
      */
-    public NetworkStats getNetStatsPost() {
-        return netStatsPost;
+    public NetworkStats getNetStatsPostStatic() {
+        return netStatsPostStatic;
     }
 
+
     /**
-     * @param netStatsPost the netStatsPost to set
+     * @param netStatsPostStatic the netStatsPostStatic to set
      */
-    public void setNetStatsPost(NetworkStats netStatsPost) {
-        this.netStatsPost = netStatsPost;
+    public void setNetStatsPostStatic(NetworkStats netStatsPostStatic) {
+        this.netStatsPostStatic = netStatsPostStatic;
     }
+
+
+    /**
+     * @return the netStatsPostDynamic
+     */
+    public NetworkStats getNetStatsPostDynamic() {
+        return netStatsPostDynamic;
+    }
+
+
+    /**
+     * @param netStatsPostDynamic the netStatsPostDynamic to set
+     */
+    public void setNetStatsPostDynamic(NetworkStats netStatsPostDynamic) {
+        this.netStatsPostDynamic = netStatsPostDynamic;
+    }
+
 
     /**
      * @return the netStatsCurrent
@@ -125,17 +147,31 @@ public class DataGeneratorData<UMP extends UtilityModelParameters> {
     }
 
     /**
-     * @return the indexCaseStats
+     * @return the indexCaseStatsStatic
      */
-    public AgentStats getIndexCaseStats() {
-        return indexCaseStats;
+    public AgentStats getIndexCaseStatsStatic() {
+        return indexCaseStatsStatic;
     }
 
     /**
-     * @param indexCaseStats the indexCaseStats to set
+     * @param indexCaseStatsStatic the indexCaseStatsStatic to set
      */
-    public void setIndexCaseStats(AgentStats indexCaseStats) {
-        this.indexCaseStats = indexCaseStats;
+    public void setIndexCaseStatsStatic(AgentStats indexCaseStatsStatic) {
+        this.indexCaseStatsStatic = indexCaseStatsStatic;
+    }
+
+    /**
+     * @return the indexCaseStatsDynamic
+     */
+    public AgentStats getIndexCaseStatsDynamic() {
+        return indexCaseStatsDynamic;
+    }
+
+    /**
+     * @param indexCaseStatsDynamic the indexCaseStatsDynamic to set
+     */
+    public void setIndexCaseStatsDynamic(AgentStats indexCaseStatsDynamic) {
+        this.indexCaseStatsDynamic = indexCaseStatsDynamic;
     }
 
     /**
