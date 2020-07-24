@@ -41,6 +41,7 @@ import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.agents.AgentListener;
 import nl.uu.socnetid.nidm.data.in.AgeStructure;
 import nl.uu.socnetid.nidm.data.out.DataGeneratorData;
+import nl.uu.socnetid.nidm.data.out.EpidemicStructures;
 import nl.uu.socnetid.nidm.data.out.NunnerBuskensParameters;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
@@ -71,6 +72,7 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
     // network
     private Network network;
     private double tiesBrokenWithInfectionPresent;
+    private double networkChangesWithInfectionPresent;
 
     // simulation
     private Simulation simulation;
@@ -140,8 +142,6 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
     @Override
     protected void generate() {
 
-        boolean[] epStatics = this.dgData.getUtilityModelParams().isEpStaticRandom() ?
-                new boolean[1] : this.dgData.getUtilityModelParams().getEpStatics();
         double[] b1s = this.dgData.getUtilityModelParams().isB1Random() ?
                 new double[1] : this.dgData.getUtilityModelParams().getB1s();
         double[] b2s = this.dgData.getUtilityModelParams().isB2Random() ?
@@ -187,7 +187,7 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
 
         // unique parameter combinations
         int upcs =
-                epStatics.length *
+                (this.dgData.getUtilityModelParams().getEpStructure() == EpidemicStructures.BOTH ? 2 : 1) *
                 b1s.length *
                 b2s.length *
                 alphas.length *
@@ -207,83 +207,80 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
                 omegaShuffles.length;
 
         // loop over all possible parameter combinations
-        for (boolean epStatic : epStatics) {
-            this.dgData.getUtilityModelParams().setCurrEpStatic(epStatic);
-            for (double b1 : b1s) {
-                this.dgData.getUtilityModelParams().setCurrB1(b1);
-                for (double b2 : b2s) {
-                    this.dgData.getUtilityModelParams().setCurrB2(b2);
-                    for (double alpha : alphas) {
-                        this.dgData.getUtilityModelParams().setCurrAlpha(alpha);
-                        for (double c1 : c1s) {
-                            this.dgData.getUtilityModelParams().setCurrC1(c1);
-                            for (double c2 : c2s) {
-                                this.dgData.getUtilityModelParams().setCurrC2(c2);
-                                for (double sigma : sigmas) {
-                                    this.dgData.getUtilityModelParams().setCurrSigma(sigma);
-                                    for (double gamma : gammas) {
-                                        this.dgData.getUtilityModelParams().setCurrGamma(gamma);
-                                        for (int tau : taus) {
-                                            this.dgData.getUtilityModelParams().setCurrTau(tau);
-                                            for (double rSigma : rSigmas) {
-                                                this.dgData.getUtilityModelParams().setCurrRSigma(rSigma);
-                                                for (boolean rSigmaRandomHomogeneous : rSigmaRandomHomogeneouses) {
-                                                    this.dgData.getUtilityModelParams().setCurrRSigmaRandomHomogeneous(rSigmaRandomHomogeneous);
-                                                    for (double rPi : rPis) {
-                                                        this.dgData.getUtilityModelParams().setCurrRPi(rPi);
-                                                        for (boolean rPiRandomHomogeneous : rPiRandomHomogeneouses) {
-                                                            this.dgData.getUtilityModelParams().setCurrRPiRandomHomogeneous(rPiRandomHomogeneous);
-                                                            for (int N : Ns) {
-                                                                this.dgData.getUtilityModelParams().setCurrN(N);
-                                                                for (boolean iota : iotas) {
-                                                                    this.dgData.getUtilityModelParams().setCurrIota(iota);
-                                                                    for (double phi : phis) {
-                                                                        this.dgData.getUtilityModelParams().setCurrPhi(phi);
-                                                                        for (double omega : omegas) {
-                                                                            this.dgData.getUtilityModelParams().setCurrOmega(omega);
-                                                                            for (boolean omegaShuffle : omegaShuffles) {
-                                                                                this.dgData.getUtilityModelParams().setCurrOmegaShuffle(omegaShuffle);
+        for (double b1 : b1s) {
+            this.dgData.getUtilityModelParams().setCurrB1(b1);
+            for (double b2 : b2s) {
+                this.dgData.getUtilityModelParams().setCurrB2(b2);
+                for (double alpha : alphas) {
+                    this.dgData.getUtilityModelParams().setCurrAlpha(alpha);
+                    for (double c1 : c1s) {
+                        this.dgData.getUtilityModelParams().setCurrC1(c1);
+                        for (double c2 : c2s) {
+                            this.dgData.getUtilityModelParams().setCurrC2(c2);
+                            for (double sigma : sigmas) {
+                                this.dgData.getUtilityModelParams().setCurrSigma(sigma);
+                                for (double gamma : gammas) {
+                                    this.dgData.getUtilityModelParams().setCurrGamma(gamma);
+                                    for (int tau : taus) {
+                                        this.dgData.getUtilityModelParams().setCurrTau(tau);
+                                        for (double rSigma : rSigmas) {
+                                            this.dgData.getUtilityModelParams().setCurrRSigma(rSigma);
+                                            for (boolean rSigmaRandomHomogeneous : rSigmaRandomHomogeneouses) {
+                                                this.dgData.getUtilityModelParams().setCurrRSigmaRandomHomogeneous(rSigmaRandomHomogeneous);
+                                                for (double rPi : rPis) {
+                                                    this.dgData.getUtilityModelParams().setCurrRPi(rPi);
+                                                    for (boolean rPiRandomHomogeneous : rPiRandomHomogeneouses) {
+                                                        this.dgData.getUtilityModelParams().setCurrRPiRandomHomogeneous(rPiRandomHomogeneous);
+                                                        for (int N : Ns) {
+                                                            this.dgData.getUtilityModelParams().setCurrN(N);
+                                                            for (boolean iota : iotas) {
+                                                                this.dgData.getUtilityModelParams().setCurrIota(iota);
+                                                                for (double phi : phis) {
+                                                                    this.dgData.getUtilityModelParams().setCurrPhi(phi);
+                                                                    for (double omega : omegas) {
+                                                                        this.dgData.getUtilityModelParams().setCurrOmega(omega);
+                                                                        for (boolean omegaShuffle : omegaShuffles) {
+                                                                            this.dgData.getUtilityModelParams().setCurrOmegaShuffle(omegaShuffle);
 
-                                                                                this.dgData.getSimStats().incUpc();
-                                                                                logger.info("Starting to compute "
-                                                                                        + this.dgData.getUtilityModelParams().
-                                                                                        getSimsPerParameterCombination()
-                                                                                        + " simulations for parameter combination: "
-                                                                                        + this.dgData.getSimStats().getUpc() + " / "
-                                                                                        + upcs);
+                                                                            this.dgData.getSimStats().incUpc();
+                                                                            logger.info("Starting to compute "
+                                                                                    + this.dgData.getUtilityModelParams().
+                                                                                    getSimsPerParameterCombination()
+                                                                                    + " simulations for parameter combination: "
+                                                                                    + this.dgData.getSimStats().getUpc() + " / "
+                                                                                    + upcs);
 
-                                                                                // multiple simulations for same parameter combination
-                                                                                this.dgData.getSimStats().setSimPerUpc(1);
-                                                                                while (this.dgData.getSimStats().getSimPerUpc()
-                                                                                        <= this.dgData.getUtilityModelParams().
-                                                                                        getSimsPerParameterCombination()) {
+                                                                            // multiple simulations for same parameter combination
+                                                                            this.dgData.getSimStats().setSimPerUpc(1);
+                                                                            while (this.dgData.getSimStats().getSimPerUpc()
+                                                                                    <= this.dgData.getUtilityModelParams().
+                                                                                    getSimsPerParameterCombination()) {
 
-                                                                                    // uid = "upc-sim"
-                                                                                    this.dgData.getSimStats().setUid(
-                                                                                            String.valueOf(this.dgData.getSimStats().getUpc()) +
-                                                                                            "-" + String.valueOf(
-                                                                                                    this.dgData.getSimStats().getSimPerUpc()));
+                                                                                // uid = "upc-sim"
+                                                                                this.dgData.getSimStats().setUid(
+                                                                                        String.valueOf(this.dgData.getSimStats().getUpc()) +
+                                                                                        "-" + String.valueOf(
+                                                                                                this.dgData.getSimStats().getSimPerUpc()));
 
-                                                                                    // simulate
-                                                                                    performSingleSimulation();
+                                                                                // simulate
+                                                                                performSingleSimulation();
 
-                                                                                    // log simulation summary
-                                                                                    if (PropertiesHandler.getInstance().isExportSummary()) {
-                                                                                        this.ssWriter.writeCurrentData();
-                                                                                    }
-
-                                                                                    logger.debug("Simulation " +
-                                                                                            this.dgData.getSimStats().getSimPerUpc() +
-                                                                                            "/" +
-                                                                                            this.dgData.getUtilityModelParams().getSimsPerParameterCombination() +
-                                                                                            " of parameter combination " +
-                                                                                            this.dgData.getSimStats().getUpc() +
-                                                                                            "/" +
-                                                                                            upcs +
-                                                                                            " finished.");
-
-                                                                                    this.dgData.getSimStats().incSimPerUpc();
+                                                                                // log simulation summary
+                                                                                if (PropertiesHandler.getInstance().isExportSummary()) {
+                                                                                    this.ssWriter.writeCurrentData();
                                                                                 }
+
+                                                                                logger.debug("Simulation " +
+                                                                                        this.dgData.getSimStats().getSimPerUpc() +
+                                                                                        "/" +
+                                                                                        this.dgData.getUtilityModelParams().getSimsPerParameterCombination() +
+                                                                                        " of parameter combination " +
+                                                                                        this.dgData.getSimStats().getUpc() +
+                                                                                        "/" +
+                                                                                        upcs +
+                                                                                        " finished.");
+
+                                                                                this.dgData.getSimStats().incSimPerUpc();
                                                                             }
                                                                         }
                                                                     }
@@ -317,10 +314,6 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
         this.network = new Network();
 
         // setting parameters
-        // epStatic
-        if (this.dgData.getUtilityModelParams().isEpStaticRandom()) {
-            this.dgData.getUtilityModelParams().setCurrEpStatic(ThreadLocalRandom.current().nextBoolean());
-        }
         // b1
         if (this.dgData.getUtilityModelParams().isB1Random()) {
             this.dgData.getUtilityModelParams().setCurrB1(ThreadLocalRandom.current().nextDouble(
@@ -377,17 +370,23 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
         }
         // rSigma
         if (this.dgData.getUtilityModelParams().isRSigmaRandom()) {
+
+            double range = (this.dgData.getUtilityModelParams().getRSigmaRandomMax() -
+                    this.dgData.getUtilityModelParams().getRSigmaRandomMin()) / 2.0;
+            double min = ThreadLocalRandom.current().nextDouble(
+                    this.dgData.getUtilityModelParams().getRSigmaRandomMin(),
+                    range);
+            double max = ThreadLocalRandom.current().nextDouble(
+                    this.dgData.getUtilityModelParams().getRSigmaRandomMin() + range,
+                    this.dgData.getUtilityModelParams().getRSigmaRandomMax());
+
             if (this.dgData.getUtilityModelParams().isCurrRSigmaRandomHomogeneous()) {
-                this.dgData.getUtilityModelParams().setCurrRSigma(ThreadLocalRandom.current().nextDouble(
-                        this.dgData.getUtilityModelParams().getRSigmaRandomMin(),
-                        this.dgData.getUtilityModelParams().getRSigmaRandomMax()));
+                this.dgData.getUtilityModelParams().setCurrRSigma(ThreadLocalRandom.current().nextDouble(min, max));
             } else {
                 int currN = this.dgData.getUtilityModelParams().getCurrN();
                 double[] rSigmas = new double[currN];
                 for (int i = 0; i < currN; i++) {
-                    rSigmas[i] = ThreadLocalRandom.current().nextDouble(
-                            this.dgData.getUtilityModelParams().getRSigmaRandomMin(),
-                            this.dgData.getUtilityModelParams().getRSigmaRandomMax());
+                    rSigmas[i] = ThreadLocalRandom.current().nextDouble(min, max);
                 }
                 this.dgData.getUtilityModelParams().setCurrRSigmas(rSigmas);
             }
@@ -401,17 +400,23 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
             this.dgData.getUtilityModelParams().setCurrRPi(this.dgData.getUtilityModelParams().getCurrRSigma());
             this.dgData.getUtilityModelParams().setCurrRPis(this.dgData.getUtilityModelParams().getCurrRSigmas());
         } else if (this.dgData.getUtilityModelParams().isRPiRandom()) {
+
+            double range = (this.dgData.getUtilityModelParams().getRPiRandomMax() -
+                    this.dgData.getUtilityModelParams().getRPiRandomMin()) / 2.0;
+            double min = ThreadLocalRandom.current().nextDouble(
+                    this.dgData.getUtilityModelParams().getRPiRandomMin(),
+                    range);
+            double max = ThreadLocalRandom.current().nextDouble(
+                    this.dgData.getUtilityModelParams().getRPiRandomMin() + range,
+                    this.dgData.getUtilityModelParams().getRPiRandomMax());
+
             if (this.dgData.getUtilityModelParams().isCurrRPiRandomHomogeneous()) {
-                this.dgData.getUtilityModelParams().setCurrRPi(ThreadLocalRandom.current().nextDouble(
-                        this.dgData.getUtilityModelParams().getRSigmaRandomMin(),
-                        this.dgData.getUtilityModelParams().getRSigmaRandomMax()));
+                this.dgData.getUtilityModelParams().setCurrRPi(ThreadLocalRandom.current().nextDouble(min, max));
             } else {
                 int currN = this.dgData.getUtilityModelParams().getCurrN();
                 double[] rPis = new double[currN];
                 for (int i = 0; i < currN; i++) {
-                    rPis[i] = ThreadLocalRandom.current().nextDouble(
-                            this.dgData.getUtilityModelParams().getRSigmaRandomMin(),
-                            this.dgData.getUtilityModelParams().getRSigmaRandomMax());
+                    rPis[i] = ThreadLocalRandom.current().nextDouble(min, max);
                 }
                 this.dgData.getUtilityModelParams().setCurrRPis(rPis);
             }
@@ -474,6 +479,7 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
                     rPi,
                     this.dgData.getUtilityModelParams().getCurrPhi(),
                     this.dgData.getUtilityModelParams().getCurrOmega(),
+                    // TODO remove omegaShuffle (deprecated with new assortativity algorithm)
                     this.dgData.getUtilityModelParams().isCurrOmegaShuffle(),
                     this.dgData.getUtilityModelParams().getCurrPsi(),
                     this.dgData.getUtilityModelParams().getCurrXi(),
@@ -489,36 +495,96 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
             network.createFullNetwork();
         }
 
-        // PRE_EPIDEMIC STAGE
+        if (this.dgData.getUtilityModelParams().getEpStructure() == EpidemicStructures.BOTH) {
+            this.dgData.getUtilityModelParams().setCurrEpStructure(EpidemicStructures.BOTH);
+            this.simulatePreEpidemic();
+            Agent indexCase = this.network.getRandomNotInfectedAgent();
+
+            this.dgData.getUtilityModelParams().setCurrEpStructure(EpidemicStructures.STATIC);
+            this.simulateEpidemic(ds, indexCase);
+
+            this.dgData.getUtilityModelParams().setCurrEpStructure(EpidemicStructures.DYNAMIC);
+            this.simulateEpidemic(ds, indexCase);
+
+        } else {
+            this.dgData.getUtilityModelParams().setCurrEpStructure(this.dgData.getUtilityModelParams().getEpStructure());
+            this.simulatePreEpidemic();
+            this.simulateEpidemic(ds, this.network.getRandomNotInfectedAgent());
+        }
+    }
+
+    /**
+     *
+     */
+    private void simulatePreEpidemic() {
         // set up general stats
         this.dgData.getSimStats().setSimStage(SimulationStage.PRE_EPIDEMIC);
         // create simulation
-        this.simulation = new Simulation(network, this.dgData.getUtilityModelParams().isCurrEpStatic());
+        this.simulation = new Simulation(network,
+                this.dgData.getUtilityModelParams().getCurrEpStructure() == EpidemicStructures.STATIC);
         this.simulation.addSimulationListener(this);
         // simulate
         simulation.simulateUntilStable(this.dgData.getUtilityModelParams().getZeta());
         // save data of last round of pre-epidemic stage
         this.dgData.setNetStatsPre(new NetworkStats(this.network));
         this.dgData.getNetStatsPre().setTiesBrokenWithInfectionPresent(0.0);
+        this.dgData.getNetStatsPre().setNetworkChangesWithInfectionPresent(0.0);
         // write agent detail data if necessary
         if (!PropertiesHandler.getInstance().isExportAgentDetails() &&
                 PropertiesHandler.getInstance().isExportAgentDetailsReduced()) {
             this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
             this.adWriter.writeCurrentData();
         }
+    }
 
-        // EPIDEMIC AND POST-EPIDEMIC STAGES
+    /**
+     * @param ds
+     */
+    private void simulateEpidemic(DiseaseSpecs ds, Agent indexCase) {
+        this.network.resetDiseaseStates();
+
         this.tiesBrokenWithInfectionPresent = 0.0;
-        Agent indexCase = this.network.infectRandomAgent(ds);
+        this.networkChangesWithInfectionPresent = 0.0;
+        indexCase.forceInfect(ds);
         this.dgData.getSimStats().setSimStage(SimulationStage.ACTIVE_EPIDEMIC);
+
         // save index case properties of pre-epidemic stage
-        this.dgData.setIndexCaseStats(new AgentStats(indexCase));
+        switch (this.dgData.getUtilityModelParams().getCurrEpStructure()) {
+            case STATIC:
+                this.dgData.setIndexCaseStatsStatic(new AgentStats(indexCase));
+                break;
+
+            case DYNAMIC:
+                this.dgData.setIndexCaseStatsDynamic(new AgentStats(indexCase));
+                break;
+
+            case BOTH:
+            default:
+                logger.error("Unimplement epidemic structure: " + this.dgData.getUtilityModelParams().getCurrEpStructure());
+        }
+
         this.dgData.getSimStats().setRoundStartInfection(this.simulation.getRounds());
         // simulate
         this.simulation.simulateUntilStable(this.dgData.getUtilityModelParams().getEpsilon());
+
         // save data of last round of post-epidemic stage
-        this.dgData.setNetStatsPost(new NetworkStats(this.network));
-        this.dgData.getNetStatsPost().setTiesBrokenWithInfectionPresent(this.tiesBrokenWithInfectionPresent);
+        switch (this.dgData.getUtilityModelParams().getCurrEpStructure()) {
+            case STATIC:
+                this.dgData.setNetStatsPostStatic(new NetworkStats(this.network));
+                this.dgData.getNetStatsPostStatic().setTiesBrokenWithInfectionPresent(this.tiesBrokenWithInfectionPresent);
+                this.dgData.getNetStatsPostStatic().setNetworkChangesWithInfectionPresent(this.networkChangesWithInfectionPresent);
+                break;
+
+            case DYNAMIC:
+                this.dgData.setNetStatsPostDynamic(new NetworkStats(this.network));
+                this.dgData.getNetStatsPostDynamic().setTiesBrokenWithInfectionPresent(this.tiesBrokenWithInfectionPresent);
+                this.dgData.getNetStatsPostDynamic().setNetworkChangesWithInfectionPresent(this.networkChangesWithInfectionPresent);
+                break;
+
+            case BOTH:
+            default:
+                logger.error("Unimplement epidemic structure: " + this.dgData.getUtilityModelParams().getCurrEpStructure());
+        }
 
         // end: GEXF export
         if (PropertiesHandler.getInstance().isExportGexf()) {
@@ -593,7 +659,11 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
      * org.graphstream.graph.Edge, nl.uu.socnetid.nidm.agents.Agent, nl.uu.socnetid.nidm.agents.Agent)
      */
     @Override
-    public void notifyConnectionAdded(Edge edge, Agent agent1, Agent agent2) { }
+    public void notifyConnectionAdded(Edge edge, Agent agent1, Agent agent2) {
+        if (this.dgData.getSimStats().getSimStage() == SimulationStage.ACTIVE_EPIDEMIC) {
+            this.networkChangesWithInfectionPresent++;
+        }
+    }
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.agents.AgentListener#notifyConnectionRemoved(
@@ -603,6 +673,7 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
     public void notifyConnectionRemoved(Agent agent, Edge edge) {
         if (this.dgData.getSimStats().getSimStage() == SimulationStage.ACTIVE_EPIDEMIC) {
             this.tiesBrokenWithInfectionPresent++;
+            this.networkChangesWithInfectionPresent++;
         }
     }
 

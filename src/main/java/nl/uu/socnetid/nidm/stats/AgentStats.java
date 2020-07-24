@@ -33,28 +33,38 @@ import nl.uu.socnetid.nidm.diseases.types.DiseaseGroup;
  */
 public class AgentStats {
 
-    private boolean satisfied;
-    private double degree1;
-    private double degree2;
-    private double closeness;
-    private double clustering;
-    private double betweenness;
-    private double betweennessNormalized;
-    private double utility;
-    private double socialBenefits;
-    private double socialCosts;
-    private double diseaseCosts;
-    private DiseaseGroup diseaseGroup;
-    private int timeToRecover;
-    private int brokenTiesActive;
-    private int brokenTiesPassive;
-    private int acceptedRequestsOut;
-    private int acceptedRequestsIn;
-    private int declinedRequestsOut;
-    private int declinedRequestsIn;
+    private final double rSigma;
+    private final double rSigmaNeighborhood;
+    private final double rPi;
+    private final double rPiNeighborhood;
+    private final boolean satisfied;
+    private final double degree1;
+    private final double degree2;
+    private final double closeness;
+    private final double clustering;
+    private final double betweenness;
+    private final double betweennessNormalized;
+    private final double utility;
+    private final double socialBenefits;
+    private final double socialCosts;
+    private final double diseaseCosts;
+    private final DiseaseGroup diseaseGroup;
+    private final int timeToRecover;
+    private final boolean forceInfected;
+    private final int brokenTiesActive;
+    private final int brokenTiesPassive;
+    private final int acceptedRequestsOut;
+    private final int acceptedRequestsIn;
+    private final int declinedRequestsOut;
+    private final int declinedRequestsIn;
 
 
     public AgentStats(Agent agent) {
+
+        this.rSigma = agent.getRSigma();
+        this.rSigmaNeighborhood = agent.getRSigmaNeighborhood();
+        this.rPi = agent.getRPi();
+        this.rPiNeighborhood = agent.getRPiNeighborhood();
         this.satisfied = agent.isSatisfied();
         this.degree1 = agent.getDegree();
         this.degree2 = agent.getSecondOrderDegree();
@@ -72,6 +82,7 @@ public class AgentStats {
         } else {
             this.timeToRecover = -1;
         }
+        this.forceInfected = agent.isForceInfected();
         this.brokenTiesActive = agent.getConnectionStats().getBrokenTiesActive();
         this.brokenTiesPassive = agent.getConnectionStats().getBrokenTiesPassive();
         this.acceptedRequestsOut = agent.getConnectionStats().getAcceptedRequestsOut();
@@ -82,143 +93,31 @@ public class AgentStats {
 
 
     /**
-     * @return the degree1
+     * @return the rSigma
      */
-    public double getDegree1() {
-        return degree1;
+    public double getrSigma() {
+        return rSigma;
     }
 
     /**
-     * @param degree1 the degree1 to set
+     * @return the rSigmaNeighborhood
      */
-    public void setDegree1(double degree1) {
-        this.degree1 = degree1;
+    public double getrSigmaNeighborhood() {
+        return rSigmaNeighborhood;
     }
 
     /**
-     * @return the degree2
+     * @return the rPi
      */
-    public double getDegree2() {
-        return degree2;
+    public double getrPi() {
+        return rPi;
     }
 
     /**
-     * @param degree2 the degree2 to set
+     * @return the rPiNeighborhood
      */
-    public void setDegree2(double degree2) {
-        this.degree2 = degree2;
-    }
-
-    /**
-     * @return the closeness
-     */
-    public double getCloseness() {
-        return closeness;
-    }
-
-    /**
-     * @param closeness the closeness to set
-     */
-    public void setCloseness(double closeness) {
-        this.closeness = closeness;
-    }
-
-    /**
-     * @return the clustering
-     */
-    public double getClustering() {
-        return clustering;
-    }
-
-    /**
-     * @param clustering the clustering to set
-     */
-    public void setClustering(double clustering) {
-        this.clustering = clustering;
-    }
-
-    /**
-     * @return the betweenness
-     */
-    public double getBetweenness() {
-        return betweenness;
-    }
-
-    /**
-     * @param betweenness the betweenness to set
-     */
-    public void setBetweenness(double betweenness) {
-        this.betweenness = betweenness;
-    }
-
-    /**
-     * @return the betweennessNormalized
-     */
-    public double getBetweennessNormalized() {
-        return betweennessNormalized;
-    }
-
-    /**
-     * @param betweennessNormalized the betweennessNormalized to set
-     */
-    public void setBetweennessNormalized(double betweennessNormalized) {
-        this.betweennessNormalized = betweennessNormalized;
-    }
-
-    /**
-     * @return the utility
-     */
-    public double getUtility() {
-        return utility;
-    }
-
-    /**
-     * @param utility the utility to set
-     */
-    public void setUtility(double utility) {
-        this.utility = utility;
-    }
-
-    /**
-     * @return the socialBenefits
-     */
-    public double getSocialBenefits() {
-        return socialBenefits;
-    }
-
-    /**
-     * @param socialBenefits the socialBenefits to set
-     */
-    public void setSocialBenefits(double socialBenefits) {
-        this.socialBenefits = socialBenefits;
-    }
-
-    /**
-     * @return the socialCosts
-     */
-    public double getSocialCosts() {
-        return socialCosts;
-    }
-
-    /**
-     * @param socialCosts the socialCosts to set
-     */
-    public void setSocialCosts(double socialCosts) {
-        this.socialCosts = socialCosts;
-    }
-
-    /**
-     * @return the diseaseCosts
-     */
-    public double getDiseaseCosts() {
-        return diseaseCosts;
-    }
-
-    /**
-     * @param diseaseCosts the diseaseCosts to set
-     */
-    public void setDiseaseCosts(double diseaseCosts) {
-        this.diseaseCosts = diseaseCosts;
+    public double getrPiNeighborhood() {
+        return rPiNeighborhood;
     }
 
     /**
@@ -229,10 +128,73 @@ public class AgentStats {
     }
 
     /**
-     * @param satisfied the satisfied to set
+     * @return the degree1
      */
-    public void setSatisfied(boolean satisfied) {
-        this.satisfied = satisfied;
+    public double getDegree1() {
+        return degree1;
+    }
+
+    /**
+     * @return the degree2
+     */
+    public double getDegree2() {
+        return degree2;
+    }
+
+    /**
+     * @return the closeness
+     */
+    public double getCloseness() {
+        return closeness;
+    }
+
+    /**
+     * @return the clustering
+     */
+    public double getClustering() {
+        return clustering;
+    }
+
+    /**
+     * @return the betweenness
+     */
+    public double getBetweenness() {
+        return betweenness;
+    }
+
+    /**
+     * @return the betweennessNormalized
+     */
+    public double getBetweennessNormalized() {
+        return betweennessNormalized;
+    }
+
+    /**
+     * @return the utility
+     */
+    public double getUtility() {
+        return utility;
+    }
+
+    /**
+     * @return the socialBenefits
+     */
+    public double getSocialBenefits() {
+        return socialBenefits;
+    }
+
+    /**
+     * @return the socialCosts
+     */
+    public double getSocialCosts() {
+        return socialCosts;
+    }
+
+    /**
+     * @return the diseaseCosts
+     */
+    public double getDiseaseCosts() {
+        return diseaseCosts;
     }
 
     /**
@@ -243,13 +205,6 @@ public class AgentStats {
     }
 
     /**
-     * @param diseaseGroup the diseaseGroup to set
-     */
-    public void setDiseaseGroup(DiseaseGroup diseaseGroup) {
-        this.diseaseGroup = diseaseGroup;
-    }
-
-    /**
      * @return the timeToRecover
      */
     public int getTimeToRecover() {
@@ -257,10 +212,10 @@ public class AgentStats {
     }
 
     /**
-     * @param timeToRecover the timeToRecover to set
+     * @return the forceInfected
      */
-    public void setTimeToRecover(int timeToRecover) {
-        this.timeToRecover = timeToRecover;
+    public boolean isForceInfected() {
+        return forceInfected;
     }
 
     /**
@@ -271,24 +226,10 @@ public class AgentStats {
     }
 
     /**
-     * @param brokenTiesActive the brokenTiesActive to set
-     */
-    public void setBrokenTiesActive(int brokenTiesActive) {
-        this.brokenTiesActive = brokenTiesActive;
-    }
-
-    /**
      * @return the brokenTiesPassive
      */
     public int getBrokenTiesPassive() {
         return brokenTiesPassive;
-    }
-
-    /**
-     * @param brokenTiesPassive the brokenTiesPassive to set
-     */
-    public void setBrokenTiesPassive(int brokenTiesPassive) {
-        this.brokenTiesPassive = brokenTiesPassive;
     }
 
     /**
@@ -299,24 +240,10 @@ public class AgentStats {
     }
 
     /**
-     * @param acceptedRequestsOut the acceptedRequestsOut to set
-     */
-    public void setAcceptedRequestsOut(int acceptedRequestsOut) {
-        this.acceptedRequestsOut = acceptedRequestsOut;
-    }
-
-    /**
      * @return the acceptedRequestsIn
      */
     public int getAcceptedRequestsIn() {
         return acceptedRequestsIn;
-    }
-
-    /**
-     * @param acceptedRequestsIn the acceptedRequestsIn to set
-     */
-    public void setAcceptedRequestsIn(int acceptedRequestsIn) {
-        this.acceptedRequestsIn = acceptedRequestsIn;
     }
 
     /**
@@ -327,24 +254,10 @@ public class AgentStats {
     }
 
     /**
-     * @param declinedRequestsOut the declinedRequestsOut to set
-     */
-    public void setDeclinedRequestsOut(int declinedRequestsOut) {
-        this.declinedRequestsOut = declinedRequestsOut;
-    }
-
-    /**
      * @return the declinedRequestsIn
      */
     public int getDeclinedRequestsIn() {
         return declinedRequestsIn;
-    }
-
-    /**
-     * @param declinedRequestsIn the declinedRequestsIn to set
-     */
-    public void setDeclinedRequestsIn(int declinedRequestsIn) {
-        this.declinedRequestsIn = declinedRequestsIn;
     }
 
 }
