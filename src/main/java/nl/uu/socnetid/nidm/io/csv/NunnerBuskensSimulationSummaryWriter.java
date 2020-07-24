@@ -60,7 +60,7 @@ public class NunnerBuskensSimulationSummaryWriter extends SimulationSummaryWrite
      */
     @Override
     protected List<String> addModelColumns(List<String> cols) {
-        cols.add(LogValues.IV_NB_EPSTATIC.toString());
+        cols.add(LogValues.IV_NB_EP_STRUCTURE.toString());
         cols.add(LogValues.IV_NB_B1.toString());
         cols.add(LogValues.IV_NB_B2.toString());
         cols.add(LogValues.IV_NB_ALPHA.toString());
@@ -78,6 +78,7 @@ public class NunnerBuskensSimulationSummaryWriter extends SimulationSummaryWrite
         cols.add(LogValues.IV_NB_RS_EQUAL.toString());
         cols.add(LogValues.IV_NB_R_SIGMA_AV.toString());
         cols.add(LogValues.IV_NB_R_PI_AV.toString());
+
         return cols;
     }
 
@@ -86,7 +87,7 @@ public class NunnerBuskensSimulationSummaryWriter extends SimulationSummaryWrite
      */
     @Override
     protected List<String> addCurrModelData(List<String> currData) {
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().isCurrEpStatic() ? 1 : 0));
+        currData.add(this.dgData.getUtilityModelParams().getEpStructure().toString());
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrB1()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrB2()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrAlpha()));
@@ -104,6 +105,7 @@ public class NunnerBuskensSimulationSummaryWriter extends SimulationSummaryWrite
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().isRsEqual() ? 1 : 0));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getRSigmaAv()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getRPiAv()));
+
         return currData;
     }
 

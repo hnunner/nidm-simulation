@@ -59,7 +59,7 @@ public class NunnerBuskensRoundSummaryWriter extends RoundSummaryWriter<NunnerBu
      */
     @Override
     protected List<String> addModelColumns(List<String> cols) {
-        cols.add(LogValues.IV_NB_EPSTATIC.toString());
+        cols.add(LogValues.IV_NB_EP_STRUCTURE.toString());
         cols.add(LogValues.IV_NB_ALPHA.toString());
         cols.add(LogValues.IV_NB_SIGMA.toString());
         cols.add(LogValues.IV_NB_RS_EQUAL.toString());
@@ -75,7 +75,7 @@ public class NunnerBuskensRoundSummaryWriter extends RoundSummaryWriter<NunnerBu
      */
     @Override
     protected List<String> addCurrModelData(List<String> currData) {
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().isCurrEpStatic() ? 1 : 0));
+        currData.add(this.dgData.getUtilityModelParams().getCurrEpStructure().toString());
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrAlpha()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrSigma()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().isRsEqual() ? 1 : 0));

@@ -96,8 +96,8 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
         // DEPENDENT VARIABLES (D)
         // simulation
         cols.add(LogValues.DV_SIM_EPIDEMIC_DURATION.toString());
-        // network
-        // pre-epidemic
+
+        // PRE-EPIDEMIC
         cols.add(LogValues.DV_NET_AV_DEGREE_PRE.toString());
         cols.add(LogValues.DV_NET_AV_DEGREE2_PRE.toString());
         cols.add(LogValues.DV_NET_AV_CLOSENESS_PRE.toString());
@@ -111,44 +111,88 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
         cols.add(LogValues.DV_NET_ASSORTATIVITY_CONDITION.toString());
         cols.add(LogValues.DV_NET_ASSORTATIVITY_PRE.toString());
         cols.add(LogValues.DV_NET_STABLE_PRE.toString());
-        // post-epidemic
-        cols.add(LogValues.DV_NET_PERCENTAGE_SUSCEPTIBLE.toString());
-        cols.add(LogValues.DV_NET_PERCENTAGE_INFECTED.toString());
-        cols.add(LogValues.DV_NET_PERCENTAGE_RECOVERED.toString());
-        cols.add(LogValues.DV_NET_TIES_BROKEN_EPIDEMIC.toString());
-        cols.add(LogValues.DV_NET_AV_DEGREE_POST.toString());
-        cols.add(LogValues.DV_NET_AV_DEGREE2_POST.toString());
-        cols.add(LogValues.DV_NET_AV_CLOSENESS_POST.toString());
-        cols.add(LogValues.DV_NET_AV_CLUSTERING_POST.toString());
-        cols.add(LogValues.DV_NET_AV_PATHLENGTH_POST.toString());
-        cols.add(LogValues.DV_NET_AV_UTIL_POST.toString());
-        cols.add(LogValues.DV_NET_AV_BENEFIT_SOCIAL_POST.toString());
-        cols.add(LogValues.DV_NET_AV_COSTS_SOCIAL_POST.toString());
-        cols.add(LogValues.DV_NET_AV_COSTS_DISEASE_POST.toString());
-        cols.add(LogValues.DV_NET_DENSITY_POST.toString());
-        cols.add(LogValues.DV_NET_ASSORTATIVITY_CONDITION.toString());
-        cols.add(LogValues.DV_NET_ASSORTATIVITY_POST.toString());
-        cols.add(LogValues.DV_NET_STABLE_POST.toString());
-        // index case
-        cols.add(LogValues.DV_INDEX_SATISFIED.toString());
-        cols.add(LogValues.DV_INDEX_UTIL.toString());
-        cols.add(LogValues.DV_INDEX_BENEFIT_SOCIAL.toString());
-        cols.add(LogValues.DV_INDEX_COSTS_SOCIAL.toString());
-        cols.add(LogValues.DV_INDEX_COSTS_DISEASE.toString());
-        cols.add(LogValues.DV_INDEX_DISEASE_STATE.toString());
-        cols.add(LogValues.DV_INDEX_DISEASE_ROUNDS_REMAINING.toString());
-        cols.add(LogValues.DV_INDEX_DEGREE1.toString());
-        cols.add(LogValues.DV_INDEX_DEGREE2.toString());
-        cols.add(LogValues.DV_INDEX_CLOSENESS.toString());
-        cols.add(LogValues.DV_INDEX_CLUSTERING.toString());
-        cols.add(LogValues.DV_INDEX_BETWEENNESS.toString());
-        cols.add(LogValues.DV_INDEX_BETWEENNESS_NORMALIZED.toString());
-        cols.add(LogValues.DV_INDEX_CONS_BROKEN_ACTIVE.toString());
-        cols.add(LogValues.DV_INDEX_CONS_BROKEN_PASSIVE.toString());
-        cols.add(LogValues.DV_INDEX_CONS_OUT_ACCEPTED.toString());
-        cols.add(LogValues.DV_INDEX_CONS_OUT_DECLINED.toString());
-        cols.add(LogValues.DV_INDEX_CONS_IN_ACCEPTED.toString());
-        cols.add(LogValues.DV_INDEX_CONS_IN_DECLINED.toString());
+
+        // POST-EDIDEMIC
+        // static
+        cols.add(LogValues.DV_NET_STATIC_PERCENTAGE_SUSCEPTIBLE.toString());
+        cols.add(LogValues.DV_NET_STATIC_PERCENTAGE_INFECTED.toString());
+        cols.add(LogValues.DV_NET_STATIC_PERCENTAGE_RECOVERED.toString());
+        cols.add(LogValues.DV_NET_STATIC_TIES_BROKEN_EPIDEMIC.toString());
+        cols.add(LogValues.DV_NET_STATIC_NETWORK_CHANGES_EPIDEMIC.toString());
+        cols.add(LogValues.DV_NET_STATIC_AV_DEGREE_POST.toString());
+        cols.add(LogValues.DV_NET_STATIC_AV_DEGREE2_POST.toString());
+        cols.add(LogValues.DV_NET_STATIC_AV_CLOSENESS_POST.toString());
+        cols.add(LogValues.DV_NET_STATIC_AV_CLUSTERING_POST.toString());
+        cols.add(LogValues.DV_NET_STATIC_AV_PATHLENGTH_POST.toString());
+        cols.add(LogValues.DV_NET_STATIC_AV_UTIL_POST.toString());
+        cols.add(LogValues.DV_NET_STATIC_AV_BENEFIT_SOCIAL_POST.toString());
+        cols.add(LogValues.DV_NET_STATIC_AV_COSTS_SOCIAL_POST.toString());
+        cols.add(LogValues.DV_NET_STATIC_AV_COSTS_DISEASE_POST.toString());
+        cols.add(LogValues.DV_NET_STATIC_DENSITY_POST.toString());
+        cols.add(LogValues.DV_NET_STATIC_ASSORTATIVITY_CONDITION.toString());
+        cols.add(LogValues.DV_NET_STATIC_ASSORTATIVITY_POST.toString());
+        cols.add(LogValues.DV_NET_STATIC_STABLE_POST.toString());
+        cols.add(LogValues.DV_INDEX_STATIC_SATISFIED.toString());
+        cols.add(LogValues.DV_INDEX_STATIC_UTIL.toString());
+        cols.add(LogValues.DV_INDEX_STATIC_BENEFIT_SOCIAL.toString());
+        cols.add(LogValues.DV_INDEX_STATIC_COSTS_SOCIAL.toString());
+        cols.add(LogValues.DV_INDEX_STATIC_COSTS_DISEASE.toString());
+        cols.add(LogValues.DV_INDEX_STATIC_DISEASE_STATE.toString());
+        cols.add(LogValues.DV_INDEX_STATIC_DISEASE_ROUNDS_REMAINING.toString());
+        cols.add(LogValues.DV_INDEX_STATIC_DEGREE1.toString());
+        cols.add(LogValues.DV_INDEX_STATIC_DEGREE2.toString());
+        cols.add(LogValues.DV_INDEX_STATIC_CLOSENESS.toString());
+        cols.add(LogValues.DV_INDEX_STATIC_CLUSTERING.toString());
+        cols.add(LogValues.DV_INDEX_STATIC_BETWEENNESS.toString());
+        cols.add(LogValues.DV_INDEX_STATIC_BETWEENNESS_NORMALIZED.toString());
+        cols.add(LogValues.DV_INDEX_STATIC_CONS_BROKEN_ACTIVE.toString());
+        cols.add(LogValues.DV_INDEX_STATIC_CONS_BROKEN_PASSIVE.toString());
+        cols.add(LogValues.DV_INDEX_STATIC_CONS_OUT_ACCEPTED.toString());
+        cols.add(LogValues.DV_INDEX_STATIC_CONS_OUT_DECLINED.toString());
+        cols.add(LogValues.DV_INDEX_STATIC_CONS_IN_ACCEPTED.toString());
+        cols.add(LogValues.DV_INDEX_STATIC_CONS_IN_DECLINED.toString());
+        cols.add(LogValues.DV_INDEX_STATIC_R_SIGMA.toString());
+        cols.add(LogValues.DV_INDEX_STATIC_R_PI.toString());
+        // dynamic
+        cols.add(LogValues.DV_NET_DYNAMIC_PERCENTAGE_SUSCEPTIBLE.toString());
+        cols.add(LogValues.DV_NET_DYNAMIC_PERCENTAGE_INFECTED.toString());
+        cols.add(LogValues.DV_NET_DYNAMIC_PERCENTAGE_RECOVERED.toString());
+        cols.add(LogValues.DV_NET_DYNAMIC_TIES_BROKEN_EPIDEMIC.toString());
+        cols.add(LogValues.DV_NET_DYNAMIC_NETWORK_CHANGES_EPIDEMIC.toString());
+        cols.add(LogValues.DV_NET_DYNAMIC_AV_DEGREE_POST.toString());
+        cols.add(LogValues.DV_NET_DYNAMIC_AV_DEGREE2_POST.toString());
+        cols.add(LogValues.DV_NET_DYNAMIC_AV_CLOSENESS_POST.toString());
+        cols.add(LogValues.DV_NET_DYNAMIC_AV_CLUSTERING_POST.toString());
+        cols.add(LogValues.DV_NET_DYNAMIC_AV_PATHLENGTH_POST.toString());
+        cols.add(LogValues.DV_NET_DYNAMIC_AV_UTIL_POST.toString());
+        cols.add(LogValues.DV_NET_DYNAMIC_AV_BENEFIT_SOCIAL_POST.toString());
+        cols.add(LogValues.DV_NET_DYNAMIC_AV_COSTS_SOCIAL_POST.toString());
+        cols.add(LogValues.DV_NET_DYNAMIC_AV_COSTS_DISEASE_POST.toString());
+        cols.add(LogValues.DV_NET_DYNAMIC_DENSITY_POST.toString());
+        cols.add(LogValues.DV_NET_DYNAMIC_ASSORTATIVITY_CONDITION.toString());
+        cols.add(LogValues.DV_NET_DYNAMIC_ASSORTATIVITY_POST.toString());
+        cols.add(LogValues.DV_NET_DYNAMIC_STABLE_POST.toString());
+        cols.add(LogValues.DV_INDEX_DYNAMIC_SATISFIED.toString());
+        cols.add(LogValues.DV_INDEX_DYNAMIC_UTIL.toString());
+        cols.add(LogValues.DV_INDEX_DYNAMIC_BENEFIT_SOCIAL.toString());
+        cols.add(LogValues.DV_INDEX_DYNAMIC_COSTS_SOCIAL.toString());
+        cols.add(LogValues.DV_INDEX_DYNAMIC_COSTS_DISEASE.toString());
+        cols.add(LogValues.DV_INDEX_DYNAMIC_DISEASE_STATE.toString());
+        cols.add(LogValues.DV_INDEX_DYNAMIC_DISEASE_ROUNDS_REMAINING.toString());
+        cols.add(LogValues.DV_INDEX_DYNAMIC_DEGREE1.toString());
+        cols.add(LogValues.DV_INDEX_DYNAMIC_DEGREE2.toString());
+        cols.add(LogValues.DV_INDEX_DYNAMIC_CLOSENESS.toString());
+        cols.add(LogValues.DV_INDEX_DYNAMIC_CLUSTERING.toString());
+        cols.add(LogValues.DV_INDEX_DYNAMIC_BETWEENNESS.toString());
+        cols.add(LogValues.DV_INDEX_DYNAMIC_BETWEENNESS_NORMALIZED.toString());
+        cols.add(LogValues.DV_INDEX_DYNAMIC_CONS_BROKEN_ACTIVE.toString());
+        cols.add(LogValues.DV_INDEX_DYNAMIC_CONS_BROKEN_PASSIVE.toString());
+        cols.add(LogValues.DV_INDEX_DYNAMIC_CONS_OUT_ACCEPTED.toString());
+        cols.add(LogValues.DV_INDEX_DYNAMIC_CONS_OUT_DECLINED.toString());
+        cols.add(LogValues.DV_INDEX_DYNAMIC_CONS_IN_ACCEPTED.toString());
+        cols.add(LogValues.DV_INDEX_DYNAMIC_CONS_IN_DECLINED.toString());
+        cols.add(LogValues.DV_INDEX_DYNAMIC_R_SIGMA.toString());
+        cols.add(LogValues.DV_INDEX_DYNAMIC_R_PI.toString());
 
         // RELATED EXPORTS
         cols.add(LogValues.GEXF_FILE.toString());
@@ -176,7 +220,8 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
         // DEPENDENT VARIABLES
         // simulation
         currData.add(String.valueOf(this.dgData.getSimStats().getRoundLastInfection()));
-        // network - pre epidemic
+
+        // PRE-EPIDEMIC
         currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvDegree()));
         currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvDegree2()));
         currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvCloseness()));
@@ -190,44 +235,88 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
         currData.add(this.dgData.getNetStatsPre().getAssortativityCondition().toString());
         currData.add(String.valueOf(this.dgData.getNetStatsPre().getAssortativity()));
         currData.add(String.valueOf(this.dgData.getNetStatsPre().isStable() ? 1 : 0));
-        // network - post epidemic
-        currData.add(String.valueOf(this.dgData.getNetStatsPost().getSusceptiblePercent()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPost().getInfectedPercent()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPost().getRecoveredPercent()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPost().getTiesBrokenWithInfectionPresent()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPost().getAvDegree()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPost().getAvDegree2()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPost().getAvCloseness()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPost().getAvClustering()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPost().getAvPathLength()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPost().getAvUtility()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPost().getAvSocialBenefits()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPost().getAvSocialCosts()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPost().getAvDiseaseCosts()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPost().getDensity()));
+
+        // POST-EDIDEMIC
+        // static
+        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getSusceptiblePercent()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getInfectedPercent()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getRecoveredPercent()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getTiesBrokenWithInfectionPresent()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getNetworkChangesWithInfectionPresent()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getAvDegree()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getAvDegree2()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getAvCloseness()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getAvClustering()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getAvPathLength()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getAvUtility()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getAvSocialBenefits()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getAvSocialCosts()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getAvDiseaseCosts()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getDensity()));
         currData.add(this.dgData.getNetStatsPre().getAssortativityCondition().toString());
-        currData.add(String.valueOf(this.dgData.getNetStatsPost().getAssortativity()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPost().isStable() ? 1 : 0));
-        // index case
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().isSatisfied()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getUtility()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getSocialBenefits()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getSocialCosts()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getDiseaseCosts()));
-        currData.add(this.dgData.getIndexCaseStats().getDiseaseGroup().name());
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getTimeToRecover()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getDegree1()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getDegree2()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getCloseness()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getClustering()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getBetweenness()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getBetweennessNormalized()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getBrokenTiesActive()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getBrokenTiesPassive()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getAcceptedRequestsOut()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getDeclinedRequestsOut()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getAcceptedRequestsIn()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getDeclinedRequestsIn()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getAssortativity()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().isStable() ? 1 : 0));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsStatic().isSatisfied()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsStatic().getUtility()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsStatic().getSocialBenefits()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsStatic().getSocialCosts()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsStatic().getDiseaseCosts()));
+        currData.add(this.dgData.getIndexCaseStatsStatic().getDiseaseGroup().name());
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsStatic().getTimeToRecover()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsStatic().getDegree1()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsStatic().getDegree2()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsStatic().getCloseness()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsStatic().getClustering()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsStatic().getBetweenness()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsStatic().getBetweennessNormalized()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsStatic().getBrokenTiesActive()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsStatic().getBrokenTiesPassive()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsStatic().getAcceptedRequestsOut()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsStatic().getDeclinedRequestsOut()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsStatic().getAcceptedRequestsIn()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsStatic().getDeclinedRequestsIn()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsStatic().getrSigma()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsStatic().getrPi()));
+        // dynamic
+        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getSusceptiblePercent()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getInfectedPercent()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getRecoveredPercent()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getTiesBrokenWithInfectionPresent()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getNetworkChangesWithInfectionPresent()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAvDegree()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAvDegree2()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAvCloseness()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAvClustering()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAvPathLength()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAvUtility()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAvSocialBenefits()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAvSocialCosts()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAvDiseaseCosts()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getDensity()));
+        currData.add(this.dgData.getNetStatsPre().getAssortativityCondition().toString());
+        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAssortativity()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().isStable() ? 1 : 0));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsDynamic().isSatisfied()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsDynamic().getUtility()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsDynamic().getSocialBenefits()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsDynamic().getSocialCosts()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsDynamic().getDiseaseCosts()));
+        currData.add(this.dgData.getIndexCaseStatsDynamic().getDiseaseGroup().name());
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsDynamic().getTimeToRecover()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsDynamic().getDegree1()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsDynamic().getDegree2()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsDynamic().getCloseness()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsDynamic().getClustering()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsDynamic().getBetweenness()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsDynamic().getBetweennessNormalized()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsDynamic().getBrokenTiesActive()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsDynamic().getBrokenTiesPassive()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsDynamic().getAcceptedRequestsOut()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsDynamic().getDeclinedRequestsOut()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsDynamic().getAcceptedRequestsIn()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsDynamic().getDeclinedRequestsIn()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsDynamic().getrSigma()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsDynamic().getrPi()));
 
         // RELATED EXPORTS
         currData.add(this.dgData.getGexfExportFile());
