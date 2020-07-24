@@ -39,6 +39,7 @@ import org.apache.logging.log4j.Logger;
 import nl.uu.socnetid.nidm.data.out.BurgerBuskensParameters;
 import nl.uu.socnetid.nidm.data.out.CarayolRouxParameters;
 import nl.uu.socnetid.nidm.data.out.CidmParameters;
+import nl.uu.socnetid.nidm.data.out.EpidemicStructures;
 import nl.uu.socnetid.nidm.data.out.LogValues;
 import nl.uu.socnetid.nidm.data.out.NunnerBuskensGeneticParameters;
 import nl.uu.socnetid.nidm.data.out.NunnerBuskensParameters;
@@ -331,8 +332,7 @@ public class PropertiesHandler {
         generateNunnerBuskensNetworksGenetic = Boolean.parseBoolean(configProps.getProperty("nb.generate.networks.genetic"));
         nbParameters = new NunnerBuskensParameters();
         // network structure static during epidemics
-        nbParameters.setEpStaticRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_EPSTATIC_RANDOM.toString())));
-        nbParameters.setEpStatics(parseBooleanArray(configProps.getProperty(LogValues.IV_NB_EPSTATIC.toString())));
+        nbParameters.setEpStructure(EpidemicStructures.fromString(configProps.getProperty(LogValues.IV_NB_EP_STRUCTURE.toString())));
         // b1
         nbParameters.setB1Random(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_B1_RANDOM.toString())));
         nbParameters.setB1RandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_B1_RANDOM_MIN.toString())));
