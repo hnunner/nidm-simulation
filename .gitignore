@@ -29,3 +29,6 @@ bfg-report*
 .Rhistory
 # Session Data files
 .RData
+
+# file system
+/exports
