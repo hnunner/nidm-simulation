@@ -67,9 +67,6 @@ public abstract class UtilityModelParameters {
     private double omegaRandomMax;
     private double[] omegas;
     private double currOmega;
-    private boolean omegaShuffleRandom;
-    private boolean[] omegaShuffles;
-    private boolean currOmegaShuffle;
     // ac - assortativity condition
     private AssortativityConditions ac;     // TODO move to a more appropriate place (not really a utility parameter)
     // considering age
@@ -120,6 +117,7 @@ public abstract class UtilityModelParameters {
     private int epsilon;
     // simulations per parameter combination
     private int simsPerParameterCombination;
+    private int simIterations;
 
 
     /**
@@ -991,6 +989,20 @@ public abstract class UtilityModelParameters {
     }
 
     /**
+     * @return the simIterations
+     */
+    public int getSimIterations() {
+        return simIterations;
+    }
+
+    /**
+     * @param simIterations the simIterations to set
+     */
+    public void setSimIterations(int simIterations) {
+        this.simIterations = simIterations;
+    }
+
+    /**
      * @return the currRSigmas
      */
     public double[] getCurrRSigmas() {
@@ -1111,48 +1123,6 @@ public abstract class UtilityModelParameters {
             rPiTotal += this.currRPis[i];
         }
         return rPiTotal/length;
-    }
-
-    /**
-     * @return the omegaShuffleRandom
-     */
-    public boolean isOmegaShuffleRandom() {
-        return omegaShuffleRandom;
-    }
-
-    /**
-     * @param omegaShuffleRandom the omegaShuffleRandom to set
-     */
-    public void setOmegaShuffleRandom(boolean omegaShuffleRandom) {
-        this.omegaShuffleRandom = omegaShuffleRandom;
-    }
-
-    /**
-     * @return the omegaShuffles
-     */
-    public boolean[] getOmegaShuffles() {
-        return omegaShuffles;
-    }
-
-    /**
-     * @param omegaShuffles the omegaShuffles to set
-     */
-    public void setOmegaShuffles(boolean[] omegaShuffles) {
-        this.omegaShuffles = omegaShuffles;
-    }
-
-    /**
-     * @return the currOmegaShuffle
-     */
-    public boolean isCurrOmegaShuffle() {
-        return currOmegaShuffle;
-    }
-
-    /**
-     * @param currOmegaShuffle the currOmegaShuffle to set
-     */
-    public void setCurrOmegaShuffle(boolean currOmegaShuffle) {
-        this.currOmegaShuffle = currOmegaShuffle;
     }
 
     /**

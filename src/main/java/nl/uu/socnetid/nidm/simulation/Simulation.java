@@ -208,7 +208,7 @@ public class Simulation implements Runnable {
                 && this.rounds < maxRounds
                 && !this.stopped) {
             computeSingleRound();
-            logger.debug("round " + (this.rounds) + ": finished");
+//            logger.debug("round " + (this.rounds) + ": finished");
         }
 
         // status message
@@ -242,6 +242,16 @@ public class Simulation implements Runnable {
         if (this.network.hasActiveInfection()) {
             computeDiseaseDynamics();
         }
+
+        // first round with active infection
+        if (this.network.hasActiveInfection() && !this.activeInfection) {
+            this.activeInfection = true;
+        }
+        // first round of defeated infection
+        if (this.activeInfection && !this.network.hasActiveInfection()) {
+            this.activeInfection = false;
+            notifyInfectionDefeated();
+        }
         if (!this.network.hasActiveInfection() || (this.network.hasActiveInfection() && !this.epStatic)) {
             computeAgentDynamics();
         }
@@ -250,17 +260,6 @@ public class Simulation implements Runnable {
 
         // notifications
         notifyRoundFinished();
-
-        // first round with active infection
-        if (this.network.hasActiveInfection() && !this.activeInfection) {
-            this.activeInfection = true;
-        }
-
-        // first round of defeated infection
-        if (this.activeInfection && !this.network.hasActiveInfection()) {
-            this.activeInfection = false;
-            notifyInfectionDefeated();
-        }
     }
 
     /**
