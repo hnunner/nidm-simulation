@@ -89,6 +89,7 @@ public abstract class NetworkSummaryWriter<UMP extends UtilityModelParameters> e
         cols.add(LogValues.IV_SIM_UID.toString());
         cols.add(LogValues.IV_SIM_UPC.toString());
         cols.add(LogValues.IV_SIM_CNT.toString());
+        cols.add(LogValues.IV_SIM_IT.toString());
         cols.add(LogValues.IV_SIM_ROUND.toString());
 
         // model specific columns
@@ -121,6 +122,7 @@ public abstract class NetworkSummaryWriter<UMP extends UtilityModelParameters> e
         currData.add(this.dgData.getSimStats().getUid());
         currData.add(String.valueOf(this.dgData.getSimStats().getUpc()));
         currData.add(String.valueOf(this.dgData.getSimStats().getSimPerUpc()));
+        currData.add(String.valueOf(this.dgData.getSimStats().getSimIt()));
         currData.add(String.valueOf(this.dgData.getSimStats().getCurrRound()));
 
         // model specific data
