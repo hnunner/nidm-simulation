@@ -41,6 +41,7 @@ public enum LogValues {
     IV_SIM_UID("sim.uid"),
     IV_SIM_UPC("sim.upc"),
     IV_SIM_CNT("sim.cnt"),
+    IV_SIM_IT("sim.it"),
     IV_SIM_ROUND("sim.round"),
     // agent
     IV_AGENT_ID("agent.id"),
@@ -228,11 +229,10 @@ public enum LogValues {
     IV_NB_OMEGA_RANDOM_MIN("nb.omega.random.min"),
     IV_NB_OMEGA_RANDOM_MAX("nb.omega.random.max"),
     IV_NB_OMEGA("nb.omega"),
-    IV_NB_OMEGA_SHUFFLE_RANDOM("nb.omega.shuffle.random"),
-    IV_NB_OMEGA_SHUFFLE("nb.omega.shuffle"),
     IV_NB_ZETA("nb.zeta"),
     IV_NB_EPSILON("nb.epsilon"),
     IV_NB_SIMS_PER_PC("nb.n"),
+    IV_NB_SIM_ITERATIONS("nb.m"),
     // NunnerBuskens genetic
     IV_NB_GEN_B1("nb.gen.b1"),
     IV_NB_GEN_B2("nb.gen.b2"),
@@ -331,6 +331,8 @@ public enum LogValues {
     // neighborhood
     DV_AGENT_NEIGHBORHOOD_R_SIGMA_AV("agent.neighborhood.r.sigma.av"),
     DV_AGENT_NEIGHBORHOOD_R_PI_AV("agent.neighborhood.r.pi.av"),
+    DV_AGENT_INDEX_NEIGHBORHOOD_R_SIGMA_AV("agent.index.neighborhood.r.sigma.av"),
+    DV_AGENT_INDEX_NEIGHBORHOOD_R_PI_AV("agent.index.neighborhood.r.pi.av"),
     // index
     DV_INDEX_SATISFIED("index.satisfied"),
     DV_INDEX_UTIL("index.util"),
@@ -351,8 +353,15 @@ public enum LogValues {
     DV_INDEX_CONS_OUT_DECLINED("index.cons.out.declined"),
     DV_INDEX_CONS_IN_ACCEPTED("index.cons.in.accepted"),
     DV_INDEX_CONS_IN_DECLINED("index.cons.in.declined"),
+    DV_INDEX_R_SIGMA("index.r.sigma"),
+    DV_INDEX_R_SIGMA_NEIGHBORHOOD("index.r.sigma.neighborhood"),
+    DV_INDEX_R_PI("index.r.pi"),
+    DV_INDEX_R_PI_NEIGHBORHOOD("index.r.pi.neighborhood"),
 
     // static
+    DV_NET_STATIC_EPIDEMIC_DURATION("net.static.epidemic.duration"),
+    DV_NET_STATIC_EPIDEMIC_MAX_INFECTIONS("net.static.epidemic.max.infections"),
+    DV_NET_STATIC_EPIDEMIC_PEAK("net.static.epidemic.peak"),
     DV_NET_STATIC_PERCENTAGE_SUSCEPTIBLE("net.static.pct.sus"),
     DV_NET_STATIC_PERCENTAGE_INFECTED("net.static.pct.inf"),
     DV_NET_STATIC_PERCENTAGE_RECOVERED("net.static.pct.rec"),
@@ -393,6 +402,9 @@ public enum LogValues {
     DV_INDEX_STATIC_R_SIGMA("index.static.r.sigma"),
     DV_INDEX_STATIC_R_PI("index.static.r.pi"),
     // dynamic
+    DV_NET_DYNAMIC_EPIDEMIC_DURATION("net.dynamic.epidemic.duration"),
+    DV_NET_DYNAMIC_EPIDEMIC_MAX_INFECTIONS("net.dynamic.epidemic.max.infections"),
+    DV_NET_DYNAMIC_EPIDEMIC_PEAK("net.dynamic.epidemic.peak"),
     DV_NET_DYNAMIC_PERCENTAGE_SUSCEPTIBLE("net.dynamic.pct.sus"),
     DV_NET_DYNAMIC_PERCENTAGE_INFECTED("net.dynamic.pct.inf"),
     DV_NET_DYNAMIC_PERCENTAGE_RECOVERED("net.dynamic.pct.rec"),

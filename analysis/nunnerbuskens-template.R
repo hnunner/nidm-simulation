@@ -62,6 +62,8 @@ EXPORT_DIR_NUM              <- "numerical/"
 EXPORT_PATH_NUM             <- paste(DATA_PATH, EXPORT_DIR_NUM, sep = "")
 EXPORT_FILE_TYPE_REG        <- "html"
 EXPORT_FILE_EXTENSION_REG   <- paste(".", EXPORT_FILE_TYPE_REG, sep = "")
+EXPORT_FILE_TYPE_DESC       <- "txt"
+EXPORT_FILE_EXTENSION_DESC  <- paste(".", EXPORT_FILE_TYPE_DESC, sep = "")
 EXPORT_DIR_PLOTS            <- "figures/"
 EXPORT_PATH_PLOTS           <- paste(DATA_PATH, EXPORT_DIR_PLOTS, sep = "")
 EXPORT_FILE_TYPE_PLOTS      <- "png"
@@ -96,6 +98,16 @@ load_simulation_summary_data <- function() {
 }
 
 #----------------------------------------------------------------------------------------------------#
+# function: remove_exclusions_simulation_summary_data
+#     Removes excluded records from simulation summary data.
+# return: the simulation summary data cleaned from excluded data records
+#----------------------------------------------------------------------------------------------------#
+remove_exclusions_simulation_summary_data <- function(data.ss) {
+  data.ss <- subset(data.ss, data.ss$net.pathlength.pre.epidemic.av >= 1)
+  return(data.ss)
+}
+
+#----------------------------------------------------------------------------------------------------#
 # function: load_round_summary_data
 #     Loads summary data for all simulated NIDM rounds.
 # return: the summary data for all simulated NIDM rounds
@@ -113,64 +125,58 @@ load_agent_details_data <- function() {
   return(load_csv(CSV_AGENT_DETAILS_PATH))
 }
 
-print_descriptives <- function(data.ss = load_simulation_summary_data()) {
-  print(paste("observations:", nrow(data.ss)))
-  print(paste("exlcusions (unstable):", nrow(subset(data.ss, data.ss$net.stable.pre == 0))))
-  print(paste("exlcusions (disconnected):", nrow(subset(data.ss, data.ss$net.pathlength.pre.epidemic.av < 1))))
-  print("------------------------------------------")
 
-  # remove exclusions
-  data.ss <- subset(data.ss,
-                    data.ss$net.stable.pre == 1
-                    & data.ss$net.pathlength.pre.epidemic.av >= 1)
 
-  print(paste("av. risk perception: ", round(mean(data.ss$nb.r.sigma.av), digits = 2),         # rs.equal = true
-              " (", round(sd(data.ss$nb.r.sigma.av), digits = 2), ")", sep = ""))
-  print("------------------------------------------")
-  print(paste("av. degree (network): ", round(mean(data.ss$net.degree.pre.epidemic.av), digits = 2),
-              " (", round(sd(data.ss$net.degree.pre.epidemic.av), digits = 2), ")", sep = ""))
-  print(paste("av. clustering (network): ", round(mean(data.ss$net.clustering.pre.epidemic.av), digits = 2),
-              " (", round(sd(data.ss$net.clustering.pre.epidemic.av), digits = 2), ")", sep = ""))
-  print(paste("av. path length (network): ", round(mean(data.ss$net.pathlength.pre.epidemic.av), digits = 2),
-              " (", round(sd(data.ss$net.pathlength.pre.epidemic.av), digits = 2), ")", sep = ""))
-  print("------------------------------------------")
-  print(paste("av. degree (patient-0): ", round(mean(data.ss$index.degree), digits = 2),
-              " (", round(sd(data.ss$index.degree), digits = 2), ")", sep = ""))
-  print(paste("av. clustering (patient-0): ", round(mean(data.ss$index.clustering), digits = 2),
-              " (", round(sd(data.ss$index.clustering), digits = 2), ")", sep = ""))
-  print(paste("av. betweenness (patient-0): ", round(mean(data.ss$index.betweenness.normalized), digits = 2),
-              " (", round(sd(data.ss$index.betweenness.normalized), digits = 2), ")", sep = ""))
-  print("------------------------------------------")
-  print(paste("mean attack rate: ", round(mean(data.ss$net.pct.rec), digits = 2),
-              " (", round(sd(data.ss$net.pct.rec), digits = 2), ")", sep = ""))
-  print(paste("median attack rate: ", round(median(data.ss$net.pct.rec), digits = 2),
-              " (", round(quantile(data.ss$net.pct.rec)[2], digits = 2), ", ",
-              round(quantile(data.ss$net.pct.rec)[4], digits = 2), ")", sep = ""))
-  print("")
-}
-
-print_descriptives_per_condition <- function(data.ss = load_simulation_summary_data()) {
-  print("#################### OVERALL ####################")
-  print_descriptives(data.ss)
-  print("#################### RRM ####################")
-  print_descriptives(subset(data.ss, data.ss$nb.alpha == 0.15 & data.ss$nb.omega == 0.0 & data.ss$nb.sigma == 2.0))
-  print("#################### RRS ####################")
-  print_descriptives(subset(data.ss, data.ss$nb.alpha == 0.15 & data.ss$nb.omega == 0.0 & data.ss$nb.sigma == 50.0))
-  print("#################### RAM ####################")
-  print_descriptives(subset(data.ss, data.ss$nb.alpha == 0.15 & data.ss$nb.omega == 0.8 & data.ss$nb.sigma ==  2.0))
-  print("#################### RAS ####################")
-  print_descriptives(subset(data.ss, data.ss$nb.alpha == 0.15 & data.ss$nb.omega == 0.8 & data.ss$nb.sigma == 50.0))
-  print("#################### SRM ####################")
-  print_descriptives(subset(data.ss, data.ss$nb.alpha == 0.85 & data.ss$nb.omega == 0.0 & data.ss$nb.sigma ==  2.0))
-  print("#################### SRS ####################")
-  print_descriptives(subset(data.ss, data.ss$nb.alpha == 0.85 & data.ss$nb.omega == 0.0 & data.ss$nb.sigma == 50.0))
-  print("#################### SAM ####################")
-  print_descriptives(subset(data.ss, data.ss$nb.alpha == 0.85 & data.ss$nb.omega == 0.8 & data.ss$nb.sigma ==  2.0))
-  print("#################### SAS ####################")
-  print_descriptives(subset(data.ss, data.ss$nb.alpha == 0.85 & data.ss$nb.omega == 0.8 & data.ss$nb.sigma == 50.0))
+############################################# DESCRIPTIVES ###########################################
+get_descriptive <- function(vec, title) {
+  out <- "------------------------------------------\n"
+  out <- paste(out, " ", title, "\n", sep = "")
+  out <- paste(out, "    mean:   ", round(mean(vec), digits = 2), " (", round(sd(vec), digits = 2), ")\n", sep = "")
+  out <- paste(out, "    min:    ", round(min(vec), digits = 2), "\n", sep = "")
+  out <- paste(out, "    max:    ", round(max(vec), digits = 2), "\n", sep = "")
+  out <- paste(out, "    median: ", round(median(vec), digits = 2),
+               " (", round(quantile(vec)[2], digits = 2), ", ",
+               round(quantile(vec)[4], digits = 2), ")\n", sep = "")
+  return(out)
 }
 
 
+
+export_descriptives <- function(data.ss = load_simulation_summary_data()) {
+
+  # observations
+  obs <- nrow(data.ss)
+  out <- paste(" observations: ", obs, "\n", sep = "")
+  data.ss <- remove_exclusions_simulation_summary_data(data.ss)
+  out <- paste(out, " exclusions:   ", obs - nrow(data.ss), "\n", sep = "")
+
+  # data
+  out <- paste(out, get_descriptive(data.ss$nb.r.sigma.av, "av. risk perception"))
+  out <- paste(out, get_descriptive(data.ss$net.degree.pre.epidemic.av, "degree (network)"))
+  out <- paste(out, get_descriptive(data.ss$net.clustering.pre.epidemic.av, "clustering (network)"))
+  out <- paste(out, get_descriptive(data.ss$net.pathlength.pre.epidemic.av, "path length (network)"))
+  out <- paste(out, get_descriptive(data.ss$index.degree, "degree (index case)"))
+  out <- paste(out, get_descriptive(data.ss$index.clustering, "clustering (index case)"))
+  out <- paste(out, get_descriptive(data.ss$index.betweenness.normalized, "betweenness (index case)"))
+  out <- paste(out, get_descriptive(data.ss$net.static.ties.broken.epidemic, "ties broken during epidemic (static)"))
+  out <- paste(out, get_descriptive(data.ss$net.static.network.changes.epidemic, "network changes during epidemic (static)"))
+  out <- paste(out, get_descriptive(data.ss$net.dynamic.ties.broken.epidemic, "ties broken during epidemic (dynamic)"))
+  out <- paste(out, get_descriptive(data.ss$net.dynamic.network.changes.epidemic, "network changes during epidemic (dynamic)"))
+  out <- paste(out, get_descriptive(data.ss$net.static.pct.rec, "attack rate (static)"))
+  out <- paste(out, get_descriptive(data.ss$net.dynamic.pct.rec, "attack rate (dynamic)"))
+  out <- paste(out, get_descriptive(data.ss$net.static.epidemic.duration, "duration (static)"))
+  out <- paste(out, get_descriptive(data.ss$net.dynamic.epidemic.duration, "duration (dynamic)"))
+  out <- paste(out, get_descriptive(data.ss$net.static.epidemic.max.infections, "epidemic max infections (static)"))
+  out <- paste(out, get_descriptive(data.ss$net.dynamic.epidemic.max.infections, "epidemic max infections (dynamic)"))
+  out <- paste(out, get_descriptive(data.ss$net.static.epidemic.peak, "epidemic peak (static)"))
+  out <- paste(out, get_descriptive(data.ss$net.dynamic.epidemic.peak, "epidemic peak (dynamic)"))
+
+  # export to file
+  cat(out, file = paste(EXPORT_PATH_NUM,
+                        "descriptives",
+                        EXPORT_FILE_EXTENSION_DESC,
+                        sep = ""))
+}
 
 
 ############################################ REGRESSIONS #############################################
@@ -222,413 +228,401 @@ exportModels <- function(models, filename) {
 }
 
 #----------------------------------------------------------------------------------------------------#
-# function: export_regression_models_complete
-#     Creates and exports multi-level logistic regression models for attack rate with all possible
-#     parameters and interaction effects.
+# function: export_attackrate_models
+#     Creates and exports multi-level logistic regression models for attack rate for all conjectures.
 # param:  data.ss
-#     simulation summary data to get regression models for
+#     simulation summary data to produce regression models for
+# param:  filenamname.appendix
+#     Optional string to append to the standard filename
 #----------------------------------------------------------------------------------------------------#
-export_regression_models_complete <- function(data.ss = load_simulation_summary_data(), name.extension = "") {
+export_attackrate_models <- function(data.ss = load_simulation_summary_data(), filenamname.appendix = "") {
 
-  # remove exclusions
-  data.ss <- subset(data.ss,
-                    data.ss$net.stable.pre == 1
-                    & data.ss$net.pathlength.pre.epidemic.av >= 1)
+  ### DATA PREPARATIONS ###
+  data.ss <- remove_exclusions_simulation_summary_data(data.ss)
 
-  # MAIN EFFECTS
-  # SWIDM parameters
-  alpha                                 <- meanCenter(data.ss$nb.alpha)
-  omega                                 <- meanCenter(data.ss$nb.omega)
-  sigma                                 <- meanCenter(data.ss$nb.sigma)
-  r.av                                  <- meanCenter(data.ss$nb.r.sigma.av)    # rs.equal = true
-  # network properties (macro)
-  net.degree                            <- meanCenter(data.ss$net.degree.pre.epidemic.av)
-  net.clustering                        <- meanCenter(data.ss$net.clustering.pre.epidemic.av)
-  net.pathlength                        <- meanCenter(data.ss$net.pathlength.pre.epidemic.av)
-  # network properties (macro)
-  index.degree                          <- meanCenter(data.ss$index.degree)
-  index.clustering                      <- meanCenter(data.ss$index.clustering)
-  index.betweenness                     <- meanCenter(data.ss$index.betweenness)
+  # main effects
+  r.sigma                               <- meanCenter(data.ss$nb.r.sigma.av)                          # range: 0.0 - 2.0
+  i.r.neigh                             <- meanCenter(data.ss$index.r.sigma.neighborhood)             # range: 0.0 - 2.0
+  sigma                                 <- meanCenter(data.ss$nb.sigma)                               # range: 0.0 - 100.0
+  gamma                                 <- meanCenter(data.ss$nb.gamma)                               # range: 0.0 - 1.0
+  net.clustering                        <- meanCenter(data.ss$net.clustering.pre.epidemic.av)         # range: 0.0 - 1.0
+  net.pathlenth                         <- meanCenter(data.ss$net.pathlength.pre.epidemic.av)         # range: 0.0 - infinity
+  i.betw                                <- meanCenter(data.ss$index.betweenness.normalized)           # range: 0.0 - 1.0
+  net.assortativity                     <- meanCenter(data.ss$net.assortativity.pre.epidemic)         # range: 0.0 - 1.0
 
-  # INTERACTION EFFECTS
-  # combinations of alpha
-  alpha.X.omega                         <- (alpha - mean(alpha))                        *  (omega - mean(omega))
-  alpha.X.sigma                         <- (alpha - mean(alpha))                        *  (sigma - mean(sigma))
-  alpha.X.r.av                          <- (alpha - mean(alpha))                        *  (r.av - mean(r.av))
-  alpha.X.net.degree                    <- (alpha - mean(alpha))                        *  (net.degree - mean(net.degree))
-  alpha.X.net.clustering                <- (alpha - mean(alpha))                        *  (net.clustering - mean(net.clustering))
-  alpha.X.net.pathlength                <- (alpha - mean(alpha))                        *  (net.pathlength - mean(net.pathlength))
-  alpha.X.index.degree                  <- (alpha - mean(alpha))                        *  (index.degree - mean(index.degree))
-  alpha.X.index.clustering              <- (alpha - mean(alpha))                        *  (index.clustering - mean(index.clustering))
-  alpha.X.index.betweenness             <- (alpha - mean(alpha))                        *  (index.betweenness - mean(index.betweenness))
-
-  # combinations of omega
-  omega.X.sigma                         <- (omega - mean(omega))                        *  (sigma - mean(sigma))
-  omega.X.r.av                          <- (omega - mean(omega))                        *  (r.av - mean(r.av))
-  omega.X.net.degree                    <- (omega - mean(omega))                        *  (net.degree - mean(net.degree))
-  omega.X.net.clustering                <- (omega - mean(omega))                        *  (net.clustering - mean(net.clustering))
-  omega.X.net.pathlength                <- (omega - mean(omega))                        *  (net.pathlength - mean(net.pathlength))
-  omega.X.index.degree                  <- (omega - mean(omega))                        *  (index.degree - mean(index.degree))
-  omega.X.index.clustering              <- (omega - mean(omega))                        *  (index.clustering - mean(index.clustering))
-  omega.X.index.betweenness             <- (omega - mean(omega))                        *  (index.betweenness - mean(index.betweenness))
-
-  # combinations of sigma
-  sigma.X.r.av                          <- (sigma - mean(sigma))                        *  (r.av - mean(r.av))
-  sigma.X.net.degree                    <- (sigma - mean(sigma))                        *  (net.degree - mean(net.degree))
-  sigma.X.net.clustering                <- (sigma - mean(sigma))                        *  (net.clustering - mean(net.clustering))
-  sigma.X.net.pathlength                <- (sigma - mean(sigma))                        *  (net.pathlength - mean(net.pathlength))
-  sigma.X.index.degree                  <- (sigma - mean(sigma))                        *  (index.degree - mean(index.degree))
-  sigma.X.index.clustering              <- (sigma - mean(sigma))                        *  (index.clustering - mean(index.clustering))
-  sigma.X.index.betweenness             <- (sigma - mean(sigma))                        *  (index.betweenness - mean(index.betweenness))
-
-  # combinations of r.av
-  r.av.X.net.degree                     <- (r.av - mean(r.av))                          *  (net.degree - mean(net.degree))
-  r.av.X.net.clustering                 <- (r.av - mean(r.av))                          *  (net.clustering - mean(net.clustering))
-  r.av.X.net.pathlength                 <- (r.av - mean(r.av))                          *  (net.pathlength - mean(net.pathlength))
-  r.av.X.index.degree                   <- (r.av - mean(r.av))                          *  (index.degree - mean(index.degree))
-  r.av.X.index.clustering               <- (r.av - mean(r.av))                          *  (index.clustering - mean(index.clustering))
-  r.av.X.index.betweenness              <- (r.av - mean(r.av))                          *  (index.betweenness - mean(index.betweenness))
-
-  # combinations of net.degree
-  net.degree.X.net.clustering           <- (net.degree - mean(net.degree))              *  (net.clustering - mean(net.clustering))
-  net.degree.X.net.pathlength           <- (net.degree - mean(net.degree))              *  (net.pathlength - mean(net.pathlength))
-  net.degree.X.index.degree             <- (net.degree - mean(net.degree))              *  (index.degree - mean(index.degree))
-  net.degree.X.index.clustering         <- (net.degree - mean(net.degree))              *  (index.clustering - mean(index.clustering))
-  net.degree.X.index.betweenness        <- (net.degree - mean(net.degree))              *  (index.betweenness - mean(index.betweenness))
-
-  # combinations of net.clustering
-  net.clustering.X.net.pathlength       <- (net.clustering - mean(net.clustering))      *  (net.pathlength - mean(net.pathlength))
-  net.clustering.X.index.degree         <- (net.clustering - mean(net.clustering))      *  (index.degree - mean(index.degree))
-  net.clustering.X.index.clustering     <- (net.clustering - mean(net.clustering))      *  (index.clustering - mean(index.clustering))
-  net.clustering.X.index.betweenness    <- (net.clustering - mean(net.clustering))      *  (index.betweenness - mean(index.betweenness))
-
-  # combinations of net.pathlength
-  net.pathlength.X.index.degree         <- (net.pathlength - mean(net.pathlength))      *  (index.degree - mean(index.degree))
-  net.pathlength.X.index.clustering     <- (net.pathlength - mean(net.pathlength))      *  (index.clustering - mean(index.clustering))
-  net.pathlength.X.index.betweenness    <- (net.pathlength - mean(net.pathlength))      *  (index.betweenness - mean(index.betweenness))
-
-  # combinations of index.degree
-  index.degree.X.index.clustering       <- (index.degree - mean(index.degree))          *  (index.clustering - mean(index.clustering))
-  index.degree.X.index.betweenness      <- (index.degree - mean(index.degree))          *  (index.betweenness - mean(index.betweenness))
-
-  # combinations of index.clustering
-  index.clustering.X.index.betweenness  <- (index.clustering - mean(index.clustering))  *  (index.betweenness - mean(index.betweenness))
-
+  # interaction effects
+  r.sigma.X.sigma                       <- (r.sigma - mean(r.sigma))                *   (sigma - mean(sigma))
+  r.sigma.X.gamma                       <- (r.sigma - mean(r.sigma))                *   (gamma - mean(gamma))
+  i.r.neigh.X.sigma                     <- (i.r.neigh - mean(i.r.neigh))            *   (sigma - mean(sigma))
+  i.r.neigh.X.gamma                     <- (i.r.neigh - mean(i.r.neigh))            *   (gamma - mean(gamma))
+  i.betw.X.i.r.neigh                    <- (i.betw - mean(i.betw))                  *   (i.r.neigh - mean(i.r.neigh))
+  net.clustering.X.net.assortativity    <- (net.clustering - mean(net.clustering))  *   (net.assortativity - mean(net.assortativity))
+  i.r.neigh.X.net.assortativity         <- (i.r.neigh - mean(i.r.neigh))            *   (net.assortativity - mean(net.assortativity))
 
   ### 2-LEVEL LOGISTIC REGRESSIONS (attack rate)  ###
-  ### level 2: parameters combination             ###
-  ### level 1: simulation runs                    ###
+  ### level 2: randomized parameters              ###
+  ### level 1: simulation iterations              ###
+  ## DYNAMIC ##
   # null-model
-  reg.00    <- glmer(data.ss$net.pct.rec/100 ~
-                       1 +
-                       (1 | sim.upc),
-                     family = binomial,
-                     data = data.ss)
-  # main effects: varied SWIDM parameters
-  reg.param <- glmer(data.ss$net.pct.rec/100 ~
-                       #  model parameters
-                       alpha +
-                       omega +
-                       sigma +
-                       r.av +
-                       (1 | sim.upc),
-                     family = binomial,
-                     data = data.ss)
-  # network properties
-  reg.net.macro <- glmer(data.ss$net.pct.rec/100 ~
-                           #  network properties
-                           net.degree +
-                           net.clustering +
-                           net.pathlength +
-                           (1 | sim.upc),
-                         family = binomial,
-                         data = data.ss)
-  # network properties
-  reg.net.micro <- glmer(data.ss$net.pct.rec/100 ~
-                           #  network properties
-                           index.degree +
-                           index.clustering +
-                           index.betweenness +
-                           (1 | sim.upc),
-                         family = binomial,
-                         data = data.ss)
-  # network properties
-  reg.net.all <- glmer(data.ss$net.pct.rec/100 ~
-                         #  network properties
-                         net.degree +
-                         net.clustering +
-                         net.pathlength +
-                         index.degree +
-                         index.clustering +
-                         index.betweenness +
-                         (1 | sim.upc),
-                       family = binomial,
-                       data = data.ss)
-  # network properties
-  reg.all <- glmer(data.ss$net.pct.rec/100 ~
-                     #  model parameters
-                     alpha +
-                     omega +
-                     sigma +
-                     r.av +
-                     #  network properties
-                     net.degree +
-                     net.clustering +
-                     net.pathlength +
-                     index.degree +
-                     index.clustering +
-                     index.betweenness +
-                     (1 | sim.upc),
-                   family = binomial,
-                   data = data.ss)
+  reg.dynamic.00   <- glmer(data.ss$net.dynamic.pct.rec/100 ~
+                              1 +
+                              (1 | sim.cnt),
+                            family = binomial,
+                            data = data.ss)
+  # model conjecture 2
+  net.dynamic.c2   <- glmer(data.ss$net.dynamic.pct.rec/100 ~
+                              r.sigma +
+                              i.r.neigh +
+                              sigma +
+                              gamma +
+                              r.sigma.X.sigma +
+                              r.sigma.X.gamma +
+                              i.r.neigh.X.sigma +
+                              i.r.neigh.X.gamma +
+                              (1 | sim.cnt),
+                            family = binomial,
+                            data = data.ss)
+  # model conjecture 3
+  net.dynamic.c3   <- glmer(data.ss$net.dynamic.pct.rec/100 ~
+                              net.clustering +
+                              i.r.neigh +
+                              net.pathlenth +
+                              i.betw +
+                              i.betw.X.i.r.neigh +
+                              (1 | sim.cnt),
+                            family = binomial,
+                            data = data.ss)
+  # model conjecture 4
+  net.dynamic.c4   <- glmer(data.ss$net.dynamic.pct.rec/100 ~
+                              net.assortativity +
+                              net.clustering +
+                              net.clustering.X.net.assortativity +
+                              i.r.neigh +
+                              i.r.neigh.X.net.assortativity +
+                              (1 | sim.cnt),
+                            family = binomial,
+                            data = data.ss)
+  # model all combined
+  net.dynamic.all  <- glmer(data.ss$net.dynamic.pct.rec/100 ~
+                              r.sigma +
+                              i.r.neigh +
+                              sigma +
+                              gamma +
+                              net.clustering +
+                              net.pathlenth +
+                              i.betw +
+                              net.assortativity +
+                              r.sigma.X.sigma +
+                              r.sigma.X.gamma +
+                              i.r.neigh.X.sigma +
+                              i.r.neigh.X.gamma +
+                              i.betw.X.i.r.neigh +
+                              net.clustering.X.net.assortativity +
+                              i.r.neigh.X.net.assortativity +
+                              (1 | sim.cnt),
+                            family = binomial,
+                            data = data.ss)
+  ## STATIC ##
+  # null-model
+  reg.static.00   <- glmer(data.ss$net.static.pct.rec/100 ~
+                             1 +
+                             (1 | sim.cnt),
+                           family = binomial,
+                           data = data.ss)
+  # model conjecture 2
+  net.static.c2   <- glmer(data.ss$net.static.pct.rec/100 ~
+                             r.sigma +
+                             sigma +
+                             gamma +
+                             r.sigma.X.sigma +
+                             r.sigma.X.gamma +
+                             (1 | sim.cnt),
+                           family = binomial,
+                           data = data.ss)
+  # model conjecture 3
+  net.static.c3   <- glmer(data.ss$net.static.pct.rec/100 ~
+                             net.clustering +
+                             i.r.neigh +
+                             net.pathlenth +
+                             i.betw +
+                             i.betw.X.i.r.neigh +
+                             (1 | sim.cnt),
+                           family = binomial,
+                           data = data.ss)
+  # model conjecture 4
+  net.static.c4   <- glmer(data.ss$net.static.pct.rec/100 ~
+                             net.assortativity +
+                             net.clustering +
+                             net.clustering.X.net.assortativity +
+                             i.r.neigh +
+                             i.r.neigh.X.net.assortativity +
+                             (1 | sim.cnt),
+                           family = binomial,
+                           data = data.ss)
+  # model all combined
+  net.static.all  <- glmer(data.ss$net.static.pct.rec/100 ~
+                             r.sigma +
+                             sigma +
+                             gamma +
+                             net.clustering +
+                             i.r.neigh +
+                             net.pathlenth +
+                             i.betw +
+                             net.assortativity +
+                             r.sigma.X.sigma +
+                             r.sigma.X.gamma +
+                             i.betw.X.i.r.neigh +
+                             net.clustering.X.net.assortativity +
+                             i.r.neigh.X.net.assortativity +
+                             (1 | sim.cnt),
+                           family = binomial,
+                           data = data.ss)
+
+  ### FILE EXPORT ###
+  filename <- "reg-attackrate-dynamic"
+  if (filenamname.appendix != "") {
+    filename <- paste("-", filenamname.appendix, sep = "")
+  }
+  exportModels(list(reg.dynamic.00,
+                    net.dynamic.c2,
+                    net.dynamic.c3,
+                    net.dynamic.c4,
+                    net.dynamic.all), filename)
+  filename <- "reg-attackrate-static"
+  if (filenamname.appendix != "") {
+    filename <- paste("-", filenamname.appendix, sep = "")
+  }
+  exportModels(list(reg.static.00,
+                    net.static.c2,
+                    net.static.c3,
+                    net.static.c4,
+                    net.static.all), filename)
+}
+
+#----------------------------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------#
+export_agent_regression_model <- function(data.ad = load_agent_details_data(), filenamname.appendix = "") {
+
+  ### DATA PREPARATIONS ###
+  # only finished simulations
+  data.ad <- subset(data.ad, sim.stage == "finished")
+  # only data of not excluded records
+  data.ad <- subset(data.ad, sim.uid %in% remove_exclusions_simulation_summary_data(load_simulation_summary_data())$sim.uid)
+  # transform disease state into flage whether agent has been infected or not
+  data.ad$agent.infected <- ifelse(data.ad$agent.dis.state == "RECOVERED", 1, ifelse(data.ad$agent.dis.state == "INFECTED", 1, 0))
+
+  # main effects
+  ties.broken                           <- meanCenter(data.ad$agent.cons.broken.active)               # range: 0.0 - infinity
+  ties.rewired                          <- meanCenter(data.ad$agent.cons.out.accepted)                # range: 0.0 - infinity
+  r.sigma                               <- meanCenter(data.ad$nb.r.sigma)                             # range: 0.0 - 2.0
+  r.sigma.neigh                         <- meanCenter(data.ad$agent.neighborhood.r.sigma.av)          # range: 0.0 - 2.0
+  i.r.sigma.neigh                       <- meanCenter(data.ad$agent.index.neighborhood.r.sigma.av)    # range: 0.0 - 2.0
+  sigma                                 <- meanCenter(data.ad$nb.sigma)                               # range: 0.0 - 100.0
+  gamma                                 <- meanCenter(data.ad$nb.gamma)                               # range: 0.0 - 1.0
+  agent.clustering                      <- meanCenter(data.ad$agent.clustering)                       # range: 0.0 - 1.0
+  net.clustering                        <- meanCenter(data.ad$net.clustering.av)                      # range: 0.0 - 1.0
+  pathlength                            <- meanCenter(data.ad$net.pathlength.av)                      # range: 0.0 - infinity
+  betweenness                           <- meanCenter(data.ad$agent.betweenness.normalized)           # range: 0.0 - 1.0
+  r.sigma.neighborhood                  <- meanCenter(data.ad$agent.neighborhood.r.sigma.av)          # range: 0.0 - 2.0
+  assortativity                         <- meanCenter(data.ad$net.assortativity)                      # range: 0.0 - 1.0
+
   # interaction effects
-  reg.int  <- glmer(data.ss$net.pct.rec/100 ~
-                      #  model parameters
-                      alpha +
-                      omega +
-                      sigma +
-                      r.av +
-                      #  network properties
-                      net.degree +
-                      net.clustering +
-                      net.pathlength +
-                      index.degree +
-                      index.clustering +
-                      index.betweenness +
-                      #  interactions
-                      alpha.X.omega +
-                      alpha.X.sigma +
-                      alpha.X.r.av +
-                      alpha.X.net.degree +
-                      alpha.X.net.clustering +
-                      alpha.X.net.pathlength +
-                      alpha.X.index.degree +
-                      alpha.X.index.clustering +
-                      alpha.X.index.betweenness +
-                      omega.X.sigma +
-                      omega.X.r.av +
-                      omega.X.net.degree +
-                      omega.X.net.clustering +
-                      omega.X.net.pathlength +
-                      omega.X.index.degree +
-                      omega.X.index.clustering +
-                      omega.X.index.betweenness +
-                      sigma.X.r.av +
-                      sigma.X.net.degree +
-                      sigma.X.net.clustering +
-                      sigma.X.net.pathlength +
-                      sigma.X.index.degree +
-                      sigma.X.index.clustering +
-                      sigma.X.index.betweenness +
-                      r.av.X.net.degree +
-                      r.av.X.net.clustering +
-                      r.av.X.net.pathlength +
-                      r.av.X.index.degree +
-                      r.av.X.index.clustering +
-                      r.av.X.index.betweenness +
-                      net.degree.X.net.clustering +
-                      net.degree.X.net.pathlength +
-                      net.degree.X.index.degree +
-                      net.degree.X.index.clustering +
-                      net.degree.X.index.betweenness +
-                      net.clustering.X.net.pathlength +
-                      net.clustering.X.index.degree +
-                      net.clustering.X.index.clustering +
-                      net.clustering.X.index.betweenness +
-                      net.pathlength.X.index.degree +
-                      net.pathlength.X.index.clustering +
-                      net.pathlength.X.index.betweenness +
-                      index.degree.X.index.clustering +
-                      index.degree.X.index.betweenness +
-                      index.clustering.X.index.betweenness +
-                      (1 | sim.upc),
-                    family = binomial,
-                    data = data.ss)
-  exportModels(list(reg.00,
-                    reg.param,
-                    reg.net.macro,
-                    reg.net.micro,
-                    reg.net.all,
-                    reg.all,
-                    reg.int), paste("reg-attackrate-complete", name.extension, sep = ""))
+  r.sigma.X.sigma                       <- (r.sigma - mean(r.sigma))                  *   (sigma - mean(sigma))
+  r.sigma.X.gamma                       <- (r.sigma - mean(r.sigma))                  *   (gamma - mean(gamma))
+  r.sigma.neigh.X.sigma                 <- (r.sigma.neigh - mean(r.sigma.neigh))      *   (sigma - mean(sigma))
+  r.sigma.neigh.X.gamma                 <- (r.sigma.neigh - mean(r.sigma.neigh))      *   (gamma - mean(gamma))
+  i.r.sigma.neigh.X.sigma               <- (i.r.sigma.neigh - mean(i.r.sigma.neigh))  *   (sigma - mean(sigma))
+  i.r.sigma.neigh.X.gamma               <- (i.r.sigma.neigh - mean(i.r.sigma.neigh))  *   (gamma - mean(gamma))
+  assortativity.X.r.sigma               <- (assortativity - mean(assortativity))      *   (r.sigma - mean(r.sigma))
+  assortativity.X.net.clustering        <- (assortativity - mean(assortativity))      *   (net.clustering - mean(net.clustering))
+  assortativity.X.agent.clustering      <- (assortativity - mean(assortativity))      *   (agent.clustering - mean(agent.clustering))
+  assortativity.X.r.sigma.neigh         <- (assortativity - mean(assortativity))      *   (r.sigma.neigh - mean(r.sigma.neigh))
+
+  ### 2-LEVEL LOGISTIC REGRESSIONS (attack rate)  ###
+  ### level 2: randomized parameters              ###
+  ### level 1: simulation iterations              ###
+  ## DYNAMIC ##
+  # null-model
+  infprob.dynamic.00   <- glmer(data.ad$agent.infected ~
+                                  1 +
+                                  (1 | sim.cnt),
+                                family = binomial,
+                                data = data.ad)
+  # model conjecture 2
+  infprob.dynamic.c2   <- glmer(data.ad$agent.infected ~
+                                  ties.broken +
+                                  ties.rewired +
+                                  r.sigma +
+                                  r.sigma.neigh +
+                                  i.r.sigma.neigh +
+                                  sigma +
+                                  gamma +
+                                  r.sigma.X.sigma +
+                                  r.sigma.X.gamma +
+                                  r.sigma.neigh.X.sigma +
+                                  r.sigma.neigh.X.gamma +
+                                  i.r.sigma.neigh.X.sigma +
+                                  i.r.sigma.neigh.X.gamma +
+                                  (1 | sim.cnt),
+                                family = binomial,
+                                data = data.ad)
+  # model conjecture 3
+  infprob.dynamic.c3   <- glmer(data.ad$agent.infected ~
+                                  agent.clustering +
+                                  net.clustering +
+                                  r.sigma.neigh +
+                                  i.r.sigma.neigh +
+                                  pathlength +
+                                  betweenness +
+                                  (1 | sim.cnt),
+                                family = binomial,
+                                data = data.ad)
+  # model conjecture 4
+  infprob.dynamic.c4   <- glmer(data.ad$agent.infected ~
+                                  assortativity +
+                                  r.sigma +
+                                  net.clustering +
+                                  agent.clustering +
+                                  r.sigma.neigh +
+                                  assortativity.X.r.sigma +
+                                  assortativity.X.net.clustering +
+                                  assortativity.X.agent.clustering +
+                                  assortativity.X.r.sigma.neigh +
+                                  (1 | sim.cnt),
+                                family = binomial,
+                                data = data.ad)
+  # model all combined
+  infprob.dynamic.all   <- glmer(data.ad$agent.infected ~
+                                   ties.broken +
+                                   ties.rewired +
+                                   r.sigma +
+                                   r.sigma.neigh +
+                                   i.r.sigma.neigh +
+                                   sigma +
+                                   gamma +
+                                   agent.clustering +
+                                   net.clustering +
+                                   pathlength +
+                                   betweenness +
+                                   assortativity +
+                                   r.sigma.X.sigma +
+                                   r.sigma.X.gamma +
+                                   r.sigma.neigh.X.sigma +
+                                   r.sigma.neigh.X.gamma +
+                                   i.r.sigma.neigh.X.sigma +
+                                   i.r.sigma.neigh.X.gamma +
+                                   assortativity.X.r.sigma +
+                                   assortativity.X.net.clustering +
+                                   assortativity.X.agent.clustering +
+                                   assortativity.X.r.sigma.neigh +
+                                   (1 | sim.cnt),
+                                 family = binomial,
+                                 data = data.ad)
+
+  filename <- "reg-infectionprobability-dynamic"
+  if (filenamname.appendix != "") {
+    filename <- paste("-", filenamname.appendix, sep = "")
+  }
+  exportModels(list(infprob.dynamic.00,
+                    infprob.dynamic.c2,
+                    infprob.dynamic.c3,
+                    infprob.dynamic.c4,
+                    infprob.dynamic.all), filename)
+
 }
 
 #----------------------------------------------------------------------------------------------------#
-# function: export_regression_models_selected
-#     Creates and exports multi-level logistic regression models for attack rate with only
-#     selected parameters and interactions. This method is a copy of 'exportAttackRateModelsComplete',
-#     but is intended to find the best models with only significant and expressive parameters by
-#     modyfying the model parameters without changing the complete export for command line
-#     invocations.
-# param:  data.ss
-#     simulation summary data to get regression models for
 #----------------------------------------------------------------------------------------------------#
-export_regression_models_selected <- function(data.ss = load_simulation_summary_data()) {
-  ### COPY MODELS FROM ABOVE AND COMMENT OUT INSIGNIFICANT OR IMPLAUSIBLE PARAMETERS
+export_agent_regression_models <- function(data.ad = load_agent_details_data(), filenamname.appendix = "") {
+  export_agent_regression_model(subset(data.ad, nb.ep.structure == "dynamic"), paste(filenamname.appendix, "dynamic", sep = ""))
+  export_agent_regression_model(subset(data.ad, nb.ep.structure == "static"), paste(filenamname.appendix, "static", sep = ""))
 }
 
 
-
-export_compare_dyn_stat <- function() {
-
-  data.ss <- load_simulation_summary_data()
-
-  # remove exclusions
-  data.ss <- subset(data.ss,
-                    data.ss$net.stable.pre == 1
-                    & data.ss$net.pathlength.pre.epidemic.av >= 1)
-
-  ar.rrm <- select(subset(data.ss, data.ss$nb.alpha == 0.15 &
-                            data.ss$nb.omega == 0.0 &
-                            data.ss$nb.sigma == 2.0),
-                   net.pct.rec, nb.ep.static)
-  ar.rrm <- data.frame("submodel" = rep("RRM", nrow(ar.rrm)),
-                       "a.rate" = ar.rrm$net.pct.rec,
-                       "static" = ar.rrm$nb.ep.static)
-  ar.rrs <- select(subset(data.ss, data.ss$nb.alpha == 0.15 &
-                            data.ss$nb.omega == 0.0 &
-                            data.ss$nb.sigma == 50.0),
-                   net.pct.rec, nb.ep.static)
-  ar.rrs <- data.frame("submodel" = rep("RRS", nrow(ar.rrs)),
-                       "a.rate" = ar.rrs$net.pct.rec,
-                       "static" = ar.rrs$nb.ep.static)
-  ar.ram <- select(subset(data.ss, data.ss$nb.alpha == 0.15 &
-                            data.ss$nb.omega == 0.8 &
-                            data.ss$nb.sigma == 2.0),
-                   net.pct.rec, nb.ep.static)
-  ar.ram <- data.frame("submodel" = rep("RAM", nrow(ar.ram)),
-                       "a.rate" = ar.ram$net.pct.rec,
-                       "static" = ar.ram$nb.ep.static)
-  ar.ras <- select(subset(data.ss, data.ss$nb.alpha == 0.15 &
-                            data.ss$nb.omega == 0.8 &
-                            data.ss$nb.sigma == 50.0),
-                   net.pct.rec, nb.ep.static)
-  ar.ras <- data.frame("submodel" = rep("RAS", nrow(ar.ras)),
-                       "a.rate" = ar.ras$net.pct.rec,
-                       "static" = ar.ras$nb.ep.static)
-  ar.srm <- select(subset(data.ss, data.ss$nb.alpha == 0.85 &
-                            data.ss$nb.omega == 0.0 &
-                            data.ss$nb.sigma == 2.0),
-                   net.pct.rec, nb.ep.static)
-  ar.srm <- data.frame("submodel" = rep("SRM", nrow(ar.srm)),
-                       "a.rate" = ar.srm$net.pct.rec,
-                       "static" = ar.srm$nb.ep.static)
-  ar.srs <- select(subset(data.ss, data.ss$nb.alpha == 0.85 &
-                            data.ss$nb.omega == 0.0 &
-                            data.ss$nb.sigma == 50.0),
-                   net.pct.rec, nb.ep.static)
-  ar.srs <- data.frame("submodel" = rep("SRS", nrow(ar.srs)),
-                       "a.rate" = ar.srs$net.pct.rec,
-                       "static" = ar.srs$nb.ep.static)
-  ar.sam <- select(subset(data.ss, data.ss$nb.alpha == 0.85 &
-                            data.ss$nb.omega == 0.8 &
-                            data.ss$nb.sigma == 2.0),
-                   net.pct.rec, nb.ep.static)
-  ar.sam <- data.frame("submodel" = rep("SAM", nrow(ar.sam)),
-                       "a.rate" = ar.sam$net.pct.rec,
-                       "static" = ar.sam$nb.ep.static)
-  ar.sas <- select(subset(data.ss, data.ss$nb.alpha == 0.85 &
-                            data.ss$nb.omega == 0.8 &
-                            data.ss$nb.sigma == 50.0),
-                   net.pct.rec, nb.ep.static)
-  ar.sas <- data.frame("submodel" = rep("SAS", nrow(ar.sas)),
-                       "a.rate" = ar.sas$net.pct.rec,
-                       "static" = ar.sas$nb.ep.static)
-
-  ar.complete <- rbind(ar.rrm,
-                       ar.rrs,
-                       ar.ram,
-                       ar.ras,
-                       ar.srm,
-                       ar.srs,
-                       ar.sam,
-                       ar.sas)
-
-  # ggplot(ar.complete, aes(x=submodel, y=a.rate)) +
-  #   geom_boxplot()
-  #
-  # ggplot(ar.complete, aes(x=submodel, y=a.rate, fill=factor(static))) +
-  #   geom_boxplot()
-  #
-  # ggplot(ar.complete,aes(x=factor(static),y=a.rate,fill=factor(static)))+
-  #   geom_boxplot()+
-  #   facet_wrap(~submodel)
-
-  static.labs <- c("dynamic", "static")
-  names(static.labs) <- c(0, 1)
-
-  plot <- ggplot(ar.complete,aes(x=submodel,y=a.rate,fill=submodel))+
-    geom_boxplot()+
-    facet_wrap(~static,
-               labeller = labeller(static = static.labs)) +
-    xlab("Submodel") +
-    ylab("Attack rate") +
-    scale_fill_discrete(name = "Submodel")
-
-  plot
-
-  # create directory if necessary
-  dir.create(EXPORT_PATH_PLOTS, showWarnings = FALSE)
-
-  filepath <- paste(EXPORT_PATH_PLOTS,
-                    "stat-dyn-comparison",
-                    EXPORT_FILE_EXTENSION_PLOTS,
-                    sep = "")
-
-  ggsave(filepath,
-         plot,
-         width = EXPORT_PLOT_WIDTH,
-         height = EXPORT_PLOT_HEIGHT,
-         units = EXPORT_SIZE_UNITS,
-         dpi = EXPORT_DPI,
-         device = EXPORT_FILE_TYPE_PLOTS)
-
-  print(paste(":::::::: Export of ", filepath, " succesful.", sep = ""))
-}
-
-
+############################################# COMPOSITION ############################################
+#----------------------------------------------------------------------------------------------------#
+# function: export_all
+#     Exports all data for a complete analysis.
+#----------------------------------------------------------------------------------------------------#
 export_all <- function() {
 
   data.ss <- load_simulation_summary_data()
-  data.ss <- subset(data.ss, data.ss$nb.ep.static == 0)
-  print("##################################### DESCRIPTIVE STATISTICS #####################################")
-  print_descriptives_per_condition(data.ss)
+  data.ad <- load_agent_details_data()
+
+  print("################################ EXPORTING DESCRIPTIVE STATISTICS ################################")
+  export_descriptives(data.ss)
 
   print("################################## EXPORTING REGRESSION ANALYSES #################################")
-  export_regression_models_complete(data.ss)
-
-  print("####################### EXPORTING COMPARISON OF DYNAMIC AND STATIC NETWORKS ######################")
-  export_compare_dyn_stat()
-
-
-  # print("######################################### STATIC NETWORKS ########################################")
-  # data.ss <- load_simulation_summary_data()
-  # data.ss <- subset(data.ss, data.ss$nb.ep.static == 1)
-  # print("##################################### DESCRIPTIVE STATISTICS #####################################")
-  # print("################################ N = 20 ################################")
-  # print_descriptives_per_condition(subset(data.ss, data.ss$nb.N == 20))
-  # print("################################ N = 24 ################################")
-  # print_descriptives_per_condition(subset(data.ss, data.ss$nb.N == 24))
-  #
-  # print("################################## EXPORTING REGRESSION ANALYSES #################################")
-  # export_regression_models_complete(subset(data.ss, data.ss$nb.N == 20), "-N20-static")
-  # export_regression_models_complete(subset(data.ss, data.ss$nb.N == 24), "-N24-static")
-  #
-  # print("######################################## DYNAMIC NETWORKS ########################################")
-  # data.ss <- load_simulation_summary_data()
-  # data.ss <- subset(data.ss, data.ss$nb.ep.static == 0)
-  # print("##################################### DESCRIPTIVE STATISTICS #####################################")
-  # print("################################ N = 20 ################################")
-  # print_descriptives_per_condition(subset(data.ss, data.ss$nb.N == 20))
-  # print("################################ N = 24 ################################")
-  # print_descriptives_per_condition(subset(data.ss, data.ss$nb.N == 24))
-  #
-  # print("################################## EXPORTING REGRESSION ANALYSES #################################")
-  # export_regression_models_complete(subset(data.ss, data.ss$nb.N == 20), "-N20-dynamic")
-  # export_regression_models_complete(subset(data.ss, data.ss$nb.N == 24), "-N24-dynamic")
-  #
+  export_attackrate_models(data.ss)
+  export_agent_regression_models(data.ad)
 
 }
+
+
+
+
+
+
+conjecture1 <- function(data.ss = load_simulation_summary_data()) {
+
+  summary(data.ss$net.static.pct.rec)
+  summary(data.ss$net.dynamic.pct.rec)
+
+
+  d <- data.frame("structure"   = rep("static", nrow(data.ss)),
+                  "attack rate" = data.ss$net.static.pct.rec,
+                  "duration"    = data.ss$net.static.epidemic.duration)
+
+  d <- rbind(d, data.frame("structure"   = rep("dynamic", nrow(data.ss)),
+                           "attack rate" = data.ss$net.dynamic.pct.rec,
+                           "duration"    = data.ss$net.dynamic.epidemic.duration))
+
+  # attack rate - all simulations
+  p.attackrate <- ggplot(d,
+                         aes(x = structure,
+                             y = attack.rate)) +
+    geom_boxplot() +
+    scale_x_discrete(name="Network structure during epidemic") +
+    scale_y_continuous(name="Attack rate",
+                       limits=c(0, 100))
+  p.attackrate
+  # duration - all simulations
+  p.duration <- ggplot(d,
+                       aes(x = structure,
+                           y = duration)) +
+    geom_boxplot() +
+    scale_x_discrete(name="Network structure during epidemic") +
+    scale_y_continuous(name="Duration")
+  p.duration
+
+}
+
+
+conjecture2a <- function(data.ad = load_agent_details_data()) {
+
+  d <- subset(data.ad, nb.ep.structure == "dynamic" & sim.stage == "finished")
+  summary(subset(d, agent.dis.state == "RECOVERED")$nb.r.sigma)
+  summary(subset(d, agent.dis.state == "SUSCEPTIBLE")$nb.r.sigma)
+
+  d.reg <- data.frame("sim.uid" = d$sim.uid,
+                      "sigma" = d$nb.sigma,
+                      "gamma" = d$nb.gamma,
+                      "agent.id" = d$agent.id,
+                      "r.sigma" = d$nb.r.sigma,
+                      "infected" = d$agent.dis.state == "RECOVERED")
+
+  summary(d.reg)
+  l <- glm(infected ~ r.sigma + gamma + sigma, data = d.reg, family = "binomial")
+  summary(l)
+
+
+}
+
+
+
+
+
+
 
 ####################################### COMMAND LINE EXECUTION #######################################
 if (length(args) >= 1) {
