@@ -75,9 +75,6 @@ public class Network extends SingleGraph implements SimulationListener {
     private static final double STANDARD_OMEGA = 0.0;
 
     // standard shuffling of assortatively selected co-agents
-    private static final boolean STANDARD_OMEGA_SHUFFLE = true;
-
-    // standard shuffling of assortatively selected co-agents
     private static final AssortativityConditions STANDARD_AC = AssortativityConditions.RISK_PERCEPTION;
 
     // listener
@@ -165,7 +162,7 @@ public class Network extends SingleGraph implements SimulationListener {
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs) {
         // TODO clean up addAgent methods -- too many special cases!!!
         return this.addAgent(utilityFunction, diseaseSpecs, RISK_FACTOR_NEUTRAL, RISK_FACTOR_NEUTRAL, STANDARD_PHI,
-                STANDARD_OMEGA, STANDARD_OMEGA_SHUFFLE, STANDARD_PSI, STANDARD_XI, AgeStructure.getInstance().getRandomAge(), false);
+                STANDARD_OMEGA, STANDARD_PSI, STANDARD_XI, AgeStructure.getInstance().getRandomAge(), false);
     }
 
     /**
@@ -189,7 +186,7 @@ public class Network extends SingleGraph implements SimulationListener {
      */
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
             double omega) {
-        return this.addAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, omega, STANDARD_OMEGA_SHUFFLE, STANDARD_PSI,
+        return this.addAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, omega, STANDARD_PSI,
                 STANDARD_XI, AgeStructure.getInstance().getRandomAge(), false);
     }
 
@@ -215,52 +212,17 @@ public class Network extends SingleGraph implements SimulationListener {
      * @param xi
      *          the proportion of ties at distance 2 an agent evaluates per round
      * @param age
-     *          the agent's age
-     * @param considerAge
-     *          whether age is considered for peer selection or not
-     * @return the newly added agent.
-     */
-    public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
-            double omega, double psi, double xi, int age, boolean considerAge) {
-        return this.addAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, omega, STANDARD_OMEGA_SHUFFLE, psi, xi, age,
-                considerAge);
-    }
-
-    /**
-     * Creates and adds an agent to the network.
-     *
-     * @param utilityFunction
-     *          the agent's utility function
-     * @param diseaseSpecs
-     *          the disease specs
-     * @param rSigma
-     *          the factor describing how the agent perceives severity of diseases:
-     *          <1: risk seeking, =1: risk neutral; >1: risk averse
-     * @param rPi
-     *          the factor describing how the agent perceives the risk of an infection:
-     *          <1: risk seeking, =1: risk neutral; >1: risk averse
-     * @param phi
-     *          the share of peers an agent evaluates per round
-     * @param omega
-     *          the share of peers to select assortatively
-     * @param omegaShuffle
-     *          whether assortatively selected co-agents ought to be shuffled before processing
-     * @param psi
-     *          the proportion of direct ties an agent evaluates per round
-     * @param xi
-     *          the proportion of ties at distance 2 an agent evaluates per round
-     * @param age
      *          the agents age
      * @param considerAge
      *          whether age is considered for peer selection or not
      * @return the newly added agent.
      */
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
-            double omega, boolean omegaShuffle, double psi, double xi, int age, boolean considerAge) {
+            double omega, double psi, double xi, int age, boolean considerAge) {
         Agent agent = this.addNode(String.valueOf(this.getNodeCount() + 1));
 
         // age randomly drawn from /resources/age-dist.csv
-        agent.initAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, psi, xi, omega, omegaShuffle, age, considerAge);
+        agent.initAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, psi, xi, omega, age, considerAge);
         notifyAgentAdded(agent);
 
         // re-position agents if auto-layout is disabled
