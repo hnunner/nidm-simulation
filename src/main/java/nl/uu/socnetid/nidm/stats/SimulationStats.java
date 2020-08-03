@@ -281,4 +281,16 @@ public class SimulationStats {
         this.epidemicPeakDynamic = epidemicPeakDynamic;
     }
 
+    /**
+     * Resets the epidemic stats (duration, peak, max infections)
+     */
+    public void resetEpidemicStats() {
+        this.epidemicDurationDynamic = 0;
+        this.epidemicDurationStatic = 0;
+        this.epidemicMaxInfectionsDynamic = 0;
+        this.epidemicMaxInfectionsStatic = 0;
+        this.epidemicPeakDynamic = 0;
+        this.epidemicPeakStatic = 0;
+    }
+
 }
