@@ -351,7 +351,7 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
         Agent indexCase = this.network.infectRandomAgent(ds);
         this.dgData.getSimStats().setSimStage(SimulationStage.ACTIVE_EPIDEMIC);
         // save index case properties of pre-epidemic stage
-        this.dgData.setIndexCaseStatsStatic(new AgentStats(indexCase));     // TODO static is only quick dirty fix
+        this.dgData.setIndexCaseStats(new AgentStats(indexCase));
         this.dgData.getSimStats().setRoundStartInfection(this.simulation.getRounds());
         // simulate
         this.simulation.simulate(this.dgData.getUtilityModelParams().getEpsilon());

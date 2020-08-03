@@ -94,6 +94,7 @@ public abstract class AgentDetailsWriter<UMP extends UtilityModelParameters> ext
         cols.add(LogValues.IV_SIM_UID.toString());
         cols.add(LogValues.IV_SIM_UPC.toString());
         cols.add(LogValues.IV_SIM_CNT.toString());
+        cols.add(LogValues.IV_SIM_IT.toString());
         cols.add(LogValues.IV_SIM_ROUND.toString());
         cols.add(LogValues.IV_AGENT_ID.toString());
 
@@ -109,6 +110,8 @@ public abstract class AgentDetailsWriter<UMP extends UtilityModelParameters> ext
         cols.add(LogValues.DV_NET_AV_DEGREE.toString());
         cols.add(LogValues.DV_NET_AV_CLUSTERING.toString());
         cols.add(LogValues.DV_NET_AV_PATHLENGTH.toString());
+        cols.add(LogValues.DV_NET_ASSORTATIVITY_CONDITION.toString());
+        cols.add(LogValues.DV_NET_ASSORTATIVITY.toString());
         // agent
         cols.add(LogValues.DV_AGENT_SATISFIED.toString());
         cols.add(LogValues.DV_AGENT_UTIL.toString());
@@ -133,6 +136,9 @@ public abstract class AgentDetailsWriter<UMP extends UtilityModelParameters> ext
         // neighborhood
         cols.add(LogValues.DV_AGENT_NEIGHBORHOOD_R_SIGMA_AV.toString());
         cols.add(LogValues.DV_AGENT_NEIGHBORHOOD_R_PI_AV.toString());
+        // index case
+        cols.add(LogValues.DV_AGENT_INDEX_NEIGHBORHOOD_R_SIGMA_AV.toString());
+        cols.add(LogValues.DV_AGENT_INDEX_NEIGHBORHOOD_R_PI_AV.toString());
 
         writeLine(cols);
     }
@@ -156,6 +162,7 @@ public abstract class AgentDetailsWriter<UMP extends UtilityModelParameters> ext
             currData.add(this.dgData.getSimStats().getUid());
             currData.add(String.valueOf(this.dgData.getSimStats().getUpc()));
             currData.add(String.valueOf(this.dgData.getSimStats().getSimPerUpc()));
+            currData.add(String.valueOf(this.dgData.getSimStats().getSimIt()));
             currData.add(String.valueOf(this.dgData.getSimStats().getRounds()));
             currData.add(agent.getId());
 
@@ -171,6 +178,8 @@ public abstract class AgentDetailsWriter<UMP extends UtilityModelParameters> ext
             currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvDegree()));
             currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvClustering()));
             currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvPathLength()));
+            currData.add(this.dgData.getNetStatsCurrent().getAssortativityCondition().toString());
+            currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAssortativity()));
             // agent
             AgentStats agentStats = new AgentStats(agent);
             currData.add(String.valueOf(agentStats.isSatisfied()));
@@ -196,6 +205,13 @@ public abstract class AgentDetailsWriter<UMP extends UtilityModelParameters> ext
             // neighborhood
             currData.add(String.valueOf(agentStats.getrSigmaNeighborhood()));
             currData.add(String.valueOf(agentStats.getrPiNeighborhood()));
+            // index case
+            currData.add(String.valueOf(this.dgData.getIndexCaseStats() != null
+                    ? this.dgData.getIndexCaseStats().getrSigmaNeighborhood()
+                    : "NA"));
+            currData.add(String.valueOf(this.dgData.getIndexCaseStats() != null
+                    ? this.dgData.getIndexCaseStats().getrPiNeighborhood()
+                    : "NA"));
 
             writeLine(currData);
         }

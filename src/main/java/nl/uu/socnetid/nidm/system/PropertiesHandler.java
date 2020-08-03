@@ -415,9 +415,6 @@ public class PropertiesHandler {
         nbParameters.setOmegaRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_OMEGA_RANDOM_MIN.toString())));
         nbParameters.setOmegaRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_OMEGA_RANDOM_MAX.toString())));
         nbParameters.setOmegas(parseDoubleArray(configProps.getProperty(LogValues.IV_NB_OMEGA.toString())));
-        nbParameters.setOmegaShuffleRandom(Boolean.parseBoolean(
-                configProps.getProperty(LogValues.IV_NB_OMEGA_SHUFFLE_RANDOM.toString())));
-        nbParameters.setOmegaShuffles(parseBooleanArray(configProps.getProperty(LogValues.IV_NB_OMEGA_SHUFFLE.toString())));
         // time steps
         nbParameters.setZeta(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_ZETA.toString())));
         nbParameters.setEpsilon(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_EPSILON.toString())));
@@ -425,6 +422,8 @@ public class PropertiesHandler {
         // n
         nbParameters.setSimsPerParameterCombination(Integer.valueOf(configProps.getProperty(
                 LogValues.IV_NB_SIMS_PER_PC.toString())));
+        // m TODO find better name
+        nbParameters.setSimIterations(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_SIM_ITERATIONS.toString())));
 
         // NunnerBuskens networks genetic
         generateNunnerBuskensNetworksGenetic = Boolean.parseBoolean(configProps.getProperty("nb.generate.networks.genetic"));
