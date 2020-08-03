@@ -451,6 +451,9 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
 
             this.dgData.getSimStats().setSimIt(j);
 
+            // reset sim epidemic stats
+            this.dgData.getSimStats().resetEpidemicStats();
+
             // create network
             this.network = new Network();
 
@@ -731,16 +734,6 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
     public void notifyRoundFinished(Simulation simulation) {
         this.dgData.getSimStats().setRounds(simulation.getRounds());
 
-        if (PropertiesHandler.getInstance().isExportSummaryEachRound() || PropertiesHandler.getInstance().isExportAgentDetails()) {
-            this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
-        }
-        if (PropertiesHandler.getInstance().isExportSummaryEachRound()) {
-            this.rsWriter.writeCurrentData();
-        }
-        if (PropertiesHandler.getInstance().isExportAgentDetails()) {
-            this.adWriter.writeCurrentData();
-        }
-
         switch (this.dgData.getSimStats().getSimStage()) {
             case ACTIVE_EPIDEMIC:
                 int epidemicSize = simulation.getNetwork().getInfected().size();
@@ -771,6 +764,16 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
             case FINISHED:
             default:
                 break;
+        }
+
+        if (PropertiesHandler.getInstance().isExportSummaryEachRound() || PropertiesHandler.getInstance().isExportAgentDetails()) {
+            this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
+        }
+        if (PropertiesHandler.getInstance().isExportSummaryEachRound()) {
+            this.rsWriter.writeCurrentData();
+        }
+        if (PropertiesHandler.getInstance().isExportAgentDetails()) {
+            this.adWriter.writeCurrentData();
         }
     }
 
