@@ -60,7 +60,7 @@ public class Simulation implements Runnable {
     // simulation delay
     private int delay = 0;
     // rounds
-    private int rounds = 0;
+    private int rounds = 1;
     // flag whether network has active infection or not
     private boolean activeInfection;
 
@@ -125,13 +125,13 @@ public class Simulation implements Runnable {
 
         this.activeInfection = false;
 
-        while (!this.network.isStable() && this.rounds < MAX_ROUNDS && !this.stopped) {
+        while (!this.network.isStable() && this.rounds <= MAX_ROUNDS && !this.stopped) {
             computeSingleRound();
         }
 
         // status message
         StringBuilder sb = new StringBuilder();
-        sb.append("Simulation finished after " + rounds + " time steps.");
+        sb.append("Simulation finished after " + (rounds-1) + " time steps.");
         boolean unfinished = false;
         if (!this.network.isStable()) {
             sb.append(" Network was unstable.");
@@ -163,7 +163,7 @@ public class Simulation implements Runnable {
 
         this.activeInfection = false;
 
-        while (!this.network.isStable() && this.rounds < rounds && !this.stopped) {
+        while (!this.network.isStable() && this.rounds <= rounds && !this.stopped) {
             computeSingleRound();
         }
 
@@ -202,18 +202,18 @@ public class Simulation implements Runnable {
         notifySimulationStarted();
 
         this.activeInfection = false;
-        this.rounds = 0;
+        this.rounds = 1;
 
         while ((!this.network.isStable() || this.network.hasActiveInfection())
-                && this.rounds < maxRounds
+                && this.rounds <= maxRounds
                 && !this.stopped) {
             computeSingleRound();
-            logger.debug("round " + (this.rounds) + ": finished");
+//            logger.debug("round " + (this.rounds) + ": finished");
         }
 
         // status message
         StringBuilder sb = new StringBuilder();
-        sb.append("Simulation finished after " + this.rounds + " time steps.");
+        sb.append("Simulation finished after " + (this.rounds-1) + " time steps.");
         boolean unfinished = false;
         if (!this.network.isStable()) {
             sb.append(" Network was unstable.");
@@ -242,25 +242,24 @@ public class Simulation implements Runnable {
         if (this.network.hasActiveInfection()) {
             computeDiseaseDynamics();
         }
-        if (!this.network.hasActiveInfection() || (this.network.hasActiveInfection() && !this.epStatic)) {
-            computeAgentDynamics();
-        }
-
-        this.rounds++;
-
-        // notifications
-        notifyRoundFinished();
 
         // first round with active infection
         if (this.network.hasActiveInfection() && !this.activeInfection) {
             this.activeInfection = true;
         }
-
         // first round of defeated infection
         if (this.activeInfection && !this.network.hasActiveInfection()) {
             this.activeInfection = false;
             notifyInfectionDefeated();
         }
+        if (!this.network.hasActiveInfection() || (this.network.hasActiveInfection() && !this.epStatic)) {
+            computeAgentDynamics();
+        }
+
+        // notifications
+        notifyRoundFinished();
+
+        this.rounds++;
     }
 
     /**
