@@ -172,6 +172,7 @@ export_descriptives <- function(data.ss = load_simulation_summary_data()) {
   out <- paste(out, get_descriptive(data.ss$net.dynamic.epidemic.peak, "epidemic peak (dynamic)"))
 
   # export to file
+  dir.create(EXPORT_PATH_NUM, showWarnings = FALSE)
   cat(out, file = paste(EXPORT_PATH_NUM,
                         "descriptives",
                         EXPORT_FILE_EXTENSION_DESC,
@@ -251,13 +252,13 @@ export_attackrate_models <- function(data.ss = load_simulation_summary_data(), f
   net.assortativity                     <- meanCenter(data.ss$net.assortativity.pre.epidemic)         # range: 0.0 - 1.0
 
   # interaction effects
-  r.sigma.X.sigma                       <- (r.sigma - mean(r.sigma))                *   (sigma - mean(sigma))
-  r.sigma.X.gamma                       <- (r.sigma - mean(r.sigma))                *   (gamma - mean(gamma))
-  i.r.neigh.X.sigma                     <- (i.r.neigh - mean(i.r.neigh))            *   (sigma - mean(sigma))
-  i.r.neigh.X.gamma                     <- (i.r.neigh - mean(i.r.neigh))            *   (gamma - mean(gamma))
-  i.betw.X.i.r.neigh                    <- (i.betw - mean(i.betw))                  *   (i.r.neigh - mean(i.r.neigh))
-  net.clustering.X.net.assortativity    <- (net.clustering - mean(net.clustering))  *   (net.assortativity - mean(net.assortativity))
-  i.r.neigh.X.net.assortativity         <- (i.r.neigh - mean(i.r.neigh))            *   (net.assortativity - mean(net.assortativity))
+  r.sigma.X.sigma                       <- (r.sigma - mean(r.sigma, na.rm=TRUE))                * (sigma - mean(sigma, na.rm=TRUE))
+  r.sigma.X.gamma                       <- (r.sigma - mean(r.sigma, na.rm=TRUE))                * (gamma - mean(gamma, na.rm=TRUE))
+  i.r.neigh.X.sigma                     <- (i.r.neigh - mean(i.r.neigh, na.rm=TRUE))            * (sigma - mean(sigma, na.rm=TRUE))
+  i.r.neigh.X.gamma                     <- (i.r.neigh - mean(i.r.neigh, na.rm=TRUE))            * (gamma - mean(gamma, na.rm=TRUE))
+  i.betw.X.i.r.neigh                    <- (i.betw - mean(i.betw, na.rm=TRUE))                  * (i.r.neigh - mean(i.r.neigh, na.rm=TRUE))
+  net.clustering.X.net.assortativity    <- (net.clustering - mean(net.clustering, na.rm=TRUE))  * (net.assortativity - mean(net.assortativity, na.rm=TRUE))
+  i.r.neigh.X.net.assortativity         <- (i.r.neigh - mean(i.r.neigh, na.rm=TRUE))            * (net.assortativity - mean(net.assortativity, na.rm=TRUE))
 
   ### 2-LEVEL LOGISTIC REGRESSIONS (attack rate)  ###
   ### level 2: randomized parameters              ###
@@ -427,16 +428,16 @@ export_agent_regression_model <- function(data.ad = load_agent_details_data(), f
   assortativity                         <- meanCenter(data.ad$net.assortativity)                      # range: 0.0 - 1.0
 
   # interaction effects
-  r.sigma.X.sigma                       <- (r.sigma - mean(r.sigma))                  *   (sigma - mean(sigma))
-  r.sigma.X.gamma                       <- (r.sigma - mean(r.sigma))                  *   (gamma - mean(gamma))
-  r.sigma.neigh.X.sigma                 <- (r.sigma.neigh - mean(r.sigma.neigh))      *   (sigma - mean(sigma))
-  r.sigma.neigh.X.gamma                 <- (r.sigma.neigh - mean(r.sigma.neigh))      *   (gamma - mean(gamma))
-  i.r.sigma.neigh.X.sigma               <- (i.r.sigma.neigh - mean(i.r.sigma.neigh))  *   (sigma - mean(sigma))
-  i.r.sigma.neigh.X.gamma               <- (i.r.sigma.neigh - mean(i.r.sigma.neigh))  *   (gamma - mean(gamma))
-  assortativity.X.r.sigma               <- (assortativity - mean(assortativity))      *   (r.sigma - mean(r.sigma))
-  assortativity.X.net.clustering        <- (assortativity - mean(assortativity))      *   (net.clustering - mean(net.clustering))
-  assortativity.X.agent.clustering      <- (assortativity - mean(assortativity))      *   (agent.clustering - mean(agent.clustering))
-  assortativity.X.r.sigma.neigh         <- (assortativity - mean(assortativity))      *   (r.sigma.neigh - mean(r.sigma.neigh))
+  r.sigma.X.sigma                       <- (r.sigma - mean(r.sigma, na.rm=TRUE))                  * (sigma - mean(sigma, na.rm=TRUE))
+  r.sigma.X.gamma                       <- (r.sigma - mean(r.sigma, na.rm=TRUE))                  * (gamma - mean(gamma, na.rm=TRUE))
+  r.sigma.neigh.X.sigma                 <- (r.sigma.neigh - mean(r.sigma.neigh, na.rm=TRUE))      * (sigma - mean(sigma, na.rm=TRUE))
+  r.sigma.neigh.X.gamma                 <- (r.sigma.neigh - mean(r.sigma.neigh, na.rm=TRUE))      * (gamma - mean(gamma, na.rm=TRUE))
+  i.r.sigma.neigh.X.sigma               <- (i.r.sigma.neigh - mean(i.r.sigma.neigh, na.rm=TRUE))  * (sigma - mean(sigma, na.rm=TRUE))
+  i.r.sigma.neigh.X.gamma               <- (i.r.sigma.neigh - mean(i.r.sigma.neigh, na.rm=TRUE))  * (gamma - mean(gamma, na.rm=TRUE))
+  assortativity.X.r.sigma               <- (assortativity - mean(assortativity, na.rm=TRUE))      * (r.sigma - mean(r.sigma, na.rm=TRUE))
+  assortativity.X.net.clustering        <- (assortativity - mean(assortativity, na.rm=TRUE))      * (net.clustering - mean(net.clustering, na.rm=TRUE))
+  assortativity.X.agent.clustering      <- (assortativity - mean(assortativity, na.rm=TRUE))      * (agent.clustering - mean(agent.clustering, na.rm=TRUE))
+  assortativity.X.r.sigma.neigh         <- (assortativity - mean(assortativity, na.rm=TRUE))      * (r.sigma.neigh - mean(r.sigma.neigh, na.rm=TRUE))
 
   ### 2-LEVEL LOGISTIC REGRESSIONS (attack rate)  ###
   ### level 2: randomized parameters              ###
@@ -519,9 +520,9 @@ export_agent_regression_model <- function(data.ad = load_agent_details_data(), f
                                  family = binomial,
                                  data = data.ad)
 
-  filename <- "reg-infectionprobability-dynamic"
+  filename <- "reg-infectionprobability"
   if (filenamname.appendix != "") {
-    filename <- paste("-", filenamname.appendix, sep = "")
+    filename <- paste(filename, "-", filenamname.appendix, sep = "")
   }
   exportModels(list(infprob.dynamic.00,
                     infprob.dynamic.c2,
