@@ -133,6 +133,12 @@ public abstract class AgentDetailsWriter<UMP extends UtilityModelParameters> ext
         cols.add(LogValues.DV_AGENT_CONS_OUT_DECLINED.toString());
         cols.add(LogValues.DV_AGENT_CONS_IN_ACCEPTED.toString());
         cols.add(LogValues.DV_AGENT_CONS_IN_DECLINED.toString());
+        cols.add(LogValues.DV_AGENT_CONS_BROKEN_ACTIVE_EPIDEMIC.toString());
+        cols.add(LogValues.DV_AGENT_CONS_BROKEN_PASSIVE_EPIDEMIC.toString());
+        cols.add(LogValues.DV_AGENT_CONS_OUT_ACCEPTED_EPIDEMIC.toString());
+        cols.add(LogValues.DV_AGENT_CONS_OUT_DECLINED_EPIDEMIC.toString());
+        cols.add(LogValues.DV_AGENT_CONS_IN_ACCEPTED_EPIDEMIC.toString());
+        cols.add(LogValues.DV_AGENT_CONS_IN_DECLINED_EPIDEMIC.toString());
         // neighborhood
         cols.add(LogValues.DV_AGENT_NEIGHBORHOOD_R_SIGMA_AV.toString());
         cols.add(LogValues.DV_AGENT_NEIGHBORHOOD_R_PI_AV.toString());
@@ -202,6 +208,12 @@ public abstract class AgentDetailsWriter<UMP extends UtilityModelParameters> ext
             currData.add(String.valueOf(agentStats.getDeclinedRequestsOut()));
             currData.add(String.valueOf(agentStats.getAcceptedRequestsIn()));
             currData.add(String.valueOf(agentStats.getDeclinedRequestsIn()));
+            currData.add(String.valueOf(agentStats.getBrokenTiesActiveEpidemic()));
+            currData.add(String.valueOf(agentStats.getBrokenTiesPassiveEpidemic()));
+            currData.add(String.valueOf(agentStats.getAcceptedRequestsOutEpidemic()));
+            currData.add(String.valueOf(agentStats.getDeclinedRequestsOutEpidemic()));
+            currData.add(String.valueOf(agentStats.getAcceptedRequestsInEpidemic()));
+            currData.add(String.valueOf(agentStats.getDeclinedRequestsInEpidemic()));
             // neighborhood
             currData.add(String.valueOf(agentStats.getrSigmaNeighborhood()));
             currData.add(String.valueOf(agentStats.getrPiNeighborhood()));
