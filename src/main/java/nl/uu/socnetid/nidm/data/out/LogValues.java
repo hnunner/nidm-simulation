@@ -328,6 +328,12 @@ public enum LogValues {
     DV_AGENT_CONS_OUT_DECLINED("agent.cons.out.declined"),
     DV_AGENT_CONS_IN_ACCEPTED("agent.cons.in.accepted"),
     DV_AGENT_CONS_IN_DECLINED("agent.cons.in.declined"),
+    DV_AGENT_CONS_BROKEN_ACTIVE_EPIDEMIC("agent.cons.broken.active.epidemic"),
+    DV_AGENT_CONS_BROKEN_PASSIVE_EPIDEMIC("agent.cons.broken.passive.epidemic"),
+    DV_AGENT_CONS_OUT_ACCEPTED_EPIDEMIC("agent.cons.out.accepted.epidemic"),
+    DV_AGENT_CONS_OUT_DECLINED_EPIDEMIC("agent.cons.out.declined.epidemic"),
+    DV_AGENT_CONS_IN_ACCEPTED_EPIDEMIC("agent.cons.in.accepted.epidemic"),
+    DV_AGENT_CONS_IN_DECLINED_EPIDEMIC("agent.cons.in.declined.epidemic"),
     // neighborhood
     DV_AGENT_NEIGHBORHOOD_R_SIGMA_AV("agent.neighborhood.r.sigma.av"),
     DV_AGENT_NEIGHBORHOOD_R_PI_AV("agent.neighborhood.r.pi.av"),
