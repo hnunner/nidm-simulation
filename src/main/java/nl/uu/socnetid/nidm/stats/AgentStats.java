@@ -57,6 +57,12 @@ public class AgentStats {
     private final int acceptedRequestsIn;
     private final int declinedRequestsOut;
     private final int declinedRequestsIn;
+    private final int brokenTiesActiveEpidemic;
+    private final int brokenTiesPassiveEpidemic;
+    private final int acceptedRequestsOutEpidemic;
+    private final int acceptedRequestsInEpidemic;
+    private final int declinedRequestsOutEpidemic;
+    private final int declinedRequestsInEpidemic;
 
 
     public AgentStats(Agent agent) {
@@ -89,6 +95,13 @@ public class AgentStats {
         this.acceptedRequestsIn = agent.getConnectionStats().getAcceptedRequestsIn();
         this.declinedRequestsOut = agent.getConnectionStats().getDeclinedRequestsOut();
         this.declinedRequestsIn = agent.getConnectionStats().getDeclinedRequestsIn();
+
+        this.brokenTiesActiveEpidemic = agent.getConnectionStats().getBrokenTiesActiveEpidemic();
+        this.brokenTiesPassiveEpidemic = agent.getConnectionStats().getBrokenTiesPassiveEpidemic();
+        this.acceptedRequestsOutEpidemic = agent.getConnectionStats().getAcceptedRequestsOutEpidemic();
+        this.acceptedRequestsInEpidemic = agent.getConnectionStats().getAcceptedRequestsInEpidemic();
+        this.declinedRequestsOutEpidemic = agent.getConnectionStats().getDeclinedRequestsOutEpidemic();
+        this.declinedRequestsInEpidemic = agent.getConnectionStats().getDeclinedRequestsInEpidemic();
     }
 
 
@@ -258,6 +271,48 @@ public class AgentStats {
      */
     public int getDeclinedRequestsIn() {
         return declinedRequestsIn;
+    }
+
+    /**
+     * @return the brokenTiesActiveEpidemic
+     */
+    public int getBrokenTiesActiveEpidemic() {
+        return brokenTiesActiveEpidemic;
+    }
+
+    /**
+     * @return the brokenTiesPassiveEpidemic
+     */
+    public int getBrokenTiesPassiveEpidemic() {
+        return brokenTiesPassiveEpidemic;
+    }
+
+    /**
+     * @return the acceptedRequestsOutEpidemic
+     */
+    public int getAcceptedRequestsOutEpidemic() {
+        return acceptedRequestsOutEpidemic;
+    }
+
+    /**
+     * @return the acceptedRequestsInEpidemic
+     */
+    public int getAcceptedRequestsInEpidemic() {
+        return acceptedRequestsInEpidemic;
+    }
+
+    /**
+     * @return the declinedRequestsOutEpidemic
+     */
+    public int getDeclinedRequestsOutEpidemic() {
+        return declinedRequestsOutEpidemic;
+    }
+
+    /**
+     * @return the declinedRequestsInEpidemic
+     */
+    public int getDeclinedRequestsInEpidemic() {
+        return declinedRequestsInEpidemic;
     }
 
 }
