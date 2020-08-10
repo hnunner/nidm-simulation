@@ -36,13 +36,19 @@ public class AgentConnectionStats implements Cloneable {
     // logger
     private static final Logger logger = LogManager.getLogger(AgentConnectionStats.class);
 
-    // stats
     private int brokenTiesActive = 0;
     private int brokenTiesPassive = 0;
     private int acceptedRequestsOut = 0;
     private int declinedRequestsOut = 0;
     private int acceptedRequestsIn = 0;
     private int declinedRequestsIn = 0;
+
+    private int brokenTiesActiveEpidemic = 0;
+    private int brokenTiesPassiveEpidemic = 0;
+    private int acceptedRequestsOutEpidemic = 0;
+    private int declinedRequestsOutEpidemic = 0;
+    private int acceptedRequestsInEpidemic = 0;
+    private int declinedRequestsInEpidemic = 0;
 
 
     /**
@@ -128,6 +134,91 @@ public class AgentConnectionStats implements Cloneable {
     public void incDeclinedRequestsIn() {
         this.declinedRequestsIn++;
     }
+
+    /**
+     * @return the actively broken ties during an epidemic
+     */
+    public int getBrokenTiesActiveEpidemic() {
+        return brokenTiesActiveEpidemic;
+    }
+
+    /**
+     * Increases the amount of actively broken ties during an epidemic.
+     */
+    public void incBrokenTiesActiveEpidemic() {
+        this.brokenTiesActiveEpidemic++;
+    }
+
+    /**
+     * @return the passively broken ties during an epidemic
+     */
+    public int getBrokenTiesPassiveEpidemic() {
+        return brokenTiesPassiveEpidemic;
+    }
+
+    /**
+     * Increases the amount of passively broken ties during an epidemic.
+     */
+    public void incBrokenTiesPassiveEpidemic() {
+        this.brokenTiesPassiveEpidemic++;
+    }
+
+    /**
+     * @return the acceptedRequestsOutEpidemic
+     */
+    public int getAcceptedRequestsOutEpidemic() {
+        return acceptedRequestsOutEpidemic;
+    }
+
+    /**
+     * Increases the amount of accepted outgoing requests during an epidemic.
+     */
+    public void incAcceptedRequestsOutEpidemic() {
+        this.acceptedRequestsOutEpidemic++;
+    }
+
+    /**
+     * @return the declinedRequestsOutEpidemic
+     */
+    public int getDeclinedRequestsOutEpidemic() {
+        return declinedRequestsOutEpidemic;
+    }
+
+    /**
+     * Increases the amount of declined outgoing requests during an epidemic.
+     */
+    public void incDeclinedRequestsOutEpidemic() {
+        this.declinedRequestsOutEpidemic++;
+    }
+
+    /**
+     * @return the acceptedRequestsInEpidemic
+     */
+    public int getAcceptedRequestsInEpidemic() {
+        return acceptedRequestsInEpidemic;
+    }
+
+    /**
+     * Increases the amount of accepted incoming requests during an epidemic.
+     */
+    public void incAcceptedRequestsInEpidemic() {
+        this.acceptedRequestsInEpidemic++;
+    }
+
+    /**
+     * @return the declinedRequestsInEpidemic
+     */
+    public int getDeclinedRequestsInEpidemic() {
+        return declinedRequestsInEpidemic;
+    }
+
+    /**
+     * Increases the amount of declined incoming requests during an epidemic.
+     */
+    public void incDeclinedRequestsInEpidemic() {
+        this.declinedRequestsInEpidemic++;
+    }
+
 
 
     /*
