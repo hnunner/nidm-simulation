@@ -682,6 +682,9 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         AgentConnectionStats oldConnectionStats = getConnectionStats().clone();
         AgentConnectionStats newConnectionStats = getConnectionStats();
         newConnectionStats.incBrokenTiesActive();
+        if (this.getNetwork().hasActiveInfection()) {
+            newConnectionStats.incBrokenTiesActiveEpidemic();
+        }
         changeAttribute(AgentAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
     }
 
@@ -693,6 +696,9 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         AgentConnectionStats oldConnectionStats = getConnectionStats().clone();
         AgentConnectionStats newConnectionStats = getConnectionStats();
         newConnectionStats.incBrokenTiesPassive();
+        if (this.getNetwork().hasActiveInfection()) {
+            newConnectionStats.incBrokenTiesPassiveEpidemic();
+        }
         changeAttribute(AgentAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
     }
 
@@ -704,6 +710,9 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         AgentConnectionStats oldConnectionStats = getConnectionStats().clone();
         AgentConnectionStats newConnectionStats = getConnectionStats();
         newConnectionStats.incAcceptedRequestsOut();
+        if (this.getNetwork().hasActiveInfection()) {
+            newConnectionStats.incAcceptedRequestsOutEpidemic();
+        }
         changeAttribute(AgentAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
     }
 
@@ -715,6 +724,9 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         AgentConnectionStats oldConnectionStats = getConnectionStats().clone();
         AgentConnectionStats newConnectionStats = getConnectionStats();
         newConnectionStats.incDeclinedRequestsOut();
+        if (this.getNetwork().hasActiveInfection()) {
+            newConnectionStats.incDeclinedRequestsOutEpidemic();
+        }
         changeAttribute(AgentAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
     }
 
@@ -726,6 +738,9 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         AgentConnectionStats oldConnectionStats = getConnectionStats().clone();
         AgentConnectionStats newConnectionStats = getConnectionStats();
         newConnectionStats.incAcceptedRequestsIn();
+        if (this.getNetwork().hasActiveInfection()) {
+            newConnectionStats.incAcceptedRequestsInEpidemic();
+        }
         changeAttribute(AgentAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
     }
 
@@ -737,6 +752,9 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         AgentConnectionStats oldConnectionStats = getConnectionStats().clone();
         AgentConnectionStats newConnectionStats = getConnectionStats();
         newConnectionStats.incDeclinedRequestsIn();
+        if (this.getNetwork().hasActiveInfection()) {
+            newConnectionStats.incDeclinedRequestsInEpidemic();
+        }
         changeAttribute(AgentAttributes.CONNECTION_STATS, oldConnectionStats, newConnectionStats);
     }
 
@@ -849,9 +867,11 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         if (newUtility >= currUtility) {
             addConnection(agent);
             trackAcceptedRequestOut();
+            agent.trackAcceptedRequestIn();
             return true;
         }
         trackDeclinedRequestOut();
+        agent.trackDeclinedRequestIn();
         return false;
     }
 
