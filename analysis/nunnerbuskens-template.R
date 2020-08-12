@@ -38,10 +38,10 @@ source_libs(c("ggplot2",      # plots
               "sjstats",      # "icc" function
               "texreg",       # html export
               "QuantPsyc",    # 'meanCenter' function
-              "dplyr"         # 'select' function
+              "dplyr",         # 'select' function
+              "ggpubr"       # arranging a list of plots with one common legend
               # "gridExtra",   # side-by-side plots
               # "psych",       # summary statistics
-              # "ggpubr"       # arranging a list of plots with one common legend
 ))
 
 
@@ -291,6 +291,203 @@ export_descriptives <- function(data.ss = load_simulation_summary_data()) {
   dir.create(EXPORT_PATH_NUM, showWarnings = FALSE)
   cat(out, file = paste(EXPORT_PATH_NUM,
                         "descriptives",
+                        EXPORT_FILE_EXTENSION_DESC,
+                        sep = ""))
+}
+
+
+############################################ CORRELATIONS ############################################
+#----------------------------------------------------------------------------------------------------#
+# function: plot_correlation
+#     Creates a scatter plot with fitted linear model for two vectors.
+# param:  data
+#     The data to create correlations forv
+# param:  vec.x
+#     The vector to be displayed on the x-axis
+# param:  vec.y
+#     The vector to be displayed on the y-axis
+# param:  title.x
+#     The title of the x-axis
+# param:  title.y
+#     The title of the y-axis
+# return: a scatter plot with fitted linear model for two vectors
+#----------------------------------------------------------------------------------------------------#
+plot_correlation <- function(data, vec.x, vec.y, title.x, title.y) {
+  min.y <- trunc(min(vec.y)   * 10) / 10
+  max.y <- ceiling(max(vec.y) * 10) / 10
+  p <- ggplot(data, aes(x = vec.x, y = vec.y)) +
+    geom_point(alpha = 0.7, position = position_jitter(h = 0, w = 0.02)) +
+    geom_line(stat="smooth",method = "lm", fullrange=TRUE, size = 1.0) +
+    scale_x_continuous(name = title.x,
+                       limits = c(0.0, 1.0)) +
+    scale_y_continuous(name = title.y,
+                       limits = c(min.y, max.y),
+                       breaks = seq(min.y, max.y, 0.2)) +
+    theme_bw(base_size = 16) +
+    theme(legend.position = "top",
+          legend.title = element_blank())
+  return(p)
+}
+
+#----------------------------------------------------------------------------------------------------#
+# function: get_correlation_text
+#     Creates a text representation of the correlation analysis of two vectors.
+# param:  vec.1
+#     The first vector for the correlation analysis
+# param:  vec.2
+#     The second vector for the correlation analysis
+# param:  title.1
+#     The title of the first vector
+# param:  title.2
+#     The title of second vector
+# return: a text representation of the correlation analysis of two vectors
+#----------------------------------------------------------------------------------------------------#
+get_correlation_text <- function(vec.1, vec.2, title.1, title.2) {
+  shapiro.1 <- shapiro.test(vec.1)
+  shapiro.2 <- shapiro.test(vec.2)
+  if (shapiro.1[2] > 0.05 & shapiro.2[2] > 0.05) {
+    pearson <- cor.test(vec.1, vec.2,  method = "pearson")
+    out <- paste(title.1, " - ", title.2,"\n    Pearson (normally distributed): ",
+                 "cor.coeff = ", round(pearson[4][[1]], 4), ", p = ", round(pearson[3][[1]], 4), "\n", sep = "")
+  } else {
+    kendall <- cor.test(vec.1, vec.2,  method = "kendall")
+    out <- paste(title.1, " - ", title.2, "\n    Kendall (not normally distributed): ",
+                 "tau = ", round(kendall[4][[1]], 4), ", p = ", round(kendall[3][[1]], 4), "\n", sep = "")
+  }
+  out <- paste(out, "--------------------------------------------------------------\n", sep = "")
+  return(out)
+}
+
+#----------------------------------------------------------------------------------------------------#
+# function: export_correlations
+#     Exports all correlations.
+# param:  data.ss
+#     The simulation summary data containing the records for the correlation analyses
+#----------------------------------------------------------------------------------------------------#
+export_correlations <- function(data.ss = load_simulation_summary_data()) {
+
+  ##### ALPHA
+  out <- ""
+  out <- paste(out, "##############################################################\n", sep = "")
+  out <- paste(out, "#######              CORRELATIONS OF ALPHA              ######\n", sep = "")
+  out <- paste(out, "##############################################################\n\n", sep = "")
+
+  ### CLUSTERING
+  # plot
+  ggsave(paste(EXPORT_PATH_PLOTS, "correlation-alpha-clustering", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_correlation(data.ss,
+                          data.ss$nb.alpha,
+                          data.ss$net.clustering.pre.epidemic.av,
+                          "alpha",
+                          "Clustering"),
+         width = EXPORT_PLOT_HEIGHT,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # correlation
+  out <- paste(out, get_correlation_text(data.ss$nb.alpha,
+                                         data.ss$net.clustering.pre.epidemic.av,
+                                         "alpha",
+                                         "clustering"),
+               sep = "")
+
+  ### PATH LENGTH
+  # plot
+  ggsave(paste(EXPORT_PATH_PLOTS, "correlation-alpha-pathlength", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_correlation(data.ss,
+                          data.ss$nb.alpha,
+                          data.ss$net.pathlength.pre.epidemic.av,
+                          "alpha",
+                          "Average path length"),
+         width = EXPORT_PLOT_HEIGHT,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # correlation
+  out <- paste(out, get_correlation_text(data.ss$nb.alpha,
+                                         data.ss$net.pathlength.pre.epidemic.av,
+                                         "alpha",
+                                         "av. path length"),
+               sep = "")
+
+  ### BETWEENNESS (INDEX CASE)
+  # plot
+  ggsave(paste(EXPORT_PATH_PLOTS, "correlation-alpha-betweennessindex", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_correlation(data.ss,
+                          data.ss$nb.alpha,
+                          data.ss$index.betweenness.normalized,
+                          "alpha",
+                          "Betweenness (index case)"),
+         width = EXPORT_PLOT_HEIGHT,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # correlation
+  out <- paste(out, get_correlation_text(data.ss$nb.alpha,
+                                         data.ss$index.betweenness.normalized,
+                                         "alpha",
+                                         "betweenness (index case)"),
+               sep = "")
+
+  ##### OMEGA
+  out <- paste(out, "\n\n", sep = "")
+  out <- paste(out, "##############################################################\n", sep = "")
+  out <- paste(out, "#######              CORRELATIONS OF OMEGA              ######\n", sep = "")
+  out <- paste(out, "##############################################################\n\n", sep = "")
+
+  ### ASSORTATIVITY
+  # plot
+  ggsave(paste(EXPORT_PATH_PLOTS, "correlation-omega-assortativity", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_correlation(data.ss,
+                          data.ss$nb.omega,
+                          data.ss$net.assortativity.pre.epidemic,
+                          "omega",
+                          "Assortativity"),
+         width = EXPORT_PLOT_HEIGHT,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # correlation
+  out <- paste(out, get_correlation_text(data.ss$nb.omega,
+                                         data.ss$net.assortativity.pre.epidemic,
+                                         "omega",
+                                         "assortativity"),
+               sep = "")
+
+  ##### RISK PREFERENCE
+  out <- paste(out, "\n\n", sep = "")
+  out <- paste(out, "##############################################################\n", sep = "")
+  out <- paste(out, "#######            CORRELATIONS OF CLUSTERING           ######\n", sep = "")
+  out <- paste(out, "##############################################################\n\n", sep = "")
+
+  ### ASSORTATIVITY
+  # plot
+  ggsave(paste(EXPORT_PATH_PLOTS, "correlation-clustering-pathlength", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_correlation(data.ss,
+                          data.ss$net.clustering.pre.epidemic.av,
+                          data.ss$net.pathlength.pre.epidemic.av,
+                          "Clustering",
+                          "Average path length"),
+         width = EXPORT_PLOT_HEIGHT,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # correlation
+  out <- paste(out, get_correlation_text(data.ss$net.clustering.pre.epidemic.av,
+                                         data.ss$net.pathlength.pre.epidemic.av,
+                                         "clustering",
+                                         "av. path length"),
+               sep = "")
+
+  ##### EXPORT
+  dir.create(EXPORT_PATH_NUM, showWarnings = FALSE)
+  cat(out, file = paste(EXPORT_PATH_NUM,
+                        "correlations",
                         EXPORT_FILE_EXTENSION_DESC,
                         sep = ""))
 }
@@ -1156,7 +1353,7 @@ plot_c1_a <- function(data.ss = load_simulation_summary_data()) {
 }
 
 #----------------------------------------------------------------------------------------------------#
-# function: plot_c_b
+# function: plot_c1_b
 #     Exports plots for conjecture 1.b.
 # param:  data.ss
 #     the simulation summary data
@@ -1164,7 +1361,7 @@ plot_c1_a <- function(data.ss = load_simulation_summary_data()) {
 #     whether plot for dynamic or static data ought to be created
 # return: the plot
 #----------------------------------------------------------------------------------------------------#
-plot_c1_b <- function(data.ss = load_simulation_summary_data()) {
+plot_c1_b_duration <- function(data.ss = load_simulation_summary_data()) {
   # data - all
   d <- data.frame("structure"   = rep("static", nrow(data.ss)),
                   "attack.rate" = rep("combined", nrow(data.ss)),
@@ -1190,7 +1387,7 @@ plot_c1_b <- function(data.ss = load_simulation_summary_data()) {
   # plot
   p.duration <- ggplot(d, aes(x = structure, y = duration, fill = attack.rate)) +
     #geom_point(aes(colour = attack.rate, shape = attack.rate), position = position_jitterdodge(), alpha=0.2) +
-    geom_boxplot(alpha = 0.7) +
+    geom_boxplot() +
     scale_color_manual(values = c("combined" = "#000000",
                                   "25"       = "#D55E00",
                                   "50"       = "#E69D00",
@@ -1204,9 +1401,63 @@ plot_c1_b <- function(data.ss = load_simulation_summary_data()) {
     scale_x_discrete(name="Network structure during epidemic") +
     scale_y_continuous(name="Duration", limits=c(0, 30)) +
     theme_bw(base_size = 16) +
-    guides(fill=guide_legend(title="Attack rate"))
-  # theme(legend.position = "top")
+    guides(fill=guide_legend(title="Attack rate")) +
+    theme(legend.position = "top")
   return(p.duration)
+}
+
+#----------------------------------------------------------------------------------------------------#
+# function: plot_c1_b
+#     Exports plots for conjecture 1.b.
+# param:  data.ss
+#     the simulation summary data
+# param:  ep.structure
+#     whether plot for dynamic or static data ought to be created
+# return: the plot
+#----------------------------------------------------------------------------------------------------#
+plot_c1_b_peak <- function(data.ss = load_simulation_summary_data()) {
+  # data - all
+  d <- data.frame("structure"   = rep("static", nrow(data.ss)),
+                  "attack.rate" = rep("combined", nrow(data.ss)),
+                  "peak"        = data.ss$net.static.epidemic.peak)
+  d <- rbind(d, data.frame("structure"   = rep("dynamic", nrow(data.ss)),
+                           "attack.rate" = rep("combined", nrow(data.ss)),
+                           "peak"        = data.ss$net.dynamic.epidemic.peak))
+  # data - by attack rate
+  min_pct <- 0
+  step_size_pct <- 25
+  for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
+    d.static <- subset(data.ss, net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
+    d <- rbind(d, data.frame("structure"   = rep("static", nrow(d.static)),
+                             "attack.rate" = factor(rep(max_pct, nrow(d.static))),
+                             "peak"        = d.static$net.static.epidemic.peak))
+    d.dynamic <- subset(data.ss, net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
+    d <- rbind(d, data.frame("structure"   = rep("dynamic", nrow(d.dynamic)),
+                             "attack.rate" = factor(rep(max_pct, nrow(d.dynamic))),
+                             "peak"        = d.dynamic$net.dynamic.epidemic.peak))
+    min_pct <- max_pct
+  }
+
+  # plot
+  p.peak <- ggplot(d, aes(x = structure, y = peak, fill = attack.rate)) +
+    #geom_point(aes(colour = attack.rate, shape = attack.rate), position = position_jitterdodge(), alpha=0.2) +
+    geom_boxplot() +
+    scale_color_manual(values = c("combined" = "#000000",
+                                  "25"       = "#D55E00",
+                                  "50"       = "#E69D00",
+                                  "75"       = "#0072B2",
+                                  "100"      = "#009E73")) +
+    scale_fill_manual(values = c("combined"  = "#000000",
+                                 "25"        = "#D55E00",
+                                 "50"        = "#E69D00",
+                                 "75"        = "#0072B2",
+                                 "100"       = "#009E73")) +
+    scale_x_discrete(name="Network structure during epidemic") +
+    scale_y_continuous(name="Peak", limits=c(0, 30)) +
+    theme_bw(base_size = 16) +
+    guides(fill=guide_legend(title="Attack rate")) +
+    theme(legend.position = "top")
+  return(p.peak)
 }
 
 #----------------------------------------------------------------------------------------------------#
@@ -1311,49 +1562,80 @@ plot_c2_bc <- function(data.ad = load_agent_details_data(), ep.structure = "dyna
 #     whether plot for dynamic or static data ought to be created
 # return: the plot
 #----------------------------------------------------------------------------------------------------#
-plot_c2_de <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic") {
+plot_c2_de <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic", average.data = TRUE) {
 
   # data preparations
   d <- data.frame(r.sigma     = numeric(0),
                   of.whom     = character(0),
                   attack.rate = numeric(0))
-  bin.prev <- 0.00
-  for (bin in seq(0.01, 2, 0.01)) {
-    data.ss.av.bin <- subset(data.ss, nb.r.sigma.av > bin.prev & nb.r.sigma.av <= bin)
-    if (nrow(data.ss.av.bin) > 1) {
-      if (ep.structure == "dynamic") {
-        d <- rbind(d,
-                   data.frame(r.sigma     = bin,
-                              of.whom     = "network average",
-                              attack.rate = mean(data.ss.av.bin$net.dynamic.pct.rec)))
-      } else {
-        d <- rbind(d,
-                   data.frame(r.sigma     = bin,
-                              of.whom     = "network average",
-                              attack.rate = mean(data.ss.av.bin$net.static.pct.rec)))
-      }
-    }
 
-    data.ss.neigh.bin <- subset(data.ss, index.r.sigma.neighborhood > bin.prev & index.r.sigma.neighborhood <= bin)
-    if (nrow(data.ss.neigh.bin) > 1) {
-      if (ep.structure == "dynamic") {
-        d <- rbind(d,
-                   data.frame(r.sigma     = bin,
-                              of.whom     = "index case neighborhood",
-                              attack.rate = mean(data.ss.neigh.bin$net.dynamic.pct.rec)))
-      } else {
-        d <- rbind(d,
-                   data.frame(r.sigma     = bin,
-                              of.whom     = "index case neighborhood",
-                              attack.rate = mean(data.ss.neigh.bin$net.static.pct.rec)))
-      }
+  if (!average.data) {
+    if (ep.structure == "dynamic") {
+      d <- rbind(d,
+                 data.frame(r.sigma     = data.ss$nb.r.sigma.av,
+                            of.whom     = "network average",
+                            attack.rate = data.ss$net.dynamic.pct.rec))
+      d <- rbind(d,
+                 data.frame(r.sigma     = data.ss$index.r.sigma.neighborhood,
+                            of.whom     = "index case neighborhood",
+                            attack.rate = data.ss$net.dynamic.pct.rec))
+    } else {
+      d <- rbind(d,
+                 data.frame(r.sigma     = data.ss$nb.r.sigma.av,
+                            of.whom     = "network average",
+                            attack.rate = data.ss$net.static.pct.rec))
+      d <- rbind(d,
+                 data.frame(r.sigma     = data.ss$index.r.sigma.neighborhood,
+                            of.whom     = "index case neighborhood",
+                            attack.rate = data.ss$net.static.pct.rec))
     }
-    bin.prev <- bin
+  } else {
+    bin.prev <- 0.00
+    for (bin in seq(0.01, 2, 0.01)) {
+      data.ss.av.bin <- subset(data.ss, nb.r.sigma.av > bin.prev & nb.r.sigma.av <= bin)
+      if (nrow(data.ss.av.bin) > 1) {
+        if (ep.structure == "dynamic") {
+          d <- rbind(d,
+                     data.frame(r.sigma     = bin,
+                                of.whom     = "network average",
+                                attack.rate = mean(data.ss.av.bin$net.dynamic.pct.rec)))
+        } else {
+          d <- rbind(d,
+                     data.frame(r.sigma     = bin,
+                                of.whom     = "network average",
+                                attack.rate = mean(data.ss.av.bin$net.static.pct.rec)))
+        }
+      }
+
+      data.ss.neigh.bin <- subset(data.ss, index.r.sigma.neighborhood > bin.prev & index.r.sigma.neighborhood <= bin)
+      if (nrow(data.ss.neigh.bin) > 1) {
+        if (ep.structure == "dynamic") {
+          d <- rbind(d,
+                     data.frame(r.sigma     = bin,
+                                of.whom     = "index case neighborhood",
+                                attack.rate = mean(data.ss.neigh.bin$net.dynamic.pct.rec)))
+        } else {
+          d <- rbind(d,
+                     data.frame(r.sigma     = bin,
+                                of.whom     = "index case neighborhood",
+                                attack.rate = mean(data.ss.neigh.bin$net.static.pct.rec)))
+        }
+      }
+      bin.prev <- bin
+    }
   }
+
   d <- subset(d, !is.na(attack.rate))
   # plot
-  p <- ggplot(d, aes(x = r.sigma, y = attack.rate, color = of.whom, shape = of.whom)) +
-    geom_point(aes(colour = of.whom, shape = factor(of.whom)), alpha = 0.7) +
+  p <- ggplot(d, aes(x = r.sigma, y = attack.rate, color = of.whom, shape = of.whom))
+  if (!average.data) {
+    p <- p +
+      geom_point(aes(colour = of.whom, shape = factor(of.whom)), alpha = 0.2, position = position_jitter(w = 0.05, h = 1.00))
+  } else {
+    p <- p +
+      geom_point(aes(colour = of.whom, shape = factor(of.whom)), alpha = 0.7)
+  }
+  p <- p +
     geom_line(stat="smooth",method = "lm", fullrange=TRUE, size = 1.0, aes(linetype=of.whom, color=of.whom)) +
     scale_color_manual(values = c("network average" = "#D55E00",
                                   "index case neighborhood" = "#0072B2")) +
@@ -1374,56 +1656,100 @@ plot_c2_de <- function(data.ss = load_simulation_summary_data(), ep.structure = 
 #     whether plot for dynamic or static data ought to be created
 # return: the plot
 #----------------------------------------------------------------------------------------------------#
-plot_c2_fg_duration <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic") {
+plot_c2_fg_duration <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic", average.data = TRUE) {
 
   # data preparations
   d <- data.frame(r.sigma     = numeric(0),
                   attack.rate = character(0),
                   duration    = numeric(0))
-  bin.prev <- 0.00
-  for (bin in seq(0.01, 2, 0.01)) {
-    data.ss.av.bin <- subset(data.ss, nb.r.sigma.av > bin.prev & nb.r.sigma.av <= bin)
-    if (nrow(data.ss.av.bin) > 1) {
+
+  if (!average.data) {
+    if (ep.structure == "dynamic") {
       # attack rate: all
       if (ep.structure == "dynamic") {
         d <- rbind(d,
-                   data.frame(r.sigma     = bin,
+                   data.frame(r.sigma     = data.ss$nb.r.sigma.av,
                               attack.rate = "all",
-                              duration    = mean(data.ss.av.bin$net.dynamic.epidemic.duration)))
+                              duration    = data.ss$net.dynamic.epidemic.duration))
       } else {
         d <- rbind(d,
-                   data.frame(r.sigma     = bin,
+                   data.frame(r.sigma     = data.ss$nb.r.sigma.av,
                               attack.rate = "all",
-                              duration    = mean(data.ss.av.bin$net.static.epidemic.duration)))
+                              duration    = data.ss$net.static.epidemic.duration))
       }
       # by attack rate
       min_pct <- 0
       step_size_pct <- 25
       for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
         if (ep.structure == "dynamic") {
-          data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
-                                                 net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
+          data.ss.by.attackrate <- subset(data.ss, net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
           d <- rbind(d,
-                     data.frame(r.sigma     = bin,
+                     data.frame(r.sigma     = data.ss.by.attackrate$nb.r.sigma.av,
                                 attack.rate = factor(max_pct),
-                                duration    = mean(data.ss.av.bin.by.attackrate$net.dynamic.epidemic.duration)))
+                                duration    = data.ss.by.attackrate$net.dynamic.epidemic.duration))
         } else {
-          data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
-                                                 net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
+          data.ss.by.attackrate <- subset(data.ss, net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
           d <- rbind(d,
-                     data.frame(r.sigma     = bin,
+                     data.frame(r.sigma     = data.ss.by.attackrate$nb.r.sigma.av,
                                 attack.rate = factor(max_pct),
-                                duration    = mean(data.ss.av.bin.by.attackrate$net.static.epidemic.duration)))
+                                duration    = data.ss.by.attackrate$net.static.epidemic.duration))
         }
         min_pct <- max_pct
       }
     }
-    bin.prev <- bin
+  } else {
+    bin.prev <- 0.00
+    for (bin in seq(0.01, 2, 0.01)) {
+      data.ss.av.bin <- subset(data.ss, nb.r.sigma.av > bin.prev & nb.r.sigma.av <= bin)
+      if (nrow(data.ss.av.bin) > 1) {
+        # attack rate: all
+        if (ep.structure == "dynamic") {
+          d <- rbind(d,
+                     data.frame(r.sigma     = bin,
+                                attack.rate = "all",
+                                duration    = mean(data.ss.av.bin$net.dynamic.epidemic.duration)))
+        } else {
+          d <- rbind(d,
+                     data.frame(r.sigma     = bin,
+                                attack.rate = "all",
+                                duration    = mean(data.ss.av.bin$net.static.epidemic.duration)))
+        }
+        # by attack rate
+        min_pct <- 0
+        step_size_pct <- 25
+        for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
+          if (ep.structure == "dynamic") {
+            data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
+                                                   net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
+            d <- rbind(d,
+                       data.frame(r.sigma     = bin,
+                                  attack.rate = factor(max_pct),
+                                  duration    = mean(data.ss.av.bin.by.attackrate$net.dynamic.epidemic.duration)))
+          } else {
+            data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
+                                                   net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
+            d <- rbind(d,
+                       data.frame(r.sigma     = bin,
+                                  attack.rate = factor(max_pct),
+                                  duration    = mean(data.ss.av.bin.by.attackrate$net.static.epidemic.duration)))
+          }
+          min_pct <- max_pct
+        }
+      }
+      bin.prev <- bin
+    }
   }
   d <- subset(d, !is.na(duration))
   # plot
-  p <- ggplot(d, aes(x = r.sigma, y = duration, color = attack.rate, shape = attack.rate)) +
-    geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.7) +
+  p <- ggplot(d, aes(x = r.sigma, y = duration, color = attack.rate, shape = attack.rate))
+  if (!average.data) {
+    p <- p +
+      geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.2, position = position_jitter(w = 0.05, h = 1.00))
+  } else {
+    p <- p +
+      geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.7)
+  }
+  p <- p +
     geom_line(stat="smooth",method = "lm", fullrange=TRUE, size = 1.0, aes(linetype=attack.rate, color=attack.rate)) +
     scale_color_manual(values = c("all" = "#000000",
                                   "25"       = "#D55E00",
@@ -1452,56 +1778,98 @@ plot_c2_fg_duration <- function(data.ss = load_simulation_summary_data(), ep.str
 #     whether plot for dynamic or static data ought to be created
 # return: the plot
 #----------------------------------------------------------------------------------------------------#
-plot_c2_fg_peak <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic") {
+plot_c2_fg_peak <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic", average.data = TRUE) {
 
   # data preparations
   d <- data.frame(r.sigma     = numeric(0),
                   attack.rate = character(0),
                   peak        = numeric(0))
-  bin.prev <- 0.00
-  for (bin in seq(0.01, 2, 0.01)) {
-    data.ss.av.bin <- subset(data.ss, nb.r.sigma.av > bin.prev & nb.r.sigma.av <= bin)
-    if (nrow(data.ss.av.bin) > 1) {
-      # attack rate: all
-      if (ep.structure == "dynamic") {
-        d <- rbind(d,
-                   data.frame(r.sigma     = bin,
-                              attack.rate = "all",
-                              peak        = mean(data.ss.av.bin$net.dynamic.epidemic.peak)))
-      } else {
-        d <- rbind(d,
-                   data.frame(r.sigma     = bin,
-                              attack.rate = "all",
-                              peak        = mean(data.ss.av.bin$net.static.epidemic.peak)))
-      }
-      # by attack rate
-      min_pct <- 0
-      step_size_pct <- 25
-      for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
-        if (ep.structure == "dynamic") {
-          data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
-                                                 net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
-          d <- rbind(d,
-                     data.frame(r.sigma     = bin,
-                                attack.rate = factor(max_pct),
-                                peak    = mean(data.ss.av.bin.by.attackrate$net.dynamic.epidemic.peak)))
-        } else {
-          data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
-                                                 net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
-          d <- rbind(d,
-                     data.frame(r.sigma     = bin,
-                                attack.rate = factor(max_pct),
-                                peak    = mean(data.ss.av.bin.by.attackrate$net.static.epidemic.peak)))
-        }
-        min_pct <- max_pct
-      }
+
+  if (!average.data) {
+    # attack rate: all
+    if (ep.structure == "dynamic") {
+      d <- rbind(d,
+                 data.frame(r.sigma     = data.ss$nb.r.sigma.av,
+                            attack.rate = "all",
+                            peak        = data.ss$net.dynamic.epidemic.peak))
+    } else {
+      d <- rbind(d,
+                 data.frame(r.sigma     = data.ss$nb.r.sigma.av,
+                            attack.rate = "all",
+                            peak        = data.ss$net.static.epidemic.peak))
     }
-    bin.prev <- bin
+    # by attack rate
+    min_pct <- 0
+    step_size_pct <- 25
+    for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
+      if (ep.structure == "dynamic") {
+        data.ss.by.attackrate <- subset(data.ss, net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
+        d <- rbind(d,
+                   data.frame(r.sigma     = data.ss.by.attackrate$nb.r.sigma.av,
+                              attack.rate = factor(max_pct),
+                              peak        = data.ss.by.attackrate$net.dynamic.epidemic.peak))
+      } else {
+        data.ss.by.attackrate <- subset(data.ss, net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
+        d <- rbind(d,
+                   data.frame(r.sigma     = data.ss.by.attackrate$nb.r.sigma.av,
+                              attack.rate = factor(max_pct),
+                              peak        = data.ss.by.attackrate$net.static.epidemic.peak))
+      }
+      min_pct <- max_pct
+    }
+  } else {
+    bin.prev <- 0.00
+    for (bin in seq(0.01, 2, 0.01)) {
+      data.ss.av.bin <- subset(data.ss, nb.r.sigma.av > bin.prev & nb.r.sigma.av <= bin)
+      if (nrow(data.ss.av.bin) > 1) {
+        # attack rate: all
+        if (ep.structure == "dynamic") {
+          d <- rbind(d,
+                     data.frame(r.sigma     = bin,
+                                attack.rate = "all",
+                                peak        = mean(data.ss.av.bin$net.dynamic.epidemic.peak)))
+        } else {
+          d <- rbind(d,
+                     data.frame(r.sigma     = bin,
+                                attack.rate = "all",
+                                peak        = mean(data.ss.av.bin$net.static.epidemic.peak)))
+        }
+        # by attack rate
+        min_pct <- 0
+        step_size_pct <- 25
+        for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
+          if (ep.structure == "dynamic") {
+            data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
+                                                   net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
+            d <- rbind(d,
+                       data.frame(r.sigma     = bin,
+                                  attack.rate = factor(max_pct),
+                                  peak    = mean(data.ss.av.bin.by.attackrate$net.dynamic.epidemic.peak)))
+          } else {
+            data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
+                                                   net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
+            d <- rbind(d,
+                       data.frame(r.sigma     = bin,
+                                  attack.rate = factor(max_pct),
+                                  peak    = mean(data.ss.av.bin.by.attackrate$net.static.epidemic.peak)))
+          }
+          min_pct <- max_pct
+        }
+      }
+      bin.prev <- bin
+    }
   }
   d <- subset(d, !is.na(peak))
   # plot
-  p <- ggplot(d, aes(x = r.sigma, y = peak, color = attack.rate, shape = attack.rate)) +
-    geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.7) +
+  p <- ggplot(d, aes(x = r.sigma, y = peak, color = attack.rate, shape = attack.rate))
+  if (!average.data) {
+    p <- p +
+      geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.2, position = position_jitter(w = 0.05, h = 1.00))
+  } else {
+    p <- p +
+      geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.7)
+  }
+  p <- p +
     geom_line(stat="smooth",method = "lm", fullrange=TRUE, size = 1.0, aes(linetype=attack.rate, color=attack.rate)) +
     scale_color_manual(values = c("all" = "#000000",
                                   "25"       = "#D55E00",
@@ -1606,6 +1974,15 @@ plot_c3_h <- function(data.ad = load_agent_details_data(), ep.structure = "dynam
   return(p)
 }
 
+#----------------------------------------------------------------------------------------------------#
+# function: plot_c3_l
+#     Exports plots for conjecture 3.l.
+# param:  data.ad
+#     the agent details data
+# param:  ep.structure
+#     whether plot for dynamic or static data ought to be created
+# return: the plot
+#----------------------------------------------------------------------------------------------------#
 plot_c3_l <- function(data.ad = load_agent_details_data(), ep.structure = "dynamic") {
 
   # data preparations
@@ -1644,46 +2021,81 @@ plot_c3_l <- function(data.ad = load_agent_details_data(), ep.structure = "dynam
 #     whether plot for dynamic or static data ought to be created
 # return: the plot
 #----------------------------------------------------------------------------------------------------#
-plot_c3_d <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic") {
+plot_c3_d <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic", average.data = TRUE) {
 
   # data preparations
   d <- data.frame(clustering  = numeric(0),
                   of.whom     = character(0),
                   attack.rate = numeric(0))
-  bin.min  <- min(min(data.ss$net.clustering.pre.epidemic.av), min(data.ss$index.clustering))
-  bin.max  <- max(max(data.ss$net.clustering.pre.epidemic.av), max(data.ss$index.clustering))
-  bin.prev <- 0.00
-  for (bin in seq(bin.min, bin.max, 0.01)) {
-    data.ss.av.bin <- subset(data.ss, net.clustering.pre.epidemic.av > bin.prev & net.clustering.pre.epidemic.av <= bin)
-    if (nrow(data.ss.av.bin) > 1) {
-      if (ep.structure == "dynamic") {
-        d <- rbind(d,
-                   data.frame(clustering  = bin,
-                              of.whom     = "network average",
-                              attack.rate = mean(data.ss.av.bin$net.dynamic.pct.rec)))
-      } else {
-        d <- rbind(d,
-                   data.frame(clustering  = bin,
-                              of.whom     = "network average",
-                              attack.rate = mean(data.ss.av.bin$net.static.pct.rec)))
+
+  if (!average.data) {
+    if (ep.structure == "dynamic") {
+      d <- rbind(d,
+                 data.frame(clustering  = data.ss$net.clustering.pre.epidemic.av,
+                            of.whom     = "network average",
+                            attack.rate = data.ss$net.dynamic.pct.rec))
+      d <- rbind(d,
+                 data.frame(clustering  = data.ss$index.clustering,
+                            of.whom     = "index case",
+                            attack.rate = data.ss$net.dynamic.pct.rec))
+    } else {
+      d <- rbind(d,
+                 data.frame(clustering  = data.ss$net.clustering.pre.epidemic.av,
+                            of.whom     = "network average",
+                            attack.rate = data.ss$net.static.pct.rec))
+      d <- rbind(d,
+                 data.frame(clustering  = data.ss$index.clustering,
+                            of.whom     = "index case",
+                            attack.rate = data.ss$net.static.pct.rec))
+    }
+  } else {
+    bin.min  <- min(min(data.ss$net.clustering.pre.epidemic.av), min(data.ss$index.clustering))
+    bin.max  <- max(max(data.ss$net.clustering.pre.epidemic.av), max(data.ss$index.clustering))
+    bin.prev <- 0.00
+    for (bin in seq(bin.min, bin.max, 0.01)) {
+      data.ss.av.bin <- subset(data.ss, net.clustering.pre.epidemic.av > bin.prev & net.clustering.pre.epidemic.av <= bin)
+      if (nrow(data.ss.av.bin) > 1) {
+        if (ep.structure == "dynamic") {
+          d <- rbind(d,
+                     data.frame(clustering  = bin,
+                                of.whom     = "network average",
+                                attack.rate = mean(data.ss.av.bin$net.dynamic.pct.rec)))
+        } else {
+          d <- rbind(d,
+                     data.frame(clustering  = bin,
+                                of.whom     = "network average",
+                                attack.rate = mean(data.ss.av.bin$net.static.pct.rec)))
+        }
+      }
+      data.ss.index.bin <- subset(data.ss, index.clustering > bin.prev & index.clustering <= bin)
+      if (nrow(data.ss.index.bin) > 1) {
+        if (ep.structure == "dynamic") {
+          d <- rbind(d,
+                     data.frame(clustering  = bin,
+                                of.whom     = "index case",
+                                attack.rate = mean(data.ss.index.bin$net.dynamic.pct.rec)))
+        } else {
+          d <- rbind(d,
+                     data.frame(clustering  = bin,
+                                of.whom     = "index case",
+                                attack.rate = mean(data.ss.index.bin$net.static.pct.rec)))
+        }
+        bin.prev <- bin
       }
     }
   }
-
-  data.ss.index.bin <- subset(data.ss, index.clustering > bin.prev & index.clustering <= bin)
-  if (nrow(data.ss.index.bin) > 1) {
-    if (ep.structure == "dynamic") {
-      d <- rbind(d,
-                 data.frame(clustering  = bin,
-                            of.whom     = "index case",
-                            attack.rate = mean(data.ss.index.bin$net.dynamic.pct.rec)))
-    }
-    bin.prev <- bin
-  }
   d <- subset(d, !is.na(attack.rate))
+
   # plot
-  p <- ggplot(d, aes(x = clustering, y = attack.rate, color = of.whom, shape = of.whom)) +
-    geom_point(aes(colour = of.whom, shape = factor(of.whom)), alpha = 0.7) +
+  p <- ggplot(d, aes(x = clustering, y = attack.rate, color = of.whom, shape = of.whom))
+  if (!average.data) {
+    p <- p +
+      geom_point(aes(colour = of.whom, shape = factor(of.whom)), alpha = 0.2, position = position_jitter(w = 0.05, h = 1.00))
+  } else {
+    p <- p +
+      geom_point(aes(colour = of.whom, shape = factor(of.whom)), alpha = 0.7)
+  }
+  p <- p +
     geom_line(stat="smooth",method = "lm", fullrange=TRUE, size = 1.0, aes(linetype=of.whom, color=of.whom)) +
     scale_color_manual(values = c("network average" = "#D55E00",
                                   "index case" = "#0072B2")) +
@@ -1704,69 +2116,120 @@ plot_c3_d <- function(data.ss = load_simulation_summary_data(), ep.structure = "
 #     whether plot for dynamic or static data ought to be created
 # return: the plot
 #----------------------------------------------------------------------------------------------------#
-plot_c3_i <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic") {
+plot_c3_i <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic", average.data = TRUE) {
 
   # data preparations
   d <- data.frame(av.path.length  = numeric(0),
                   attack.rate     = numeric(0))
-  bin.min  <- min(data.ss$net.pathlength.pre.epidemic.av)
-  bin.max  <- max(data.ss$net.pathlength.pre.epidemic.av)
-  bin.prev <- 0.00
-  for (bin in seq(bin.min, bin.max, 0.01)) {
-    data.ss.av.bin <- subset(data.ss, net.pathlength.pre.epidemic.av > bin.prev & net.pathlength.pre.epidemic.av <= bin)
-    if (nrow(data.ss.av.bin) > 1) {
-      if (ep.structure == "dynamic") {
-        d <- rbind(d,
-                   data.frame(av.path.length  = bin,
-                              attack.rate     = mean(data.ss.av.bin$net.dynamic.pct.rec)))
-      } else {
-        d <- rbind(d,
-                   data.frame(av.path.length  = bin,
-                              attack.rate     = mean(data.ss.av.bin$net.static.pct.rec)))
 
+  if (!average.data) {
+    if (ep.structure == "dynamic") {
+      d <- rbind(d,
+                 data.frame(av.path.length  = data.ss$net.pathlength.pre.epidemic.av,
+                            attack.rate     = data.ss$net.dynamic.pct.rec))
+    } else {
+      d <- rbind(d,
+                 data.frame(av.path.length  = data.ss$net.pathlength.pre.epidemic.av,
+                            attack.rate     = data.ss$net.static.pct.rec))
+
+    }
+  } else {
+    bin.min  <- min(data.ss$net.pathlength.pre.epidemic.av)
+    bin.max  <- max(data.ss$net.pathlength.pre.epidemic.av)
+    bin.prev <- 0.00
+    for (bin in seq(bin.min, bin.max, 0.01)) {
+      data.ss.av.bin <- subset(data.ss, net.pathlength.pre.epidemic.av > bin.prev & net.pathlength.pre.epidemic.av <= bin)
+      if (nrow(data.ss.av.bin) > 1) {
+        if (ep.structure == "dynamic") {
+          d <- rbind(d,
+                     data.frame(av.path.length  = bin,
+                                attack.rate     = mean(data.ss.av.bin$net.dynamic.pct.rec)))
+        } else {
+          d <- rbind(d,
+                     data.frame(av.path.length  = bin,
+                                attack.rate     = mean(data.ss.av.bin$net.static.pct.rec)))
+
+        }
       }
+      bin.prev <- bin
     }
   }
   d <- subset(d, !is.na(attack.rate))
   # plot
-  p <- ggplot(d, aes(x = av.path.length, y = attack.rate)) +
-    geom_point(alpha = 0.7, color = "#D55E00") +
+  p <- ggplot(d, aes(x = av.path.length, y = attack.rate))
+  if (!average.data) {
+    p <- p +
+      geom_point(alpha = 0.2, color = "#D55E00", position = position_jitter(w = 0.05, h = 1.00))
+  } else {
+    p <- p +
+      geom_point(alpha = 0.7, color = "#D55E00")
+  }
+  p <- p +
     geom_line(stat="smooth",method = "lm", fullrange=TRUE, size = 1.0, color = "#D55E00") +
-    scale_x_continuous(name="Average path length", limits = c(bin.min, bin.max)) +
+    scale_x_continuous(name="Average path length", limits = c(min(d$av.path.length), max(d$av.path.length))) +
     scale_y_continuous(name="Attack rate", limits=c(1, 100)) +
     theme_bw(base_size = 16)
   return(p)
 }
 
-plot_c3_m <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic") {
+#----------------------------------------------------------------------------------------------------#
+# function: plot_c3_m
+#     Exports plots for conjecture 3.m.
+# param:  data.ss
+#     the simulation summary data
+# param:  ep.structure
+#     whether plot for dynamic or static data ought to be created
+# return: the plot
+#----------------------------------------------------------------------------------------------------#
+plot_c3_m <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic", average.data = TRUE) {
 
   # data preparations
   d <- data.frame(betweenness.index  = numeric(0),
                   attack.rate        = numeric(0))
-  bin.min  <- min(data.ss$index.betweenness.normalized)
-  bin.max  <- max(data.ss$index.betweenness.normalized)
-  bin.prev <- 0.00
-  for (bin in seq(bin.min, bin.max, 0.01)) {
-    data.ss.av.bin <- subset(data.ss, index.betweenness.normalized > bin.prev & index.betweenness.normalized <= bin)
-    if (nrow(data.ss.av.bin) > 1) {
-      if (ep.structure == "dynamic") {
-        d <- rbind(d,
-                   data.frame(betweenness.index = bin,
-                              attack.rate       = mean(data.ss.av.bin$net.dynamic.pct.rec)))
-      } else {
-        d <- rbind(d,
-                   data.frame(betweenness.index = bin,
-                              attack.rate       = mean(data.ss.av.bin$net.static.pct.rec)))
 
+  if (!average.data) {
+    if (ep.structure == "dynamic") {
+      d <- rbind(d,
+                 data.frame(betweenness.index = data.ss$index.betweenness.normalized,
+                            attack.rate       = data.ss$net.dynamic.pct.rec))
+    } else {
+      d <- rbind(d,
+                 data.frame(betweenness.index = data.ss$index.betweenness.normalized,
+                            attack.rate       = data.ss$net.static.pct.rec))
+    }
+  } else {
+    bin.min  <- min(data.ss$index.betweenness.normalized)
+    bin.max  <- max(data.ss$index.betweenness.normalized)
+    bin.prev <- 0.00
+    for (bin in seq(bin.min, bin.max, 0.01)) {
+      data.ss.av.bin <- subset(data.ss, index.betweenness.normalized > bin.prev & index.betweenness.normalized <= bin)
+      if (nrow(data.ss.av.bin) > 1) {
+        if (ep.structure == "dynamic") {
+          d <- rbind(d,
+                     data.frame(betweenness.index = bin,
+                                attack.rate       = mean(data.ss.av.bin$net.dynamic.pct.rec)))
+        } else {
+          d <- rbind(d,
+                     data.frame(betweenness.index = bin,
+                                attack.rate       = mean(data.ss.av.bin$net.static.pct.rec)))
+        }
       }
+      bin.prev <- bin
     }
   }
   d <- subset(d, !is.na(attack.rate))
   # plot
-  p <- ggplot(d, aes(x = betweenness.index, y = attack.rate)) +
-    geom_point(alpha = 0.7, color = "#D55E00") +
+  p <- ggplot(d, aes(x = betweenness.index, y = attack.rate))
+  if (!average.data) {
+    p <- p +
+      geom_point(alpha = 0.2, color = "#D55E00", position = position_jitter(w = 0.05, h = 1.00))
+  } else {
+    p <- p +
+      geom_point(alpha = 0.7, color = "#D55E00")
+  }
+  p <- p +
     geom_line(stat="smooth",method = "lm", fullrange=TRUE, size = 1.0, color = "#D55E00") +
-    scale_x_continuous(name="Betweenness (index case)", limits = c(bin.min, bin.max)) +
+    scale_x_continuous(name="Betweenness (index case)", limits = c(min(d$betweenness.index), max(d$betweenness.index))) +
     scale_y_continuous(name="Attack rate", limits=c(1, 100)) +
     theme_bw(base_size = 16)
   return(p)
@@ -1781,58 +2244,100 @@ plot_c3_m <- function(data.ss = load_simulation_summary_data(), ep.structure = "
 #     whether plot for dynamic or static data ought to be created
 # return: the plot
 #----------------------------------------------------------------------------------------------------#
-plot_c3_fg_duration <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic") {
+plot_c3_fg_duration <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic", average.data = TRUE) {
 
   # data preparations
   d <- data.frame(clustering  = numeric(0),
                   attack.rate = character(0),
                   duration    = numeric(0))
-  bin.min  <- min(data.ss$net.clustering.pre.epidemic.av)
-  bin.max  <- max(data.ss$net.clustering.pre.epidemic.av)
-  bin.prev <- 0.00
-  for (bin in seq(bin.min, bin.max, 0.01)) {
-    data.ss.av.bin <- subset(data.ss, net.clustering.pre.epidemic.av > bin.prev & net.clustering.pre.epidemic.av <= bin)
-    if (nrow(data.ss.av.bin) > 1) {
-      # attack rate: all
-      if (ep.structure == "dynamic") {
-        d <- rbind(d,
-                   data.frame(clustering  = bin,
-                              attack.rate = "all",
-                              duration    = mean(data.ss.av.bin$net.dynamic.epidemic.duration)))
-      } else {
-        d <- rbind(d,
-                   data.frame(clustering  = bin,
-                              attack.rate = "all",
-                              duration    = mean(data.ss.av.bin$net.static.epidemic.duration)))
-      }
-      # by attack rate
-      min_pct <- 0
-      step_size_pct <- 25
-      for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
-        if (ep.structure == "dynamic") {
-          data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
-                                                 net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
-          d <- rbind(d,
-                     data.frame(clustering  = bin,
-                                attack.rate = factor(max_pct),
-                                duration    = mean(data.ss.av.bin.by.attackrate$net.dynamic.epidemic.duration)))
-        } else {
-          data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
-                                                 net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
-          d <- rbind(d,
-                     data.frame(clustering  = bin,
-                                attack.rate = factor(max_pct),
-                                duration    = mean(data.ss.av.bin.by.attackrate$net.static.epidemic.duration)))
-        }
-        min_pct <- max_pct
-      }
+
+  if (!average.data) {
+    # attack rate: all
+    if (ep.structure == "dynamic") {
+      d <- rbind(d,
+                 data.frame(clustering  = data.ss$net.clustering.pre.epidemic.av,
+                            attack.rate = "all",
+                            duration    = data.ss$net.dynamic.epidemic.duration))
+    } else {
+      d <- rbind(d,
+                 data.frame(clustering  = data.ss$net.clustering.pre.epidemic.av,
+                            attack.rate = "all",
+                            duration    = data.ss$net.static.epidemic.duration))
     }
-    bin.prev <- bin
+    # by attack rate
+    min_pct <- 0
+    step_size_pct <- 25
+    for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
+      if (ep.structure == "dynamic") {
+        data.ss.by.attackrate <- subset(data.ss, net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
+        d <- rbind(d,
+                   data.frame(clustering  = data.ss.by.attackrate$net.clustering.pre.epidemic.av,
+                              attack.rate = factor(max_pct),
+                              duration    = data.ss.by.attackrate$net.dynamic.epidemic.duration))
+      } else {
+        data.ss.by.attackrate <- subset(data.ss, net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
+        d <- rbind(d,
+                   data.frame(clustering  = data.ss.by.attackrate$net.clustering.pre.epidemic.av,
+                              attack.rate = factor(max_pct),
+                              duration    = data.ss.by.attackrate$net.static.epidemic.duration))
+      }
+      min_pct <- max_pct
+    }
+  } else {
+    bin.min  <- min(data.ss$net.clustering.pre.epidemic.av)
+    bin.max  <- max(data.ss$net.clustering.pre.epidemic.av)
+    bin.prev <- 0.00
+    for (bin in seq(bin.min, bin.max, 0.01)) {
+      data.ss.av.bin <- subset(data.ss, net.clustering.pre.epidemic.av > bin.prev & net.clustering.pre.epidemic.av <= bin)
+      if (nrow(data.ss.av.bin) > 1) {
+        # attack rate: all
+        if (ep.structure == "dynamic") {
+          d <- rbind(d,
+                     data.frame(clustering  = bin,
+                                attack.rate = "all",
+                                duration    = mean(data.ss.av.bin$net.dynamic.epidemic.duration)))
+        } else {
+          d <- rbind(d,
+                     data.frame(clustering  = bin,
+                                attack.rate = "all",
+                                duration    = mean(data.ss.av.bin$net.static.epidemic.duration)))
+        }
+        # by attack rate
+        min_pct <- 0
+        step_size_pct <- 25
+        for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
+          if (ep.structure == "dynamic") {
+            data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
+                                                   net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
+            d <- rbind(d,
+                       data.frame(clustering  = bin,
+                                  attack.rate = factor(max_pct),
+                                  duration    = mean(data.ss.av.bin.by.attackrate$net.dynamic.epidemic.duration)))
+          } else {
+            data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
+                                                   net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
+            d <- rbind(d,
+                       data.frame(clustering  = bin,
+                                  attack.rate = factor(max_pct),
+                                  duration    = mean(data.ss.av.bin.by.attackrate$net.static.epidemic.duration)))
+          }
+          min_pct <- max_pct
+        }
+      }
+      bin.prev <- bin
+    }
   }
   d <- subset(d, !is.na(duration))
   # plot
-  p <- ggplot(d, aes(x = clustering, y = duration, color = attack.rate, shape = attack.rate)) +
-    geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.7) +
+  p <- ggplot(d, aes(x = clustering, y = duration, color = attack.rate, shape = attack.rate))
+  if (!average.data) {
+    p <- p +
+      geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.2, position = position_jitter(w = 0.05, h = 1.00))
+  } else {
+    p <- p +
+      geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.7)
+  }
+  p <- p +
     geom_line(stat="smooth",method = "lm", fullrange=TRUE, size = 1.0, aes(linetype=attack.rate, color=attack.rate)) +
     scale_color_manual(values = c("all" = "#000000",
                                   "25"       = "#D55E00",
@@ -1861,59 +2366,101 @@ plot_c3_fg_duration <- function(data.ss = load_simulation_summary_data(), ep.str
 #     whether plot for dynamic or static data ought to be created
 # return: the plot
 #----------------------------------------------------------------------------------------------------#
-plot_c3_fg_peak <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic") {
+plot_c3_fg_peak <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic", average.data = TRUE) {
 
   # data preparations
   d <- data.frame(clustering  = numeric(0),
                   attack.rate = character(0),
                   peak        = numeric(0))
-  bin.min  <- min(data.ss$net.clustering.pre.epidemic.av)
-  bin.max  <- max(data.ss$net.clustering.pre.epidemic.av)
-  bin.prev <- 0.00
-  for (bin in seq(bin.min, bin.max, 0.01)) {
-    data.ss.av.bin <- subset(data.ss, net.clustering.pre.epidemic.av > bin.prev & net.clustering.pre.epidemic.av <= bin)
-    if (nrow(data.ss.av.bin) > 1) {
-      # attack rate: all
-      if (ep.structure == "dynamic") {
-        d <- rbind(d,
-                   data.frame(clustering  = bin,
-                              attack.rate = "all",
-                              peak        = mean(data.ss.av.bin$net.dynamic.epidemic.peak)))
-      } else {
-        d <- rbind(d,
-                   data.frame(clustering  = bin,
-                              attack.rate = "all",
-                              peak        = mean(data.ss.av.bin$net.static.epidemic.peak)))
-      }
-      # by attack rate
-      min_pct <- 0
-      step_size_pct <- 25
-      for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
-        if (ep.structure == "dynamic") {
-          data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
-                                                 net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
-          d <- rbind(d,
-                     data.frame(clustering  = bin,
-                                attack.rate = factor(max_pct),
-                                peak        = mean(data.ss.av.bin.by.attackrate$net.dynamic.epidemic.peak)))
-        } else {
-          data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
-                                                 net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
-          d <- rbind(d,
-                     data.frame(clustering  = bin,
-                                attack.rate = factor(max_pct),
-                                peak        = mean(data.ss.av.bin.by.attackrate$net.static.epidemic.peak)))
-        }
-        min_pct <- max_pct
-      }
+
+  if (!average.data) {
+    # attack rate: all
+    if (ep.structure == "dynamic") {
+      d <- rbind(d,
+                 data.frame(clustering  = data.ss$net.clustering.pre.epidemic.av,
+                            attack.rate = "all",
+                            peak        = data.ss$net.dynamic.epidemic.peak))
+    } else {
+      d <- rbind(d,
+                 data.frame(clustering  = data.ss$net.clustering.pre.epidemic.av,
+                            attack.rate = "all",
+                            peak        = data.ss$net.static.epidemic.peak))
     }
-    bin.prev <- bin
+    # by attack rate
+    min_pct <- 0
+    step_size_pct <- 25
+    for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
+      if (ep.structure == "dynamic") {
+        data.ss.by.attackrate <- subset(data.ss, net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
+        d <- rbind(d,
+                   data.frame(clustering  = data.ss.by.attackrate$net.clustering.pre.epidemic.av,
+                              attack.rate = factor(max_pct),
+                              peak        = data.ss.by.attackrate$net.dynamic.epidemic.peak))
+      } else {
+        data.ss.by.attackrate <- subset(data.ss, net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
+        d <- rbind(d,
+                   data.frame(clustering  = data.ss.by.attackrate$net.clustering.pre.epidemic.av,
+                              attack.rate = factor(max_pct),
+                              peak        = data.ss.by.attackrate$net.static.epidemic.peak))
+      }
+      min_pct <- max_pct
+    }
+  } else {
+    bin.min  <- min(data.ss$net.clustering.pre.epidemic.av)
+    bin.max  <- max(data.ss$net.clustering.pre.epidemic.av)
+    bin.prev <- 0.00
+    for (bin in seq(bin.min, bin.max, 0.01)) {
+      data.ss.av.bin <- subset(data.ss, net.clustering.pre.epidemic.av > bin.prev & net.clustering.pre.epidemic.av <= bin)
+      if (nrow(data.ss.av.bin) > 1) {
+        # attack rate: all
+        if (ep.structure == "dynamic") {
+          d <- rbind(d,
+                     data.frame(clustering  = bin,
+                                attack.rate = "all",
+                                peak        = mean(data.ss.av.bin$net.dynamic.epidemic.peak)))
+        } else {
+          d <- rbind(d,
+                     data.frame(clustering  = bin,
+                                attack.rate = "all",
+                                peak        = mean(data.ss.av.bin$net.static.epidemic.peak)))
+        }
+        # by attack rate
+        min_pct <- 0
+        step_size_pct <- 25
+        for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
+          if (ep.structure == "dynamic") {
+            data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
+                                                   net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
+            d <- rbind(d,
+                       data.frame(clustering  = bin,
+                                  attack.rate = factor(max_pct),
+                                  peak        = mean(data.ss.av.bin.by.attackrate$net.dynamic.epidemic.peak)))
+          } else {
+            data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
+                                                   net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
+            d <- rbind(d,
+                       data.frame(clustering  = bin,
+                                  attack.rate = factor(max_pct),
+                                  peak        = mean(data.ss.av.bin.by.attackrate$net.static.epidemic.peak)))
+          }
+          min_pct <- max_pct
+        }
+      }
+      bin.prev <- bin
+    }
   }
   d <- subset(d, !is.na(d$peak))
   d <- subset(d, peak > 0)
   # plot
-  p <- ggplot(d, aes(x = clustering, y = peak, color = attack.rate, shape = attack.rate)) +
-    geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.7) +
+  p <- ggplot(d, aes(x = clustering, y = peak, color = attack.rate, shape = attack.rate))
+  if (!average.data) {
+    p <- p +
+      geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.2, position = position_jitter(w = 0.05, h = 1.00))
+  } else {
+    p <- p +
+      geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.7)
+  }
+  p <- p +
     geom_line(stat="smooth",method = "lm", fullrange=TRUE, size = 1.0, aes(linetype=attack.rate, color=attack.rate)) +
     scale_color_manual(values = c("all" = "#000000",
                                   "25"       = "#D55E00",
@@ -1942,58 +2489,100 @@ plot_c3_fg_peak <- function(data.ss = load_simulation_summary_data(), ep.structu
 #     whether plot for dynamic or static data ought to be created
 # return: the plot
 #----------------------------------------------------------------------------------------------------#
-plot_c3_jk_duration <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic") {
+plot_c3_jk_duration <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic", average.data = TRUE) {
 
   # data preparations
   d <- data.frame(path.length = numeric(0),
                   attack.rate = character(0),
                   duration    = numeric(0))
-  bin.min  <- min(data.ss$net.pathlength.pre.epidemic.av)
-  bin.max  <- max(data.ss$net.pathlength.pre.epidemic.av)
-  bin.prev <- 0.00
-  for (bin in seq(bin.min, bin.max, 0.01)) {
-    data.ss.av.bin <- subset(data.ss, net.pathlength.pre.epidemic.av > bin.prev & net.pathlength.pre.epidemic.av <= bin)
-    if (nrow(data.ss.av.bin) > 1) {
-      # attack rate: all
-      if (ep.structure == "dynamic") {
-        d <- rbind(d,
-                   data.frame(path.length = bin,
-                              attack.rate = "all",
-                              duration    = mean(data.ss.av.bin$net.dynamic.epidemic.duration)))
-      } else {
-        d <- rbind(d,
-                   data.frame(path.length = bin,
-                              attack.rate = "all",
-                              duration    = mean(data.ss.av.bin$net.static.epidemic.duration)))
-      }
-      # by attack rate
-      min_pct <- 0
-      step_size_pct <- 25
-      for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
-        if (ep.structure == "dynamic") {
-          data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
-                                                 net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
-          d <- rbind(d,
-                     data.frame(path.length = bin,
-                                attack.rate = factor(max_pct),
-                                duration    = mean(data.ss.av.bin.by.attackrate$net.dynamic.epidemic.duration)))
-        } else {
-          data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
-                                                 net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
-          d <- rbind(d,
-                     data.frame(path.length = bin,
-                                attack.rate = factor(max_pct),
-                                duration    = mean(data.ss.av.bin.by.attackrate$net.static.epidemic.duration)))
-        }
-        min_pct <- max_pct
-      }
+
+  if (!average.data) {
+    # attack rate: all
+    if (ep.structure == "dynamic") {
+      d <- rbind(d,
+                 data.frame(path.length = data.ss$net.pathlength.pre.epidemic.av,
+                            attack.rate = "all",
+                            duration    = data.ss$net.dynamic.epidemic.duration))
+    } else {
+      d <- rbind(d,
+                 data.frame(path.length = data.ss$net.pathlength.pre.epidemic.av,
+                            attack.rate = "all",
+                            duration    = data.ss$net.static.epidemic.duration))
     }
-    bin.prev <- bin
+    # by attack rate
+    min_pct <- 0
+    step_size_pct <- 25
+    for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
+      if (ep.structure == "dynamic") {
+        data.ss.by.attackrate <- subset(data.ss, net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
+        d <- rbind(d,
+                   data.frame(path.length = data.ss.by.attackrate$net.pathlength.pre.epidemic.av,
+                              attack.rate = factor(max_pct),
+                              duration    = data.ss.by.attackrate$net.dynamic.epidemic.duration))
+      } else {
+        data.ss.by.attackrate <- subset(data.ss, net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
+        d <- rbind(d,
+                   data.frame(path.length = data.ss.by.attackrate$net.pathlength.pre.epidemic.av,
+                              attack.rate = factor(max_pct),
+                              duration    = data.ss.by.attackrate$net.static.epidemic.duration))
+      }
+      min_pct <- max_pct
+    }
+  } else {
+    bin.min  <- min(data.ss$net.pathlength.pre.epidemic.av)
+    bin.max  <- max(data.ss$net.pathlength.pre.epidemic.av)
+    bin.prev <- 0.00
+    for (bin in seq(bin.min, bin.max, 0.01)) {
+      data.ss.av.bin <- subset(data.ss, net.pathlength.pre.epidemic.av > bin.prev & net.pathlength.pre.epidemic.av <= bin)
+      if (nrow(data.ss.av.bin) > 1) {
+        # attack rate: all
+        if (ep.structure == "dynamic") {
+          d <- rbind(d,
+                     data.frame(path.length = bin,
+                                attack.rate = "all",
+                                duration    = mean(data.ss.av.bin$net.dynamic.epidemic.duration)))
+        } else {
+          d <- rbind(d,
+                     data.frame(path.length = bin,
+                                attack.rate = "all",
+                                duration    = mean(data.ss.av.bin$net.static.epidemic.duration)))
+        }
+        # by attack rate
+        min_pct <- 0
+        step_size_pct <- 25
+        for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
+          if (ep.structure == "dynamic") {
+            data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
+                                                   net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
+            d <- rbind(d,
+                       data.frame(path.length = bin,
+                                  attack.rate = factor(max_pct),
+                                  duration    = mean(data.ss.av.bin.by.attackrate$net.dynamic.epidemic.duration)))
+          } else {
+            data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
+                                                   net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
+            d <- rbind(d,
+                       data.frame(path.length = bin,
+                                  attack.rate = factor(max_pct),
+                                  duration    = mean(data.ss.av.bin.by.attackrate$net.static.epidemic.duration)))
+          }
+          min_pct <- max_pct
+        }
+      }
+      bin.prev <- bin
+    }
   }
   d <- subset(d, !is.na(duration))
   # plot
-  p <- ggplot(d, aes(x = path.length, y = duration, color = attack.rate, shape = attack.rate)) +
-    geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.7) +
+  p <- ggplot(d, aes(x = path.length, y = duration, color = attack.rate, shape = attack.rate))
+  if (!average.data) {
+    p <- p +
+      geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.2, position = position_jitter(w = 0.05, h = 1.00))
+  } else {
+    p <- p +
+      geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.7)
+  }
+  p <- p +
     geom_line(stat="smooth",method = "lm", fullrange=TRUE, size = 1.0, aes(linetype=attack.rate, color=attack.rate)) +
     scale_color_manual(values = c("all" = "#000000",
                                   "25"       = "#D55E00",
@@ -2022,58 +2611,100 @@ plot_c3_jk_duration <- function(data.ss = load_simulation_summary_data(), ep.str
 #     whether plot for dynamic or static data ought to be created
 # return: the plot
 #----------------------------------------------------------------------------------------------------#
-plot_c3_jk_peak <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic") {
+plot_c3_jk_peak <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic", average.data = TRUE) {
 
   # data preparations
   d <- data.frame(path.length = numeric(0),
                   attack.rate = character(0),
                   peak        = numeric(0))
-  bin.min  <- min(data.ss$net.pathlength.pre.epidemic.av)
-  bin.max  <- max(data.ss$net.pathlength.pre.epidemic.av)
-  bin.prev <- 0.00
-  for (bin in seq(bin.min, bin.max, 0.01)) {
-    data.ss.av.bin <- subset(data.ss, net.pathlength.pre.epidemic.av > bin.prev & net.pathlength.pre.epidemic.av <= bin)
-    if (nrow(data.ss.av.bin) > 1) {
-      # attack rate: all
-      if (ep.structure == "dynamic") {
-        d <- rbind(d,
-                   data.frame(path.length = bin,
-                              attack.rate = "all",
-                              peak        = mean(data.ss.av.bin$net.dynamic.epidemic.peak)))
-      } else {
-        d <- rbind(d,
-                   data.frame(path.length = bin,
-                              attack.rate = "all",
-                              peak        = mean(data.ss.av.bin$net.static.epidemic.peak)))
-      }
-      # by attack rate
-      min_pct <- 0
-      step_size_pct <- 25
-      for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
-        if (ep.structure == "dynamic") {
-          data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
-                                                 net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
-          d <- rbind(d,
-                     data.frame(path.length = bin,
-                                attack.rate = factor(max_pct),
-                                peak        = mean(data.ss.av.bin.by.attackrate$net.dynamic.epidemic.peak)))
-        } else {
-          data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
-                                                 net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
-          d <- rbind(d,
-                     data.frame(path.length = bin,
-                                attack.rate = factor(max_pct),
-                                peak        = mean(data.ss.av.bin.by.attackrate$net.static.epidemic.peak)))
-        }
-        min_pct <- max_pct
-      }
+
+  if (!average.data) {
+    # attack rate: all
+    if (ep.structure == "dynamic") {
+      d <- rbind(d,
+                 data.frame(path.length = data.ss$net.pathlength.pre.epidemic.av,
+                            attack.rate = "all",
+                            peak        = data.ss$net.dynamic.epidemic.peak))
+    } else {
+      d <- rbind(d,
+                 data.frame(path.length = data.ss$net.pathlength.pre.epidemic.av,
+                            attack.rate = "all",
+                            peak        = data.ss$net.static.epidemic.peak))
     }
-    bin.prev <- bin
+    # by attack rate
+    min_pct <- 0
+    step_size_pct <- 25
+    for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
+      if (ep.structure == "dynamic") {
+        data.ss.by.attackrate <- subset(data.ss, net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
+        d <- rbind(d,
+                   data.frame(path.length = data.ss.by.attackrate$net.pathlength.pre.epidemic.av,
+                              attack.rate = factor(max_pct),
+                              peak        = data.ss.by.attackrate$net.dynamic.epidemic.peak))
+      } else {
+        data.ss.by.attackrate <- subset(data.ss, net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
+        d <- rbind(d,
+                   data.frame(path.length = data.ss.by.attackrate$net.pathlength.pre.epidemic.av,
+                              attack.rate = factor(max_pct),
+                              peak        = data.ss.by.attackrate$net.static.epidemic.peak))
+      }
+      min_pct <- max_pct
+    }
+  } else {
+    bin.min  <- min(data.ss$net.pathlength.pre.epidemic.av)
+    bin.max  <- max(data.ss$net.pathlength.pre.epidemic.av)
+    bin.prev <- 0.00
+    for (bin in seq(bin.min, bin.max, 0.01)) {
+      data.ss.av.bin <- subset(data.ss, net.pathlength.pre.epidemic.av > bin.prev & net.pathlength.pre.epidemic.av <= bin)
+      if (nrow(data.ss.av.bin) > 1) {
+        # attack rate: all
+        if (ep.structure == "dynamic") {
+          d <- rbind(d,
+                     data.frame(path.length = bin,
+                                attack.rate = "all",
+                                peak        = mean(data.ss.av.bin$net.dynamic.epidemic.peak)))
+        } else {
+          d <- rbind(d,
+                     data.frame(path.length = bin,
+                                attack.rate = "all",
+                                peak        = mean(data.ss.av.bin$net.static.epidemic.peak)))
+        }
+        # by attack rate
+        min_pct <- 0
+        step_size_pct <- 25
+        for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
+          if (ep.structure == "dynamic") {
+            data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
+                                                   net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
+            d <- rbind(d,
+                       data.frame(path.length = bin,
+                                  attack.rate = factor(max_pct),
+                                  peak        = mean(data.ss.av.bin.by.attackrate$net.dynamic.epidemic.peak)))
+          } else {
+            data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
+                                                   net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
+            d <- rbind(d,
+                       data.frame(path.length = bin,
+                                  attack.rate = factor(max_pct),
+                                  peak        = mean(data.ss.av.bin.by.attackrate$net.static.epidemic.peak)))
+          }
+          min_pct <- max_pct
+        }
+      }
+      bin.prev <- bin
+    }
   }
   d <- subset(d, !is.na(peak))
   # plot
-  p <- ggplot(d, aes(x = path.length, y = peak, color = attack.rate, shape = attack.rate)) +
-    geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.7) +
+  p <- ggplot(d, aes(x = path.length, y = peak, color = attack.rate, shape = attack.rate))
+  if (!average.data) {
+    p <- p +
+      geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.2, position = position_jitter(w = 0.05, h = 1.00))
+  } else {
+    p <- p +
+      geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.7)
+  }
+  p <- p +
     geom_line(stat="smooth",method = "lm", fullrange=TRUE, size = 1.0, aes(linetype=attack.rate, color=attack.rate)) +
     scale_color_manual(values = c("all" = "#000000",
                                   "25"       = "#D55E00",
@@ -2102,59 +2733,101 @@ plot_c3_jk_peak <- function(data.ss = load_simulation_summary_data(), ep.structu
 #     whether plot for dynamic or static data ought to be created
 # return: the plot
 #----------------------------------------------------------------------------------------------------#
-plot_c3_n_duration <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic") {
+plot_c3_n_duration <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic", average.data = TRUE) {
 
   # data preparations
   d <- data.frame(betweenness.index = numeric(0),
                   attack.rate       = character(0),
                   duration          = numeric(0))
-  bin.min  <- min(data.ss$index.betweenness.normalized)
-  bin.max  <- max(data.ss$index.betweenness.normalized)
-  bin.prev <- 0.00
-  for (bin in seq(bin.min, bin.max, 0.01)) {
-    data.ss.av.bin <- subset(data.ss, index.betweenness.normalized > bin.prev & index.betweenness.normalized <= bin)
-    if (nrow(data.ss.av.bin) > 1) {
-      # attack rate: all
-      if (ep.structure == "dynamic") {
-        d <- rbind(d,
-                   data.frame(betweenness.index = bin,
-                              attack.rate       = "all",
-                              duration          = mean(data.ss.av.bin$net.static.epidemic.duration)))
-      } else {
-        d <- rbind(d,
-                   data.frame(betweenness.index = bin,
-                              attack.rate       = "all",
-                              duration          = mean(data.ss.av.bin$net.static.epidemic.duration)))
-      }
-      # by attack rate
-      min_pct <- 0
-      step_size_pct <- 25
-      for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
-        if (ep.structure == "dynamic") {
-          data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
-                                                 net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
-          d <- rbind(d,
-                     data.frame(betweenness.index = bin,
-                                attack.rate       = factor(max_pct),
-                                duration          = mean(data.ss.av.bin.by.attackrate$net.dynamic.epidemic.duration)))
-        } else {
-          data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
-                                                 net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
-          d <- rbind(d,
-                     data.frame(betweenness.index = bin,
-                                attack.rate       = factor(max_pct),
-                                duration          = mean(data.ss.av.bin.by.attackrate$net.static.epidemic.duration)))
 
-        }
-        min_pct <- max_pct
-      }
+  if (!average.data) {
+    # attack rate: all
+    if (ep.structure == "dynamic") {
+      d <- rbind(d,
+                 data.frame(betweenness.index = data.ss$index.betweenness.normalized,
+                            attack.rate       = "all",
+                            duration          = data.ss$net.static.epidemic.duration))
+    } else {
+      d <- rbind(d,
+                 data.frame(betweenness.index = data.ss$index.betweenness.normalized,
+                            attack.rate       = "all",
+                            duration          = data.ss$net.static.epidemic.duration))
     }
-    bin.prev <- bin
+    # by attack rate
+    min_pct <- 0
+    step_size_pct <- 25
+    for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
+      if (ep.structure == "dynamic") {
+        data.ss.by.attackrate <- subset(data.ss, net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
+        d <- rbind(d,
+                   data.frame(betweenness.index = data.ss.by.attackrate$index.betweenness.normalized,
+                              attack.rate       = factor(max_pct),
+                              duration          = data.ss.by.attackrate$net.dynamic.epidemic.duration))
+      } else {
+        data.ss.by.attackrate <- subset(data.ss, net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
+        d <- rbind(d,
+                   data.frame(betweenness.index = data.ss.by.attackrate$index.betweenness.normalized,
+                              attack.rate       = factor(max_pct),
+                              duration          = data.ss.by.attackrate$net.static.epidemic.duration))
+      }
+      min_pct <- max_pct
+    }
+  } else {
+    bin.min  <- min(data.ss$index.betweenness.normalized)
+    bin.max  <- max(data.ss$index.betweenness.normalized)
+    bin.prev <- 0.00
+    for (bin in seq(bin.min, bin.max, 0.01)) {
+      data.ss.av.bin <- subset(data.ss, index.betweenness.normalized > bin.prev & index.betweenness.normalized <= bin)
+      if (nrow(data.ss.av.bin) > 1) {
+        # attack rate: all
+        if (ep.structure == "dynamic") {
+          d <- rbind(d,
+                     data.frame(betweenness.index = bin,
+                                attack.rate       = "all",
+                                duration          = mean(data.ss.av.bin$net.static.epidemic.duration)))
+        } else {
+          d <- rbind(d,
+                     data.frame(betweenness.index = bin,
+                                attack.rate       = "all",
+                                duration          = mean(data.ss.av.bin$net.static.epidemic.duration)))
+        }
+        # by attack rate
+        min_pct <- 0
+        step_size_pct <- 25
+        for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
+          if (ep.structure == "dynamic") {
+            data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
+                                                   net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
+            d <- rbind(d,
+                       data.frame(betweenness.index = bin,
+                                  attack.rate       = factor(max_pct),
+                                  duration          = mean(data.ss.av.bin.by.attackrate$net.dynamic.epidemic.duration)))
+          } else {
+            data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
+                                                   net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
+            d <- rbind(d,
+                       data.frame(betweenness.index = bin,
+                                  attack.rate       = factor(max_pct),
+                                  duration          = mean(data.ss.av.bin.by.attackrate$net.static.epidemic.duration)))
+
+          }
+          min_pct <- max_pct
+        }
+      }
+      bin.prev <- bin
+    }
   }
   d <- subset(d, !is.na(duration))
   # plot
-  p <- ggplot(d, aes(x = betweenness.index, y = duration, color = attack.rate, shape = attack.rate)) +
-    geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.7) +
+  p <- ggplot(d, aes(x = betweenness.index, y = duration, color = attack.rate, shape = attack.rate))
+  if (!average.data) {
+    p <- p +
+      geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.2, position = position_jitter(w = 0.05, h = 1.00))
+  } else {
+    p <- p +
+      geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.7)
+  }
+  p <- p +
     geom_line(stat="smooth",method = "lm", fullrange=TRUE, size = 1.0, aes(linetype=attack.rate, color=attack.rate)) +
     scale_color_manual(values = c("all" = "#000000",
                                   "25"       = "#D55E00",
@@ -2183,58 +2856,100 @@ plot_c3_n_duration <- function(data.ss = load_simulation_summary_data(), ep.stru
 #     whether plot for dynamic or static data ought to be created
 # return: the plot
 #----------------------------------------------------------------------------------------------------#
-plot_c3_n_peak <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic") {
+plot_c3_n_peak <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic", average.data = TRUE) {
 
   # data preparations
   d <- data.frame(betweenness.index = numeric(0),
                   attack.rate       = character(0),
                   peak              = numeric(0))
-  bin.min  <- min(data.ss$index.betweenness.normalized)
-  bin.max  <- max(data.ss$index.betweenness.normalized)
-  bin.prev <- 0.00
-  for (bin in seq(bin.min, bin.max, 0.01)) {
-    data.ss.av.bin <- subset(data.ss, index.betweenness.normalized > bin.prev & index.betweenness.normalized <= bin)
-    if (nrow(data.ss.av.bin) > 1) {
-      # attack rate: all
-      if (ep.structure == "dynamic") {
-        d <- rbind(d,
-                   data.frame(betweenness.index = bin,
-                              attack.rate       = "all",
-                              peak              = mean(data.ss.av.bin$net.dynamic.epidemic.peak)))
-      } else {
-        d <- rbind(d,
-                   data.frame(betweenness.index = bin,
-                              attack.rate       = "all",
-                              peak              = mean(data.ss.av.bin$net.static.epidemic.peak)))
-      }
-      # by attack rate
-      min_pct <- 0
-      step_size_pct <- 25
-      for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
-        if (ep.structure == "dynamic") {
-          data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
-                                                 net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
-          d <- rbind(d,
-                     data.frame(betweenness.index = bin,
-                                attack.rate       = factor(max_pct),
-                                peak              = mean(data.ss.av.bin.by.attackrate$net.dynamic.epidemic.peak)))
-        } else {
-          data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
-                                                 net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
-          d <- rbind(d,
-                     data.frame(betweenness.index = bin,
-                                attack.rate       = factor(max_pct),
-                                peak              = mean(data.ss.av.bin.by.attackrate$net.static.epidemic.peak)))
-        }
-        min_pct <- max_pct
-      }
+
+  if (!average.data) {
+    # attack rate: all
+    if (ep.structure == "dynamic") {
+      d <- rbind(d,
+                 data.frame(betweenness.index = data.ss$index.betweenness.normalized,
+                            attack.rate       = "all",
+                            peak              = data.ss$net.dynamic.epidemic.peak))
+    } else {
+      d <- rbind(d,
+                 data.frame(betweenness.index = data.ss$index.betweenness.normalized,
+                            attack.rate       = "all",
+                            peak              = data.ss$net.static.epidemic.peak))
     }
-    bin.prev <- bin
+    # by attack rate
+    min_pct <- 0
+    step_size_pct <- 25
+    for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
+      if (ep.structure == "dynamic") {
+        data.ss.by.attackrate <- subset(data.ss, net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
+        d <- rbind(d,
+                   data.frame(betweenness.index = data.ss.by.attackrate$index.betweenness.normalized,
+                              attack.rate       = factor(max_pct),
+                              peak              = data.ss.by.attackrate$net.dynamic.epidemic.peak))
+      } else {
+        data.ss.by.attackrate <- subset(data.ss, net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
+        d <- rbind(d,
+                   data.frame(betweenness.index = data.ss.by.attackrate$index.betweenness.normalized,
+                              attack.rate       = factor(max_pct),
+                              peak              = data.ss.by.attackrate$net.static.epidemic.peak))
+      }
+      min_pct <- max_pct
+    }
+  } else {
+    bin.min  <- min(data.ss$index.betweenness.normalized)
+    bin.max  <- max(data.ss$index.betweenness.normalized)
+    bin.prev <- 0.00
+    for (bin in seq(bin.min, bin.max, 0.01)) {
+      data.ss.av.bin <- subset(data.ss, index.betweenness.normalized > bin.prev & index.betweenness.normalized <= bin)
+      if (nrow(data.ss.av.bin) > 1) {
+        # attack rate: all
+        if (ep.structure == "dynamic") {
+          d <- rbind(d,
+                     data.frame(betweenness.index = bin,
+                                attack.rate       = "all",
+                                peak              = mean(data.ss.av.bin$net.dynamic.epidemic.peak)))
+        } else {
+          d <- rbind(d,
+                     data.frame(betweenness.index = bin,
+                                attack.rate       = "all",
+                                peak              = mean(data.ss.av.bin$net.static.epidemic.peak)))
+        }
+        # by attack rate
+        min_pct <- 0
+        step_size_pct <- 25
+        for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
+          if (ep.structure == "dynamic") {
+            data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
+                                                   net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
+            d <- rbind(d,
+                       data.frame(betweenness.index = bin,
+                                  attack.rate       = factor(max_pct),
+                                  peak              = mean(data.ss.av.bin.by.attackrate$net.dynamic.epidemic.peak)))
+          } else {
+            data.ss.av.bin.by.attackrate <- subset(data.ss.av.bin,
+                                                   net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
+            d <- rbind(d,
+                       data.frame(betweenness.index = bin,
+                                  attack.rate       = factor(max_pct),
+                                  peak              = mean(data.ss.av.bin.by.attackrate$net.static.epidemic.peak)))
+          }
+          min_pct <- max_pct
+        }
+      }
+      bin.prev <- bin
+    }
   }
   d <- subset(d, !is.na(peak))
   # plot
-  p <- ggplot(d, aes(x = betweenness.index, y = peak, color = attack.rate, shape = attack.rate)) +
-    geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.7) +
+  p <- ggplot(d, aes(x = betweenness.index, y = peak, color = attack.rate, shape = attack.rate))
+  if (!average.data) {
+    p <- p +
+      geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.2, position = position_jitter(w = 0.05, h = 1.00))
+  } else {
+    p <- p +
+      geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.7)
+  }
+  p <- p +
     geom_line(stat="smooth",method = "lm", fullrange=TRUE, size = 1.0, aes(linetype=attack.rate, color=attack.rate)) +
     scale_color_manual(values = c("all" = "#000000",
                                   "25"       = "#D55E00",
@@ -2327,58 +3042,98 @@ plot_c4_ab <- function(data.ad = load_agent_details_data(), ep.structure = "dyna
 #     whether plot for dynamic or static data ought to be created
 # return: the plot
 #----------------------------------------------------------------------------------------------------#
-plot_c4_ef <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic") {
+plot_c4_ef <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic", average.data = TRUE) {
 
   # data preparations
   d <- data.frame(assortativity = numeric(0),
                   clustering    = character(0),
                   attack.rate   = numeric(0))
-  bin.min  <- min(data.ss$net.assortativity.pre.epidemic)
-  bin.max  <- max(data.ss$net.assortativity.pre.epidemic)
-  bin.prev <- bin.min - 0.01
-  for (bin in seq(bin.min, bin.max, 0.01)) {
-    data.ss.bin <- subset(data.ss, net.assortativity.pre.epidemic > bin.prev & net.assortativity.pre.epidemic <= bin)
-    if (nrow(data.ss.bin) > 1) {
+
+  if (!average.data) {
+    if (ep.structure == "dynamic") {
+      d <- rbind(d,
+                 data.frame(assortativity = data.ss$net.assortativity.pre.epidemic,
+                            clustering    = "all",
+                            attack.rate   = data.ss$net.dynamic.pct.rec))
+    } else {
+      d <- rbind(d,
+                 data.frame(assortativity = data.ss$net.assortativity.pre.epidemic,
+                            clustering    = "all",
+                            attack.rate   = data.ss$net.static.pct.rec))
+    }
+    # by clustering
+    min_clustering <- 0
+    step_size_clustering <- 0.25
+    for (max_clustering in seq(step_size_clustering, 1.00, step_size_clustering)) {
+      data.ss.by.clustering <- subset(data.ss,
+                                      net.clustering.pre.epidemic.av > min_clustering
+                                      & net.clustering.pre.epidemic.av <= max_clustering)
       if (ep.structure == "dynamic") {
         d <- rbind(d,
-                   data.frame(assortativity = bin,
-                              clustering    = "all",
-                              attack.rate = mean(data.ss.bin$net.dynamic.pct.rec)))
+                   data.frame(assortativity = data.ss.by.clustering$net.assortativity.pre.epidemic,
+                              clustering    = factor(max_clustering),
+                              attack.rate   = data.ss.by.clustering$net.static.pct.rec))
       } else {
         d <- rbind(d,
-                   data.frame(assortativity = bin,
-                              clustering    = "all",
-                              attack.rate = mean(data.ss.bin$net.static.pct.rec)))
+                   data.frame(assortativity = data.ss.by.clustering$net.assortativity.pre.epidemic,
+                              clustering    = factor(max_clustering),
+                              attack.rate   = data.ss.by.clustering$net.static.pct.rec))
       }
-
-      # by clustering
-      min_clustering <- 0
-      step_size_clustering <- 0.25
-      for (max_clustering in seq(step_size_clustering, 1.00, step_size_clustering)) {
-        data.ss.bin.by.clustering <- subset(data.ss.bin,
-                                            net.clustering.pre.epidemic.av > min_clustering
-                                            & net.clustering.pre.epidemic.av <= max_clustering)
+      min_clustering <- max_clustering
+    }
+  } else {
+    bin.min  <- min(data.ss$net.assortativity.pre.epidemic)
+    bin.max  <- max(data.ss$net.assortativity.pre.epidemic)
+    bin.prev <- bin.min - 0.01
+    for (bin in seq(bin.min, bin.max, 0.01)) {
+      data.ss.bin <- subset(data.ss, net.assortativity.pre.epidemic > bin.prev & net.assortativity.pre.epidemic <= bin)
+      if (nrow(data.ss.bin) > 1) {
         if (ep.structure == "dynamic") {
           d <- rbind(d,
                      data.frame(assortativity = bin,
-                                clustering    = factor(max_clustering),
-                                attack.rate   = mean(data.ss.bin.by.clustering$net.static.pct.rec)))
+                                clustering    = "all",
+                                attack.rate = mean(data.ss.bin$net.dynamic.pct.rec)))
         } else {
           d <- rbind(d,
                      data.frame(assortativity = bin,
-                                clustering    = factor(max_clustering),
-                                attack.rate   = mean(data.ss.bin.by.clustering$net.static.pct.rec)))
+                                clustering    = "all",
+                                attack.rate = mean(data.ss.bin$net.static.pct.rec)))
         }
-        min_clustering <- max_clustering
+        # by clustering
+        min_clustering <- 0
+        step_size_clustering <- 0.25
+        for (max_clustering in seq(step_size_clustering, 1.00, step_size_clustering)) {
+          data.ss.bin.by.clustering <- subset(data.ss.bin,
+                                              net.clustering.pre.epidemic.av > min_clustering
+                                              & net.clustering.pre.epidemic.av <= max_clustering)
+          if (ep.structure == "dynamic") {
+            d <- rbind(d,
+                       data.frame(assortativity = bin,
+                                  clustering    = factor(max_clustering),
+                                  attack.rate   = mean(data.ss.bin.by.clustering$net.static.pct.rec)))
+          } else {
+            d <- rbind(d,
+                       data.frame(assortativity = bin,
+                                  clustering    = factor(max_clustering),
+                                  attack.rate   = mean(data.ss.bin.by.clustering$net.static.pct.rec)))
+          }
+          min_clustering <- max_clustering
+        }
       }
+      bin.prev <- bin
     }
-
-    bin.prev <- bin
   }
   d <- subset(d, !is.na(attack.rate))
   # plot
-  p <- ggplot(d, aes(x = assortativity, y = attack.rate, color = clustering, shape = clustering)) +
-    geom_point(aes(colour = clustering, shape = factor(clustering)), alpha = 0.5) +
+  p <- ggplot(d, aes(x = assortativity, y = attack.rate, color = clustering, shape = clustering))
+  if (!average.data) {
+    p <- p +
+      geom_point(aes(colour = clustering, shape = factor(clustering)), alpha = 0.2, position = position_jitter(w = 0.01, h = 1.00))
+  } else {
+    p <- p +
+      geom_point(aes(colour = clustering, shape = factor(clustering)), alpha = 0.7)
+  }
+  p <- p +
     geom_line(stat="smooth",method = "lm", fullrange=TRUE, size = 1.0, aes(linetype=clustering, color=clustering)) +
     scale_color_manual(values = c("all"  = "#000000",
                                   "0.25" = "#D55E00",
@@ -2386,8 +3141,8 @@ plot_c4_ef <- function(data.ss = load_simulation_summary_data(), ep.structure = 
                                   "0.75" = "#0072B2",
                                   "1" = "#009E73")) +
     scale_x_continuous(name="Assortativity",
-                       limits = c(bin.min, bin.max),
-                       breaks = seq(trunc(bin.min*10)/10, ceiling(bin.max*10)/10, 0.2)) +
+                       limits = c(min(d$assortativity), max(d$assortativity)),
+                       breaks = seq(trunc(min(d$assortativity)*10)/10, ceiling(max(d$assortativity)*10)/10, 0.2)) +
     scale_y_continuous(name="Attack rate", limits=c(0, 100)) +
     theme_bw(base_size = 16) +
     theme(legend.position = "top",
@@ -2404,59 +3159,102 @@ plot_c4_ef <- function(data.ss = load_simulation_summary_data(), ep.structure = 
 #     whether plot for dynamic or static data ought to be created
 # return: the plot
 #----------------------------------------------------------------------------------------------------#
-plot_c4_h_duration <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic") {
+plot_c4_h_duration <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic", average.data = TRUE) {
 
   # data preparations
   d <- data.frame(assortativity = numeric(0),
                   attack.rate   = character(0),
                   duration      = numeric(0))
-  bin.min  <- min(data.ss$net.assortativity.pre.epidemic)
-  bin.max  <- max(data.ss$net.assortativity.pre.epidemic)
-  bin.prev <- bin.min - 0.01
-  for (bin in seq(bin.min, bin.max, 0.01)) {
-    data.ss.bin <- subset(data.ss, net.assortativity.pre.epidemic > bin.prev & net.assortativity.pre.epidemic <= bin)
-    if (nrow(data.ss.bin) > 1) {
-      # attack rate: all
-      if (ep.structure == "dynamic") {
-        d <- rbind(d,
-                   data.frame(assortativity = bin,
-                              attack.rate   = "all",
-                              duration      = mean(data.ss.bin$net.dynamic.epidemic.duration)))
-      } else {
-        d <- rbind(d,
-                   data.frame(assortativity = bin,
-                              attack.rate   = "all",
-                              duration      = mean(data.ss.bin$net.static.epidemic.duration)))
-      }
-      # by attack rate
-      min_pct <- 0
-      step_size_pct <- 25
-      for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
-        if (ep.structure == "dynamic") {
-          data.ss.bin.by.attackrate <- subset(data.ss.bin,
-                                              net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
-          d <- rbind(d,
-                     data.frame(assortativity = bin,
-                                attack.rate   = factor(max_pct),
-                                duration      = mean(data.ss.bin.by.attackrate$net.dynamic.epidemic.duration)))
-        } else {
-          data.ss.bin.by.attackrate <- subset(data.ss.bin,
-                                              net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
-          d <- rbind(d,
-                     data.frame(assortativity = bin,
-                                attack.rate   = factor(max_pct),
-                                duration      = mean(data.ss.bin.by.attackrate$net.static.epidemic.duration)))
 
-        }
-        min_pct <- max_pct
-      }
+  if (!average.data) {
+    # attack rate: all
+    if (ep.structure == "dynamic") {
+      d <- rbind(d,
+                 data.frame(assortativity = data.ss$net.assortativity.pre.epidemic,
+                            attack.rate   = "all",
+                            duration      = data.ss$net.dynamic.epidemic.duration))
+    } else {
+      d <- rbind(d,
+                 data.frame(assortativity = data.ss$net.assortativity.pre.epidemic,
+                            attack.rate   = "all",
+                            duration      = data.ss$net.static.epidemic.duration))
     }
-    bin.prev <- bin
+    # by attack rate
+    min_pct <- 0
+    step_size_pct <- 25
+    for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
+      if (ep.structure == "dynamic") {
+        data.ss.by.attackrate <- subset(data.ss, net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
+        d <- rbind(d,
+                   data.frame(assortativity = data.ss.by.attackrate$net.assortativity.pre.epidemic,
+                              attack.rate   = factor(max_pct),
+                              duration      = data.ss.by.attackrate$net.dynamic.epidemic.duration))
+      } else {
+        data.ss.by.attackrate <- subset(data.ss, net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
+        d <- rbind(d,
+                   data.frame(assortativity = data.ss.by.attackrate$net.assortativity.pre.epidemic,
+                              attack.rate   = factor(max_pct),
+                              duration      = data.ss.by.attackrate$net.static.epidemic.duration))
+
+      }
+      min_pct <- max_pct
+    }
+  } else {
+    bin.min  <- min(data.ss$net.assortativity.pre.epidemic)
+    bin.max  <- max(data.ss$net.assortativity.pre.epidemic)
+    bin.prev <- bin.min - 0.01
+    for (bin in seq(bin.min, bin.max, 0.01)) {
+      data.ss.bin <- subset(data.ss, net.assortativity.pre.epidemic > bin.prev & net.assortativity.pre.epidemic <= bin)
+      if (nrow(data.ss.bin) > 1) {
+        # attack rate: all
+        if (ep.structure == "dynamic") {
+          d <- rbind(d,
+                     data.frame(assortativity = bin,
+                                attack.rate   = "all",
+                                duration      = mean(data.ss.bin$net.dynamic.epidemic.duration)))
+        } else {
+          d <- rbind(d,
+                     data.frame(assortativity = bin,
+                                attack.rate   = "all",
+                                duration      = mean(data.ss.bin$net.static.epidemic.duration)))
+        }
+        # by attack rate
+        min_pct <- 0
+        step_size_pct <- 25
+        for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
+          if (ep.structure == "dynamic") {
+            data.ss.bin.by.attackrate <- subset(data.ss.bin,
+                                                net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
+            d <- rbind(d,
+                       data.frame(assortativity = bin,
+                                  attack.rate   = factor(max_pct),
+                                  duration      = mean(data.ss.bin.by.attackrate$net.dynamic.epidemic.duration)))
+          } else {
+            data.ss.bin.by.attackrate <- subset(data.ss.bin,
+                                                net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
+            d <- rbind(d,
+                       data.frame(assortativity = bin,
+                                  attack.rate   = factor(max_pct),
+                                  duration      = mean(data.ss.bin.by.attackrate$net.static.epidemic.duration)))
+
+          }
+          min_pct <- max_pct
+        }
+      }
+      bin.prev <- bin
+    }
   }
   d <- subset(d, !is.na(duration))
   # plot
-  p <- ggplot(d, aes(x = assortativity, y = duration, color = attack.rate, shape = attack.rate)) +
-    geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.7) +
+  p <- ggplot(d, aes(x = assortativity, y = duration, color = attack.rate, shape = attack.rate))
+  if (!average.data) {
+    p <- p +
+      geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.2, position = position_jitter(w = 0.05, h = 1.00))
+  } else {
+    p <- p +
+      geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.7)
+  }
+  p <- p +
     geom_line(stat="smooth",method = "lm", fullrange=TRUE, size = 1.0, aes(linetype=attack.rate, color=attack.rate)) +
     scale_color_manual(values = c("all" = "#000000",
                                   "25"       = "#D55E00",
@@ -2469,8 +3267,8 @@ plot_c4_h_duration <- function(data.ss = load_simulation_summary_data(), ep.stru
                                  "75"        = "#0072B2",
                                  "100"       = "#009E73")) +
     scale_x_continuous(name="Assortativity",
-                       limits = c(bin.min, bin.max),
-                       breaks = seq(trunc(bin.min*10)/10, ceiling(bin.max*10)/10, 0.2)) +
+                       limits = c(min(d$assortativity), max(d$assortativity)),
+                       breaks = seq(trunc(min(d$assortativity)*10)/10, ceiling(max(d$assortativity)*10)/10, 0.2)) +
     scale_y_continuous(name="Duration", limits=c(0, max(d$duration))) +
     theme_bw(base_size = 16) +
     theme(legend.position = "top",
@@ -2487,59 +3285,100 @@ plot_c4_h_duration <- function(data.ss = load_simulation_summary_data(), ep.stru
 #     whether plot for dynamic or static data ought to be created
 # return: the plot
 #----------------------------------------------------------------------------------------------------#
-plot_c4_h_peak <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic") {
+plot_c4_h_peak <- function(data.ss = load_simulation_summary_data(), ep.structure = "dynamic", average.data = TRUE) {
 
   # data preparations
   d <- data.frame(assortativity = numeric(0),
                   attack.rate   = character(0),
                   peak          = numeric(0))
-  bin.min  <- min(data.ss$net.assortativity.pre.epidemic)
-  bin.max  <- max(data.ss$net.assortativity.pre.epidemic)
-  bin.prev <- bin.min - 0.01
-  for (bin in seq(bin.min, bin.max, 0.01)) {
-    data.ss.bin <- subset(data.ss, net.assortativity.pre.epidemic > bin.prev & net.assortativity.pre.epidemic <= bin)
-    if (nrow(data.ss.bin) > 1) {
-      # attack rate: all
-      if (ep.structure == "dynamic") {
-        d <- rbind(d,
-                   data.frame(assortativity = bin,
-                              attack.rate   = "all",
-                              peak          = mean(data.ss.bin$net.dynamic.epidemic.peak)))
-      } else {
-        d <- rbind(d,
-                   data.frame(assortativity = bin,
-                              attack.rate   = "all",
-                              peak          = mean(data.ss.bin$net.static.epidemic.peak)))
 
-      }
-      # by attack rate
-      min_pct <- 0
-      step_size_pct <- 25
-      for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
-        if (ep.structure == "dynamic") {
-          data.ss.bin.by.attackrate <- subset(data.ss.bin,
-                                              net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
-          d <- rbind(d,
-                     data.frame(assortativity = bin,
-                                attack.rate   = factor(max_pct),
-                                peak          = mean(data.ss.bin.by.attackrate$net.dynamic.epidemic.peak)))
-        } else {
-          data.ss.bin.by.attackrate <- subset(data.ss.bin,
-                                              net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
-          d <- rbind(d,
-                     data.frame(assortativity = bin,
-                                attack.rate   = factor(max_pct),
-                                peak          = mean(data.ss.bin.by.attackrate$net.static.epidemic.peak)))
-        }
-        min_pct <- max_pct
-      }
+  if (!average.data) {
+    # attack rate: all
+    if (ep.structure == "dynamic") {
+      d <- rbind(d,
+                 data.frame(assortativity = data.ss$net.assortativity.pre.epidemic,
+                            attack.rate   = "all",
+                            peak          = data.ss$net.dynamic.epidemic.peak))
+    } else {
+      d <- rbind(d,
+                 data.frame(assortativity = data.ss$net.assortativity.pre.epidemic,
+                            attack.rate   = "all",
+                            peak          = data.ss$net.static.epidemic.peak))
     }
-    bin.prev <- bin
+    # by attack rate
+    min_pct <- 0
+    step_size_pct <- 25
+    for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
+      if (ep.structure == "dynamic") {
+        data.ss.by.attackrate <- subset(data.ss, net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
+        d <- rbind(d,
+                   data.frame(assortativity = data.ss.by.attackrate$net.assortativity.pre.epidemic,
+                              attack.rate   = factor(max_pct),
+                              peak          = data.ss.by.attackrate$net.dynamic.epidemic.peak))
+      } else {
+        data.ss.by.attackrate <- subset(data.ss,  net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
+        d <- rbind(d,
+                   data.frame(assortativity = data.ss.by.attackrate$net.assortativity.pre.epidemic,
+                              attack.rate   = factor(max_pct),
+                              peak          = data.ss.by.attackrate$net.static.epidemic.peak))
+      }
+      min_pct <- max_pct
+    }
+  } else {
+    bin.min  <- min(data.ss$net.assortativity.pre.epidemic)
+    bin.max  <- max(data.ss$net.assortativity.pre.epidemic)
+    bin.prev <- bin.min - 0.01
+    for (bin in seq(bin.min, bin.max, 0.01)) {
+      data.ss.bin <- subset(data.ss, net.assortativity.pre.epidemic > bin.prev & net.assortativity.pre.epidemic <= bin)
+      if (nrow(data.ss.bin) > 1) {
+        # attack rate: all
+        if (ep.structure == "dynamic") {
+          d <- rbind(d,
+                     data.frame(assortativity = bin,
+                                attack.rate   = "all",
+                                peak          = mean(data.ss.bin$net.dynamic.epidemic.peak)))
+        } else {
+          d <- rbind(d,
+                     data.frame(assortativity = bin,
+                                attack.rate   = "all",
+                                peak          = mean(data.ss.bin$net.static.epidemic.peak)))
+        }
+        # by attack rate
+        min_pct <- 0
+        step_size_pct <- 25
+        for (max_pct in seq(step_size_pct, 100, step_size_pct)) {
+          if (ep.structure == "dynamic") {
+            data.ss.bin.by.attackrate <- subset(data.ss.bin,
+                                                net.dynamic.pct.rec > min_pct & net.dynamic.pct.rec <= max_pct)
+            d <- rbind(d,
+                       data.frame(assortativity = bin,
+                                  attack.rate   = factor(max_pct),
+                                  peak          = mean(data.ss.bin.by.attackrate$net.dynamic.epidemic.peak)))
+          } else {
+            data.ss.bin.by.attackrate <- subset(data.ss.bin,
+                                                net.static.pct.rec > min_pct & net.static.pct.rec <= max_pct)
+            d <- rbind(d,
+                       data.frame(assortativity = bin,
+                                  attack.rate   = factor(max_pct),
+                                  peak          = mean(data.ss.bin.by.attackrate$net.static.epidemic.peak)))
+          }
+          min_pct <- max_pct
+        }
+      }
+      bin.prev <- bin
+    }
   }
   d <- subset(d, !is.na(peak))
   # plot
-  p <- ggplot(d, aes(x = assortativity, y = peak, color = attack.rate, shape = attack.rate)) +
-    geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.7) +
+  p <- ggplot(d, aes(x = assortativity, y = peak, color = attack.rate, shape = attack.rate))
+  if (!average.data) {
+    p <- p +
+      geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.2, position = position_jitter(w = 0.05, h = 1.00))
+  } else {
+    p <- p +
+      geom_point(aes(colour = attack.rate, shape = factor(attack.rate)), alpha = 0.7)
+  }
+  p <- p +
     geom_line(stat="smooth",method = "lm", fullrange=TRUE, size = 1.0, aes(linetype=attack.rate, color=attack.rate)) +
     scale_color_manual(values = c("all" = "#000000",
                                   "25"       = "#D55E00",
@@ -2552,8 +3391,8 @@ plot_c4_h_peak <- function(data.ss = load_simulation_summary_data(), ep.structur
                                  "75"        = "#0072B2",
                                  "100"       = "#009E73")) +
     scale_x_continuous(name="Assortativity",
-                       limits = c(bin.min, bin.max),
-                       breaks = seq(trunc(bin.min*10)/10, ceiling(bin.max*10)/10, 0.2)) +
+                       limits = c(min(d$assortativity), max(d$assortativity)),
+                       breaks = seq(trunc(min(d$assortativity)*10)/10, ceiling(max(d$assortativity)*10)/10, 0.2)) +
     scale_y_continuous(name="Peak", limits=c(0, max(d$peak))) +
     theme_bw(base_size = 16) +
     theme(legend.position = "top",
@@ -2619,7 +3458,16 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
 
   # conjecture 1 - duration
   ggsave(paste(EXPORT_PATH_PLOTS, "c1-duration", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
-         plot_c1_b(data.ss),
+         plot_c1_b_duration(data.ss),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+
+  # conjecture 1 - peak
+  ggsave(paste(EXPORT_PATH_PLOTS, "c1-peak", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c1_b_peak(data.ss),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
          units = EXPORT_SIZE_UNITS,
@@ -2661,7 +3509,7 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          device = EXPORT_FILE_TYPE_PLOTS)
 
   # conjecture 2.d.e - attack rate - dynamic
-  ggsave(paste(EXPORT_PATH_PLOTS, "c2-de-attackrate-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c2-de-attackrate-dynamic-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c2_de(data.ss),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
@@ -2669,8 +3517,24 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          dpi = EXPORT_DPI,
          device = EXPORT_FILE_TYPE_PLOTS)
   # conjecture 2.d.e - attack rate - static
-  ggsave(paste(EXPORT_PATH_PLOTS, "c2-de-attackrate-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c2-de-attackrate-static-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c2_de(data.ss, ep.structure = "static"),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 2.d.e - attack rate - dynamic
+  ggsave(paste(EXPORT_PATH_PLOTS, "c2-de-attackrate-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c2_de(data.ss, average.data = FALSE),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 2.d.e - attack rate - static
+  ggsave(paste(EXPORT_PATH_PLOTS, "c2-de-attackrate-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c2_de(data.ss, ep.structure = "static", average.data = FALSE),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
          units = EXPORT_SIZE_UNITS,
@@ -2678,7 +3542,7 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          device = EXPORT_FILE_TYPE_PLOTS)
 
   # conjecture 2.f.g - duration - dynamic
-  ggsave(paste(EXPORT_PATH_PLOTS, "c2-fg-duration-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c2-fg-duration-dynamic-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c2_fg_duration(data.ss),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
@@ -2686,8 +3550,24 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          dpi = EXPORT_DPI,
          device = EXPORT_FILE_TYPE_PLOTS)
   # conjecture 2.f.g - duration - static
-  ggsave(paste(EXPORT_PATH_PLOTS, "c2-fg-duration-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c2-fg-duration-static-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c2_fg_duration(data.ss, ep.structure = "static"),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 2.f.g - duration - dynamic
+  ggsave(paste(EXPORT_PATH_PLOTS, "c2-fg-duration-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c2_fg_duration(data.ss, average.data = FALSE),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 2.f.g - duration - static
+  ggsave(paste(EXPORT_PATH_PLOTS, "c2-fg-duration-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c2_fg_duration(data.ss, ep.structure = "static", average.data = FALSE),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
          units = EXPORT_SIZE_UNITS,
@@ -2695,7 +3575,7 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          device = EXPORT_FILE_TYPE_PLOTS)
 
   # conjecture 2.f.g - epidemic peak - dynamic
-  ggsave(paste(EXPORT_PATH_PLOTS, "c2-fg-peak-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c2-fg-peak-dynamic-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c2_fg_peak(data.ss),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
@@ -2703,8 +3583,24 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          dpi = EXPORT_DPI,
          device = EXPORT_FILE_TYPE_PLOTS)
   # conjecture 2.f.g - epidemic peak - static
-  ggsave(paste(EXPORT_PATH_PLOTS, "c2-fg-peak-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c2-fg-peak-static-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c2_fg_peak(data.ss, ep.structure = "static"),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 2.f.g - epidemic peak - dynamic
+  ggsave(paste(EXPORT_PATH_PLOTS, "c2-fg-peak-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c2_fg_peak(data.ss, average.data = FALSE),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 2.f.g - epidemic peak - static
+  ggsave(paste(EXPORT_PATH_PLOTS, "c2-fg-peak-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c2_fg_peak(data.ss, ep.structure = "static", average.data = FALSE),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
          units = EXPORT_SIZE_UNITS,
@@ -2729,7 +3625,7 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          device = EXPORT_FILE_TYPE_PLOTS)
 
   # conjecture 3.d. - attack rate - dynamic
-  ggsave(paste(EXPORT_PATH_PLOTS, "c3-d-attackrate-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-d-attackrate-dynamic-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c3_d(data.ss),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
@@ -2737,8 +3633,24 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          dpi = EXPORT_DPI,
          device = EXPORT_FILE_TYPE_PLOTS)
   # conjecture 3.d. - attack rate - static
-  ggsave(paste(EXPORT_PATH_PLOTS, "c3-d-attackrate-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-d-attackrate-static-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c3_d(data.ss, ep.structure = "static"),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 3.d. - attack rate - dynamic
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-d-attackrate-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c3_d(data.ss, average.data = FALSE),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 3.d. - attack rate - static
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-d-attackrate-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c3_d(data.ss, ep.structure = "static", average.data = FALSE),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
          units = EXPORT_SIZE_UNITS,
@@ -2746,7 +3658,7 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          device = EXPORT_FILE_TYPE_PLOTS)
 
   # conjecture 3.f.g. - duration - dynamic
-  ggsave(paste(EXPORT_PATH_PLOTS, "c3-fg-duration-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-fg-duration-dynamic-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c3_fg_duration(data.ss),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
@@ -2754,8 +3666,24 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          dpi = EXPORT_DPI,
          device = EXPORT_FILE_TYPE_PLOTS)
   # conjecture 3.f.g. - duration - static
-  ggsave(paste(EXPORT_PATH_PLOTS, "c3-fg-duration-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-fg-duration-static-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c3_fg_duration(data.ss, ep.structure = "static"),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 3.f.g. - duration - dynamic
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-fg-duration-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c3_fg_duration(data.ss, average.data = FALSE),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 3.f.g. - duration - static
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-fg-duration-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c3_fg_duration(data.ss, ep.structure = "static", average.data = FALSE),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
          units = EXPORT_SIZE_UNITS,
@@ -2763,7 +3691,7 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          device = EXPORT_FILE_TYPE_PLOTS)
 
   # conjecture 3.f.g. - peak - dynamic
-  ggsave(paste(EXPORT_PATH_PLOTS, "c3-fg-peak-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-fg-peak-dynamic-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c3_fg_peak(data.ss),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
@@ -2771,8 +3699,24 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          dpi = EXPORT_DPI,
          device = EXPORT_FILE_TYPE_PLOTS)
   # conjecture 3.f.g. - peak - static
-  ggsave(paste(EXPORT_PATH_PLOTS, "c3-fg-peak-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-fg-peak-static-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c3_fg_peak(data.ss, ep.structure = "static"),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 3.f.g. - peak - dynamic
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-fg-peak-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c3_fg_peak(data.ss, average.data = FALSE),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 3.f.g. - peak - static
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-fg-peak-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c3_fg_peak(data.ss, ep.structure = "static", average.data = FALSE),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
          units = EXPORT_SIZE_UNITS,
@@ -2797,7 +3741,7 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          device = EXPORT_FILE_TYPE_PLOTS)
 
   # conjecture 3.i. - attack rate - dynamic
-  ggsave(paste(EXPORT_PATH_PLOTS, "c3-i-attackrate-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-i-attackrate-dynamic-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c3_i(data.ss),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
@@ -2805,8 +3749,24 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          dpi = EXPORT_DPI,
          device = EXPORT_FILE_TYPE_PLOTS)
   # conjecture 3.i. - attack rate - static
-  ggsave(paste(EXPORT_PATH_PLOTS, "c3-i-attackrate-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-i-attackrate-static-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c3_i(data.ss, ep.structure = "static"),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 3.i. - attack rate - dynamic
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-i-attackrate-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c3_i(data.ss, average.data = FALSE),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 3.i. - attack rate - static
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-i-attackrate-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c3_i(data.ss, ep.structure = "static", average.data = FALSE),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
          units = EXPORT_SIZE_UNITS,
@@ -2814,7 +3774,7 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          device = EXPORT_FILE_TYPE_PLOTS)
 
   # conjecture 3.j.k. - duration - dynamic
-  ggsave(paste(EXPORT_PATH_PLOTS, "c3-jk-duration-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-jk-duration-dynamic-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c3_jk_duration(data.ss),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
@@ -2822,8 +3782,24 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          dpi = EXPORT_DPI,
          device = EXPORT_FILE_TYPE_PLOTS)
   # conjecture 3.j.k. - duration - static
-  ggsave(paste(EXPORT_PATH_PLOTS, "c3-jk-duration-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-jk-duration-static-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c3_jk_duration(data.ss, ep.structure = "static"),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 3.j.k. - duration - dynamic
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-jk-duration-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c3_jk_duration(data.ss, average.data = FALSE),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 3.j.k. - duration - static
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-jk-duration-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c3_jk_duration(data.ss, ep.structure = "static", average.data = FALSE),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
          units = EXPORT_SIZE_UNITS,
@@ -2831,7 +3807,7 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          device = EXPORT_FILE_TYPE_PLOTS)
 
   # conjecture 3.j.k. - peak - dynamic
-  ggsave(paste(EXPORT_PATH_PLOTS, "c3-jk-peak-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-jk-peak-dynamic-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c3_jk_peak(data.ss),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
@@ -2839,8 +3815,24 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          dpi = EXPORT_DPI,
          device = EXPORT_FILE_TYPE_PLOTS)
   # conjecture 3.j.k. - peak - static
-  ggsave(paste(EXPORT_PATH_PLOTS, "c3-jk-peak-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-jk-peak-static-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c3_jk_peak(data.ss, ep.structure = "static"),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 3.j.k. - peak - dynamic
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-jk-peak-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c3_jk_peak(data.ss, average.data = FALSE),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 3.j.k. - peak - static
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-jk-peak-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c3_jk_peak(data.ss, ep.structure = "static", average.data = FALSE),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
          units = EXPORT_SIZE_UNITS,
@@ -2865,7 +3857,7 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          device = EXPORT_FILE_TYPE_PLOTS)
 
   # conjecture 3.m. - attack rate - dynamic
-  ggsave(paste(EXPORT_PATH_PLOTS, "c3-m-attackrate-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-m-attackrate-dynamic-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c3_m(data.ss),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
@@ -2873,8 +3865,24 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          dpi = EXPORT_DPI,
          device = EXPORT_FILE_TYPE_PLOTS)
   # conjecture 3.m. - attack rate - static
-  ggsave(paste(EXPORT_PATH_PLOTS, "c3-m-attackrate-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-m-attackrate-static-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c3_m(data.ss, ep.structure = "static"),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 3.m. - attack rate - dynamic
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-m-attackrate-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c3_m(data.ss, average.data = FALSE),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 3.m. - attack rate - static
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-m-attackrate-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c3_m(data.ss, ep.structure = "static", average.data = FALSE),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
          units = EXPORT_SIZE_UNITS,
@@ -2882,7 +3890,7 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          device = EXPORT_FILE_TYPE_PLOTS)
 
   # conjecture 3.n. - duration - dynamic
-  ggsave(paste(EXPORT_PATH_PLOTS, "c3-n-duration-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-n-duration-dynamic-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c3_n_duration(data.ss),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
@@ -2890,8 +3898,24 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          dpi = EXPORT_DPI,
          device = EXPORT_FILE_TYPE_PLOTS)
   # conjecture 3.n. - duration - static
-  ggsave(paste(EXPORT_PATH_PLOTS, "c3-n-duration-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-n-duration-static-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c3_n_duration(data.ss, ep.structure = "static"),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 3.n. - duration - dynamic
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-n-duration-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c3_n_duration(data.ss, average.data = FALSE),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 3.n. - duration - static
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-n-duration-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c3_n_duration(data.ss, ep.structure = "static", average.data = FALSE),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
          units = EXPORT_SIZE_UNITS,
@@ -2899,7 +3923,7 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          device = EXPORT_FILE_TYPE_PLOTS)
 
   # conjecture 3.n. - peak - dynamic
-  ggsave(paste(EXPORT_PATH_PLOTS, "c3-n-peak-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-n-peak-dynamic-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c3_n_peak(data.ss),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
@@ -2907,8 +3931,24 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          dpi = EXPORT_DPI,
          device = EXPORT_FILE_TYPE_PLOTS)
   # conjecture 3.n. - peak - static
-  ggsave(paste(EXPORT_PATH_PLOTS, "c3-n-peak-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-n-peak-static-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c3_n_peak(data.ss, ep.structure = "static"),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 3.n. - peak - dynamic
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-n-peak-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c3_n_peak(data.ss, average.data = FALSE),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 3.n. - peak - static
+  ggsave(paste(EXPORT_PATH_PLOTS, "c3-n-peak-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c3_n_peak(data.ss, ep.structure = "static", average.data = FALSE),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
          units = EXPORT_SIZE_UNITS,
@@ -3069,7 +4109,7 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          device = EXPORT_FILE_TYPE_PLOTS)
 
   # conjecture 4.e.f. - attack rate - dynamic
-  ggsave(paste(EXPORT_PATH_PLOTS, "c4-ef-attackrate-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c4-ef-attackrate-dynamic-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c4_ef(data.ss),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
@@ -3077,8 +4117,24 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          dpi = EXPORT_DPI,
          device = EXPORT_FILE_TYPE_PLOTS)
   # conjecture 4.e.f. - attack rate - static
-  ggsave(paste(EXPORT_PATH_PLOTS, "c4-ef-attackrate-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c4-ef-attackrate-static-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c4_ef(data.ss, ep.structure = "static"),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 4.e.f. - attack rate - dynamic
+  ggsave(paste(EXPORT_PATH_PLOTS, "c4-ef-attackrate-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c4_ef(data.ss, average.data = FALSE),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 4.e.f. - attack rate - static
+  ggsave(paste(EXPORT_PATH_PLOTS, "c4-ef-attackrate-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c4_ef(data.ss, ep.structure = "static", average.data = FALSE),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
          units = EXPORT_SIZE_UNITS,
@@ -3086,7 +4142,7 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          device = EXPORT_FILE_TYPE_PLOTS)
 
   # conjecture 4.h. - duration - dynamic
-  ggsave(paste(EXPORT_PATH_PLOTS, "c4-h-duration-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c4-h-duration-dynamic-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c4_h_duration(data.ss),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
@@ -3094,8 +4150,24 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          dpi = EXPORT_DPI,
          device = EXPORT_FILE_TYPE_PLOTS)
   # conjecture 4.h. - duration - static
-  ggsave(paste(EXPORT_PATH_PLOTS, "c4-h-duration-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c4-h-duration-static-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c4_h_duration(data.ss, ep.structure = "static"),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 4.h. - duration - dynamic
+  ggsave(paste(EXPORT_PATH_PLOTS, "c4-h-duration-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c4_h_duration(data.ss, average.data = FALSE),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 4.h. - duration - static
+  ggsave(paste(EXPORT_PATH_PLOTS, "c4-h-duration-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c4_h_duration(data.ss, ep.structure = "static", average.data = FALSE),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
          units = EXPORT_SIZE_UNITS,
@@ -3103,7 +4175,7 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          device = EXPORT_FILE_TYPE_PLOTS)
 
   # conjecture 4.h. - peak - dynamic
-  ggsave(paste(EXPORT_PATH_PLOTS, "c4-h-peak-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c4-h-peak-dynamic-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c4_h_peak(data.ss),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
@@ -3111,8 +4183,24 @@ export_plots <- function(data.ss = load_simulation_summary_data(),
          dpi = EXPORT_DPI,
          device = EXPORT_FILE_TYPE_PLOTS)
   # conjecture 4.h. - peak - static
-  ggsave(paste(EXPORT_PATH_PLOTS, "c4-h-peak-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+  ggsave(paste(EXPORT_PATH_PLOTS, "c4-h-peak-static-averaged", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
          plot_c4_h_peak(data.ss, ep.structure = "static"),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 4.h. - peak - dynamic
+  ggsave(paste(EXPORT_PATH_PLOTS, "c4-h-peak-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c4_h_peak(data.ss, average.data = FALSE),
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_HEIGHT,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  # conjecture 4.h. - peak - static
+  ggsave(paste(EXPORT_PATH_PLOTS, "c4-h-peak-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         plot_c4_h_peak(data.ss, ep.structure = "static", average.data = FALSE),
          width = EXPORT_PLOT_WIDTH,
          height = EXPORT_PLOT_HEIGHT,
          units = EXPORT_SIZE_UNITS,
@@ -3134,6 +4222,9 @@ export_all <- function() {
 
   print("################################ EXPORTING DESCRIPTIVE STATISTICS ################################")
   export_descriptives(data.ss)
+
+  print("################################# EXPORTING CORRELATION ANALYSES #################################")
+  export_correlations(data.ss)
 
   print("################################## EXPORTING REGRESSION ANALYSES #################################")
   export_agent_regression_models_composition(data.ad)
