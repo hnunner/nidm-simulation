@@ -945,9 +945,11 @@ export_agent_regression_models <- function(data.ss = load_simulation_summary_dat
 #----------------------------------------------------------------------------------------------------#
 export_agent_regression_models_composition <- function(data.ad = load_agent_details_data(), filenamname.appendix = "") {
   print("########## agent's probability to get infected (dynamic) ##########")
-  export_agent_regression_models(subset(data.ad, nb.ep.structure == "dynamic"), paste(filenamname.appendix, "dynamic", sep = ""))
+  export_agent_regression_models(data.ss = subset(data.ad, nb.ep.structure == "dynamic"),
+                                 filenamname.appendix = paste(filenamname.appendix, "dynamic", sep = ""))
   print("########## agent's probability to get infected (static)  ##########")
-  export_agent_regression_models(subset(data.ad, nb.ep.structure == "static"), paste(filenamname.appendix, "static", sep = ""))
+  export_agent_regression_models(data.ss = subset(data.ad, nb.ep.structure == "static"),
+                                 filenamname.appendix = paste(filenamname.appendix, "static", sep = ""))
 }
 
 
