@@ -208,7 +208,6 @@ public class Simulation implements Runnable {
                 && this.rounds <= maxRounds
                 && !this.stopped) {
             computeSingleRound();
-//            logger.debug("round " + (this.rounds) + ": finished");
         }
 
         // status message
@@ -228,6 +227,29 @@ public class Simulation implements Runnable {
         } else {
             logger.debug(sb.toString());
         }
+
+        // notify simulation finished
+        this.notifySimulationFinished();
+    }
+
+    /**
+     * Simulates the network dynamics (disease and agents) until the network is stable.
+     *
+     * TODO: generalize with method above
+     */
+    public void simulateUntilEpidemicFinished() {
+
+        notifySimulationStarted();
+
+        this.activeInfection = false;
+        this.rounds = 1;
+
+        while (this.network.hasActiveInfection() && !this.stopped) {
+            computeSingleRound();
+        }
+
+        // status message
+        logger.debug(new StringBuilder("Epidemic finished after " + (this.rounds-1) + " time steps.").toString());
 
         // notify simulation finished
         this.notifySimulationFinished();
