@@ -61,24 +61,26 @@ public class NunnerBuskensSimulationSummaryWriter extends SimulationSummaryWrite
     @Override
     protected List<String> addModelColumns(List<String> cols) {
         cols.add(LogValues.IV_NB_EP_STRUCTURE.toString());
-        cols.add(LogValues.IV_NB_B1.toString());
-        cols.add(LogValues.IV_NB_B2.toString());
+//        cols.add(LogValues.IV_NB_B1.toString());
+//        cols.add(LogValues.IV_NB_B2.toString());
         cols.add(LogValues.IV_NB_ALPHA.toString());
-        cols.add(LogValues.IV_NB_C1.toString());
-        cols.add(LogValues.IV_NB_C2.toString());
-        cols.add(LogValues.IV_NB_NET_SIZE.toString());
-        cols.add(LogValues.IV_NB_IOTA.toString());
-        cols.add(LogValues.IV_NB_PHI.toString());
-        cols.add(LogValues.IV_NB_PSI.toString());
-        cols.add(LogValues.IV_NB_XI.toString());
+//        cols.add(LogValues.IV_NB_C1.toString());
+//        cols.add(LogValues.IV_NB_C2.toString());
+//        cols.add(LogValues.IV_NB_NET_SIZE.toString());
+//        cols.add(LogValues.IV_NB_IOTA.toString());
+//        cols.add(LogValues.IV_NB_PHI.toString());
+//        cols.add(LogValues.IV_NB_PSI.toString());
+//        cols.add(LogValues.IV_NB_XI.toString());
         cols.add(LogValues.IV_NB_OMEGA.toString());
 
         cols.add(LogValues.IV_NB_SIGMA.toString());
         cols.add(LogValues.IV_NB_GAMMA.toString());
-        cols.add(LogValues.IV_NB_TAU.toString());
-        cols.add(LogValues.IV_NB_RS_EQUAL.toString());
+//        cols.add(LogValues.IV_NB_TAU.toString());
+        cols.add(LogValues.IV_NB_R_MIN.toString());
+        cols.add(LogValues.IV_NB_R_MAX.toString());
+//        cols.add(LogValues.IV_NB_RS_EQUAL.toString());
         cols.add(LogValues.IV_NB_R_SIGMA_AV.toString());
-        cols.add(LogValues.IV_NB_R_PI_AV.toString());
+//        cols.add(LogValues.IV_NB_R_PI_AV.toString());
 
         return cols;
     }
@@ -89,24 +91,26 @@ public class NunnerBuskensSimulationSummaryWriter extends SimulationSummaryWrite
     @Override
     protected List<String> addCurrModelData(List<String> currData) {
         currData.add(this.dgData.getUtilityModelParams().getEpStructure().toString());
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrB1()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrB2()));
+//        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrB1()));
+//        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrB2()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrAlpha()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrC1()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrC2()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrN()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().isCurrIota() ? 1 : 0));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrPhi()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrPsi()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrXi()));
+//        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrC1()));
+//        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrC2()));
+//        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrN()));
+//        currData.add(String.valueOf(this.dgData.getUtilityModelParams().isCurrIota() ? 1 : 0));
+//        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrPhi()));
+//        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrPsi()));
+//        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrXi()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrOmega()));
 
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrSigma()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrGamma()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrTau()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().isRsEqual() ? 1 : 0));
+//        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrTau()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrRMin()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrRMax()));
+//        currData.add(String.valueOf(this.dgData.getUtilityModelParams().isRsEqual() ? 1 : 0));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getRSigmaAv()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getRPiAv()));
+//        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getRPiAv()));
 
         return currData;
     }

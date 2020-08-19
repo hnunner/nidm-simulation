@@ -86,20 +86,26 @@ public abstract class UtilityModelParameters {
     private double[] gammas;
     private double currGamma;
     // r - risk perception (rSigma - perceived disease severity, rPi - perceived susceptibility)
+    private boolean rMinRandom;
+    private double rMinRandomMin;
+    private double rMinRandomMax;
+    private double[] rMins;
+    private double currRMin;
+    private boolean rMaxRandom;
+    private double rMaxRandomMin;
+    private double rMaxRandomMax;
+    private double[] rMaxs;
+    private double currRMax;
     private boolean rsEqual;
     private boolean rSigmaRandom;
     private boolean[] rSigmaRandomHomogeneous;
     private boolean currRSigmaRandomHomogeneous;
-    private double rSigmaRandomMin;
-    private double rSigmaRandomMax;
     private double[] rSigmas;
     private double currRSigma;
     private double[] currRSigmas;
     private boolean rPiRandom;
     private boolean[] rPiRandomHomogeneous;
     private boolean currRPiRandomHomogeneous;
-    private double rPiRandomMin;
-    private double rPiRandomMax;
     private double[] rPis;
     private double currRPi;
     private double[] currRPis;
@@ -723,6 +729,146 @@ public abstract class UtilityModelParameters {
     }
 
     /**
+     * @return the rMinRandom
+     */
+    public boolean isRMinRandom() {
+        return rMinRandom;
+    }
+
+    /**
+     * @param rMinRandom the rMinRandom to set
+     */
+    public void setRMinRandom(boolean rMinRandom) {
+        this.rMinRandom = rMinRandom;
+    }
+
+    /**
+     * @return the rMinRandomMin
+     */
+    public double getRMinRandomMin() {
+        return rMinRandomMin;
+    }
+
+    /**
+     * @param rMinRandomMin the rMinRandomMin to set
+     */
+    public void setRMinRandomMin(double rMinRandomMin) {
+        this.rMinRandomMin = rMinRandomMin;
+    }
+
+    /**
+     * @return the rMinRandomMax
+     */
+    public double getRMinRandomMax() {
+        return rMinRandomMax;
+    }
+
+    /**
+     * @param rMinRandomMax the rMinRandomMax to set
+     */
+    public void setRMinRandomMax(double rMinRandomMax) {
+        this.rMinRandomMax = rMinRandomMax;
+    }
+
+    /**
+     * @return the rMins
+     */
+    public double[] getRMins() {
+        return rMins;
+    }
+
+    /**
+     * @param rMins the rMins to set
+     */
+    public void setRMins(double[] rMins) {
+        this.rMins = rMins;
+    }
+
+    /**
+     * @return the currRMin
+     */
+    public double getCurrRMin() {
+        return currRMin;
+    }
+
+    /**
+     * @param currRMin the currRMin to set
+     */
+    public void setCurrRMin(double currRMin) {
+        this.currRMin = currRMin;
+    }
+
+    /**
+     * @return the rMaxRandom
+     */
+    public boolean isRMaxRandom() {
+        return rMaxRandom;
+    }
+
+    /**
+     * @param rMaxRandom the rMaxRandom to set
+     */
+    public void setRMaxRandom(boolean rMaxRandom) {
+        this.rMaxRandom = rMaxRandom;
+    }
+
+    /**
+     * @return the rMaxRandomMin
+     */
+    public double getRMaxRandomMin() {
+        return rMaxRandomMin;
+    }
+
+    /**
+     * @param rMaxRandomMin the rMaxRandomMin to set
+     */
+    public void setRMaxRandomMin(double rMaxRandomMin) {
+        this.rMaxRandomMin = rMaxRandomMin;
+    }
+
+    /**
+     * @return the rMaxRandomMax
+     */
+    public double getRMaxRandomMax() {
+        return rMaxRandomMax;
+    }
+
+    /**
+     * @param rMaxRandomMax the rMaxRandomMax to set
+     */
+    public void setRMaxRandomMax(double rMaxRandomMax) {
+        this.rMaxRandomMax = rMaxRandomMax;
+    }
+
+    /**
+     * @return the rMaxs
+     */
+    public double[] getRMaxs() {
+        return rMaxs;
+    }
+
+    /**
+     * @param rMaxs the rMaxs to set
+     */
+    public void setRMaxs(double[] rMaxs) {
+        this.rMaxs = rMaxs;
+    }
+
+    /**
+     * @return the currRMax
+     */
+    public double getCurrRMax() {
+        return currRMax;
+    }
+
+    /**
+     * @param currRMax the currRMax to set
+     */
+    public void setCurrRMax(double currRMax) {
+        this.currRMax = currRMax;
+    }
+
+    /**
      * @return the rsEqual
      */
     public boolean isRsEqual() {
@@ -748,34 +894,6 @@ public abstract class UtilityModelParameters {
      */
     public void setRSigmaRandom(boolean rSigmaRandom) {
         this.rSigmaRandom = rSigmaRandom;
-    }
-
-    /**
-     * @return the rSigmaRandomMin
-     */
-    public double getRSigmaRandomMin() {
-        return rSigmaRandomMin;
-    }
-
-    /**
-     * @param rSigmaRandomMin the rSigmaRandomMin to set
-     */
-    public void setRSigmaRandomMin(double rSigmaRandomMin) {
-        this.rSigmaRandomMin = rSigmaRandomMin;
-    }
-
-    /**
-     * @return the rSigmaRandomMax
-     */
-    public double getRSigmaRandomMax() {
-        return rSigmaRandomMax;
-    }
-
-    /**
-     * @param rSigmaRandomMax the rSigmaRandomMax to set
-     */
-    public void setRSigmaRandomMax(double rSigmaRandomMax) {
-        this.rSigmaRandomMax = rSigmaRandomMax;
     }
 
     /**
@@ -818,34 +936,6 @@ public abstract class UtilityModelParameters {
      */
     public void setRPiRandom(boolean rPiRandom) {
         this.rPiRandom = rPiRandom;
-    }
-
-    /**
-     * @return the rPiRandomMin
-     */
-    public double getRPiRandomMin() {
-        return rPiRandomMin;
-    }
-
-    /**
-     * @param rPiRandomMin the rPiRandomMin to set
-     */
-    public void setRPiRandomMin(double rPiRandomMin) {
-        this.rPiRandomMin = rPiRandomMin;
-    }
-
-    /**
-     * @return the rPiRandomMax
-     */
-    public double getRPiRandomMax() {
-        return rPiRandomMax;
-    }
-
-    /**
-     * @param rPiRandomMax the rPiRandomMax to set
-     */
-    public void setRPiRandomMax(double rPiRandomMax) {
-        this.rPiRandomMax = rPiRandomMax;
     }
 
     /**
