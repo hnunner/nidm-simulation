@@ -103,11 +103,11 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
         cols.add(LogValues.DV_NET_AV_CLUSTERING_PRE.toString());
         cols.add(LogValues.DV_NET_AV_PATHLENGTH_PRE.toString());
         cols.add(LogValues.DV_NET_AV_UTIL_PRE.toString());
-        cols.add(LogValues.DV_NET_AV_BENEFIT_SOCIAL_PRE.toString());
-        cols.add(LogValues.DV_NET_AV_COSTS_SOCIAL_PRE.toString());
-        cols.add(LogValues.DV_NET_AV_COSTS_DISEASE_PRE.toString());
+//        cols.add(LogValues.DV_NET_AV_BENEFIT_SOCIAL_PRE.toString());
+//        cols.add(LogValues.DV_NET_AV_COSTS_SOCIAL_PRE.toString());
+//        cols.add(LogValues.DV_NET_AV_COSTS_DISEASE_PRE.toString());
         cols.add(LogValues.DV_NET_DENSITY_PRE.toString());
-        cols.add(LogValues.DV_NET_ASSORTATIVITY_CONDITION.toString());
+//        cols.add(LogValues.DV_NET_ASSORTATIVITY_CONDITION.toString());
         cols.add(LogValues.DV_NET_ASSORTATIVITY_PRE.toString());
         cols.add(LogValues.DV_NET_STABLE_PRE.toString());
         // index case
@@ -117,7 +117,7 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
         cols.add(LogValues.DV_INDEX_DEGREE2.toString());
         cols.add(LogValues.DV_INDEX_CLOSENESS.toString());
         cols.add(LogValues.DV_INDEX_CLUSTERING.toString());
-        cols.add(LogValues.DV_INDEX_BETWEENNESS.toString());
+//        cols.add(LogValues.DV_INDEX_BETWEENNESS.toString());
         cols.add(LogValues.DV_INDEX_BETWEENNESS_NORMALIZED.toString());
         cols.add(LogValues.DV_INDEX_R_SIGMA.toString());
         cols.add(LogValues.DV_INDEX_R_SIGMA_NEIGHBORHOOD.toString());
@@ -189,11 +189,11 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
         currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvClustering()));
         currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvPathLength()));
         currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvUtility()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvSocialBenefits()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvSocialCosts()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvDiseaseCosts()));
+//        currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvSocialBenefits()));
+//        currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvSocialCosts()));
+//        currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvDiseaseCosts()));
         currData.add(String.valueOf(this.dgData.getNetStatsPre().getDensity()));
-        currData.add(this.dgData.getNetStatsPre().getAssortativityCondition().toString());
+//        currData.add(this.dgData.getNetStatsPre().getAssortativityCondition().toString());
         currData.add(String.valueOf(this.dgData.getNetStatsPre().getAssortativity()));
         currData.add(String.valueOf(this.dgData.getNetStatsPre().isStable() ? 1 : 0));
         // index case
@@ -203,7 +203,7 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().getDegree2()));
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().getCloseness()));
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().getClustering()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getBetweenness()));
+//        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getBetweenness()));
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().getBetweennessNormalized()));
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().getrSigma()));
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().getrSigmaNeighborhood()));
