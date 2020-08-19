@@ -33,6 +33,7 @@ import nl.uu.socnetid.nidm.simulation.SimulationStage;
  */
 public class SimulationStats {
 
+    private int upcs = 0;
     private int upc = 0;
     private String uid;
     private int simPerUpc;
@@ -97,6 +98,20 @@ public class SimulationStats {
      */
     public void setRounds(int rounds) {
         this.rounds = rounds;
+    }
+
+    /**
+     * @return the upcs
+     */
+    public int getUpcs() {
+        return upcs;
+    }
+
+    /**
+     * @param upcs the upcs to set
+     */
+    public void setUpcs(int upcs) {
+        this.upcs = upcs;
     }
 
     /**

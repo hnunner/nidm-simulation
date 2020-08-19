@@ -1002,9 +1002,11 @@ public class Network extends SingleGraph implements SimulationListener {
                     continue;
                 }
                 Integer shortestPathLength = dsp.getShortestPathLength(a2);
-                // if nodes cannot be reached: path length = 0
                 if (shortestPathLength != null) {
                     totalShortestPathLengths += shortestPathLength.intValue();
+                } else {
+                    // if nodes cannot be reached: path length = "infinity"
+                    totalShortestPathLengths += Integer.MAX_VALUE;
                 }
             }
         }
