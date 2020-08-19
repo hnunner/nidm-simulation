@@ -76,7 +76,7 @@ public class AgentStats {
         this.degree2 = agent.getSecondOrderDegree();
         this.closeness = agent.getCloseness();
         this.clustering = agent.getClustering();
-        this.betweenness = agent.getBetweenness();
+        this.betweenness = 0; //agent.getBetweenness(); TODO remove comment / parameterize
         this.betweennessNormalized = agent.getBetweennessNormalized();
         this.utility = agent.getUtility().getOverallUtility();
         this.socialBenefits = agent.getUtility().getSocialBenefits();
