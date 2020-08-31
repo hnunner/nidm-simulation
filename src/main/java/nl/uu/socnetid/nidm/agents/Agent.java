@@ -1370,7 +1370,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         if (isRecovered()) {
             return;
         }
-        forceInfect(diseaseSpecs);
+        this.infect(diseaseSpecs, false);
     }
 
     /**
@@ -1380,7 +1380,10 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      *          the specificationso of the disease the agent is infected with
      */
     public void forceInfect(DiseaseSpecs diseaseSpecs) {
+        this.infect(diseaseSpecs, true);
+    }
 
+    private void infect(DiseaseSpecs diseaseSpecs, boolean forceInfect) {
         // coherence check
         if (!this.getDiseaseSpecs().equals(diseaseSpecs)) {
             throw new RuntimeException("Known disease and caught disease mismatch!");
@@ -1395,8 +1398,10 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         this.changeAttribute(AgentAttributes.UI_CLASS,
                 prevDiseaseGroup.toString(), DiseaseGroup.INFECTED.toString(), false);
 
-        // set force infected flag
-        this.changeAttribute(AgentAttributes.FORCE_INFECTED, false, true);
+        if (forceInfect) {
+            // set force infected flag
+            this.changeAttribute(AgentAttributes.FORCE_INFECTED, false, true);
+        }
     }
 
     /**
