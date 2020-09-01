@@ -528,12 +528,12 @@ public class AgentTest {
      */
     @Test
     public void testGetCloseness() {
-        assertEquals(0.6, this.agent1.getCloseness(), 0.01);
-        assertEquals(0.52, this.agent2.getCloseness(), 0.01);
-        assertEquals(0.56, this.agent3.getCloseness(), 0.01);
-        assertEquals(0.56, this.agent4.getCloseness(), 0.01);
-        assertEquals(0, this.agent5.getCloseness(), 0.01);
-        assertEquals(0, this.agent6.getCloseness(), 0.01);
+        assertEquals(0.6, this.agent1.getCloseness(1), 0.01);
+        assertEquals(0.52, this.agent2.getCloseness(1), 0.01);
+        assertEquals(0.56, this.agent3.getCloseness(1), 0.01);
+        assertEquals(0.56, this.agent4.getCloseness(1), 0.01);
+        assertEquals(0, this.agent5.getCloseness(1), 0.01);
+        assertEquals(0, this.agent6.getCloseness(1), 0.01);
     }
 
     /**
@@ -561,12 +561,12 @@ public class AgentTest {
      */
     @Test
     public void testGetBetweenness() {
-        assertEquals(4, this.agent1.getBetweenness(), 0.01);
-        assertEquals(0, this.agent2.getBetweenness(), 0.01);
-        assertEquals(0, this.agent3.getBetweenness(), 0.01);
-        assertEquals(0, this.agent4.getBetweenness(), 0.01);
-        assertEquals(0, this.agent5.getBetweenness(), 0.01);
-        assertEquals(0, this.agent6.getBetweenness(), 0.01);
+        assertEquals(4, this.agent1.getBetweenness(1), 0.01);
+        assertEquals(0, this.agent2.getBetweenness(1), 0.01);
+        assertEquals(0, this.agent3.getBetweenness(1), 0.01);
+        assertEquals(0, this.agent4.getBetweenness(1), 0.01);
+        assertEquals(0, this.agent5.getBetweenness(1), 0.01);
+        assertEquals(0, this.agent6.getBetweenness(1), 0.01);
     }
 
     /**
@@ -574,12 +574,12 @@ public class AgentTest {
      */
     @Test
     public void testGetNormalizedBetweenness() {
-        assertEquals(0.4, this.agent1.getBetweennessNormalized(), 0.01);
-        assertEquals(0, this.agent2.getBetweennessNormalized(), 0.01);
-        assertEquals(0, this.agent3.getBetweennessNormalized(), 0.01);
-        assertEquals(0, this.agent4.getBetweennessNormalized(), 0.01);
-        assertEquals(0, this.agent5.getBetweennessNormalized(), 0.01);
-        assertEquals(0, this.agent6.getBetweennessNormalized(), 0.01);
+        assertEquals(0.4, this.agent1.getBetweennessNormalized(1), 0.01);
+        assertEquals(0, this.agent2.getBetweennessNormalized(1), 0.01);
+        assertEquals(0, this.agent3.getBetweennessNormalized(1), 0.01);
+        assertEquals(0, this.agent4.getBetweennessNormalized(1), 0.01);
+        assertEquals(0, this.agent5.getBetweennessNormalized(1), 0.01);
+        assertEquals(0, this.agent6.getBetweennessNormalized(1), 0.01);
     }
 
 }

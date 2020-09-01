@@ -42,9 +42,10 @@ public class NetworkStats {
     private AssortativityConditions ac;
     private double assortativity;
     private double avDegree;
-    private double avDegree2;
+    private Double avDegree2 = null;     // lazy initialization (very costly operations)
     private double avDegreeSatisfied;
     private double avDegreeUnsatisfied;
+    private Double avBetweenness = null;     // lazy initialization (very costly operations)
     private Double avCloseness = null;     // lazy initialization (very costly operations)
     private double avClustering;
     private Double avPathLength = null;     // lazy initialization (very costly operations)
@@ -62,8 +63,8 @@ public class NetworkStats {
     private double recoveredPercent;
     private double satisfiedPercent;
     private double unsatisfiedPercent;
-    private double tiesBrokenWithInfectionPresent;
-    private double networkChangesWithInfectionPresent;
+    private int tiesBrokenWithInfectionPresent = 0;
+    private int networkChangesWithInfectionPresent = 0;
 
 
     public NetworkStats(Network network) {
@@ -73,7 +74,6 @@ public class NetworkStats {
         this.ac = network.getAssortativityCondition();
         this.assortativity = network.getAssortativity();
         this.avDegree = network.getAvDegree();
-        this.avDegree2 = network.getAvDegree2();
         this.avDegreeSatisfied = network.getAvDegreeSatisfied();
         this.avDegreeUnsatisfied = network.getAvDegreeUnsatisfied();
         this.avClustering = network.getAvClustering();
@@ -161,7 +161,10 @@ public class NetworkStats {
      * @return the avDegree2
      */
     public double getAvDegree2() {
-        return avDegree2;
+        if (this.avDegree2 == null) {
+            this.avDegree2 = network.getAvDegree2();
+        }
+        return this.avDegree2;
     }
 
     /**
@@ -172,11 +175,32 @@ public class NetworkStats {
     }
 
     /**
+     * @param simRound
+     *          the simulation round to get the average betweenness for
+     * @return the avBetweenness
+     */
+    public double getAvBetweenness(int simRound) {
+        if (this.avBetweenness == null) {
+            this.avBetweenness = network.getAvBetweenness(simRound);
+        }
+        return avBetweenness;
+    }
+
+    /**
+     * @param avBetweenness the avBetweenness to set
+     */
+    public void setAvBetweenness(double avBetweenness) {
+        this.avBetweenness = avBetweenness;
+    }
+
+    /**
+     * @param simRound
+     *          the simulation round to get the average closeness for
      * @return the avCloseness
      */
-    public double getAvCloseness() {
+    public double getAvCloseness(int simRound) {
         if (this.avCloseness == null) {
-            this.avCloseness = network.getAvCloseness();
+            this.avCloseness = network.getAvCloseness(simRound);
         }
         return avCloseness;
     }
@@ -371,21 +395,21 @@ public class NetworkStats {
     /**
      * @param tiesBrokenWithInfectionPresent the tiesBrokenWithInfectionPresent to set
      */
-    public void setTiesBrokenWithInfectionPresent(double tiesBrokenWithInfectionPresent) {
+    public void setTiesBrokenWithInfectionPresent(int tiesBrokenWithInfectionPresent) {
         this.tiesBrokenWithInfectionPresent = tiesBrokenWithInfectionPresent;
     }
 
     /**
      * @return the networkChangesWithInfectionPresent
      */
-    public double getNetworkChangesWithInfectionPresent() {
+    public int getNetworkChangesWithInfectionPresent() {
         return networkChangesWithInfectionPresent;
     }
 
     /**
      * @param networkChangesWithInfectionPresent the networkChangesWithInfectionPresent to set
      */
-    public void setNetworkChangesWithInfectionPresent(double networkChangesWithInfectionPresent) {
+    public void setNetworkChangesWithInfectionPresent(int networkChangesWithInfectionPresent) {
         this.networkChangesWithInfectionPresent = networkChangesWithInfectionPresent;
     }
 
