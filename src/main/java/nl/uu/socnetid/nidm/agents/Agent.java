@@ -136,8 +136,14 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         this.addAttribute(AgentAttributes.CONSIDER_AGE, considerAge);
         this.addAttribute(AgentAttributes.FORCE_INFECTED, false);
         this.addAttribute("ui.label", this.getId());
-        this.addAttribute(AgentAttributes.BETWEENNESS_LAST_COMPUTATION, 0);
-        this.addAttribute(AgentAttributes.CLOSENESS_LAST_COMPUTATION, 0);
+        this.addAttribute(AgentAttributes.CLOSENESS, -1);
+        this.addAttribute(AgentAttributes.CLOSENESS_LAST_COMPUTATION, -1);
+        this.addAttribute(AgentAttributes.BETWEENNESS, -1);
+        this.addAttribute(AgentAttributes.BETWEENNESS_LAST_COMPUTATION, -1);
+        this.addAttribute(AgentAttributes.CLUSTERING, -1);
+        this.addAttribute(AgentAttributes.CLUSTERING_LAST_COMPUTATION, -1);
+        this.addAttribute(AgentAttributes.ASSORTATIVITY, -1);
+        this.addAttribute(AgentAttributes.ASSORTATIVITY_LAST_COMPUTATION, -1);
     }
 
     public String getLabel() {
@@ -547,19 +553,39 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     public double getCloseness(int simRound) {
         int lastComputation = this.getClosenessLastComputation();
         if (lastComputation < simRound) {
-            this.addAttribute(AgentAttributes.CLOSENESS, StatsComputer.computeCloseness(this));
-            this.changeAttribute(AgentAttributes.CLOSENESS_LAST_COMPUTATION, lastComputation, simRound);
+
+            this.changeAttribute(AgentAttributes.CLOSENESS,
+                    this.getAttribute(AgentAttributes.CLOSENESS),
+                    StatsComputer.computeCloseness(this));
+            this.changeAttribute(AgentAttributes.CLOSENESS_LAST_COMPUTATION,
+                    lastComputation,
+                    simRound);
         }
         return (double) this.getAttribute(AgentAttributes.CLOSENESS);
+    }
+
+    private int getClusteringLastComputation() {
+        return (int) this.getAttribute(AgentAttributes.CLUSTERING_LAST_COMPUTATION);
     }
 
     /**
      * Gets the clustering.
      *
+     * @param simRound
+     *          the simulation round to compute closeness for
      * @return the clustering
      */
-    public double getClustering() {
-        return Toolkit.clusteringCoefficient(this);
+    public double getClustering(int simRound) {
+        int lastComputation = this.getClusteringLastComputation();
+        if (lastComputation < simRound) {
+            this.changeAttribute(AgentAttributes.CLUSTERING,
+                    this.getAttribute(AgentAttributes.CLUSTERING),
+                    Toolkit.clusteringCoefficient(this));
+            this.changeAttribute(AgentAttributes.CLUSTERING_LAST_COMPUTATION,
+                    lastComputation,
+                    simRound);
+        }
+        return (double) this.getAttribute(AgentAttributes.CLUSTERING);
     }
 
 
@@ -581,8 +607,12 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
             bc.setUnweighted();
             bc.init(this.getNetwork());
             bc.compute();
-            this.addAttribute(AgentAttributes.BETWEENNESS, bc.centrality(this));
-            this.changeAttribute(AgentAttributes.BETWEENNESS_LAST_COMPUTATION, lastComputation, simRound);
+            this.changeAttribute(AgentAttributes.BETWEENNESS,
+                    this.getAttribute(AgentAttributes.BETWEENNESS),
+                    bc.centrality(this));
+            this.changeAttribute(AgentAttributes.BETWEENNESS_LAST_COMPUTATION,
+                    lastComputation,
+                    simRound);
         }
         return (double) this.getAttribute(AgentAttributes.BETWEENNESS);
     }
@@ -667,9 +697,21 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         return dsp.getShortestPathLength(agent);
     }
 
-    public double getAssortativity() {
-        return(StatsComputer.computeAssortativity(this.getEdgeSet(),
-                this.getNetwork().getAssortativityCondition()));
+    private int getAssortativityLastComputation() {
+        return (int) this.getAttribute(AgentAttributes.ASSORTATIVITY_LAST_COMPUTATION);
+    }
+
+    public double getAssortativity(int simRound) {
+        int lastComputation = this.getAssortativityLastComputation();
+        if (lastComputation < simRound) {
+            this.changeAttribute(AgentAttributes.ASSORTATIVITY,
+                    this.getAttribute(AgentAttributes.ASSORTATIVITY),
+                    StatsComputer.computeAssortativity(this.getEdgeSet(), this.getNetwork().getAssortativityCondition()));
+            this.changeAttribute(AgentAttributes.ASSORTATIVITY_LAST_COMPUTATION,
+                    lastComputation,
+                    simRound);
+        }
+        return (double) this.getAttribute(AgentAttributes.ASSORTATIVITY);
     }
 
     /**

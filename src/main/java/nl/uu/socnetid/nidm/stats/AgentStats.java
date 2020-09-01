@@ -89,10 +89,10 @@ public class AgentStats {
         this.degree1 = agent.getDegree();
         this.degree2 = agent.getSecondOrderDegree();
         this.closeness = agent.getCloseness(simRound);
-        this.clustering = agent.getClustering();
+        this.clustering = agent.getClustering(simRound);
         this.betweenness = agent.getBetweenness(simRound);
         this.betweennessNormalized = agent.getBetweennessNormalized(simRound);
-        this.assortativity = agent.getAssortativity();
+        this.assortativity = agent.getAssortativity(simRound);
         this.initialIndexCaseDistance = agent.getInitialIndexCaseDistance();
         this.brokenTiesActive = agent.getConnectionStats().getBrokenTiesActive();
         this.brokenTiesPassive = agent.getConnectionStats().getBrokenTiesPassive();

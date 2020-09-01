@@ -343,7 +343,7 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
         // write agent detail data if necessary
         if (!PropertiesHandler.getInstance().isExportAgentDetails() &&
                 PropertiesHandler.getInstance().isExportAgentDetailsReduced()) {
-            this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
+            this.dgData.setNetStatsCurrent(new NetworkStats(this.network, this.simulation.getRounds()));
             this.adWriter.writeCurrentData();
         }
 
@@ -464,7 +464,7 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
     @Override
     public void notifyRoundFinished(Simulation simulation) {
         if (PropertiesHandler.getInstance().isExportSummaryEachRound() || PropertiesHandler.getInstance().isExportAgentDetails()) {
-            this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
+            this.dgData.setNetStatsCurrent(new NetworkStats(this.network, simulation.getRounds()));
         }
         if (PropertiesHandler.getInstance().isExportSummaryEachRound()) {
             this.rsWriter.writeCurrentData();
@@ -486,7 +486,7 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
         // TODO improve
         if (!PropertiesHandler.getInstance().isExportAgentDetails() &&
                 PropertiesHandler.getInstance().isExportAgentDetailsReduced()) {
-            this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
+            this.dgData.setNetStatsCurrent(new NetworkStats(this.network, simulation.getRounds()));
             this.adWriter.writeCurrentData();
         }
     }
@@ -502,7 +502,7 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
             if (PropertiesHandler.getInstance().isExportSummaryEachRound() ||
                     PropertiesHandler.getInstance().isExportAgentDetails() ||
                     PropertiesHandler.getInstance().isExportAgentDetailsReduced()) {
-                this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
+                this.dgData.setNetStatsCurrent(new NetworkStats(this.network, simulation.getRounds()));
             }
             if (PropertiesHandler.getInstance().isExportSummaryEachRound()) {
                 this.rsWriter.writeCurrentData();
