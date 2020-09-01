@@ -34,7 +34,8 @@ import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.data.out.DataGeneratorData;
 import nl.uu.socnetid.nidm.data.out.LogValues;
 import nl.uu.socnetid.nidm.data.out.UtilityModelParameters;
-import nl.uu.socnetid.nidm.stats.AgentStats;
+import nl.uu.socnetid.nidm.stats.AgentStatsPost;
+import nl.uu.socnetid.nidm.stats.AgentStatsPre;
 
 /**
  * @author Hendrik Nunner
@@ -122,11 +123,12 @@ public abstract class AgentDetailsWriter<UMP extends UtilityModelParameters> ext
         cols.add(LogValues.DV_AGENT_DISEASE_ROUNDS_REMAINING.toString());
         cols.add(LogValues.DV_AGENT_FORCE_INFECTED.toString());
         cols.add(LogValues.DV_AGENT_DEGREE1.toString());
-        cols.add(LogValues.DV_AGENT_DEGREE2.toString());
+//        cols.add(LogValues.DV_AGENT_DEGREE2.toString());
         cols.add(LogValues.DV_AGENT_CLOSENESS.toString());
         cols.add(LogValues.DV_AGENT_CLUSTERING.toString());
 //        cols.add(LogValues.DV_AGENT_BETWEENNESS.toString());
         cols.add(LogValues.DV_AGENT_BETWEENNESS_NORMALIZED.toString());
+        cols.add(LogValues.DV_AGENT_ASSORTATIVITY.toString());
 //        cols.add(LogValues.DV_AGENT_CONS_BROKEN_ACTIVE.toString());
 //        cols.add(LogValues.DV_AGENT_CONS_BROKEN_PASSIVE.toString());
 //        cols.add(LogValues.DV_AGENT_CONS_OUT_ACCEPTED.toString());
@@ -145,6 +147,7 @@ public abstract class AgentDetailsWriter<UMP extends UtilityModelParameters> ext
         // index case
         cols.add(LogValues.DV_AGENT_INDEX_NEIGHBORHOOD_R_SIGMA_AV.toString());
         cols.add(LogValues.DV_AGENT_INDEX_NEIGHBORHOOD_R_PI_AV.toString());
+        cols.add(LogValues.DV_AGENT_INDEX_DISTANCE.toString());
 
         writeLine(cols);
     }
@@ -178,51 +181,60 @@ public abstract class AgentDetailsWriter<UMP extends UtilityModelParameters> ext
             // PROPERTIES
             // simulation
             currData.add(String.valueOf(this.dgData.getSimStats().getSimStage()));
+
             // network
-            currData.add(String.valueOf(this.dgData.getNetStatsCurrent().isStable()));
-            currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getDensity()));
-            currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvDegree()));
-            currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvClustering()));
-            currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvPathLength()));
-//            currData.add(this.dgData.getNetStatsCurrent().getAssortativityCondition().toString());
-            currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAssortativity()));
-            // agent
-            AgentStats agentStats = new AgentStats(agent);
-            currData.add(String.valueOf(agentStats.isSatisfied()));
+            currData.add(String.valueOf(this.dgData.getNetStatsPre().isStable()));
+//            currData.add(String.valueOf(this.dgData.getNetStatsPre().getDensity()));
+            currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvDegree()));
+            currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvClustering()));
+            currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvPathLength()));
+//            currData.add(this.dgData.getNetStatsPre().getAssortativityCondition().toString());
+            currData.add(String.valueOf(this.dgData.getNetStatsPre().getAssortativity()));
+
+            // agent -- TODO this works only for latest SWIDM data generation!!!
+            AgentStatsPre agentStatsPre  = this.dgData.getAgentStatsPre().get(agent.getId());
+            AgentStatsPost agentStatsPost = new AgentStatsPost(agent);
+
+            currData.add(String.valueOf(agentStatsPre.isSatisfied()));
 //            currData.add(String.valueOf(agentStats.getUtility()));
 //            currData.add(String.valueOf(agentStats.getSocialBenefits()));
 //            currData.add(String.valueOf(agentStats.getSocialCosts()));
 //            currData.add(String.valueOf(agentStats.getDiseaseCosts()));
-            currData.add(agentStats.getDiseaseGroup().name());
-            currData.add(String.valueOf(agentStats.getTimeToRecover()));
-            currData.add(String.valueOf(agentStats.isForceInfected()));
-            currData.add(String.valueOf(agentStats.getDegree1()));
-            currData.add(String.valueOf(agentStats.getDegree2()));
-            currData.add(String.valueOf(agentStats.getCloseness()));
-            currData.add(String.valueOf(agentStats.getClustering()));
+            currData.add(agentStatsPost.getDiseaseGroup().name());
+            currData.add(String.valueOf(agentStatsPost.getTimeToRecover()));
+            currData.add(String.valueOf(agentStatsPost.isForceInfected()));
+            currData.add(String.valueOf(agentStatsPre.getDegree1()));
+//            currData.add(String.valueOf(agentStatsPre.getDegree2()));
+            currData.add(String.valueOf(agentStatsPre.getCloseness()));
+            currData.add(String.valueOf(agentStatsPre.getClustering()));
 //            currData.add(String.valueOf(agentStats.getBetweenness()));
-            currData.add(String.valueOf(agentStats.getBetweennessNormalized()));
+            currData.add(String.valueOf(agentStatsPre.getBetweennessNormalized()));
+            currData.add(String.valueOf(agentStatsPre.getAssortativity()));
 //            currData.add(String.valueOf(agentStats.getBrokenTiesActive()));
 //            currData.add(String.valueOf(agentStats.getBrokenTiesPassive()));
 //            currData.add(String.valueOf(agentStats.getAcceptedRequestsOut()));
 //            currData.add(String.valueOf(agentStats.getDeclinedRequestsOut()));
 //            currData.add(String.valueOf(agentStats.getAcceptedRequestsIn()));
 //            currData.add(String.valueOf(agentStats.getDeclinedRequestsIn()));
-            currData.add(String.valueOf(agentStats.getBrokenTiesActiveEpidemic()));
-            currData.add(String.valueOf(agentStats.getBrokenTiesPassiveEpidemic()));
-            currData.add(String.valueOf(agentStats.getAcceptedRequestsOutEpidemic()));
-            currData.add(String.valueOf(agentStats.getDeclinedRequestsOutEpidemic()));
-            currData.add(String.valueOf(agentStats.getAcceptedRequestsInEpidemic()));
-            currData.add(String.valueOf(agentStats.getDeclinedRequestsInEpidemic()));
+            currData.add(String.valueOf(agentStatsPost.getBrokenTiesActiveEpidemic()));
+            currData.add(String.valueOf(agentStatsPost.getBrokenTiesPassiveEpidemic()));
+            currData.add(String.valueOf(agentStatsPost.getAcceptedRequestsOutEpidemic()));
+            currData.add(String.valueOf(agentStatsPost.getDeclinedRequestsOutEpidemic()));
+            currData.add(String.valueOf(agentStatsPost.getAcceptedRequestsInEpidemic()));
+            currData.add(String.valueOf(agentStatsPost.getDeclinedRequestsInEpidemic()));
             // neighborhood
-            currData.add(String.valueOf(agentStats.getrSigmaNeighborhood()));
-            currData.add(String.valueOf(agentStats.getrPiNeighborhood()));
+            currData.add(String.valueOf(agentStatsPre.getrSigmaNeighborhood()));
+            currData.add(String.valueOf(agentStatsPre.getrPiNeighborhood()));
             // index case
             currData.add(String.valueOf(this.dgData.getIndexCaseStats() != null
                     ? this.dgData.getIndexCaseStats().getrSigmaNeighborhood()
                     : "NA"));
             currData.add(String.valueOf(this.dgData.getIndexCaseStats() != null
                     ? this.dgData.getIndexCaseStats().getrPiNeighborhood()
+                    : "NA"));
+            currData.add(String.valueOf(agentStatsPre.getIndexCaseDistance() != null &&
+                    agentStatsPre.getIndexCaseDistance() > 0
+                    ? agentStatsPre.getIndexCaseDistance()
                     : "NA"));
 
             writeLine(currData);

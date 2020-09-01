@@ -98,15 +98,15 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
         // PRE-EPIDEMIC
         // network
         cols.add(LogValues.DV_NET_AV_DEGREE_PRE.toString());
-        cols.add(LogValues.DV_NET_AV_DEGREE2_PRE.toString());
+//        cols.add(LogValues.DV_NET_AV_DEGREE2_PRE.toString());
         cols.add(LogValues.DV_NET_AV_CLOSENESS_PRE.toString());
         cols.add(LogValues.DV_NET_AV_CLUSTERING_PRE.toString());
         cols.add(LogValues.DV_NET_AV_PATHLENGTH_PRE.toString());
-        cols.add(LogValues.DV_NET_AV_UTIL_PRE.toString());
+//        cols.add(LogValues.DV_NET_AV_UTIL_PRE.toString());
 //        cols.add(LogValues.DV_NET_AV_BENEFIT_SOCIAL_PRE.toString());
 //        cols.add(LogValues.DV_NET_AV_COSTS_SOCIAL_PRE.toString());
 //        cols.add(LogValues.DV_NET_AV_COSTS_DISEASE_PRE.toString());
-        cols.add(LogValues.DV_NET_DENSITY_PRE.toString());
+//        cols.add(LogValues.DV_NET_DENSITY_PRE.toString());
 //        cols.add(LogValues.DV_NET_ASSORTATIVITY_CONDITION.toString());
         cols.add(LogValues.DV_NET_ASSORTATIVITY_PRE.toString());
         cols.add(LogValues.DV_NET_STABLE_PRE.toString());
@@ -114,11 +114,12 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
         cols.add(LogValues.DV_INDEX_DISEASE_STATE.toString());
         cols.add(LogValues.DV_INDEX_DISEASE_ROUNDS_REMAINING.toString());
         cols.add(LogValues.DV_INDEX_DEGREE1.toString());
-        cols.add(LogValues.DV_INDEX_DEGREE2.toString());
+//        cols.add(LogValues.DV_INDEX_DEGREE2.toString());
         cols.add(LogValues.DV_INDEX_CLOSENESS.toString());
         cols.add(LogValues.DV_INDEX_CLUSTERING.toString());
 //        cols.add(LogValues.DV_INDEX_BETWEENNESS.toString());
         cols.add(LogValues.DV_INDEX_BETWEENNESS_NORMALIZED.toString());
+        cols.add(LogValues.DV_INDEX_ASSORTATIVITY.toString());
         cols.add(LogValues.DV_INDEX_R_SIGMA.toString());
         cols.add(LogValues.DV_INDEX_R_SIGMA_NEIGHBORHOOD.toString());
         cols.add(LogValues.DV_INDEX_R_PI.toString());
@@ -127,33 +128,33 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
         // POST-EDIDEMIC
         // static
         cols.add(LogValues.DV_NET_STATIC_EPIDEMIC_DURATION.toString());
-        cols.add(LogValues.DV_NET_STATIC_EPIDEMIC_MAX_INFECTIONS.toString());
+        cols.add(LogValues.DV_NET_STATIC_EPIDEMIC_PEAK_SIZE.toString());
         cols.add(LogValues.DV_NET_STATIC_EPIDEMIC_PEAK.toString());
-        cols.add(LogValues.DV_NET_STATIC_PERCENTAGE_SUSCEPTIBLE.toString());
+//        cols.add(LogValues.DV_NET_STATIC_PERCENTAGE_SUSCEPTIBLE.toString());
         cols.add(LogValues.DV_NET_STATIC_PERCENTAGE_INFECTED.toString());
         cols.add(LogValues.DV_NET_STATIC_PERCENTAGE_RECOVERED.toString());
-        cols.add(LogValues.DV_NET_STATIC_TIES_BROKEN_EPIDEMIC.toString());
-        cols.add(LogValues.DV_NET_STATIC_NETWORK_CHANGES_EPIDEMIC.toString());
+//        cols.add(LogValues.DV_NET_STATIC_TIES_BROKEN_EPIDEMIC.toString());
+//        cols.add(LogValues.DV_NET_STATIC_NETWORK_CHANGES_EPIDEMIC.toString());
         // dynamic
         cols.add(LogValues.DV_NET_DYNAMIC_EPIDEMIC_DURATION.toString());
-        cols.add(LogValues.DV_NET_DYNAMIC_EPIDEMIC_MAX_INFECTIONS.toString());
+        cols.add(LogValues.DV_NET_DYNAMIC_EPIDEMIC_PEAK_SIZE.toString());
         cols.add(LogValues.DV_NET_DYNAMIC_EPIDEMIC_PEAK.toString());
-        cols.add(LogValues.DV_NET_DYNAMIC_PERCENTAGE_SUSCEPTIBLE.toString());
+//        cols.add(LogValues.DV_NET_DYNAMIC_PERCENTAGE_SUSCEPTIBLE.toString());
         cols.add(LogValues.DV_NET_DYNAMIC_PERCENTAGE_INFECTED.toString());
         cols.add(LogValues.DV_NET_DYNAMIC_PERCENTAGE_RECOVERED.toString());
-        cols.add(LogValues.DV_NET_DYNAMIC_TIES_BROKEN_EPIDEMIC.toString());
-        cols.add(LogValues.DV_NET_DYNAMIC_NETWORK_CHANGES_EPIDEMIC.toString());
-        cols.add(LogValues.DV_NET_DYNAMIC_AV_DEGREE_POST.toString());
-        cols.add(LogValues.DV_NET_DYNAMIC_AV_DEGREE2_POST.toString());
-        cols.add(LogValues.DV_NET_DYNAMIC_AV_CLOSENESS_POST.toString());
-        cols.add(LogValues.DV_NET_DYNAMIC_AV_CLUSTERING_POST.toString());
-        cols.add(LogValues.DV_NET_DYNAMIC_AV_PATHLENGTH_POST.toString());
-        cols.add(LogValues.DV_NET_DYNAMIC_AV_UTIL_POST.toString());
-        cols.add(LogValues.DV_NET_DYNAMIC_AV_BENEFIT_SOCIAL_POST.toString());
-        cols.add(LogValues.DV_NET_DYNAMIC_AV_COSTS_SOCIAL_POST.toString());
-        cols.add(LogValues.DV_NET_DYNAMIC_AV_COSTS_DISEASE_POST.toString());
-        cols.add(LogValues.DV_NET_DYNAMIC_DENSITY_POST.toString());
-        cols.add(LogValues.DV_NET_DYNAMIC_ASSORTATIVITY_POST.toString());
+//        cols.add(LogValues.DV_NET_DYNAMIC_TIES_BROKEN_EPIDEMIC.toString());
+//        cols.add(LogValues.DV_NET_DYNAMIC_NETWORK_CHANGES_EPIDEMIC.toString());
+//        cols.add(LogValues.DV_NET_DYNAMIC_AV_DEGREE_POST.toString());
+//        cols.add(LogValues.DV_NET_DYNAMIC_AV_DEGREE2_POST.toString());
+//        cols.add(LogValues.DV_NET_DYNAMIC_AV_CLOSENESS_POST.toString());
+//        cols.add(LogValues.DV_NET_DYNAMIC_AV_CLUSTERING_POST.toString());
+//        cols.add(LogValues.DV_NET_DYNAMIC_AV_PATHLENGTH_POST.toString());
+//        cols.add(LogValues.DV_NET_DYNAMIC_AV_UTIL_POST.toString());
+//        cols.add(LogValues.DV_NET_DYNAMIC_AV_BENEFIT_SOCIAL_POST.toString());
+//        cols.add(LogValues.DV_NET_DYNAMIC_AV_COSTS_SOCIAL_POST.toString());
+//        cols.add(LogValues.DV_NET_DYNAMIC_AV_COSTS_DISEASE_POST.toString());
+//        cols.add(LogValues.DV_NET_DYNAMIC_DENSITY_POST.toString());
+//        cols.add(LogValues.DV_NET_DYNAMIC_ASSORTATIVITY_POST.toString());
         cols.add(LogValues.DV_NET_DYNAMIC_STABLE_POST.toString());
 
         // RELATED EXPORTS
@@ -184,15 +185,15 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
         // PRE-EPIDEMIC
         // network
         currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvDegree()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvDegree2()));
+//        currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvDegree2()));
         currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvCloseness()));
         currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvClustering()));
         currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvPathLength()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvUtility()));
+//        currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvUtility()));
 //        currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvSocialBenefits()));
 //        currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvSocialCosts()));
 //        currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvDiseaseCosts()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPre().getDensity()));
+//        currData.add(String.valueOf(this.dgData.getNetStatsPre().getDensity()));
 //        currData.add(this.dgData.getNetStatsPre().getAssortativityCondition().toString());
         currData.add(String.valueOf(this.dgData.getNetStatsPre().getAssortativity()));
         currData.add(String.valueOf(this.dgData.getNetStatsPre().isStable() ? 1 : 0));
@@ -200,11 +201,12 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
         currData.add(this.dgData.getIndexCaseStats().getDiseaseGroup().name());
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().getTimeToRecover()));
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().getDegree1()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getDegree2()));
+//        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getDegree2()));
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().getCloseness()));
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().getClustering()));
 //        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getBetweenness()));
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().getBetweennessNormalized()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getAssortativity()));
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().getrSigma()));
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().getrSigmaNeighborhood()));
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().getrPi()));
@@ -213,33 +215,33 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
         // POST-EDIDEMIC
         // static
         currData.add(String.valueOf(this.dgData.getSimStats().getEpidemicDurationStatic()));
-        currData.add(String.valueOf(this.dgData.getSimStats().getEpidemicMaxInfectionsStatic()));
+        currData.add(String.valueOf(this.dgData.getSimStats().getEpidemicPeakSizeStatic()));
         currData.add(String.valueOf(this.dgData.getSimStats().getEpidemicPeakStatic()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getSusceptiblePercent()));
+//        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getSusceptiblePercent()));
         currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getInfectedPercent()));
         currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getRecoveredPercent()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getTiesBrokenWithInfectionPresent()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getNetworkChangesWithInfectionPresent()));
+//        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getTiesBrokenWithInfectionPresent()));
+//        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getNetworkChangesWithInfectionPresent()));
         // dynamic
         currData.add(String.valueOf(this.dgData.getSimStats().getEpidemicDurationDynamic()));
-        currData.add(String.valueOf(this.dgData.getSimStats().getEpidemicMaxInfectionsDynamic()));
+        currData.add(String.valueOf(this.dgData.getSimStats().getEpidemicPeakSizeDynamic()));
         currData.add(String.valueOf(this.dgData.getSimStats().getEpidemicPeakDynamic()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getSusceptiblePercent()));
+//        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getSusceptiblePercent()));
         currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getInfectedPercent()));
         currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getRecoveredPercent()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getTiesBrokenWithInfectionPresent()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getNetworkChangesWithInfectionPresent()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAvDegree()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAvDegree2()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAvCloseness()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAvClustering()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAvPathLength()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAvUtility()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAvSocialBenefits()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAvSocialCosts()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAvDiseaseCosts()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getDensity()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAssortativity()));
+//        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getTiesBrokenWithInfectionPresent()));
+//        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getNetworkChangesWithInfectionPresent()));
+//        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAvDegree()));
+//        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAvDegree2()));
+//        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAvCloseness()));
+//        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAvClustering()));
+//        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAvPathLength()));
+//        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAvUtility()));
+//        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAvSocialBenefits()));
+//        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAvSocialCosts()));
+//        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAvDiseaseCosts()));
+//        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getDensity()));
+//        currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getAssortativity()));
         currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().isStable() ? 1 : 0));
 
         // RELATED EXPORTS
