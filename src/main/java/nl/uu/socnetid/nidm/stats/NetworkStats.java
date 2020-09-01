@@ -67,16 +67,16 @@ public class NetworkStats {
     private int networkChangesWithInfectionPresent = 0;
 
 
-    public NetworkStats(Network network) {
+    public NetworkStats(Network network, int simRound) {
         this.network = network;
         this.stable = network.isStable();
         this.density = network.getDensity();
         this.ac = network.getAssortativityCondition();
-        this.assortativity = network.getAssortativity();
-        this.avDegree = network.getAvDegree();
+        this.assortativity = network.getAssortativity(simRound);
+        this.avDegree = network.getAvDegree(simRound);
         this.avDegreeSatisfied = network.getAvDegreeSatisfied();
         this.avDegreeUnsatisfied = network.getAvDegreeUnsatisfied();
-        this.avClustering = network.getAvClustering();
+        this.avClustering = network.getAvClustering(simRound);
         this.avUtility = network.getAvUtility();
         this.avSocialBenefits = network.getAvSocialBenefits();
         this.avSocialCosts = network.getAvSocialCosts();
@@ -227,11 +227,13 @@ public class NetworkStats {
     }
 
     /**
+     * @param simRound
+     *          the simulation round to get the average path length for
      * @return the avPathLength
      */
-    public double getAvPathLength() {
+    public double getAvPathLength(int simRound) {
         if (this.avPathLength == null) {
-            this.avPathLength = network.getAvPathLength();
+            this.avPathLength = network.getAvPathLength(simRound);
         }
         return avPathLength;
     }
