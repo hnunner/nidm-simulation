@@ -445,7 +445,7 @@ public class NetworkTest {
     @Test
     public void testGetAvDegree() {
         assertEquals(6, this.network.getN());
-        assertEquals(1.33, this.network.getAvDegree(), 0.01);
+        assertEquals(1.33, this.network.getAvDegree(1), 0.01);
     }
 
     /**
@@ -472,7 +472,7 @@ public class NetworkTest {
     //@Test TODO redo with connected graph
     public void testGetAvPathLength() {
         assertEquals(6, this.network.getN());
-        assertEquals(0.53, Precision.round(this.network.getAvPathLength(), 2), 0);
+        assertEquals(0.53, Precision.round(this.network.getAvPathLength(1), 2), 0);
     }
 
     /**

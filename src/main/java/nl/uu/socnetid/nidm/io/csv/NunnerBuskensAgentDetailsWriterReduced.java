@@ -83,6 +83,7 @@ public class NunnerBuskensAgentDetailsWriterReduced extends CsvFileWriter<Nunner
         cols.add(LogValues.IV_NB_R_MIN.toString());
         cols.add(LogValues.IV_NB_R_MAX.toString());
         cols.add(LogValues.IV_NB_R_SIGMA.toString());
+        cols.add(LogValues.IV_NB_R_SIGMA_AV.toString());
         cols.add(LogValues.IV_NB_R_SIGMA_NEIGHBORHOOD.toString());
 
         // PRE-EPIDEMIC
@@ -146,7 +147,7 @@ public class NunnerBuskensAgentDetailsWriterReduced extends CsvFileWriter<Nunner
             currData.add(String.valueOf(this.dgData.getSimStats().getSimIt()));
             currData.add(agent.getId());
             // network (static / dynamic)
-            currData.add(this.dgData.getUtilityModelParams().getEpStructure().toString());
+            currData.add(this.dgData.getUtilityModelParams().getCurrEpStructure().toString());
             // varied model parameters
             currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrAlpha()));
             currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrOmega()));
@@ -154,6 +155,7 @@ public class NunnerBuskensAgentDetailsWriterReduced extends CsvFileWriter<Nunner
             currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrGamma()));
             currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrRMin()));
             currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrRMax()));
+            currData.add(String.valueOf(agent.getRSigma()));
             currData.add(String.valueOf(this.dgData.getUtilityModelParams().getRSigmaAv()));
             currData.add(String.valueOf(agent.getRSigmaNeighborhood()));
 
@@ -186,7 +188,7 @@ public class NunnerBuskensAgentDetailsWriterReduced extends CsvFileWriter<Nunner
             // POST-EPIDEMIC
             // agent
             AgentStatsPost agentStatsPost = null;
-            switch (this.dgData.getUtilityModelParams().getEpStructure()) {
+            switch (this.dgData.getUtilityModelParams().getCurrEpStructure()) {
                 case DYNAMIC:
                     agentStatsPost = this.dgData.getAgentStatsPostDynamic().get(agent.getId());
                     break;
