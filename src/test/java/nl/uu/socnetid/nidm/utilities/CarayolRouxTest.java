@@ -110,11 +110,11 @@ public class CarayolRouxTest {
      */
     @Test
     public void testGetUtility() {
-        assertEquals(0.14, this.agent1.getUtility().getOverallUtility(), 0.01);
-        assertEquals(0.56, this.agent2.getUtility().getOverallUtility(), 0.01);
-        assertEquals(0.65, this.agent3.getUtility().getOverallUtility(), 0.01);
-        assertEquals(0.24, this.agent4.getUtility().getOverallUtility(), 0.01);
-        assertEquals(0.17, this.agent5.getUtility().getOverallUtility(), 0.01);
+        assertEquals(1.14, this.agent1.getUtility().getOverallUtility(), 0.01);
+        assertEquals(1.56, this.agent2.getUtility().getOverallUtility(), 0.01);
+        assertEquals(1.65, this.agent3.getUtility().getOverallUtility(), 0.01);
+        assertEquals(1.24, this.agent4.getUtility().getOverallUtility(), 0.01);
+        assertEquals(1.17, this.agent5.getUtility().getOverallUtility(), 0.01);
     }
 
 }
