@@ -133,7 +133,7 @@ public abstract class NetworkSummaryWriter<UMP extends UtilityModelParameters> e
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvDegree()));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvCloseness(this.dgData.getSimStats().getCurrRound())));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvClustering()));
-        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvPathLength()));
+        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvPathLength(this.dgData.getSimStats().getCurrRound())));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getDensity()));
         currData.add(this.dgData.getNetStatsCurrent().getAssortativityCondition().toString());
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAssortativity()));

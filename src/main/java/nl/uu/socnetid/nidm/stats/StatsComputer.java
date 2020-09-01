@@ -138,7 +138,8 @@ public final class StatsComputer {
         avDegree = agents.size() == 0 ? 0.0 : (double) connections / agents.size();
         connections /= 2;
 
-        return new GlobalNetworkStats(network.isStable(), connections, avDegree, diameter, avDistance, network.getAssortativity());
+        return new GlobalNetworkStats(network.isStable(), connections, avDegree,
+                diameter, avDistance, network.getAssortativity());
     }
 
     /**

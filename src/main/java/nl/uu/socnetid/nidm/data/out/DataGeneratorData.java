@@ -63,6 +63,7 @@ public class DataGeneratorData<UMP extends UtilityModelParameters> {
     private List<Agent> agents;
     // index case
     private AgentStatsPre indexCaseStats;
+    private AgentStatsPre indexCaseStatsCurrent;
     // export
     private String gexfExportFile = "/";
 
@@ -165,6 +166,20 @@ public class DataGeneratorData<UMP extends UtilityModelParameters> {
      */
     public void setIndexCaseStats(AgentStatsPre indexCaseStats) {
         this.indexCaseStats = indexCaseStats;
+    }
+
+    /**
+     * @return the indexCaseStatsCurrent
+     */
+    public AgentStatsPre getIndexCaseStatsCurrent() {
+        return indexCaseStatsCurrent;
+    }
+
+    /**
+     * @param indexCaseStatsCurrent the indexCaseStatsCurrent to set
+     */
+    public void setIndexCaseStatsCurrent(AgentStatsPre indexCaseStatsCurrent) {
+        this.indexCaseStatsCurrent = indexCaseStatsCurrent;
     }
 
     /**

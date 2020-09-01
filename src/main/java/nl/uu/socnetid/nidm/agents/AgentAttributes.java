@@ -54,7 +54,13 @@ public enum AgentAttributes {
     BETWEENNESS("betweenness"),
     BETWEENNESS_LAST_COMPUTATION("betweenness.last.computation"),
     CLOSENESS("closeness"),
-    CLOSENESS_LAST_COMPUTATION("closeness.last.computation");
+    CLOSENESS_LAST_COMPUTATION("closeness.last.computation"),
+    CLUSTERING("clustering"),
+    CLUSTERING_LAST_COMPUTATION("clustering.last.computation"),
+    ASSORTATIVITY("assortativity"),
+    ASSORTATIVITY_LAST_COMPUTATION("assortativity.last.computation"),
+    INDEX_CASE_DISTANCE("index.case.distance"),
+    INDEX_CASE_DISTANCE_LAST_COMPUTATION("index.case.distance.last.computation");
 
     // the name
     private String name;
