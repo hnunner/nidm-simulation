@@ -276,7 +276,7 @@ public class CarayolRouxDataGenerator extends AbstractDataGenerator {
         // simulate
         simulation.simulate();
         // save data
-        this.dgData.setNetStatsCurrent(new NetworkStats(network));
+        this.dgData.setNetStatsCurrent(new NetworkStats(network, simulation.getRounds()));
 
     }
 

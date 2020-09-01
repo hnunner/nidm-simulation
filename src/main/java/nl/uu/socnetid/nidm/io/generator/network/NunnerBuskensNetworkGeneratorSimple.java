@@ -228,7 +228,7 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
                         logger.debug("Preparing lower clustering.");
                         newAlpha = Math.round((newAlpha - 0.05) * 1000.0) / 1000.0;
                         lowerAlpha(newAlpha);
-                        double newC = Math.round((this.network.getAvClustering()-0.05) * 100.0) / 100.0;
+                        double newC = Math.round((this.network.getAvClustering(this.simulation.getRounds())-0.05) * 100.0) / 100.0;
                         newTargetMean = 5.53  + (0.0453 * Math.pow(Math.E, 2.589 * newAlpha));
                         lowerC2s(newTargetMean);
                         logger.debug("Trying to approximate av. clustering (" + newC
@@ -282,13 +282,13 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
 
         int round = 0;
 
-        double avC = Math.round(this.network.getAvClustering() * cPrecision) / cPrecision;
-        double avD = Math.round(this.network.getAvDegree() * dPrecision) / dPrecision;
+        double avC = Math.round(this.network.getAvClustering(this.simulation.getRounds()) * cPrecision) / cPrecision;
+        double avD = Math.round(this.network.getAvDegree(this.simulation.getRounds()) * dPrecision) / dPrecision;
 
         while (true) {//!(avC == appC && avD == appD)) {
             this.simulation.simulate(1);
-            avC = Math.round(this.network.getAvClustering() * cPrecision) / cPrecision;
-            avD = Math.round(this.network.getAvDegree() * dPrecision) / dPrecision;
+            avC = Math.round(this.network.getAvClustering(this.simulation.getRounds()) * cPrecision) / cPrecision;
+            avD = Math.round(this.network.getAvDegree(this.simulation.getRounds()) * dPrecision) / dPrecision;
             round++;
             logger.debug("round: " + round +
                     "\t clustering: " + avC +
@@ -298,8 +298,8 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
             }
         }
         logger.debug("Approximation " + (avC == appC && avD == appD ? "successful"
-                : "failed (av. clustering: " + Math.round(this.network.getAvClustering() * cPrecision) / cPrecision +
-                "; av. degree: " + Math.round(this.network.getAvDegree() * dPrecision) / dPrecision));
+                : "failed (av. clustering: " + Math.round(this.network.getAvClustering(this.simulation.getRounds()) * cPrecision) / cPrecision +
+                "; av. degree: " + Math.round(this.network.getAvDegree(this.simulation.getRounds()) * dPrecision) / dPrecision));
     }
 
 
@@ -307,7 +307,7 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
      * Amends the summary file by writing a row with the current state of the network.
      */
     private void amendSummary() {
-        this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
+        this.dgData.setNetStatsCurrent(new NetworkStats(this.network, this.simulation.getRounds()));
         this.nsWriter.writeCurrentData();
     }
 
