@@ -32,11 +32,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.math.stat.correlation.PearsonsCorrelation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.graphstream.graph.Edge;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseGroup;
+import nl.uu.socnetid.nidm.networks.AssortativityConditions;
 import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.simulation.Simulation;
 
@@ -564,6 +567,53 @@ public final class StatsComputer {
      */
     public static double computeProbabilityOfInfection(Agent agent, int nI) {
         return 1 - Math.pow((1 - agent.getDiseaseSpecs().getGamma()), nI);
+    }
+
+    public static double computeAssortativity(Collection<Edge> edges, AssortativityConditions ac) {
+
+        double a = 0.0;
+
+        // collect attributes of all node pairs
+        double[] attributes1 = new double[edges.size()];
+        double[] attributes2 = new double[edges.size()];
+
+        Iterator<Edge> eIt = edges.iterator();
+
+        int i = 0;
+        while (eIt.hasNext()) {
+            Edge edge = eIt.next();
+            switch (ac) {
+                case AGE:
+                    attributes1[i] = ((Agent) edge.getNode0()).getAge();
+                    attributes2[i] = ((Agent) edge.getNode1()).getAge();
+                    break;
+
+                case RISK_PERCEPTION:
+                    attributes1[i] = ((Agent) edge.getNode0()).getRSigma() + ((Agent) edge.getNode0()).getRPi();
+                    attributes2[i] = ((Agent) edge.getNode1()).getRSigma() + ((Agent) edge.getNode1()).getRPi();
+                    break;
+
+                default:
+                    logger.warn("assortativity not available for: " + ac);
+                    break;
+            }
+            i++;
+        }
+
+        // Pearson correlation coefficient
+        if (attributes1.length > 1 || attributes2.length > 1) {
+            try {
+                a = new PearsonsCorrelation().correlation(attributes1, attributes2);
+                if (Double.isNaN(a)) {
+                    a = 0.0;
+                }
+            } catch (Exception e) {
+                logger.error("Computation of Pearson's correlation coefficient failed: ", e);
+                a = 0.0;
+            }
+        }
+        return a;
+
     }
 
 }

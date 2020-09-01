@@ -101,9 +101,18 @@ public abstract class RoundSummaryWriter<UMP extends UtilityModelParameters> ext
         // network
         cols.add(LogValues.DV_NET_STABLE.toString());
         cols.add(LogValues.DV_NET_DENSITY.toString());
+
         cols.add(LogValues.DV_NET_AV_DEGREE.toString());
         cols.add(LogValues.DV_NET_AV_CLUSTERING.toString());
         cols.add(LogValues.DV_NET_AV_PATHLENGTH.toString());
+        cols.add(LogValues.DV_NET_ASSORTATIVITY.toString());
+
+        // TODO
+//        cols.add(LogValues.DV_NET_AV_DEGREE_INDEX.toString());
+//        cols.add(LogValues.DV_NET_AV_CLUSTERING_INDEX.toString());
+//        cols.add(LogValues.DV_NET_AV_BETWEENNESS_INDEX.toString());
+//        cols.add(LogValues.DV_NET_AV_ASSORTATIVITY_INDEX.toString());
+
         cols.add(LogValues.DV_NET_PERCENTAGE_SUSCEPTIBLE.toString());
         cols.add(LogValues.DV_NET_PERCENTAGE_INFECTED.toString());
         cols.add(LogValues.DV_NET_PERCENTAGE_RECOVERED.toString());
@@ -139,6 +148,8 @@ public abstract class RoundSummaryWriter<UMP extends UtilityModelParameters> ext
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvDegree()));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvClustering()));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvPathLength()));
+        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAssortativity()));
+
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getSusceptiblePercent()));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getInfectedPercent()));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getRecoveredPercent()));

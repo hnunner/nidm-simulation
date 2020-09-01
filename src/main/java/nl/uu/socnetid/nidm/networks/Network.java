@@ -35,11 +35,9 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.apache.commons.math.stat.correlation.PearsonsCorrelation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.graphstream.algorithm.Toolkit;
-import org.graphstream.graph.Edge;
 import org.graphstream.graph.implementations.SingleGraph;
 
 import nl.uu.socnetid.nidm.agents.Agent;
@@ -49,6 +47,7 @@ import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.simulation.Simulation;
 import nl.uu.socnetid.nidm.simulation.SimulationListener;
 import nl.uu.socnetid.nidm.stats.DijkstraShortestPath;
+import nl.uu.socnetid.nidm.stats.StatsComputer;
 import nl.uu.socnetid.nidm.utility.UtilityFunction;
 
 /**
@@ -887,16 +886,35 @@ public class Network extends SingleGraph implements SimulationListener {
     }
 
     /**
-     * Gets the average closeness of the network.
+     * Gets the average betweenness of the network.
      *
+     * @param simRound
+     *          the simulation round to compute betweenness for
      * @return the average closeness of the network
      */
-    public double getAvCloseness() {
+    public double getAvBetweenness(int simRound) {
+        double avBetweenness = 0;
+        Iterator<Agent> agentsIt = this.getAgents().iterator();
+        while (agentsIt.hasNext()) {
+            Agent agent = agentsIt.next();
+            avBetweenness += agent.getBetweennessNormalized(simRound);
+        }
+        return avBetweenness/this.getAgents().size();
+    }
+
+    /**
+     * Gets the average closeness of the network.
+     *
+     * @param simRound
+     *          the simulation round to compute betweenness for
+     * @return the average closeness of the network
+     */
+    public double getAvCloseness(int simRound) {
         double avCloseness = 0;
         Iterator<Agent> agentsIt = this.getAgents().iterator();
         while (agentsIt.hasNext()) {
             Agent agent = agentsIt.next();
-            avCloseness += agent.getCloseness();
+            avCloseness += agent.getCloseness(simRound);
         }
         return avCloseness/this.getAgents().size();
     }
@@ -925,48 +943,7 @@ public class Network extends SingleGraph implements SimulationListener {
      * @return the assortativity of the network
      */
     public double getAssortativity() {
-
-        double a = 0.0;
-
-        // collect attributes of all node pairs
-        double[] attributes1 = new double[this.getEdgeCount()];
-        double[] attributes2 = new double[this.getEdgeCount()];
-
-        Iterator<Edge> eIt = this.getEdgeIterator();
-        int i = 0;
-        while (eIt.hasNext()) {
-            Edge edge = eIt.next();
-            switch (this.getAssortativityCondition()) {
-                case AGE:
-                    attributes1[i] = ((Agent) edge.getNode0()).getAge();
-                    attributes2[i] = ((Agent) edge.getNode1()).getAge();
-                    break;
-
-                case RISK_PERCEPTION:
-                    attributes1[i] = ((Agent) edge.getNode0()).getRSigma() + ((Agent) edge.getNode0()).getRPi();
-                    attributes2[i] = ((Agent) edge.getNode1()).getRSigma() + ((Agent) edge.getNode1()).getRPi();
-                    break;
-
-                default:
-                    logger.warn("assortativity not available for: " + this.getAssortativityCondition());
-                    break;
-            }
-            i++;
-        }
-
-        // Pearson correlation coefficient
-        if (attributes1.length > 1 || attributes2.length > 1) {
-            try {
-                a = new PearsonsCorrelation().correlation(attributes1, attributes2);
-                if (Double.isNaN(a)) {
-                    a = 0.0;
-                }
-            } catch (Exception e) {
-                logger.error("Computation of Pearson's correlation coefficient failed: ", e);
-                a = 0.0;
-            }
-        }
-        return a;
+        return(StatsComputer.computeAssortativity(this.getEdgeSet(), this.getAssortativityCondition()));
     }
 
     /**
