@@ -31,20 +31,11 @@ import nl.uu.socnetid.nidm.diseases.types.DiseaseGroup;
 /**
  * @author Hendrik Nunner
  */
-public class AgentStats {
+public class AgentStatsPost {
 
     private double rSigma;
-    private double rSigmaNeighborhood;
     private double rPi;
-    private double rPiNeighborhood;
     private boolean satisfied;
-    private double degree1;
-    private double degree2;
-    private double closeness;
-    private double clustering;
-    private double betweenness;
-    private double betweennessNormalized;
-    private double assortativity;
     private double utility;
     private double socialBenefits;
     private double socialCosts;
@@ -67,7 +58,7 @@ public class AgentStats {
     private Integer initialIndexCaseDistance;
 
 
-    public AgentStats(Agent agent, int simRound) {
+    public AgentStatsPost(Agent agent) {
 
         this.rSigma = agent.getRSigma();
         this.rPi = agent.getRPi();
@@ -83,17 +74,6 @@ public class AgentStats {
         }
         this.forceInfected = agent.isForceInfected();
 
-        this.rSigmaNeighborhood = agent.getRSigmaNeighborhood();
-        this.rPiNeighborhood = agent.getRPiNeighborhood();
-        this.satisfied = agent.isSatisfied();
-        this.degree1 = agent.getDegree();
-        this.degree2 = agent.getSecondOrderDegree();
-        this.closeness = agent.getCloseness(simRound);
-        this.clustering = agent.getClustering();
-        this.betweenness = agent.getBetweenness(simRound);
-        this.betweennessNormalized = agent.getBetweennessNormalized(simRound);
-        this.assortativity = agent.getAssortativity();
-        this.initialIndexCaseDistance = agent.getInitialIndexCaseDistance();
         this.brokenTiesActive = agent.getConnectionStats().getBrokenTiesActive();
         this.brokenTiesPassive = agent.getConnectionStats().getBrokenTiesPassive();
         this.acceptedRequestsOut = agent.getConnectionStats().getAcceptedRequestsOut();
@@ -107,8 +87,6 @@ public class AgentStats {
         this.acceptedRequestsInEpidemic = agent.getConnectionStats().getAcceptedRequestsInEpidemic();
         this.declinedRequestsOutEpidemic = agent.getConnectionStats().getDeclinedRequestsOutEpidemic();
         this.declinedRequestsInEpidemic = agent.getConnectionStats().getDeclinedRequestsInEpidemic();
-
-
     }
 
 
@@ -120,24 +98,10 @@ public class AgentStats {
     }
 
     /**
-     * @return the rSigmaNeighborhood
-     */
-    public double getrSigmaNeighborhood() {
-        return rSigmaNeighborhood;
-    }
-
-    /**
      * @return the rPi
      */
     public double getrPi() {
         return rPi;
-    }
-
-    /**
-     * @return the rPiNeighborhood
-     */
-    public double getrPiNeighborhood() {
-        return rPiNeighborhood;
     }
 
     /**
@@ -152,55 +116,6 @@ public class AgentStats {
      */
     public boolean isSatisfied() {
         return satisfied;
-    }
-
-    /**
-     * @return the degree1
-     */
-    public double getDegree1() {
-        return degree1;
-    }
-
-    /**
-     * @return the degree2
-     */
-    public double getDegree2() {
-        return degree2;
-    }
-
-    /**
-     * @return the closeness
-     */
-    public double getCloseness() {
-        return closeness;
-    }
-
-    /**
-     * @return the clustering
-     */
-    public double getClustering() {
-        return clustering;
-    }
-
-    /**
-     * @return the betweenness
-     */
-    public double getBetweenness() {
-        return betweenness;
-    }
-
-    /**
-     * @return the betweennessNormalized
-     */
-    public double getBetweennessNormalized() {
-        return betweennessNormalized;
-    }
-
-    /**
-     * @return the assortativity
-     */
-    public double getAssortativity() {
-        return assortativity;
     }
 
     /**

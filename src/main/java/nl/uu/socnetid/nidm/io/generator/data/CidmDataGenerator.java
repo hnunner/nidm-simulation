@@ -48,8 +48,10 @@ import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.simulation.Simulation;
 import nl.uu.socnetid.nidm.simulation.SimulationListener;
 import nl.uu.socnetid.nidm.simulation.SimulationStage;
-import nl.uu.socnetid.nidm.stats.AgentStats;
+import nl.uu.socnetid.nidm.stats.AgentStatsPre;
 import nl.uu.socnetid.nidm.stats.NetworkStats;
+import nl.uu.socnetid.nidm.stats.NetworkStatsPost;
+import nl.uu.socnetid.nidm.stats.NetworkStatsPre;
 import nl.uu.socnetid.nidm.system.PropertiesHandler;
 import nl.uu.socnetid.nidm.utility.Cidm;
 import nl.uu.socnetid.nidm.utility.UtilityFunction;
@@ -70,7 +72,7 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
 
     // network
     private Network network;
-    private double tiesBrokenWithInfectionPresent;
+//    private int tiesBrokenWithInfectionPresent;
 
     // simulation
     private Simulation simulation;
@@ -337,8 +339,7 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
         // simulate
         this.simulation.simulate(this.dgData.getUtilityModelParams().getZeta());
         // save data of last round of pre-epidemic stage
-        this.dgData.setNetStatsPre(new NetworkStats(this.network));
-        this.dgData.getNetStatsPre().setTiesBrokenWithInfectionPresent(0.0);
+        this.dgData.setNetStatsPre(new NetworkStatsPre(this.network, this.simulation.getRounds()));
         // write agent detail data if necessary
         if (!PropertiesHandler.getInstance().isExportAgentDetails() &&
                 PropertiesHandler.getInstance().isExportAgentDetailsReduced()) {
@@ -347,17 +348,17 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
         }
 
         // EPIDEMIC AND POST-EPIDEMIC STAGES
-        this.tiesBrokenWithInfectionPresent = 0.0;
+//        this.tiesBrokenWithInfectionPresent = 0;
         Agent indexCase = this.network.infectRandomAgent(ds);
         this.dgData.getSimStats().setSimStage(SimulationStage.ACTIVE_EPIDEMIC);
         // save index case properties of pre-epidemic stage
-        this.dgData.setIndexCaseStats(new AgentStats(indexCase));
+        this.dgData.setIndexCaseStats(new AgentStatsPre(indexCase, this.simulation.getRounds()));
         this.dgData.getSimStats().setRoundStartInfection(this.simulation.getRounds());
         // simulate
         this.simulation.simulate(this.dgData.getUtilityModelParams().getEpsilon());
         // save data of last round of post-epidemic stage
-        this.dgData.setNetStatsPostStatic(new NetworkStats(this.network));     // TODO static is only quick dirty fix
-        this.dgData.getNetStatsPostStatic().setTiesBrokenWithInfectionPresent(this.tiesBrokenWithInfectionPresent);     // TODO static is only quick dirty fix
+        this.dgData.setNetStatsPostStatic(new NetworkStatsPost(this.network));     // TODO static is only quick dirty fix
+//        this.dgData.getNetStatsPostStatic().setTiesBrokenWithInfectionPresent(this.tiesBrokenWithInfectionPresent);     // TODO static is only quick dirty fix
 
         // end: GEXF export
         if (PropertiesHandler.getInstance().isExportGexf()) {
@@ -435,9 +436,9 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
      */
     @Override
     public void notifyConnectionRemoved(Agent agent, Edge edge) {
-        if (this.dgData.getSimStats().getSimStage() == SimulationStage.ACTIVE_EPIDEMIC) {
-            this.tiesBrokenWithInfectionPresent++;
-        }
+//        if (this.dgData.getSimStats().getSimStage() == SimulationStage.ACTIVE_EPIDEMIC) {
+//            this.tiesBrokenWithInfectionPresent++;
+//        }
     }
 
     /* (non-Javadoc)

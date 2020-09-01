@@ -26,10 +26,14 @@
 package nl.uu.socnetid.nidm.data.out;
 
 import java.util.List;
+import java.util.Map;
 
 import nl.uu.socnetid.nidm.agents.Agent;
-import nl.uu.socnetid.nidm.stats.AgentStats;
+import nl.uu.socnetid.nidm.stats.AgentStatsPost;
+import nl.uu.socnetid.nidm.stats.AgentStatsPre;
 import nl.uu.socnetid.nidm.stats.NetworkStats;
+import nl.uu.socnetid.nidm.stats.NetworkStatsPost;
+import nl.uu.socnetid.nidm.stats.NetworkStatsPre;
 import nl.uu.socnetid.nidm.stats.SimulationStats;
 
 /**
@@ -45,16 +49,20 @@ public class DataGeneratorData<UMP extends UtilityModelParameters> {
     // simulation
     private SimulationStats simStats;
     // network stats
-    private NetworkStats netStatsPre;
-    private NetworkStats netStatsPostStatic;
-    private NetworkStats netStatsPostDynamic;
+    private NetworkStatsPre netStatsPre;
+    private NetworkStatsPost netStatsPostStatic;
+    private NetworkStatsPost netStatsPostDynamic;
     private NetworkStats netStatsCurrent;
+    // agent stats
+    private Map<String, AgentStatsPre> agentStatsPre;
+    private Map<String, AgentStatsPost> agentStatsPostStatic;
+    private Map<String, AgentStatsPost> agentStatsPostDynamic;
 
 
     // agents
     private List<Agent> agents;
     // index case
-    private AgentStats indexCaseStats;
+    private AgentStatsPre indexCaseStats;
     // export
     private String gexfExportFile = "/";
 
@@ -74,21 +82,21 @@ public class DataGeneratorData<UMP extends UtilityModelParameters> {
     /**
      * @return the netStatsPre
      */
-    public NetworkStats getNetStatsPre() {
+    public NetworkStatsPre getNetStatsPre() {
         return netStatsPre;
     }
 
     /**
      * @param netStatsPre the netStatsPre to set
      */
-    public void setNetStatsPre(NetworkStats netStatsPre) {
+    public void setNetStatsPre(NetworkStatsPre netStatsPre) {
         this.netStatsPre = netStatsPre;
     }
 
     /**
      * @return the netStatsPostStatic
      */
-    public NetworkStats getNetStatsPostStatic() {
+    public NetworkStatsPost getNetStatsPostStatic() {
         return netStatsPostStatic;
     }
 
@@ -96,7 +104,7 @@ public class DataGeneratorData<UMP extends UtilityModelParameters> {
     /**
      * @param netStatsPostStatic the netStatsPostStatic to set
      */
-    public void setNetStatsPostStatic(NetworkStats netStatsPostStatic) {
+    public void setNetStatsPostStatic(NetworkStatsPost netStatsPostStatic) {
         this.netStatsPostStatic = netStatsPostStatic;
     }
 
@@ -104,7 +112,7 @@ public class DataGeneratorData<UMP extends UtilityModelParameters> {
     /**
      * @return the netStatsPostDynamic
      */
-    public NetworkStats getNetStatsPostDynamic() {
+    public NetworkStatsPost getNetStatsPostDynamic() {
         return netStatsPostDynamic;
     }
 
@@ -112,7 +120,7 @@ public class DataGeneratorData<UMP extends UtilityModelParameters> {
     /**
      * @param netStatsPostDynamic the netStatsPostDynamic to set
      */
-    public void setNetStatsPostDynamic(NetworkStats netStatsPostDynamic) {
+    public void setNetStatsPostDynamic(NetworkStatsPost netStatsPostDynamic) {
         this.netStatsPostDynamic = netStatsPostDynamic;
     }
 
@@ -148,14 +156,14 @@ public class DataGeneratorData<UMP extends UtilityModelParameters> {
     /**
      * @return the indexCaseStats
      */
-    public AgentStats getIndexCaseStats() {
+    public AgentStatsPre getIndexCaseStats() {
         return indexCaseStats;
     }
 
     /**
      * @param indexCaseStats the indexCaseStats to set
      */
-    public void setIndexCaseStats(AgentStats indexCaseStats) {
+    public void setIndexCaseStats(AgentStatsPre indexCaseStats) {
         this.indexCaseStats = indexCaseStats;
     }
 
@@ -192,6 +200,48 @@ public class DataGeneratorData<UMP extends UtilityModelParameters> {
      */
     public UMP getUtilityModelParams() {
         return utilityModelParams;
+    }
+
+    /**
+     * @return the agentStatsPre
+     */
+    public Map<String, AgentStatsPre> getAgentStatsPre() {
+        return agentStatsPre;
+    }
+
+    /**
+     * @param agentStatsPre the agentStatsPre to set
+     */
+    public void setAgentStatsPre(Map<String, AgentStatsPre> agentStatsPre) {
+        this.agentStatsPre = agentStatsPre;
+    }
+
+    /**
+     * @return the agentStatsPostStatic
+     */
+    public Map<String, AgentStatsPost> getAgentStatsPostStatic() {
+        return agentStatsPostStatic;
+    }
+
+    /**
+     * @param agentStatsPostStatic the agentStatsPostStatic to set
+     */
+    public void setAgentStatsPostStatic(Map<String, AgentStatsPost> agentStatsPostStatic) {
+        this.agentStatsPostStatic = agentStatsPostStatic;
+    }
+
+    /**
+     * @return the agentStatsPostDynamic
+     */
+    public Map<String, AgentStatsPost> getAgentStatsPostDynamic() {
+        return agentStatsPostDynamic;
+    }
+
+    /**
+     * @param agentStatsPostDynamic the agentStatsPostDynamic to set
+     */
+    public void setAgentStatsPostDynamic(Map<String, AgentStatsPost> agentStatsPostDynamic) {
+        this.agentStatsPostDynamic = agentStatsPostDynamic;
     }
 
 }
