@@ -136,6 +136,8 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         this.addAttribute(AgentAttributes.CONSIDER_AGE, considerAge);
         this.addAttribute(AgentAttributes.FORCE_INFECTED, false);
         this.addAttribute("ui.label", this.getId());
+        this.addAttribute(AgentAttributes.BETWEENNESS_LAST_COMPUTATION, 0);
+        this.addAttribute(AgentAttributes.CLOSENESS_LAST_COMPUTATION, 0);
     }
 
     public String getLabel() {
@@ -531,13 +533,24 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         return StatsComputer.computeSecondOrderDegree(this);
     }
 
+    private int getClosenessLastComputation() {
+        return (int) this.getAttribute(AgentAttributes.CLOSENESS_LAST_COMPUTATION);
+    }
+
     /**
      * Gets the closeness.
      *
+     * @param simRound
+     *          the simulation round to compute closeness for
      * @return the closeness
      */
-    public double getCloseness() {
-        return StatsComputer.computeCloseness(this);
+    public double getCloseness(int simRound) {
+        int lastComputation = this.getClosenessLastComputation();
+        if (lastComputation < simRound) {
+            this.addAttribute(AgentAttributes.CLOSENESS, StatsComputer.computeCloseness(this));
+            this.changeAttribute(AgentAttributes.CLOSENESS_LAST_COMPUTATION, lastComputation, simRound);
+        }
+        return (double) this.getAttribute(AgentAttributes.CLOSENESS);
     }
 
     /**
@@ -549,28 +562,50 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         return Toolkit.clusteringCoefficient(this);
     }
 
+
+    private int getBetweennessLastComputation() {
+        return (int) this.getAttribute(AgentAttributes.BETWEENNESS_LAST_COMPUTATION);
+    }
+
     /**
      * Gets the betweenness.
      *
+     * @param simRound
+     *          the simulation round to compute betweenness for
      * @return the betweenness
      */
-    public double getBetweenness() {
-        BetweennessCentrality bc = new BetweennessCentrality();
-        bc.setUnweighted();
-        bc.init(this.getNetwork());
-        bc.compute();
-        return bc.centrality(this);
+    public double getBetweenness(int simRound) {
+        int lastComputation = this.getBetweennessLastComputation();
+        if (lastComputation < simRound) {
+            BetweennessCentrality bc = new BetweennessCentrality();
+            bc.setUnweighted();
+            bc.init(this.getNetwork());
+            bc.compute();
+            this.addAttribute(AgentAttributes.BETWEENNESS, bc.centrality(this));
+            this.changeAttribute(AgentAttributes.BETWEENNESS_LAST_COMPUTATION, lastComputation, simRound);
+        }
+        return (double) this.getAttribute(AgentAttributes.BETWEENNESS);
     }
 
     /**
      * Gets the normalized betweenness.
      *
+     * @param simRound
+     *          the simulation round to compute betweenness for
      * @return the normalized betweenness
      */
-    public double getBetweennessNormalized() {
-        double onShortestPaths = this.getBetweenness();
+    public double getBetweennessNormalized(int simRound) {
+        double onShortestPaths = this.getBetweenness(simRound);
         double N = this.getNetwork().getN();
         return onShortestPaths / (((N-1)/2) * (N-2));
+    }
+
+    public void setInitialIndexCaseDistance(Agent indexCase) {
+        this.addAttribute(AgentAttributes.INITIAL_INDEX_CASE_DISTANCE, this.getGeodesicDistanceTo(indexCase));
+    }
+
+    public Integer getInitialIndexCaseDistance() {
+        return (Integer) this.getAttribute(AgentAttributes.INITIAL_INDEX_CASE_DISTANCE);
     }
 
     /**
@@ -624,9 +659,17 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      * @return the geodesic distance to another agent
      */
     public Integer getGeodesicDistanceTo(Agent agent) {
+        if (this.getId().equals(agent.getId())) {
+            return 0;
+        }
         DijkstraShortestPath dsp = new DijkstraShortestPath();
         dsp.executeShortestPaths(this);
         return dsp.getShortestPathLength(agent);
+    }
+
+    public double getAssortativity() {
+        return(StatsComputer.computeAssortativity(this.getEdgeSet(),
+                this.getNetwork().getAssortativityCondition()));
     }
 
     /**

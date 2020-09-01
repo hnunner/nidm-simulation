@@ -42,8 +42,8 @@ public class SimulationStats {
     private int roundLastInfection;
     private int epidemicDurationStatic;
     private int epidemicDurationDynamic;
-    private int epidemicMaxInfectionsStatic;
-    private int epidemicMaxInfectionsDynamic;
+    private int epidemicPeakSizeStatic;
+    private int epidemicPeakSizeDynamic;
     private int epidemicPeakStatic;
     private int epidemicPeakDynamic;
     private SimulationStage simStage;
@@ -241,31 +241,31 @@ public class SimulationStats {
     }
 
     /**
-     * @return the epidemicMaxInfectionsStatic
+     * @return the epidemicPeakSizeStatic
      */
-    public int getEpidemicMaxInfectionsStatic() {
-        return epidemicMaxInfectionsStatic;
+    public int getEpidemicPeakSizeStatic() {
+        return epidemicPeakSizeStatic;
     }
 
     /**
-     * @param epidemicMaxInfectionsStatic the epidemicMaxInfectionsStatic to set
+     * @param epidemicPeakSizeStatic the epidemicPeakSizeStatic to set
      */
-    public void setEpidemicMaxInfectionsStatic(int epidemicMaxInfectionsStatic) {
-        this.epidemicMaxInfectionsStatic = epidemicMaxInfectionsStatic;
+    public void setEpidemicPeakSizeStatic(int epidemicPeakSizeStatic) {
+        this.epidemicPeakSizeStatic = epidemicPeakSizeStatic;
     }
 
     /**
-     * @return the epidemicMaxInfectionsDynamic
+     * @return the epidemicPeakSizeDynamic
      */
-    public int getEpidemicMaxInfectionsDynamic() {
-        return epidemicMaxInfectionsDynamic;
+    public int getEpidemicPeakSizeDynamic() {
+        return epidemicPeakSizeDynamic;
     }
 
     /**
-     * @param epidemicMaxInfectionsDynamic the epidemicMaxInfectionsDynamic to set
+     * @param epidemicPeakSizeDynamic the epidemicPeakSizeDynamic to set
      */
-    public void setEpidemicMaxInfectionsDynamic(int epidemicMaxInfectionsDynamic) {
-        this.epidemicMaxInfectionsDynamic = epidemicMaxInfectionsDynamic;
+    public void setEpidemicMaxInfectionsDynamic(int epidemicPeakSizeDynamic) {
+        this.epidemicPeakSizeDynamic = epidemicPeakSizeDynamic;
     }
 
     /**
@@ -302,8 +302,8 @@ public class SimulationStats {
     public void resetEpidemicStats() {
         this.epidemicDurationDynamic = 0;
         this.epidemicDurationStatic = 0;
-        this.epidemicMaxInfectionsDynamic = 0;
-        this.epidemicMaxInfectionsStatic = 0;
+        this.epidemicPeakSizeDynamic = 0;
+        this.epidemicPeakSizeStatic = 0;
         this.epidemicPeakDynamic = 0;
         this.epidemicPeakStatic = 0;
     }

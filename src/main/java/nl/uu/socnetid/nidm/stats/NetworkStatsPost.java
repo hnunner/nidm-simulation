@@ -23,59 +23,55 @@
  *      Nunner, H., Buskens, V., & Kretzschmar, M. (2019). A model for the co-evolution of dynamic
  *      social networks and infectious diseases. Manuscript sumbitted for publication.
  */
-package nl.uu.socnetid.nidm.agents;
+package nl.uu.socnetid.nidm.stats;
+
+import nl.uu.socnetid.nidm.networks.Network;
 
 /**
  * @author Hendrik Nunner
  */
-public enum AgentAttributes {
+public class NetworkStatsPost {
 
-    UTILITY_FUNCTION("utility.function"),
-    DISEASE_SPECS("disease.specs"),
-    DISEASE_GROUP("disease.group"),
-    DISEASE_INFECTION("disease.infection"),
-    UI_CLASS("ui.class"),
-    RISK_FACTOR_SIGMA("risk.factor.sigma"),
-    RISK_FACTOR_PI("risk.factor.pi"),
-    RISK_MEANING_SIGMA("risk.meaning.sigma"),
-    RISK_MEANING_PI("risk.meaning.pi"),
-    PHI("phi"),
-    PSI("psi"),
-    XI("xi"),
-    OMEGA("omega"),
-    OMEGA_SHUFFLE("omega.shuffle"),
-    SATISFIED("satisfied"),
-    CONNECTION_STATS("connection.stats"),
-    AGE("age"),
-    ASSORTATIVITY_CONDITION("assortativity.condition"),
-    CONSIDER_AGE("consider.age"),
-    FORCE_INFECTED("force.infected"),
-    INITIAL_INDEX_CASE_DISTANCE("initial.index.case.distance"),
-    BETWEENNESS("betweenness"),
-    BETWEENNESS_LAST_COMPUTATION("betweenness.last.computation"),
-    CLOSENESS("closeness"),
-    CLOSENESS_LAST_COMPUTATION("closeness.last.computation");
+    private final boolean stable;
+    private final double infectedPercent;
+    private final double recoveredPercent;
+    private final double satisfiedPercent;
 
-    // the name
-    private String name;
 
-    /**
-     * Constructor, setting the name
-     *
-     * @param name
-     *          the name of the enum
-     */
-    AgentAttributes(String name) {
-        this.name = name;
+    public NetworkStatsPost(Network network) {
+        this.stable = network.isStable();
+        double pct = 100D / network.getAgents().size();
+        this.infectedPercent = pct * network.getInfected().size();
+        this.recoveredPercent = pct * network.getRecovered().size();
+        this.satisfiedPercent = pct * network.getSatisfied().size();
     }
 
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Enum#toString()
+    /**
+     * @return the stable
      */
-    @Override
-    public String toString() {
-        return name;
+    public boolean isStable() {
+        return stable;
+    }
+
+    /**
+     * @return the infectedPercent
+     */
+    public double getInfectedPercent() {
+        return infectedPercent;
+    }
+
+    /**
+     * @return the recoveredPercent
+     */
+    public double getRecoveredPercent() {
+        return recoveredPercent;
+    }
+
+    /**
+     * @return the satisfiedPercent
+     */
+    public double getSatisfiedPercent() {
+        return satisfiedPercent;
     }
 
 }
