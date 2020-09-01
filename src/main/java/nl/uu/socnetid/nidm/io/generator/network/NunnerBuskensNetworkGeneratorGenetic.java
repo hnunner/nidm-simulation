@@ -111,6 +111,7 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
 
     // simulation
     private boolean simFinished = false;
+    private Simulation simulation;
 
 
     /**
@@ -274,7 +275,7 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
         initNetwork(nbg.getAvC2(), nbg.getAlpha());
 
         // simulate
-        Simulation simulation = new Simulation(this.network);
+        this.simulation = new Simulation(this.network);
         simulation.addSimulationListener(this);
         simulation.simulateUntilStable(PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getRoundsMax());
     }
@@ -374,7 +375,7 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
      */
     private void amendSummary() {
         this.dgData.getUtilityModelParams().setOffspring(this.currentOffspring);
-        this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
+        this.dgData.setNetStatsCurrent(new NetworkStats(this.network, this.simulation.getRounds()));
         this.nsWriter.writeCurrentData();
     }
 
@@ -424,7 +425,7 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
 
         // simulation finished when fitness is not improving anymore
         this.simFinished = this.fitnessPrevRound < this.currentOffspring.getFitnessOverall(
-                this.network.getAvDegree(), this.network.getAvClustering());
+                this.network.getAvDegree(simulation.getRounds()), this.network.getAvClustering(simulation.getRounds()));
 
         if (simFinished) {
             // stop simulation
@@ -432,7 +433,7 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
         } else {
             // fitness
             this.currentOffspring.setFitness(
-                    this.network.getAvDegree(), this.network.getAvClustering());
+                    this.network.getAvDegree(simulation.getRounds()), this.network.getAvClustering(simulation.getRounds()));
             this.fitnessPrevRound = this.currentOffspring.getFitnessOverall();
             // exports only when fitness is still improving
             amendSummary();         // amend summary CSV

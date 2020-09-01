@@ -45,9 +45,9 @@ import nl.uu.socnetid.nidm.data.out.EpidemicStructures;
 import nl.uu.socnetid.nidm.data.out.NunnerBuskensParameters;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
-import nl.uu.socnetid.nidm.io.csv.NunnerBuskensAgentDetailsWriter;
+import nl.uu.socnetid.nidm.io.csv.NunnerBuskensAgentDetailsWriterReduced;
 import nl.uu.socnetid.nidm.io.csv.NunnerBuskensRoundSummaryWriter;
-import nl.uu.socnetid.nidm.io.csv.NunnerBuskensSimulationSummaryWriter;
+import nl.uu.socnetid.nidm.io.csv.NunnerBuskensSimulationSummaryWriterReduced;
 import nl.uu.socnetid.nidm.io.network.GEXFWriter;
 import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.simulation.Simulation;
@@ -74,15 +74,16 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
 
     // network
     private Network network;
+    private Agent indexCase;
 
     // simulation
     private Simulation simulation;
 
     // stats & writer
     private DataGeneratorData<NunnerBuskensParameters> dgData;
-    private NunnerBuskensSimulationSummaryWriter ssWriter;
+    private NunnerBuskensSimulationSummaryWriterReduced ssWriter;
     private NunnerBuskensRoundSummaryWriter rsWriter;
-    private NunnerBuskensAgentDetailsWriter adWriter;
+    private NunnerBuskensAgentDetailsWriterReduced adWriter;
     private GEXFWriter gexfWriter;
 
 
@@ -124,7 +125,8 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
     protected void initWriters() throws IOException {
         // summary CSV
         if (PropertiesHandler.getInstance().isExportSummary()) {
-            this.ssWriter = new NunnerBuskensSimulationSummaryWriter(getExportPath() + "simulation-summary.csv", this.dgData);
+            this.ssWriter = new NunnerBuskensSimulationSummaryWriterReduced(getExportPath() + "simulation-summary.csv",
+                    this.dgData);
         }
         // round summary CSV
         if (PropertiesHandler.getInstance().isExportSummaryEachRound()) {
@@ -133,7 +135,7 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
         // agent details
         if (PropertiesHandler.getInstance().isExportAgentDetails() ||
                 PropertiesHandler.getInstance().isExportAgentDetailsReduced()) {
-            this.adWriter = new NunnerBuskensAgentDetailsWriter(getExportPath() + "agent-details.csv", this.dgData);
+            this.adWriter = new NunnerBuskensAgentDetailsWriterReduced(getExportPath() + "agent-details.csv", this.dgData);
         }
     }
 
@@ -478,12 +480,17 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
                 network.createFullNetwork();
             }
 
-            Agent indexCase = this.network.getRandomNotInfectedAgent();
+            this.indexCase = this.network.getRandomNotInfectedAgent();
 
             if (this.dgData.getUtilityModelParams().getEpStructure() == EpidemicStructures.BOTH) {
                 this.dgData.getUtilityModelParams().setCurrEpStructure(EpidemicStructures.STATIC);
                 this.simulatePreEpidemic();
                 this.simulateEpidemic(ds, indexCase, true);
+                // write agent data
+                if (PropertiesHandler.getInstance().isExportAgentDetails() ||
+                        PropertiesHandler.getInstance().isExportAgentDetailsReduced()) {
+                            this.adWriter.writeCurrentData();
+                }
                 this.dgData.getUtilityModelParams().setCurrEpStructure(EpidemicStructures.DYNAMIC);
                 this.simulateEpidemic(ds, indexCase, false);
 
@@ -493,10 +500,11 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
                 this.simulateEpidemic(ds, indexCase, true);
             }
 
-            // write data
+            // write summary data
             if (PropertiesHandler.getInstance().isExportSummary()) {
                 this.ssWriter.writeCurrentData();
             }
+            // write agent data
             if (PropertiesHandler.getInstance().isExportAgentDetails() ||
                     PropertiesHandler.getInstance().isExportAgentDetailsReduced()) {
                         this.adWriter.writeCurrentData();
@@ -695,7 +703,8 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
         }
 
         if (PropertiesHandler.getInstance().isExportSummaryEachRound() || PropertiesHandler.getInstance().isExportAgentDetails()) {
-            this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
+            this.dgData.setNetStatsCurrent(new NetworkStats(this.network, simulation.getRounds()));
+            this.dgData.setIndexCaseStatsCurrent(new AgentStatsPre(this.indexCase, simulation.getRounds()));
         }
         if (PropertiesHandler.getInstance().isExportSummaryEachRound()) {
             this.rsWriter.writeCurrentData();
@@ -733,7 +742,7 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
             if (PropertiesHandler.getInstance().isExportSummaryEachRound() ||
                     PropertiesHandler.getInstance().isExportAgentDetails() ||
                     PropertiesHandler.getInstance().isExportAgentDetailsReduced()) {
-                this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
+                this.dgData.setNetStatsCurrent(new NetworkStats(this.network, simulation.getRounds()));
             }
             if (PropertiesHandler.getInstance().isExportSummaryEachRound()) {
                 this.rsWriter.writeCurrentData();

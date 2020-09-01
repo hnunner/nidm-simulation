@@ -89,6 +89,20 @@ public class Network extends SingleGraph implements SimulationListener {
     // assortativity condition
     private AssortativityConditions ac;
 
+    // reduction of computational power
+    int avPathLengthRound = -1;
+    double avPathLength;
+    int assortativityRound = -1;
+    double assortativity;
+    int avClusteringRound = -1;
+    double avClustering;
+    int avDegreeRound = -1;
+    double avDegree;
+    int avBetweennessRound = -1;
+    double avBetweenness;
+    int avClosenessRound = -1;
+    double avCloseness;
+
 
     /**
      * Constructor.
@@ -808,10 +822,16 @@ public class Network extends SingleGraph implements SimulationListener {
     /**
      * Gets the average degree of the network.
      *
+     * @param simRound
+     *          the simulation round to get the average degree for
      * @return the average degree of the network
      */
-    public double getAvDegree() {
-        return Toolkit.averageDegree(this);
+    public double getAvDegree(int simRound) {
+        if (avDegreeRound < simRound) {
+            this.avDegree = Toolkit.averageDegree(this);
+            this.avDegreeRound = simRound;
+        }
+        return this.avDegree;
     }
 
     /**
@@ -893,13 +913,17 @@ public class Network extends SingleGraph implements SimulationListener {
      * @return the average closeness of the network
      */
     public double getAvBetweenness(int simRound) {
-        double avBetweenness = 0;
-        Iterator<Agent> agentsIt = this.getAgents().iterator();
-        while (agentsIt.hasNext()) {
-            Agent agent = agentsIt.next();
-            avBetweenness += agent.getBetweennessNormalized(simRound);
+        if (this.avBetweennessRound < simRound) {
+            double avBetweenness = 0;
+            Iterator<Agent> agentsIt = this.getAgents().iterator();
+            while (agentsIt.hasNext()) {
+                Agent agent = agentsIt.next();
+                avBetweenness += agent.getBetweennessNormalized(simRound);
+            }
+            this.avBetweenness = avBetweenness/this.getAgents().size();
+            this.avBetweennessRound = simRound;
         }
-        return avBetweenness/this.getAgents().size();
+        return this.avBetweenness;
     }
 
     /**
@@ -910,13 +934,17 @@ public class Network extends SingleGraph implements SimulationListener {
      * @return the average closeness of the network
      */
     public double getAvCloseness(int simRound) {
-        double avCloseness = 0;
-        Iterator<Agent> agentsIt = this.getAgents().iterator();
-        while (agentsIt.hasNext()) {
-            Agent agent = agentsIt.next();
-            avCloseness += agent.getCloseness(simRound);
+        if (this.avClosenessRound < simRound) {
+            double avCloseness = 0;
+            Iterator<Agent> agentsIt = this.getAgents().iterator();
+            while (agentsIt.hasNext()) {
+                Agent agent = agentsIt.next();
+                avCloseness += agent.getCloseness(simRound);
+            }
+            this.avCloseness = avCloseness/this.getAgents().size();
+            this.avClosenessRound = simRound;
         }
-        return avCloseness/this.getAgents().size();
+        return this.avCloseness;
     }
 
     /**
@@ -943,53 +971,79 @@ public class Network extends SingleGraph implements SimulationListener {
      * @return the assortativity of the network
      */
     public double getAssortativity() {
-        return(StatsComputer.computeAssortativity(this.getEdgeSet(), this.getAssortativityCondition()));
+        this.assortativity = StatsComputer.computeAssortativity(this.getEdgeSet(), this.getAssortativityCondition());
+        return this.assortativity;
+    }
+
+    /**
+     * Gets the assortativity of the network.
+     *
+     * @param simRound
+     *          the simulation round to get the average path length for
+     * @return the assortativity of the network
+     */
+    public double getAssortativity(int simRound) {
+        if (assortativityRound < simRound) {
+            this.assortativity = StatsComputer.computeAssortativity(this.getEdgeSet(), this.getAssortativityCondition());
+            this.assortativityRound = simRound;
+        }
+        return this.assortativity;
     }
 
     /**
      * Gets the average clustering coefficient of the network.
      *
+     * @param simRound
+     *          the simulation round to the clustering coefficient for
      * @return the average clustering coefficient of the network
      */
-    public double getAvClustering() {
-        return Toolkit.averageClusteringCoefficient(this);
+    public double getAvClustering(int simRound) {
+        if (avClusteringRound < simRound) {
+            this.avClustering = Toolkit.averageClusteringCoefficient(this);
+            this.avClusteringRound = simRound;
+        }
+        return this.avClustering;
     }
 
     /**
      * Gets the average path length of the network.
      *
+     * @param simRound
+     *          the simulation round to get the average path length for
      * @return the average path length of the network
      */
-    public double getAvPathLength() {
-        double totalShortestPathLengths = 0;
+    public double getAvPathLength(int simRound) {
+        if (this.avPathLengthRound < simRound) {
+            double totalShortestPathLengths = 0;
+            Collection<Agent> agents1 = this.getAgents();
+            Iterator<Agent> agents1It = agents1.iterator();
+            while (agents1It.hasNext()) {
+                Agent a1 = agents1It.next();
+                DijkstraShortestPath dsp = new DijkstraShortestPath();
+                dsp.executeShortestPaths(a1);
 
-        Collection<Agent> agents1 = this.getAgents();
-        Iterator<Agent> agents1It = agents1.iterator();
-        while (agents1It.hasNext()) {
-            Agent a1 = agents1It.next();
-            DijkstraShortestPath dsp = new DijkstraShortestPath();
-            dsp.executeShortestPaths(a1);
-
-            Collection<Agent> agents2 = this.getAgents();
-            Iterator<Agent> agents2It = agents2.iterator();
-            while (agents2It.hasNext()) {
-                Agent a2 = agents2It.next();
-                // skip if a1 and a2 are identical
-                if (a1.getId().equals(a2.getId())) {
-                    continue;
-                }
-                Integer shortestPathLength = dsp.getShortestPathLength(a2);
-                if (shortestPathLength != null) {
-                    totalShortestPathLengths += shortestPathLength.intValue();
-                } else {
-                    // if nodes cannot be reached: path length = "infinity"
-                    totalShortestPathLengths += Integer.MAX_VALUE;
+                Collection<Agent> agents2 = this.getAgents();
+                Iterator<Agent> agents2It = agents2.iterator();
+                while (agents2It.hasNext()) {
+                    Agent a2 = agents2It.next();
+                    // skip if a1 and a2 are identical
+                    if (a1.getId().equals(a2.getId())) {
+                        continue;
+                    }
+                    Integer shortestPathLength = dsp.getShortestPathLength(a2);
+                    if (shortestPathLength != null) {
+                        totalShortestPathLengths += shortestPathLength.intValue();
+                    } else {
+                        // if nodes cannot be reached: path length = "infinity"
+                        totalShortestPathLengths += Integer.MAX_VALUE;
+                    }
                 }
             }
+            // average
+            this.avPathLength = totalShortestPathLengths / (this.getN() * (this.getN()-1));
+            this.avPathLengthRound = simRound;
         }
-
-        // average
-        return totalShortestPathLengths / (this.getN() * (this.getN()-1));
+        return this.avPathLength;
     }
 
     /**

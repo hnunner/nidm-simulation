@@ -331,7 +331,7 @@ public class NunnerBuskensNetworkGenerator extends AbstractGenerator implements 
      * Amends the summary file by writing a row with the current state of the network.
      */
     private void amendSummary() {
-        this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
+        this.dgData.setNetStatsCurrent(new NetworkStats(this.network, this.simulation.getRounds()));
         this.nsWriter.writeCurrentData();
     }
 
