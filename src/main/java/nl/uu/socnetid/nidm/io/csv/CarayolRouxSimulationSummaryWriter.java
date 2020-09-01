@@ -116,7 +116,7 @@ public class CarayolRouxSimulationSummaryWriter extends CsvFileWriter<CarayolRou
         currData.add(this.dgData.getNetStatsCurrent().isStable() ? "1" : "0");
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvDegree()));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvClustering()));
-        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvPathLength()));
+        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvPathLength(this.dgData.getSimStats().getCurrRound())));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getDensity()));
 
         writeLine(currData);

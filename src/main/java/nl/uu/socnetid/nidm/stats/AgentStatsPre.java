@@ -66,9 +66,9 @@ public class AgentStatsPre {
         this.satisfied = agent.isSatisfied();
         this.degree1 = agent.getDegree();
         this.closeness = agent.getCloseness(simRound);
-        this.clustering = agent.getClustering();
+        this.clustering = agent.getClustering(simRound);
         this.betweennessNormalized = agent.getBetweennessNormalized(simRound);
-        this.assortativity = agent.getAssortativity();
+        this.assortativity = agent.getAssortativity(simRound);
         this.indexCaseDistance = agent.getInitialIndexCaseDistance();
     }
 

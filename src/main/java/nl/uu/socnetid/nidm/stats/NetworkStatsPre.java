@@ -46,12 +46,12 @@ public class NetworkStatsPre {
     public NetworkStatsPre(Network network, int simRound) {
         this.network = network;
         this.stable = network.isStable();
-        this.assortativity = network.getAssortativity();
-        this.avDegree = network.getAvDegree();
+        this.assortativity = network.getAssortativity(simRound);
+        this.avDegree = network.getAvDegree(simRound);
         this.avBetweenness = network.getAvBetweenness(simRound);
         this.avCloseness = network.getAvCloseness(simRound);
-        this.avClustering = network.getAvClustering();
-        this.avPathLength = network.getAvPathLength();
+        this.avClustering = network.getAvClustering(simRound);
+        this.avPathLength = network.getAvPathLength(simRound);
     }
 
     /**
