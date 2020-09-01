@@ -30,15 +30,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.graphstream.graph.Edge;
 
 import nl.uu.socnetid.nidm.agents.Agent;
-import nl.uu.socnetid.nidm.agents.AgentListener;
 import nl.uu.socnetid.nidm.data.in.AgeStructure;
 import nl.uu.socnetid.nidm.data.out.DataGeneratorData;
 import nl.uu.socnetid.nidm.data.out.EpidemicStructures;
@@ -53,8 +53,11 @@ import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.simulation.Simulation;
 import nl.uu.socnetid.nidm.simulation.SimulationListener;
 import nl.uu.socnetid.nidm.simulation.SimulationStage;
-import nl.uu.socnetid.nidm.stats.AgentStats;
+import nl.uu.socnetid.nidm.stats.AgentStatsPost;
+import nl.uu.socnetid.nidm.stats.AgentStatsPre;
 import nl.uu.socnetid.nidm.stats.NetworkStats;
+import nl.uu.socnetid.nidm.stats.NetworkStatsPost;
+import nl.uu.socnetid.nidm.stats.NetworkStatsPre;
 import nl.uu.socnetid.nidm.system.PropertiesHandler;
 import nl.uu.socnetid.nidm.utility.NunnerBuskens;
 import nl.uu.socnetid.nidm.utility.UtilityFunction;
@@ -64,17 +67,13 @@ import nl.uu.socnetid.nidm.utility.UtilityFunction;
  *
  * TODO unify data generators
  */
-public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements AgentListener, SimulationListener {
+public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements SimulationListener {
 
     // logger
     private static final Logger logger = LogManager.getLogger(NunnerBuskensDataGenerator.class);
 
     // network
     private Network network;
-    private double tiesBrokenWithInfectionPresentStatic;
-    private double networkChangesWithInfectionPresentStatic;
-    private double tiesBrokenWithInfectionPresentDynamic;
-    private double networkChangesWithInfectionPresentDynamic;
 
     // simulation
     private Simulation simulation;
@@ -461,7 +460,7 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
                         !this.dgData.getUtilityModelParams().isCurrRPiRandomHomogeneous()) {
                     rPi = this.dgData.getUtilityModelParams().getCurrRPis()[n];
                 }
-                Agent agent = network.addAgent(uf, ds,
+                network.addAgent(uf, ds,
                         rSigma,
                         rPi,
                         this.dgData.getUtilityModelParams().getCurrPhi(),
@@ -471,7 +470,6 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
                         // TODO make age optional
                         AgeStructure.getInstance().getRandomAge(),
                         false);
-                agent.addAgentListener(this);
             }
             this.dgData.setAgents(new LinkedList<Agent>(network.getAgents()));
 
@@ -485,19 +483,23 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
             if (this.dgData.getUtilityModelParams().getEpStructure() == EpidemicStructures.BOTH) {
                 this.dgData.getUtilityModelParams().setCurrEpStructure(EpidemicStructures.STATIC);
                 this.simulatePreEpidemic();
-                this.simulateEpidemic(ds, indexCase);
+                this.simulateEpidemic(ds, indexCase, true);
                 this.dgData.getUtilityModelParams().setCurrEpStructure(EpidemicStructures.DYNAMIC);
-                this.simulateEpidemic(ds, indexCase);
+                this.simulateEpidemic(ds, indexCase, false);
 
             } else {
                 this.dgData.getUtilityModelParams().setCurrEpStructure(this.dgData.getUtilityModelParams().getEpStructure());
                 this.simulatePreEpidemic();
-                this.simulateEpidemic(ds, indexCase);
+                this.simulateEpidemic(ds, indexCase, true);
             }
 
-            // log simulation summary
+            // write data
             if (PropertiesHandler.getInstance().isExportSummary()) {
                 this.ssWriter.writeCurrentData();
+            }
+            if (PropertiesHandler.getInstance().isExportAgentDetails() ||
+                    PropertiesHandler.getInstance().isExportAgentDetailsReduced()) {
+                        this.adWriter.writeCurrentData();
             }
 
             logger.debug("Finished - "
@@ -513,40 +515,50 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
      *
      */
     private void simulatePreEpidemic() {
+
         boolean isEpStatic = this.dgData.getUtilityModelParams().getCurrEpStructure() == EpidemicStructures.STATIC;
+
         // set up general stats
         this.dgData.getSimStats().setSimStage(SimulationStage.PRE_EPIDEMIC);
+
         // create simulation
         this.simulation = new Simulation(network, isEpStatic);
         this.simulation.addSimulationListener(this);
+
         // simulate
         this.simulation.simulateUntilStable(this.dgData.getUtilityModelParams().getZeta());
-        // save data of last round of pre-epidemic stage
-        this.dgData.setNetStatsPre(new NetworkStats(this.network));
-        this.dgData.getNetStatsPre().setTiesBrokenWithInfectionPresent(0.0);
-        this.dgData.getNetStatsPre().setNetworkChangesWithInfectionPresent(0.0);
     }
 
     /**
      * @param ds
      */
-    private void simulateEpidemic(DiseaseSpecs ds, Agent indexCase) {
-        this.network.resetDiseaseStates();
+    private void simulateEpidemic(DiseaseSpecs ds, Agent indexCase, boolean savePreEpidemicData) {
 
+        this.network.resetDiseaseStates();
         indexCase.forceInfect(ds);
-        this.dgData.setIndexCaseStats(new AgentStats(indexCase));
+
+        if (savePreEpidemicData) {
+            this.dgData.setNetStatsPre(new NetworkStatsPre(this.network, this.simulation.getRounds()));
+            this.dgData.setIndexCaseStats(new AgentStatsPre(indexCase, this.simulation.getRounds()));
+            HashMap<String, AgentStatsPre> agentStats = new HashMap<String, AgentStatsPre>();
+            Iterator<Agent> aIt = this.network.getAgentIterator();
+            while (aIt.hasNext()) {
+                Agent agent = aIt.next();
+                agent.setInitialIndexCaseDistance(indexCase);
+                agentStats.put(agent.getId(), new AgentStatsPre(agent, this.simulation.getRounds()));
+            }
+            this.dgData.setAgentStatsPre(agentStats);
+        }
+
+
         this.dgData.getSimStats().setSimStage(SimulationStage.ACTIVE_EPIDEMIC);
 
         switch (this.dgData.getUtilityModelParams().getCurrEpStructure()) {
             case STATIC:
-                this.tiesBrokenWithInfectionPresentStatic = 0;
-                this.networkChangesWithInfectionPresentStatic = 0;
                 this.simulation.setEpStatic(true);
                 break;
 
             case DYNAMIC:
-                this.tiesBrokenWithInfectionPresentDynamic = 0;
-                this.networkChangesWithInfectionPresentDynamic = 0;
                 this.simulation.setEpStatic(false);
                 break;
 
@@ -562,19 +574,25 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
         // save data of last round of post-epidemic stage
         switch (this.dgData.getUtilityModelParams().getCurrEpStructure()) {
             case STATIC:
-                this.dgData.setNetStatsPostStatic(new NetworkStats(this.network));
-                this.dgData.getNetStatsPostStatic().setTiesBrokenWithInfectionPresent(
-                        this.tiesBrokenWithInfectionPresentStatic);
-                this.dgData.getNetStatsPostStatic().setNetworkChangesWithInfectionPresent(
-                        this.networkChangesWithInfectionPresentStatic);
+                this.dgData.setNetStatsPostStatic(new NetworkStatsPost(this.network));
+                HashMap<String, AgentStatsPost> agentStatsStatic = new HashMap<String, AgentStatsPost>();
+                Iterator<Agent> aItStatic = this.network.getAgentIterator();
+                while (aItStatic.hasNext()) {
+                    Agent agent = aItStatic.next();
+                    agentStatsStatic.put(agent.getId(), new AgentStatsPost(agent));
+                }
+                this.dgData.setAgentStatsPostStatic(agentStatsStatic);
                 break;
 
             case DYNAMIC:
-                this.dgData.setNetStatsPostDynamic(new NetworkStats(this.network));
-                this.dgData.getNetStatsPostDynamic().setTiesBrokenWithInfectionPresent(
-                        this.tiesBrokenWithInfectionPresentDynamic);
-                this.dgData.getNetStatsPostDynamic().setNetworkChangesWithInfectionPresent(
-                        this.networkChangesWithInfectionPresentDynamic);
+                this.dgData.setNetStatsPostDynamic(new NetworkStatsPost(this.network));
+                HashMap<String, AgentStatsPost> agentStatsDynamic = new HashMap<String, AgentStatsPost>();
+                Iterator<Agent> aItDynamic = this.network.getAgentIterator();
+                while (aItDynamic.hasNext()) {
+                    Agent agent = aItDynamic.next();
+                    agentStatsDynamic.put(agent.getId(), new AgentStatsPost(agent));
+                }
+                this.dgData.setAgentStatsPostDynamic(agentStatsDynamic);
                 break;
 
             case BOTH:
@@ -630,87 +648,11 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
 
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.agents.AgentListener#notifyAttributeAdded(
-     * nl.uu.socnetid.nidm.agents.Agent, java.lang.String, java.lang.Object)
-     */
-    @Override
-    public void notifyAttributeAdded(Agent agent, String attribute, Object value) { }
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.agents.AgentListener#notifyAttributeChanged(
-     * nl.uu.socnetid.nidm.agents.Agent, java.lang.String, java.lang.Object, java.lang.Object)
-     */
-    @Override
-    public void notifyAttributeChanged(Agent agent, String attribute, Object oldValue, Object newValue) { }
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.agents.AgentListener#notifyAttributeRemoved(
-     * nl.uu.socnetid.nidm.agents.Agent, java.lang.String)
-     */
-    @Override
-    public void notifyAttributeRemoved(Agent agent, String attribute) { }
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.agents.AgentListener#notifyConnectionAdded(
-     * org.graphstream.graph.Edge, nl.uu.socnetid.nidm.agents.Agent, nl.uu.socnetid.nidm.agents.Agent)
-     */
-    @Override
-    public void notifyConnectionAdded(Edge edge, Agent agent1, Agent agent2) {
-        if (this.dgData.getSimStats().getSimStage() == SimulationStage.ACTIVE_EPIDEMIC) {
-            switch (this.dgData.getUtilityModelParams().getCurrEpStructure()) {
-                case STATIC:
-                    this.networkChangesWithInfectionPresentStatic++;
-                    break;
-
-                case DYNAMIC:
-                    this.networkChangesWithInfectionPresentDynamic++;
-                    break;
-
-                case BOTH:
-                default:
-                    break;
-            }
-        }
-    }
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.agents.AgentListener#notifyConnectionRemoved(
-     * nl.uu.socnetid.nidm.agents.Agent, org.graphstream.graph.Edge)
-     */
-    @Override
-    public void notifyConnectionRemoved(Agent agent, Edge edge) {
-        if (this.dgData.getSimStats().getSimStage() == SimulationStage.ACTIVE_EPIDEMIC) {
-            switch (this.dgData.getUtilityModelParams().getCurrEpStructure()) {
-                case STATIC:
-                    this.tiesBrokenWithInfectionPresentStatic++;
-                    this.networkChangesWithInfectionPresentStatic++;
-                    break;
-
-                case DYNAMIC:
-                    this.tiesBrokenWithInfectionPresentDynamic++;
-                    this.networkChangesWithInfectionPresentDynamic++;
-                    break;
-
-                case BOTH:
-                default:
-                    break;
-            }
-        }
-    }
-
-    /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.simulation.SimulationListener#notifySimulationStarted(
      * nl.uu.socnetid.nidm.simulation.Simulation)
      */
     @Override
     public void notifySimulationStarted(Simulation simulation) { }
-
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.agents.AgentListener#notifyRoundFinished(
-     * nl.uu.socnetid.nidm.agents.Agent)
-     */
-    @Override
-    public void notifyRoundFinished(Agent agent) { }
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.simulation.SimulationListener#notifyRoundFinished(
@@ -726,14 +668,14 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
 
                 switch (this.dgData.getUtilityModelParams().getCurrEpStructure()) {
                     case STATIC:
-                        if (epidemicSize > this.dgData.getSimStats().getEpidemicMaxInfectionsStatic()) {
-                            this.dgData.getSimStats().setEpidemicMaxInfectionsStatic(epidemicSize);
+                        if (epidemicSize > this.dgData.getSimStats().getEpidemicPeakSizeStatic()) {
+                            this.dgData.getSimStats().setEpidemicPeakSizeStatic(epidemicSize);
                             this.dgData.getSimStats().setEpidemicPeakStatic(simulation.getRounds());
                         }
                         break;
 
                     case DYNAMIC:
-                        if (epidemicSize > this.dgData.getSimStats().getEpidemicMaxInfectionsDynamic()) {
+                        if (epidemicSize > this.dgData.getSimStats().getEpidemicPeakSizeDynamic()) {
                             this.dgData.getSimStats().setEpidemicMaxInfectionsDynamic(epidemicSize);
                             this.dgData.getSimStats().setEpidemicPeakDynamic(simulation.getRounds());
                         }
@@ -796,8 +738,7 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
             if (PropertiesHandler.getInstance().isExportSummaryEachRound()) {
                 this.rsWriter.writeCurrentData();
             }
-            if (PropertiesHandler.getInstance().isExportAgentDetails() ||
-                    PropertiesHandler.getInstance().isExportAgentDetailsReduced()) {
+            if (PropertiesHandler.getInstance().isExportAgentDetails()) {
                 this.adWriter.writeCurrentData();
             }
         }
