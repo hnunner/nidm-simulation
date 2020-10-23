@@ -53,7 +53,8 @@ COLORS                      <- c(Susceptible = "#F0E442",   # yellow
                                  Infected    = "#E69F00",   # orange
                                  Recovered   = "#0072B2",   # blue
                                  Degree      = "#888888",   # grey
-                                 Density     = "#000000")   # black
+                                 Density     = "#888888",   # grey
+                                 Clustering  = "#888888")   # grey
 
 
 ##################################### IMPORTS / DATA PREPARATIONS ####################################
@@ -190,6 +191,7 @@ plotSIRDevelopment <- function(rsData = reduceRoundSummaryData(loadRoundSummaryD
                                showRibbons = TRUE,
                                showDegree = TRUE,
                                showDensity = FALSE,
+                               showClustering = FALSE,
                                showAxes = TRUE) {
 
   ### SHARED data
@@ -218,6 +220,9 @@ plotSIRDevelopment <- function(rsData = reduceRoundSummaryData(loadRoundSummaryD
   if (showDensity) {
     scaleFactor           <- 100
   }
+  if (showClustering) {
+    scaleFactor           <- 10000
+  }
   if (showDegree) {
     scaleFactor           <- 10
   }
@@ -239,6 +244,25 @@ plotSIRDevelopment <- function(rsData = reduceRoundSummaryData(loadRoundSummaryD
     names(densityRibbonData) <- c("Timestep", "DenMin", "DenMax")
     ribbonData$DenMin   <- densityRibbonData$DenMin[match(ribbonData$Timestep, densityRibbonData$Timestep)]
     ribbonData$DenMax   <- densityRibbonData$DenMax[match(ribbonData$Timestep, densityRibbonData$Timestep)]
+  }
+
+  ### NETWORK CLUSTERING data
+  if (showClustering) {
+    # preparations :: statistical summary for clustering
+    summaryClustering      <- as.data.frame(do.call(rbind, with(rsData, tapply(net.prop.av.clustering, sim.prop.round, summary))))
+
+    # data for lines :: median
+    clusteringData         <- data.frame(rounds, "Clustering", summaryClustering$Median * scaleFactor)
+    names(clusteringData)  <- c("Timestep", "Measure", "Frequency")
+    plotData               <- rbind(plotData, clusteringData)
+
+    # data for ribbons :: 1st and 3rd quartile per compartment
+    clusteringRibbonData   <- data.frame(rounds,
+                                         summaryClustering$`1st Qu.` * scaleFactor,
+                                         summaryClustering$`3rd Qu.` * scaleFactor)
+    names(clusteringRibbonData) <- c("Timestep", "ClusMin", "ClusMax")
+    ribbonData$ClusMin   <- clusteringRibbonData$ClusMin[match(ribbonData$Timestep, clusteringRibbonData$Timestep)]
+    ribbonData$ClusMax   <- clusteringRibbonData$ClusMax[match(ribbonData$Timestep, clusteringRibbonData$Timestep)]
   }
 
   ### DEGREE data
@@ -275,6 +299,17 @@ plotSIRDevelopment <- function(rsData = reduceRoundSummaryData(loadRoundSummaryD
                     aes(x = Timestep, ymin = DenMin, ymax = DenMax),
                     inherit.aes = FALSE,
                     fill = COLORS["Density"],
+                    alpha = RIBBON_ALPHA)
+    }
+
+    # ribbon :: clustering
+    if (showClustering) {
+      plot <- plot +
+        # clustering
+        geom_ribbon(data = ribbonData,
+                    aes(x = Timestep, ymin = ClusMin, ymax = ClusMax),
+                    inherit.aes = FALSE,
+                    fill = COLORS["Clustering"],
                     alpha = RIBBON_ALPHA)
     }
 
@@ -333,6 +368,9 @@ plotSIRDevelopment <- function(rsData = reduceRoundSummaryData(loadRoundSummaryD
     } else if (showDensity) {
       plot <- plot +
         scale_y_continuous(sec.axis = sec_axis(~./scaleFactor, name = "Density"))
+    } else if (showClustering) {
+      plot <- plot +
+        scale_y_continuous(sec.axis = sec_axis(~./scaleFactor, name = "Clustering"))
     }
   }
 
@@ -366,6 +404,7 @@ exportPlots <- function(rsData = reduceRoundSummaryData(loadRoundSummaryData(), 
                         showRibbons = TRUE,
                         showDegree = TRUE,
                         showDensity = FALSE,
+                        showClustering = FALSE,
                         showAxes = TRUE,
                         filePrefix = "individual.",
                         plotWidth = EXPORT_PLOT_WIDTH,
@@ -379,7 +418,7 @@ exportPlots <- function(rsData = reduceRoundSummaryData(loadRoundSummaryData(), 
                                          col1 = 'net.param.beta',
                                          col2 = 'dis.param.mu')
   for (subsetBetaMu in subsetsBetaMu) {
-    plot <- plotSIRDevelopment(subsetBetaMu, showLegend, showRibbons, showDegree, showDensity, showAxes)
+    plot <- plotSIRDevelopment(subsetBetaMu, showLegend, showRibbons, showDegree, showDensity, showClustering, showAxes)
 
     filepath <- paste(EXPORT_PATH_PLOTS,
                       filePrefix,
@@ -402,7 +441,7 @@ exportPlots <- function(rsData = reduceRoundSummaryData(loadRoundSummaryData(), 
                                      col1 = 'net.param.r',
                                      col2 = 'dis.param.s')
   for (subsetRS in subsetsRS) {
-    plot <- plotSIRDevelopment(subsetRS, showLegend, showRibbons, showDegree, showDensity, showAxes)
+    plot <- plotSIRDevelopment(subsetRS, showLegend, showRibbons, showDegree, showDensity, showClustering, showAxes)
 
     filepath <- paste(EXPORT_PATH_PLOTS,
                       filePrefix,
@@ -433,10 +472,28 @@ exportGridPlots <- function(rsData = reduceRoundSummaryData(loadRoundSummaryData
     showRibbons = TRUE,
     showDegree = TRUE,
     showDensity = FALSE,
+    showClustering = FALSE,
     showAxes = FALSE,
     filePrefix = "grid.",
     plotWidth = 50,
     plotHeight = 35)
+
+  # per network size
+  for (N in unique(rsData$net.param.N)) {
+    rsData.by.N <- subset(rsData, net.param.N == N)
+    exportPlots(
+      rsData.by.N,
+      showLegend = FALSE,
+      showRibbons = TRUE,
+      showDegree = TRUE,
+      showDensity = FALSE,
+      showClustering = FALSE,
+      showAxes = FALSE,
+      filePrefix = paste("grid.N", N, ".", sep = ""),
+      plotWidth = 50,
+      plotHeight = 35)
+  }
+
 }
 
 
