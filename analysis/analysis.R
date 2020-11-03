@@ -13,7 +13,10 @@ sourceLibs(c("reshape2",    # 'melt' function
              "QuantPsyc",   # 'meanCenter' function
              "lme4",        # regression analyses
              "sjstats",     # "icc" function
-             "texreg"       # html export
+             "texreg",      # html export
+             "e1071",       # skewness function
+             "dplyr",       # %>% function
+             "xtable"       # data frame as HTML
              )
            )
 
@@ -77,6 +80,80 @@ loadCSV <- function(filePath) {
 #----------------------------------------------------------------------------------------------------#
 loadSimulationSummaryData <- function() {
   return(loadCSV(CSV_SUMMARY_PATH))
+}
+
+#----------------------------------------------------------------------------------------------------#
+# function: loadAgentDetailsData
+#     Loads agent detail data for NIDM simulations.
+# return: the agent detail data for NIDM simulations
+#----------------------------------------------------------------------------------------------------#
+loadAgentDetailsData <- function() {
+  return(loadCSV(CSV_AGENT_DETAILS_PATH))
+}
+
+#----------------------------------------------------------------------------------------------------#
+# function: aggregateAgentDetailsData
+#     Aggregates agent detail data for NIDM simulations.
+# return: the aggregated agent detail data for NIDM simulations
+#----------------------------------------------------------------------------------------------------#
+aggregateAgentDetailsData <- function(adData = loadAgentDetailsData()) {
+  adDataReduced <- data.frame("uid" = adData$sim.param.uid,
+                              "stage" = adData$sim.prop.stage,
+                              "density" = adData$net.prop.density,
+                              "degree" = adData$net.prop.av.degree,
+                              "clustering" = adData$net.prop.av.clustering,
+                              "ties.broken" = adData$act.prop.cons.broken.active,
+                              "ties.out.accepted" = adData$act.prop.cons.out.accepted,
+                              "ties.out.declined" = adData$act.prop.cons.out.declined)
+  adDataReduced$net.changes <- adDataReduced$ties.broken + adDataReduced$ties.out.accepted
+
+  adDataAgg <- adDataReduced %>%
+    group_by(uid, stage) %>%
+    summarise(net.changes.total = sum(net.changes, na.rm = TRUE))
+
+  adDataAgg <- merge(x = adDataAgg,
+                     y = adDataReduced %>%
+                       group_by(uid, stage) %>%
+                       summarise(ties.broken.av = sum(ties.broken, na.rm = TRUE)),
+                     by = c("uid", "stage"),
+                     all = TRUE)
+
+  adDataAgg <- merge(x = adDataAgg,
+                     y = adDataReduced %>%
+                       group_by(uid, stage) %>%
+                       summarise(ties.out.accepted.av = sum(ties.out.accepted, na.rm = TRUE)),
+                     by = c("uid", "stage"),
+                     all = TRUE)
+
+  adDataAgg <- merge(x = adDataAgg,
+                     y = adDataReduced %>%
+                       group_by(uid, stage) %>%
+                       summarise(ties.out.declined.av = sum(ties.out.declined, na.rm = TRUE)),
+                     by = c("uid", "stage"),
+                     all = TRUE)
+
+  adDataAgg <- merge(x = adDataAgg,
+                     y = adDataReduced %>%
+                       group_by(uid, stage) %>%
+                       summarise(density.av = mean(density, na.rm = TRUE)),
+                     by = c("uid", "stage"),
+                     all = TRUE)
+
+  adDataAgg <- merge(x = adDataAgg,
+                     y = adDataReduced %>%
+                       group_by(uid, stage) %>%
+                       summarise(degree.av = mean(degree, na.rm = TRUE)),
+                     by = c("uid", "stage"),
+                     all = TRUE)
+
+  adDataAgg <- merge(x = adDataAgg,
+                     y = adDataReduced %>%
+                       group_by(uid, stage) %>%
+                       summarise(clustering.av = mean(clustering, na.rm = TRUE)),
+                     by = c("uid", "stage"),
+                     all = TRUE)
+
+  return(adDataAgg)
 }
 
 #----------------------------------------------------------------------------------------------------#
@@ -1057,12 +1134,18 @@ exportDataFrame <- function(df, filename) {
   # create directory if necessary
   dir.create(EXPORT_PATH_NUM, showWarnings = FALSE)
 
-  filepath <- paste(EXPORT_PATH_NUM,
-                    filename,
-                    EXPORT_FILE_EXTENSION_DF,
-                    sep = "")
+  filepath.csv <- paste(EXPORT_PATH_NUM,
+                        filename,
+                        EXPORT_FILE_EXTENSION_DF,
+                        sep = "")
+  write.table(df, file=filepath.csv, sep = ";", row.names = TRUE, col.names = NA)
 
-  write.table(df, file=filepath, sep = ";", row.names = TRUE, col.names = NA)
+  filepath.html <- paste(EXPORT_PATH_NUM,
+                        filename,
+                        ".html",
+                        sep = "")
+  print(xtable(df), type="html", file=filepath.html)
+
 }
 
 #----------------------------------------------------------------------------------------------------#
@@ -1216,6 +1299,103 @@ exportEpidemicMeasures <- function(ssData = loadSimulationSummaryData(),
   }
   exportDataFrame(resSigmaR, "descriptives-sigma-r")
 }
+
+getDescriptives <- function(data, name) {
+
+  mean <- round(mean(data), 2)
+  sd <- round(sd(data), 2)
+  min <- round(min(data), 2)
+  max <- round(max(data), 2)
+  skew <- round(skewness(data), 2)
+
+  return(data.frame(name, mean, sd, min, max, skew))
+
+}
+
+#----------------------------------------------------------------------------------------------------#
+# function: exportNetworkSizeMeasures
+#     Exports various measures dependent on network size, such as density, average degree,
+#     attack rate, duration of epidemics, and time steps to epidemic peaks.
+# param:  ssData
+#     simulation summary data to export network size dependent measures for
+# param:  rsData
+#     round summary data to export network size dependent measures for
+# param:  filename
+#     the name of the export file
+#----------------------------------------------------------------------------------------------------#
+exportPrePostMeasures <- function(ssData = loadSimulationSummaryData(),
+                                  adData = aggregateAgentDetailsData(),
+                                  filename = "pre-post-measures") {
+
+  # network measures
+  prePostMeasures <- getDescriptives(ssData$net.prop.av.degree.pre.epidemic, "degree (pre)")
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.degree.post.epidemic, "degree (finished)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.degree2.pre.epidemic, "2nd degree (pre)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.degree2.post.epidemic, "2nd degree (finished)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.density.pre.epidemic, "density (pre)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.density.post.epidemic, "density (finished)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.clustering.pre.epidemic, "clustering (pre)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.clustering.post.epidemic, "clustering (finished)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.closeness.pre.epidemic, "closeness (pre)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.closeness.post.epidemic, "closeness (finished)"))
+
+  # network changes
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "pre-epidemic")$net.changes.total, "network changes (pre)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "finished")$net.changes.total, "network changes (finished)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "post-epidemic")$net.changes.total, "network changes (post)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "pre-epidemic")$ties.broken.av, "ties broken (pre)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "finished")$ties.broken.av, "ties broken (finished)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "post-epidemic")$ties.broken.av, "ties broken (post)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "pre-epidemic")$ties.out.accepted.av, "tie requests accepted (pre)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "finished")$ties.out.accepted.av, "tie requests accepted (finished)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "post-epidemic")$ties.out.accepted.av, "tie requests accepted (post)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "pre-epidemic")$ties.out.declined.av, "tie requests declined (pre)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "finished")$ties.out.declined.av, "tie requests declined (finished)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "post-epidemic")$ties.out.declined.av, "tie requests declined (post)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "pre-epidemic")$degree.av, "degreed (pre)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "finished")$degree.av, "degreed (finished)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "post-epidemic")$degree.av, "degreed (post)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "pre-epidemic")$density.av, "density (pre)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "finished")$density.av, "density (finished)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "post-epidemic")$density.av, "density (post)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "pre-epidemic")$clustering.av, "clustering (pre)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "finished")$clustering.av, "clustering (finished)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "post-epidemic")$clustering.av, "clustering (post)"))
+
+  # utility
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.utility.pre.epidemic, "utility (pre)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.utility.post.epidemic, "utility (finished)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.benefit.distance1.pre.epidemic, "benefit distance 1 (pre)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.benefit.distance1.post.epidemic, "benefit distance 1 (finished)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.benefit.distance2.pre.epidemic, "benefit distance 2 (pre)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.benefit.distance2.post.epidemic, "benefit distance 2 (finished)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.costs.distance1.pre.epidemic, "costs distance 1 (pre)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.costs.distance1.post.epidemic, "costs distance 1 (finished)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.costs.disease.pre.epidemic, "costs disease (pre)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.costs.disease.post.epidemic, "costs disease (finished)"))
+
+  # patient-0
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$act.prop.net.degree.order.1, "degree (patient-0)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$act.prop.net.degree.order.2, "2nd degree (patient-0)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$act.prop.net.closeness, "closeness (patient-0)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$act.prop.net.clustering, "clustering (patient-0)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$act.prop.benefit.distance.1, "benefit distance 1 (patient-0)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$act.prop.benefit.distance.2, "benefit distance 2 (patient-0)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$act.prop.costs.distance.1, "costs distance 1 (patient-0)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$act.prop.costs.disease, "costs disease (patient-0)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$act.prop.util, "utility (patient-0)"))
+
+  # epidemics
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$dis.prop.pct.sus, "susceptible"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$dis.prop.pct.inf, "infected"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$dis.prop.pct.rec, "recovered"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$dis.prop.duration, "duration"))
+
+  # export
+  exportDataFrame(prePostMeasures, filename)
+
+}
+
 
 
 ############################## SCRIPT COMPOSITION FOR COMPLETE EXPORT ################################
