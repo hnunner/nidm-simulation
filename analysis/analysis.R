@@ -473,6 +473,23 @@ exportPlots <- function(rsData = reduceRoundSummaryData(loadRoundSummaryData(), 
   # create directory if necessary
   dir.create(EXPORT_PATH_PLOTS, showWarnings = FALSE)
 
+  # 0. overall data
+  plot <- plotSIRDevelopment(rsData, showLegend, showRibbons, showDegree, showDensity, showClustering, showAxes)
+
+  filepath <- paste(EXPORT_PATH_PLOTS,
+                    filePrefix,
+                    "complete",
+                    EXPORT_FILE_EXTENSION_PLOTS,
+                    sep = "")
+  ggsave(filepath,
+         plot,
+         width = plotWidth,
+         height = plotHeight,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  print(paste(":::::::: Export of ", filepath, " succesful.", sep = ""))
+
   # 1. care factor (mu) by denefit of indirect connections (beta)
   subsetsBetaMu <- subsetsByColumnValues(data = rsData,
                                          col1 = 'net.param.beta',
@@ -557,7 +574,7 @@ exportGridPlots <- function(rsData = reduceRoundSummaryData(loadRoundSummaryData
 }
 
 
-exportEpidemicDensityPlots <- function(ssData = loadSimulationSummaryData()) {
+exportEpidemicDensityPlots <- function(ssData = loadSimulationSummaryData(), filename.appendix = "") {
 
   color = COLORS["Infected"]
   plot.width = 50
@@ -581,6 +598,7 @@ exportEpidemicDensityPlots <- function(ssData = loadSimulationSummaryData()) {
 
   filepath.attack.rate <- paste(EXPORT_PATH_PLOTS,
                                 "density-attack-rate",
+                                filename.appendix,
                                 EXPORT_FILE_EXTENSION_PLOTS,
                                 sep = "")
   ggsave(filepath.attack.rate,
@@ -610,6 +628,7 @@ exportEpidemicDensityPlots <- function(ssData = loadSimulationSummaryData()) {
 
   filepath.duration <- paste(EXPORT_PATH_PLOTS,
                              "density-duration",
+                             filename.appendix,
                              EXPORT_FILE_EXTENSION_PLOTS,
                              sep = "")
   ggsave(filepath.duration,
@@ -619,6 +638,14 @@ exportEpidemicDensityPlots <- function(ssData = loadSimulationSummaryData()) {
          units = EXPORT_SIZE_UNITS,
          dpi = EXPORT_DPI,
          device = EXPORT_FILE_TYPE_PLOTS)
+
+}
+
+exportEpidemicDensityPlotsByN <- function(ssData = loadSimulationSummaryData()) {
+
+  for (N in unique(ssData$net.param.N)) {
+    exportEpidemicDensityPlots(ssData = subset(ssData, net.param.N == N), filename.appendix = paste("-N", N, sep = ""))
+  }
 
 }
 
