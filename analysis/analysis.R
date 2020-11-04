@@ -560,7 +560,8 @@ exportGridPlots <- function(rsData = reduceRoundSummaryData(loadRoundSummaryData
 exportEpidemicDensityPlots <- function(ssData = loadSimulationSummaryData()) {
 
   color = COLORS["Infected"]
-  plot.size = 50
+  plot.width = 50
+  plot.height = 35
 
   p.attack.rate <- ggplot(ssData, aes(x = dis.prop.pct.rec, fill = dis.prop.pct.rec)) +
     geom_histogram(aes(y=..density..), colour="black", fill="white", bins = 15)+
@@ -584,8 +585,8 @@ exportEpidemicDensityPlots <- function(ssData = loadSimulationSummaryData()) {
                                 sep = "")
   ggsave(filepath.attack.rate,
          p.attack.rate,
-         width = plot.size,
-         height = plot.size,
+         width = plot.width,
+         height = plot.height,
          units = EXPORT_SIZE_UNITS,
          dpi = EXPORT_DPI,
          device = EXPORT_FILE_TYPE_PLOTS)
@@ -613,8 +614,8 @@ exportEpidemicDensityPlots <- function(ssData = loadSimulationSummaryData()) {
                              sep = "")
   ggsave(filepath.duration,
          p.duration,
-         width = plot.size,
-         height = plot.size,
+         width = plot.width,
+         height = plot.height,
          units = EXPORT_SIZE_UNITS,
          dpi = EXPORT_DPI,
          device = EXPORT_FILE_TYPE_PLOTS)
