@@ -574,27 +574,30 @@ exportGridPlots <- function(rsData = reduceRoundSummaryData(loadRoundSummaryData
 }
 
 
-exportEpidemicDensityPlots <- function(ssData = loadSimulationSummaryData(), filename.appendix = "") {
+exportEpidemicDensityPlots <- function(ssData = loadSimulationSummaryData(), filename.appendix = "", labeled = TRUE) {
 
   color = COLORS["Infected"]
   plot.width = 50
   plot.height = 35
 
   p.attack.rate <- ggplot(ssData, aes(x = dis.prop.pct.rec, fill = dis.prop.pct.rec)) +
-    geom_histogram(aes(y=..density..), colour="black", fill="white", bins = 15)+
-    geom_density(alpha = 0.4, fill = color) +
+    geom_histogram(aes(y=..density..), colour="black", fill=color, alpha = 0.5, bins = 10)+
+    # geom_density(alpha = 0.4, fill = color) +
     geom_vline(aes(xintercept = median(dis.prop.pct.rec)),
                color = color,
                linetype = "dashed",
                size=1) +
-    scale_x_continuous(breaks = seq(0, 100, by = 25)) +
+    scale_x_continuous(breaks = seq(0, 100, by = 25))+
+    scale_y_continuous(limits = c(0, 0.086), breaks = seq(0, 86, 20)/1000)
+  if (!labeled) {
+    p.attack.rate <- p.attack.rate +
     labs(x=NULL, y=NULL, title=NULL) +
     theme(axis.title = element_blank(),
           axis.text = element_blank(),
           axis.ticks = element_blank(),
           axis.ticks.length = unit(0, "mm"),
           plot.margin=grid::unit(c(0,0,0,0), "mm"))
-  p.attack.rate
+  }
 
   filepath.attack.rate <- paste(EXPORT_PATH_PLOTS,
                                 "density-attack-rate",
@@ -611,20 +614,24 @@ exportEpidemicDensityPlots <- function(ssData = loadSimulationSummaryData(), fil
 
 
   p.duration <- ggplot(ssData, aes(x = dis.prop.duration, fill = dis.prop.duration)) +
-    geom_histogram(aes(y=..density..), colour="black", fill="white", bins = 15)+
-    geom_density(alpha = 0.4, fill = color) +
+    geom_histogram(aes(y=..density..), colour="black", fill=color, alpha = 0.5, bins = 15)+
+    # geom_density(alpha = 0.4, fill = color) +
     geom_vline(aes(xintercept = median(dis.prop.duration)),
                color = color,
                linetype = "dashed",
-               size=1) +
-  scale_x_continuous(breaks = seq(0, 60, by = 10)) +
-    labs(x=NULL, y=NULL, title=NULL) +
-    theme(axis.title = element_blank(),
-          axis.text = element_blank(),
-          axis.ticks = element_blank(),
-          axis.ticks.length = unit(0, "mm"),
-          plot.margin=grid::unit(c(0,0,0,0), "mm"))
-  p.duration
+                 size=1) +
+    scale_x_continuous(breaks = seq(0, 60, by = 10)) +
+    scale_y_continuous(limits = c(0, 0.15), breaks = seq(0, 150, by = 50)/1000)
+
+  if (!labeled) {
+    p.duration <- p.duration +
+      labs(x=NULL, y=NULL, title=NULL) +
+      theme(axis.title = element_blank(),
+            axis.text = element_blank(),
+            axis.ticks = element_blank(),
+            axis.ticks.length = unit(0, "mm"),
+            plot.margin=grid::unit(c(0,0,0,0), "mm"))
+  }
 
   filepath.duration <- paste(EXPORT_PATH_PLOTS,
                              "density-duration",
@@ -643,8 +650,12 @@ exportEpidemicDensityPlots <- function(ssData = loadSimulationSummaryData(), fil
 
 exportEpidemicDensityPlotsByN <- function(ssData = loadSimulationSummaryData()) {
 
+  exportEpidemicDensityPlots(ssData = ssData)
+  exportEpidemicDensityPlots(ssData = ssData, filename.appendix = "-unlabeled", labeled = FALSE)
+
   for (N in unique(ssData$net.param.N)) {
     exportEpidemicDensityPlots(ssData = subset(ssData, net.param.N == N), filename.appendix = paste("-N", N, sep = ""))
+    exportEpidemicDensityPlots(ssData = subset(ssData, net.param.N == N), filename.appendix = paste("-N", N, "-unlabeled", sep = ""), labeled = FALSE)
   }
 
 }
