@@ -560,6 +560,7 @@ exportGridPlots <- function(rsData = reduceRoundSummaryData(loadRoundSummaryData
 exportEpidemicDensityPlots <- function(ssData = loadSimulationSummaryData()) {
 
   color = COLORS["Infected"]
+  plot.size = 50
 
   p.attack.rate <- ggplot(ssData, aes(x = dis.prop.pct.rec, fill = dis.prop.pct.rec)) +
     geom_histogram(aes(y=..density..), colour="black", fill="white", bins = 15)+
@@ -569,8 +570,12 @@ exportEpidemicDensityPlots <- function(ssData = loadSimulationSummaryData()) {
                linetype = "dashed",
                size=1) +
     scale_x_continuous(breaks = seq(0, 100, by = 25)) +
-    xlab("Attack rate") +
-    ylab("Density")
+    labs(x=NULL, y=NULL, title=NULL) +
+    theme(axis.title = element_blank(),
+          axis.text = element_blank(),
+          axis.ticks = element_blank(),
+          axis.ticks.length = unit(0, "mm"),
+          plot.margin=grid::unit(c(0,0,0,0), "mm"))
   p.attack.rate
 
   filepath.attack.rate <- paste(EXPORT_PATH_PLOTS,
@@ -579,8 +584,8 @@ exportEpidemicDensityPlots <- function(ssData = loadSimulationSummaryData()) {
                                 sep = "")
   ggsave(filepath.attack.rate,
          p.attack.rate,
-         width = 100,
-         height = 100,
+         width = plot.size,
+         height = plot.size,
          units = EXPORT_SIZE_UNITS,
          dpi = EXPORT_DPI,
          device = EXPORT_FILE_TYPE_PLOTS)
@@ -593,9 +598,13 @@ exportEpidemicDensityPlots <- function(ssData = loadSimulationSummaryData()) {
                color = color,
                linetype = "dashed",
                size=1) +
-  scale_x_continuous(breaks = seq(0, 60, by = 10))+
-    xlab("Duration (in time steps)") +
-    ylab("Density")
+  scale_x_continuous(breaks = seq(0, 60, by = 10)) +
+    labs(x=NULL, y=NULL, title=NULL) +
+    theme(axis.title = element_blank(),
+          axis.text = element_blank(),
+          axis.ticks = element_blank(),
+          axis.ticks.length = unit(0, "mm"),
+          plot.margin=grid::unit(c(0,0,0,0), "mm"))
   p.duration
 
   filepath.duration <- paste(EXPORT_PATH_PLOTS,
@@ -604,8 +613,8 @@ exportEpidemicDensityPlots <- function(ssData = loadSimulationSummaryData()) {
                              sep = "")
   ggsave(filepath.duration,
          p.duration,
-         width = 100,
-         height = 100,
+         width = plot.size,
+         height = plot.size,
          units = EXPORT_SIZE_UNITS,
          dpi = EXPORT_DPI,
          device = EXPORT_FILE_TYPE_PLOTS)
