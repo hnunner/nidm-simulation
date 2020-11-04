@@ -577,24 +577,26 @@ exportGridPlots <- function(rsData = reduceRoundSummaryData(loadRoundSummaryData
 exportEpidemicDensityPlots <- function(ssData = loadSimulationSummaryData(),
                                        filename.appendix = "",
                                        labeled = TRUE,
-                                       attack.rate.y.limits = c(0, 8000),
-                                       duration.y.limits = c(0, 4000)) {
+                                       attack.rate.y.limits = c(0, 0.15),
+                                       attack.rate.y.breaks = 3,
+                                       duration.y.limits = c(0, 0.15),
+                                       duration.y.breaks = 3) {
 
   color = COLORS["Infected"]
   plot.width = 50
   plot.height = 35
 
   p.attack.rate <- ggplot(ssData, aes(x = dis.prop.pct.rec, fill = dis.prop.pct.rec)) +
-    geom_histogram(colour="black", fill=color, alpha = 0.5, bins = 8)+
-    # geom_density(alpha = 0.4, fill = color) +
+    # geom_histogram(colour="black", fill=color, alpha = 0.5, bins = 20)+
+    geom_density(alpha = 0.4, fill = color) +
     geom_vline(aes(xintercept = median(dis.prop.pct.rec)),
                color = color,
-               linetype = "dashed",
+               linetype = "longdash",
                size=1) +
-    scale_x_continuous(breaks = seq(0, 100, by = 25)) +
+    scale_x_continuous(limits = c(0, 100), breaks = seq(0, 100, by = 25)) +
     scale_y_continuous(limits = attack.rate.y.limits, breaks = seq(attack.rate.y.limits[1],
-                                                                   attack.rate.y.limits[2],
-                                                                   by = attack.rate.y.limits[2]/4))
+                                                                   attack.rate.y.limits[2]*1000,
+                                                                   by = attack.rate.y.limits[2]*1000/attack.rate.y.breaks)/1000)
   if (!labeled) {
     p.attack.rate <- p.attack.rate +
     labs(x=NULL, y=NULL, title=NULL) +
@@ -620,16 +622,16 @@ exportEpidemicDensityPlots <- function(ssData = loadSimulationSummaryData(),
 
 
   p.duration <- ggplot(ssData, aes(x = dis.prop.duration, fill = dis.prop.duration)) +
-    geom_histogram(colour="black", fill=color, alpha = 0.5, bins = 15)+
-    # geom_density(alpha = 0.4, fill = color) +
+    # geom_histogram(colour="black", fill=color, alpha = 0.5, bins = 15)+
+    geom_density(alpha = 0.4, fill = color) +
     geom_vline(aes(xintercept = median(dis.prop.duration)),
                color = color,
-               linetype = "dashed",
+               linetype = "longdash",
                  size=1) +
-    scale_x_continuous(breaks = seq(0, 60, by = 10)) +
+    scale_x_continuous(limits = c(0, 60), breaks = seq(0, 60, by = 10)) +
     scale_y_continuous(limits = duration.y.limits, breaks = seq(duration.y.limits[1],
-                                                                duration.y.limits[2],
-                                                                by = duration.y.limits[2]/4))
+                                                                duration.y.limits[2]*1000,
+                                                                by = duration.y.limits[2]*1000/duration.y.breaks)/1000)
 
   if (!labeled) {
     p.duration <- p.duration +
@@ -658,9 +660,12 @@ exportEpidemicDensityPlots <- function(ssData = loadSimulationSummaryData(),
 
 exportEpidemicDensityPlotsByN <- function(ssData = loadSimulationSummaryData()) {
 
-  exportEpidemicDensityPlots(ssData = ssData, attack.rate.y.limits = c(0, 24000), duration.y.limits = c(0, 12000))
+  exportEpidemicDensityPlots(ssData = ssData,
+                             attack.rate.y.limits = c(0, 0.08), attack.rate.y.breaks = 4,
+                             duration.y.limits = c(0, 0.08), duration.y.breaks = 4)
   exportEpidemicDensityPlots(ssData = ssData, filename.appendix = "-unlabeled", labeled = FALSE,
-                             attack.rate.y.limits = c(0, 24000), duration.y.limits = c(0, 12000))
+                             attack.rate.y.limits = c(0, 0.08), attack.rate.y.breaks = 4,
+                             duration.y.limits = c(0, 0.08), duration.y.breaks = 4)
 
   for (N in unique(ssData$net.param.N)) {
     exportEpidemicDensityPlots(ssData = subset(ssData, net.param.N == N), filename.appendix = paste("-N", N, sep = ""))
