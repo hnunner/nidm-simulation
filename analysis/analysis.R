@@ -97,11 +97,9 @@ loadAgentDetailsData <- function() {
 # return: the aggregated agent detail data for NIDM simulations
 #----------------------------------------------------------------------------------------------------#
 aggregateAgentDetailsData <- function(adData = loadAgentDetailsData()) {
+
   adDataReduced <- data.frame("uid" = adData$sim.param.uid,
                               "stage" = adData$sim.prop.stage,
-                              "density" = adData$net.prop.density,
-                              "degree" = adData$net.prop.av.degree,
-                              "clustering" = adData$net.prop.av.clustering,
                               "ties.broken" = adData$act.prop.cons.broken.active,
                               "ties.out.accepted" = adData$act.prop.cons.out.accepted,
                               "ties.out.declined" = adData$act.prop.cons.out.declined)
@@ -109,51 +107,36 @@ aggregateAgentDetailsData <- function(adData = loadAgentDetailsData()) {
 
   adDataAgg <- adDataReduced %>%
     group_by(uid, stage) %>%
-    summarise(net.changes.total = sum(net.changes, na.rm = TRUE))
+    summarise(net.changes = sum(net.changes, na.rm = TRUE))
 
   adDataAgg <- merge(x = adDataAgg,
                      y = adDataReduced %>%
                        group_by(uid, stage) %>%
-                       summarise(ties.broken.av = sum(ties.broken, na.rm = TRUE)),
+                       summarise(ties.out.declined = sum(ties.out.declined, na.rm = TRUE)),
                      by = c("uid", "stage"),
                      all = TRUE)
 
-  adDataAgg <- merge(x = adDataAgg,
-                     y = adDataReduced %>%
-                       group_by(uid, stage) %>%
-                       summarise(ties.out.accepted.av = sum(ties.out.accepted, na.rm = TRUE)),
-                     by = c("uid", "stage"),
-                     all = TRUE)
+  adDataAggPre <- subset(adDataAgg, stage == "pre-epidemic")
+  adDataAggFinished <- subset(adDataAgg, stage == "finished")
 
-  adDataAgg <- merge(x = adDataAgg,
-                     y = adDataReduced %>%
-                       group_by(uid, stage) %>%
-                       summarise(ties.out.declined.av = sum(ties.out.declined, na.rm = TRUE)),
-                     by = c("uid", "stage"),
-                     all = TRUE)
+  res <- data.frame(
+    uid = adDataAggPre$uid,
+    net.changes.pre = adDataAggPre$net.changes,
+    tie.requests.declined.pre = adDataAggPre$ties.out.declined
+  )
 
-  adDataAgg <- merge(x = adDataAgg,
-                     y = adDataReduced %>%
-                       group_by(uid, stage) %>%
-                       summarise(density.av = mean(density, na.rm = TRUE)),
-                     by = c("uid", "stage"),
-                     all = TRUE)
+  adDataAggFinished <- adDataAggFinished %>%
+    select(uid, net.changes, ties.out.declined)
 
-  adDataAgg <- merge(x = adDataAgg,
-                     y = adDataReduced %>%
-                       group_by(uid, stage) %>%
-                       summarise(degree.av = mean(degree, na.rm = TRUE)),
-                     by = c("uid", "stage"),
-                     all = TRUE)
+  res <- left_join(res, adDataAggFinished, by = c("uid"))
 
-  adDataAgg <- merge(x = adDataAgg,
-                     y = adDataReduced %>%
-                       group_by(uid, stage) %>%
-                       summarise(clustering.av = mean(clustering, na.rm = TRUE)),
-                     by = c("uid", "stage"),
-                     all = TRUE)
+  colnames(res)[which(names(res) == "net.changes")] <- "net.changes.finished"
+  colnames(res)[which(names(res) == "ties.out.declined")] <- "tie.requests.declined.finished"
 
-  return(adDataAgg)
+  res$net.changes.epidemic <- res$net.changes.finished - res$net.changes.pre
+  res$tie.requests.declined.epidemic <- res$tie.requests.declined.finished - res$tie.requests.declined.pre
+
+  return(res)
 }
 
 #----------------------------------------------------------------------------------------------------#
@@ -574,6 +557,62 @@ exportGridPlots <- function(rsData = reduceRoundSummaryData(loadRoundSummaryData
 }
 
 
+exportEpidemicDensityPlots <- function(ssData = loadSimulationSummaryData()) {
+
+  color = COLORS["Infected"]
+
+  p.attack.rate <- ggplot(ssData, aes(x = dis.prop.pct.rec, fill = dis.prop.pct.rec)) +
+    geom_histogram(aes(y=..density..), colour="black", fill="white", bins = 15)+
+    geom_density(alpha = 0.4, fill = color) +
+    geom_vline(aes(xintercept = median(dis.prop.pct.rec)),
+               color = color,
+               linetype = "dashed",
+               size=1) +
+    scale_x_continuous(breaks = seq(0, 100, by = 25)) +
+    xlab("Attack rate") +
+    ylab("Density")
+  p.attack.rate
+
+  filepath.attack.rate <- paste(EXPORT_PATH_PLOTS,
+                                "density-attack-rate",
+                                EXPORT_FILE_EXTENSION_PLOTS,
+                                sep = "")
+  ggsave(filepath.attack.rate,
+         p.attack.rate,
+         width = 100,
+         height = 100,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+
+
+  p.duration <- ggplot(ssData, aes(x = dis.prop.duration, fill = dis.prop.duration)) +
+    geom_histogram(aes(y=..density..), colour="black", fill="white", bins = 15)+
+    geom_density(alpha = 0.4, fill = color) +
+    geom_vline(aes(xintercept = median(dis.prop.duration)),
+               color = color,
+               linetype = "dashed",
+               size=1) +
+  scale_x_continuous(breaks = seq(0, 60, by = 10))+
+    xlab("Duration (in time steps)") +
+    ylab("Density")
+  p.duration
+
+  filepath.duration <- paste(EXPORT_PATH_PLOTS,
+                             "density-duration",
+                             EXPORT_FILE_EXTENSION_PLOTS,
+                             sep = "")
+  ggsave(filepath.duration,
+         p.duration,
+         width = 100,
+         height = 100,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+
+}
+
+
 ############################################ REGRESSIONS #############################################
 #----------------------------------------------------------------------------------------------------#
 # function: exportModels
@@ -745,16 +784,12 @@ exportAttackRateModelsComplete <- function(ssData = loadSimulationSummaryData())
 }
 
 #----------------------------------------------------------------------------------------------------#
-# function: exportAttackRateModelsSelected
-#     Creates and exports multi-level logistic regression models for attack rate with only
-#     selected parameters and interactions. This method is a copy of 'exportAttackRateModelsComplete',
-#     but is intended to find the best models with only significant and expressive parameters by
-#     modyfying the model parameters without changing the complete export for command line
-#     invocations.
+# function: getAttackRateInteractionModel
+#     Creates a multi-level logistic regression model for attack rate with selected interactions.
 # param:  ssData
 #     simulation summary data to get regression models for
 #----------------------------------------------------------------------------------------------------#
-exportAttackRateModelsSelected <- function(ssData = loadSimulationSummaryData()) {
+getAttackRateInteractionModel <- function(ssData = loadSimulationSummaryData()) {
 
   # MAIN EFFECTS
   # CIDMo parameters
@@ -804,6 +839,71 @@ exportAttackRateModelsSelected <- function(ssData = loadSimulationSummaryData())
   # combinations of density
   intDensDeg1   <- (dens - mean(dens))  *   (deg1 - mean(deg1))
 
+  # interaction effects
+  regInt <- glmer(ssData$dis.prop.pct.rec/100 ~
+                    #  model parameters
+                    beta + mu + sigma + r + N + # iota +
+                    # network properties
+                    dens + deg1 +
+                    # interaction effects
+                    intBetaMu +
+                    # intBetaSigma +
+                    # intBetaR +
+                    # intBetaN +
+                    # intBetaIota +
+                    # intBetaDens +
+                    # intBetaDeg1 +
+                    intMuSigma +
+                    intMuR +
+                    # intMuN +
+                    # intMuIota +
+                    # intMuDens +
+                    # intMuDeg1 +
+                    intSigmaR +
+                    # intSigmaN +
+                    # intSigmaIota +
+                    # intSigmaDens +
+                    # intSigmaDeg1 +
+                    # intRN +
+                    # intRIota +
+                    intRDens +
+                    # intRDeg1 +
+                    # intNIota +
+                    # intNDens +
+                    intNDeg1 +
+                    # intIotaDens +
+                    # intIotaDeg1 +
+                    # intDensDeg1 +
+                    (1 | sim.param.upc),
+                  family = binomial,
+                  data = ssData)
+  return(regInt)
+}
+
+#----------------------------------------------------------------------------------------------------#
+# function: exportAttackRateModelsSelected
+#     Creates and exports multi-level logistic regression models for attack rate with only
+#     selected parameters and interactions. This method is a copy of 'exportAttackRateModelsComplete',
+#     but is intended to find the best models with only significant and expressive parameters by
+#     modyfying the model parameters without changing the complete export for command line
+#     invocations.
+# param:  ssData
+#     simulation summary data to get regression models for
+#----------------------------------------------------------------------------------------------------#
+exportAttackRateModelsSelected <- function(ssData = loadSimulationSummaryData()) {
+
+  # MAIN EFFECTS
+  # CIDMo parameters
+  beta  <- meanCenter(ssData$net.param.beta)
+  mu    <- meanCenter(ssData$dis.param.mu)
+  sigma <- meanCenter(ssData$dis.param.s / 50)
+  r     <- meanCenter(ssData$net.param.r)
+  N     <- meanCenter(ssData$net.param.N / 50)
+  iota  <- meanCenter(ssData$net.param.net.empty)
+  # network properties
+  deg1  <- meanCenter(ssData$act.prop.net.degree.order.1 / (ssData$net.param.N-1))
+  dens  <- meanCenter(ssData$net.prop.density.pre.epidemic)
+
   ### 2-LEVEL LOGISTIC REGRESSIONS    ###
   ### level 2: parameters combination ###
   ### level 1: simulation runs        ###
@@ -830,44 +930,28 @@ exportAttackRateModelsSelected <- function(ssData = loadSimulationSummaryData())
                     family = binomial,
                     data = ssData)
   # interaction effects
-  reg2Int <- glmer(ssData$dis.prop.pct.rec/100 ~
-                     #  model parameters
-                     beta + mu + sigma + r + N + # iota +
-                     # network properties
-                     dens + deg1 +
-                     # interaction effects
-                     intBetaMu +
-                     # intBetaSigma +
-                     # intBetaR +
-                     # intBetaN +
-                     # intBetaIota +
-                     # intBetaDens +
-                     # intBetaDeg1 +
-                     intMuSigma +
-                     intMuR +
-                     # intMuN +
-                     # intMuIota +
-                     # intMuDens +
-                     # intMuDeg1 +
-                     intSigmaR +
-                     # intSigmaN +
-                     # intSigmaIota +
-                     # intSigmaDens +
-                     # intSigmaDeg1 +
-                     # intRN +
-                     # intRIota +
-                     intRDens +
-                     # intRDeg1 +
-                     # intNIota +
-                     # intNDens +
-                     intNDeg1 +
-                     # intIotaDens +
-                     # intIotaDeg1 +
-                     # intDensDeg1 +
-                     (1 | sim.param.upc),
-                   family = binomial,
-                   data = ssData)
+  reg2Int <- getAttackRateInteractionModel(ssData = ssData)
+
   exportModels(list(reg00,reg1Main,reg2Main,reg2Int), "reg-attack-rate-selected")
+}
+
+#----------------------------------------------------------------------------------------------------#
+# function: exportAttackRateInteractionModelsByN
+#     Creates and exports multi-level linear regression models for attack rate of epidemics with only
+#     selected parameters and interactions, and divided by network size.
+# param:  ssData
+#     simulation summary data to get regression models for
+#----------------------------------------------------------------------------------------------------#
+exportAttackRateInteractionModelsByN <- function(ssData = loadSimulationSummaryData()) {
+
+  regNall <- getAttackRateInteractionModel(ssData = ssData)
+  regN10  <- getAttackRateInteractionModel(ssData = subset(ssData, net.param.N == 10))
+  regN15  <- getAttackRateInteractionModel(ssData = subset(ssData, net.param.N == 15))
+  regN20  <- getAttackRateInteractionModel(ssData = subset(ssData, net.param.N == 20))
+  regN25  <- getAttackRateInteractionModel(ssData = subset(ssData, net.param.N == 25))
+  regN50  <- getAttackRateInteractionModel(ssData = subset(ssData, net.param.N == 50))
+
+  exportModels(list(regNall, regN10, regN15, regN20, regN25, regN50), "reg-attack-rate-byN")
 }
 
 #----------------------------------------------------------------------------------------------------#
@@ -994,6 +1078,102 @@ exportDurationModelsComplete <- function(ssData = loadSimulationSummaryData()) {
 }
 
 #----------------------------------------------------------------------------------------------------#
+# function: getDurationInteractionModel
+#     Creates a multi-level linear regression model for duration of epidemics with selected interaction effects.
+# param:  ssData
+#     simulation summary data to get regression models for
+#----------------------------------------------------------------------------------------------------#
+getDurationInteractionModel <- function(ssData = loadSimulationSummaryData()) {
+
+  # MAIN EFFECTS
+  # NIDM parameters
+  beta  <- meanCenter(ssData$net.param.beta)
+  mu    <- meanCenter(ssData$dis.param.mu)
+  sigma <- meanCenter(ssData$dis.param.s / 50)
+  r     <- meanCenter(ssData$net.param.r)
+  N     <- meanCenter(ssData$net.param.N / 50)
+  iota  <- meanCenter(ssData$net.param.net.empty)
+  # network properties
+  deg1  <- meanCenter(ssData$act.prop.net.degree.order.1 / (ssData$net.param.N-1))
+  dens  <- meanCenter(ssData$net.prop.density.pre.epidemic)
+  # INTERACTION EFFECTS
+  intBetaMu     <- (beta - mean(beta))    *   (mu - mean(mu))
+  intBetaSigma  <- (beta - mean(beta))    *   (sigma - mean(sigma))
+  intBetaR      <- (beta - mean(beta))    *   (r - mean(r))
+  intBetaN      <- (beta - mean(beta))    *   (N - mean(N))
+  intBetaIota   <- (beta - mean(beta))    *   (iota - mean(iota))
+  intBetaDens   <- (beta - mean(beta))    *   (dens - mean(dens))
+  intBetaDeg1   <- (beta - mean(beta))    *   (deg1 - mean(deg1))
+  # combinations of mu
+  intMuSigma    <- (mu - mean(mu))        *   (sigma - mean(sigma))
+  intMuR        <- (mu - mean(mu))        *   (r - mean(r))
+  intMuN        <- (mu - mean(mu))        *   (N - mean(N))
+  intMuIota     <- (mu - mean(mu))        *   (iota - mean(iota))
+  intMuDens     <- (mu - mean(mu))        *   (dens - mean(dens))
+  intMuDeg1     <- (mu - mean(mu))        *   (deg1 - mean(deg1))
+  # combinations of sigma
+  intSigmaR     <- (sigma - mean(sigma))  *   (r - mean(r))
+  intSigmaN     <- (sigma - mean(sigma))  *   (N - mean(N))
+  intSigmaIota  <- (sigma - mean(sigma))  *   (iota - mean(iota))
+  intSigmaDens  <- (sigma - mean(sigma))  *   (dens - mean(dens))
+  intSigmaDeg1  <- (sigma - mean(sigma))  *   (deg1 - mean(deg1))
+  # combinations of r
+  intRN         <- (r - mean(r))          *   (N - mean(N))
+  intRIota      <- (r - mean(r))          *   (iota - mean(iota))
+  intRDens      <- (r - mean(r))          *   (dens - mean(dens))
+  intRDeg1      <- (r - mean(r))          *   (deg1 - mean(deg1))
+  # combinations of N
+  intNIota      <- (N - mean(N))          *   (iota - mean(iota))
+  intNDens      <- (N - mean(N))          *   (dens - mean(dens))
+  intNDeg1      <- (N - mean(N))          *   (deg1 - mean(deg1))
+  # combinations of iota
+  intIotaDens   <- (iota - mean(iota))    *   (dens - mean(dens))
+  intIotaDeg1   <- (iota - mean(iota))    *   (deg1 - mean(deg1))
+  # combinations of density
+  intDensDeg1   <- (dens - mean(dens))  *   (deg1 - mean(deg1))
+
+  # interaction effects model
+  regInt <- lmer(ssData$dis.prop.duration ~
+                   # CIDMo parameters
+                   beta + mu + sigma + r + N + # iota +
+                   # network properties
+                   dens + deg1 +
+                   # interaction effects
+                   intBetaMu +
+                   # intBetaSigma +
+                   # intBetaR +
+                   intBetaN +
+                   # intBetaIota +
+                   # intBetaDens +
+                   # intBetaDeg1 +
+                   # intMuSigma +
+                   # intMuR +
+                   # intMuN +
+                   # intMuIota +
+                   intMuDens +
+                   # intMuDeg1 +
+                   intSigmaR +
+                   intSigmaN +
+                   # intSigmaIota +
+                   # intSigmaDens +
+                   # intSigmaDeg1 +
+                   intRN +
+                   # intRIota +
+                   # intRDens +
+                   # intRDeg1 +
+                   # intNIota +
+                   intNDens +
+                   # intNDeg1 +
+                   # intIotaDens +
+                   # intIotaDeg1 +
+                   # intDensDeg1 +
+                   (1 | sim.param.upc),
+                 data = ssData,
+                 REML = FALSE)
+  return(regInt)
+}
+
+#----------------------------------------------------------------------------------------------------#
 # function: exportDurationModelsSelected
 #     Creates and exports multi-level linear regression models for duration of epidemics with only
 #     selected parameters and interactions. This method is a copy of 'exportDurationModelsComplete',
@@ -1078,45 +1258,28 @@ exportDurationModelsSelected <- function(ssData = loadSimulationSummaryData()) {
                    data = ssData,
                    REML = FALSE)
   # interaction effects
-  reg2Int <- lmer(ssData$dis.prop.duration ~
-                    # CIDMo parameters
-                    beta + mu + sigma + r + N + # iota +
-                    # network properties
-                    dens + deg1 +
-                    # interaction effects
-                    intBetaMu +
-                    # intBetaSigma +
-                    # intBetaR +
-                    intBetaN +
-                    # intBetaIota +
-                    # intBetaDens +
-                    # intBetaDeg1 +
-                    # intMuSigma +
-                    # intMuR +
-                    # intMuN +
-                    # intMuIota +
-                    intMuDens +
-                    # intMuDeg1 +
-                    intSigmaR +
-                    intSigmaN +
-                    # intSigmaIota +
-                    # intSigmaDens +
-                    # intSigmaDeg1 +
-                    intRN +
-                    # intRIota +
-                    # intRDens +
-                    # intRDeg1 +
-                    # intNIota +
-                    intNDens +
-                    # intNDeg1 +
-                    # intIotaDens +
-                    # intIotaDeg1 +
-                    # intDensDeg1 +
-                    (1 | sim.param.upc),
-                  data = ssData,
-                  REML = FALSE)
+  reg2Int <- getDurationInteractionModel(ssData = ssData)
 
   exportModels(list(reg00,reg1Main,reg2Main,reg2Int), "reg-duration-selected")
+}
+
+#----------------------------------------------------------------------------------------------------#
+# function: exportDurationInteractionModelsByN
+#     Creates and exports multi-level linear regression models for duration of epidemics with only
+#     selected parameters and interactions, and divided by network size.
+# param:  ssData
+#     simulation summary data to get regression models for
+#----------------------------------------------------------------------------------------------------#
+exportDurationInteractionModelsByN <- function(ssData = loadSimulationSummaryData()) {
+
+  regNall <- getDurationInteractionModel(ssData = ssData)
+  regN10  <- getDurationInteractionModel(ssData = subset(ssData, net.param.N == 10))
+  regN15  <- getDurationInteractionModel(ssData = subset(ssData, net.param.N == 15))
+  regN20  <- getDurationInteractionModel(ssData = subset(ssData, net.param.N == 20))
+  regN25  <- getDurationInteractionModel(ssData = subset(ssData, net.param.N == 25))
+  regN50  <- getDurationInteractionModel(ssData = subset(ssData, net.param.N == 50))
+
+  exportModels(list(regNall, regN10, regN15, regN20, regN25, regN50), "reg-duration-byN")
 }
 
 
@@ -1340,56 +1503,38 @@ exportPrePostMeasures <- function(ssData = loadSimulationSummaryData(),
   prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.closeness.post.epidemic, "closeness (finished)"))
 
   # network changes
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "pre-epidemic")$net.changes.total, "network changes (pre)"))
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "finished")$net.changes.total, "network changes (finished)"))
-  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "post-epidemic")$net.changes.total, "network changes (post)"))
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "pre-epidemic")$ties.broken.av, "ties broken (pre)"))
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "finished")$ties.broken.av, "ties broken (finished)"))
-  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "post-epidemic")$ties.broken.av, "ties broken (post)"))
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "pre-epidemic")$ties.out.accepted.av, "tie requests accepted (pre)"))
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "finished")$ties.out.accepted.av, "tie requests accepted (finished)"))
-  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "post-epidemic")$ties.out.accepted.av, "tie requests accepted (post)"))
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "pre-epidemic")$ties.out.declined.av, "tie requests declined (pre)"))
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "finished")$ties.out.declined.av, "tie requests declined (finished)"))
-  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "post-epidemic")$ties.out.declined.av, "tie requests declined (post)"))
-  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "pre-epidemic")$degree.av, "degreed (pre)"))
-  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "finished")$degree.av, "degreed (finished)"))
-  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "post-epidemic")$degree.av, "degreed (post)"))
-  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "pre-epidemic")$density.av, "density (pre)"))
-  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "finished")$density.av, "density (finished)"))
-  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "post-epidemic")$density.av, "density (post)"))
-  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "pre-epidemic")$clustering.av, "clustering (pre)"))
-  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "finished")$clustering.av, "clustering (finished)"))
-  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(adData, stage == "post-epidemic")$clustering.av, "clustering (post)"))
-
-  # utility
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.utility.pre.epidemic, "utility (pre)"))
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.utility.post.epidemic, "utility (finished)"))
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.benefit.distance1.pre.epidemic, "benefit distance 1 (pre)"))
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.benefit.distance1.post.epidemic, "benefit distance 1 (finished)"))
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.benefit.distance2.pre.epidemic, "benefit distance 2 (pre)"))
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.benefit.distance2.post.epidemic, "benefit distance 2 (finished)"))
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.costs.distance1.pre.epidemic, "costs distance 1 (pre)"))
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.costs.distance1.post.epidemic, "costs distance 1 (finished)"))
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.costs.disease.pre.epidemic, "costs disease (pre)"))
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.costs.disease.post.epidemic, "costs disease (finished)"))
-
-  # patient-0
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$act.prop.net.degree.order.1, "degree (patient-0)"))
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$act.prop.net.degree.order.2, "2nd degree (patient-0)"))
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$act.prop.net.closeness, "closeness (patient-0)"))
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$act.prop.net.clustering, "clustering (patient-0)"))
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$act.prop.benefit.distance.1, "benefit distance 1 (patient-0)"))
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$act.prop.benefit.distance.2, "benefit distance 2 (patient-0)"))
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$act.prop.costs.distance.1, "costs distance 1 (patient-0)"))
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$act.prop.costs.disease, "costs disease (patient-0)"))
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$act.prop.util, "utility (patient-0)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData$net.changes.epidemic, "network changes (epidemic)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData$tie.requests.declined.epidemic, "tie requests declined (epidemic)"))
 
   # epidemics
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$dis.prop.pct.sus, "susceptible"))
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$dis.prop.pct.inf, "infected"))
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$dis.prop.pct.rec, "recovered"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$dis.prop.pct.sus, "susceptible"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$dis.prop.pct.inf, "infected"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$dis.prop.pct.rec, "attack rate"))
   prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$dis.prop.duration, "duration"))
+
+  # # utility
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.utility.pre.epidemic, "utility (pre)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.utility.post.epidemic, "utility (finished)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.benefit.distance1.pre.epidemic, "benefit distance 1 (pre)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.benefit.distance1.post.epidemic, "benefit distance 1 (finished)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.benefit.distance2.pre.epidemic, "benefit distance 2 (pre)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.benefit.distance2.post.epidemic, "benefit distance 2 (finished)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.costs.distance1.pre.epidemic, "costs distance 1 (pre)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.costs.distance1.post.epidemic, "costs distance 1 (finished)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.costs.disease.pre.epidemic, "costs disease (pre)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.costs.disease.post.epidemic, "costs disease (finished)"))
+  #
+  # # patient-0
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$act.prop.net.degree.order.1, "degree (patient-0)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$act.prop.net.degree.order.2, "2nd degree (patient-0)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$act.prop.net.closeness, "closeness (patient-0)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$act.prop.net.clustering, "clustering (patient-0)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$act.prop.benefit.distance.1, "benefit distance 1 (patient-0)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$act.prop.benefit.distance.2, "benefit distance 2 (patient-0)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$act.prop.costs.distance.1, "costs distance 1 (patient-0)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$act.prop.costs.disease, "costs disease (patient-0)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$act.prop.util, "utility (patient-0)"))
+
 
   # export
   exportDataFrame(prePostMeasures, filename)
@@ -1427,10 +1572,16 @@ exportAll <- function() {
   exportAttackRateModelsComplete(ssData = ssData)
   print(":::::: Exporting selected regression models for attack rate..")
   exportAttackRateModelsSelected(ssData = ssData)
+  print(":::::: Exporting selected regression interaction models for attack rate of epidemics, divided by network size..")
+  exportAttackRateInteractionModelsByN(ssData = ssData)
+
   print(":::::: Exporting complete regression models for duration of epidemics..")
   exportDurationModelsComplete(ssData = ssData)
   print(":::::: Exporting selected regression models for duration of epidemics..")
   exportDurationModelsSelected(ssData = ssData)
+  print(":::::: Exporting selected regression interaction models for duration of epidemics, divided by network size..")
+  exportDurationInteractionModelsByN(ssData = ssData)
+
   print(":::::: Exporting network size measures..")
   exportNetworkSizeMeasures(ssData = ssData, rsData = rsData)
   print(":::::: Exporting epidemic measures..")

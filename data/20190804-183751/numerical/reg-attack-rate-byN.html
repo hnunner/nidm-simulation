@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Statistical models</title>
+<style>
+table.texreg {margin: 10px auto;border-collapse: collapse;border-spacing: 0px;caption-side: bottom;color: #000000;border-top: 2px solid #000000;}
+table.texreg thead .rule {border-bottom: 1px solid #000000;}
+table.texreg tbody tr.rule td {border-top: 1px solid #000000;}
+table.texreg tbody tr.bottomrule td {border-bottom: 2px solid #000000;}
+table.texreg tfoot td {font-size: 0.8em;}
+table.texreg th, table.texreg td {padding-left: 5px;padding-right: 5px;}
+</style>
+</head>
+<body>
+<table class="texreg">
+<caption>Statistical models</caption>
+<thead>
+<tr>
+<th>&nbsp;</th>
+<th>Model 1</th>
+<th>Model 2</th>
+<th>Model 3</th>
+<th>Model 4</th>
+<th>Model 5</th>
+<th>Model 6</th>
+</tr>
+</thead>
+<tbody>
+<tr class="rule">
+<td>(Intercept)</td>
+<td>2.59<sup>***</sup></td>
+<td>0.05</td>
+<td>1.46<sup>***</sup></td>
+<td>2.40<sup>***</sup></td>
+<td>3.17<sup>***</sup></td>
+<td>4.75<sup>***</sup></td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>(0.07)</td>
+<td>(0.04)</td>
+<td>(0.11)</td>
+<td>(0.16)</td>
+<td>(0.19)</td>
+<td>(0.27)</td>
+</tr>
+<tr>
+<td>beta</td>
+<td>0.23<sup>***</sup></td>
+<td>0.23<sup>***</sup></td>
+<td>0.25<sup>***</sup></td>
+<td>0.27<sup>***</sup></td>
+<td>0.26<sup>***</sup></td>
+<td>0.20<sup>***</sup></td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>(0.02)</td>
+<td>(0.01)</td>
+<td>(0.03)</td>
+<td>(0.04)</td>
+<td>(0.04)</td>
+<td>(0.04)</td>
+</tr>
+<tr>
+<td>mu</td>
+<td>-5.30<sup>***</sup></td>
+<td>-4.89<sup>***</sup></td>
+<td>-5.85<sup>***</sup></td>
+<td>-6.71<sup>***</sup></td>
+<td>-6.53<sup>***</sup></td>
+<td>-4.44<sup>***</sup></td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>(0.21)</td>
+<td>(0.17)</td>
+<td>(0.42)</td>
+<td>(0.62)</td>
+<td>(0.76)</td>
+<td>(0.94)</td>
+</tr>
+<tr>
+<td>sigma</td>
+<td>-1.75<sup>***</sup></td>
+<td>-1.86<sup>***</sup></td>
+<td>-1.91<sup>***</sup></td>
+<td>-2.50<sup>***</sup></td>
+<td>-2.11<sup>***</sup></td>
+<td>-1.59<sup>***</sup></td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>(0.11)</td>
+<td>(0.10)</td>
+<td>(0.23)</td>
+<td>(0.30)</td>
+<td>(0.31)</td>
+<td>(0.35)</td>
+</tr>
+<tr>
+<td>r</td>
+<td>-3.16<sup>***</sup></td>
+<td>-2.51<sup>***</sup></td>
+<td>-3.16<sup>***</sup></td>
+<td>-3.76<sup>***</sup></td>
+<td>-4.28<sup>***</sup></td>
+<td>-3.57<sup>***</sup></td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>(0.13)</td>
+<td>(0.11)</td>
+<td>(0.26)</td>
+<td>(0.36)</td>
+<td>(0.43)</td>
+<td>(0.51)</td>
+</tr>
+<tr>
+<td>N</td>
+<td>6.22<sup>***</sup></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>(0.40)</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>dens</td>
+<td>-7.35<sup>***</sup></td>
+<td>-4.16<sup>**</sup></td>
+<td>-11.91<sup>***</sup></td>
+<td>-10.00<sup>**</sup></td>
+<td>-13.64<sup>**</sup></td>
+<td>-5.72</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>(0.98)</td>
+<td>(1.27)</td>
+<td>(2.36)</td>
+<td>(3.44)</td>
+<td>(5.24)</td>
+<td>(20.02)</td>
+</tr>
+<tr>
+<td>deg1</td>
+<td>6.46<sup>***</sup></td>
+<td>2.73<sup>***</sup></td>
+<td>5.79<sup>***</sup></td>
+<td>2.88<sup>***</sup></td>
+<td>6.40<sup>***</sup></td>
+<td>17.29<sup>***</sup></td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>(0.54)</td>
+<td>(0.45)</td>
+<td>(0.67)</td>
+<td>(0.82)</td>
+<td>(1.07)</td>
+<td>(3.33)</td>
+</tr>
+<tr>
+<td>intBetaMu</td>
+<td>0.52<sup>***</sup></td>
+<td>0.46<sup>***</sup></td>
+<td>0.48<sup>***</sup></td>
+<td>0.54<sup>***</sup></td>
+<td>0.50<sup>**</sup></td>
+<td>0.30</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>(0.06)</td>
+<td>(0.05)</td>
+<td>(0.13)</td>
+<td>(0.16)</td>
+<td>(0.16)</td>
+<td>(0.16)</td>
+</tr>
+<tr>
+<td>intMuSigma</td>
+<td>3.16<sup>***</sup></td>
+<td>1.74<sup>***</sup></td>
+<td>3.80<sup>***</sup></td>
+<td>4.70<sup>***</sup></td>
+<td>3.99<sup>**</sup></td>
+<td>2.39<sup>*</sup></td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>(0.44)</td>
+<td>(0.40)</td>
+<td>(0.92)</td>
+<td>(1.18)</td>
+<td>(1.21)</td>
+<td>(1.17)</td>
+</tr>
+<tr>
+<td>intMuR</td>
+<td>6.41<sup>***</sup></td>
+<td>4.33<sup>***</sup></td>
+<td>7.60<sup>***</sup></td>
+<td>8.34<sup>***</sup></td>
+<td>9.60<sup>***</sup></td>
+<td>7.24<sup>***</sup></td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>(0.49)</td>
+<td>(0.42)</td>
+<td>(1.04)</td>
+<td>(1.44)</td>
+<td>(1.71)</td>
+<td>(1.91)</td>
+</tr>
+<tr>
+<td>intSigmaR</td>
+<td>-2.04<sup>***</sup></td>
+<td>-3.14<sup>***</sup></td>
+<td>-1.93<sup>***</sup></td>
+<td>-1.65<sup>*</sup></td>
+<td>-1.88<sup>**</sup></td>
+<td>-0.74</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>(0.27)</td>
+<td>(0.27)</td>
+<td>(0.57)</td>
+<td>(0.69)</td>
+<td>(0.73)</td>
+<td>(0.71)</td>
+</tr>
+<tr>
+<td>intRDens</td>
+<td>9.39<sup>***</sup></td>
+<td>-5.29</td>
+<td>13.86<sup>*</sup></td>
+<td>21.26<sup>*</sup></td>
+<td>23.66</td>
+<td>32.70</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>(1.52)</td>
+<td>(3.03)</td>
+<td>(5.38)</td>
+<td>(8.43)</td>
+<td>(13.10)</td>
+<td>(37.99)</td>
+</tr>
+<tr>
+<td>intNDeg1</td>
+<td>13.79<sup>***</sup></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>(2.30)</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="rule">
+<td>AIC</td>
+<td>23192.63</td>
+<td>6210.31</td>
+<td>5461.05</td>
+<td>5040.96</td>
+<td>4581.53</td>
+<td>1878.28</td>
+</tr>
+<tr>
+<td>BIC</td>
+<td>23320.00</td>
+<td>6299.78</td>
+<td>5550.51</td>
+<td>5130.42</td>
+<td>4670.99</td>
+<td>1967.75</td>
+</tr>
+<tr>
+<td>Log Likelihood</td>
+<td>-11581.31</td>
+<td>-3092.16</td>
+<td>-2717.52</td>
+<td>-2507.48</td>
+<td>-2277.77</td>
+<td>-926.14</td>
+</tr>
+<tr>
+<td>Num. obs.</td>
+<td>36000</td>
+<td>7200</td>
+<td>7200</td>
+<td>7200</td>
+<td>7200</td>
+<td>7200</td>
+</tr>
+<tr>
+<td>Num. groups: sim.param.upc</td>
+<td>360</td>
+<td>72</td>
+<td>72</td>
+<td>72</td>
+<td>72</td>
+<td>72</td>
+</tr>
+<tr class="bottomrule">
+<td>Var: sim.param.upc (Intercept)</td>
+<td>0.47</td>
+<td>0.02</td>
+<td>0.44</td>
+<td>0.57</td>
+<td>0.52</td>
+<td>0.25</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td colspan="7"></span></td>
+</tr>
+<tr>
+<td class="bottomRule">ICC</td>
+<td class="bottomRule">0.125</td>
+<td class="bottomRule">0.007</td>
+<td class="bottomRule">0.118</td>
+<td class="bottomRule">0.149</td>
+<td class="bottomRule">0.136</td>
+<td class="bottomRule">0.072</td>
+ </span></td>
+</tr><tr>
+<td colspan="7"><span style="font-size:0.8em"><sup>***</sup>p &lt; 0.001, <sup>**</sup>p &lt; 0.01, <sup>*</sup>p &lt; 0.05</span></td></td>
+</tr>
+</tfoot>
+</table>
+</body>
+</html>
