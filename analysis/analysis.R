@@ -628,10 +628,12 @@ exportEpidemicDensityPlots <- function(ssData = loadSimulationSummaryData(),
                color = color,
                linetype = "longdash",
                  size=1) +
-    scale_x_continuous(limits = c(0, 60), breaks = seq(0, 60, by = 10)) +
+    scale_x_continuous(breaks = seq(0, 60, by = 10)) +
     scale_y_continuous(limits = duration.y.limits, breaks = seq(duration.y.limits[1],
                                                                 duration.y.limits[2]*1000,
-                                                                by = duration.y.limits[2]*1000/duration.y.breaks)/1000)
+                                                                by = duration.y.limits[2]*1000/duration.y.breaks)/1000) +
+    expand_limits(x = c(0, 60))
+
 
   if (!labeled) {
     p.duration <- p.duration +
