@@ -820,10 +820,10 @@ exportGridPlots <- function(rsData = reduceRoundSummaryData(loadRoundSummaryData
 exportEpidemicDensityPlots <- function(ssData = loadSimulationSummaryData(),
                                        filename.appendix = "",
                                        labeled = TRUE,
-                                       attack.rate.y.limits = c(0, 0.15),
-                                       attack.rate.y.breaks = 3,
-                                       duration.y.limits = c(0, 0.15),
-                                       duration.y.breaks = 3) {
+                                       attack.rate.y.limits = c(0, 0.25),
+                                       attack.rate.y.breaks = 5,
+                                       duration.y.limits = c(0, 0.25),
+                                       duration.y.breaks = 5) {
 
   color = COLORS["Infected"]
   plot.width = 50
@@ -906,29 +906,29 @@ exportEpidemicDensityPlots <- function(ssData = loadSimulationSummaryData(),
 exportEpidemicDensityPlotsByN <- function(ssData = loadSimulationSummaryData()) {
 
   exportEpidemicDensityPlots(ssData = ssData,
-                             attack.rate.y.limits = c(0, 0.08), attack.rate.y.breaks = 4,
-                             duration.y.limits = c(0, 0.08), duration.y.breaks = 4)
+                             attack.rate.y.limits = c(0, 0.15), attack.rate.y.breaks = 3,
+                             duration.y.limits = c(0, 0.15), duration.y.breaks = 3)
   exportEpidemicDensityPlots(ssData = ssData, filename.appendix = "-unlabeled", labeled = FALSE,
-                             attack.rate.y.limits = c(0, 0.08), attack.rate.y.breaks = 4,
-                             duration.y.limits = c(0, 0.08), duration.y.breaks = 4)
+                             attack.rate.y.limits = c(0, 0.15), attack.rate.y.breaks = 3,
+                             duration.y.limits = c(0, 0.15), duration.y.breaks = 3)
 
   exportEpidemicDensityPlots(ssData = subset(ssData, net.prop.ties.broken.epidemic == 1),
                              filename.appendix = "-dynamic",
-                             attack.rate.y.limits = c(0, 0.08), attack.rate.y.breaks = 4,
-                             duration.y.limits = c(0, 0.08), duration.y.breaks = 4)
+                             attack.rate.y.limits = c(0, 0.15), attack.rate.y.breaks = 3,
+                             duration.y.limits = c(0, 0.15), duration.y.breaks = 3)
   exportEpidemicDensityPlots(ssData = subset(ssData, net.prop.ties.broken.epidemic == 1),
                              filename.appendix = "-dynamic-unlabeled", labeled = FALSE,
-                             attack.rate.y.limits = c(0, 0.08), attack.rate.y.breaks = 4,
-                             duration.y.limits = c(0, 0.08), duration.y.breaks = 4)
+                             attack.rate.y.limits = c(0, 0.15), attack.rate.y.breaks = 3,
+                             duration.y.limits = c(0, 0.15), duration.y.breaks = 3)
 
   exportEpidemicDensityPlots(ssData = subset(ssData, net.prop.ties.broken.epidemic == 0),
                              filename.appendix = "-static",
-                             attack.rate.y.limits = c(0, 0.08), attack.rate.y.breaks = 4,
-                             duration.y.limits = c(0, 0.08), duration.y.breaks = 4)
+                             attack.rate.y.limits = c(0, 0.15), attack.rate.y.breaks = 3,
+                             duration.y.limits = c(0, 0.15), duration.y.breaks = 3)
   exportEpidemicDensityPlots(ssData = subset(ssData, net.prop.ties.broken.epidemic == 0),
                              filename.appendix = "-static-unlabeled", labeled = FALSE,
-                             attack.rate.y.limits = c(0, 0.08), attack.rate.y.breaks = 4,
-                             duration.y.limits = c(0, 0.08), duration.y.breaks = 4)
+                             attack.rate.y.limits = c(0, 0.15), attack.rate.y.breaks = 3,
+                             duration.y.limits = c(0, 0.15), duration.y.breaks = 3)
 
 
   for (N in unique(ssData$net.param.N)) {
