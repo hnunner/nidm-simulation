@@ -96,45 +96,230 @@ loadAgentDetailsData <- function() {
 #     Aggregates agent detail data for NIDM simulations.
 # return: the aggregated agent detail data for NIDM simulations
 #----------------------------------------------------------------------------------------------------#
-aggregateAgentDetailsData <- function(adData = loadAgentDetailsData()) {
+aggregateAgentDetailsData <- function(adData = loadAgentDetailsData(), ssData = loadSimulationSummaryData()) {
 
   adDataReduced <- data.frame("uid" = adData$sim.param.uid,
                               "stage" = adData$sim.prop.stage,
+                              "dis.state" = adData$act.prop.dis.state,
+                              "net.size" = adData$net.param.N,
                               "ties.broken" = adData$act.prop.cons.broken.active,
                               "ties.out.accepted" = adData$act.prop.cons.out.accepted,
                               "ties.out.declined" = adData$act.prop.cons.out.declined)
-  adDataReduced$net.changes <- adDataReduced$ties.broken + adDataReduced$ties.out.accepted
 
-  adDataAgg <- adDataReduced %>%
-    group_by(uid, stage) %>%
-    summarise(net.changes = sum(net.changes, na.rm = TRUE))
 
-  adDataAgg <- merge(x = adDataAgg,
-                     y = adDataReduced %>%
-                       group_by(uid, stage) %>%
-                       summarise(ties.out.declined = sum(ties.out.declined, na.rm = TRUE)),
-                     by = c("uid", "stage"),
-                     all = TRUE)
+  adDataReduced.pre <- subset(adDataReduced, stage == "pre-epidemic")
 
-  adDataAggPre <- subset(adDataAgg, stage == "pre-epidemic")
-  adDataAggFinished <- subset(adDataAgg, stage == "finished")
+  adDataReduced.pre <- merge(x = adDataReduced.pre,
+                             y = adDataReduced.pre %>%
+                               group_by(uid) %>%
+                               summarise(ties.broken.total = sum(ties.broken, na.rm = TRUE)),
+                             by = c("uid"),
+                             all = TRUE)
+  adDataReduced.pre <- merge(x = adDataReduced.pre,
+                             y = adDataReduced.pre %>%
+                               group_by(uid) %>%
+                               summarise(ties.out.accepted.total = sum(ties.out.accepted, na.rm = TRUE)),
+                             by = c("uid"),
+                             all = TRUE)
+  adDataReduced.pre <- merge(x = adDataReduced.pre,
+                             y = adDataReduced.pre %>%
+                               group_by(uid) %>%
+                               summarise(ties.out.declined.total = sum(ties.out.declined, na.rm = TRUE)),
+                             by = c("uid"),
+                             all = TRUE)
+
+  adDataReduced.pre$net.changes.total <- adDataReduced.pre$ties.broken.total + adDataReduced.pre$ties.out.accepted.total
+  adDataReduced.pre$tie.requests.total <- adDataReduced.pre$ties.out.accepted.total + adDataReduced.pre$ties.out.declined.total
+
+  adDataReduced.pre <- adDataReduced.pre %>%
+    group_by(uid, dis.state) %>%
+    mutate(net.size.by.dis.state = 1:n())
+
+  adDataReduced.pre <- adDataReduced.pre %>%
+    group_by(uid, dis.state, net.size) %>%
+    top_n(1, net.size.by.dis.state)
+
+  adDataReduced.pre <- subset(adDataReduced.pre, select=-c(ties.broken, ties.out.accepted, ties.out.declined))
 
   res <- data.frame(
-    uid = adDataAggPre$uid,
-    net.changes.pre = adDataAggPre$net.changes,
-    tie.requests.declined.pre = adDataAggPre$ties.out.declined
+    uid = adDataReduced.pre$uid,
+    net.size = adDataReduced.pre$net.size,
+    dis.state.pre = adDataReduced.pre$dis.state,
+    net.size.by.dis.state.pre = adDataReduced.pre$net.size.by.dis.state,
+    net.changes.pre = adDataReduced.pre$net.changes.total,
+    ties.broken.pre = adDataReduced.pre$ties.broken.total,
+    tie.requests.accepted.pre = adDataReduced.pre$ties.out.accepted.total,
+    tie.requests.declined.pre = adDataReduced.pre$ties.out.declined.total,
+    tie.requests.total.pre = adDataReduced.pre$tie.requests.total
   )
 
-  adDataAggFinished <- adDataAggFinished %>%
-    select(uid, net.changes, ties.out.declined)
 
-  res <- left_join(res, adDataAggFinished, by = c("uid"))
 
-  colnames(res)[which(names(res) == "net.changes")] <- "net.changes.finished"
-  colnames(res)[which(names(res) == "ties.out.declined")] <- "tie.requests.declined.finished"
 
-  res$net.changes.epidemic <- res$net.changes.finished - res$net.changes.pre
-  res$tie.requests.declined.epidemic <- res$tie.requests.declined.finished - res$tie.requests.declined.pre
+  adDataReduced.fin <- subset(adDataReduced, stage == "finished")
+
+  adDataReduced.fin <- merge(x = adDataReduced.fin,
+                             y = adDataReduced.fin %>%
+                               group_by(uid) %>%
+                               summarise(ties.broken.total = sum(ties.broken, na.rm = TRUE)),
+                             by = c("uid"),
+                             all = TRUE)
+  adDataReduced.fin <- merge(x = adDataReduced.fin,
+                             y = adDataReduced.fin %>%
+                               group_by(uid) %>%
+                               summarise(ties.out.accepted.total = sum(ties.out.accepted, na.rm = TRUE)),
+                             by = c("uid"),
+                             all = TRUE)
+  adDataReduced.fin <- merge(x = adDataReduced.fin,
+                             y = adDataReduced.fin %>%
+                               group_by(uid) %>%
+                               summarise(ties.out.declined.total = sum(ties.out.declined, na.rm = TRUE)),
+                             by = c("uid"),
+                             all = TRUE)
+
+  adDataReduced.fin$net.changes.total <- adDataReduced.fin$ties.broken.total + adDataReduced.fin$ties.out.accepted.total
+  adDataReduced.fin$tie.requests.total <- adDataReduced.fin$ties.out.accepted.total + adDataReduced.fin$ties.out.declined.total
+
+  adDataReduced.fin <- adDataReduced.fin %>%
+    group_by(uid, dis.state) %>%
+    mutate(net.size.by.dis.state = 1:n())
+
+  adDataReduced.fin <- adDataReduced.fin %>%
+    group_by(uid, dis.state, net.size) %>%
+    top_n(1, net.size.by.dis.state)
+
+  adDataReduced.fin <- subset(adDataReduced.fin, select=-c(stage,
+                                                           net.size,
+                                                           ties.broken,
+                                                           ties.out.accepted,
+                                                           ties.out.declined))
+
+
+
+  res <- left_join(res, adDataReduced.fin, by = c("uid"))
+
+  colnames(res)[which(names(res) == "dis.state")] <- "dis.state.after"
+  colnames(res)[which(names(res) == "net.size.by.dis.state")] <- "net.size.by.dis.state.after"
+  colnames(res)[which(names(res) == "net.changes.total")] <- "net.changes.after"
+  colnames(res)[which(names(res) == "ties.broken.total")] <- "ties.broken.after"
+  colnames(res)[which(names(res) == "ties.out.accepted.total")] <- "tie.requests.accepted.after"
+  colnames(res)[which(names(res) == "ties.out.declined.total")] <- "tie.requests.declined.after"
+  colnames(res)[which(names(res) == "tie.requests.total")] <- "tie.requests.total.after"
+
+
+
+  res$net.changes.epidemic <- res$net.changes.after - res$net.changes.pre
+  res$ties.broken.epidemic <- res$ties.broken.after - res$ties.broken.pre
+  res$tie.requests.accepted.epidemic <- res$tie.requests.accepted.after - res$tie.requests.accepted.pre
+  res$tie.requests.declined.epidemic <- res$tie.requests.declined.after - res$tie.requests.declined.pre
+  res$tie.requests.total.epidemic <- res$tie.requests.total.after - res$tie.requests.total.pre
+
+  attack.rate <- data.frame("uid" = ssData$sim.param.uid,
+                            "attack.rate" = ssData$dis.prop.pct.rec)
+  res <- left_join(res, attack.rate, by = c("uid"))
+
+
+
+  res$tie.requests.accepted.pre.pct <- res$tie.requests.accepted.pre / (res$tie.requests.accepted.pre + res$tie.requests.declined.pre)
+  res$tie.requests.declined.pre.pct <- res$tie.requests.declined.pre / (res$tie.requests.accepted.pre + res$tie.requests.declined.pre)
+  res$tie.requests.accepted.epidemic.pct <- res$tie.requests.accepted.epidemic / (res$tie.requests.accepted.epidemic + res$tie.requests.declined.epidemic)
+  res$tie.requests.declined.epidemic.pct <- res$tie.requests.declined.epidemic / (res$tie.requests.accepted.epidemic + res$tie.requests.declined.epidemic)
+
+  res$ties.broken.pre.pct <- res$ties.broken.pre / res$net.changes.pre
+  res$ties.broken.epidemic.pct <- res$ties.broken.epidemic / res$net.changes.epidemic
+
+  res$net.changes.pre.normalized <- res$net.changes.pre / res$net.size
+  res$net.changes.epidemic.normalized <- res$net.changes.epidemic / res$net.size
+
+  # adDataReduced <- adDataReduced %>%
+  #   group_by(uid, stage, dis.state) %>%
+  #   mutate(net.size.by.dis.state = 1:n())
+  #
+  # adDataReduced <- adDataReduced %>%
+  #   group_by(uid, stage, dis.state, net.size) %>%
+  #   top_n(1, net.size.by.dis.state)
+  #
+  # adDataReduced <- subset(adDataReduced, stage != "post-epidemic")
+  #
+  #
+  # adDataAgg <- adDataReduced %>%
+  #   group_by(uid, stage, net.size, dis.state, net.size.by.dis.state) %>%
+  #   summarise(net.changes = sum(net.changes, na.rm = TRUE),
+  #             ties.broken = sum(ties.broken, na.rm = TRUE),
+  #             ties.out.accepted = sum(ties.out.accepted, na.rm = TRUE),
+  #             ties.out.declined = sum(ties.out.declined, na.rm = TRUE),
+  #             ties.out.total = sum(ties.out.total, na.rm = TRUE))
+  #
+  # adDataAggPre <- subset(adDataAgg, stage == "pre-epidemic")
+  #
+  # res <- data.frame(
+  #   uid = adDataAggPre$uid,
+  #   net.size = adDataAggPre$net.size,
+  #   dis.state.pre = adDataAggPre$dis.state,
+  #   net.size.by.dis.state.pre = adDataAggPre$net.size.by.dis.state,
+  #   net.changes.pre = adDataAggPre$net.changes,
+  #   ties.broken.pre = adDataAggPre$ties.broken,
+  #   tie.requests.accepted.pre = adDataAggPre$ties.out.accepted,
+  #   tie.requests.declined.pre = adDataAggPre$ties.out.declined,
+  #   tie.requests.total.pre = adDataAggPre$ties.out.total
+  # )
+  #
+  # adDataAggFinished <- subset(adDataAgg, stage == "finished")
+  # adDataAggFinished <- subset(adDataAggFinished, select = -c(stage, net.size))
+  #
+  # res <- left_join(res, adDataAggFinished, by = c("uid"))
+  #
+  # colnames(res)[which(names(res) == "dis.state")] <- "dis.state.after"
+  # colnames(res)[which(names(res) == "net.size.by.dis.state")] <- "net.size.by.dis.state.after"
+  # colnames(res)[which(names(res) == "net.changes")] <- "net.changes.finished"
+  # colnames(res)[which(names(res) == "ties.broken")] <- "ties.broken.finished"
+  # colnames(res)[which(names(res) == "ties.out.accepted")] <- "tie.requests.accepted.finished"
+  # colnames(res)[which(names(res) == "ties.out.declined")] <- "tie.requests.declined.finished"
+  # colnames(res)[which(names(res) == "ties.out.total")] <- "tie.requests.total.finished"
+  #
+  # # res <- merge(x = res,
+  # #              y = res %>%
+  # #                group_by(uid) %>%
+  # #                summarise(net.changes.finished.total = sum(net.changes.finished, na.rm = TRUE)),
+  # #              by = c("uid"),
+  # #              all = TRUE)
+  #
+  #
+  #
+  # res$net.changes.epidemic <- res$net.changes.finished - res$
+  #
+  #
+  #
+  #
+  #
+  #
+  # res$net.changes.epidemic.total <- res$net.changes.finished.total - res$net.changes.pre
+  #
+  #
+  #
+  # res$ties.broken.epidemic <- res$ties.broken.finished - res$ties.broken.pre
+  # res$tie.requests.accepted.epidemic <- res$tie.requests.accepted.finished - res$tie.requests.accepted.pre
+  # res$tie.requests.declined.epidemic <- res$tie.requests.declined.finished - res$tie.requests.declined.pre
+  # res$tie.requests.total.epidemic <- res$tie.requests.total.finished - res$tie.requests.total.pre
+  #
+  # attack.rate <- data.frame("uid" = ssData$sim.param.uid,
+  #                           "attack.rate" = ssData$dis.prop.pct.rec)
+  # res <- left_join(res, attack.rate, by = c("uid"))
+  #
+  # res <- res %>%
+  #   select(-contains(".finished"))
+  #
+  # res$tie.requests.accepted.pre.pct <- res$tie.requests.accepted.pre / (res$tie.requests.accepted.pre + res$tie.requests.declined.pre)
+  # res$tie.requests.declined.pre.pct <- res$tie.requests.declined.pre / (res$tie.requests.accepted.pre + res$tie.requests.declined.pre)
+  #
+  # res$tie.requests.accepted.epidemic.pct <- res$tie.requests.accepted.epidemic / (res$tie.requests.accepted.epidemic + res$tie.requests.declined.epidemic)
+  # res$tie.requests.declined.epidemic.pct <- res$tie.requests.declined.epidemic / (res$tie.requests.accepted.epidemic + res$tie.requests.declined.epidemic)
+  #
+  # res$ties.broken.pre.pct <- res$ties.broken.pre / res$net.changes.pre
+  # res$ties.broken.epidemic.pct <- res$ties.broken.epidemic / res$net.changes.epidemic
+  #
+  # res$net.changes.pre.normalized <- res$net.changes.pre / res$net.size
+  # res$net.changes.epidemic.normalized <- res$net.changes.epidemic / res$net.size
 
   return(res)
 }
@@ -542,7 +727,15 @@ exportPlots <- function(rsData = reduceRoundSummaryData(loadRoundSummaryData(), 
 # function: exportGridPlots
 #     Exports plots of selected interaction effects for grid assembly (no axes and labels).
 #----------------------------------------------------------------------------------------------------#
-exportGridPlots <- function(rsData = reduceRoundSummaryData(loadRoundSummaryData(), cropTail = 20)) {
+exportGridPlots <- function(rsData = reduceRoundSummaryData(loadRoundSummaryData(), cropTail = 20),
+                            ssData = loadSimulationSummaryData()) {
+
+  uids.dyna <- subset(ssData, net.prop.ties.broken.epidemic == 1)$sim.param.uid
+  rsData.dyna <- subset(rsData, sim.param.uid %in% uids.dyna)
+
+  rsData.stat <- subset(rsData, sim.param.uid %in% uids.stat)
+  uids.stat <- subset(ssData, net.prop.ties.broken.epidemic == 0)$sim.param.uid
+
   exportPlots(
     rsData,
     showLegend = FALSE,
@@ -552,6 +745,30 @@ exportGridPlots <- function(rsData = reduceRoundSummaryData(loadRoundSummaryData
     showClustering = FALSE,
     showAxes = FALSE,
     filePrefix = "grid.",
+    plotWidth = 50,
+    plotHeight = 35)
+
+  exportPlots(
+    rsData.dyna,
+    showLegend = FALSE,
+    showRibbons = TRUE,
+    showDegree = TRUE,
+    showDensity = FALSE,
+    showClustering = FALSE,
+    showAxes = FALSE,
+    filePrefix = "grid.dynamic.",
+    plotWidth = 50,
+    plotHeight = 35)
+
+  exportPlots(
+    rsData.stat,
+    showLegend = FALSE,
+    showRibbons = TRUE,
+    showDegree = TRUE,
+    showDensity = FALSE,
+    showClustering = FALSE,
+    showAxes = FALSE,
+    filePrefix = "grid.static.",
     plotWidth = 50,
     plotHeight = 35)
 
@@ -567,6 +784,32 @@ exportGridPlots <- function(rsData = reduceRoundSummaryData(loadRoundSummaryData
       showClustering = FALSE,
       showAxes = FALSE,
       filePrefix = paste("grid.N", N, ".", sep = ""),
+      plotWidth = 50,
+      plotHeight = 35)
+
+    rsData.dyna.by.N <- subset(rsData.dyna, net.param.N == N)
+    exportPlots(
+      rsData.dyna.by.N,
+      showLegend = FALSE,
+      showRibbons = TRUE,
+      showDegree = TRUE,
+      showDensity = FALSE,
+      showClustering = FALSE,
+      showAxes = FALSE,
+      filePrefix = paste("grid.dynamic.N", N, ".", sep = ""),
+      plotWidth = 50,
+      plotHeight = 35)
+
+    rsData.stat.by.N <- subset(rsData.stat, net.param.N == N)
+    exportPlots(
+      rsData.stat.by.N,
+      showLegend = FALSE,
+      showRibbons = TRUE,
+      showDegree = TRUE,
+      showDensity = FALSE,
+      showClustering = FALSE,
+      showAxes = FALSE,
+      filePrefix = paste("grid.static.N", N, ".", sep = ""),
       plotWidth = 50,
       plotHeight = 35)
   }
@@ -669,9 +912,40 @@ exportEpidemicDensityPlotsByN <- function(ssData = loadSimulationSummaryData()) 
                              attack.rate.y.limits = c(0, 0.08), attack.rate.y.breaks = 4,
                              duration.y.limits = c(0, 0.08), duration.y.breaks = 4)
 
+  exportEpidemicDensityPlots(ssData = subset(ssData, net.prop.ties.broken.epidemic == 1),
+                             filename.appendix = "-dynamic",
+                             attack.rate.y.limits = c(0, 0.08), attack.rate.y.breaks = 4,
+                             duration.y.limits = c(0, 0.08), duration.y.breaks = 4)
+  exportEpidemicDensityPlots(ssData = subset(ssData, net.prop.ties.broken.epidemic == 1),
+                             filename.appendix = "-dynamic-unlabeled", labeled = FALSE,
+                             attack.rate.y.limits = c(0, 0.08), attack.rate.y.breaks = 4,
+                             duration.y.limits = c(0, 0.08), duration.y.breaks = 4)
+
+  exportEpidemicDensityPlots(ssData = subset(ssData, net.prop.ties.broken.epidemic == 0),
+                             filename.appendix = "-static",
+                             attack.rate.y.limits = c(0, 0.08), attack.rate.y.breaks = 4,
+                             duration.y.limits = c(0, 0.08), duration.y.breaks = 4)
+  exportEpidemicDensityPlots(ssData = subset(ssData, net.prop.ties.broken.epidemic == 0),
+                             filename.appendix = "-static-unlabeled", labeled = FALSE,
+                             attack.rate.y.limits = c(0, 0.08), attack.rate.y.breaks = 4,
+                             duration.y.limits = c(0, 0.08), duration.y.breaks = 4)
+
+
   for (N in unique(ssData$net.param.N)) {
-    exportEpidemicDensityPlots(ssData = subset(ssData, net.param.N == N), filename.appendix = paste("-N", N, sep = ""))
-    exportEpidemicDensityPlots(ssData = subset(ssData, net.param.N == N), filename.appendix = paste("-N", N, "-unlabeled", sep = ""), labeled = FALSE)
+    exportEpidemicDensityPlots(ssData = subset(ssData, net.param.N == N),
+                               filename.appendix = paste("-N", N, sep = ""))
+    exportEpidemicDensityPlots(ssData = subset(ssData, net.param.N == N),
+                               filename.appendix = paste("-N", N, "-unlabeled", sep = ""), labeled = FALSE)
+
+    exportEpidemicDensityPlots(ssData = subset(ssData, net.param.N == N & net.prop.ties.broken.epidemic == 1),
+                               filename.appendix = paste("-dynamic-N", N, sep = ""))
+    exportEpidemicDensityPlots(ssData = subset(ssData, net.param.N == N & net.prop.ties.broken.epidemic == 1),
+                               filename.appendix = paste("-dynamic-N", N, "-unlabeled", sep = ""), labeled = FALSE)
+
+    exportEpidemicDensityPlots(ssData = subset(ssData, net.param.N == N & net.prop.ties.broken.epidemic == 0),
+                               filename.appendix = paste("-static-N", N, sep = ""))
+    exportEpidemicDensityPlots(ssData = subset(ssData, net.param.N == N & net.prop.ties.broken.epidemic == 0),
+                               filename.appendix = paste("-static-N", N, "-unlabeled", sep = ""), labeled = FALSE)
   }
 
 }
@@ -1529,11 +1803,11 @@ exportEpidemicMeasures <- function(ssData = loadSimulationSummaryData(),
 
 getDescriptives <- function(data, name) {
 
-  mean <- round(mean(data), 2)
-  sd <- round(sd(data), 2)
-  min <- round(min(data), 2)
-  max <- round(max(data), 2)
-  skew <- round(skewness(data), 2)
+  mean <- round(mean(data, na.rm = TRUE), 2)
+  sd <- round(sd(data, na.rm = TRUE), 2)
+  min <- round(min(data, na.rm = TRUE), 2)
+  max <- round(max(data, na.rm = TRUE), 2)
+  skew <- round(skewness(data, na.rm = TRUE), 2)
 
   return(data.frame(name, mean, sd, min, max, skew))
 
@@ -1567,14 +1841,56 @@ exportPrePostMeasures <- function(ssData = loadSimulationSummaryData(),
   prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.closeness.post.epidemic, "closeness (finished)"))
 
   # network changes
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData$net.changes.epidemic, "network changes (epidemic)"))
-  prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData$tie.requests.declined.epidemic, "tie requests declined (epidemic)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData$net.changes.epidemic, "network changes (epidemic)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData$tie.requests.declined.epidemic, "tie requests declined (epidemic)"))
+
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData$net.changes.epidemic.normalized, "network changes normalized (epidemic)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData$ties.broken.epidemic / adData$net.size, "ties broken normalized (epidemic)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData$tie.requests.accepted.epidemic / adData$net.size, "ties created normalized (epidemic)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData$tie.requests.total.epidemic / adData$net.size, "tie requests normalized (epidemic)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData$tie.requests.accepted.epidemic.pct, "% tie requests accepted (epidemic)"))
+
+  adData.sus <- subset(adData, dis.state.after == "SUSCEPTIBLE")
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData.sus$net.changes.epidemic.normalized, "network changes normalized (epidemic, suceptible)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData.sus$ties.broken.epidemic / adData.sus$net.size, "ties broken normalized (epidemic, susceptible)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData.sus$tie.requests.accepted.epidemic / adData.sus$net.size, "ties created normalized (epidemic, susceptible)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData.sus$tie.requests.total.epidemic / adData.sus$net.size, "tie requests normalized (epidemic, susceptible)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData.sus$tie.requests.accepted.epidemic.pct, "% tie requests accepted (epidemic, susceptible)"))
+
+  adData.rec <- subset(adData, dis.state.after == "RECOVERED")
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData.rec$net.changes.epidemic.normalized, "network changes normalized (epidemic, recovered)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData.rec$ties.broken.epidemic / adData.rec$net.size, "ties broken normalized (epidemic, recovered)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData.rec$tie.requests.accepted.epidemic / adData.rec$net.size, "ties created normalized (epidemic, recovered)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData.rec$tie.requests.total.epidemic / adData.rec$net.size, "tie requests normalized (epidemic, recovered)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData.rec$tie.requests.accepted.epidemic.pct, "% tie requests accepted (epidemic, recovered)"))
+
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData$tie.requests.total.pre / adData$net.size, "tie requests normalized (pre)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData$tie.requests.accepted.pre.pct, "% tie requests accepted (pre)"))
+
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData$ties.broken.epidemic.pct, "% ties broken (epidemic)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(1-adData$ties.broken.epidemic.pct, "% ties created (epidemic)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData$tie.requests.total.epidemic, "tie requests total (epidemic)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData$tie.requests.declined.epidemic.pct, "% tie requests declined (epidemic)"))
+
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData$net.changes.pre.normalized, "network changes normalized (pre)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData$ties.broken.pre / adData$net.size, "ties broken normalized (pre)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData$ties.broken.pre.pct, "% ties broken (pre)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData$tie.requests.accepted.pre / adData$net.size, "ties created normalized (pre)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(1-adData$ties.broken.pre.pct, "% ties created (pre)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData$tie.requests.total.pre, "tie requests total (pre)"))
+  # prePostMeasures <- rbind(prePostMeasures, getDescriptives(adData$tie.requests.declined.pre.pct, "% tie requests declined (pre)"))
 
   # epidemics
   # prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$dis.prop.pct.sus, "susceptible"))
   # prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$dis.prop.pct.inf, "infected"))
   prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$dis.prop.pct.rec, "attack rate"))
   prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$dis.prop.duration, "duration"))
+
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(ssData, net.prop.ties.broken.epidemic == 0)$dis.prop.pct.rec, "attack rate (static)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(ssData, net.prop.ties.broken.epidemic == 0)$dis.prop.duration, "duration (static)"))
+
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(ssData, net.prop.ties.broken.epidemic == 1)$dis.prop.pct.rec, "attack rate (dynamic)"))
+  prePostMeasures <- rbind(prePostMeasures, getDescriptives(subset(ssData, net.prop.ties.broken.epidemic == 1)$dis.prop.duration, "duration (dynamic)"))
 
   # # utility
   # prePostMeasures <- rbind(prePostMeasures, getDescriptives(ssData$net.prop.av.utility.pre.epidemic, "utility (pre)"))
@@ -1655,6 +1971,13 @@ exportAll <- function() {
   print("::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
 
   quit()
+}
+
+
+additionalStats <- function(aggAdData = aggregateAgentDetailsData()) {
+
+  sum(subset(aggAdData, dis.state.after == "SUSCEPTIBLE")$ties.broken.epidemic) / sum(aggAdData$ties.broken.epidemic)
+
 }
 
 
