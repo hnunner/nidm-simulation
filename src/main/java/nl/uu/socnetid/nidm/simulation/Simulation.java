@@ -309,6 +309,16 @@ public class Simulation implements Runnable {
 
         Iterator<Agent> agentsIt = agents.iterator();
         while (agentsIt.hasNext()) {
+
+            // some delay before processing of each agent (e.g., for animation processes)
+            if (delay > 0) {
+                try {
+                    Thread.sleep(delay);
+                } catch (InterruptedException e) {
+                    return;
+                }
+            }
+
             if (this.paused) {
                 return;
             }
