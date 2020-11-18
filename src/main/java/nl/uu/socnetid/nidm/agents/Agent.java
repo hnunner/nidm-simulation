@@ -876,7 +876,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
             // some delay before processing of each other agent (e.g., for animation processes)
             if (delay > 0) {
                 try {
-                    Thread.sleep(delay * 10);
+                    Thread.sleep(delay);
                 } catch (InterruptedException e) {
                     return;
                 }
