@@ -53,7 +53,7 @@ public final class StatsComputer {
      */
     public static double computeCloseness(Agent agent) {
 
-        // Note: M = n, see Buechel & Buskens (2013), p. 162
+        // Note: M = n, see Buechel & Buskens (2013), p. 163
         double n = agent.getCoAgents().size() + 1;              // all co-agents plus the agent himself
         double M = n;
         double cumulatedDistance = 0.0;
