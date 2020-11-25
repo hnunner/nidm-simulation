@@ -19,7 +19,7 @@ target/
 *.log*
 
 # R
-analysis/.RData
+.RData
 
 # data exports
 network-exports/
