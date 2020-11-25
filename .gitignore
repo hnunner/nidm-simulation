@@ -18,5 +18,10 @@ target/
 # log files
 *.log*
 
-# network exports
+# R
+analysis/.RData
+
+# data exports
 network-exports/
+data/nb-conditions/
+exports/
