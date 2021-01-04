@@ -139,6 +139,9 @@ The _Data Generator_ uses a configuration file (_path.to.nidm.simulator.project.
     * _export.agent.details.reduced_: creates a detailed overview of each single agent (e.g., parameter settings, disease states, utilities, network measures) at the end of each simulation run. If _export.agent.details_ is activated _export.agent.details.reduced_ is ignored.
     * _export.gexf_: creates individual dynamic _.gexf_ files for each simulation run.
  3. _Data analysis configuration_ to configure and trigger (_analyze.data=true_) data analysis subsequent to data generation. Please make sure that the correct location of the _Rscript_ executable is set, if _analyze.data_ is set _true_. Analysis results are stored in _path.to.nidm.simulator.project.folder/data/`date-time-of-data-generator-invocation`_.
+ 
+<!-- ## Published versions ##
+ * Version 4.1.0 containing code and data for the manuscript "A model for the co-evolution of dynamic social networks and infectious disease dynamics": [![DOI](https://zenodo.org/badge/207793330.svg)](https://zenodo.org/badge/latestdoi/207793330) -->
 
 ## Third party software ##
  * GraphStream v1.3 library (Pigné et al., 2008) for internal and visual handling of graph dynamics.
@@ -156,6 +159,6 @@ The _Data Generator_ uses a configuration file (_path.to.nidm.simulator.project.
  * Wickham, H. (2016). ggplot2: Elegant Graphics for Data Analysis. Springer- Verlag New York.
 
 ## Copyright ##
-Copyright (C), 2017 - 2019,  Hendrik Nunner (<h.nunner@gmail.com>)
+Copyright (C), 2017 - 2020,  Hendrik Nunner (<h.nunner@gmail.com>)
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
