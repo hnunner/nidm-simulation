@@ -471,6 +471,9 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
                         this.dgData.getUtilityModelParams().getCurrXi(),
                         // TODO make age optional
                         AgeStructure.getInstance().getRandomAge(),
+                        false,
+                        // TODO make profession optional
+                        "NA",
                         false);
             }
             this.dgData.setAgents(new LinkedList<Agent>(network.getAgents()));

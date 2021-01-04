@@ -35,6 +35,7 @@ import org.apache.logging.log4j.Logger;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.data.in.AgeStructure;
+import nl.uu.socnetid.nidm.data.in.Professions;
 import nl.uu.socnetid.nidm.data.out.DataGeneratorData;
 import nl.uu.socnetid.nidm.data.out.NunnerBuskensParameters;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
@@ -206,7 +207,9 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
                                 this.dgData.getUtilityModelParams().getCurrPsi(),
                                 this.dgData.getUtilityModelParams().getXi(),
                                 AgeStructure.getInstance().getRandomAge(),
-                                this.dgData.getUtilityModelParams().isConsiderAge());
+                                this.dgData.getUtilityModelParams().isConsiderAge(),
+                                Professions.getInstance().getRandomProfession(),
+                                this.dgData.getUtilityModelParams().isConsiderProfession());
                     }
                     this.dgData.setAgents(new ArrayList<Agent>(network.getAgents()));
                     logger.debug("theoretic mean degree: " + this.network.getTheoreticAvDegree());
