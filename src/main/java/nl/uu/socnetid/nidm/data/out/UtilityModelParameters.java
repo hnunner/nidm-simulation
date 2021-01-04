@@ -71,6 +71,8 @@ public abstract class UtilityModelParameters {
     private AssortativityConditions ac;     // TODO move to a more appropriate place (not really a utility parameter)
     // considering age
     private boolean considerAge;
+    // considering profession
+    private boolean considerProfession;
 
     // INFECTIONS
     // sigma - severity
@@ -1241,6 +1243,20 @@ public abstract class UtilityModelParameters {
      */
     public void setConsiderAge(boolean considerAge) {
         this.considerAge = considerAge;
+    }
+
+    /**
+     * @return the considerProfession
+     */
+    public boolean isConsiderProfession() {
+        return considerProfession;
+    }
+
+    /**
+     * @param considerProfession the considerProfession to set
+     */
+    public void setConsiderProfession(boolean considerProfession) {
+        this.considerProfession = considerProfession;
     }
 
 }
