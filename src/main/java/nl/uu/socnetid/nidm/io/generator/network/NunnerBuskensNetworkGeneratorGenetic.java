@@ -41,6 +41,7 @@ import org.apache.logging.log4j.Logger;
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.data.genetic.NunnerBuskensGene;
 import nl.uu.socnetid.nidm.data.in.AgeStructure;
+import nl.uu.socnetid.nidm.data.in.Professions;
 import nl.uu.socnetid.nidm.data.out.DataGeneratorData;
 import nl.uu.socnetid.nidm.data.out.NunnerBuskensGeneticParameters;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
@@ -158,7 +159,23 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
                 PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getPhi());
         this.dgData.getUtilityModelParams().setPsi(
                 PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getPsi());
-        this.dgData.getUtilityModelParams().setAssortativityCondition(AssortativityConditions.AGE);
+
+
+
+
+
+
+
+        // TODO move to config file!!!
+        // this.dgData.getUtilityModelParams().setAssortativityCondition(AssortativityConditions.AGE);
+        this.dgData.getUtilityModelParams().setAssortativityCondition(AssortativityConditions.PROFESSION);
+
+
+
+
+
+
+
     }
 
     /* (non-Javadoc)
@@ -173,7 +190,7 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
         }
     }
 
-    private void initNetwork(double targetAvC2, double targetAlpha) {
+    private void initNetworkByAge(double targetAvC2, double targetAlpha) {
 
         this.network = new Network("Network of the infectious kind", AssortativityConditions.AGE);
         DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, 0, 0, 0, 0);    // not used
@@ -231,7 +248,9 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
                         this.dgData.getUtilityModelParams().getPsi(),
                         this.dgData.getUtilityModelParams().getXi(),
                         age,
-                        this.dgData.getUtilityModelParams().isConsiderAge());
+                        this.dgData.getUtilityModelParams().isConsiderAge(),
+                        Professions.getInstance().getRandomProfession(),
+                        this.dgData.getUtilityModelParams().isConsiderProfession());
             }
 
             logger.info("Theoretic average degree: " + (Math.round(this.network.getTheoreticAvDegree() * 100.0) / 100.0));
@@ -242,6 +261,90 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
         this.dgData.setAgents(new ArrayList<Agent>(this.network.getAgents()));
 
     }
+
+
+
+
+
+
+
+
+    kffkkg
+    private void initNetworkByProfession(double targetAvC2, double targetAlpha) {
+
+        this.network = new Network("Network of the infectious kind", AssortativityConditions.AGE);
+        DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, 0, 0, 0, 0);    // not used
+
+        double b1 = this.dgData.getUtilityModelParams().getB1();
+        double b2 = this.dgData.getUtilityModelParams().getB2();
+        double c1 = this.dgData.getUtilityModelParams().getC1();
+
+        double targetAvDegree = NunnerBuskens.getAvDegreeFromC2(b1, c1, targetAvC2);
+        double correction = 1.00;
+
+        while ((Math.round(this.network.getTheoreticAvDegree() * 100.0) / 100.0) != (Math.round(targetAvDegree * 100.0) / 100.0)) {
+
+            if ((Math.round(this.network.getTheoreticAvDegree() * 100.0) / 100.0) < (Math.round(targetAvDegree * 100.0) / 100.0)) {
+                correction += 0.01;
+            } else {
+                correction -= 0.01;
+            }
+
+            this.network.clear();
+            logger.info("(Re-)sampling random degrees to achieve degree distribution with theoretic average degree of "
+                    + (Math.round(targetAvDegree * 100.0) / 100.0));
+            double allC2s = 0;
+            for (int i = 0; i < this.dgData.getUtilityModelParams().getN(); i++) {
+                int age = AgeStructure.getInstance().getRandomAge();
+
+                // corrected target average degree, due to omitting isolates
+                double tadCorrected = targetAvDegree * correction;
+                ExponentialDistribution ed = new ExponentialDistribution(tadCorrected +
+                        (tadCorrected * AgeStructure.getInstance().getErrorAvDegree(age)));
+                // TODO consider changing exponential distribution to something more grounded in theory (e.g. Danon et al. (2013))
+                // TODO remove sample == 0 check once simple power law distribution has been replaced
+                // TODO remove corrected target average degree once simple power law distribution has been replaced
+                long targetDegree = 0;
+                // omitting isolates
+                while (targetDegree == 0) {
+                    // target degree dependent on agent's age
+                    targetDegree = Math.round(ed.sample());
+                }
+
+                double c2 = NunnerBuskens.getC2FromAvDegree(b1, c1, targetDegree);
+                allC2s += c2;
+
+                // utility
+                UtilityFunction uf = new NunnerBuskens(b1, b2, targetAlpha, c1, c2);
+
+                // add agents
+                this.network.addAgent(
+                        uf,
+                        ds,
+                        1.0,
+                        1.0,
+                        this.dgData.getUtilityModelParams().getPhi(),
+                        this.dgData.getUtilityModelParams().getOmega(),
+                        this.dgData.getUtilityModelParams().getPsi(),
+                        this.dgData.getUtilityModelParams().getXi(),
+                        age,
+                        this.dgData.getUtilityModelParams().isConsiderAge(),
+                        Professions.getInstance().getRandomProfession(),
+                        this.dgData.getUtilityModelParams().isConsiderProfession());
+            }
+
+            logger.info("Theoretic average degree: " + (Math.round(this.network.getTheoreticAvDegree() * 100.0) / 100.0));
+            this.dgData.getUtilityModelParams().setC2(allC2s/this.dgData.getUtilityModelParams().getN());
+        }
+        this.dgData.getUtilityModelParams().setAlpha(targetAlpha);
+        logger.info("Network initialization successful.");
+        this.dgData.setAgents(new ArrayList<Agent>(this.network.getAgents()));
+
+    }
+
+
+
+
 
 
     /* (non-Javadoc)
@@ -272,7 +375,19 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
 
     private void simulateSingleGene(NunnerBuskensGene nbg) {
 
-        initNetwork(nbg.getAvC2(), nbg.getAlpha());
+
+        // TODO this needs to be assortativity init condition
+         jfjgj
+        switch (this.dgData.getUtilityModelParams().getAssortativityCondition()) {
+            case PROFESSION:
+                initNetworkByProfession(nbg.getAvC2(), nbg.getAlpha());
+                break;
+            case RISK_PERCEPTION:
+            case AGE:
+            default:
+                initNetworkByAge(nbg.getAvC2(), nbg.getAlpha());
+                break;
+        }
 
         // simulate
         this.simulation = new Simulation(this.network);

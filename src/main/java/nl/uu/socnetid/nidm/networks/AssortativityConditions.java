@@ -31,7 +31,8 @@ package nl.uu.socnetid.nidm.networks;
 public enum AssortativityConditions {
 
     RISK_PERCEPTION("ac.riskperception"),
-    AGE("ac.age");
+    AGE("ac.age"),
+    PROFESSION("ac.profession");
 
     // the name
     private String name;
