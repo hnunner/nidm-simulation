@@ -261,6 +261,7 @@ public enum LogValues {
     IV_NB_GEN_INITIAL_ALPHA_MIN("nb.gen.initial.alpha.min"),
     IV_NB_GEN_INITIAL_ALPHA_MAX("nb.gen.initial.alpha.max"),
     IV_NB_GEN_CONSIDER_AGE("nb.gen.consider.age"),
+    IV_NB_GEN_CONSIDER_PROFESSION("nb.gen.consider.profession"),
 
     // PROPERTIES (dependent variables)
     // simulation
