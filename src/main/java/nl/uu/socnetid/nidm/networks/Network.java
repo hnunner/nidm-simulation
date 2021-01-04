@@ -86,8 +86,17 @@ public class Network extends SingleGraph implements SimulationListener {
     private int timestepsStable = 0;
     private static final int TIMESTEPS_REQUIRED_FOR_STABILITY = 1;
 
-    // assortativity condition
-    private AssortativityConditions ac;
+
+
+
+
+    // assortativity conditions
+    // TODO this might need to be a list
+    private List<AssortativityConditions> ac;
+
+
+
+
 
     // reduction of computational power
     int avPathLengthRound = -1;
@@ -175,7 +184,7 @@ public class Network extends SingleGraph implements SimulationListener {
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs) {
         // TODO clean up addAgent methods -- too many special cases!!!
         return this.addAgent(utilityFunction, diseaseSpecs, RISK_FACTOR_NEUTRAL, RISK_FACTOR_NEUTRAL, STANDARD_PHI,
-                STANDARD_OMEGA, STANDARD_PSI, STANDARD_XI, AgeStructure.getInstance().getRandomAge(), false);
+                STANDARD_OMEGA, STANDARD_PSI, STANDARD_XI, AgeStructure.getInstance().getRandomAge(), false, "NA", false);
     }
 
     /**
@@ -200,7 +209,7 @@ public class Network extends SingleGraph implements SimulationListener {
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
             double omega) {
         return this.addAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, omega, STANDARD_PSI,
-                STANDARD_XI, AgeStructure.getInstance().getRandomAge(), false);
+                STANDARD_XI, AgeStructure.getInstance().getRandomAge(), false, "NA", false);
     }
 
     /**
@@ -225,17 +234,22 @@ public class Network extends SingleGraph implements SimulationListener {
      * @param xi
      *          the proportion of ties at distance 2 an agent evaluates per round
      * @param age
-     *          the agents age
+     *          the agent's age
      * @param considerAge
      *          whether age is considered for peer selection or not
+     * @param profession
+     *          the agent's profession
+     * @param considerProfession
+     *          whether profession is considered for peer selection or not
      * @return the newly added agent.
      */
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
-            double omega, double psi, double xi, int age, boolean considerAge) {
+            double omega, double psi, double xi, int age, boolean considerAge, String profession, boolean considerProfession) {
         Agent agent = this.addNode(String.valueOf(this.getNodeCount() + 1));
 
         // age randomly drawn from /resources/age-dist.csv
-        agent.initAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, psi, xi, omega, age, considerAge);
+        agent.initAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, psi, xi, omega, age, considerAge,
+                profession, considerProfession);
         notifyAgentAdded(agent);
 
         // re-position agents if auto-layout is disabled

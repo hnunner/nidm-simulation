@@ -114,6 +114,7 @@ public class PropertiesHandler {
     private Path ageDistributionImportPath;
     private Path ageDegreesImportPath;
     private Path ageAssortativityImportPath;
+    private Path professionsImportPath;
 
 
     /**
@@ -450,6 +451,7 @@ public class PropertiesHandler {
         nbgParameters.setInitialAlphaMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_INITIAL_ALPHA_MIN.toString())));
         nbgParameters.setInitialAlphaMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_INITIAL_ALPHA_MAX.toString())));
         nbgParameters.setConsiderAge(Boolean.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_CONSIDER_AGE.toString())));
+        nbgParameters.setConsiderProfession(Boolean.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_CONSIDER_PROFESSION.toString())));
 
         // types of data export
         this.exportSummary = Boolean.parseBoolean(configProps.getProperty("export.summary"));
@@ -471,6 +473,12 @@ public class PropertiesHandler {
                     .getResource(configProps.getProperty("import.age.assortativity.path")).toURI());
         } catch (URISyntaxException use) {
             logger.error("Error while retrieving age structure paths: ", use);
+        }
+        try {
+            this.professionsImportPath = Paths.get(getClass().getClassLoader()
+                    .getResource(configProps.getProperty("import.professions.path")).toURI());
+        } catch (URISyntaxException use) {
+            logger.error("Error while retrieving profession structure path: ", use);
         }
 
     }
@@ -787,6 +795,13 @@ public class PropertiesHandler {
      */
     public Path getAgeAssortativityImportPath() {
         return ageAssortativityImportPath;
+    }
+
+    /**
+     * @return the professionsImportPath
+     */
+    public Path getProfessionsImportPath() {
+        return professionsImportPath;
     }
 
 }
