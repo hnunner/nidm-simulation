@@ -111,10 +111,14 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      *          the age of the agent
      * @param considerAge
      *          whether age is considered for peer selection or not
+     * @param profession
+     *          the profession of the agent
+     * @param considerProfession
+     *          whether profession is considered for peer selection or not
      */
     public void initAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs,
             Double riskFactorSigma, Double riskFactorPi, Double phi, Double psi, Double xi, Double omega,
-            Integer age, boolean considerAge) {
+            Integer age, boolean considerAge, String profession, boolean considerProfession) {
         this.addAttribute(AgentAttributes.UTILITY_FUNCTION, utilityFunction);
         this.addAttribute(AgentAttributes.DISEASE_SPECS, diseaseSpecs);
         DiseaseGroup diseaseGroup = DiseaseGroup.SUSCEPTIBLE;
@@ -132,8 +136,12 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         this.addAttribute(AgentAttributes.OMEGA, omega);
         this.addAttribute(AgentAttributes.SATISFIED, false);
         this.addAttribute(AgentAttributes.CONNECTION_STATS, new AgentConnectionStats());
+        // TODO make a list of properties usable for homophily, rather than hard coded properties
         this.addAttribute(AgentAttributes.AGE, age);
         this.addAttribute(AgentAttributes.CONSIDER_AGE, considerAge);
+        this.addAttribute(AgentAttributes.PROFESSION, profession);
+        this.addAttribute(AgentAttributes.CONSIDER_PROFESSION, considerProfession);
+
         this.addAttribute(AgentAttributes.FORCE_INFECTED, false);
         this.addAttribute("ui.label", this.getId());
         this.addAttribute(AgentAttributes.CLOSENESS, -1);
@@ -1118,6 +1126,18 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         if (agents.isEmpty()) {
             return null;
         }
+
+
+
+
+        // TODO remove all agents that have different professions, if consider professions,
+        // and depending on profession homophily parameter (e.g., h = 0.75)
+        jfjf
+
+
+
+
+
 
         if (ThreadLocalRandom.current().nextDouble() <= this.getOmega()) {
             // assortativity condition
