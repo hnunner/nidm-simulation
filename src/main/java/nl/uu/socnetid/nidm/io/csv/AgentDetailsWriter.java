@@ -112,7 +112,9 @@ public abstract class AgentDetailsWriter<UMP extends UtilityModelParameters> ext
         cols.add(LogValues.DV_NET_AV_CLUSTERING.toString());
         cols.add(LogValues.DV_NET_AV_PATHLENGTH.toString());
 //        cols.add(LogValues.DV_NET_ASSORTATIVITY_CONDITION.toString());
-        cols.add(LogValues.DV_NET_ASSORTATIVITY.toString());
+        cols.add(LogValues.DV_NET_ASSORTATIVITY_RISK_PERCEPTION.toString());
+        cols.add(LogValues.DV_NET_ASSORTATIVITY_AGE.toString());
+        cols.add(LogValues.DV_NET_ASSORTATIVITY_PROFESSION.toString());
         // agent
         cols.add(LogValues.DV_AGENT_SATISFIED.toString());
 //        cols.add(LogValues.DV_AGENT_UTIL.toString());
@@ -128,7 +130,9 @@ public abstract class AgentDetailsWriter<UMP extends UtilityModelParameters> ext
         cols.add(LogValues.DV_AGENT_CLUSTERING.toString());
 //        cols.add(LogValues.DV_AGENT_BETWEENNESS.toString());
         cols.add(LogValues.DV_AGENT_BETWEENNESS_NORMALIZED.toString());
-        cols.add(LogValues.DV_AGENT_ASSORTATIVITY.toString());
+        cols.add(LogValues.DV_AGENT_ASSORTATIVITY_RISK_PERCEPTION.toString());
+        cols.add(LogValues.DV_AGENT_ASSORTATIVITY_AGE.toString());
+        cols.add(LogValues.DV_AGENT_ASSORTATIVITY_PROFESSION.toString());
 //        cols.add(LogValues.DV_AGENT_CONS_BROKEN_ACTIVE.toString());
 //        cols.add(LogValues.DV_AGENT_CONS_BROKEN_PASSIVE.toString());
 //        cols.add(LogValues.DV_AGENT_CONS_OUT_ACCEPTED.toString());
@@ -189,7 +193,9 @@ public abstract class AgentDetailsWriter<UMP extends UtilityModelParameters> ext
             currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvClustering()));
             currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvPathLength()));
 //            currData.add(this.dgData.getNetStatsPre().getAssortativityCondition().toString());
-            currData.add(String.valueOf(this.dgData.getNetStatsPre().getAssortativity()));
+            currData.add(String.valueOf(this.dgData.getNetStatsPre().getAssortativityRiskPerception()));
+            currData.add(String.valueOf(this.dgData.getNetStatsPre().getAssortativityAge()));
+            currData.add(String.valueOf(this.dgData.getNetStatsPre().getAssortativityProfession()));
 
             // agent -- TODO this works only for latest SWIDM data generation!!!
             AgentStatsPre agentStatsPre  = this.dgData.getAgentStatsPre().get(agent.getId());
@@ -209,7 +215,9 @@ public abstract class AgentDetailsWriter<UMP extends UtilityModelParameters> ext
             currData.add(String.valueOf(agentStatsPre.getClustering()));
 //            currData.add(String.valueOf(agentStats.getBetweenness()));
             currData.add(String.valueOf(agentStatsPre.getBetweennessNormalized()));
-            currData.add(String.valueOf(agentStatsPre.getAssortativity()));
+            currData.add(String.valueOf(agentStatsPre.getAssortativityRiskPerception()));
+            currData.add(String.valueOf(agentStatsPre.getAssortativityAge()));
+            currData.add(String.valueOf(agentStatsPre.getAssortativityProfession()));
 //            currData.add(String.valueOf(agentStats.getBrokenTiesActive()));
 //            currData.add(String.valueOf(agentStats.getBrokenTiesPassive()));
 //            currData.add(String.valueOf(agentStats.getAcceptedRequestsOut()));

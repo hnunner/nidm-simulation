@@ -35,7 +35,9 @@ public class GlobalNetworkStats {
     private final double avDegree;
     private final int diameter;
     private final double avDistance;
-    private final double assortativity;
+    private double assortativityRiskPerception;
+    private double assortativityAge;
+    private double assortativityProfession;
 
     /**
      * Constructor
@@ -50,17 +52,23 @@ public class GlobalNetworkStats {
      *          the diameter of the network
      * @param avDistance
      *          the average distance of the network
-     * @param assortativity
-     *          the assortativity of the network
+     * @param assortativityRiskPerception
+     *          the risk perception assortativity of the network
+     * @param assortativityAge
+     *          the age assortativity of the network
+     * @param assortativityProfession
+     *          the profession assortativity of the network
      */
     public GlobalNetworkStats(boolean stable, int connections, double avDegree, int diameter, double avDistance,
-            double assortativity) {
+            double assortativityRiskPerception, double assortativityAge, double assortativityProfession) {
         this.stable = stable;
         this.connections = connections;
         this.avDegree = avDegree;
         this.diameter = diameter;
         this.avDistance = avDistance;
-        this.assortativity = assortativity;
+        this.assortativityRiskPerception = assortativityRiskPerception;
+        this.assortativityAge = assortativityAge;
+        this.assortativityProfession = assortativityProfession;
     }
 
 
@@ -100,10 +108,24 @@ public class GlobalNetworkStats {
     }
 
     /**
-     * @return the assortativity
+     * @return the assortativityRiskPerception
      */
-    public double getAssortativity() {
-        return assortativity;
+    public double getAssortativityRiskPerception() {
+        return assortativityRiskPerception;
+    }
+
+    /**
+     * @return the assortativityAge
+     */
+    public double getAssortativityAge() {
+        return assortativityAge;
+    }
+
+    /**
+     * @return the assortativityProfession
+     */
+    public double getAssortativityProfession() {
+        return assortativityProfession;
     }
 
 }
