@@ -93,13 +93,17 @@ public class NunnerBuskensAgentDetailsWriterReduced extends CsvFileWriter<Nunner
         cols.add(LogValues.DV_NET_AV_PATHLENGTH_PRE.toString());
         cols.add(LogValues.DV_NET_AV_BETWEENNESS_PRE.toString());
         cols.add(LogValues.DV_NET_AV_CLOSENESS_PRE.toString());
-        cols.add(LogValues.DV_NET_ASSORTATIVITY_PRE.toString());
+        cols.add(LogValues.DV_NET_ASSORTATIVITY_RISK_PERCEPTION_PRE.toString());
+        cols.add(LogValues.DV_NET_ASSORTATIVITY_AGE_PRE.toString());
+        cols.add(LogValues.DV_NET_ASSORTATIVITY_PROFESSION_PRE.toString());
         cols.add(LogValues.DV_NET_STABLE_PRE.toString());
         // index case
         cols.add(LogValues.DV_INDEX_DEGREE1.toString());
         cols.add(LogValues.DV_INDEX_CLUSTERING.toString());
         cols.add(LogValues.DV_INDEX_BETWEENNESS_NORMALIZED.toString());
-        cols.add(LogValues.DV_INDEX_ASSORTATIVITY.toString());
+        cols.add(LogValues.DV_INDEX_ASSORTATIVITY_RISK_PERCEPTION.toString());
+        cols.add(LogValues.DV_INDEX_ASSORTATIVITY_AGE.toString());
+        cols.add(LogValues.DV_INDEX_ASSORTATIVITY_PROFESSION.toString());
         cols.add(LogValues.DV_INDEX_CLOSENESS.toString());
         cols.add(LogValues.DV_INDEX_R_SIGMA.toString());
         cols.add(LogValues.DV_INDEX_R_SIGMA_NEIGHBORHOOD.toString());
@@ -107,7 +111,9 @@ public class NunnerBuskensAgentDetailsWriterReduced extends CsvFileWriter<Nunner
         cols.add(LogValues.DV_AGENT_DEGREE1.toString());
         cols.add(LogValues.DV_AGENT_CLUSTERING.toString());
         cols.add(LogValues.DV_AGENT_BETWEENNESS_NORMALIZED.toString());
-        cols.add(LogValues.DV_AGENT_ASSORTATIVITY.toString());
+        cols.add(LogValues.DV_AGENT_ASSORTATIVITY_RISK_PERCEPTION.toString());
+        cols.add(LogValues.DV_AGENT_ASSORTATIVITY_AGE.toString());
+        cols.add(LogValues.DV_AGENT_ASSORTATIVITY_PROFESSION.toString());
         cols.add(LogValues.DV_AGENT_CLOSENESS.toString());
         cols.add(LogValues.DV_AGENT_INDEX_DISTANCE.toString());
 
@@ -166,13 +172,17 @@ public class NunnerBuskensAgentDetailsWriterReduced extends CsvFileWriter<Nunner
             currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvPathLength()));
             currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvBetweenness()));
             currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvCloseness()));
-            currData.add(String.valueOf(this.dgData.getNetStatsPre().getAssortativity()));
+            currData.add(String.valueOf(this.dgData.getNetStatsPre().getAssortativityRiskPerception()));
+            currData.add(String.valueOf(this.dgData.getNetStatsPre().getAssortativityAge()));
+            currData.add(String.valueOf(this.dgData.getNetStatsPre().getAssortativityProfession()));
             currData.add(String.valueOf(this.dgData.getNetStatsPre().isStable() ? 1 : 0));
             // index case
             currData.add(String.valueOf(this.dgData.getIndexCaseStats().getDegree1()));
             currData.add(String.valueOf(this.dgData.getIndexCaseStats().getClustering()));
             currData.add(String.valueOf(this.dgData.getIndexCaseStats().getBetweennessNormalized()));
-            currData.add(String.valueOf(this.dgData.getIndexCaseStats().getAssortativity()));
+            currData.add(String.valueOf(this.dgData.getIndexCaseStats().getAssortativityRiskPerception()));
+            currData.add(String.valueOf(this.dgData.getIndexCaseStats().getAssortativityAge()));
+            currData.add(String.valueOf(this.dgData.getIndexCaseStats().getAssortativityProfession()));
             currData.add(String.valueOf(this.dgData.getIndexCaseStats().getCloseness()));
             currData.add(String.valueOf(this.dgData.getIndexCaseStats().getrSigma()));
             currData.add(String.valueOf(this.dgData.getIndexCaseStats().getrSigmaNeighborhood()));
@@ -181,7 +191,9 @@ public class NunnerBuskensAgentDetailsWriterReduced extends CsvFileWriter<Nunner
             currData.add(String.valueOf(agentStatsPre.getDegree1()));
             currData.add(String.valueOf(agentStatsPre.getClustering()));
             currData.add(String.valueOf(agentStatsPre.getBetweennessNormalized()));
-            currData.add(String.valueOf(agentStatsPre.getAssortativity()));
+            currData.add(String.valueOf(agentStatsPre.getAssortativityRiskPerception()));
+            currData.add(String.valueOf(agentStatsPre.getAssortativityAge()));
+            currData.add(String.valueOf(agentStatsPre.getAssortativityProfession()));
             currData.add(String.valueOf(agentStatsPre.getCloseness()));
             currData.add(String.valueOf(agentStatsPre.getIndexCaseDistance()));
 
