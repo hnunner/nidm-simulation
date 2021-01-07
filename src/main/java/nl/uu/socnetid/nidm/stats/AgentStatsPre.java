@@ -27,6 +27,7 @@ package nl.uu.socnetid.nidm.stats;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseGroup;
+import nl.uu.socnetid.nidm.networks.AssortativityConditions;
 
 /**
  * @author Hendrik Nunner
@@ -42,7 +43,9 @@ public class AgentStatsPre {
     private double closeness;
     private double clustering;
     private double betweennessNormalized;
-    private double assortativity;
+    private double assortativityRiskPerception;
+    private double assortativityAge;
+    private double assortativityProfession;
     private DiseaseGroup diseaseGroup;
     private int timeToRecover;
     private boolean forceInfected;
@@ -68,7 +71,9 @@ public class AgentStatsPre {
         this.closeness = agent.getCloseness(simRound);
         this.clustering = agent.getClustering(simRound);
         this.betweennessNormalized = agent.getBetweennessNormalized(simRound);
-        this.assortativity = agent.getAssortativity(simRound);
+        this.assortativityRiskPerception = agent.getAssortativity(simRound, AssortativityConditions.RISK_PERCEPTION);
+        this.assortativityAge = agent.getAssortativity(simRound, AssortativityConditions.AGE);
+        this.assortativityProfession = agent.getAssortativity(simRound, AssortativityConditions.PROFESSION);
         this.indexCaseDistance = agent.getInitialIndexCaseDistance();
     }
 
@@ -144,10 +149,24 @@ public class AgentStatsPre {
     }
 
     /**
-     * @return the assortativity
+     * @return the assortativityRiskPerception
      */
-    public double getAssortativity() {
-        return assortativity;
+    public double getAssortativityRiskPerception() {
+        return assortativityRiskPerception;
+    }
+
+    /**
+     * @return the assortativityAge
+     */
+    public double getAssortativityAge() {
+        return assortativityAge;
+    }
+
+    /**
+     * @return the assortativityProfession
+     */
+    public double getAssortativityProfession() {
+        return assortativityProfession;
     }
 
     /**

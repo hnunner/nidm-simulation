@@ -67,8 +67,8 @@ public abstract class UtilityModelParameters {
     private double omegaRandomMax;
     private double[] omegas;
     private double currOmega;
-    // ac - assortativity condition
-    private AssortativityConditions ac;     // TODO move to a more appropriate place (not really a utility parameter)
+    // aic - assortativity init condition
+    private AssortativityConditions aic;     // TODO move to a more appropriate place (not really a utility parameter)
     // considering age
     private boolean considerAge;
     // considering profession
@@ -1218,17 +1218,17 @@ public abstract class UtilityModelParameters {
     }
 
     /**
-     * @return the ac
+     * @return the aic
      */
-    public AssortativityConditions getAssortativityCondition() {
-        return ac;
+    public AssortativityConditions getAssortativityInitCondition() {
+        return aic;
     }
 
     /**
-     * @param ac the ac to set
+     * @param aic the aic to set
      */
-    public void setAssortativityCondition(AssortativityConditions ac) {
-        this.ac = ac;
+    public void setAssortativityInitCondition(AssortativityConditions aic) {
+        this.aic = aic;
     }
 
     /**

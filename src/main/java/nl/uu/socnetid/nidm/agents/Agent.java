@@ -26,6 +26,7 @@
 package nl.uu.socnetid.nidm.agents;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -51,6 +52,7 @@ import nl.uu.socnetid.nidm.diseases.Disease;
 import nl.uu.socnetid.nidm.diseases.DiseaseFactory;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseGroup;
+import nl.uu.socnetid.nidm.networks.AssortativityConditions;
 import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.stats.AgentConnectionStats;
 import nl.uu.socnetid.nidm.stats.DijkstraShortestPath;
@@ -136,6 +138,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         this.addAttribute(AgentAttributes.OMEGA, omega);
         this.addAttribute(AgentAttributes.SATISFIED, false);
         this.addAttribute(AgentAttributes.CONNECTION_STATS, new AgentConnectionStats());
+
         // TODO make a list of properties usable for homophily, rather than hard coded properties
         this.addAttribute(AgentAttributes.AGE, age);
         this.addAttribute(AgentAttributes.CONSIDER_AGE, considerAge);
@@ -150,8 +153,14 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         this.addAttribute(AgentAttributes.BETWEENNESS_LAST_COMPUTATION, -1);
         this.addAttribute(AgentAttributes.CLUSTERING, -1);
         this.addAttribute(AgentAttributes.CLUSTERING_LAST_COMPUTATION, -1);
-        this.addAttribute(AgentAttributes.ASSORTATIVITY, -1);
-        this.addAttribute(AgentAttributes.ASSORTATIVITY_LAST_COMPUTATION, -1);
+
+        // TODO create assortativity interface, use list filled with instanciations of subclasses here
+        this.addAttribute(AgentAttributes.ASSORTATIVITY_RISK_PERCEPTION, -1);
+        this.addAttribute(AgentAttributes.ASSORTATIVITY_RISK_PERCEPTION_LAST_COMPUTATION, -1);
+        this.addAttribute(AgentAttributes.ASSORTATIVITY_AGE, -1);
+        this.addAttribute(AgentAttributes.ASSORTATIVITY_AGE_LAST_COMPUTATION, -1);
+        this.addAttribute(AgentAttributes.ASSORTATIVITY_PROFESSION, -1);
+        this.addAttribute(AgentAttributes.ASSORTATIVITY_PROFESSION_LAST_COMPUTATION, -1);
     }
 
     public String getLabel() {
@@ -539,6 +548,24 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
+     * Gets the agent's profession.
+     *
+     * @return the agent's profession
+     */
+    public String getProfession() {
+        return (String) this.getAttribute(AgentAttributes.PROFESSION);
+    }
+
+    /**
+     * Gets whether the agent considers profession when selecting a peer for network decisions.
+     *
+     * @return true when the agent considers profession, false otherwise
+     */
+    public boolean considerProfession() {
+        return (boolean) this.getAttribute(AgentAttributes.CONSIDER_PROFESSION);
+    }
+
+    /**
      * Gets the second order degree.
      *
      * @return the second order degree
@@ -705,67 +732,84 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         return dsp.getShortestPathLength(agent);
     }
 
-    private int getAssortativityLastComputation() {
-        return (int) this.getAttribute(AgentAttributes.ASSORTATIVITY_LAST_COMPUTATION);
+    private int getAssortativityLastComputation(AssortativityConditions ac) {
+        switch (ac) {
+            case RISK_PERCEPTION:
+                return (int) this.getAttribute(AgentAttributes.ASSORTATIVITY_RISK_PERCEPTION_LAST_COMPUTATION);
+            case AGE:
+                return (int) this.getAttribute(AgentAttributes.ASSORTATIVITY_AGE_LAST_COMPUTATION);
+            case PROFESSION:
+                return (int) this.getAttribute(AgentAttributes.ASSORTATIVITY_PROFESSION_LAST_COMPUTATION);
+            default:
+                logger.warn("Unknown assortativity condition: " + ac);
+                return -1;
+        }
     }
 
-    public double getAssortativity(int simRound) {
-        int lastComputation = this.getAssortativityLastComputation();
+    private void updateAssortativity(AssortativityConditions ac, int simRound, int lastComputation) {
+        switch (ac) {
+            case RISK_PERCEPTION:
+                this.changeAttribute(AgentAttributes.ASSORTATIVITY_RISK_PERCEPTION,
+                        this.getAttribute(AgentAttributes.ASSORTATIVITY_RISK_PERCEPTION),
+                        StatsComputer.computeAssortativity(this.getEdgeSet(), AssortativityConditions.RISK_PERCEPTION));
+                this.changeAttribute(AgentAttributes.ASSORTATIVITY_RISK_PERCEPTION_LAST_COMPUTATION,
+                        lastComputation,
+                        simRound);
+                break;
+
+            case AGE:
+                this.changeAttribute(AgentAttributes.ASSORTATIVITY_AGE,
+                        this.getAttribute(AgentAttributes.ASSORTATIVITY_AGE),
+                        StatsComputer.computeAssortativity(this.getEdgeSet(), AssortativityConditions.AGE));
+
+                this.changeAttribute(AgentAttributes.ASSORTATIVITY_AGE_LAST_COMPUTATION,
+                        lastComputation,
+                        simRound);
+                break;
+
+            case PROFESSION:
+                this.changeAttribute(AgentAttributes.ASSORTATIVITY_PROFESSION,
+                        this.getAttribute(AgentAttributes.ASSORTATIVITY_PROFESSION),
+                        StatsComputer.computeAssortativity(this.getEdgeSet(), AssortativityConditions.PROFESSION));
+
+                this.changeAttribute(AgentAttributes.ASSORTATIVITY_PROFESSION_LAST_COMPUTATION,
+                        lastComputation,
+                        simRound);
+                break;
+
+            default:
+                logger.warn("Unknown assortativity condition: " + ac);
+        }
+    }
+
+    /**
+     * Gets the assortativity of the agent.
+     *
+     * @param simRound
+     *          the current simulation round
+     * @param ac
+     *          the assortativity condition
+     * @return the assortativity
+     */
+    public double getAssortativity(int simRound, AssortativityConditions ac) {
+        int lastComputation = this.getAssortativityLastComputation(ac);
+
         if (lastComputation < simRound) {
-            this.changeAttribute(AgentAttributes.ASSORTATIVITY,
-                    this.getAttribute(AgentAttributes.ASSORTATIVITY),
-                    StatsComputer.computeAssortativity(this.getEdgeSet(), this.getNetwork().getAssortativityCondition()));
-            this.changeAttribute(AgentAttributes.ASSORTATIVITY_LAST_COMPUTATION,
-                    lastComputation,
-                    simRound);
+            updateAssortativity(ac, simRound, lastComputation);
         }
-        return (double) this.getAttribute(AgentAttributes.ASSORTATIVITY);
-    }
 
-    /**
-     * Gets the value used for assortativity comparisons.
-     *
-     * @return the value used for assortativity comparisons
-     */
-    private double getAssortativityComparativeValue() {
-        switch (this.getNetwork().getAssortativityCondition()) {
-            case AGE:
-                return this.getAge();
-
+        switch (ac) {
             case RISK_PERCEPTION:
-                return (this.getRPi() + this.getRSigma());
-
-            default:
-                logger.warn("Unknown assortativity condition: " + this.getNetwork().getAssortativityCondition());
-                break;
-        }
-        return 0.0;
-    }
-
-    /**
-     * Gets the absolute difference between the comp(aritive) value and the actual value,
-     * according to the assortativity condition.
-     *
-     * @param comp
-     *          the value to compare to
-     * @return the absolute difference between the value to compare to and the actual value,
-     *         according to the assortativity condition
-     */
-    private double getAssortDiff(double comp) {
-        switch (this.getNetwork().getAssortativityCondition()) {
+                return (double) this.getAttribute(AgentAttributes.ASSORTATIVITY_RISK_PERCEPTION);
             case AGE:
-                return Math.abs((comp) - this.getAge());
-
-            case RISK_PERCEPTION:
-                return Math.abs((comp) - (this.getRPi() + this.getRSigma()));
-
+                return (double) this.getAttribute(AgentAttributes.ASSORTATIVITY_AGE);
+            case PROFESSION:
+                return (double) this.getAttribute(AgentAttributes.ASSORTATIVITY_PROFESSION);
             default:
-                logger.warn("Unknown assortativity condition: " + this.getNetwork().getAssortativityCondition());
-                break;
+                logger.warn("Unknown assortativity condition: " + ac);
         }
-        return 0.0;
+        return -1;
     }
-
 
     /**
      * Keeps track of actively broken ties.
@@ -1018,48 +1062,150 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         trackBrokenTiePassive();
     }
 
+    /**
+     * Gets the normalized assortativity difference (0.0 - 1.0) between this agent
+     * and another agent depending on the assortativity condition.
+     *
+     * @param otherAgent
+     *          the agents to compute the assortativity difference for
+     * @return the normalized assortativity difference (0.0 - 1.0) between this agent and another agent
+     */
+    private double getNormalizedAssortativityDiff(Agent otherAgent, AssortativityConditions ac) {
+        switch (ac) {
+            case RISK_PERCEPTION:
+                return Math.abs((this.getRPi() + this.getRSigma()) - (otherAgent.getRPi() + otherAgent.getRSigma())) /
+                        (this.getNetwork().getMaxRPi() + this.getNetwork().getMaxRSigma());
 
+            case AGE:
+                return ((double) Math.abs(this.getAge() - otherAgent.getAge())) / ((double) this.getNetwork().getMaxAge());
 
+            case PROFESSION:
+                return Math.abs(this.getProfession().equals(otherAgent.getProfession()) ? 0 : 1);
+
+            default:
+                logger.warn("Unimplemented assortativity condition: " + ac);
+        }
+        return -1;
+    }
 
     /**
-     * Sorts the given list of agents by absolute difference of a comparative value.
+     * Creates a map of normalized assortativity differences (key) and list of agents with the same difference (value)
+     * for a given list of agents.
+     *
+     * @param agents
+     *          the list of agents to create the assortativity difference map for
+     * @return a map of assortativity differences (key) and list of agents with the same difference (value)
+     */
+    private TreeMap<Double, List<Agent>> getNormalizedAssortativityDiffMap(List<Agent> agents, AssortativityConditions ac) {
+        TreeMap<Double, List<Agent>> diffMap = new TreeMap<Double, List<Agent>>();
+        for (int i = 0; i < agents.size(); i++) {
+            Agent agent = agents.get(i);
+
+            double diff = getNormalizedAssortativityDiff(agent, ac);
+
+            if (diffMap.containsKey(diff)) {
+                List<Agent> list = diffMap.get(diff);
+                list.add(agent);
+                diffMap.put(diff, list);
+            } else {
+                List<Agent> list = new ArrayList<Agent>();
+                list.add(agents.get(i));
+                diffMap.put(diff, list);
+            }
+        }
+        return diffMap;
+    }
+
+
+
+    // TODO comments!!!
+    private TreeMap<Double, List<Agent>> reduceMaps(TreeMap<Double, List<Agent>> map1, TreeMap<Double, List<Agent>> map2) {
+
+        TreeMap<Double, List<Agent>> reducedMap = new TreeMap<Double, List<Agent>>();
+        double maxNewKey = 0.0;
+
+        Iterator<Double> key1It = map1.keySet().iterator();
+        while (key1It.hasNext()) {
+            Double key1 = key1It.next();
+            List<Agent> agents1 = map1.get(key1);
+
+
+            Iterator<Double> key2It = map2.keySet().iterator();
+            while (key2It.hasNext()) {
+                Double key2 = key2It.next();
+                List<Agent> agents2 = map2.get(key2);
+
+
+                Iterator<Agent> agents2It = agents2.iterator();
+                while (agents2It.hasNext()) {
+                    Agent agent = agents2It.next();
+
+                    if (agents1.contains(agent)) {
+                        Double newKey = key1 + key2;
+
+                        if (reducedMap.containsKey(newKey)) {
+                            reducedMap.get(newKey).add(agent);
+                        } else {
+                            reducedMap.put(newKey, Arrays.asList(agent));
+                        }
+
+                        if (newKey > maxNewKey) {
+                            maxNewKey = newKey;
+                        }
+                    }
+                }
+            }
+        }
+
+        // normalizing keys
+        Iterator<Double> it = reducedMap.keySet().iterator();
+        while (it.hasNext()) {
+            Double key = it.next();
+            reducedMap.put(key/maxNewKey, reducedMap.remove(key));
+        }
+
+        return reducedMap;
+    }
+
+    /**
+     * Sorts the given list of agents by differences of assortativity conditions.
      *
      * @param agents
      *          the list of agents to sort
-     * @param comp
-     *          the comparative value to create the absolute difference for
      */
-    private void sortByRDiff(List<Agent> agents, double comp) {
+    private void sortByAssortativityConditions(List<Agent> agents) {
 
-            TreeMap<Double, ArrayList<Agent>> map = new TreeMap<>();
+        // struct used to create order depending on order of assortativity conditions
+        // first level: list per assortativity condition
+        // second level: map of assortativity differences (key) and list of agents with the same difference (value)
+        List<TreeMap<Double, List<Agent>>> diffList = new ArrayList<TreeMap<Double, List<Agent>>>();
 
-            // store values in map with difference as key
-            for (int i = 0; i < agents.size(); i++) {
+        Iterator<AssortativityConditions> acsIt = this.getNetwork().getAssortativityConditions().iterator();
+        while (acsIt.hasNext()) {
+            AssortativityConditions ac = acsIt.next();
+            diffList.add(getNormalizedAssortativityDiffMap(agents, ac));
+        }
 
-                Agent agent = agents.get(i);
-                double diff = agent.getAssortDiff(comp);
+        for (int i = diffList.size()-1; i > 0; i--) {
+            // combine last two maps into one, while combining the ordering of the two
+            diffList.add(reduceMaps(diffList.remove(i), diffList.remove(i-1)));
+        }
 
-                if (map.containsKey(diff)) {
-                    ArrayList<Agent> list = map.get(diff);
-                    list.add(agent);
-                    map.put(diff, list);
-                } else {
-                    ArrayList<Agent> list = new ArrayList<Agent>();
-                    list.add(agents.get(i));
-                    map.put(diff, list);
-                }
+        if (diffList.size() > 1) {
+            logger.error("Error during reduction of assortativity order maps.");
+            return;
+        }
+
+        // order list of agents according to assortativity order maps
+        TreeMap<Double, List<Agent>> map = diffList.get(0);
+        int index = 0;
+        for (Map.Entry<Double, List<Agent>> entry : map.entrySet()) {
+            List<Agent> list = map.get(entry.getKey());
+            for (int i = 0; i < list.size(); i++) {
+                    agents.set(index++, list.get(i));
             }
-
-            // Update the values of array
-            int index = 0;
-            for (Map.Entry<Double, ArrayList<Agent>> entry : map.entrySet()) {
-                ArrayList<Agent> list = map.get(entry.getKey());
-                for (int i = 0; i < list.size(); i++) {
-                        agents.set(index++, list.get(i));
-                }
-            }
+        }
     }
-
 
     private List<Agent> getRandomListOfAgents(List<Agent> agents, int amount) {
         List<Agent> res = new ArrayList<Agent>(amount);
@@ -1067,7 +1213,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         if (agents != null && !agents.isEmpty()) {
 
             // fill (omega share) according assortativity condition
-            sortByRDiff(agents, this.getAssortativityComparativeValue());
+            sortByAssortativityConditions(agents);
             Iterator<Agent> it = agents.iterator();
             long amountAss = Math.round(amount * this.getOmega());
             while (it.hasNext() &&
@@ -1086,7 +1232,6 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
                 }
             }
         }
-
         return res;
     }
 
@@ -1121,27 +1266,19 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      * @param agents
      * @return
      */
+    // TODO improve performance
+    //          1. create assortativity order once in the beginning of agent processing
+    //          2. create shuffled list once in the beginning of agent processing
+    //          3. draw and alter these lists when needed (omega condition)
     private Agent drawRandomAgent(List<Agent> agents) {
         // no feasible agent
         if (agents.isEmpty()) {
             return null;
         }
 
-
-
-
-        // TODO remove all agents that have different professions, if consider professions,
-        // and depending on profession homophily parameter (e.g., h = 0.75)
-        jfjf
-
-
-
-
-
-
         if (ThreadLocalRandom.current().nextDouble() <= this.getOmega()) {
             // assortativity condition
-            sortByRDiff(agents, this.getAssortativityComparativeValue());
+            sortByAssortativityConditions(agents);
         } else {
             // random selection
             Collections.shuffle(agents);

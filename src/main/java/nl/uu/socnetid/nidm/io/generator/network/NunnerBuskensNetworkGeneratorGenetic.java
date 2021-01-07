@@ -167,8 +167,8 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
 
 
         // TODO move to config file!!!
-        // this.dgData.getUtilityModelParams().setAssortativityCondition(AssortativityConditions.AGE);
-        this.dgData.getUtilityModelParams().setAssortativityCondition(AssortativityConditions.PROFESSION);
+        // this.dgData.getUtilityModelParams().setAssortativityInitCondition(AssortativityConditions.AGE);
+        this.dgData.getUtilityModelParams().setAssortativityInitCondition(AssortativityConditions.PROFESSION);
 
 
 
@@ -268,8 +268,7 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
 
 
 
-
-    kffkkg
+    kkflsf
     private void initNetworkByProfession(double targetAvC2, double targetAlpha) {
 
         this.network = new Network("Network of the infectious kind", AssortativityConditions.AGE);
@@ -375,10 +374,8 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
 
     private void simulateSingleGene(NunnerBuskensGene nbg) {
 
-
-        // TODO this needs to be assortativity init condition
-         jfjgj
-        switch (this.dgData.getUtilityModelParams().getAssortativityCondition()) {
+        // init network
+        switch (this.dgData.getUtilityModelParams().getAssortativityInitCondition()) {
             case PROFESSION:
                 initNetworkByProfession(nbg.getAvC2(), nbg.getAlpha());
                 break;
