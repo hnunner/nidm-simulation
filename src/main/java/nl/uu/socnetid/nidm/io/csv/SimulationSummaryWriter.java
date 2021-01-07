@@ -108,7 +108,9 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
 //        cols.add(LogValues.DV_NET_AV_COSTS_DISEASE_PRE.toString());
 //        cols.add(LogValues.DV_NET_DENSITY_PRE.toString());
 //        cols.add(LogValues.DV_NET_ASSORTATIVITY_CONDITION.toString());
-        cols.add(LogValues.DV_NET_ASSORTATIVITY_PRE.toString());
+        cols.add(LogValues.DV_NET_ASSORTATIVITY_RISK_PERCEPTION_PRE.toString());
+        cols.add(LogValues.DV_NET_ASSORTATIVITY_AGE_PRE.toString());
+        cols.add(LogValues.DV_NET_ASSORTATIVITY_PROFESSION_PRE.toString());
         cols.add(LogValues.DV_NET_STABLE_PRE.toString());
         // index case
         cols.add(LogValues.DV_INDEX_DISEASE_STATE.toString());
@@ -119,7 +121,9 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
         cols.add(LogValues.DV_INDEX_CLUSTERING.toString());
 //        cols.add(LogValues.DV_INDEX_BETWEENNESS.toString());
         cols.add(LogValues.DV_INDEX_BETWEENNESS_NORMALIZED.toString());
-        cols.add(LogValues.DV_INDEX_ASSORTATIVITY.toString());
+        cols.add(LogValues.DV_INDEX_ASSORTATIVITY_RISK_PERCEPTION.toString());
+        cols.add(LogValues.DV_INDEX_ASSORTATIVITY_AGE.toString());
+        cols.add(LogValues.DV_INDEX_ASSORTATIVITY_PROFESSION.toString());
         cols.add(LogValues.DV_INDEX_R_SIGMA.toString());
         cols.add(LogValues.DV_INDEX_R_SIGMA_NEIGHBORHOOD.toString());
         cols.add(LogValues.DV_INDEX_R_PI.toString());
@@ -195,7 +199,9 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
 //        currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvDiseaseCosts()));
 //        currData.add(String.valueOf(this.dgData.getNetStatsPre().getDensity()));
 //        currData.add(this.dgData.getNetStatsPre().getAssortativityCondition().toString());
-        currData.add(String.valueOf(this.dgData.getNetStatsPre().getAssortativity()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPre().getAssortativityRiskPerception()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPre().getAssortativityAge()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPre().getAssortativityProfession()));
         currData.add(String.valueOf(this.dgData.getNetStatsPre().isStable() ? 1 : 0));
         // index case
         currData.add(this.dgData.getIndexCaseStats().getDiseaseGroup().name());
@@ -206,7 +212,9 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().getClustering()));
 //        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getBetweenness()));
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().getBetweennessNormalized()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getAssortativity()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getAssortativityRiskPerception()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getAssortativityAge()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getAssortativityProfession()));
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().getrSigma()));
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().getrSigmaNeighborhood()));
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().getrPi()));
