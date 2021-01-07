@@ -35,7 +35,9 @@ public class NetworkStatsPre {
     private Network network;
 
     private final boolean stable;
-    private final double assortativity;
+    private double assortativityRiskPerception;
+    private double assortativityAge;
+    private double assortativityProfession;
     private final double avDegree;
     private final double avBetweenness;
     private final double avCloseness;
@@ -46,8 +48,10 @@ public class NetworkStatsPre {
     public NetworkStatsPre(Network network, int simRound) {
         this.network = network;
         this.stable = network.isStable();
-        this.assortativity = network.getAssortativity(simRound);
         this.avDegree = network.getAvDegree(simRound);
+        this.assortativityRiskPerception = network.getAssortativityRiskPerception(simRound);
+        this.assortativityAge = network.getAssortativityAge(simRound);
+        this.assortativityProfession = network.getAssortativityProfession(simRound);
         this.avBetweenness = network.getAvBetweenness(simRound);
         this.avCloseness = network.getAvCloseness(simRound);
         this.avClustering = network.getAvClustering(simRound);
@@ -76,10 +80,24 @@ public class NetworkStatsPre {
     }
 
     /**
-     * @return the assortativity
+     * @return the assortativityRiskPerception
      */
-    public double getAssortativity() {
-        return assortativity;
+    public double getAssortativityRiskPerception() {
+        return assortativityRiskPerception;
+    }
+
+    /**
+     * @return the assortativityAge
+     */
+    public double getAssortativityAge() {
+        return assortativityAge;
+    }
+
+    /**
+     * @return the assortativityProfession
+     */
+    public double getAssortativityProfession() {
+        return assortativityProfession;
     }
 
     /**

@@ -26,6 +26,7 @@
 package nl.uu.socnetid.nidm.networks;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -74,7 +75,7 @@ public class Network extends SingleGraph implements SimulationListener {
     private static final double STANDARD_OMEGA = 0.0;
 
     // standard shuffling of assortatively selected co-agents
-    private static final AssortativityConditions STANDARD_AC = AssortativityConditions.RISK_PERCEPTION;
+    private static final List<AssortativityConditions> STANDARD_ACS = Arrays.asList(AssortativityConditions.RISK_PERCEPTION);
 
     // listener
     private final Set<NetworkListener> networkListeners = new CopyOnWriteArraySet<NetworkListener>();
@@ -86,23 +87,19 @@ public class Network extends SingleGraph implements SimulationListener {
     private int timestepsStable = 0;
     private static final int TIMESTEPS_REQUIRED_FOR_STABILITY = 1;
 
-
-
-
-
     // assortativity conditions
-    // TODO this might need to be a list
-    private List<AssortativityConditions> ac;
-
-
-
-
+    private List<AssortativityConditions> acs;
 
     // reduction of computational power
     int avPathLengthRound = -1;
     double avPathLength;
+
+    // TODO create assortativity interface, use list filled with instanciations of subclasses here
     int assortativityRound = -1;
-    double assortativity;
+    double assortativityRiskPerception;
+    double assortativityAge;
+    double assortativityProfession;
+
     int avClusteringRound = -1;
     double avClustering;
     int avDegreeRound = -1;
@@ -112,12 +109,16 @@ public class Network extends SingleGraph implements SimulationListener {
     int avClosenessRound = -1;
     double avCloseness;
 
+    private Double maxRPi = null;
+    private Double maxRSigma = null;
+    private Integer maxAge = null;
+
 
     /**
      * Constructor.
      */
     public Network() {
-        this("Network of the Infectious Kind", false, STANDARD_AC);
+        this("Network of the Infectious Kind", false, STANDARD_ACS);
     }
 
     /**
@@ -127,7 +128,7 @@ public class Network extends SingleGraph implements SimulationListener {
      *          the network's unique identifier
      */
     public Network(String id) {
-        this(id, false, STANDARD_AC);
+        this(id, false, STANDARD_ACS);
     }
 
     /**
@@ -139,7 +140,7 @@ public class Network extends SingleGraph implements SimulationListener {
      *          flag whether agents to arrange in circle or not
      */
     public Network(String id, boolean arrangeInCircle) {
-        this(id, arrangeInCircle, STANDARD_AC);
+        this(id, arrangeInCircle, STANDARD_ACS);
     }
 
     /**
@@ -147,11 +148,11 @@ public class Network extends SingleGraph implements SimulationListener {
      *
      * @param id
      *          the network's unique identifier
-     * @param ac
-     *          the condition to realize assortativity for
+     * @param acs
+     *          the conditions to realize assortativity for
      */
-    public Network(String id, AssortativityConditions ac) {
-        this(id, false, ac);
+    public Network(String id, List<AssortativityConditions> acs) {
+        this(id, false, acs);
     }
 
     /**
@@ -161,13 +162,13 @@ public class Network extends SingleGraph implements SimulationListener {
      *          the network's unique identifier
      * @param arrangeInCircle
      *          flag whether agents to arrange in circle or not
-     * @param ac
-     *          the condition to realize assortativity for
+     * @param acs
+     *          the conditions to realize assortativity for
      */
-    public Network(String id, boolean arrangeInCircle, AssortativityConditions ac) {
+    public Network(String id, boolean arrangeInCircle, List<AssortativityConditions> acs) {
         super(id);
         this.arrangeInCircle = arrangeInCircle;
-        this.ac = ac;
+        this.acs = acs;
         this.setNodeFactory(new AgentFactory());
     }
 
@@ -257,6 +258,16 @@ public class Network extends SingleGraph implements SimulationListener {
             arrangeAgentsInCircle();
         }
 
+        if (this.maxRPi == null || this.maxRPi < rPi) {
+            this.maxRPi = rPi;
+        }
+        if (this.maxRSigma == null || this.maxRSigma < rSigma) {
+            this.maxRSigma = rSigma;
+        }
+        if (this.maxAge == null || this.maxAge < age) {
+            this.maxAge = age;
+        }
+
         return agent;
     }
 
@@ -270,12 +281,28 @@ public class Network extends SingleGraph implements SimulationListener {
             return null;
         }
         String agentId = this.getLastAgent().getId();
-        this.removeNode(String.valueOf(agentId));
+        Agent agent = (Agent) this.removeNode(String.valueOf(agentId));
         notifyAgentRemoved(agentId);
 
         // re-position agents if auto-layout is disabled
         if (!this.arrangeInCircle) {
             arrangeAgentsInCircle();
+        }
+
+        if (this.getN() == 0) {
+            this.maxRPi = null;
+            this.maxRSigma = null;
+            this.maxAge = null;
+        } else {
+            if (agent.getAge() == this.maxAge) {
+                setMaxAge();
+            }
+            if (agent.getRPi() == this.maxRPi) {
+                setMaxRPi();
+            }
+            if (agent.getRSigma() == this.maxRSigma) {
+                setMaxRSigma();
+            }
         }
 
         return agentId;
@@ -503,6 +530,78 @@ public class Network extends SingleGraph implements SimulationListener {
         }
 
         return unsatisfied;
+    }
+
+    private void setMaxAge() {
+        int tmpMaxAge = 0;
+        Iterator<Agent> agentIt = this.getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent a = agentIt.next();
+            if (a.getAge() > tmpMaxAge) {
+                tmpMaxAge = a.getAge();
+            }
+        }
+        this.maxAge = tmpMaxAge;
+    }
+
+    /**
+     * Gets the age of the oldest agent.
+     *
+     * @return the age of the oldest agent
+     */
+    public int getMaxAge() {
+        if (this.maxAge == null) {
+            setMaxAge();
+        }
+        return this.maxAge;
+    }
+
+    private void setMaxRPi() {
+        double tmpMaxRPi = 0;
+        Iterator<Agent> agentIt = this.getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent a = agentIt.next();
+            if (a.getRPi() > tmpMaxRPi) {
+                tmpMaxRPi = a.getRPi();
+            }
+        }
+        this.maxRPi = tmpMaxRPi;
+    }
+
+    /**
+     * Gets the highest risk perception for probability of infections among all agents.
+     *
+     * @return the highest risk perception for probability of infections among all agents
+     */
+    public double getMaxRPi() {
+        if (this.maxRPi == null) {
+            setMaxRPi();
+        }
+        return this.maxRPi;
+    }
+
+    private void setMaxRSigma() {
+        double tmpMaxRSigma = 0;
+        Iterator<Agent> agentIt = this.getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent a = agentIt.next();
+            if (a.getAge() > tmpMaxRSigma) {
+                tmpMaxRSigma = a.getRSigma();
+            }
+        }
+        this.maxRSigma = tmpMaxRSigma;
+    }
+
+    /**
+     * Gets the highest risk perception for severity of infections among all agents.
+     *
+     * @return the highest risk perception for severity of infections among all agents
+     */
+    public double getMaxRSigma() {
+        if (this.maxRSigma == null) {
+            setMaxRSigma();
+        }
+        return this.maxRSigma;
     }
 
     /**
@@ -975,33 +1074,87 @@ public class Network extends SingleGraph implements SimulationListener {
      *
      * @return the assortativity condition of the network
      */
-    public AssortativityConditions getAssortativityCondition() {
-        return this.ac;
+    public List<AssortativityConditions> getAssortativityConditions() {
+        return this.acs;
     }
 
     /**
-     * Gets the assortativity of the network.
+     * Gets the risk perception assortativity of the network.
      *
-     * @return the assortativity of the network
+     * @return the risk perception assortativity of the network
      */
-    public double getAssortativity() {
-        this.assortativity = StatsComputer.computeAssortativity(this.getEdgeSet(), this.getAssortativityCondition());
-        return this.assortativity;
+    public double getAssortativityRiskPerception() {
+        this.assortativityRiskPerception = StatsComputer.computeAssortativity(this.getEdgeSet(),
+                AssortativityConditions.RISK_PERCEPTION);
+        return this.assortativityRiskPerception;
     }
 
     /**
-     * Gets the assortativity of the network.
+     * Gets the risk perception assortativity of the network.
      *
      * @param simRound
-     *          the simulation round to get the average path length for
-     * @return the assortativity of the network
+     *          the simulation round to get the risk perception assortativity for
+     * @return the risk perception assortativity of the network
      */
-    public double getAssortativity(int simRound) {
+    public double getAssortativityRiskPerception(int simRound) {
         if (assortativityRound < simRound) {
-            this.assortativity = StatsComputer.computeAssortativity(this.getEdgeSet(), this.getAssortativityCondition());
+            this.assortativityRiskPerception = StatsComputer.computeAssortativity(this.getEdgeSet(),
+                    AssortativityConditions.RISK_PERCEPTION);
             this.assortativityRound = simRound;
         }
-        return this.assortativity;
+        return this.assortativityRiskPerception;
+    }
+
+    /**
+     * Gets the age assortativity of the network.
+     *
+     * @return the age assortativity of the network
+     */
+    public double getAssortativityAge() {
+        this.assortativityAge = StatsComputer.computeAssortativity(this.getEdgeSet(), AssortativityConditions.AGE);
+        return this.assortativityAge;
+    }
+
+    /**
+     * Gets the age assortativity of the network.
+     *
+     * @param simRound
+     *          the simulation round to get the age assortativity for
+     * @return the age assortativity of the network
+     */
+    public double getAssortativityAge(int simRound) {
+        if (assortativityRound < simRound) {
+            this.assortativityAge = StatsComputer.computeAssortativity(this.getEdgeSet(), AssortativityConditions.AGE);
+            this.assortativityRound = simRound;
+        }
+        return this.assortativityAge;
+    }
+
+    /**
+     * Gets the profession assortativity of the network.
+     *
+     * @return the profession assortativity of the network
+     */
+    public double getAssortativityProfession() {
+        this.assortativityProfession = StatsComputer.computeAssortativity(this.getEdgeSet(),
+                AssortativityConditions.PROFESSION);
+        return this.assortativityProfession;
+    }
+
+    /**
+     * Gets the profession assortativity of the network.
+     *
+     * @param simRound
+     *          the simulation round to get the profession assortativity for
+     * @return the profession assortativity of the network
+     */
+    public double getAssortativityProfession(int simRound) {
+        if (assortativityRound < simRound) {
+            this.assortativityProfession = StatsComputer.computeAssortativity(this.getEdgeSet(),
+                    AssortativityConditions.PROFESSION);
+            this.assortativityRound = simRound;
+        }
+        return this.assortativityProfession;
     }
 
     /**
