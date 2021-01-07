@@ -25,6 +25,8 @@
  */
 package nl.uu.socnetid.nidm.stats;
 
+import java.util.List;
+
 import nl.uu.socnetid.nidm.networks.AssortativityConditions;
 import nl.uu.socnetid.nidm.networks.Network;
 
@@ -39,8 +41,10 @@ public class NetworkStats {
 
     private boolean stable;
     private double density;
-    private AssortativityConditions ac;
-    private double assortativity;
+    private List<AssortativityConditions> acs;
+    private double assortativityRiskPerception;
+    private double assortativityAge;
+    private double assortativityProfession;
     private double avDegree;
     private Double avDegree2 = null;     // lazy initialization (very costly operations)
     private double avDegreeSatisfied;
@@ -71,8 +75,10 @@ public class NetworkStats {
         this.network = network;
         this.stable = network.isStable();
         this.density = network.getDensity();
-        this.ac = network.getAssortativityCondition();
-        this.assortativity = network.getAssortativity(simRound);
+        this.acs = network.getAssortativityConditions();
+        this.assortativityRiskPerception = network.getAssortativityRiskPerception(simRound);
+        this.assortativityAge = network.getAssortativityAge(simRound);
+        this.assortativityProfession = network.getAssortativityProfession(simRound);
         this.avDegree = network.getAvDegree(simRound);
         this.avDegreeSatisfied = network.getAvDegreeSatisfied();
         this.avDegreeUnsatisfied = network.getAvDegreeUnsatisfied();
@@ -123,24 +129,52 @@ public class NetworkStats {
     }
 
     /**
-     * @return the assortativity condition
+     * @return the assortativity conditions
      */
-    public AssortativityConditions getAssortativityCondition() {
-        return ac;
+    public List<AssortativityConditions> getAssortativityConditions() {
+        return acs;
     }
 
     /**
-     * @return the assortativity
+     * @return the assortativityRiskPerception
      */
-    public double getAssortativity() {
-        return assortativity;
+    public double getAssortativityRiskPerception() {
+        return assortativityRiskPerception;
     }
 
     /**
-     * @param assortativity the assortativity to set
+     * @param assortativityRiskPerception the assortativityRiskPerception to set
      */
-    public void setAssortativity(double assortativity) {
-        this.assortativity = assortativity;
+    public void setAssortativityRiskPerception(double assortativityRiskPerception) {
+        this.assortativityRiskPerception = assortativityRiskPerception;
+    }
+
+    /**
+     * @return the assortativityAge
+     */
+    public double getAssortativityAge() {
+        return assortativityAge;
+    }
+
+    /**
+     * @param assortativityAge the assortativityAge to set
+     */
+    public void setAssortativityAge(double assortativityAge) {
+        this.assortativityAge = assortativityAge;
+    }
+
+    /**
+     * @return the assortativityProfession
+     */
+    public double getAssortativityProfession() {
+        return assortativityProfession;
+    }
+
+    /**
+     * @param assortativityProfession the assortativityProfession to set
+     */
+    public void setAssortativityProfession(double assortativityProfession) {
+        this.assortativityProfession = assortativityProfession;
     }
 
     /**

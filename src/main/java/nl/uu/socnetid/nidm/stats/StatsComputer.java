@@ -139,7 +139,8 @@ public final class StatsComputer {
         connections /= 2;
 
         return new GlobalNetworkStats(network.isStable(), connections, avDegree,
-                diameter, avDistance, network.getAssortativity());
+                diameter, avDistance, network.getAssortativityRiskPerception(), network.getAssortativityAge(),
+                network.getAssortativityProfession());
     }
 
     /**
@@ -570,13 +571,41 @@ public final class StatsComputer {
         return 1 - Math.pow((1 - agent.getDiseaseSpecs().getGamma()), nI);
     }
 
+    /**
+     * Computes the pearson correlation coefficient for two attribute arrays.
+     *
+     * @param attributes1
+     *          attribute array 1
+     * @param attributes2
+     *          attribute array 2
+     * @return the pearson correlation coefficient
+     */
+    private static double getPearsonCorrelationCoefficient(double[] attributes1, double[] attributes2) {
+        double pcc = 0.0;
+        if (attributes1.length > 1 || attributes2.length > 1) {
+            try {
+                pcc = new PearsonsCorrelation().correlation(attributes1, attributes2);
+                if (Double.isNaN(pcc)) {
+                    pcc = 0.0;
+                }
+            } catch (Exception e) {
+                logger.error("Computation of Pearson's correlation coefficient failed: ", e);
+                pcc = 0.0;
+            }
+        }
+        return pcc;
+    }
+
     public static double computeAssortativity(Collection<Edge> edges, AssortativityConditions ac) {
 
         double a = 0.0;
 
-        // collect attributes of all node pairs
+        // TODO improve (e.g., one method per type of assortativity condition)
+        // collect attributes for numerical variables of all node pairs
         double[] attributes1 = new double[edges.size()];
         double[] attributes2 = new double[edges.size()];
+        // collect sum off all equal attributes for categorical variables
+        double equals = 0.0;
 
         Iterator<Edge> eIt = edges.iterator();
 
@@ -594,6 +623,11 @@ public final class StatsComputer {
                     attributes2[i] = ((Agent) edge.getNode1()).getRSigma() + ((Agent) edge.getNode1()).getRPi();
                     break;
 
+                case PROFESSION:
+                    equals += ((Agent) edge.getNode0()).getProfession().equals(((Agent) edge.getNode1()).getProfession()) ?
+                            1 : 0;
+                    break;
+
                 default:
                     logger.warn("assortativity not available for: " + ac);
                     break;
@@ -601,18 +635,23 @@ public final class StatsComputer {
             i++;
         }
 
-        // Pearson correlation coefficient
-        if (attributes1.length > 1 || attributes2.length > 1) {
-            try {
-                a = new PearsonsCorrelation().correlation(attributes1, attributes2);
-                if (Double.isNaN(a)) {
-                    a = 0.0;
-                }
-            } catch (Exception e) {
-                logger.error("Computation of Pearson's correlation coefficient failed: ", e);
-                a = 0.0;
-            }
+
+        switch (ac) {
+            // Pearson correlation coefficient for numerical variables
+            case AGE:
+            case RISK_PERCEPTION:
+                a = getPearsonCorrelationCoefficient(attributes1, attributes2);
+                break;
+
+            case PROFESSION:
+                a = equals / edges.size();
+                break;
+
+            default:
+                logger.warn("assortativity not available for: " + ac);
+                break;
         }
+
         return a;
 
     }

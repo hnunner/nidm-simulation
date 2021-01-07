@@ -27,6 +27,7 @@ package nl.uu.socnetid.nidm.io.generator.network;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 
 import org.apache.commons.math3.distribution.ExponentialDistribution;
@@ -113,7 +114,7 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
         this.dgData.getUtilityModelParams().setCurrPhi(0.60);
         this.dgData.getUtilityModelParams().setCurrPsi(0.6);
         this.dgData.getUtilityModelParams().setCurrOmega(0.8);
-        this.dgData.getUtilityModelParams().setAssortativityCondition(AssortativityConditions.AGE);
+        this.dgData.getUtilityModelParams().setAssortativityInitCondition(AssortativityConditions.AGE);
     }
 
     /* (non-Javadoc)
@@ -185,7 +186,7 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
                     this.dgData.getUtilityModelParams().setCurrC2(allC2s/this.dgData.getUtilityModelParams().getCurrN());
 
                     // create network
-                    this.network = new Network("Network of the infectious kind", false, AssortativityConditions.AGE);
+                    this.network = new Network("Network of the infectious kind", false, Arrays.asList(AssortativityConditions.AGE));
                     // disease specs - same for all
                     DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, 0, 0, 0, 0);
                     for (int i = 0; i < c2s.length; i++) {
