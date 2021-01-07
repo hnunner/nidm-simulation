@@ -104,7 +104,9 @@ public abstract class RoundSummaryWriter<UMP extends UtilityModelParameters> ext
         cols.add(LogValues.DV_NET_AV_PATHLENGTH.toString());
         cols.add(LogValues.DV_NET_AV_BETWEENNESS.toString());
         cols.add(LogValues.DV_NET_AV_CLOSENESS.toString());
-        cols.add(LogValues.DV_NET_ASSORTATIVITY.toString());
+        cols.add(LogValues.DV_NET_ASSORTATIVITY_RISK_PERCEPTION.toString());
+        cols.add(LogValues.DV_NET_ASSORTATIVITY_AGE.toString());
+        cols.add(LogValues.DV_NET_ASSORTATIVITY_PROFESSION.toString());
         cols.add(LogValues.DV_NET_PERCENTAGE_SUSCEPTIBLE.toString());
         cols.add(LogValues.DV_NET_PERCENTAGE_INFECTED.toString());
         cols.add(LogValues.DV_NET_PERCENTAGE_RECOVERED.toString());
@@ -113,7 +115,9 @@ public abstract class RoundSummaryWriter<UMP extends UtilityModelParameters> ext
         cols.add(LogValues.DV_INDEX_CLUSTERING.toString());
         cols.add(LogValues.DV_INDEX_BETWEENNESS_NORMALIZED.toString());
         cols.add(LogValues.DV_INDEX_CLOSENESS.toString());
-        cols.add(LogValues.DV_INDEX_ASSORTATIVITY.toString());
+        cols.add(LogValues.DV_INDEX_ASSORTATIVITY_RISK_PERCEPTION.toString());
+        cols.add(LogValues.DV_INDEX_ASSORTATIVITY_AGE.toString());
+        cols.add(LogValues.DV_INDEX_ASSORTATIVITY_PROFESSION.toString());
 
         // FILE SYSTEM
         writeLine(cols);
@@ -146,7 +150,9 @@ public abstract class RoundSummaryWriter<UMP extends UtilityModelParameters> ext
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvPathLength(this.dgData.getSimStats().getCurrRound())));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvBetweenness(this.dgData.getSimStats().getCurrRound())));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvCloseness(this.dgData.getSimStats().getCurrRound())));
-        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAssortativity()));
+        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAssortativityRiskPerception()));
+        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAssortativityAge()));
+        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAssortativityProfession()));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getSusceptiblePercent()));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getInfectedPercent()));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getRecoveredPercent()));
@@ -155,7 +161,9 @@ public abstract class RoundSummaryWriter<UMP extends UtilityModelParameters> ext
         currData.add(String.valueOf(this.dgData.getIndexCaseStatsCurrent().getClustering()));
         currData.add(String.valueOf(this.dgData.getIndexCaseStatsCurrent().getBetweennessNormalized()));
         currData.add(String.valueOf(this.dgData.getIndexCaseStatsCurrent().getCloseness()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStatsCurrent().getAssortativity()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsCurrent().getAssortativityRiskPerception()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsCurrent().getAssortativityAge()));
+        currData.add(String.valueOf(this.dgData.getIndexCaseStatsCurrent().getAssortativityProfession()));
 
         writeLine(currData);
     }
