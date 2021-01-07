@@ -47,7 +47,6 @@ public enum AgentAttributes {
     SATISFIED("satisfied"),
     CONNECTION_STATS("connection.stats"),
     AGE("age"),
-    ASSORTATIVITY_CONDITION("assortativity.condition"),
     CONSIDER_AGE("consider.age"),
     PROFESSION("profession"),
     CONSIDER_PROFESSION("consider.profession"),
@@ -59,14 +58,13 @@ public enum AgentAttributes {
     CLOSENESS_LAST_COMPUTATION("closeness.last.computation"),
     CLUSTERING("clustering"),
     CLUSTERING_LAST_COMPUTATION("clustering.last.computation"),
-
-
-    // TODO this needs to be divided into different types of assortativity (risk perception, age, profession)
-    ASSORTATIVITY_AGE ssd ("assortativity"),
-    ASSORTATIVITY_LAST_COMPUTATION("assortativity.last.computation"),
-
-
-
+    ASSORTATIVITY_INIT_CONDITION("assortativity.condition"),
+    ASSORTATIVITY_RISK_PERCEPTION("assortativity.risk.perception"),
+    ASSORTATIVITY_RISK_PERCEPTION_LAST_COMPUTATION("assortativity.risk.perception.last.computation"),
+    ASSORTATIVITY_AGE("assortativity.age"),
+    ASSORTATIVITY_AGE_LAST_COMPUTATION("assortativity.age.last.computation"),
+    ASSORTATIVITY_PROFESSION("assortativity.profession"),
+    ASSORTATIVITY_PROFESSION_LAST_COMPUTATION("assortativity.profession.last.computation"),
     INDEX_CASE_DISTANCE("index.case.distance"),
     INDEX_CASE_DISTANCE_LAST_COMPUTATION("index.case.distance.last.computation");
 
