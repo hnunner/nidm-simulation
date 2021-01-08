@@ -25,6 +25,8 @@
  */
 package nl.uu.socnetid.nidm.data.out;
 
+import java.util.List;
+
 import nl.uu.socnetid.nidm.networks.AssortativityConditions;
 
 /**
@@ -67,8 +69,9 @@ public abstract class UtilityModelParameters {
     private double omegaRandomMax;
     private double[] omegas;
     private double currOmega;
-    // aic - assortativity init condition
-    private AssortativityConditions aic;     // TODO move to a more appropriate place (not really a utility parameter)
+    // assortativity
+    private AssortativityConditions aic;            // init condition
+    private List<AssortativityConditions> acs;      // earlier elements have higher priority
     // considering age
     private boolean considerAge;
     // considering profession
@@ -1229,6 +1232,20 @@ public abstract class UtilityModelParameters {
      */
     public void setAssortativityInitCondition(AssortativityConditions aic) {
         this.aic = aic;
+    }
+
+    /**
+     * @return the acs
+     */
+    public List<AssortativityConditions> getAssortativityConditions() {
+        return acs;
+    }
+
+    /**
+     * @param acs the acs to set
+     */
+    public void setAssortativityConditions(List<AssortativityConditions> acs) {
+        this.acs = acs;
     }
 
     /**
