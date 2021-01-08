@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 - 2019
+ * Copyright (C) 2017 - 2021
  *      Hendrik Nunner    <h.nunner@gmail.com>
  *
  * This file is part of the NIDM-Simulation project <https://github.com/hnunner/NIDM-simulation>.
@@ -44,10 +44,11 @@ import nl.uu.socnetid.nidm.data.genetic.NunnerBuskensGene;
 import nl.uu.socnetid.nidm.data.in.AgeStructure;
 import nl.uu.socnetid.nidm.data.in.Professions;
 import nl.uu.socnetid.nidm.data.out.DataGeneratorData;
-import nl.uu.socnetid.nidm.data.out.NunnerBuskensGeneticParameters;
+import nl.uu.socnetid.nidm.data.out.LogValues;
+import nl.uu.socnetid.nidm.data.out.NunnerBuskensParameters;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
-import nl.uu.socnetid.nidm.io.csv.NunnerBuskensNetworkSummaryGeneticWriter;
+import nl.uu.socnetid.nidm.io.csv.NunnerBuskensNetworkSummaryWriter;
 import nl.uu.socnetid.nidm.io.generator.AbstractGenerator;
 import nl.uu.socnetid.nidm.io.network.AgentPropertiesWriter;
 import nl.uu.socnetid.nidm.io.network.EdgeListWriter;
@@ -67,33 +68,10 @@ import nl.uu.socnetid.nidm.utility.UtilityFunction;
  *
  * TODO unify data generators
  */
-public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator implements SimulationListener {
+public class NunnerBuskensNetworkGeneratorProfessions extends AbstractGenerator implements SimulationListener {
 
     // logger
-    private static final Logger logger = LogManager.getLogger(NunnerBuskensNetworkGeneratorGenetic.class);
-
-    // percent of mean as standard deviation for mutation
-    private static final double MUTATION_SD =
-            PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getMutationSd();
-
-    // number of parents per generation
-    private static final int NUMBER_OF_PARENTS =
-            PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getParents();
-    // size of first generation = iterations of number of parents
-    private static final int SIZE_OF_FIRST_GENERATION =
-            PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getFirstGeneration();
-    // number of children per pair of parents
-    private static final int NUMBER_OF_CHILDREN =
-            PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getChildren();
-    // number of generations to simulate
-    private static final int NUMBER_OF_GENERATIONS =
-            PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getGenerations();
-
-    // target values
-    private static final double TARGET_AV_DEGREE =
-            PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getTargetAvDegree();        // controlled by c2
-    private static final double TARGET_CLUSTERING =
-            PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getTargetClustering();      // controlled by alpha
+    private static final Logger logger = LogManager.getLogger(NunnerBuskensNetworkGeneratorProfessions.class);
 
     // assortativity conditions
     private static final List<AssortativityConditions> ASSORTATIVITY_CONDITIONS = Arrays.asList(AssortativityConditions.AGE);
@@ -101,22 +79,13 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
     // network
     private Network network;
 
-    // list of all genes
-    private List<NunnerBuskensGene> allGenes = new LinkedList<NunnerBuskensGene>();
-    // current offspring
-    private NunnerBuskensGene currentOffspring;
-
-    // stats & writer
-    private DataGeneratorData<NunnerBuskensGeneticParameters> dgData;
-    private NunnerBuskensNetworkSummaryGeneticWriter nsWriter;
-    private int upc = 1;
-
-    // fitness
-    private double fitnessPrevRound;
-
     // simulation
     private boolean simFinished = false;
     private Simulation simulation;
+
+    // stats & writer
+    private DataGeneratorData<NunnerBuskensParameters> dgData;
+    private NunnerBuskensNetworkSummaryWriter nsWriter;
 
 
     /**
@@ -129,7 +98,7 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
      *          than a regular file, do(es) not exist but cannot be
      *          created, or cannot be opened for any other reason
      */
-    public NunnerBuskensNetworkGeneratorGenetic(String rootExportPath) throws IOException {
+    public NunnerBuskensNetworkGeneratorProfessions(String rootExportPath) throws IOException {
         super(rootExportPath);
     }
 
@@ -139,7 +108,7 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
      */
     @Override
     protected String getFolderName() {
-        return "nunnerbuskens.genetic";
+        return "nunnerbuskens.professions";
     }
 
     /* (non-Javadoc)
@@ -147,40 +116,41 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
      */
     @Override
     protected void initData() {
-        this.dgData = new DataGeneratorData<NunnerBuskensGeneticParameters>(
-                PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters());
+        this.dgData = new DataGeneratorData<NunnerBuskensParameters>(
+                PropertiesHandler.getInstance().getNunnerBuskensParameters());
         this.dgData.getSimStats().setUpc(0);
 
-        this.dgData.getUtilityModelParams().setN(
-                PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getN());
-        this.dgData.getUtilityModelParams().setB1(
-                PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getB1());
-        this.dgData.getUtilityModelParams().setB2(
-                PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getB2());
-        this.dgData.getUtilityModelParams().setC1(
-                PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getC1());
-        this.dgData.getUtilityModelParams().setPhi(
-                PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getPhi());
-        this.dgData.getUtilityModelParams().setPsi(
-                PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getPsi());
+        this.dgData.getUtilityModelParams().setN(PropertiesHandler.getInstance().getNunnerBuskensProfessionsParameters().getN());
 
 
-
-
-
-
-
-        // TODO move to config file!!!
-        // this.dgData.getUtilityModelParams().setAssortativityInitCondition(AssortativityConditions.AGE);
-        this.dgData.getUtilityModelParams().setAssortativityInitCondition(AssortativityConditions.PROFESSION);
-
-
-
-
-
-
-
+        nbpParameters.setPhi(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_PHI.toString())));
+        nbpParameters.setPsi(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_PSI.toString())));
+        nbpParameters.setXi(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_XI.toString())));
+        nbpParameters.setZeta(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_ZETA.toString())));
+        nbpParameters.setB1(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_B1.toString())));
+        nbpParameters.setB2(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_B2.toString())));
+        nbpParameters.setC1(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_C1.toString())));
+        nbpParameters.setAlpha(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_ALPHA.toString())));
+        nbpParameters.setConsiderAge(Boolean.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_CONSIDER_AGE.toString())));
+        nbpParameters.setConsiderProfession(Boolean.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_CONSIDER_PROFESSION.toString())));
+        nbpParameters.setAssortativityInitCondition(AssortativityConditions.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_ASSORTATIVITY_INIT_CONDITION.toString())));
+        nbpParameters.setAssortativityConditions(acs);
+        nbpParameters.setOmega(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_OMEGA.toString())));
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.io.generator.AbstractGenerator#initWriters()
@@ -189,7 +159,7 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
     protected void initWriters() throws IOException {
         // summary CSV
         if (PropertiesHandler.getInstance().isExportSummary()) {
-            this.nsWriter = new NunnerBuskensNetworkSummaryGeneticWriter(getExportPath() + "network-summary-genetic.csv",
+            this.nsWriter = new NunnerBuskensNetworkSummaryWriter(getExportPath() + "network-summary.csv",
                     this.dgData);
         }
     }
@@ -310,7 +280,7 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
         // simulate
         this.simulation = new Simulation(this.network);
         simulation.addSimulationListener(this);
-        simulation.simulateUntilStable(PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getRoundsMax());
+        simulation.simulateUntilStable(PropertiesHandler.getInstance().getNunnerBuskensParameters().getRoundsMax());
     }
 
 

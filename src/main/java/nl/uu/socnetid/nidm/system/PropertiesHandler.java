@@ -30,7 +30,9 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
@@ -43,6 +45,8 @@ import nl.uu.socnetid.nidm.data.out.EpidemicStructures;
 import nl.uu.socnetid.nidm.data.out.LogValues;
 import nl.uu.socnetid.nidm.data.out.NunnerBuskensGeneticParameters;
 import nl.uu.socnetid.nidm.data.out.NunnerBuskensParameters;
+import nl.uu.socnetid.nidm.data.out.NunnerBuskensProfessionsParameters;
+import nl.uu.socnetid.nidm.networks.AssortativityConditions;
 
 
 /**
@@ -92,6 +96,9 @@ public class PropertiesHandler {
     // NunnerBuskens networks genetic parameters
     private boolean generateNunnerBuskensNetworksGenetic;
     private NunnerBuskensGeneticParameters nbgParameters;
+    // NunnerBuskens networks professions parameters
+    private boolean generateNunnerBuskensNetworksProfessions;
+    private NunnerBuskensProfessionsParameters nbpParameters;
 
     // DATA EXPORT
     // types of data export
@@ -330,7 +337,6 @@ public class PropertiesHandler {
         generateNunnerBuskensData = Boolean.parseBoolean(configProps.getProperty("nb.generate.data"));
         generateNunnerBuskensNetworks = Boolean.parseBoolean(configProps.getProperty("nb.generate.networks"));
         generateNunnerBuskensNetworksSimple = Boolean.parseBoolean(configProps.getProperty("nb.generate.networks.simple"));
-        generateNunnerBuskensNetworksGenetic = Boolean.parseBoolean(configProps.getProperty("nb.generate.networks.genetic"));
         nbParameters = new NunnerBuskensParameters();
         // network structure static during epidemics
         nbParameters.setEpStructure(EpidemicStructures.fromString(configProps.getProperty(LogValues.IV_NB_EP_STRUCTURE.toString())));
@@ -452,6 +458,29 @@ public class PropertiesHandler {
         nbgParameters.setInitialAlphaMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_INITIAL_ALPHA_MAX.toString())));
         nbgParameters.setConsiderAge(Boolean.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_CONSIDER_AGE.toString())));
         nbgParameters.setConsiderProfession(Boolean.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_CONSIDER_PROFESSION.toString())));
+
+        // NunnerBuskens network professions
+        generateNunnerBuskensNetworksProfessions = Boolean.parseBoolean(configProps.getProperty("nb.generate.networks.professions"));
+        nbpParameters = new NunnerBuskensProfessionsParameters();
+        nbpParameters.setN(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_N.toString())));
+        nbpParameters.setPhi(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_PHI.toString())));
+        nbpParameters.setPsi(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_PSI.toString())));
+        nbpParameters.setXi(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_XI.toString())));
+        nbpParameters.setZeta(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_ZETA.toString())));
+        nbpParameters.setB1(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_B1.toString())));
+        nbpParameters.setB2(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_B2.toString())));
+        nbpParameters.setC1(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_C1.toString())));
+        nbpParameters.setAlpha(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_ALPHA.toString())));
+        nbpParameters.setConsiderAge(Boolean.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_CONSIDER_AGE.toString())));
+        nbpParameters.setConsiderProfession(Boolean.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_CONSIDER_PROFESSION.toString())));
+        nbpParameters.setAssortativityInitCondition(AssortativityConditions.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_ASSORTATIVITY_INIT_CONDITION.toString())));
+        String[] acsString = configProps.getProperty(LogValues.IV_NB_PROF_ASSORTATIVITY_CONDITIONS.toString()).split(",");
+        List<AssortativityConditions> acs = new ArrayList<AssortativityConditions>(acsString.length);
+        for (int i = 0; i < acsString.length; i++) {
+            acs.add(AssortativityConditions.valueOf(acsString[i]));
+        }
+        nbpParameters.setAssortativityConditions(acs);
+        nbpParameters.setOmega(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_OMEGA.toString())));
 
         // types of data export
         this.exportSummary = Boolean.parseBoolean(configProps.getProperty("export.summary"));
@@ -717,6 +746,15 @@ public class PropertiesHandler {
     }
 
     /**
+     * Gets whether to generate profession networks for the NunnerBuskens model or not.
+     *
+     * @return true if networks ought to be generated, false otherwise
+     */
+    public boolean isGenerateNunnerBuskensNetworksProfessions() {
+        return generateNunnerBuskensNetworksProfessions;
+    }
+
+    /**
      * Gets the NunnerBuskens parameters as defined in the config.properties
      *
      * @return the NunnerBuskens parameters as defined in the config.properties
@@ -732,6 +770,15 @@ public class PropertiesHandler {
      */
     public NunnerBuskensGeneticParameters getNunnerBuskensGeneticParameters() {
         return nbgParameters;
+    }
+
+    /**
+     * Gets the NunnerBuskensProfessions parameters as defined in the config.properties
+     *
+     * @return the NunnerBuskens parameters as defined in the config.properties
+     */
+    public NunnerBuskensProfessionsParameters getNunnerBuskensProfessionsParameters() {
+        return nbpParameters;
     }
 
     /**

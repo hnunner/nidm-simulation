@@ -262,6 +262,21 @@ public enum LogValues {
     IV_NB_GEN_INITIAL_ALPHA_MAX("nb.gen.initial.alpha.max"),
     IV_NB_GEN_CONSIDER_AGE("nb.gen.consider.age"),
     IV_NB_GEN_CONSIDER_PROFESSION("nb.gen.consider.profession"),
+    // NunnerBuskens professions
+    IV_NB_PROF_N("nb.prof.N"),
+    IV_NB_PROF_PHI("nb.prof.phi"),
+    IV_NB_PROF_PSI("nb.prof.psi"),
+    IV_NB_PROF_XI("nb.prof.xi"),
+    IV_NB_PROF_ZETA("nb.zeta"),
+    IV_NB_PROF_B1("nb.prof.b1"),
+    IV_NB_PROF_B2("nb.prof.b2"),
+    IV_NB_PROF_C1("nb.prof.c1"),
+    IV_NB_PROF_ALPHA("nb.prof.alpha"),
+    IV_NB_PROF_CONSIDER_AGE("nb.prof.consider.age"),
+    IV_NB_PROF_CONSIDER_PROFESSION("nb.prof.consider.profession"),
+    IV_NB_PROF_ASSORTATIVITY_INIT_CONDITION("nb.prof.assortativity.init.condition"),
+    IV_NB_PROF_ASSORTATIVITY_CONDITIONS("nb.prof.assortativity.conditions"),
+    IV_NB_PROF_OMEGA("nb.prof.omega"),
 
     // PROPERTIES (dependent variables)
     // simulation
