@@ -40,6 +40,7 @@ public class AgentPropertiesWriter implements NetworkWriter {
 
     private static final String AGENT_COLUMN = "agent";
     private static final String AGE_COLUMN = "age";
+    private static final String PROFESSION_COLUMN = "profession";
 
     private Iterator<Agent> agentsIt = null;
 
@@ -65,7 +66,7 @@ public class AgentPropertiesWriter implements NetworkWriter {
 
         if (agentsIt == null) {
             // first row
-            sb.append(AGENT_COLUMN).append(VALUE_SEPERATOR).append(AGE_COLUMN);
+            sb.append(AGENT_COLUMN).append(VALUE_SEPERATOR).append(AGE_COLUMN).append(PROFESSION_COLUMN);
             sb.append(System.getProperty("line.separator"));
 
             // prepare iterator
@@ -77,7 +78,9 @@ public class AgentPropertiesWriter implements NetworkWriter {
         int currNumAgents = 0;
         while (agentsIt.hasNext() && currNumAgents <= numAgents) {
             Agent currAgent = agentsIt.next();
-            sb.append(currAgent.getId()).append(VALUE_SEPERATOR).append(currAgent.getAge());
+            sb.append(currAgent.getId());
+            sb.append(VALUE_SEPERATOR).append(currAgent.getAge());
+            sb.append(VALUE_SEPERATOR).append(currAgent.getProfession());
             sb.append(System.getProperty("line.separator"));
             currNumAgents++;
         }
