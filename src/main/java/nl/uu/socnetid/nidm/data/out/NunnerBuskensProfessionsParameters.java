@@ -25,6 +25,10 @@
  */
 package nl.uu.socnetid.nidm.data.out;
 
+import java.util.List;
+
+import nl.uu.socnetid.nidm.networks.DegreeDistributionConditions;
+
 /**
  * @author Hendrik Nunner
  */
@@ -37,6 +41,14 @@ public class NunnerBuskensProfessionsParameters extends UtilityModelParameters {
 
     // social costs
     private double c1;
+    private double c2;
+
+    // simulation
+    private int roundsMax;
+
+    // initializations
+    private List<DegreeDistributionConditions> dccs;
+
 
 
     /**
@@ -93,6 +105,48 @@ public class NunnerBuskensProfessionsParameters extends UtilityModelParameters {
      */
     public void setC1(double c1) {
         this.c1 = c1;
+    }
+
+    /**
+     * @return the c2
+     */
+    public double getC2() {
+        return c2;
+    }
+
+    /**
+     * @param c2 the c2 to set
+     */
+    public void setC2(double c2) {
+        this.c2 = c2;
+    }
+
+    /**
+     * @return the roundsMax
+     */
+    public int getRoundsMax() {
+        return roundsMax;
+    }
+
+    /**
+     * @param roundsMax the roundsMax to set
+     */
+    public void setRoundsMax(int roundsMax) {
+        this.roundsMax = roundsMax;
+    }
+
+    /**
+     * @return the dccs
+     */
+    public List<DegreeDistributionConditions> getDegreeDistributionConditions() {
+        return dccs;
+    }
+
+    /**
+     * @param dccs the dccs to set
+     */
+    public void setDegreeDistributionConditions(List<DegreeDistributionConditions> dccs) {
+        this.dccs = dccs;
     }
 
 }
