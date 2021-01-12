@@ -271,12 +271,17 @@ public enum LogValues {
     IV_NB_PROF_B1("nb.prof.b1"),
     IV_NB_PROF_B2("nb.prof.b2"),
     IV_NB_PROF_C1("nb.prof.c1"),
+    IV_NB_PROF_C2("nb.prof.c2"),
     IV_NB_PROF_ALPHA("nb.prof.alpha"),
     IV_NB_PROF_CONSIDER_AGE("nb.prof.consider.age"),
     IV_NB_PROF_CONSIDER_PROFESSION("nb.prof.consider.profession"),
     IV_NB_PROF_ASSORTATIVITY_INIT_CONDITION("nb.prof.assortativity.init.condition"),
     IV_NB_PROF_ASSORTATIVITY_CONDITIONS("nb.prof.assortativity.conditions"),
     IV_NB_PROF_OMEGA("nb.prof.omega"),
+    IV_NB_PROF_SIM_ITERATIONS("nb.prof.n"),
+    IV_NB_PROF_LOCKDOWN_CONDITIONS("nb.prof.lockdown.conditions"),
+    IV_NB_PROF_DEGREE_DISTRIBUTION_CONDITIONS("nb.prof.degree.distribution.conditions"),
+    IV_NB_PROF_ROUNDS_MAX("nb.prof.rounds.max"),
 
     // PROPERTIES (dependent variables)
     // simulation

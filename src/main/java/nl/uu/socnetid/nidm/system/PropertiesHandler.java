@@ -47,6 +47,8 @@ import nl.uu.socnetid.nidm.data.out.NunnerBuskensGeneticParameters;
 import nl.uu.socnetid.nidm.data.out.NunnerBuskensParameters;
 import nl.uu.socnetid.nidm.data.out.NunnerBuskensProfessionsParameters;
 import nl.uu.socnetid.nidm.networks.AssortativityConditions;
+import nl.uu.socnetid.nidm.networks.DegreeDistributionConditions;
+import nl.uu.socnetid.nidm.networks.LockdownConditions;
 
 
 /**
@@ -481,6 +483,20 @@ public class PropertiesHandler {
         }
         nbpParameters.setAssortativityConditions(acs);
         nbpParameters.setOmega(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_OMEGA.toString())));
+        nbpParameters.setSimIterations(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_SIM_ITERATIONS.toString())));
+        String[] lcsString = configProps.getProperty(LogValues.IV_NB_PROF_LOCKDOWN_CONDITIONS.toString()).split(",");
+        List<LockdownConditions> lcs = new ArrayList<LockdownConditions>(lcsString.length);
+        for (int i = 0; i < lcsString.length; i++) {
+            lcs.add(LockdownConditions.valueOf(lcsString[i]));
+        }
+        nbpParameters.setLockdownConditions(lcs);
+        String[] ddcsString = configProps.getProperty(LogValues.IV_NB_PROF_DEGREE_DISTRIBUTION_CONDITIONS.toString()).split(",");
+        List<DegreeDistributionConditions> ddcs = new ArrayList<DegreeDistributionConditions>(ddcsString.length);
+        for (int i = 0; i < ddcsString.length; i++) {
+            lcs.add(LockdownConditions.valueOf(ddcsString[i]));
+        }
+        nbpParameters.setDegreeDistributionConditions(ddcs);
+        nbpParameters.setRoundsMax(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_ROUNDS_MAX.toString())));
 
         // types of data export
         this.exportSummary = Boolean.parseBoolean(configProps.getProperty("export.summary"));

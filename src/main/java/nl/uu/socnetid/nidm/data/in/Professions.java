@@ -25,8 +25,12 @@ public class Professions {
     private static final Logger logger = LogManager.getLogger(Professions.class);
 
     private List<String> professionDistribution;
-    private Map<String, Double> professionDegreePreLockdown;
-    private Map<String, Double> professionDegreeDuringLockdown;
+    private Map<String, Double> degreePreLockdown;
+    private Map<String, Double> errorDegreePreLockdown;
+    private Map<String, Double> degreeDuringLockdown;
+    private Map<String, Double> errorDegreeDuringLockdown;
+    private double avDegreePreLockdown;
+    private double avDegreeDuringLockdown;
 
 
     /**
@@ -45,8 +49,12 @@ public class Professions {
      */
     private void initProfessions() {
         this.professionDistribution = new ArrayList<String>();
-        this.professionDegreePreLockdown = new HashMap<String, Double>();
-        this.professionDegreeDuringLockdown = new HashMap<String, Double>();
+        this.degreePreLockdown = new HashMap<String, Double>();
+        this.errorDegreePreLockdown = new HashMap<String, Double>();
+        this.degreeDuringLockdown = new HashMap<String, Double>();
+        this.errorDegreeDuringLockdown = new HashMap<String, Double>();
+
+        int n = 0;
 
         // TODO get reliable numbers; currently proportions taken from Belot et al. 2020
         Path pathToFile = PropertiesHandler.getInstance().getProfessionsImportPath();
@@ -63,15 +71,24 @@ public class Professions {
                 String profession = attributes[0];
 
                 // profession distribution
-                for (int i = 0; i < Integer.valueOf(attributes[1]); i++) {
+                int i = 0;
+                while (i < Integer.valueOf(attributes[1])) {
+                    i++;
+                    n++;
                     this.professionDistribution.add(profession);
                 }
 
                 // profession degree pre lockdown
-                this.professionDegreePreLockdown.put(profession, Double.valueOf(attributes[2]));
+                Double degPre = Double.valueOf(attributes[2]);
+                this.degreePreLockdown.put(profession, degPre);
+                this.avDegreePreLockdown += i*degPre;
+                this.errorDegreePreLockdown.put(profession, Double.valueOf(attributes[3]));
 
                 // profession degree during lockdown
-                this.professionDegreeDuringLockdown.put(profession, Double.valueOf(attributes[3]));
+                Double degDuring = Double.valueOf(attributes[4]);
+                this.degreeDuringLockdown.put(profession, degDuring);
+                this.avDegreePreLockdown += i*degDuring;
+                this.errorDegreeDuringLockdown.put(profession, Double.valueOf(attributes[5]));
 
                 line = br.readLine();
             }
@@ -88,6 +105,8 @@ public class Professions {
                 }
             }
         }
+
+        this.avDegreePreLockdown /= n;
     }
 
 
@@ -127,7 +146,7 @@ public class Professions {
      * @return the degree by profession before lockdown
      */
     public double getDegreePreLockdown(String profession) {
-        return this.professionDegreePreLockdown.get(profession);
+        return this.degreePreLockdown.get(profession);
     }
 
     /**
@@ -138,7 +157,43 @@ public class Professions {
      * @return the degree by profession during lockdown
      */
     public double getDegreeDuringLockdown(String profession) {
-        return this.professionDegreeDuringLockdown.get(profession);
+        return this.degreeDuringLockdown.get(profession);
+    }
+
+    /**
+     * Gets the degree error by profession prior to lockdown.
+     *
+     * @param profession
+     *          the profession to get the degree druing lockdown for
+     * @return the degree error by profession prior to lockdown
+     */
+    public double getDegreeErrorPreLockdown(String profession) {
+        return errorDegreePreLockdown.get(profession);
+    }
+
+    /**
+     * Gets the degree error by profession during lockdown.
+     *
+     * @param profession
+     *          the profession to get the degree druing lockdown for
+     * @return the degree error by profession during lockdown
+     */
+    public double getDegreeErrorDuringLockdown(String profession) {
+        return errorDegreeDuringLockdown.get(profession);
+    }
+
+    /**
+     * @return the avDegreePreLockdown
+     */
+    public double getAverageDegreePreLockdown() {
+        return avDegreePreLockdown;
+    }
+
+    /**
+     * @return the avDegreeDuringLockdown
+     */
+    public double getAverageDegreeDuringLockdown() {
+        return avDegreeDuringLockdown;
     }
 
 }
