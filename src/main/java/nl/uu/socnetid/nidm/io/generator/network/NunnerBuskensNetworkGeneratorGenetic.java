@@ -164,22 +164,9 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
         this.dgData.getUtilityModelParams().setPsi(
                 PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getPsi());
 
-
-
-
-
-
-
         // TODO move to config file!!!
         // this.dgData.getUtilityModelParams().setAssortativityInitCondition(AssortativityConditions.AGE);
         this.dgData.getUtilityModelParams().setAssortativityInitCondition(AssortativityConditions.PROFESSION);
-
-
-
-
-
-
-
     }
 
     /* (non-Javadoc)
