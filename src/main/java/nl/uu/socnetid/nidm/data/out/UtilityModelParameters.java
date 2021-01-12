@@ -28,6 +28,7 @@ package nl.uu.socnetid.nidm.data.out;
 import java.util.List;
 
 import nl.uu.socnetid.nidm.networks.AssortativityConditions;
+import nl.uu.socnetid.nidm.networks.LockdownConditions;
 
 /**
  * @author Hendrik Nunner
@@ -76,6 +77,8 @@ public abstract class UtilityModelParameters {
     private boolean considerAge;
     // considering profession
     private boolean considerProfession;
+    // lockdown conditions
+    private List<LockdownConditions> lcs;
 
     // INFECTIONS
     // sigma - severity
@@ -1274,6 +1277,20 @@ public abstract class UtilityModelParameters {
      */
     public void setConsiderProfession(boolean considerProfession) {
         this.considerProfession = considerProfession;
+    }
+
+    /**
+     * @return the lcs
+     */
+    public List<LockdownConditions> getLockdownConditions() {
+        return lcs;
+    }
+
+    /**
+     * @param lcs the lcs to set
+     */
+    public void setLockdownConditions(List<LockdownConditions> lcs) {
+        this.lcs = lcs;
     }
 
 }
