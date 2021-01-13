@@ -469,17 +469,17 @@ public class PropertiesHandler {
         nbpParameters.setPsi(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_PSI.toString())));
         nbpParameters.setXi(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_XI.toString())));
         nbpParameters.setZeta(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_ZETA.toString())));
-        nbpParameters.setB1(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_B1.toString())));
+        nbpParameters.setB1(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_B1.toString())));
         nbpParameters.setB2(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_B2.toString())));
         nbpParameters.setC1(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_C1.toString())));
         nbpParameters.setAlpha(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_ALPHA.toString())));
         nbpParameters.setConsiderAge(Boolean.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_CONSIDER_AGE.toString())));
         nbpParameters.setConsiderProfession(Boolean.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_CONSIDER_PROFESSION.toString())));
-        nbpParameters.setAssortativityInitCondition(AssortativityConditions.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_ASSORTATIVITY_INIT_CONDITION.toString())));
+        nbpParameters.setAssortativityInitCondition(AssortativityConditions.fromString(configProps.getProperty(LogValues.IV_NB_PROF_ASSORTATIVITY_INIT_CONDITION.toString())));
         String[] acsString = configProps.getProperty(LogValues.IV_NB_PROF_ASSORTATIVITY_CONDITIONS.toString()).split(",");
         List<AssortativityConditions> acs = new ArrayList<AssortativityConditions>(acsString.length);
         for (int i = 0; i < acsString.length; i++) {
-            acs.add(AssortativityConditions.valueOf(acsString[i]));
+            acs.add(AssortativityConditions.fromString(acsString[i]));
         }
         nbpParameters.setAssortativityConditions(acs);
         nbpParameters.setOmega(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_OMEGA.toString())));
@@ -487,13 +487,13 @@ public class PropertiesHandler {
         String[] lcsString = configProps.getProperty(LogValues.IV_NB_PROF_LOCKDOWN_CONDITIONS.toString()).split(",");
         List<LockdownConditions> lcs = new ArrayList<LockdownConditions>(lcsString.length);
         for (int i = 0; i < lcsString.length; i++) {
-            lcs.add(LockdownConditions.valueOf(lcsString[i]));
+            lcs.add(LockdownConditions.fromString(lcsString[i]));
         }
         nbpParameters.setLockdownConditions(lcs);
         String[] ddcsString = configProps.getProperty(LogValues.IV_NB_PROF_DEGREE_DISTRIBUTION_CONDITIONS.toString()).split(",");
         List<DegreeDistributionConditions> ddcs = new ArrayList<DegreeDistributionConditions>(ddcsString.length);
         for (int i = 0; i < ddcsString.length; i++) {
-            lcs.add(LockdownConditions.valueOf(ddcsString[i]));
+            ddcs.add(DegreeDistributionConditions.fromString(ddcsString[i]));
         }
         nbpParameters.setDegreeDistributionConditions(ddcs);
         nbpParameters.setRoundsMax(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_ROUNDS_MAX.toString())));
