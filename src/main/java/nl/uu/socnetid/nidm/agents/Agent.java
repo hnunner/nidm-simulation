@@ -1158,13 +1158,14 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         }
 
         // normalizing keys
+        TreeMap<Double, List<Agent>> normReducedMap = new TreeMap<Double, List<Agent>>();
         Iterator<Double> it = reducedMap.keySet().iterator();
         while (it.hasNext()) {
             Double key = it.next();
-            reducedMap.put(key/maxNewKey, reducedMap.remove(key));
+            normReducedMap.put(key/maxNewKey, reducedMap.get(key));
         }
 
-        return reducedMap;
+        return normReducedMap;
     }
 
     /**
@@ -1173,7 +1174,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      * @param agents
      *          the list of agents to sort
      */
-    private void sortByAssortativityConditions(List<Agent> agents) {
+    public void sortByAssortativityConditions(List<Agent> agents) {
 
         // struct used to create order depending on order of assortativity conditions
         // first level: list per assortativity condition
