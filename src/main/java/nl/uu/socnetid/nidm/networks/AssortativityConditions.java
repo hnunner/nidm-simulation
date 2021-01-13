@@ -56,4 +56,19 @@ public enum AssortativityConditions {
         return name;
     }
 
+    /**
+     * Creates the assortativity condition from a given string.
+     * @param text
+     *          the string to create the assortativity condition for
+     * @return the assortativity condition
+     */
+    public static AssortativityConditions fromString(String text) {
+        for (AssortativityConditions a : AssortativityConditions.values()) {
+            if (a.name.equalsIgnoreCase(text)) {
+                return a;
+            }
+        }
+        throw new IllegalArgumentException("No constant with text " + text + " found.");
+    }
+
 }
