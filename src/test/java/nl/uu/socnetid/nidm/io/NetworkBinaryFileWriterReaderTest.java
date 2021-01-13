@@ -25,17 +25,20 @@
  */
 package nl.uu.socnetid.nidm.io;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.io.IOException;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
-import nl.uu.socnetid.nidm.io.network.EdgeListWriter;
-import nl.uu.socnetid.nidm.io.network.NetworkCSVWriter;
+import nl.uu.socnetid.nidm.io.network.NetworkBinaryFileReader;
+import nl.uu.socnetid.nidm.io.network.NetworkBinaryFileWriter;
 import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.utility.Cumulative;
 import nl.uu.socnetid.nidm.utility.UtilityFunction;
@@ -43,7 +46,7 @@ import nl.uu.socnetid.nidm.utility.UtilityFunction;
 /**
  * @author Hendrik Nunner
  */
-public class EdgeListWriterTest {
+public class NetworkBinaryFileWriterReaderTest {
 
     // disease related
     private static final int    tau   = 10;
@@ -54,35 +57,24 @@ public class EdgeListWriterTest {
     // basic network
     private Network network;
 
-    // expected adjacency matrix
-    private static String expectedEdgeList;
-
-
-    @BeforeClass
-    public static void initSuite() {
-        // for "Run as Junit Test"
-        StringBuilder sb = new StringBuilder();
-        sb.append("Source,Target").append(System.getProperty("line.separator"));
-        sb.append("1,2").append(System.getProperty("line.separator"));
-        sb.append("1,3").append(System.getProperty("line.separator"));
-        sb.append("1,4").append(System.getProperty("line.separator"));
-        sb.append("2,1").append(System.getProperty("line.separator"));
-        sb.append("3,1").append(System.getProperty("line.separator"));
-        sb.append("3,4").append(System.getProperty("line.separator"));
-        sb.append("4,1").append(System.getProperty("line.separator"));
-        sb.append("4,3").append(System.getProperty("line.separator"));
-        expectedEdgeList = sb.toString();
-    }
+    // temporary file folder
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
+    private String file = "test.net";
+    private String path;
 
 
     /**
-     * Performed before each test: Initialization of the network.
+     * Performed before each test.
+     *
+     * @throws IOException
+     *          if something goes wrong with file handling
      */
     @Before
-    public void initNetwork() {
+    public void init() throws IOException {
 
         // network
-        this.network = new Network("EdgeListWriter Test");
+        this.network = new Network("AdjacencyMatrixWriter Test");
 
         UtilityFunction uf = new Cumulative();
         DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
@@ -96,16 +88,27 @@ public class EdgeListWriterTest {
         agent1.addConnection(agent3);
         agent1.addConnection(agent4);
         agent3.addConnection(agent4);
+
+        this.path = this.folder.newFile(this.file).getParent();
     }
 
     /**
-     * Test of writing an edge list representation of the network.
+     * Test of writing a binary representation of the network.
+     *
+     * @throws Exception
+     *          if something goes wrong with file handling
      */
     @Test
-    public void testWrite() {
-        NetworkCSVWriter writer = new EdgeListWriter();
-        String actualEdgeList = writer.write(this.network);
-        assertEquals(expectedEdgeList, actualEdgeList);
+    public void testWriteRead() throws Exception {
+        NetworkBinaryFileWriter nbfw = new NetworkBinaryFileWriter(path, file, network);
+        nbfw.write();
+
+        NetworkBinaryFileReader nbfr = new NetworkBinaryFileReader(path, file);
+        Network n = nbfr.read();
+
+        assertNotNull(n);
+
+        System.out.println("Done!");
     }
 
 }

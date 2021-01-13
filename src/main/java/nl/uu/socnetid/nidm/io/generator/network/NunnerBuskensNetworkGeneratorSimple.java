@@ -46,7 +46,7 @@ import nl.uu.socnetid.nidm.io.generator.AbstractGenerator;
 import nl.uu.socnetid.nidm.io.network.AgentPropertiesWriter;
 import nl.uu.socnetid.nidm.io.network.EdgeListWriter;
 import nl.uu.socnetid.nidm.io.network.GEXFWriter;
-import nl.uu.socnetid.nidm.io.network.NetworkFileWriter;
+import nl.uu.socnetid.nidm.io.network.NetworkCSVFileWriter;
 import nl.uu.socnetid.nidm.networks.AssortativityConditions;
 import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.simulation.Simulation;
@@ -320,13 +320,13 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
      * Exports the network as adjacency matrix, edge list, and Gephi files.
      */
     private void exportNetworks(String nameAppendix) {
-        NetworkFileWriter elWriter = new NetworkFileWriter(getExportPath(),
+        NetworkCSVFileWriter elWriter = new NetworkCSVFileWriter(getExportPath(),
                 this.dgData.getSimStats().getUid() + "-" + nameAppendix + ".el",
                 new EdgeListWriter(),
                 this.network);
         elWriter.write();
 
-        NetworkFileWriter ageWriter = new NetworkFileWriter(getExportPath(),
+        NetworkCSVFileWriter ageWriter = new NetworkCSVFileWriter(getExportPath(),
                 this.dgData.getSimStats().getUid() + "-" + nameAppendix + ".age",
                 new AgentPropertiesWriter(),
                 this.network);

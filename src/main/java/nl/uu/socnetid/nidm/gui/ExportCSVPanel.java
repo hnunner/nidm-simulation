@@ -33,8 +33,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
-import nl.uu.socnetid.nidm.io.network.NetworkFileWriter;
-import nl.uu.socnetid.nidm.io.network.NetworkWriter;
+import nl.uu.socnetid.nidm.io.network.NetworkCSVFileWriter;
+import nl.uu.socnetid.nidm.io.network.NetworkCSVWriter;
 import nl.uu.socnetid.nidm.networks.Network;
 
 /**
@@ -83,9 +83,9 @@ public abstract class ExportCSVPanel extends DeactivatablePanel {
         if (popdownState == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             String file = selectedFile.getPath();
-            NetworkWriter networkWriter = getNetworkWriter();
+            NetworkCSVWriter networkWriter = getNetworkWriter();
             String filePath = file.replace(selectedFile.getName(), "");
-            NetworkFileWriter fileWriter = new NetworkFileWriter(filePath, file, networkWriter, this.network);
+            NetworkCSVFileWriter fileWriter = new NetworkCSVFileWriter(filePath, file, networkWriter, this.network);
             fileWriter.write();
         }
     }
@@ -95,7 +95,7 @@ public abstract class ExportCSVPanel extends DeactivatablePanel {
      *
      * @return the network writer
      */
-    protected abstract NetworkWriter getNetworkWriter();
+    protected abstract NetworkCSVWriter getNetworkWriter();
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.gui.DeactivatablePanel#enableComponents()

@@ -23,35 +23,54 @@
  *      Nunner, H., Buskens, V., & Kretzschmar, M. (2019). A model for the co-evolution of dynamic
  *      social networks and infectious diseases. Manuscript sumbitted for publication.
  */
-package nl.uu.socnetid.nidm.gui;
+package nl.uu.socnetid.nidm.io.network;
 
-import nl.uu.socnetid.nidm.io.network.EdgeListWriter;
-import nl.uu.socnetid.nidm.io.network.NetworkCSVWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import nl.uu.socnetid.nidm.networks.Network;
 
 /**
  * @author Hendrik Nunner
  */
-public class ExportEdgeListPanel extends ExportCSVPanel {
+public abstract class NetworkFileReader {
 
-    private static final long serialVersionUID = -7700061908878468554L;
+    private final File file;
 
     /**
-     * Create the panel.
+     * Constructor. Basic initialization.
      *
-     * @param network
-     *          the network to write
+     * @param path
+     *          the path of the file to read
+     * @param file
+     *          the name of the file to read
+     * @throws FileNotFoundException
+     *          if file does not exist
      */
-    public ExportEdgeListPanel(Network network) {
-        super(network);
+    public NetworkFileReader(String path, String file) throws FileNotFoundException {
+
+        this.file = new File(path, file);
+
+        if (!Files.exists(Paths.get(this.file.getAbsolutePath()))) {
+            throw new FileNotFoundException("File '" + this.file.getAbsolutePath() + "' does not exist.");
+        }
+
     }
 
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.gui.ExportCSVPanel#getNetworkWriter()
+    /**
+     * Reads the network from the specified file.
+     *
+     * @return the network from the specified file
      */
-    @Override
-    protected NetworkCSVWriter getNetworkWriter() {
-        return new EdgeListWriter();
+    public abstract Network read();
+
+    /**
+     * @return the file
+     */
+    protected File getFile() {
+        return file;
     }
 
 }

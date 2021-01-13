@@ -440,7 +440,7 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
             this.dgData.getSimStats().resetEpidemicStats();
 
             // create network
-            this.network = new Network();
+            this.network = new Network("NB generated");
 
             // begin: GEXF export
             if (PropertiesHandler.getInstance().isExportGexf()) {

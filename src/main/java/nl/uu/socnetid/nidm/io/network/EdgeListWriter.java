@@ -36,7 +36,7 @@ import nl.uu.socnetid.nidm.networks.Network;
 /**
  * @author Hendrik Nunner
  */
-public class EdgeListWriter implements NetworkWriter {
+public class EdgeListWriter implements NetworkCSVWriter {
 
     private static final String SOURCE_COLUMN = "Source";
     private static final String TARGET_COLUMN = "Target";

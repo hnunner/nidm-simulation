@@ -201,7 +201,7 @@ public class CarayolRouxDataGenerator extends AbstractDataGenerator {
     private void performSingleSimulation() {
 
         // create network
-        Network network = new Network();
+        Network network = new Network("CR generated");
 
         // setting parameters
         // CarayolRoux omega

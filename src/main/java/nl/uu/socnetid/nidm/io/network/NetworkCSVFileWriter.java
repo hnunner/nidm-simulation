@@ -23,35 +23,55 @@
  *      Nunner, H., Buskens, V., & Kretzschmar, M. (2019). A model for the co-evolution of dynamic
  *      social networks and infectious diseases. Manuscript sumbitted for publication.
  */
-package nl.uu.socnetid.nidm.gui;
+package nl.uu.socnetid.nidm.io.network;
 
-import nl.uu.socnetid.nidm.io.network.EdgeListWriter;
-import nl.uu.socnetid.nidm.io.network.NetworkCSVWriter;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import nl.uu.socnetid.nidm.networks.Network;
 
 /**
  * @author Hendrik Nunner
  */
-public class ExportEdgeListPanel extends ExportCSVPanel {
+public class NetworkCSVFileWriter extends NetworkFileWriter {
 
-    private static final long serialVersionUID = -7700061908878468554L;
+    private NetworkCSVWriter networkWriter;
 
     /**
-     * Create the panel.
+     * Constructor. Basic initialization.
      *
+     * @param path
+     *          the path of the file to write
+     * @param file
+     *          the name of the file to write to
+     * @param networkWriter
+     *          the network writer used to format the network data
      * @param network
-     *          the network to write
+     *          the network data to be stored
      */
-    public ExportEdgeListPanel(Network network) {
-        super(network);
+    public NetworkCSVFileWriter(String path, String file, NetworkCSVWriter networkWriter, Network network) {
+        super(path, file, network);
+        this.networkWriter = networkWriter;
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.gui.ExportCSVPanel#getNetworkWriter()
+     * @see nl.uu.socnetid.nidm.io.network.NetworkFileWriter#write()
      */
     @Override
-    protected NetworkCSVWriter getNetworkWriter() {
-        return new EdgeListWriter();
+    public void write() {
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(this.getFile()))) {
+            String netString = "";
+            int numAgents = 10;
+            do {
+                netString = this.networkWriter.write(this.getNetwork(), numAgents);
+                bw.write(netString);
+                bw.flush();
+            } while (netString.length() >= numAgents);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

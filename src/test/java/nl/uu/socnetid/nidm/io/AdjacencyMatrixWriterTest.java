@@ -39,7 +39,7 @@ import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
 import nl.uu.socnetid.nidm.io.network.AdjacencyMatrixWriter;
-import nl.uu.socnetid.nidm.io.network.NetworkWriter;
+import nl.uu.socnetid.nidm.io.network.NetworkCSVWriter;
 import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.utility.Cumulative;
 import nl.uu.socnetid.nidm.utility.UtilityFunction;
@@ -103,7 +103,7 @@ public class AdjacencyMatrixWriterTest {
      */
     @Test
     public void testWrite() {
-        NetworkWriter writer = new AdjacencyMatrixWriter();
+        NetworkCSVWriter writer = new AdjacencyMatrixWriter();
         String writerMatrix = writer.write(this.network);
 
         List<String> writerList = new ArrayList<String>(Arrays.asList(writerMatrix.split(",|\\\n")));

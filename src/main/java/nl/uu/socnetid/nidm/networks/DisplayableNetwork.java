@@ -42,6 +42,9 @@ import nl.uu.socnetid.nidm.utility.UtilityFunction;
  */
 public class DisplayableNetwork extends Network {
 
+    // generated serial version uid
+    private static final long serialVersionUID = 554704904883140658L;
+
     private static final int STANDARD_NODE_SIZE = 10;
 
     private static final String GS_CSS = ""
@@ -96,7 +99,7 @@ public class DisplayableNetwork extends Network {
      * Constructor.
      */
     public DisplayableNetwork() {
-        super();
+        super("Displayable network of the infectious kind");
 
         // init graph-stream ui settings
         this.addAttribute("ui.quality");

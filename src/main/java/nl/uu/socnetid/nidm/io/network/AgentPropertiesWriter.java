@@ -36,7 +36,7 @@ import nl.uu.socnetid.nidm.networks.Network;
 /**
  * @author Hendrik Nunner
  */
-public class AgentPropertiesWriter implements NetworkWriter {
+public class AgentPropertiesWriter implements NetworkCSVWriter {
 
     private static final String AGENT_COLUMN = "agent";
     private static final String AGE_COLUMN = "age";

@@ -219,7 +219,7 @@ public class BurgerBuskensDataGenerator extends AbstractDataGenerator {
     private void performSingleSimulation() {
 
         // create network
-        Network network = new Network();
+        Network network = new Network("BB generated");
 
         // setting parameters
         // b1

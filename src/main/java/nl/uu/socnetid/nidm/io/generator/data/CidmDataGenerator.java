@@ -269,7 +269,7 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
     private void performSingleSimulation() {
 
         // create network
-        this.network = new Network();
+        this.network = new Network("CIDM generated");
 
         // setting parameters
         // N
