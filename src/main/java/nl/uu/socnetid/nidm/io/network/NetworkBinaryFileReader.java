@@ -25,21 +25,23 @@
  */
 package nl.uu.socnetid.nidm.io.network;
 
-import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.ObjectInputStream;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import nl.uu.socnetid.nidm.networks.Network;
 
 /**
  * @author Hendrik Nunner
  */
-public abstract class NetworkFileWriter {
+public class NetworkBinaryFileReader extends NetworkFileReader {
 
-    private final File file;
-    private final Network network;
+    // logger
+    private static final Logger logger = LogManager.getLogger(NetworkBinaryFileReader.class);
 
     /**
      * Constructor. Basic initialization.
@@ -48,40 +50,39 @@ public abstract class NetworkFileWriter {
      *          the path of the file to write
      * @param file
      *          the name of the file to write to
-     * @param network
-     *          the network data to be stored
+     * @throws FileNotFoundException
+     *          if file does not exist
      */
-    public NetworkFileWriter(String path, String file, Network network) {
+    public NetworkBinaryFileReader(String path, String file) throws FileNotFoundException {
+        super(path, file);
+    }
 
-        Path p = Paths.get(path);
-        if (!Files.exists(p)) {
-            try {
-                Files.createDirectories(p);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.io.network.NetworkFileReader#read()
+     */
+    @Override
+    public Network read() {
+
+        Network network = null;
+
+        try {
+
+            FileInputStream fis = new FileInputStream(this.getFile());
+            ObjectInputStream ois = new ObjectInputStream(fis);
+
+            network = (Network) ois.readObject();
+
+            ois.close();
+            fis.close();
+
+        } catch (FileNotFoundException e) {
+            logger.error("File not found: " + this.getFile().getAbsolutePath());
+        } catch (IOException e) {
+            logger.error("Error during stream initialization.", e);
+        } catch (ClassNotFoundException e) {
+            logger.error("Class not found: " + Network.class.getName());
         }
 
-        this.file = new File(path, file);
-        this.network = network;
-    }
-
-    /**
-     * Writes the network to the specified file.
-     */
-    public abstract void write();
-
-    /**
-     * @return the file
-     */
-    protected File getFile() {
-        return file;
-    }
-
-    /**
-     * @return the network
-     */
-    protected Network getNetwork() {
         return network;
     }
 

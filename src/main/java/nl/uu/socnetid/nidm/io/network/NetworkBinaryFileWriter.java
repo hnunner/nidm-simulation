@@ -25,37 +25,60 @@
  */
 package nl.uu.socnetid.nidm.io.network;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import nl.uu.socnetid.nidm.networks.Network;
 
 /**
- *
  * @author Hendrik Nunner
  */
-public interface NetworkWriter {
+public class NetworkBinaryFileWriter extends NetworkFileWriter {
 
-    static final String AGENT_PREFIX = "A";
-    static final String VALUE_SEPERATOR = ",";
-    static final String CONNECTION = "1";
-    static final String NO_CONNECTION = "0";
+    // logger
+    private static final Logger logger = LogManager.getLogger(NetworkBinaryFileWriter.class);
 
     /**
-     * Creates a string representation of the network.
+     * Constructor. Basic initialization.
      *
+     * @param path
+     *          the path of the file to write
+     * @param file
+     *          the name of the file to write to
      * @param network
-     *          the network to write
-     * @return a string representation of the network
+     *          the network data to be stored
      */
-    String write(Network network);
+    public NetworkBinaryFileWriter(String path, String file, Network network) {
+        super(path, file, network);
+    }
 
-    /**
-     * Creates a string representation of the network.
-     *
-     * @param network
-     *          the network to write
-     * @param numAgents
-     *          the number of agents to write
-     * @return a string representation of the network
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.io.network.NetworkFileWriter#write()
      */
-    String write(Network network, int numAgents);
+    @Override
+    public void write() {
+
+        try {
+
+            FileOutputStream fos = new FileOutputStream(this.getFile());
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+            oos.writeObject(this.getNetwork());
+
+            oos.close();
+            fos.close();
+
+        } catch (FileNotFoundException e) {
+            logger.error("File not found: " + this.getFile().getAbsolutePath());
+        } catch (IOException e) {
+            logger.error("Error during stream initialization.");
+        }
+
+    }
 
 }

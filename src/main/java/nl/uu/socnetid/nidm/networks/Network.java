@@ -25,6 +25,7 @@
  */
 package nl.uu.socnetid.nidm.networks;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -54,7 +55,10 @@ import nl.uu.socnetid.nidm.utility.UtilityFunction;
 /**
  * @author Hendrik Nunner
  */
-public class Network extends SingleGraph implements SimulationListener {
+public class Network extends SingleGraph implements SimulationListener, Serializable {
+
+    // generated serial version id
+    private static final long serialVersionUID = 2439134555545282114L;
 
     // logger
     private static final Logger logger = LogManager.getLogger(Network.class);
@@ -87,9 +91,6 @@ public class Network extends SingleGraph implements SimulationListener {
     private int timestepsStable = 0;
     private static final int TIMESTEPS_REQUIRED_FOR_STABILITY = 1;
 
-    // assortativity conditions
-    private List<AssortativityConditions> acs;
-
     // reduction of computational power
     int avPathLengthRound = -1;
     double avPathLength;
@@ -117,9 +118,7 @@ public class Network extends SingleGraph implements SimulationListener {
     /**
      * Constructor.
      */
-    public Network() {
-        this("Network of the Infectious Kind", false, STANDARD_ACS);
-    }
+    public Network() {super(null);}
 
     /**
      * Constructor.

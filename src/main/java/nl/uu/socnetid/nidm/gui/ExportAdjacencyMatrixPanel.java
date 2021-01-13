@@ -26,7 +26,7 @@
 package nl.uu.socnetid.nidm.gui;
 
 import nl.uu.socnetid.nidm.io.network.AdjacencyMatrixWriter;
-import nl.uu.socnetid.nidm.io.network.NetworkWriter;
+import nl.uu.socnetid.nidm.io.network.NetworkCSVWriter;
 import nl.uu.socnetid.nidm.networks.Network;
 
 /**
@@ -50,7 +50,7 @@ public class ExportAdjacencyMatrixPanel extends ExportCSVPanel {
      * @see nl.uu.socnetid.nidm.gui.ExportCSVPanel#getNetworkWriter()
      */
     @Override
-    protected NetworkWriter getNetworkWriter() {
+    protected NetworkCSVWriter getNetworkWriter() {
         return new AdjacencyMatrixWriter();
     }
 

@@ -45,7 +45,7 @@ import nl.uu.socnetid.nidm.io.generator.AbstractGenerator;
 import nl.uu.socnetid.nidm.io.network.AgentPropertiesWriter;
 import nl.uu.socnetid.nidm.io.network.EdgeListWriter;
 import nl.uu.socnetid.nidm.io.network.GEXFWriter;
-import nl.uu.socnetid.nidm.io.network.NetworkFileWriter;
+import nl.uu.socnetid.nidm.io.network.NetworkCSVFileWriter;
 import nl.uu.socnetid.nidm.networks.AssortativityConditions;
 import nl.uu.socnetid.nidm.networks.DegreeDistributionConditions;
 import nl.uu.socnetid.nidm.networks.LockdownConditions;
@@ -279,13 +279,13 @@ public class NunnerBuskensNetworkGeneratorProfessions extends AbstractGenerator 
             fileName += "-" + nameAppendix;
         }
 
-        NetworkFileWriter elWriter = new NetworkFileWriter(getExportPath(),
+        NetworkCSVFileWriter elWriter = new NetworkCSVFileWriter(getExportPath(),
                 fileName + ".el",
                 new EdgeListWriter(),
                 this.network);
         elWriter.write();
 
-        NetworkFileWriter profWriter = new NetworkFileWriter(getExportPath(),
+        NetworkCSVFileWriter profWriter = new NetworkCSVFileWriter(getExportPath(),
                 fileName + ".prof",
                 new AgentPropertiesWriter(),
                 this.network);

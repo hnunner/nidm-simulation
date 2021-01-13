@@ -23,35 +23,39 @@
  *      Nunner, H., Buskens, V., & Kretzschmar, M. (2019). A model for the co-evolution of dynamic
  *      social networks and infectious diseases. Manuscript sumbitted for publication.
  */
-package nl.uu.socnetid.nidm.gui;
+package nl.uu.socnetid.nidm.io.network;
 
-import nl.uu.socnetid.nidm.io.network.EdgeListWriter;
-import nl.uu.socnetid.nidm.io.network.NetworkCSVWriter;
 import nl.uu.socnetid.nidm.networks.Network;
 
 /**
+ *
  * @author Hendrik Nunner
  */
-public class ExportEdgeListPanel extends ExportCSVPanel {
+public interface NetworkCSVWriter {
 
-    private static final long serialVersionUID = -7700061908878468554L;
+    static final String AGENT_PREFIX = "A";
+    static final String VALUE_SEPERATOR = ",";
+    static final String CONNECTION = "1";
+    static final String NO_CONNECTION = "0";
 
     /**
-     * Create the panel.
+     * Creates a string representation of the network.
      *
      * @param network
      *          the network to write
+     * @return a string representation of the network
      */
-    public ExportEdgeListPanel(Network network) {
-        super(network);
-    }
+    String write(Network network);
 
-    /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.gui.ExportCSVPanel#getNetworkWriter()
+    /**
+     * Creates a string representation of the network.
+     *
+     * @param network
+     *          the network to write
+     * @param numAgents
+     *          the number of agents to write
+     * @return a string representation of the network
      */
-    @Override
-    protected NetworkCSVWriter getNetworkWriter() {
-        return new EdgeListWriter();
-    }
+    String write(Network network, int numAgents);
 
 }

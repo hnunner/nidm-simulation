@@ -42,7 +42,7 @@ import nl.uu.socnetid.nidm.io.csv.NunnerBuskensNetworkSummaryWriter;
 import nl.uu.socnetid.nidm.io.generator.AbstractGenerator;
 import nl.uu.socnetid.nidm.io.network.EdgeListWriter;
 import nl.uu.socnetid.nidm.io.network.GEXFWriter;
-import nl.uu.socnetid.nidm.io.network.NetworkFileWriter;
+import nl.uu.socnetid.nidm.io.network.NetworkCSVFileWriter;
 import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.simulation.Simulation;
 import nl.uu.socnetid.nidm.simulation.SimulationListener;
@@ -231,7 +231,7 @@ public class NunnerBuskensNetworkGenerator extends AbstractGenerator implements 
     private void performSingleSimulation() {
 
         // create network
-        this.network = new Network();
+        this.network = new Network("NB generated");
 
         // setting parameters
         // b1
@@ -344,7 +344,7 @@ public class NunnerBuskensNetworkGenerator extends AbstractGenerator implements 
      * Exports the network as adjacency matrix, edge list, and Gephi files.
      */
     private void exportNetworks(String nameAppendix) {
-        NetworkFileWriter elWriter = new NetworkFileWriter(getExportPath(),
+        NetworkCSVFileWriter elWriter = new NetworkCSVFileWriter(getExportPath(),
                 this.dgData.getSimStats().getUid() + "-" + nameAppendix + ".el",
                 new EdgeListWriter(),
                 this.network);

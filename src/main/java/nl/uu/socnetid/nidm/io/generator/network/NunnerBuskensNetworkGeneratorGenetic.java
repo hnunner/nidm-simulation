@@ -52,7 +52,7 @@ import nl.uu.socnetid.nidm.io.generator.AbstractGenerator;
 import nl.uu.socnetid.nidm.io.network.AgentPropertiesWriter;
 import nl.uu.socnetid.nidm.io.network.EdgeListWriter;
 import nl.uu.socnetid.nidm.io.network.GEXFWriter;
-import nl.uu.socnetid.nidm.io.network.NetworkFileWriter;
+import nl.uu.socnetid.nidm.io.network.NetworkCSVFileWriter;
 import nl.uu.socnetid.nidm.networks.AssortativityConditions;
 import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.simulation.Simulation;
@@ -409,13 +409,13 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
             fileName += "-" + nameAppendix;
         }
 
-        NetworkFileWriter elWriter = new NetworkFileWriter(getExportPath(),
+        NetworkCSVFileWriter elWriter = new NetworkCSVFileWriter(getExportPath(),
                 fileName + ".el",
                 new EdgeListWriter(),
                 this.network);
         elWriter.write();
 
-        NetworkFileWriter ageWriter = new NetworkFileWriter(getExportPath(),
+        NetworkCSVFileWriter ageWriter = new NetworkCSVFileWriter(getExportPath(),
                 fileName + ".age",
                 new AgentPropertiesWriter(),
                 this.network);

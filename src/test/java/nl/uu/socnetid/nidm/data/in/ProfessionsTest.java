@@ -94,7 +94,7 @@ public class ProfessionsTest {
                 this.degreesPreGlobal.put(profession, Double.valueOf(attributes[2]));
 
                 // profession degree during lockdown
-                this.degreesDuringGlobal.put(profession, Double.valueOf(attributes[3]));
+                this.degreesDuringGlobal.put(profession, Double.valueOf(attributes[4]));
 
                 line = br.readLine();
             }

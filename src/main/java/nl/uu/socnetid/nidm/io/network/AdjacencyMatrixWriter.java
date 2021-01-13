@@ -37,7 +37,7 @@ import nl.uu.socnetid.nidm.networks.Network;
 /**
  * @author Hendrik Nunner
  */
-public class AdjacencyMatrixWriter implements NetworkWriter {
+public class AdjacencyMatrixWriter implements NetworkCSVWriter {
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.networks.NetworkWriter#write()
