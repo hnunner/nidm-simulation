@@ -56,4 +56,19 @@ public enum LockdownConditions {
         return name;
     }
 
+    /**
+     * Creates the lockdown condition from a given string.
+     * @param text
+     *          the string to create the lockdown condition for
+     * @return the lockdown condition
+     */
+    public static LockdownConditions fromString(String text) {
+        for (LockdownConditions l : LockdownConditions.values()) {
+            if (l.name.equalsIgnoreCase(text)) {
+                return l;
+            }
+        }
+        throw new IllegalArgumentException("No constant with text " + text + " found.");
+    }
+
 }
