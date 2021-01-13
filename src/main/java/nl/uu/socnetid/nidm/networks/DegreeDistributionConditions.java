@@ -55,4 +55,19 @@ public enum DegreeDistributionConditions {
         return name;
     }
 
+    /**
+     * Creates the degree distribution condition from a given string.
+     * @param text
+     *          the string to create the degree distribution condition for
+     * @return the degree distribution condition
+     */
+    public static DegreeDistributionConditions fromString(String text) {
+        for (DegreeDistributionConditions d : DegreeDistributionConditions.values()) {
+            if (d.name.equalsIgnoreCase(text)) {
+                return d;
+            }
+        }
+        throw new IllegalArgumentException("No constant with text " + text + " found.");
+    }
+
 }
