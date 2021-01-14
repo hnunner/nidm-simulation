@@ -48,4 +48,41 @@ public interface NetworkListener {
      */
     void notifyAgentRemoved(final String agentId);
 
+    /**
+     * Entry point for network attributes being added notifications.
+     *
+     * @param network
+     *          the network
+     * @param attribute
+     *          the attribute
+     * @param value
+     *          the attribute's value
+     */
+    void notifyAttributeAdded(final Network network, final String attribute, final Object value);
+
+    /**
+     * Entry point for network attributes being changed notifications.
+     *
+     * @param network
+     *          the network
+     * @param attribute
+     *          the attribute
+     * @param oldValue
+     *          the attribute's old value
+     * @param newValue
+     *          the attribute's new value
+     */
+    void notifyAttributeChanged(final Network network, final String attribute, final Object oldValue,
+            final Object newValue);
+
+    /**
+     * Entry point for network attributes being removed notifications.
+     *
+     * @param network
+     *          the network
+     * @param attribute
+     *          the attribute
+     */
+    void notifyAttributeRemoved(final Network network, final String attribute);
+
 }
