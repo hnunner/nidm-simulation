@@ -74,8 +74,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     private Lock lock;
 
     // listeners
-    private final Set<AgentListener> agentListeners =
-            new CopyOnWriteArraySet<AgentListener>();
+    private final Set<AgentListener> agentListeners = new CopyOnWriteArraySet<AgentListener>();
 
 
     /**

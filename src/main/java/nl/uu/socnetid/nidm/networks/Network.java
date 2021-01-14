@@ -61,57 +61,20 @@ public class Network extends SingleGraph implements SimulationListener {
 
     // risk factor for risk neutral agents
     private static final double RISK_FACTOR_NEUTRAL = 1.0;
-
     // standard share to evaluate per agent
     private static final double STANDARD_PHI = 0.4;
-
     // standard proportion of direct ties to evaluate per agent
     private static final double STANDARD_PSI = 0.25;
-
     // standard proportion of direct ties to evaluate per agent
     private static final double STANDARD_XI = 0.25;
-
     // standard share to select assortatively
     private static final double STANDARD_OMEGA = 0.0;
-
     // standard shuffling of assortatively selected co-agents
     private static final List<AssortativityConditions> STANDARD_ACS = Arrays.asList(AssortativityConditions.RISK_PERCEPTION);
-
+    // stability
+    private static final int TIMESTEPS_REQUIRED_FOR_STABILITY = 1;
     // listener
     private final Set<NetworkListener> networkListeners = new CopyOnWriteArraySet<NetworkListener>();
-
-    // flag for arranging agents in circle
-    protected boolean arrangeInCircle;
-
-    // stability
-    private int timestepsStable = 0;
-    private static final int TIMESTEPS_REQUIRED_FOR_STABILITY = 1;
-
-    // assortativity conditions
-    private List<AssortativityConditions> acs;
-
-    // reduction of computational power
-    int avPathLengthRound = -1;
-    double avPathLength;
-
-    // TODO create assortativity interface, use list filled with instanciations of subclasses here
-    int assortativityRound = -1;
-    double assortativityRiskPerception;
-    double assortativityAge;
-    double assortativityProfession;
-
-    int avClusteringRound = -1;
-    double avClustering;
-    int avDegreeRound = -1;
-    double avDegree;
-    int avBetweennessRound = -1;
-    double avBetweenness;
-    int avClosenessRound = -1;
-    double avCloseness;
-
-    private Double maxRPi = null;
-    private Double maxRSigma = null;
-    private Integer maxAge = null;
 
 
     /**
@@ -167,8 +130,33 @@ public class Network extends SingleGraph implements SimulationListener {
      */
     public Network(String id, boolean arrangeInCircle, List<AssortativityConditions> acs) {
         super(id);
-        this.arrangeInCircle = arrangeInCircle;
-        this.acs = acs;
+
+        this.addAttribute(NetworkAttributes.ARRANGE_IN_CIRCLE, arrangeInCircle, false);
+
+        this.addAttribute(NetworkAttributes.TIMESTEPS_STABLE, -1, false);
+
+        this.addAttribute(NetworkAttributes.AV_PATH_LENGTH_ROUND_LAST_COMPUTATION, -1, false);
+        this.addAttribute(NetworkAttributes.AV_PATH_LENGTH, -1.0, false);
+        this.addAttribute(NetworkAttributes.AV_CLUSTERING_ROUND_LAST_COMPUTATION, -1, false);
+        this.addAttribute(NetworkAttributes.AV_CLUSTERING, -1.0, false);
+        this.addAttribute(NetworkAttributes.AV_DEGREE_ROUND_LAST_COMPUTATION, -1, false);
+        this.addAttribute(NetworkAttributes.AV_DEGREE, -1.0, false);
+        this.addAttribute(NetworkAttributes.AV_BETWEENNESS_ROUND_LAST_COMPUTATION, -1, false);
+        this.addAttribute(NetworkAttributes.AV_BETWEENNESS, -1.0, false);
+        this.addAttribute(NetworkAttributes.AV_CLOSENESS_ROUND_LAST_COMPUTATION, -1, false);
+        this.addAttribute(NetworkAttributes.AV_CLOSENESS, -1.0, false);
+
+        this.addAttribute(NetworkAttributes.MAX_R_PI, -1.0);
+        this.addAttribute(NetworkAttributes.MAX_R_SIGMA, -1.0, false);
+        this.addAttribute(NetworkAttributes.MAX_AGE, -1, false);
+
+        // TODO create assortativity interface, use list filled with instanciations of subclasses here
+        this.addAttribute(NetworkAttributes.ASSORTATIVITY_CONDITIONS, STANDARD_ACS, false);
+        this.addAttribute(NetworkAttributes.ASSORTATIVITY_ROUND_LAST_COMPUTATION, -1, false);
+        this.addAttribute(NetworkAttributes.ASSORTATIVITY_RISK_PERCEPTION, 0.0, false);
+        this.addAttribute(NetworkAttributes.ASSORTATIVITY_AGE, 0.0, false);
+        this.addAttribute(NetworkAttributes.ASSORTATIVITY_PROFESSION, 0.0, false);
+
         this.setNodeFactory(new AgentFactory());
     }
 
@@ -254,7 +242,7 @@ public class Network extends SingleGraph implements SimulationListener {
         notifyAgentAdded(agent);
 
         // re-position agents if auto-layout is disabled
-        if (this.arrangeInCircle) {
+        if (this.isArrangeInCircle()) {
             arrangeAgentsInCircle();
         }
 
@@ -418,6 +406,423 @@ public class Network extends SingleGraph implements SimulationListener {
         return this.getNodeSet();
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * Gets the value of an attribute.
+     *
+     * TODO create super class for agent and network that allows joined attribute handling
+     *
+     * @param attribute
+     *          the attribute to get
+     * @return the value of the attribute
+     */
+    private Object getAttribute(NetworkAttributes attribute) {
+        return super.getAttribute(attribute.toString());
+    }
+
+    /**
+     * Adds an attribute and notifies the listeners of the added attribute by default.
+     *
+     * @param attribute
+     *          the attribute
+     * @param value
+     *          the value
+     */
+    private void addAttribute(NetworkAttributes attribute, Object value) {
+        this.addAttribute(attribute, value, true);
+    }
+
+    /**
+     * Adds an attribute.
+     *
+     * @param attribute
+     *          the attribute
+     * @param value
+     *          the value
+     * @param notify
+     *          flag whether network listeners ought to be notified of the added attribute
+     */
+    private void addAttribute(NetworkAttributes attribute, Object value, boolean notify) {
+        super.addAttribute(attribute.toString(), value);
+        if (notify) {
+            notifyAttributeAdded(attribute, value);
+        }
+    }
+
+    /**
+     * Changes an attribute and notifies the listeners of the changed attribute by default.
+     *
+     * @param attribute
+     *          the attribute
+     * @param oldValue
+     *          the old value
+     * @param newValue
+     *          the new value
+     */
+    private void changeAttribute(NetworkAttributes attribute, Object oldValue, Object newValue) {
+        this.changeAttribute(attribute, oldValue, newValue, true);
+    }
+
+    /**
+     * Changes an attribute.
+     *
+     * @param attribute
+     *          the attribute
+     * @param oldValue
+     *          the old value
+     * @param newValue
+     *          the new value
+     * @param notify
+     *          flag whether network listeners ought to be notified of the changed attribute
+     */
+    private void changeAttribute(NetworkAttributes attribute, Object oldValue, Object newValue, boolean notify) {
+        super.changeAttribute(attribute.toString(), newValue);
+        if (notify) {
+            notifyAttributeChanged(attribute, oldValue, newValue);
+        }
+    }
+
+    /**
+     * Removes an attribute and notifies the listeners of the removed attribute by default.
+     *
+     * @param attribute
+     *          the attribute
+     */
+    private void removeAttribute(NetworkAttributes attribute) {
+        this.removeAttribute(attribute, true);
+    }
+
+    /**
+     * Adds an attribute.
+     *
+     * @param attribute
+     *          the attribute
+     * @param value
+     *          the value
+     * @param notify
+     *          flag whether network listeners ought to be notified of the added attribute
+     */
+    private void removeAttribute(NetworkAttributes attribute, boolean notify) {
+        super.removeAttribute(attribute.toString());
+        if (notify) {
+            notifyAttributeRemoved(attribute);
+        }
+    }
+
+    /**
+     * Notifies listeners of added attributes.
+     *
+     * @param attribute
+     *          the attribute
+     * @param value
+     *          the attribute's value
+     */
+    private final void notifyAttributeAdded(NetworkAttributes attribute, Object value) {
+        Iterator<NetworkListener> listenersIt = this.networkListeners.iterator();
+        while (listenersIt.hasNext()) {
+            listenersIt.next().notifyAttributeAdded(this, attribute.toString(), value);
+        }
+    }
+
+    /**
+     * Notifies listeners of changed attributes.
+     *
+     * @param attribute
+     *          the attribute
+     * @param oldValue
+     *          the attribute's old value
+     * @param newValue
+     *          the attribute's new value
+     */
+    private final void notifyAttributeChanged(NetworkAttributes attribute, Object oldValue, Object newValue) {
+        Iterator<NetworkListener> listenersIt = this.networkListeners.iterator();
+        while (listenersIt.hasNext()) {
+            listenersIt.next().notifyAttributeChanged(this, attribute.toString(), oldValue, newValue);
+        }
+    }
+
+    /**
+     * Notifies listeners of removed attributes.
+     *
+     * @param attribute
+     *          the attribute
+     */
+    private final void notifyAttributeRemoved(NetworkAttributes attribute) {
+        Iterator<NetworkListener> listenersIt = this.networkListeners.iterator();
+        while (listenersIt.hasNext()) {
+            listenersIt.next().notifyAttributeRemoved(this, attribute.toString());
+        }
+    }
+
+    /**
+     * Gets whether the network is arranged in circle.
+     *
+     * @return true if the network is arranged in circle, false otherwise
+     */
+    public boolean isArrangeInCircle() {
+        return (boolean) this.getAttribute(NetworkAttributes.ARRANGE_IN_CIRCLE);
+    }
+
+    /**
+     * Gets the number of time steps the network is stable.
+     *
+     * @return the number of time steps the network is stable
+     */
+    public int getTimestepsStable() {
+        return (int) this.getAttribute(NetworkAttributes.TIMESTEPS_STABLE);
+    }
+
+    /**
+     * Gets the round number average path length has been computed last.
+     *
+     * @return the round number average path length has been computed last
+     */
+    public int getAvPathLengthRoundLastComputation() {
+        return (int) this.getAttribute(NetworkAttributes.AV_PATH_LENGTH_ROUND_LAST_COMPUTATION);
+    }
+
+    /**
+     * Gets the average path length.
+     *
+     * @return the average path length
+     */
+    public double getAvPathLength() {
+        return (double) this.getAttribute(NetworkAttributes.AV_PATH_LENGTH);
+    }
+
+    /**
+     * Gets the round number average clustering has been computed last.
+     *
+     * @return the round number average clustering has been computed last
+     */
+    public int getAvClusteringRoundLastComputation() {
+        return (int) this.getAttribute(NetworkAttributes.AV_CLUSTERING_ROUND_LAST_COMPUTATION);
+    }
+
+    /**
+     * Gets the average clustering.
+     *
+     * @return the average clustering
+     */
+    public double getAvClustering() {
+        return (double) this.getAttribute(NetworkAttributes.AV_CLUSTERING);
+    }
+
+    /**
+     * Gets the round number average degree has been computed last.
+     *
+     * @return the round number average degree has been computed last
+     */
+    public int getAvDegreeRoundLastComputation() {
+        return (int) this.getAttribute(NetworkAttributes.AV_DEGREE_ROUND_LAST_COMPUTATION);
+    }
+
+    /**
+     * Gets the average degree.
+     *
+     * @return the average degree
+     */
+    public double getAvDegree() {
+        return (double) this.getAttribute(NetworkAttributes.AV_DEGREE);
+    }
+
+    /**
+     * Gets the round number average betweenness has been computed last.
+     *
+     * @return the round number average betweenness has been computed last
+     */
+    public int getAvBetweennessRoundLastComputation() {
+        return (int) this.getAttribute(NetworkAttributes.AV_BETWEENNESS_ROUND_LAST_COMPUTATION);
+    }
+
+    /**
+     * Gets the average betweenness.
+     *
+     * @return the average betweenness
+     */
+    public double getAvBetweenness() {
+        return (double) this.getAttribute(NetworkAttributes.AV_BETWEENNESS);
+    }
+
+    /**
+     * Gets the round number average closeness has been computed last.
+     *
+     * @return the round number average closeness has been computed last
+     */
+    public int getAvClosenessRoundLastComputation() {
+        return (int) this.getAttribute(NetworkAttributes.AV_CLOSENESS_ROUND_LAST_COMPUTATION);
+    }
+
+    /**
+     * Gets the average closeness.
+     *
+     * @return the average closeness
+     */
+    public double getAvCloseness() {
+        return (double) this.getAttribute(NetworkAttributes.AV_CLOSENESS);
+    }
+
+    /**
+     * Gets the maximum risk perception for probability of infections of all agents in the network.
+     *
+     * @return the maximum risk perception for probability of infections of all agents in the network
+     */
+    public double getMaxRPi() {
+        return (double) this.getAttribute(NetworkAttributes.MAX_R_PI);
+    }
+
+    /**
+     * Sets the maximum risk perception for probability of infections of all agents in the network.
+     */
+    private void setMaxRPi() {
+        double oldMaxRPi = this.getMaxRPi();
+        double newMaxRPi = 0;
+        Iterator<Agent> agentIt = this.getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent a = agentIt.next();
+            if (a.getRPi() > newMaxRPi) {
+                newMaxRPi = a.getRPi();
+            }
+        }
+        this.changeAttribute(NetworkAttributes.MAX_R_PI, oldMaxRPi, newMaxRPi);
+    }
+
+    /**
+     * Gets the maximum risk perception for disease severity of all agents in the network.
+     *
+     * @return the maximum risk perception for disease severity of all agents in the network
+     */
+    public double getMaxRSigma() {
+        return (double) this.getAttribute(NetworkAttributes.MAX_R_SIGMA);
+    }
+
+    /**
+     * Sets the maximum risk perception for disease severity for all agents in the network.
+     */
+    private void setMaxRSigma() {
+        double oldMaxRSigma = this.getMaxRSigma();
+        double newMaxRSigma = 0;
+        Iterator<Agent> agentIt = this.getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent a = agentIt.next();
+            if (a.getAge() > newMaxRSigma) {
+                newMaxRSigma = a.getRSigma();
+            }
+        }
+        this.changeAttribute(NetworkAttributes.MAX_R_SIGMA, oldMaxRSigma, newMaxRSigma);
+    }
+
+    /**
+     * Gets the maximum age of all agents in the network.
+     *
+     * @return the maximum age of all agents in the network
+     */
+    public int getMaxAge() {
+        return (int) this.getAttribute(NetworkAttributes.MAX_AGE);
+    }
+
+    /**
+     * Sets the maximum age of all agents in the network.
+     */
+    private void setMaxAge() {
+        int oldMaxAge = this.getMaxAge();
+        int newMaxAge = 0;
+        Iterator<Agent> agentIt = this.getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent a = agentIt.next();
+            if (a.getAge() > newMaxAge) {
+                newMaxAge = a.getAge();
+            }
+        }
+        this.changeAttribute(NetworkAttributes.MAX_AGE, oldMaxAge, newMaxAge);
+    }
+
+    /**
+     * Gets the assortativity conditions of the network.
+     *
+     * @return the assortativity conditions of the network
+     */
+    @SuppressWarnings("unchecked")
+    public List<AssortativityConditions> getAssortativityConditions() {
+        return (List<AssortativityConditions>) this.getAttribute(NetworkAttributes.ASSORTATIVITY_CONDITIONS);
+    }
+
+    /**
+     * Gets the round when assortativity has been computed last.
+     *
+     * @return the round when assortativity has been computed last
+     */
+    public int getAssortativityRound() {
+        return (int) this.getAttribute(NetworkAttributes.ASSORTATIVITY_ROUND_LAST_COMPUTATION);
+    }
+
+    /**
+     * Gets the assortativity for risk perception.
+     *
+     * @return the assorativity for risk perception
+     */
+    public double getAssortativityRiskPerception() {
+        return (double) this.getAttribute(NetworkAttributes.ASSORTATIVITY_RISK_PERCEPTION);
+    }
+
+    /**
+     * Gets the assortativity for age.
+     *
+     * @return the assorativity for age
+     */
+    public double getAssortativityAge() {
+        return (double) this.getAttribute(NetworkAttributes.ASSORTATIVITY_AGE);
+    }
+
+    /**
+     * Gets the assortativity for profession.
+     *
+     * @return the assorativity for profession
+     */
+    public double getAssortativityProfession() {
+        return (double) this.getAttribute(NetworkAttributes.ASSORTATIVITY_PROFESSION);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * Gets the number of agents in the network.
      *
@@ -432,6 +837,8 @@ public class Network extends SingleGraph implements SimulationListener {
      * dependent on the network size.
      *
      * @return the average degree dependent on network size
+     *
+     * XXX ??? WTF ???
      */
     public double getAverageDegree() {
         return 0.8628 * Math.pow(this.getN(), 0.6246);
@@ -532,77 +939,6 @@ public class Network extends SingleGraph implements SimulationListener {
         return unsatisfied;
     }
 
-    private void setMaxAge() {
-        int tmpMaxAge = 0;
-        Iterator<Agent> agentIt = this.getAgentIterator();
-        while (agentIt.hasNext()) {
-            Agent a = agentIt.next();
-            if (a.getAge() > tmpMaxAge) {
-                tmpMaxAge = a.getAge();
-            }
-        }
-        this.maxAge = tmpMaxAge;
-    }
-
-    /**
-     * Gets the age of the oldest agent.
-     *
-     * @return the age of the oldest agent
-     */
-    public int getMaxAge() {
-        if (this.maxAge == null) {
-            setMaxAge();
-        }
-        return this.maxAge;
-    }
-
-    private void setMaxRPi() {
-        double tmpMaxRPi = 0;
-        Iterator<Agent> agentIt = this.getAgentIterator();
-        while (agentIt.hasNext()) {
-            Agent a = agentIt.next();
-            if (a.getRPi() > tmpMaxRPi) {
-                tmpMaxRPi = a.getRPi();
-            }
-        }
-        this.maxRPi = tmpMaxRPi;
-    }
-
-    /**
-     * Gets the highest risk perception for probability of infections among all agents.
-     *
-     * @return the highest risk perception for probability of infections among all agents
-     */
-    public double getMaxRPi() {
-        if (this.maxRPi == null) {
-            setMaxRPi();
-        }
-        return this.maxRPi;
-    }
-
-    private void setMaxRSigma() {
-        double tmpMaxRSigma = 0;
-        Iterator<Agent> agentIt = this.getAgentIterator();
-        while (agentIt.hasNext()) {
-            Agent a = agentIt.next();
-            if (a.getAge() > tmpMaxRSigma) {
-                tmpMaxRSigma = a.getRSigma();
-            }
-        }
-        this.maxRSigma = tmpMaxRSigma;
-    }
-
-    /**
-     * Gets the highest risk perception for severity of infections among all agents.
-     *
-     * @return the highest risk perception for severity of infections among all agents
-     */
-    public double getMaxRSigma() {
-        if (this.maxRSigma == null) {
-            setMaxRSigma();
-        }
-        return this.maxRSigma;
-    }
 
     /**
      * Gets an iterator over all agents in an undefined order.
@@ -1272,7 +1608,6 @@ public class Network extends SingleGraph implements SimulationListener {
         }
         return (avCostsDisease / this.getAgents().size());
     }
-
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.simulation.SimulationListener#notifySimulationStarted(
