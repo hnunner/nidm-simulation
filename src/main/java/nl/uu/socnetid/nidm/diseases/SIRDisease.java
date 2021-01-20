@@ -25,6 +25,8 @@
  */
 package nl.uu.socnetid.nidm.diseases;
 
+import java.util.Arrays;
+
 import nl.uu.socnetid.nidm.diseases.types.DiseaseState;
 
 /**
@@ -109,5 +111,41 @@ public class SIRDisease implements Disease {
         sb.append(" | state:").append(this.diseaseState.toString());
 
         return sb.toString();
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (obj == this) {
+            return true;
+        }
+
+        if (!(obj instanceof SIRDisease)) {
+            return false;
+        }
+
+        SIRDisease d = (SIRDisease) obj;
+        return this.diseaseSpecs.equals(d.getDiseaseSpecs()) &&
+                this.getTimeUntilCured() == d.getTimeUntilCured() &&
+                this.isInfectious() == d.isInfectious() &&
+                this.isCured() == d.isCured();
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(new Object[] {
+                this.currDuration,
+                this.diseaseSpecs,
+                this.diseaseState
+         });
     }
 }

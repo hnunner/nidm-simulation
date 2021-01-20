@@ -25,6 +25,8 @@
  */
 package nl.uu.socnetid.nidm.utility;
 
+import java.util.Objects;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,18 +38,24 @@ import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
  */
 public class Cidm extends UtilityFunction {
 
+    private static final String ALPHA = "alpha:";
+    private static final String KAPPA = "kappa:";
+    private static final String BETA = "beta:";
+    private static final String LAMDA = "lamda:";
+    private static final String C = "c:";
+
     private static final Logger logger = LogManager.getLogger(BurgerBuskens.class);
 
     // utility of direct connections
-    private final double alpha;
+    private double alpha;
     // discount for infected direct connections
-    private final double kappa;
+    private double kappa;
     // utility of indirect connections
-    private final double beta;
+    private double beta;
     // discount for infected indirect connections
-    private final double lamda;
+    private double lamda;
     // costs to maintain direct connections
-    private final double c;
+    private double c;
 
     /**
      * Constructor.
@@ -71,13 +79,52 @@ public class Cidm extends UtilityFunction {
         this.c = c;
     }
 
+    /**
+     * Constructor from a string array containing he utility function's details.
+     *
+     * @param ufSplit
+     *          the string array containing he utility function's details
+     */
+    protected Cidm(String[] ufSplit) {
+
+        for (String value : ufSplit) {
+
+            if (value.contains(UF_TYPE)) {
+                continue;
+
+            } else if (value.contains(ALPHA)) {
+                value = value.replace(ALPHA, "");
+                this.alpha = Double.valueOf(value);
+
+            } else if (value.contains(KAPPA)) {
+                value = value.replace(KAPPA, "");
+                this.kappa = Double.valueOf(value);
+
+            } else if (value.contains(BETA)) {
+                value = value.replace(BETA, "");
+                this.beta = Double.valueOf(value);
+
+            } else if (value.contains(LAMDA)) {
+                value = value.replace(LAMDA, "");
+                this.lamda = Double.valueOf(value);
+
+            } else if (value.contains(C)) {
+                value = value.replace(C, "");
+                this.c = Double.valueOf(value);
+
+            } else {
+                throw new IllegalAccessError("Unknown value: " + value);
+            }
+        }
+    }
+
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getStatsName()
      */
     @Override
     public String getStatsName() {
-        return "Cidm";
+        return TYPE_CIDM;
     }
 
     /* (non-Javadoc)
@@ -112,17 +159,16 @@ public class Cidm extends UtilityFunction {
     }
 
     /* (non-Javadoc)
-     * @see java.lang.Object#toString()
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getUtilityFunctionDetails()
      */
     @Override
-    public String toString() {
+    protected String getUtilityFunctionDetails() {
         StringBuilder sb = new StringBuilder();
-        sb.append("type:").append(getStatsName());
-        sb.append(" | alpha:").append(this.getAlpha());
-        sb.append(" | kappa:").append(this.getKappa());
-        sb.append(" | beta:").append(this.getBeta());
-        sb.append(" | lamda:").append(this.getLamda());
-        sb.append(" | c:").append(this.getC());
+        sb.append(ALPHA).append(this.getAlpha()).append(STRING_DELIMITER);
+        sb.append(KAPPA).append(this.getKappa()).append(STRING_DELIMITER);
+        sb.append(BETA).append(this.getBeta()).append(STRING_DELIMITER);
+        sb.append(LAMDA).append(this.getLamda()).append(STRING_DELIMITER);
+        sb.append(C).append(this.getC()).append(STRING_DELIMITER);
         return sb.toString();
     }
 
@@ -159,6 +205,47 @@ public class Cidm extends UtilityFunction {
      */
     public double getC() {
         return c;
+    }
+
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals()
+     */
+    @Override
+    public boolean equals(Object o) {
+
+        // not null
+        if (o == null) {
+            return false;
+        }
+
+        // same object
+        if (o == this) {
+            return true;
+        }
+
+        // same type
+        if (!(o instanceof Cidm)) {
+            return false;
+        }
+
+        Cidm c = (Cidm) o;
+
+        // same values
+        return this.alpha == c.alpha &&
+                this.kappa == c.kappa &&
+                this.beta == c.beta &&
+                this.lamda == c.lamda &&
+                this.c == c.c;
+
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.alpha, this.kappa, this.beta, this.lamda, this.c);
     }
 
 }
