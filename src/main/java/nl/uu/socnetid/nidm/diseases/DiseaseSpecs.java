@@ -35,6 +35,13 @@ import scala.collection.mutable.StringBuilder;
  */
 public class DiseaseSpecs {
 
+    private static final String DISEASE_TYPE_STRING = "disease type:";
+    private static final String MU_STRING = "mu:";
+    private static final String GAMMA_STRING = "gamma:";
+    private static final String SIGMA_STRING = "sigma:";
+    private static final String TAU_STRING = "tau:";
+    private static final String STRING_DELIMITER = "; ";
+
     private final DiseaseType diseaseType;
     private final int tau;
     private final double sigma;
@@ -107,7 +114,6 @@ public class DiseaseSpecs {
         return this.diseaseType.toString();
     }
 
-
     /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
      */
@@ -116,29 +122,21 @@ public class DiseaseSpecs {
         if (obj == null) {
             return false;
         }
+
         if (obj == this) {
             return true;
         }
+
         if (!(obj instanceof DiseaseSpecs)) {
             return false;
         }
+
         DiseaseSpecs specs2 = (DiseaseSpecs) obj;
-        if (specs2.getDiseaseType() != this.diseaseType) {
-            return false;
-        }
-        if (specs2.getTau() != this.tau) {
-            return false;
-        }
-        if (specs2.getSigma() != this.sigma) {
-            return false;
-        }
-        if (specs2.getGamma() != this.gamma) {
-            return false;
-        }
-        if (specs2.getMu() != this.mu) {
-            return false;
-        }
-        return true;
+        return diseaseType.equals(specs2.getDiseaseType()) &&
+                this.tau == specs2.getTau() &&
+                this.sigma == specs2.getSigma() &&
+                this.gamma == specs2.getGamma() &&
+                this.mu == specs2.getMu();
     }
 
     /* (non-Javadoc)
@@ -162,13 +160,58 @@ public class DiseaseSpecs {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("disease type:").append(this.diseaseType.toString());
-        sb.append(" | tau:").append(this.tau);
-        sb.append(" | sigma:").append(this.sigma);
-        sb.append(" | gamma:").append(this.gamma);
-        sb.append(" | mu:").append(this.mu);
+        sb.append(DISEASE_TYPE_STRING).append(this.diseaseType.toString());
+        sb.append(STRING_DELIMITER).append(TAU_STRING).append(this.tau);
+        sb.append(STRING_DELIMITER).append(SIGMA_STRING).append(this.sigma);
+        sb.append(STRING_DELIMITER).append(GAMMA_STRING).append(this.gamma);
+        sb.append(STRING_DELIMITER).append(MU_STRING).append(this.mu);
 
         return sb.toString();
+    }
+
+    /**
+     * Creates the connection stats from a given string.
+     * @param text
+     *          the string to create the connection stats for
+     * @return the connection stats
+     */
+    public static DiseaseSpecs fromString(String text) {
+
+        DiseaseType diseaseType = null;
+        int tau = 0;
+        double sigma = 0.0;
+        double gamma = 0.0;
+        double mu = 0.0;
+
+        String[] split = text.split(STRING_DELIMITER);
+        for (String value : split) {
+
+            if (value.contains(DISEASE_TYPE_STRING)) {
+                value = value.replace(DISEASE_TYPE_STRING, "");
+                diseaseType = DiseaseType.fromString(value);
+
+            } else if (value.contains(TAU_STRING)) {
+                value = value.replace(TAU_STRING, "");
+                tau = Integer.valueOf(value);
+
+            } else if (value.contains(SIGMA_STRING)) {
+                value = value.replace(SIGMA_STRING, "");
+                sigma = Double.valueOf(value);
+
+            } else if (value.contains(GAMMA_STRING)) {
+                value = value.replace(GAMMA_STRING, "");
+                gamma = Double.valueOf(value);
+
+            } else if (value.contains(MU_STRING)) {
+                value = value.replace(MU_STRING, "");
+                mu = Double.valueOf(value);
+
+            } else {
+                throw new IllegalArgumentException("No constant with text " + value + " found.");
+            }
+        }
+
+        return new DiseaseSpecs(diseaseType, tau, sigma, gamma, mu);
     }
 
 }
