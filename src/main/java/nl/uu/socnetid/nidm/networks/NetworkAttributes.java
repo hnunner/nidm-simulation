@@ -33,6 +33,7 @@ public enum NetworkAttributes {
     ARRANGE_IN_CIRCLE("arrange.in.circle"),
 
     TIMESTEPS_STABLE("timesteps.stable"),
+    STABLE("stable"),
 
     AV_PATH_LENGTH_ROUND_LAST_COMPUTATION("av.path.length.round.last.computation"),
     AV_PATH_LENGTH("av.path.length"),
@@ -40,10 +41,25 @@ public enum NetworkAttributes {
     AV_CLUSTERING("av.clustering"),
     AV_DEGREE_ROUND_LAST_COMPUTATION("av.degree.round.last.computation"),
     AV_DEGREE("av.degree"),
+    AV_DEGREE_2("av.degree.2"),
+    AV_DEGREE_THEORETIC("av.degree.theoretic"),
+    AV_DEGREE_SATISFIED("av.degree.satisfied"),
+    AV_DEGREE_UNSATISFIED("av.degree.unsatisfied"),
     AV_BETWEENNESS_ROUND_LAST_COMPUTATION("av.betweenness.round.last.computation"),
     AV_BETWEENNESS("av.betweenness"),
     AV_CLOSENESS_ROUND_LAST_COMPUTATION("av.closeness.round.last.computation"),
     AV_CLOSENESS("av.closeness"),
+
+    AV_UTILITY("av.utility"),
+    AV_SOCIAL_BENEFITS("av.social.benefits"),
+    AV_SOCIAL_COSTS("av.social.costs"),
+    AV_DISEASE_COSTS("av.disease.costs"),
+    N("N"),
+    HAS_ACTIVE_INFECTION("has.active.infection"),
+    EMPTY("empty"),
+    FULL("full"),
+    RING("ring"),
+    STAR("star"),
 
     MAX_R_PI("max.r.pi"),
     MAX_R_SIGMA("max.r.sigma"),
