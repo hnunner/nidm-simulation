@@ -34,6 +34,17 @@ import nl.uu.socnetid.nidm.stats.StatsComputer;
  */
 public abstract class UtilityFunction {
 
+    protected static final String STRING_DELIMITER = ";";
+    protected static final String UF_TYPE = "type:";
+    protected static final String TYPE_BURGER_BUSKENS = "BB";
+    protected static final String TYPE_CARAYOL_ROUX = "CR";
+    protected static final String TYPE_CIDM = "CIDM";
+    protected static final String TYPE_CUMULATIVE = "CUM";
+    protected static final String TYPE_IRTC = "IRTC";
+    protected static final String TYPE_NUNNER_BUSKENS = "NB";
+    protected static final String TYPE_NUNNER_BUSKENS_2 = "NB2";
+    protected static final String TYPE_TRUNCATED_CONNECTIONS = "TCM";
+
 
     /**
      * Computes the utility for a agent.
@@ -174,5 +185,79 @@ public abstract class UtilityFunction {
      * @see java.lang.Object#toString()
      */
     @Override
-    public abstract String toString();
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(UF_TYPE).append(this.getStatsName()).append(STRING_DELIMITER);
+        sb.append(this.getUtilityFunctionDetails());
+        return sb.toString();
+    }
+
+    /**
+     * Gets a string representation of the utility function's details.
+     *
+     * @return a string representation of the utility function's details
+     */
+    protected abstract String getUtilityFunctionDetails();
+
+    /**
+     * Factory method to create a utility function from its String representation.
+     *
+     * @param ufString
+     *          utility function string
+     * @return the utility function
+     */
+    public static UtilityFunction fromString(String ufString) {
+
+        UtilityFunction uf = null;
+
+        String[] ufSplit = ufString.split(STRING_DELIMITER);
+        for (String value : ufSplit) {
+            if (value.contains(UF_TYPE)) {
+                String type = value.replace(UF_TYPE, "");
+                if (type.equals(TYPE_BURGER_BUSKENS)) {
+                    uf = new BurgerBuskens(ufSplit);
+                    break;
+                } else if (type.equals(TYPE_CARAYOL_ROUX)) {
+                    uf = new CarayolRoux(ufSplit);
+                    break;
+                } else if (type.equals(TYPE_CIDM)) {
+                    uf = new Cidm(ufSplit);
+                    break;
+                } else if (type.equals(TYPE_CUMULATIVE)) {
+                    uf = new Cumulative(ufSplit);
+                    break;
+                } else if (type.equals(TYPE_IRTC)) {
+                    uf = new Irtc(ufSplit);
+                    break;
+                } else if (type.equals(TYPE_NUNNER_BUSKENS)) {
+                    uf = new NunnerBuskens(ufSplit);
+                    break;
+                } else if (type.equals(TYPE_NUNNER_BUSKENS_2)) {
+                    uf = new NunnerBuskens2(ufSplit);
+                    break;
+                } else if (type.equals(TYPE_TRUNCATED_CONNECTIONS)) {
+                    uf = new TruncatedConnections(ufSplit);
+                    break;
+                } else {
+                    throw new IllegalArgumentException("Unknown utility function type: " + type);
+                }
+            }
+        }
+
+        return uf;
+    }
+
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals()
+     */
+    @Override
+    public abstract boolean equals(Object o);
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public abstract int hashCode();
+
 }

@@ -166,7 +166,7 @@ public class DisplayableNetwork extends Network {
      */
     public void enableAutoLayout() {
         this.viewer.enableAutoLayout();
-        this.arrangeInCircle = false;
+        this.setArrangeInCircle(false);
     }
 
     /**
@@ -174,7 +174,7 @@ public class DisplayableNetwork extends Network {
      */
     public void disableAutoLayout() {
         this.viewer.disableAutoLayout();
-        this.arrangeInCircle = true;
+        this.setArrangeInCircle(false);
     }
 
     /**

@@ -212,7 +212,7 @@ public class AgeStructure {
                     this.ageAssortativity = 0.0;
                 }
             }
-            logger.info("Age assortativity: " + Math.round(this.ageAssortativity*100.0)/100.0);
+//            logger.info("Age assortativity: " + Math.round(this.ageAssortativity*100.0)/100.0);
 
         } catch (IOException ioe) {
             logger.error("Error while parsing age assortativity.", ioe);
