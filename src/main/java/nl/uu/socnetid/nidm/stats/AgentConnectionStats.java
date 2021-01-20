@@ -25,6 +25,8 @@
  */
 package nl.uu.socnetid.nidm.stats;
 
+import java.util.Objects;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,6 +37,20 @@ public class AgentConnectionStats implements Cloneable {
 
     // logger
     private static final Logger logger = LogManager.getLogger(AgentConnectionStats.class);
+
+    private static final String DECLINED_REQUESTS_IN_EPIDEMIC = "declined requests (in) - epidemic:";
+    private static final String ACCEPTED_REQUESTS_IN_EPIDEMIC = "accepted requests (in) - epidemic:";
+    private static final String DECLINED_REQUESTS_OUT_EPIDEMIC = "declined requests (out) - epidemic:";
+    private static final String ACCEPTED_REQUESTS_OUT_EPIDEMIC = "accepted requests (out) - epidemic:";
+    private static final String BROKEN_TIES_PASSIVE_EPIDEMIC = "broken ties (passive) - epidemic:";
+    private static final String BROKEN_TIES_ACTIVE_EPIDEMIC = "broken ties (active) - epidemic:";
+    private static final String DECLINED_REQUESTS_IN = "declined requests (in):";
+    private static final String ACCEPTED_REQUESTS_IN = "accepted requests (in):";
+    private static final String DECLINED_REQUESTS_OUT = "declined requests (out):";
+    private static final String ACCEPTED_REQUESTS_OUT = "accepted requests (out):";
+    private static final String BROKEN_TIES_PASSIVE = "broken ties (passive):";
+    private static final String BROKEN_TIES_ACTIVE = "broken ties (active):";
+    private static final String STRING_DELIMITER = "; ";
 
     private int brokenTiesActive = 0;
     private int brokenTiesPassive = 0;
@@ -243,14 +259,140 @@ public class AgentConnectionStats implements Cloneable {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("broken ties (active):").append(this.getBrokenTiesActive());
-        sb.append(" | broken ties (passive):").append(this.getBrokenTiesPassive());
-        sb.append(" | accepted requests (out):").append(this.getAcceptedRequestsOut());
-        sb.append(" | declined requests (out):").append(this.getDeclinedRequestsOut());
-        sb.append(" | accepted requests (in):").append(this.getAcceptedRequestsIn());
-        sb.append(" | declined requests (in):").append(this.getDeclinedRequestsIn());
+        sb.append(BROKEN_TIES_ACTIVE).append(this.getBrokenTiesActive());
+        sb.append(STRING_DELIMITER).append(BROKEN_TIES_PASSIVE).append(this.getBrokenTiesPassive());
+        sb.append(STRING_DELIMITER).append(ACCEPTED_REQUESTS_OUT).append(this.getAcceptedRequestsOut());
+        sb.append(STRING_DELIMITER).append(DECLINED_REQUESTS_OUT).append(this.getDeclinedRequestsOut());
+        sb.append(STRING_DELIMITER).append(ACCEPTED_REQUESTS_IN).append(this.getAcceptedRequestsIn());
+        sb.append(STRING_DELIMITER).append(DECLINED_REQUESTS_IN).append(this.getDeclinedRequestsIn());
+        sb.append(STRING_DELIMITER).append(BROKEN_TIES_ACTIVE_EPIDEMIC).append(this.getBrokenTiesActiveEpidemic());
+        sb.append(STRING_DELIMITER).append(BROKEN_TIES_PASSIVE_EPIDEMIC).append(this.getBrokenTiesPassiveEpidemic());
+        sb.append(STRING_DELIMITER).append(ACCEPTED_REQUESTS_OUT_EPIDEMIC).append(this.getAcceptedRequestsOutEpidemic());
+        sb.append(STRING_DELIMITER).append(DECLINED_REQUESTS_OUT_EPIDEMIC).append(this.getDeclinedRequestsOutEpidemic());
+        sb.append(STRING_DELIMITER).append(ACCEPTED_REQUESTS_IN_EPIDEMIC).append(this.getAcceptedRequestsInEpidemic());
+        sb.append(STRING_DELIMITER).append(DECLINED_REQUESTS_IN_EPIDEMIC).append(this.getDeclinedRequestsInEpidemic());
 
         return sb.toString();
+    }
+
+    /**
+     * Creates the connection stats from a given string.
+     * @param text
+     *          the string to create the connection stats for
+     * @return the connection stats
+     */
+    public static AgentConnectionStats fromString(String text) {
+        AgentConnectionStats res = new AgentConnectionStats();
+
+        String[] split = text.split(STRING_DELIMITER);
+        for (String value : split) {
+
+            if (value.contains(BROKEN_TIES_ACTIVE)) {
+                value = value.replace(BROKEN_TIES_ACTIVE, "");
+                res.brokenTiesActive = Integer.valueOf(value);
+
+            } else if (value.contains(BROKEN_TIES_PASSIVE)) {
+                value = value.replace(BROKEN_TIES_PASSIVE, "");
+                res.brokenTiesPassive = Integer.valueOf(value);
+
+            } else if (value.contains(ACCEPTED_REQUESTS_OUT)) {
+                value = value.replace(ACCEPTED_REQUESTS_OUT, "");
+                res.acceptedRequestsOut = Integer.valueOf(value);
+
+            } else if (value.contains(DECLINED_REQUESTS_OUT)) {
+                value = value.replace(DECLINED_REQUESTS_OUT, "");
+                res.declinedRequestsOut = Integer.valueOf(value);
+
+            } else if (value.contains(ACCEPTED_REQUESTS_IN)) {
+                value = value.replace(ACCEPTED_REQUESTS_IN, "");
+                res.acceptedRequestsIn = Integer.valueOf(value);
+
+            } else if (value.contains(DECLINED_REQUESTS_IN)) {
+                value = value.replace(DECLINED_REQUESTS_IN, "");
+                res.declinedRequestsIn = Integer.valueOf(value);
+
+            } else if (value.contains(BROKEN_TIES_ACTIVE_EPIDEMIC)) {
+                value = value.replace(BROKEN_TIES_ACTIVE_EPIDEMIC, "");
+                res.brokenTiesActiveEpidemic = Integer.valueOf(value);
+
+            } else if (value.contains(BROKEN_TIES_PASSIVE_EPIDEMIC)) {
+                value = value.replace(BROKEN_TIES_PASSIVE_EPIDEMIC, "");
+                res.brokenTiesPassiveEpidemic = Integer.valueOf(value);
+
+            } else if (value.contains(ACCEPTED_REQUESTS_OUT_EPIDEMIC)) {
+                value = value.replace(ACCEPTED_REQUESTS_OUT_EPIDEMIC, "");
+                res.acceptedRequestsOutEpidemic = Integer.valueOf(value);
+
+            } else if (value.contains(DECLINED_REQUESTS_OUT_EPIDEMIC)) {
+                value = value.replace(DECLINED_REQUESTS_OUT_EPIDEMIC, "");
+                res.declinedRequestsOutEpidemic = Integer.valueOf(value);
+
+            } else if (value.contains(ACCEPTED_REQUESTS_IN_EPIDEMIC)) {
+                value = value.replace(ACCEPTED_REQUESTS_IN_EPIDEMIC, "");
+                res.acceptedRequestsInEpidemic = Integer.valueOf(value);
+
+            } else if (value.contains(DECLINED_REQUESTS_IN_EPIDEMIC)) {
+                value = value.replace(DECLINED_REQUESTS_IN_EPIDEMIC, "");
+                res.declinedRequestsInEpidemic = Integer.valueOf(value);
+
+            } else {
+                throw new IllegalArgumentException("No constant with text " + value + " found.");
+            }
+        }
+
+        return res;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+
+        // not null
+        if (o == null) {
+            return false;
+        }
+
+        // same object
+        if (o == this) {
+            return true;
+        }
+
+        // same type
+        if (!(o instanceof AgentConnectionStats)) {
+            return false;
+        }
+
+        AgentConnectionStats acs = (AgentConnectionStats) o;
+
+        // same values
+        return this.brokenTiesActive == acs.getBrokenTiesActive() &&
+                this.brokenTiesPassive == acs.getBrokenTiesPassive() &&
+                this.acceptedRequestsOut == acs.getAcceptedRequestsOut() &&
+                this.declinedRequestsOut == acs.getDeclinedRequestsOut() &&
+                this.acceptedRequestsIn == acs.getAcceptedRequestsIn() &&
+                this.declinedRequestsIn == acs.getDeclinedRequestsIn() &&
+                this.brokenTiesActiveEpidemic == acs.getBrokenTiesActiveEpidemic() &&
+                this.brokenTiesPassiveEpidemic == acs.getBrokenTiesPassiveEpidemic() &&
+                this.acceptedRequestsOutEpidemic == acs.getAcceptedRequestsOutEpidemic() &&
+                this.declinedRequestsOutEpidemic == acs.getDeclinedRequestsOutEpidemic() &&
+                this.acceptedRequestsInEpidemic == acs.getAcceptedRequestsInEpidemic() &&
+                this.declinedRequestsInEpidemic == acs.getDeclinedRequestsInEpidemic();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.brokenTiesActive,
+                this.brokenTiesPassive,
+                this.acceptedRequestsOut,
+                this.declinedRequestsOut,
+                this.acceptedRequestsIn,
+                this.declinedRequestsIn,
+                this.brokenTiesActiveEpidemic,
+                this.brokenTiesPassiveEpidemic,
+                this.acceptedRequestsOutEpidemic,
+                this.declinedRequestsOutEpidemic,
+                this.acceptedRequestsInEpidemic,
+                this.declinedRequestsInEpidemic);
     }
 
 }
