@@ -73,8 +73,8 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     // concurrency lock
     private Lock lock;
 
-    // listeners
-    private final Set<AgentListener> agentListeners = new CopyOnWriteArraySet<AgentListener>();
+    // agentListeners
+    private Set<AgentListener> agentListeners = new CopyOnWriteArraySet<AgentListener>();
 
 
     /**
@@ -162,6 +162,23 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         this.addAttribute(AgentAttributes.ASSORTATIVITY_PROFESSION_LAST_COMPUTATION, -1);
     }
 
+    /**
+     * Reinitializes agent after reader import. That is, types are reinitialized from their string representation.
+     */
+    public void reinitAfterRead() {
+        String dgString = (String) this.getAttribute(AgentAttributes.DISEASE_GROUP);
+        this.addAttribute(AgentAttributes.DISEASE_GROUP, DiseaseGroup.fromString(dgString), false);
+
+        String csString = (String) this.getAttribute(AgentAttributes.CONNECTION_STATS);
+        this.addAttribute(AgentAttributes.CONNECTION_STATS, AgentConnectionStats.fromString(csString), false);
+
+        String dsString = (String) this.getAttribute(AgentAttributes.DISEASE_SPECS);
+        this.addAttribute(AgentAttributes.DISEASE_SPECS, DiseaseSpecs.fromString(dsString), false);
+
+        String ufString = (String) this.getAttribute(AgentAttributes.UTILITY_FUNCTION);
+        this.addAttribute(AgentAttributes.UTILITY_FUNCTION, UtilityFunction.fromString(ufString), false);
+    }
+
     public String getLabel() {
         return "";
         // TODO create better label
@@ -218,7 +235,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
-     * Adds an attribute and notifies the listeners of the added attribute by default.
+     * Adds an attribute and notifies the agentListeners of the added attribute by default.
      *
      * @param attribute
      *          the attribute
@@ -237,7 +254,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      * @param value
      *          the value
      * @param notify
-     *          flag whether agent listeners ought to be notified of the added attribute
+     *          flag whether agent agentListeners ought to be notified of the added attribute
      */
     private void addAttribute(AgentAttributes attribute, Object value, boolean notify) {
         super.addAttribute(attribute.toString(), value);
@@ -247,7 +264,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
-     * Changes an attribute and notifies the listeners of the changed attribute by default.
+     * Changes an attribute and notifies the agentListeners of the changed attribute by default.
      *
      * @param attribute
      *          the attribute
@@ -270,7 +287,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      * @param newValue
      *          the new value
      * @param notify
-     *          flag whether agent listeners ought to be notified of the changed attribute
+     *          flag whether agent agentListeners ought to be notified of the changed attribute
      */
     private void changeAttribute(AgentAttributes attribute, Object oldValue, Object newValue, boolean notify) {
         super.changeAttribute(attribute.toString(), newValue);
@@ -280,7 +297,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
-     * Removes an attribute and notifies the listeners of the removed attribute by default.
+     * Removes an attribute and notifies the agentListeners of the removed attribute by default.
      *
      * @param attribute
      *          the attribute
@@ -297,7 +314,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      * @param value
      *          the value
      * @param notify
-     *          flag whether agent listeners ought to be notified of the added attribute
+     *          flag whether agent agentListeners ought to be notified of the added attribute
      */
     private void removeAttribute(AgentAttributes attribute, boolean notify) {
         super.removeAttribute(attribute.toString());
@@ -644,9 +661,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
             this.changeAttribute(AgentAttributes.BETWEENNESS,
                     this.getAttribute(AgentAttributes.BETWEENNESS),
                     bc.centrality(this));
-            this.changeAttribute(AgentAttributes.BETWEENNESS_LAST_COMPUTATION,
-                    lastComputation,
-                    simRound);
+            this.changeAttribute(AgentAttributes.BETWEENNESS_LAST_COMPUTATION, lastComputation, simRound);
         }
         return (double) this.getAttribute(AgentAttributes.BETWEENNESS);
     }
@@ -1709,7 +1724,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
-     * Notifies listeners of added attributes.
+     * Notifies agentListeners of added attributes.
      *
      * @param attribute
      *          the attribute
@@ -1724,7 +1739,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
-     * Notifies listeners of changed attributes.
+     * Notifies agentListeners of changed attributes.
      *
      * @param attribute
      *          the attribute
@@ -1741,7 +1756,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
-     * Notifies listeners of removed attributes.
+     * Notifies agentListeners of removed attributes.
      *
      * @param attribute
      *          the attribute
@@ -1754,7 +1769,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
-     * Notifies listeners of added connections.
+     * Notifies agentListeners of added connections.
      *
      * @param edge
      *          the new connection
@@ -1771,7 +1786,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
-     * Notifies the listeners of removed edges.
+     * Notifies the agentListeners of removed edges.
      *
      * @param edge
      *          the removed edge
@@ -1784,13 +1799,56 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
-     * Notifies listeners of finished agent rounds.
+     * Notifies agentListeners of finished agent rounds.
      */
     private final void notifyRoundFinished() {
         Iterator<AgentListener> listenersIt = this.agentListeners.iterator();
         while (listenersIt.hasNext()) {
             listenersIt.next().notifyRoundFinished(this);
         }
+    }
+
+    /**
+     * XXX Workaround: graphstream seems to use standard equals method (Object.equals) for tests before adding nodes
+     * to the network. This method was intended to replace the equals method, but caused conflicts with simple addition
+     * of nodes. Thus, it is only used for explicit calls to test agent (and not node) equality.
+     *
+     * @param o
+     *          the object to test for equality
+     * @return true if this and the provided objects are equal, false otherwise
+     */
+    public boolean same(Object o) {
+
+        // same object
+        if (o == this) {
+            return true;
+        }
+
+        // same type
+        if (!(o instanceof Agent)) {
+            return false;
+        }
+
+        Agent a = (Agent) o;
+
+        // same attributes
+        Iterator<String> akIt = this.getAttributeKeyIterator();
+        while (akIt.hasNext()) {
+            String ak = akIt.next();
+            if (ak.equals("ui.label") || ak.equals("xyz")) {
+                continue;
+            }
+
+            Object thisAttribute = this.getAttribute(ak);
+            Object otherAttribute = a.getAttribute(ak);
+
+            if (!thisAttribute.equals(otherAttribute)) {
+                logger.warn("Agents unequal: " + ak + "\tthis: " + thisAttribute + "\tother: " + otherAttribute);
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }
