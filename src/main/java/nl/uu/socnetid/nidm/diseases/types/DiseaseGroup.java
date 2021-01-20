@@ -56,4 +56,19 @@ public enum DiseaseGroup {
         return name;
     }
 
+    /**
+     * Creates the disease group from a given string.
+     * @param text
+     *          the string to create the disease group for
+     * @return the disease group
+     */
+    public static DiseaseGroup fromString(String text) {
+        for (DiseaseGroup a : DiseaseGroup.values()) {
+            if (a.name.equalsIgnoreCase(text)) {
+                return a;
+            }
+        }
+        throw new IllegalArgumentException("No constant with text " + text + " found.");
+    }
+
 }

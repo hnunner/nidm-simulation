@@ -25,6 +25,8 @@
  */
 package nl.uu.socnetid.nidm.utility;
 
+import java.util.Objects;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,6 +38,9 @@ import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
  */
 public final class Cumulative extends UtilityFunction {
 
+    private static final String ALPHA = "alpha:";
+    private static final String BETA = "beta:";
+
     private static final Logger logger = LogManager.getLogger(BurgerBuskens.class);
 
     // default values
@@ -43,9 +48,9 @@ public final class Cumulative extends UtilityFunction {
     private static final double DEFAULT_INDIRECT = 0.5;
 
     // utility of direct connections
-    private final double alpha;
+    private double alpha;
     // utility of indirect connections
-    private final double beta;
+    private double beta;
 
 
     /**
@@ -68,13 +73,40 @@ public final class Cumulative extends UtilityFunction {
         this.beta = beta;
     }
 
+    /**
+     * Constructor from a string array containing he utility function's details.
+     *
+     * @param ufSplit
+     *          the string array containing he utility function's details
+     */
+    protected Cumulative(String[] ufSplit) {
+
+        for (String value : ufSplit) {
+
+            if (value.contains(UF_TYPE)) {
+                continue;
+
+            } else if (value.contains(ALPHA)) {
+                value = value.replace(ALPHA, "");
+                this.alpha = Double.valueOf(value);
+
+            } else if (value.contains(BETA)) {
+                value = value.replace(BETA, "");
+                this.beta = Double.valueOf(value);
+
+            } else {
+                throw new IllegalAccessError("Unknown value: " + value);
+            }
+        }
+    }
+
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getStatsName()
      */
     @Override
     public String getStatsName() {
-        return "CUM";
+        return TYPE_CUMULATIVE;
     }
 
     /* (non-Javadoc)
@@ -120,14 +152,13 @@ public final class Cumulative extends UtilityFunction {
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#toString()
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getUtilityFunctionDetails()
      */
     @Override
-    public String toString() {
+    protected String getUtilityFunctionDetails() {
         StringBuilder sb = new StringBuilder();
-        sb.append("type:").append(getStatsName());
-        sb.append(" | alpha:").append(this.getAlpha());
-        sb.append(" | beta:").append(this.getBeta());
+        sb.append(ALPHA).append(this.getAlpha()).append(STRING_DELIMITER);
+        sb.append(BETA).append(this.getBeta()).append(STRING_DELIMITER);
         return sb.toString();
     }
 
@@ -143,6 +174,44 @@ public final class Cumulative extends UtilityFunction {
      */
     public double getBeta() {
         return beta;
+    }
+
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals()
+     */
+    @Override
+    public boolean equals(Object o) {
+
+        // not null
+        if (o == null) {
+            return false;
+        }
+
+        // same object
+        if (o == this) {
+            return true;
+        }
+
+        // same type
+        if (!(o instanceof Cumulative)) {
+            return false;
+        }
+
+        Cumulative c = (Cumulative) o;
+
+        // same values
+        return this.alpha == c.alpha &&
+                this.beta == c.beta;
+
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.alpha, this.beta);
     }
 
 }

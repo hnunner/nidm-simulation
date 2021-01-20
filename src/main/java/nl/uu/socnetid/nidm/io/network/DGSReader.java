@@ -68,6 +68,8 @@ public class DGSReader {
             logger.error(e);
         }
 
+        network.reinitAfterRead();
+
         return network;
     }
 
