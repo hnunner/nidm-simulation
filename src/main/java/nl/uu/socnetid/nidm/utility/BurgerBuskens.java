@@ -25,6 +25,8 @@
  */
 package nl.uu.socnetid.nidm.utility;
 
+import java.util.Objects;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,6 +39,12 @@ import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
  * @author Hendrik Nunner
  */
 public class BurgerBuskens extends UtilityFunction implements BurgerBuskensChangeListener {
+
+    private static final String B1 = "b1:";
+    private static final String B2 = "b2:";
+    private static final String C1 = "c1:";
+    private static final String C2 = "c2:";
+    private static final String C3 = "c3:";
 
     private static final Logger logger = LogManager.getLogger(BurgerBuskens.class);
 
@@ -100,13 +108,54 @@ public class BurgerBuskens extends UtilityFunction implements BurgerBuskensChang
         }
     }
 
+    /**
+     * Constructor from a string array containing he utility function's details.
+     *
+     * @param ufSplit
+     *          the string array containing he utility function's details
+     */
+    protected BurgerBuskens(String[] ufSplit) {
+
+        for (String value : ufSplit) {
+
+            if (value.contains(UF_TYPE)) {
+                continue;
+
+            } else if (value.contains(B1)) {
+                value = value.replace(B1, "");
+                this.b1 = Double.valueOf(value);
+
+            } else if (value.contains(B2)) {
+                value = value.replace(B2, "");
+                this.b2 = Double.valueOf(value);
+
+            } else if (value.contains(C1)) {
+                value = value.replace(C1, "");
+                this.c1 = Double.valueOf(value);
+
+            } else if (value.contains(C2)) {
+                value = value.replace(C2, "");
+                this.c2 = Double.valueOf(value);
+
+            } else if (value.contains(C3)) {
+                value = value.replace(C3, "");
+                this.c3 = Double.valueOf(value);
+
+            } else {
+                throw new IllegalAccessError("Unknown value: " + value);
+            }
+        }
+
+        this.bbPanel = null;
+    }
+
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getStatsName()
      */
     @Override
     public String getStatsName() {
-        return "BB";
+        return TYPE_BURGER_BUSKENS;
     }
 
     /* (non-Javadoc)
@@ -147,17 +196,16 @@ public class BurgerBuskens extends UtilityFunction implements BurgerBuskensChang
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#toString()
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getUtilityFunctionDetails()
      */
     @Override
-    public String toString() {
+    protected String getUtilityFunctionDetails() {
         StringBuilder sb = new StringBuilder();
-        sb.append("type:").append(getStatsName());
-        sb.append(" | b1:").append(this.b1);
-        sb.append(" | b2:").append(this.b2);
-        sb.append(" | c1:").append(this.c1);
-        sb.append(" | c2:").append(this.c2);
-        sb.append(" | c3:").append(this.c3);
+        sb.append(B1).append(this.b1).append(STRING_DELIMITER);
+        sb.append(B2).append(this.b2).append(STRING_DELIMITER);
+        sb.append(C1).append(this.c1).append(STRING_DELIMITER);
+        sb.append(C2).append(this.c2).append(STRING_DELIMITER);
+        sb.append(C3).append(this.c3).append(STRING_DELIMITER);
         return sb.toString();
     }
 
@@ -200,6 +248,47 @@ public class BurgerBuskens extends UtilityFunction implements BurgerBuskensChang
     @Override
     public void notifyC3Changed() {
         this.c3 = this.bbPanel.getC3();
+    }
+
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals()
+     */
+    @Override
+    public boolean equals(Object o) {
+
+        // not null
+        if (o == null) {
+            return false;
+        }
+
+        // same object
+        if (o == this) {
+            return true;
+        }
+
+        // same type
+        if (!(o instanceof BurgerBuskens)) {
+            return false;
+        }
+
+        BurgerBuskens bb = (BurgerBuskens) o;
+
+        // same values
+        return this.b1 == bb.b1 &&
+                this.b2 == bb.b2 &&
+                this.c1 == bb.c1 &&
+                this.c2 == bb.c2 &&
+                this.c3 == bb.c3;
+
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.b1, this.b2, this.c1, this.c2, this.c3);
     }
 
 }

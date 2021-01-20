@@ -25,6 +25,8 @@
  */
 package nl.uu.socnetid.nidm.utility;
 
+import java.util.Objects;
+
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.gui.NunnerBuskensChangeListener;
 import nl.uu.socnetid.nidm.gui.NunnerBuskensPanel;
@@ -34,6 +36,12 @@ import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
  * @author Hendrik Nunner
  */
 public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChangeListener {
+
+    private static final String B1 = "b1:";
+    private static final String B2 = "b2:";
+    private static final String C1 = "c1:";
+    private static final String C2 = "c2:";
+    private static final String ALPHA = "alpha:";
 
     // benefits of direct connections
     private double b1;
@@ -65,6 +73,47 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
      */
     public NunnerBuskens(double b1, double b2, double alpha, double c1, double c2) {
         this(b1, b2, alpha, c1, c2, null);
+    }
+
+    /**
+     * Constructor from a string array containing he utility function's details.
+     *
+     * @param ufSplit
+     *          the string array containing he utility function's details
+     */
+    protected NunnerBuskens(String[] ufSplit) {
+
+        for (String value : ufSplit) {
+
+            if (value.contains(UF_TYPE)) {
+                continue;
+
+            } else if (value.contains(B1)) {
+                value = value.replace(B1, "");
+                this.b1 = Double.valueOf(value);
+
+            } else if (value.contains(B2)) {
+                value = value.replace(B2, "");
+                this.b2 = Double.valueOf(value);
+
+            } else if (value.contains(ALPHA)) {
+                value = value.replace(ALPHA, "");
+                this.alpha = Double.valueOf(value);
+
+            } else if (value.contains(C1)) {
+                value = value.replace(C1, "");
+                this.c1 = Double.valueOf(value);
+
+            } else if (value.contains(C2)) {
+                value = value.replace(C2, "");
+                this.c2 = Double.valueOf(value);
+
+            } else {
+                throw new IllegalAccessError("Unknown value: " + value);
+            }
+        }
+
+        this.nbPanel = null;
     }
 
     /**
@@ -101,7 +150,7 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
      */
     @Override
     public String getStatsName() {
-        return "NB";
+        return TYPE_NUNNER_BUSKENS;
     }
 
     /* (non-Javadoc)
@@ -177,17 +226,16 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#toString()
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getUtilityFunctionDetails()
      */
     @Override
-    public String toString() {
+    protected String getUtilityFunctionDetails() {
         StringBuilder sb = new StringBuilder();
-        sb.append("type:").append(getStatsName());
-        sb.append(" | b1:").append(this.b1);
-        sb.append(" | b2:").append(this.b2);
-        sb.append(" | c1:").append(this.c1);
-        sb.append(" | c2:").append(this.c2);
-        sb.append(" | alpha:").append(this.alpha);
+        sb.append(B1).append(this.b1).append(STRING_DELIMITER);
+        sb.append(B2).append(this.b2).append(STRING_DELIMITER);
+        sb.append(C1).append(this.c1).append(STRING_DELIMITER);
+        sb.append(C2).append(this.c2).append(STRING_DELIMITER);
+        sb.append(ALPHA).append(this.alpha).append(STRING_DELIMITER);
         return sb.toString();
     }
 
@@ -283,5 +331,43 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
     }
 
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals()
+     */
+    @Override
+    public boolean equals(Object o) {
+
+        // not null
+        if (o == null) {
+            return false;
+        }
+
+        // same object
+        if (o == this) {
+            return true;
+        }
+
+        // same type
+        if (!(o instanceof NunnerBuskens)) {
+            return false;
+        }
+
+        NunnerBuskens nb = (NunnerBuskens) o;
+
+        // same values
+        return this.b1 == nb.b1 &&
+                this.b2 == nb.b2 &&
+                this.alpha == nb.alpha &&
+                this.c1 == nb.c1 &&
+                this.c2 == nb.c2;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.b1, this.b2, this.alpha, this.c1, this.c2);
+    }
 
 }

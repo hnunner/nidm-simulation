@@ -25,6 +25,8 @@
  */
 package nl.uu.socnetid.nidm.utility;
 
+import java.util.Objects;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,6 +39,10 @@ import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
  * @author Hendrik Nunner
  */
 public class NunnerBuskens2 extends UtilityFunction implements NunnerBuskens2ChangeListener {
+
+    private static final String TIES_PREF = "ties preference:";
+    private static final String CONSIDER_TRIADS = "consider triads:";
+    private static final String ALPHA = "alpha:";
 
     private static final Logger logger = LogManager.getLogger(BurgerBuskens.class);
 
@@ -92,13 +98,46 @@ public class NunnerBuskens2 extends UtilityFunction implements NunnerBuskens2Cha
         }
     }
 
+    /**
+     * Constructor from a string array containing he utility function's details.
+     *
+     * @param ufSplit
+     *          the string array containing he utility function's details
+     */
+    protected NunnerBuskens2(String[] ufSplit) {
+
+        for (String value : ufSplit) {
+
+            if (value.contains(UF_TYPE)) {
+                continue;
+
+            } else if (value.contains(TIES_PREF)) {
+                value = value.replace(TIES_PREF, "");
+                this.tPref = Integer.valueOf(value);
+
+            } else if (value.contains(CONSIDER_TRIADS)) {
+                value = value.replace(CONSIDER_TRIADS, "");
+                this.considerTriads = Boolean.valueOf(value);
+
+            } else if (value.contains(ALPHA)) {
+                value = value.replace(ALPHA, "");
+                this.alpha = Double.valueOf(value);
+
+            } else {
+                throw new IllegalAccessError("Unknown value: " + value);
+            }
+        }
+
+        this.nbPanel = null;
+    }
+
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getStatsName()
      */
     @Override
     public String getStatsName() {
-        return "NB2";
+        return TYPE_NUNNER_BUSKENS_2;
     }
 
     /* (non-Javadoc)
@@ -159,20 +198,14 @@ public class NunnerBuskens2 extends UtilityFunction implements NunnerBuskens2Cha
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#toString()
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getUtilityFunctionDetails()
      */
     @Override
-    public String toString() {
-
-        // TODO implement
-
+    protected String getUtilityFunctionDetails() {
         StringBuilder sb = new StringBuilder();
-//        sb.append("type:").append(getStatsName());
-//        sb.append(" | b1:").append(getB1());
-//        sb.append(" | b2:").append(getB2());
-//        sb.append(" | c1:").append(getC1());
-//        sb.append(" | c2:").append(getC2());
-//        sb.append(" | alpha:").append(this.alpha);
+        sb.append(TIES_PREF).append(this.tPref).append(STRING_DELIMITER);
+        sb.append(CONSIDER_TRIADS).append(this.considerTriads).append(STRING_DELIMITER);
+        sb.append(ALPHA).append(this.alpha).append(STRING_DELIMITER);
         return sb.toString();
     }
 
@@ -272,6 +305,44 @@ public class NunnerBuskens2 extends UtilityFunction implements NunnerBuskens2Cha
 //
 //        // considering triads
 //        throw new RuntimeException("Not yet implemented!");
+    }
+
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals()
+     */
+    @Override
+    public boolean equals(Object o) {
+
+        // not null
+        if (o == null) {
+            return false;
+        }
+
+        // same object
+        if (o == this) {
+            return true;
+        }
+
+        // same type
+        if (!(o instanceof NunnerBuskens2)) {
+            return false;
+        }
+
+        NunnerBuskens2 nb = (NunnerBuskens2) o;
+
+        // same values
+        return this.tPref == nb.tPref &&
+                this.considerTriads == nb.considerTriads &&
+                this.alpha == nb.alpha;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.tPref, this.considerTriads, this.alpha);
     }
 
 }
