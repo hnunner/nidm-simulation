@@ -278,10 +278,14 @@ public enum LogValues {
     IV_NB_PROF_ASSORTATIVITY_INIT_CONDITION("nb.prof.assortativity.init.condition"),
     IV_NB_PROF_ASSORTATIVITY_CONDITIONS("nb.prof.assortativity.conditions"),
     IV_NB_PROF_OMEGA("nb.prof.omega"),
-    IV_NB_PROF_SIM_ITERATIONS("nb.prof.n"),
+    IV_NB_PROF_SIMS_PER_PC("nb.prof.n"),
     IV_NB_PROF_LOCKDOWN_CONDITIONS("nb.prof.lockdown.conditions"),
     IV_NB_PROF_DEGREE_DISTRIBUTION_CONDITIONS("nb.prof.degree.distribution.conditions"),
     IV_NB_PROF_ROUNDS_MAX("nb.prof.rounds.max"),
+    DV_NB_PROF_DEGREE("nb.prof.degree."),
+    DV_NB_PROF_DEGREE_DIFF("nb.prof.degree.diff."),
+    DV_NB_PROF_DEGREE_SD("nb.prof.degree.sd."),
+    DV_NB_PROF_DEGREE_SD_DIFF("nb.prof.degree.sd.diff."),
 
     // PROPERTIES (dependent variables)
     // simulation

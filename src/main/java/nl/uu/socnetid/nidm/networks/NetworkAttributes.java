@@ -66,9 +66,11 @@ public enum NetworkAttributes {
     MAX_AGE("max.age"),
 
     ASSORTATIVITY_CONDITIONS("assortativity.conditions"),
-    ASSORTATIVITY_ROUND_LAST_COMPUTATION("assortativity.round.last.computation"),
+    ASSORTATIVITY_RISK_PERCEPTION_ROUND_LAST_COMPUTATION("assortativity.risk.perception.round.last.computation"),
     ASSORTATIVITY_RISK_PERCEPTION("assortativity.risk.perception"),
+    ASSORTATIVITY_AGE_ROUND_LAST_COMPUTATION("assortativity.age.round.last.computation"),
     ASSORTATIVITY_AGE("assortativity.age"),
+    ASSORTATIVITY_PROFESSION_ROUND_LAST_COMPUTATION("assortativity.profession.round.last.computation"),
     ASSORTATIVITY_PROFESSION("assortativity.profession");
 
 
