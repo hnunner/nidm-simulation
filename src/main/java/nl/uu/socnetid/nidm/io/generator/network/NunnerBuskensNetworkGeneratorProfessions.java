@@ -43,6 +43,7 @@ import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
 import nl.uu.socnetid.nidm.io.csv.NunnerBuskensNetworkSummaryProfessionsWriter;
 import nl.uu.socnetid.nidm.io.generator.AbstractGenerator;
 import nl.uu.socnetid.nidm.io.network.AgentPropertiesWriter;
+import nl.uu.socnetid.nidm.io.network.DGSWriter;
 import nl.uu.socnetid.nidm.io.network.EdgeListWriter;
 import nl.uu.socnetid.nidm.io.network.GEXFWriter;
 import nl.uu.socnetid.nidm.io.network.NetworkFileWriter;
@@ -53,6 +54,7 @@ import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.simulation.Simulation;
 import nl.uu.socnetid.nidm.simulation.SimulationListener;
 import nl.uu.socnetid.nidm.stats.NetworkStats;
+import nl.uu.socnetid.nidm.stats.SimulationStats;
 import nl.uu.socnetid.nidm.system.PropertiesHandler;
 import nl.uu.socnetid.nidm.utility.NunnerBuskens;
 import nl.uu.socnetid.nidm.utility.UtilityFunction;
@@ -74,6 +76,8 @@ public class NunnerBuskensNetworkGeneratorProfessions extends AbstractGenerator 
     private Simulation simulation;
 
     // stats & writer
+    private int upc = 1;
+    private String maxUid;
     private DataGeneratorData<NunnerBuskensProfessionsParameters> dgData;
     private NunnerBuskensNetworkSummaryProfessionsWriter nsWriter;
 
@@ -148,6 +152,9 @@ public class NunnerBuskensNetworkGeneratorProfessions extends AbstractGenerator 
     protected void generate() {
 
         NunnerBuskensProfessionsParameters umps = this.dgData.getUtilityModelParams();
+        SimulationStats simStats = this.dgData.getSimStats();
+        this.maxUid = String.valueOf(umps.getDegreeDistributionConditions().size() * umps.getLockdownConditions().size()) + "-" +
+                String.valueOf(umps.getSimsPerParameterCombination());
 
         Iterator<DegreeDistributionConditions> ddcsIt = umps.getDegreeDistributionConditions().iterator();
         while (ddcsIt.hasNext()) {
@@ -156,9 +163,15 @@ public class NunnerBuskensNetworkGeneratorProfessions extends AbstractGenerator 
             Iterator<LockdownConditions> lcsIt = umps.getLockdownConditions().iterator();
             while (lcsIt.hasNext()) {
                 LockdownConditions lc = lcsIt.next();
+                umps.setCurrLockdownCondition(lc);
+
+                simStats.setUpc(this.upc++);
 
                 // simulate iterations of same parameter settings
-                for (int it = 0; it <= umps.getSimIterations(); it++) {
+                for (int sims = 0; sims <= umps.getSimsPerParameterCombination(); sims++) {
+
+                    simStats.setSimPerUpc(sims+1);
+                    simStats.setUid(simStats.getUpc() + "-" + simStats.getSimPerUpc());
 
                     // init network
                     AssortativityConditions aic = umps.getAssortativityInitCondition();
@@ -274,9 +287,11 @@ public class NunnerBuskensNetworkGeneratorProfessions extends AbstractGenerator 
      *
      */
     private void exportNetworks(String nameAppendix) {
-        String fileName = this.dgData.getSimStats().getUid();
+        String fileName = "uid-" + this.dgData.getSimStats().getUid();
+        fileName += "_round-" + this.dgData.getSimStats().getCurrRound();
+
         if (nameAppendix != null && !nameAppendix.isEmpty()) {
-            fileName += "-" + nameAppendix;
+            fileName += "_" + nameAppendix;
         }
 
         NetworkFileWriter elWriter = new NetworkFileWriter(getExportPath(),
@@ -286,13 +301,16 @@ public class NunnerBuskensNetworkGeneratorProfessions extends AbstractGenerator 
         elWriter.write();
 
         NetworkFileWriter profWriter = new NetworkFileWriter(getExportPath(),
-                fileName + ".prof",
+                fileName + ".props",
                 new AgentPropertiesWriter(),
                 this.network);
         profWriter.write();
 
         GEXFWriter gexfWriter = new GEXFWriter();
         gexfWriter.writeStaticNetwork(this.network, getExportPath() + fileName + ".gexf");
+
+        DGSWriter dgsWriter = new DGSWriter();
+        dgsWriter.writeNetwork(this.network, getExportPath() + fileName + ".dgs");
     }
 
     /**
@@ -310,9 +328,15 @@ public class NunnerBuskensNetworkGeneratorProfessions extends AbstractGenerator 
 
     @Override
     public void notifyRoundFinished(Simulation simulation) {
-        this.dgData.getSimStats().incCurrRound();
-        amendSummary();             // amend summary CSV
-        exportNetworks(null);       // overwrite networks with better fitness
+        SimulationStats simStats = this.dgData.getSimStats();
+        simStats.incCurrRound();
+        amendSummary();
+//        exportNetworks(new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date()));
+        exportNetworks(null);
+        String currRound = String.valueOf(simStats.getCurrRound());
+        logger.info("Round " + currRound + (currRound.length() == 1 ? "  of " : " of ") +
+                this.dgData.getUtilityModelParams().getRoundsMax() + " finished (UID:" +
+                simStats.getUid() + " of " + this.maxUid + ")");
     }
 
     @Override

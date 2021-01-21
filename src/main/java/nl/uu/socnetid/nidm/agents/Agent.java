@@ -26,7 +26,6 @@
 package nl.uu.socnetid.nidm.agents;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -47,7 +46,6 @@ import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleNode;
 import org.graphstream.ui.graphicGraph.GraphPosLengthUtils;
 
-import nl.uu.socnetid.nidm.data.in.AgeStructure;
 import nl.uu.socnetid.nidm.diseases.Disease;
 import nl.uu.socnetid.nidm.diseases.DiseaseFactory;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
@@ -936,7 +934,26 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         boolean satisfied = true;
 
         int decisions = this.getNumberOfNetworkDecisions();
+
+        // helper collections
+        // agents that have been processed before
         Set<Agent> agentsProcessed = new HashSet<Agent>(decisions);
+        // distance 1
+        List<Agent> distance1AgentsAssorted = new ArrayList<Agent>(this.getConnections());
+        sortByAssortativityConditions(distance1AgentsAssorted);
+        List<Agent> distance1AgentsShuffled = new ArrayList<Agent>(this.getConnections());
+        Collections.shuffle(distance1AgentsShuffled);
+        // distance 2
+        List<Agent> distance2AgentsAssorted = new ArrayList<Agent>(this.getConnectionsAtDistance2());
+        sortByAssortativityConditions(distance2AgentsAssorted);
+        List<Agent> distance2AgentsShuffled = new ArrayList<Agent>(this.getConnectionsAtDistance2());
+        Collections.shuffle(distance2AgentsShuffled);
+        // any agents
+        List<Agent> allAgentsAssorted = new ArrayList<Agent>(this.getNetwork().getAgents());
+        sortByAssortativityConditions(allAgentsAssorted);
+        List<Agent> allAgentsShuffled = new ArrayList<Agent>(this.getNetwork().getAgents());
+        Collections.shuffle(allAgentsShuffled);
+
         while (agentsProcessed.size() < decisions) {
 
             // some delay before processing of each other agent (e.g., for animation processes)
@@ -948,28 +965,50 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
                 }
             }
 
-            // selecting an agent to process
+            // creating a base list of agents to draw an agent from
             Agent other = null;
-            double rand = ThreadLocalRandom.current().nextDouble();
-            // direct connection
-            if (rand <= this.getPsi()) {
-                other = this.getRandomConnection(agentsProcessed);
+            double randPsi = ThreadLocalRandom.current().nextDouble();
+            double randOmega = ThreadLocalRandom.current().nextDouble();
+            HashSet<Agent> removals = new HashSet<Agent>(agentsProcessed);
+            removals.add(this);
+            List<Agent> drawBase = null;
+            // distance 1
+            if (randPsi <= this.getPsi()) {
+                if (randOmega <= this.getOmega()) {
+                    drawBase = distance1AgentsAssorted;
+                } else {
+                    drawBase = distance1AgentsShuffled;
+                }
+                drawBase.removeAll(removals);
             }
-            // connection at distance 2
-            if (other == null && rand <= (this.getPsi() + this.getXi())) {
-                other = this.getRandomConnectionAtDistance2(agentsProcessed);
+            // distance 2
+            if (randPsi <= (this.getPsi() + this.getXi())) {
+                if (randOmega <= this.getOmega()) {
+                    drawBase = distance2AgentsAssorted;
+                } else {
+                    drawBase = distance2AgentsShuffled;
+                }
+
+                drawBase.removeAll(removals);
             }
-            // random agent
-            if (other == null) {
-                other = this.getRandomPeer(agentsProcessed);
+            // all agents
+            if (drawBase == null || drawBase.isEmpty() || randPsi > (this.getPsi() + this.getXi())) {
+                if (randOmega <= this.getOmega()) {
+                    drawBase = allAgentsAssorted;
+                } else {
+                    drawBase = allAgentsShuffled;
+                }
+                drawBase.removeAll(removals);
             }
-            // no agent to process found (e.g., number of decisions ecxeeding population size)
-            if (other == null) {
+
+            // draw agent to process
+            if (drawBase.isEmpty()) {
                 logger.warn("No other agent found to process for agent " + this.getId());
                 return;
             }
+            other = drawBase.get(0);
 
-            // processing other agent
+            // processing drawn agent
             if (this.isDirectlyConnectedTo(other)) {
                 if (existingConnectionTooCostly(other)) {
                     disconnectFrom(other);
@@ -1157,10 +1196,13 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
                     if (agents1.contains(agent)) {
                         Double newKey = key1 + key2;
 
-                        if (reducedMap.containsKey(newKey)) {
-                            reducedMap.get(newKey).add(agent);
+                        List<Agent> list = reducedMap.get(newKey);
+                        if (list != null) {
+                            list.add(agent);
                         } else {
-                            reducedMap.put(newKey, Arrays.asList(agent));
+                            list = new ArrayList<Agent>();
+                            list.add(agent);
+                            reducedMap.put(newKey, list);
                         }
 
                         if (newKey > maxNewKey) {
@@ -1275,66 +1317,6 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
 
         Collections.shuffle(res);
         return res;
-    }
-
-    /**
-     * @param agents
-     * @return
-     */
-    // TODO improve performance
-    //          1. create assortativity order once in the beginning of agent processing
-    //          2. create shuffled list once in the beginning of agent processing
-    //          3. draw and alter these lists when needed (omega condition)
-    private Agent drawRandomAgent(List<Agent> agents) {
-        // no feasible agent
-        if (agents.isEmpty()) {
-            return null;
-        }
-
-        if (ThreadLocalRandom.current().nextDouble() <= this.getOmega()) {
-            // assortativity condition
-            sortByAssortativityConditions(agents);
-        } else {
-            // random selection
-            Collections.shuffle(agents);
-        }
-
-        if (this.considerAge()) {
-            int targetAge = AgeStructure.getInstance().sampleAgeFromAgeDependentDegreeDistribution(this.getAge());
-            Iterator<Agent> it = agents.iterator();
-            while (it.hasNext()) {
-                Agent agent = it.next();
-                if (agent.getAge() == targetAge) {
-                    return agent;
-                }
-            }
-        }
-
-        return agents.get(0);
-    }
-
-    private Agent getRandomConnection(Set<Agent> exclusions) {
-        HashSet<Agent> removals = new HashSet<Agent>(exclusions);
-        removals.add(this);
-        List<Agent> connections = this.getConnections();
-        connections.removeAll(removals);
-        return drawRandomAgent(connections);
-    }
-
-    private Agent getRandomConnectionAtDistance2(Set<Agent> exclusions) {
-        HashSet<Agent> removals = new HashSet<Agent>(exclusions);
-        removals.add(this);
-        List<Agent> connectionsDist2 = this.getConnectionsAtDistance2();
-        connectionsDist2.removeAll(removals);
-        return drawRandomAgent(connectionsDist2);
-    }
-
-    private Agent getRandomPeer(Set<Agent> exclusions) {
-        HashSet<Agent> removals = new HashSet<Agent>(exclusions);
-        removals.add(this);
-        List<Agent> peers = new ArrayList<Agent>(this.getNetwork().getAgents());
-        peers.removeAll(removals);
-        return drawRandomAgent(peers);
     }
 
     private Agent getAgent1(Agent agent1, Agent agent2) {
