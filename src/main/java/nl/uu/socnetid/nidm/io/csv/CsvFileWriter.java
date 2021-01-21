@@ -46,7 +46,7 @@ public abstract class CsvFileWriter<UMP extends UtilityModelParameters> extends 
     protected DataGeneratorData<UMP> dgData;
 
     private static final Logger logger = LogManager.getLogger(CsvFileWriter.class);
-    private static final char DEFAULT_SEPARATOR = ',';
+    private static final char DEFAULT_SEPARATOR = ';';
 
 
     /**
