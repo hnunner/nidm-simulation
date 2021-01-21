@@ -26,6 +26,7 @@
 package nl.uu.socnetid.nidm.stats;
 
 import java.util.List;
+import java.util.Map;
 
 import nl.uu.socnetid.nidm.networks.AssortativityConditions;
 import nl.uu.socnetid.nidm.networks.Network;
@@ -46,6 +47,8 @@ public class NetworkStats {
     private double assortativityAge;
     private double assortativityProfession;
     private double avDegree;
+    private Map<String, Double> avDegreesByProfession;
+    private Map<String, Double> degreesSdByProfession;
     private Double avDegree2 = null;     // lazy initialization (very costly operations)
     private double avDegreeSatisfied;
     private double avDegreeUnsatisfied;
@@ -80,6 +83,8 @@ public class NetworkStats {
         this.assortativityAge = network.getAssortativityAge(simRound);
         this.assortativityProfession = network.getAssortativityProfession(simRound);
         this.avDegree = network.getAvDegree(simRound);
+        this.avDegreesByProfession = null;          // network.getAverageDegreesByProfessions();
+        this.degreesSdByProfession = null;          // network.getAverageDegreesByProfessions();
         this.avDegreeSatisfied = network.getAvDegreeSatisfied();
         this.avDegreeUnsatisfied = network.getAvDegreeUnsatisfied();
         this.avClustering = network.getAvClustering(simRound);
@@ -182,6 +187,30 @@ public class NetworkStats {
      */
     public double getAvDegree() {
         return avDegree;
+    }
+
+    /**
+     * @param profession
+     *          the profession to get average degree for
+     * @return the avDegree for profession
+     */
+    public double getAvDegreeByProfession(String profession) {
+        if (this.avDegreesByProfession == null) {
+            this.avDegreesByProfession = this.network.getAvDegreesByProfessions();
+        }
+        return this.avDegreesByProfession.get(profession);
+    }
+
+    /**
+     * @param profession
+     *          the profession to get average degree standard deviation for
+     * @return the avDegreeSd for profession
+     */
+    public double getDegreeSdByProfession(String profession) {
+        if (this.degreesSdByProfession == null) {
+            this.degreesSdByProfession = this.network.getDegreesSdByProfessions();
+        }
+        return this.degreesSdByProfession.get(profession);
     }
 
     /**

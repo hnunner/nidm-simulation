@@ -29,14 +29,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.apache.commons.math.stat.descriptive.moment.StandardDeviation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.graphstream.algorithm.Toolkit;
@@ -45,6 +48,7 @@ import org.graphstream.graph.implementations.SingleGraph;
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.agents.AgentFactory;
 import nl.uu.socnetid.nidm.data.in.AgeStructure;
+import nl.uu.socnetid.nidm.data.in.Professions;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.simulation.Simulation;
 import nl.uu.socnetid.nidm.simulation.SimulationListener;
@@ -171,9 +175,11 @@ public class Network extends SingleGraph implements SimulationListener {
 
         // TODO create assortativity interface, use list filled with instanciations of subclasses here
         this.addAttribute(NetworkAttributes.ASSORTATIVITY_CONDITIONS, acs, false);
-        this.addAttribute(NetworkAttributes.ASSORTATIVITY_ROUND_LAST_COMPUTATION, -1, false);
+        this.addAttribute(NetworkAttributes.ASSORTATIVITY_RISK_PERCEPTION_ROUND_LAST_COMPUTATION, -1, false);
         this.addAttribute(NetworkAttributes.ASSORTATIVITY_RISK_PERCEPTION, 0.0, false);
+        this.addAttribute(NetworkAttributes.ASSORTATIVITY_AGE_ROUND_LAST_COMPUTATION, -1, false);
         this.addAttribute(NetworkAttributes.ASSORTATIVITY_AGE, 0.0, false);
+        this.addAttribute(NetworkAttributes.ASSORTATIVITY_PROFESSION_ROUND_LAST_COMPUTATION, -1, false);
         this.addAttribute(NetworkAttributes.ASSORTATIVITY_PROFESSION, 0.0, false);
 
         this.setNodeFactory(new AgentFactory());
@@ -693,6 +699,59 @@ public class Network extends SingleGraph implements SimulationListener {
         return (double) this.getAttribute(NetworkAttributes.AV_DEGREE);
     }
 
+
+    // TODO testcase
+    // TODO comments
+    public Map<String, Double> getAvDegreesByProfessions() {
+
+        HashMap<String, Double> degreesByProfessions = new HashMap<String, Double>();
+        Iterator<String> professionsIt = Professions.getInstance().getProfessionsIterator();
+
+        while (professionsIt.hasNext()) {
+            String profession = professionsIt.next();
+            Iterator<Agent> agentIt = this.getAgentIterator();
+
+            double degree = 0.0;
+            double agents = 0;
+
+            while (agentIt.hasNext()) {
+                Agent agent = agentIt.next();
+                if (agent.getProfession().equals(profession)) {
+                    degree += agent.getDegree();
+                    agents++;
+                }
+            }
+            degreesByProfessions.put(profession, degree / agents);
+        }
+        return degreesByProfessions;
+    }
+
+    // TODO testcase
+    // TODO comments
+    public Map<String, Double> getDegreesSdByProfessions() {
+
+        HashMap<String, Double> degreesSdByProfessions = new HashMap<String, Double>();
+        Iterator<String> professionsIt = Professions.getInstance().getProfessionsIterator();
+
+        while (professionsIt.hasNext()) {
+            String profession = professionsIt.next();
+            Iterator<Agent> agentIt = this.getAgentIterator();
+
+            double[] degrees = new double[this.getN()];
+            int i = 0;
+
+            while (agentIt.hasNext()) {
+                Agent agent = agentIt.next();
+                if (agent.getProfession().equals(profession)) {
+                    degrees[i++] = agent.getDegree();
+                }
+            }
+            StandardDeviation sd = new StandardDeviation();
+            degreesSdByProfessions.put(profession, sd.evaluate(degrees));
+        }
+        return degreesSdByProfessions;
+    }
+
     /**
      * Gets the the theoretic average degree of the network (dependent on the utility function of the agents).
      *
@@ -963,15 +1022,6 @@ public class Network extends SingleGraph implements SimulationListener {
     }
 
     /**
-     * Gets the round when assortativity has been computed last.
-     *
-     * @return the round when assortativity has been computed last
-     */
-    public int getAssortativityRound() {
-        return (int) this.getAttribute(NetworkAttributes.ASSORTATIVITY_ROUND_LAST_COMPUTATION);
-    }
-
-    /**
      * Gets the assortativity for risk perception.
      *
      * @return the assorativity for risk perception
@@ -984,6 +1034,15 @@ public class Network extends SingleGraph implements SimulationListener {
     }
 
     /**
+     * Gets the round when assortativity for risk perception has been computed last.
+     *
+     * @return the round when assortativity for risk perception has been computed last
+     */
+    public int getAssortativityRiskPerceptionRoundLastComputation() {
+        return (int) this.getAttribute(NetworkAttributes.ASSORTATIVITY_RISK_PERCEPTION_ROUND_LAST_COMPUTATION);
+    }
+
+    /**
      * Gets the age assortativity for risk perception.
      *
      * @param simRound
@@ -991,11 +1050,12 @@ public class Network extends SingleGraph implements SimulationListener {
      * @return the assortativity for risk perception
      */
     public double getAssortativityRiskPerception(int simRound) {
-        if (this.getAssortativityRound() < simRound) {
+        if (this.getAssortativityRiskPerceptionRoundLastComputation() < simRound) {
             this.changeAttribute(NetworkAttributes.ASSORTATIVITY_RISK_PERCEPTION,
                     this.getAttribute(NetworkAttributes.ASSORTATIVITY_RISK_PERCEPTION),
                     StatsComputer.computeAssortativity(this.getEdgeSet(), AssortativityConditions.RISK_PERCEPTION));
-            this.changeAttribute(NetworkAttributes.ASSORTATIVITY_ROUND_LAST_COMPUTATION, this.getAssortativityRound(), simRound);
+            this.changeAttribute(NetworkAttributes.ASSORTATIVITY_RISK_PERCEPTION_ROUND_LAST_COMPUTATION,
+                    this.getAssortativityRiskPerceptionRoundLastComputation(), simRound);
         }
         return (double) this.getAttribute(NetworkAttributes.ASSORTATIVITY_RISK_PERCEPTION);
     }
@@ -1012,6 +1072,15 @@ public class Network extends SingleGraph implements SimulationListener {
     }
 
     /**
+     * Gets the round when assortativity for age has been computed last.
+     *
+     * @return the round when assortativity for age has been computed last
+     */
+    public int getAssortativityAgeRoundLastComputation() {
+        return (int) this.getAttribute(NetworkAttributes.ASSORTATIVITY_AGE_ROUND_LAST_COMPUTATION);
+    }
+
+    /**
      * Gets the age assortativity for age.
      *
      * @param simRound
@@ -1019,10 +1088,11 @@ public class Network extends SingleGraph implements SimulationListener {
      * @return the assortativity for age
      */
     public double getAssortativityAge(int simRound) {
-        if (this.getAssortativityRound() < simRound) {
+        if (this.getAssortativityAgeRoundLastComputation() < simRound) {
             this.changeAttribute(NetworkAttributes.ASSORTATIVITY_AGE, this.getAttribute(NetworkAttributes.ASSORTATIVITY_AGE),
                     StatsComputer.computeAssortativity(this.getEdgeSet(), AssortativityConditions.AGE));
-            this.changeAttribute(NetworkAttributes.ASSORTATIVITY_ROUND_LAST_COMPUTATION, this.getAssortativityRound(), simRound);
+            this.changeAttribute(NetworkAttributes.ASSORTATIVITY_AGE_ROUND_LAST_COMPUTATION,
+                    this.getAssortativityAgeRoundLastComputation(), simRound);
         }
         return (double) this.getAttribute(NetworkAttributes.ASSORTATIVITY_AGE);
     }
@@ -1040,6 +1110,15 @@ public class Network extends SingleGraph implements SimulationListener {
     }
 
     /**
+     * Gets the round when assortativity for profession has been computed last.
+     *
+     * @return the round when assortativity for profession has been computed last
+     */
+    public int getAssortativityProfessionRoundLastComputation() {
+        return (int) this.getAttribute(NetworkAttributes.ASSORTATIVITY_PROFESSION_ROUND_LAST_COMPUTATION);
+    }
+
+    /**
      * Gets the age assortativity for profession.
      *
      * @param simRound
@@ -1047,11 +1126,12 @@ public class Network extends SingleGraph implements SimulationListener {
      * @return the assortativity for profession
      */
     public double getAssortativityProfession(int simRound) {
-        if (this.getAssortativityRound() < simRound) {
+        if (this.getAssortativityProfessionRoundLastComputation() < simRound) {
             this.changeAttribute(NetworkAttributes.ASSORTATIVITY_PROFESSION,
                     this.getAttribute(NetworkAttributes.ASSORTATIVITY_PROFESSION),
                     StatsComputer.computeAssortativity(this.getEdgeSet(), AssortativityConditions.PROFESSION));
-            this.changeAttribute(NetworkAttributes.ASSORTATIVITY_ROUND_LAST_COMPUTATION, this.getAssortativityRound(), simRound);
+            this.changeAttribute(NetworkAttributes.ASSORTATIVITY_PROFESSION_ROUND_LAST_COMPUTATION,
+                    this.getAssortativityProfessionRoundLastComputation(), simRound);
         }
         return (double) this.getAttribute(NetworkAttributes.ASSORTATIVITY_PROFESSION);
     }

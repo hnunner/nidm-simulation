@@ -79,6 +79,7 @@ public abstract class UtilityModelParameters {
     private boolean considerProfession;
     // lockdown conditions
     private List<LockdownConditions> lcs;
+    private LockdownConditions currLc;
 
     // INFECTIONS
     // sigma - severity
@@ -1291,6 +1292,20 @@ public abstract class UtilityModelParameters {
      */
     public void setLockdownConditions(List<LockdownConditions> lcs) {
         this.lcs = lcs;
+    }
+
+    /**
+     * @param lc the lc to set
+     */
+    public void setCurrLockdownCondition(LockdownConditions lc) {
+        this.currLc = lc;
+    }
+
+    /**
+     * @return the currLc
+     */
+    public LockdownConditions getCurrLockdownCondition() {
+        return this.currLc;
     }
 
 }
