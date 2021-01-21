@@ -66,7 +66,9 @@ public class AgentPropertiesWriter implements NetworkWriter {
 
         if (agentsIt == null) {
             // first row
-            sb.append(AGENT_COLUMN).append(VALUE_SEPERATOR).append(AGE_COLUMN).append(PROFESSION_COLUMN);
+            sb.append(AGENT_COLUMN);
+            sb.append(VALUE_SEPERATOR).append(AGE_COLUMN);
+            sb.append(VALUE_SEPERATOR).append(PROFESSION_COLUMN);
             sb.append(System.getProperty("line.separator"));
 
             // prepare iterator

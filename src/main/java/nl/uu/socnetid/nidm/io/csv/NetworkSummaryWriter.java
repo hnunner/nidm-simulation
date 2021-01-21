@@ -133,9 +133,15 @@ public abstract class NetworkSummaryWriter<UMP extends UtilityModelParameters> e
         // DEPENDENT VARIABLES
         // network - pre epidemic
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvDegree()));
-        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvCloseness(this.dgData.getSimStats().getCurrRound())));
+
+        currData.add("NA");
+//        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvCloseness(this.dgData.getSimStats().getCurrRound())));
+
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvClustering()));
-        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvPathLength(this.dgData.getSimStats().getCurrRound())));
+
+        currData.add("NA");
+//        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvPathLength(this.dgData.getSimStats().getCurrRound())));
+
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getDensity()));
         currData.add(this.dgData.getNetStatsCurrent().getAssortativityConditions().toString());
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAssortativityRiskPerception()));

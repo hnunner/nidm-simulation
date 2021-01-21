@@ -26,16 +26,25 @@
 package nl.uu.socnetid.nidm.io.csv;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import nl.uu.socnetid.nidm.data.in.Professions;
 import nl.uu.socnetid.nidm.data.out.DataGeneratorData;
 import nl.uu.socnetid.nidm.data.out.LogValues;
 import nl.uu.socnetid.nidm.data.out.NunnerBuskensProfessionsParameters;
+import nl.uu.socnetid.nidm.networks.LockdownConditions;
 
 /**
  * @author Hendrik Nunner
  */
 public class NunnerBuskensNetworkSummaryProfessionsWriter extends NetworkSummaryWriter<NunnerBuskensProfessionsParameters> {
+
+    // logger
+    private static final Logger logger = LogManager.getLogger(NunnerBuskensNetworkSummaryProfessionsWriter.class);
 
     /**
      * Creates the writer.
@@ -69,6 +78,16 @@ public class NunnerBuskensNetworkSummaryProfessionsWriter extends NetworkSummary
         cols.add(LogValues.IV_NB_PROF_N.toString());
         cols.add(LogValues.IV_NB_PROF_PHI.toString());
         cols.add(LogValues.IV_NB_PROF_PSI.toString());
+
+        Iterator<String> professionIt = Professions.getInstance().getProfessionsIterator();
+        while (professionIt.hasNext()) {
+            String profession = professionIt.next();
+            cols.add(LogValues.DV_NB_PROF_DEGREE + profession.replaceAll("\\s+", "_").toLowerCase());
+            cols.add(LogValues.DV_NB_PROF_DEGREE_SD + profession.replaceAll("\\s+", "_").toLowerCase());
+            cols.add(LogValues.DV_NB_PROF_DEGREE_DIFF + profession.replaceAll("\\s+", "_").toLowerCase());
+            cols.add(LogValues.DV_NB_PROF_DEGREE_SD_DIFF + profession.replaceAll("\\s+", "_").toLowerCase());
+        }
+
         return cols;
     }
 
@@ -86,6 +105,46 @@ public class NunnerBuskensNetworkSummaryProfessionsWriter extends NetworkSummary
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getN()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getPhi()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getPsi()));
+
+        Iterator<String> professionIt = Professions.getInstance().getProfessionsIterator();
+        while (professionIt.hasNext()) {
+            String profession = professionIt.next();
+
+            // av degree by profession
+            double avDegreeByProfession = this.dgData.getNetStatsCurrent().getAvDegreeByProfession(profession);
+            currData.add(String.valueOf(avDegreeByProfession));
+
+            // av degree standard deviation by profession
+            double degreeSdByProfession = this.dgData.getNetStatsCurrent().getDegreeSdByProfession(profession);
+            currData.add(String.valueOf(degreeSdByProfession));
+
+            // av degree and av degree standard deviation difference by profession
+            double avDegreeDiffByProfession;
+            double degreeSdDiffByProfession;
+            LockdownConditions lc = this.dgData.getUtilityModelParams().getCurrLockdownCondition();
+            switch (lc) {
+                case DURING:
+                    avDegreeDiffByProfession = avDegreeByProfession -
+                            Professions.getInstance().getDegreeDuringLockdown(profession);
+                    degreeSdDiffByProfession = degreeSdByProfession -
+                            Professions.getInstance().getDegreeErrorDuringLockdown(profession);
+                    break;
+
+                case POST:
+                default:
+                    logger.warn("Lockdown condition not implemented: " + lc + ". Using pre lockdown instead.");
+                    //$FALL-THROUGH$
+                case PRE:
+                    avDegreeDiffByProfession = avDegreeByProfession -
+                            Professions.getInstance().getDegreePreLockdown(profession);
+                    degreeSdDiffByProfession = degreeSdByProfession -
+                            Professions.getInstance().getDegreeErrorPreLockdown(profession);
+                    break;
+            }
+            currData.add(String.valueOf(avDegreeDiffByProfession));
+            currData.add(String.valueOf(degreeSdDiffByProfession));
+        }
+
         return currData;
     }
 
