@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -24,6 +25,7 @@ public class Professions {
     // logger
     private static final Logger logger = LogManager.getLogger(Professions.class);
 
+    private List<String> professions;
     private List<String> professionDistribution;
     private Map<String, Double> degreePreLockdown;
     private Map<String, Double> errorDegreePreLockdown;
@@ -48,6 +50,7 @@ public class Professions {
      * TODO add age selection in GUI
      */
     private void initProfessions() {
+        this.professions = new ArrayList<String>();
         this.professionDistribution = new ArrayList<String>();
         this.degreePreLockdown = new HashMap<String, Double>();
         this.errorDegreePreLockdown = new HashMap<String, Double>();
@@ -69,6 +72,7 @@ public class Professions {
 
                 // profession
                 String profession = attributes[0];
+                this.professions.add(profession);
 
                 // profession distribution
                 int i = 0;
@@ -128,6 +132,15 @@ public class Professions {
         return LazyHolder.AS;
     }
 
+
+    /**
+     * Get an iterator over all available professions.
+     *
+     * @return an iterator over all available professions
+     */
+    public Iterator<String> getProfessionsIterator() {
+        return this.professions.iterator();
+    }
 
     /**
      * Draws a random profession from the previously initialized profession distribution (see initProfessionDistribution).

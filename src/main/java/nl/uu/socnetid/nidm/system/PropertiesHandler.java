@@ -483,7 +483,7 @@ public class PropertiesHandler {
         }
         nbpParameters.setAssortativityConditions(acs);
         nbpParameters.setOmega(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_OMEGA.toString())));
-        nbpParameters.setSimIterations(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_SIM_ITERATIONS.toString())));
+        nbpParameters.setSimsPerParameterCombination(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_SIMS_PER_PC.toString())));
         String[] lcsString = configProps.getProperty(LogValues.IV_NB_PROF_LOCKDOWN_CONDITIONS.toString()).split(",");
         List<LockdownConditions> lcs = new ArrayList<LockdownConditions>(lcsString.length);
         for (int i = 0; i < lcsString.length; i++) {
