@@ -233,7 +233,7 @@ public class Simulation implements Runnable {
     }
 
     /**
-     * Simulates the network dynamics (disease and agents) until the network is stable.
+     * Simulates the network dynamics (disease and agents) until the disease has disappeared.
      *
      * TODO: generalize with method above
      */

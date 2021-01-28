@@ -461,7 +461,7 @@ public class PropertiesHandler {
         nbgParameters.setConsiderAge(Boolean.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_CONSIDER_AGE.toString())));
         nbgParameters.setConsiderProfession(Boolean.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_CONSIDER_PROFESSION.toString())));
 
-        // NunnerBuskens network professions
+        // NunnerBuskens professions
         generateNunnerBuskensNetworksProfessions = Boolean.parseBoolean(configProps.getProperty("nb.generate.networks.professions"));
         nbpParameters = new NunnerBuskensProfessionsParameters();
         nbpParameters.setN(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_N.toString())));
@@ -473,6 +473,8 @@ public class PropertiesHandler {
         nbpParameters.setB2(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_B2.toString())));
         nbpParameters.setC1(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_C1.toString())));
         nbpParameters.setAlpha(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_ALPHA.toString())));
+        nbpParameters.setGamma(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_GAMMA.toString())));
+        nbpParameters.setTau(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_TAU.toString())));
         nbpParameters.setConsiderAge(Boolean.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_CONSIDER_AGE.toString())));
         nbpParameters.setConsiderProfession(Boolean.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_CONSIDER_PROFESSION.toString())));
         nbpParameters.setAssortativityInitCondition(AssortativityConditions.fromString(configProps.getProperty(LogValues.IV_NB_PROF_ASSORTATIVITY_INIT_CONDITION.toString())));
@@ -484,6 +486,7 @@ public class PropertiesHandler {
         nbpParameters.setAssortativityConditions(acs);
         nbpParameters.setOmega(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_OMEGA.toString())));
         nbpParameters.setSimsPerParameterCombination(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_SIMS_PER_PC.toString())));
+        nbpParameters.setSimIterations(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_SIM_ITERATIONS.toString())));
         String[] lcsString = configProps.getProperty(LogValues.IV_NB_PROF_LOCKDOWN_CONDITIONS.toString()).split(",");
         List<LockdownConditions> lcs = new ArrayList<LockdownConditions>(lcsString.length);
         for (int i = 0; i < lcsString.length; i++) {

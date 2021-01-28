@@ -146,11 +146,6 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
                 for (int run = 1; run <= 3; run++) {
                     logger.debug("run " + run + ": started.");
                     this.dgData.getSimStats().setSimPerUpc(run);
-                    // uid = "upc-sim"
-                    this.dgData.getSimStats().setUid(
-                            String.valueOf(this.dgData.getSimStats().getUpc()) +
-                            "#" + String.valueOf(
-                                    this.dgData.getSimStats().getSimPerUpc()));
 
                     // create vector of degree according to exponential distribution
                     long[] ties = new long[this.dgData.getUtilityModelParams().getCurrN()];

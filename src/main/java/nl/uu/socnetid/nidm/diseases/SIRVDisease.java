@@ -23,53 +23,21 @@
  *      Nunner, H., Buskens, V., & Kretzschmar, M. (2019). A model for the co-evolution of dynamic
  *      social networks and infectious diseases. Manuscript sumbitted for publication.
  */
-package nl.uu.socnetid.nidm.diseases.types;
+package nl.uu.socnetid.nidm.diseases;
 
 /**
  * @author Hendrik Nunner
  */
-public enum DiseaseGroup {
-
-    SUSCEPTIBLE("susceptible"),
-    INFECTED("infected"),
-    RECOVERED("recovered"),
-    VACCINATED("vaccinated");
-
-    // the name
-    private String name;
+public class SIRVDisease extends SIRDisease {
 
     /**
-     * Constructor, setting the name
+     * Constructor.
      *
-     * @param name
-     *          the name of the enum
+     * @param diseaseSpecs
+     *          the disease specs
      */
-    DiseaseGroup(String name) {
-        this.name = name;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Enum#toString()
-     */
-    @Override
-    public String toString() {
-        return name;
-    }
-
-    /**
-     * Creates the disease group from a given string.
-     * @param text
-     *          the string to create the disease group for
-     * @return the disease group
-     */
-    public static DiseaseGroup fromString(String text) {
-        for (DiseaseGroup a : DiseaseGroup.values()) {
-            if (a.name.equalsIgnoreCase(text)) {
-                return a;
-            }
-        }
-        throw new IllegalArgumentException("No constant with text " + text + " found.");
+    protected SIRVDisease(DiseaseSpecs diseaseSpecs) {
+        super(diseaseSpecs);
     }
 
 }

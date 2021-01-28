@@ -436,6 +436,27 @@ public class Network extends SingleGraph implements SimulationListener {
     }
 
     /**
+     * Gets all agents with the given profession within the network.
+     *
+     * @param profession
+     *      the profession
+     * @return all agents within the network.
+     */
+    public Collection<Agent> getAgents(String profession) {
+
+        Collection<Agent> agents = new ArrayList<Agent>();
+
+        Iterator<Agent> it = this.getAgentIterator();
+        while (it.hasNext()) {
+            Agent agent = it.next();
+            if (agent.getProfession().equals(profession)) {
+                agents.add(agent);
+            }
+        }
+        return agents;
+    }
+
+    /**
      * Gets the value of an attribute.
      *
      * TODO create super class for agent and network that allows joined attribute handling
@@ -699,6 +720,29 @@ public class Network extends SingleGraph implements SimulationListener {
         return (double) this.getAttribute(NetworkAttributes.AV_DEGREE);
     }
 
+    // TODO testcase
+    // TODO comments
+    public Map<String, Integer> getNByProfessions() {
+
+        HashMap<String, Integer> nByProfessions = new HashMap<String, Integer>();
+        Iterator<String> professionsIt = Professions.getInstance().getProfessionsIterator();
+
+        while (professionsIt.hasNext()) {
+            String profession = professionsIt.next();
+            Iterator<Agent> agentIt = this.getAgentIterator();
+
+            int n = 0;
+
+            while (agentIt.hasNext()) {
+                Agent agent = agentIt.next();
+                if (agent.getProfession().equals(profession)) {
+                    n++;
+                }
+            }
+            nByProfessions.put(profession, n);
+        }
+        return nByProfessions;
+    }
 
     // TODO testcase
     // TODO comments
@@ -1356,6 +1400,24 @@ public class Network extends SingleGraph implements SimulationListener {
     }
 
     /**
+     * Gets all vaccinated agents within the network.
+     *
+     * @return all vaccinated agents within the network.
+     */
+    public Collection<Agent> getVaccinated() {
+        List<Agent> vaccinated = new LinkedList<Agent>();
+
+        Iterator<Agent> agentIt = getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            if (agent.isVaccinated()) {
+                vaccinated.add(agent);
+            }
+        }
+        return vaccinated;
+    }
+
+    /**
      * Gets all satisfied agents within the network.
      *
      * @return all satisfied agents within the network.
@@ -1431,7 +1493,7 @@ public class Network extends SingleGraph implements SimulationListener {
     }
 
     /**
-     * Infects a random agent.
+     * Infects a random susceptible agent.
      *
      * @param diseaseSpecs
      *          the characteristics of the disease to infect a agent with
@@ -1486,6 +1548,10 @@ public class Network extends SingleGraph implements SimulationListener {
                         agent.makeSusceptible();
                         break;
 
+                    case VACCINATED:
+                        agent.makeSusceptible();
+                        break;
+
                     default:
                         break;
                 }
@@ -1493,6 +1559,22 @@ public class Network extends SingleGraph implements SimulationListener {
 
             }
         }
+    }
+
+    public void vaccinate(String profession, double eta) {
+        Iterator<Agent> agIt = this.getAgentIterator();
+        int vaccs = 0;
+        while (agIt.hasNext()) {
+            Agent agent = agIt.next();
+            if (agent.getProfession().equals(profession)) {
+                double randVacc = ThreadLocalRandom.current().nextDouble();
+                if (randVacc < eta) {
+                    agent.vaccinate();
+                    vaccs++;
+                }
+            }
+        }
+        logger.info(vaccs + " agents of profession '" + profession + "' with vaccine efficacy of '" + eta + "' vaccinated.");
     }
 
     /**
