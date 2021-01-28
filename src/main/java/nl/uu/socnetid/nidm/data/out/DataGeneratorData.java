@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import nl.uu.socnetid.nidm.agents.Agent;
+import nl.uu.socnetid.nidm.stats.AgentStats;
 import nl.uu.socnetid.nidm.stats.AgentStatsPost;
 import nl.uu.socnetid.nidm.stats.AgentStatsPre;
 import nl.uu.socnetid.nidm.stats.NetworkStats;
@@ -57,6 +58,7 @@ public class DataGeneratorData<UMP extends UtilityModelParameters> {
     private Map<String, AgentStatsPre> agentStatsPre;
     private Map<String, AgentStatsPost> agentStatsPostStatic;
     private Map<String, AgentStatsPost> agentStatsPostDynamic;
+    private Map<String, AgentStats> agentStatsCurrent;
 
 
     // agents
@@ -65,7 +67,7 @@ public class DataGeneratorData<UMP extends UtilityModelParameters> {
     private AgentStatsPre indexCaseStats;
     private AgentStatsPre indexCaseStatsCurrent;
     // export
-    private String gexfExportFile = "/";
+    private String exportFileName = "/";
 
 
     /**
@@ -183,17 +185,17 @@ public class DataGeneratorData<UMP extends UtilityModelParameters> {
     }
 
     /**
-     * @return the gexfExportFile
+     * @return the exportFileName
      */
-    public String getGexfExportFile() {
-        return gexfExportFile;
+    public String getExportFileName() {
+        return exportFileName;
     }
 
     /**
-     * @param gexfExportFile the gexfExportFile to set
+     * @param exportFileName the exportFileName to set
      */
-    public void setGexfExportFile(String gexfExportFile) {
-        this.gexfExportFile = gexfExportFile;
+    public void setExportFileName(String exportFileName) {
+        this.exportFileName = exportFileName;
     }
 
     /**
@@ -257,6 +259,20 @@ public class DataGeneratorData<UMP extends UtilityModelParameters> {
      */
     public void setAgentStatsPostDynamic(Map<String, AgentStatsPost> agentStatsPostDynamic) {
         this.agentStatsPostDynamic = agentStatsPostDynamic;
+    }
+
+    /**
+     * @return the agentStatsCurrent
+     */
+    public Map<String, AgentStats> getAgentStatsCurrent() {
+        return agentStatsCurrent;
+    }
+
+    /**
+     * @param agentStatsCurrent the agentStatsCurrent to set
+     */
+    public void setAgentStatsCurrent(Map<String, AgentStats> agentStatsCurrent) {
+        this.agentStatsCurrent = agentStatsCurrent;
     }
 
 }

@@ -225,12 +225,6 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
                                                                             <= this.dgData.getUtilityModelParams().
                                                                             getSimsPerParameterCombination()) {
 
-                                                                        // uid = "upc-sim"
-                                                                        this.dgData.getSimStats().setUid(
-                                                                                String.valueOf(this.dgData.getSimStats().getUpc()) +
-                                                                                "-" + String.valueOf(
-                                                                                        this.dgData.getSimStats().getSimPerUpc()));
-
                                                                         // simulate
                                                                         performSingleSimulation();
 
@@ -298,8 +292,8 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
         // begin: GEXF export
         if (PropertiesHandler.getInstance().isExportGexf()) {
             this.gexfWriter = new GEXFWriter();
-            this.dgData.setGexfExportFile(getExportPath() + this.dgData.getSimStats().getUid() + ".gexf");
-            gexfWriter.startRecording(network, this.dgData.getGexfExportFile());
+            this.dgData.setExportFileName(getExportPath() + this.dgData.getSimStats().getUid() + ".gexf");
+            gexfWriter.startRecording(network, this.dgData.getExportFileName());
         }
 
         // create utility

@@ -32,17 +32,25 @@ import nl.uu.socnetid.nidm.networks.Network;
  */
 public class NetworkStatsPost {
 
+    private final double pct;
     private final boolean stable;
+    private final double susceptiblePercent;
     private final double infectedPercent;
     private final double recoveredPercent;
+    private final int vaccinated;
+    private final double vaccinatedPercent;
+    private int quarantined;
     private final double satisfiedPercent;
 
 
     public NetworkStatsPost(Network network) {
         this.stable = network.isStable();
-        double pct = 100D / network.getAgents().size();
+        this.pct = 100D / network.getAgents().size();
+        this.susceptiblePercent = pct * network.getSusceptibles().size();
         this.infectedPercent = pct * network.getInfected().size();
         this.recoveredPercent = pct * network.getRecovered().size();
+        this.vaccinatedPercent = pct * network.getVaccinated().size();
+        this.vaccinated = network.getVaccinated().size();
         this.satisfiedPercent = pct * network.getSatisfied().size();
     }
 
@@ -72,6 +80,48 @@ public class NetworkStatsPost {
      */
     public double getSatisfiedPercent() {
         return satisfiedPercent;
+    }
+
+    /**
+     * @return the susceptiblePercent
+     */
+    public double getSusceptiblePercent() {
+        return susceptiblePercent;
+    }
+
+    /**
+     * @return the vaccinatedPercent
+     */
+    public double getVaccinatedPercent() {
+        return vaccinatedPercent;
+    }
+
+    /**
+     * @return the vaccinated
+     */
+    public int getVaccinated() {
+        return vaccinated;
+    }
+
+    /**
+     * @return the quarantined
+     */
+    public int getQuarantined() {
+        return quarantined;
+    }
+
+    /**
+     * @param quarantined the quarantined to set
+     */
+    public void setQuarantined(int quarantined) {
+        this.quarantined = quarantined;
+    }
+
+    /**
+     * @return the quarantinedPercent
+     */
+    public double getQuarantinedPercent() {
+        return pct * this.quarantined;
     }
 
 }
