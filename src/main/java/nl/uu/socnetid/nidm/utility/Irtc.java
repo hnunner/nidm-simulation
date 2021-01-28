@@ -159,6 +159,7 @@ public class Irtc extends UtilityFunction {
                 break;
 
             case RECOVERED:
+            case VACCINATED:
                 p = 0;
                 s = 0;
                 break;

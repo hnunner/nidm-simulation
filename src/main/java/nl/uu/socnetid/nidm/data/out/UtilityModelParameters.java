@@ -124,6 +124,12 @@ public abstract class UtilityModelParameters {
     private int tauRandomMax;
     private int[] taus;
     private int currTau;
+    // vaccine efficacy
+    private boolean etaRandom;
+    private double etaRandomMin;
+    private double etaRandomMax;
+    private double[] etas;
+    private double currEta;
 
     // SIMULATION
     // time steps network initialization stage
@@ -731,10 +737,24 @@ public abstract class UtilityModelParameters {
     }
 
     /**
+     * @return the gamma
+     */
+    public double getGamma() {
+        return currGamma;
+    }
+
+    /**
      * @param currGamma the currGamma to set
      */
     public void setCurrGamma(double currGamma) {
         this.currGamma = currGamma;
+    }
+
+    /**
+     * @param gamma the gamma to set
+     */
+    public void setGamma(double gamma) {
+        this.currGamma = gamma;
     }
 
     /**
@@ -1039,10 +1059,108 @@ public abstract class UtilityModelParameters {
     }
 
     /**
+     * @return the tau
+     */
+    public int getTau() {
+        return currTau;
+    }
+
+    /**
      * @param currTau the currTau to set
      */
     public void setCurrTau(int currTau) {
         this.currTau = currTau;
+    }
+
+    /**
+     * @param tau the tau to set
+     */
+    public void setTau(int tau) {
+        this.currTau = tau;
+    }
+
+    /**
+     * @return the etaRandom
+     */
+    public boolean isEtaRandom() {
+        return etaRandom;
+    }
+
+    /**
+     * @param etaRandom the etaRandom to set
+     */
+    public void setEtaRandom(boolean etaRandom) {
+        this.etaRandom = etaRandom;
+    }
+
+    /**
+     * @return the etaRandomMin
+     */
+    public double getEtaRandomMin() {
+        return etaRandomMin;
+    }
+
+    /**
+     * @param etaRandomMin the etaRandomMin to set
+     */
+    public void setEtaRandomMin(double etaRandomMin) {
+        this.etaRandomMin = etaRandomMin;
+    }
+
+    /**
+     * @return the etaRandomMax
+     */
+    public double getEtaRandomMax() {
+        return etaRandomMax;
+    }
+
+    /**
+     * @param etaRandomMax the etaRandomMax to set
+     */
+    public void setEtaRandomMax(double etaRandomMax) {
+        this.etaRandomMax = etaRandomMax;
+    }
+
+    /**
+     * @return the etas
+     */
+    public double[] getEtas() {
+        return etas;
+    }
+
+    /**
+     * @param etas the etas to set
+     */
+    public void setEtas(double[] etas) {
+        this.etas = etas;
+    }
+
+    /**
+     * @return the currEta
+     */
+    public double getCurrEta() {
+        return currEta;
+    }
+
+    /**
+     * @param currEta the currEta to set
+     */
+    public void setCurrEta(double currEta) {
+        this.currEta = currEta;
+    }
+
+    /**
+     * @return the currEta
+     */
+    public double getEta() {
+        return currEta;
+    }
+
+    /**
+     * @param currEta the currEta to set
+     */
+    public void setEta(double currEta) {
+        this.currEta = currEta;
     }
 
     /**

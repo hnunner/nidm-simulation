@@ -34,10 +34,12 @@ public class LocalAgentConnectionsStats {
     private final int nS;
     private final int nI;
     private final int nR;
+    private final int nV;
     private final int m;
     private final int mS;
     private final int mI;
     private final int mR;
+    private final int mV;
     private final int y;
     private final int z;
     private final int netSize;
@@ -53,6 +55,8 @@ public class LocalAgentConnectionsStats {
      *          the number of direct infected ties
      * @param nR
      *          the number of direct recovered ties
+     * @param nV
+     *          the number of direct vaccinated ties
      * @param m
      *          the number of ties at distance 2 (irrespective of disease state)
      * @param mS
@@ -61,6 +65,8 @@ public class LocalAgentConnectionsStats {
      *          the number of infected ties at distance 2
      * @param mR
      *          the number of recovered ties at distance 2
+     * @param mV
+     *          the number of vaccinated ties at distance 2
      * @param y
      *          the amount of open triads the agent is part of (ties of agent that do not share a tie between each other)
      * @param z
@@ -68,15 +74,18 @@ public class LocalAgentConnectionsStats {
      * @param netSize
      *          the network size
      */
-    public LocalAgentConnectionsStats(int n, int nS, int nI, int nR, int m, int mS, int mI, int mR, int y, int z, int netSize) {
+    public LocalAgentConnectionsStats(int n, int nS, int nI, int nR, int nV, int m, int mS, int mI, int mR, int mV,
+            int y, int z, int netSize) {
         this.n = n;
         this.nS = nS;
         this.nI = nI;
         this.nR = nR;
+        this.nV = nV;
         this.m = m;
         this.mS = mS;
         this.mI = mI;
         this.mR = mR;
+        this.mV = mV;
         this.y = y;
         this.z = z;
         this.netSize = netSize;
@@ -158,6 +167,20 @@ public class LocalAgentConnectionsStats {
      */
     public int getmR() {
         return this.mR;
+    }
+
+    /**
+     * @return the nV
+     */
+    public int getnV() {
+        return nV;
+    }
+
+    /**
+     * @return the mV
+     */
+    public int getmV() {
+        return mV;
     }
 
 }

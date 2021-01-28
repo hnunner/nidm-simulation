@@ -162,7 +162,7 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
         cols.add(LogValues.DV_NET_DYNAMIC_STABLE_POST.toString());
 
         // RELATED EXPORTS
-        cols.add(LogValues.GEXF_FILE.toString());
+        cols.add(LogValues.EXPORT_FILENAME.toString());
 
         writeLine(cols);
     }
@@ -253,7 +253,7 @@ public abstract class SimulationSummaryWriter<UMP extends UtilityModelParameters
         currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().isStable() ? 1 : 0));
 
         // RELATED EXPORTS
-        currData.add(this.dgData.getGexfExportFile());
+        currData.add(this.dgData.getExportFileName());
 
         writeLine(currData);
     }
