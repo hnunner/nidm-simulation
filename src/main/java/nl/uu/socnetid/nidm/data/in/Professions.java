@@ -10,11 +10,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import nl.uu.socnetid.nidm.agents.Agent;
+import nl.uu.socnetid.nidm.networks.LockdownConditions;
+import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.system.PropertiesHandler;
 
 /**
@@ -207,6 +211,115 @@ public class Professions {
      */
     public double getAverageDegreeDuringLockdown() {
         return avDegreeDuringLockdown;
+    }
+
+    /**
+     * Gets the error between a map of professions and degrees prior to lockdown
+     * and the actual degrees prior to lockdown.
+     *
+     * @param compDegreePreLockdown
+     *          the map of degrees prior to lockdown to compare
+     * @return the error
+     */
+    public double getDegreePercentageErrorPreLockdown(Map<String, Double> compDegreePreLockdown) {
+
+        double target = 0.0;
+        double comp = 0.0;
+
+        Iterator<String> it = compDegreePreLockdown.keySet().iterator();
+        while (it.hasNext()) {
+            String profession = it.next();
+            comp += compDegreePreLockdown.get(profession);
+            target += this.degreePreLockdown.get(profession);
+        }
+
+        return Math.abs((target - comp) / target);
+    }
+
+    /**
+     * Gets the total difference between a map of professions and degrees and the actual degrees.
+     *
+     * @param conditionsByProfession
+     *          the map of lockdown conditions by profession
+     * @param network
+     *          the network to get the degree error for
+     * @return the difference
+     */
+    public double getDegreeDiffTotal(Map<String, LockdownConditions> conditionsByProfession, Network network) {
+
+        double professionDiff = 0.0;
+
+        for (Entry<String, LockdownConditions> cbp : conditionsByProfession.entrySet()) {
+
+            String profession = cbp.getKey();
+
+            double target = 0.0;
+            switch (cbp.getValue()) {
+                case DURING:
+                    target += this.degreeDuringLockdown.get(profession);
+                    break;
+
+                case POST:
+                    logger.warn("Unimplemented lockdown condition: '" + cbp.getValue() + "'. Using prior to lockdown instead.");
+                    //$FALL-THROUGH$
+                default:
+                case PRE:
+                    target += this.degreePreLockdown.get(profession);
+                    break;
+            }
+
+            // double comp = compDegree.get(profession);
+            Iterator<Agent> it = network.getAgents(profession).iterator();
+            while (it.hasNext()) {
+                Agent agent = it.next();
+                professionDiff += target - agent.getDegree();
+            }
+        }
+
+        return professionDiff;
+    }
+
+    /**
+     * Gets the percentage difference between a map of professions and degrees and the actual degrees.
+     *
+     * @param conditionsByProfession
+     *          the map of lockdown conditions by profession
+     * @param network
+     *          the network to get the degree error for
+     * @return the difference
+     */
+    public double getDegreeDiffPercent(Map<String, LockdownConditions> conditionsByProfession, Network network) {
+
+        double professionDiff = 0.0;
+
+        for (Entry<String, LockdownConditions> cbp : conditionsByProfession.entrySet()) {
+
+            String profession = cbp.getKey();
+
+            double target = 0.0;
+            switch (cbp.getValue()) {
+                case DURING:
+                    target += this.degreeDuringLockdown.get(profession);
+                    break;
+
+                case POST:
+                    logger.warn("Unimplemented lockdown condition: '" + cbp.getValue() + "'. Using prior to lockdown instead.");
+                    //$FALL-THROUGH$
+                default:
+                case PRE:
+                    target += this.degreePreLockdown.get(profession);
+                    break;
+            }
+
+            // double comp = compDegree.get(profession);
+            Iterator<Agent> it = network.getAgents(profession).iterator();
+            while (it.hasNext()) {
+                Agent agent = it.next();
+                professionDiff += Math.abs((target - agent.getDegree()) / target);
+            }
+        }
+
+        return professionDiff/network.getN();
     }
 
 }

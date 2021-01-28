@@ -168,7 +168,9 @@ public abstract class UtilityFunction {
                 s = agent.getDiseaseSpecs().getSigma();
                 break;
 
+
             case RECOVERED:
+            case VACCINATED:
                 p = 0;
                 s = 0;
                 break;
