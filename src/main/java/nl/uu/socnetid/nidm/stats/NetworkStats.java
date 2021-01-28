@@ -26,7 +26,6 @@
 package nl.uu.socnetid.nidm.stats;
 
 import java.util.List;
-import java.util.Map;
 
 import nl.uu.socnetid.nidm.networks.AssortativityConditions;
 import nl.uu.socnetid.nidm.networks.Network;
@@ -37,6 +36,8 @@ import nl.uu.socnetid.nidm.networks.Network;
 public class NetworkStats {
 
     private Network network;
+    @SuppressWarnings("unused")
+    private int simRound;
 
     // TODO make all initializations lazy
 
@@ -47,8 +48,6 @@ public class NetworkStats {
     private double assortativityAge;
     private double assortativityProfession;
     private double avDegree;
-    private Map<String, Double> avDegreesByProfession;
-    private Map<String, Double> degreesSdByProfession;
     private Double avDegree2 = null;     // lazy initialization (very costly operations)
     private double avDegreeSatisfied;
     private double avDegreeUnsatisfied;
@@ -60,14 +59,16 @@ public class NetworkStats {
     private double avSocialBenefits;
     private double avSocialCosts;
     private double avDiseaseCosts;
-    private int susceptiblesTotal;
-    private int infectedTotal;
-    private int recoveredTotal;
+    private Integer susceptiblesTotal = null;
+    private Integer infectedTotal = null;
+    private Integer recoveredTotal = null;
+    private Integer vaccinatedTotal = null;
     private int satisfiedTotal;
     private int unsatisfiedTotal;
-    private double susceptiblePercent;
-    private double infectedPercent;
-    private double recoveredPercent;
+    private Double susceptiblePercent = null;
+    private Double infectedPercent = null;
+    private Double recoveredPercent = null;
+    private Double vaccinatedPercent = null;
     private double satisfiedPercent;
     private double unsatisfiedPercent;
     private int tiesBrokenWithInfectionPresent = 0;
@@ -75,7 +76,18 @@ public class NetworkStats {
 
 
     public NetworkStats(Network network, int simRound) {
+        this(network, simRound, true);
+    }
+
+    public NetworkStats(Network network, int simRound, boolean init) {
+
         this.network = network;
+        this.simRound = simRound;
+
+        if (!init) {
+            return;
+        }
+
         this.stable = network.isStable();
         this.density = network.getDensity();
         this.acs = network.getAssortativityConditions();
@@ -83,8 +95,6 @@ public class NetworkStats {
         this.assortativityAge = network.getAssortativityAge(simRound);
         this.assortativityProfession = network.getAssortativityProfession(simRound);
         this.avDegree = network.getAvDegree(simRound);
-        this.avDegreesByProfession = null;          // network.getAverageDegreesByProfessions();
-        this.degreesSdByProfession = null;          // network.getAverageDegreesByProfessions();
         this.avDegreeSatisfied = network.getAvDegreeSatisfied();
         this.avDegreeUnsatisfied = network.getAvDegreeUnsatisfied();
         this.avClustering = network.getAvClustering(simRound);
@@ -95,12 +105,14 @@ public class NetworkStats {
         this.susceptiblesTotal = network.getSusceptibles().size();
         this.infectedTotal = network.getInfected().size();
         this.recoveredTotal = network.getRecovered().size();
+        this.vaccinatedTotal = network.getVaccinated().size();
         this.satisfiedTotal = network.getSatisfied().size();
         this.unsatisfiedTotal = network.getUnsatisfied().size();
         double pct = 100D / network.getAgents().size();
         this.susceptiblePercent = pct * this.susceptiblesTotal;
         this.infectedPercent = pct * this.infectedTotal;
         this.recoveredPercent = pct * this.recoveredTotal;
+        this.vaccinatedPercent = pct * this.vaccinatedTotal;
         this.satisfiedPercent = pct * this.satisfiedTotal;
         this.unsatisfiedPercent = pct * this.unsatisfiedTotal;
     }
@@ -187,30 +199,6 @@ public class NetworkStats {
      */
     public double getAvDegree() {
         return avDegree;
-    }
-
-    /**
-     * @param profession
-     *          the profession to get average degree for
-     * @return the avDegree for profession
-     */
-    public double getAvDegreeByProfession(String profession) {
-        if (this.avDegreesByProfession == null) {
-            this.avDegreesByProfession = this.network.getAvDegreesByProfessions();
-        }
-        return this.avDegreesByProfession.get(profession);
-    }
-
-    /**
-     * @param profession
-     *          the profession to get average degree standard deviation for
-     * @return the avDegreeSd for profession
-     */
-    public double getDegreeSdByProfession(String profession) {
-        if (this.degreesSdByProfession == null) {
-            this.degreesSdByProfession = this.network.getDegreesSdByProfessions();
-        }
-        return this.degreesSdByProfession.get(profession);
     }
 
     /**
@@ -368,6 +356,9 @@ public class NetworkStats {
      * @return the susceptiblesTotal
      */
     public int getSusceptiblesTotal() {
+        if (this.susceptiblesTotal == null) {
+            this.susceptiblesTotal = network.getSusceptibles().size();
+        }
         return susceptiblesTotal;
     }
 
@@ -382,6 +373,9 @@ public class NetworkStats {
      * @return the infectedTotal
      */
     public int getInfectedTotal() {
+        if (this.infectedTotal == null) {
+            this.infectedTotal = network.getInfected().size();
+        }
         return infectedTotal;
     }
 
@@ -396,6 +390,9 @@ public class NetworkStats {
      * @return the recoveredTotal
      */
     public int getRecoveredTotal() {
+        if (this.recoveredTotal == null) {
+            this.recoveredTotal = network.getRecovered().size();
+        }
         return recoveredTotal;
     }
 
@@ -406,12 +403,24 @@ public class NetworkStats {
         this.recoveredTotal = recoveredTotal;
     }
 
-
+    /**
+     * @return the vaccinatedTotal
+     */
+    public int getVaccinatedTotal() {
+        if (this.vaccinatedTotal == null) {
+            this.vaccinatedTotal = network.getVaccinated().size();
+        }
+        return vaccinatedTotal;
+    }
 
     /**
      * @return the susceptiblePercent
      */
     public double getSusceptiblePercent() {
+        if (this.susceptiblePercent == null) {
+            double pct = 100D / network.getAgents().size();
+            this.susceptiblePercent = pct * this.susceptiblesTotal;
+        }
         return susceptiblePercent;
     }
 
@@ -426,6 +435,10 @@ public class NetworkStats {
      * @return the infectedPercent
      */
     public double getInfectedPercent() {
+        if (this.infectedPercent == null) {
+            double pct = 100D / network.getAgents().size();
+            this.infectedPercent = pct * this.infectedTotal;
+        }
         return infectedPercent;
     }
 
@@ -440,6 +453,10 @@ public class NetworkStats {
      * @return the recoveredPercent
      */
     public double getRecoveredPercent() {
+        if (this.recoveredPercent == null) {
+            double pct = 100D / network.getAgents().size();
+            this.recoveredPercent = pct * this.recoveredTotal;
+        }
         return recoveredPercent;
     }
 
@@ -448,6 +465,24 @@ public class NetworkStats {
      */
     public void setRecoveredPercent(double recoveredPercent) {
         this.recoveredPercent = recoveredPercent;
+    }
+
+    /**
+     * @return the vaccinatedPercent
+     */
+    public double getVaccinatedPercent() {
+        if (this.vaccinatedPercent == null) {
+            double pct = 100D / network.getAgents().size();
+            this.vaccinatedPercent = pct * this.vaccinatedTotal;
+        }
+        return vaccinatedPercent;
+    }
+
+    /**
+     * @param vaccinatedPercent the vaccinatedPercent to set
+     */
+    public void setVaccinatedPercent(double vaccinatedPercent) {
+        this.vaccinatedPercent = vaccinatedPercent;
     }
 
     /**

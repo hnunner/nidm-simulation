@@ -70,6 +70,8 @@ public class DGSReader {
 
         network.reinitAfterRead();
 
+        logger.info("Network successfully imported and initialized from: " + file);
+
         return network;
     }
 
