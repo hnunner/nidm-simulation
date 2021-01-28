@@ -466,6 +466,7 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
         this.fitnessPrevRound = Double.MAX_VALUE;
         this.simFinished = false;
 
+
         this.dgData.getSimStats().setUid(this.currentOffspring.getId());
         this.dgData.getSimStats().setUpc(this.upc++);
         this.dgData.getSimStats().setSimPerUpc(1);

@@ -1560,6 +1560,15 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
+     * Checks whether the agent is vaccinated.
+     *
+     * @return true if the agent is vaccinated, false otherwise
+     */
+    public boolean isVaccinated() {
+        return this.getDiseaseGroup() == DiseaseGroup.VACCINATED;
+    }
+
+    /**
      * Makes the agent susceptible.
      */
     public void makeSusceptible() {
@@ -1680,6 +1689,20 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         // --> no listener notifications
         this.changeAttribute(AgentAttributes.UI_CLASS,
                 prevDiseaseGroup.toString(), DiseaseGroup.RECOVERED.toString(), false);
+        this.removeAttribute(AgentAttributes.DISEASE_INFECTION);
+    }
+
+    /**
+     * Vaccinates the agent.
+     */
+    public void vaccinate() {
+        // cure
+        DiseaseGroup prevDiseaseGroup = this.getDiseaseGroup();
+        this.changeAttribute(AgentAttributes.DISEASE_GROUP, prevDiseaseGroup, DiseaseGroup.VACCINATED);
+        // ui-class required only for ui properties as defined in resources/graph-stream.css
+        // --> no listener notifications
+        this.changeAttribute(AgentAttributes.UI_CLASS,
+                prevDiseaseGroup.toString(), DiseaseGroup.VACCINATED.toString(), false);
         this.removeAttribute(AgentAttributes.DISEASE_INFECTION);
     }
 

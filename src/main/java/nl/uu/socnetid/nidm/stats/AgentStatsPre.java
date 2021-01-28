@@ -50,6 +50,7 @@ public class AgentStatsPre {
     private int timeToRecover;
     private boolean forceInfected;
     private Integer indexCaseDistance;
+    private String profession;
 
 
     public AgentStatsPre(Agent agent, int simRound) {
@@ -75,6 +76,7 @@ public class AgentStatsPre {
         this.assortativityAge = agent.getAssortativity(simRound, AssortativityConditions.AGE);
         this.assortativityProfession = agent.getAssortativity(simRound, AssortativityConditions.PROFESSION);
         this.indexCaseDistance = agent.getInitialIndexCaseDistance();
+        this.profession = agent.getProfession();
     }
 
 
@@ -188,6 +190,13 @@ public class AgentStatsPre {
      */
     public boolean isForceInfected() {
         return forceInfected;
+    }
+
+    /**
+     * @return the profession
+     */
+    public String getProfession() {
+        return profession;
     }
 
 }

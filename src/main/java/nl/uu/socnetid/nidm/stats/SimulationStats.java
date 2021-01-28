@@ -33,9 +33,9 @@ import nl.uu.socnetid.nidm.simulation.SimulationStage;
  */
 public class SimulationStats {
 
+    private String uid = null;
     private int upcs = 0;
     private int upc = 0;
-    private String uid;
     private int simPerUpc;
     private int simIt = 1;
     private int roundStartInfection;
@@ -139,11 +139,15 @@ public class SimulationStats {
      * @return the uid
      */
     public String getUid() {
-        return uid;
+        if (this.uid == null) {
+            return this.getUpc() + "-" + this.getSimPerUpc() + "-" + this.getSimIt();
+        }
+        return this.uid;
     }
 
     /**
-     * @param uid the uid to set
+     * @param uid
+     *          the uid to set
      */
     public void setUid(String uid) {
         this.uid = uid;
