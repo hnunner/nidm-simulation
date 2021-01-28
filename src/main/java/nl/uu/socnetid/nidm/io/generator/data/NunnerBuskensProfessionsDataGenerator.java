@@ -219,16 +219,15 @@ public class NunnerBuskensProfessionsDataGenerator extends AbstractGenerator imp
 
                     // vaccination
                     // variation vaccine efficacy
-                    double[] etas = {1.0, 0.8};
+                    List<Double> etas = Arrays.asList(1.0);
+                    if (vaccGroup != null && !vaccGroup.isEmpty()) {
+                        etas = Arrays.asList(1.0, 0.8);
+                    }
                     for (double eta : etas) {
                         this.dgData.getUtilityModelParams().setEta(eta);
-                        logger.info("Starting vaccination scenario for health related occupations).");
+                        logger.info("Starting new scenario.");
                         runSimulation(vaccGroup, quarGroup);
                     }
-
-                    // quarantining
-                    logger.info("Starting quarantining scenario for health related occupations).");
-                    runSimulation(vaccGroup, quarGroup);
                 }
             }
 
