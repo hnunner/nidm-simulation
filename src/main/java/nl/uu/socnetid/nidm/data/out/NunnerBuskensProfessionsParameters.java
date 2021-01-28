@@ -48,7 +48,8 @@ public class NunnerBuskensProfessionsParameters extends UtilityModelParameters {
 
     // initializations
     private List<DegreeDistributionConditions> dccs;
-
+    private List<String> quarantined;
+    private List<String> vaccinated;
 
 
     /**
@@ -147,6 +148,34 @@ public class NunnerBuskensProfessionsParameters extends UtilityModelParameters {
      */
     public void setDegreeDistributionConditions(List<DegreeDistributionConditions> dccs) {
         this.dccs = dccs;
+    }
+
+    /**
+     * @return the quarantined
+     */
+    public List<String> getQuarantined() {
+        return quarantined;
+    }
+
+    /**
+     * @param quarantined the quarantined to set
+     */
+    public void setQuarantined(List<String> quarantined) {
+        this.quarantined = quarantined;
+    }
+
+    /**
+     * @return the vaccinated
+     */
+    public List<String> getVaccinated() {
+        return vaccinated;
+    }
+
+    /**
+     * @param vaccinated the vaccinated to set
+     */
+    public void setVaccinated(List<String> vaccinated) {
+        this.vaccinated = vaccinated;
     }
 
 }

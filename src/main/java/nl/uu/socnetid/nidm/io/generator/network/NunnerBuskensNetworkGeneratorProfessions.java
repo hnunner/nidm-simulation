@@ -40,7 +40,7 @@ import nl.uu.socnetid.nidm.data.out.DataGeneratorData;
 import nl.uu.socnetid.nidm.data.out.NunnerBuskensProfessionsParameters;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
-import nl.uu.socnetid.nidm.io.csv.NunnerBuskensNetworkSummaryProfessionsWriter;
+import nl.uu.socnetid.nidm.io.csv.NunnerBuskensProfessionsSimulationSummaryWriter;
 import nl.uu.socnetid.nidm.io.generator.AbstractGenerator;
 import nl.uu.socnetid.nidm.io.network.AgentPropertiesWriter;
 import nl.uu.socnetid.nidm.io.network.DGSWriter;
@@ -79,7 +79,7 @@ public class NunnerBuskensNetworkGeneratorProfessions extends AbstractGenerator 
     private int upc = 1;
     private String maxUid;
     private DataGeneratorData<NunnerBuskensProfessionsParameters> dgData;
-    private NunnerBuskensNetworkSummaryProfessionsWriter nsWriter;
+    private NunnerBuskensProfessionsSimulationSummaryWriter nsWriter;
 
 
     /**
@@ -140,7 +140,7 @@ public class NunnerBuskensNetworkGeneratorProfessions extends AbstractGenerator 
     protected void initWriters() throws IOException {
         // summary CSV
         if (PropertiesHandler.getInstance().isExportSummary()) {
-            this.nsWriter = new NunnerBuskensNetworkSummaryProfessionsWriter(getExportPath() + "network-summary-professions.csv",
+            this.nsWriter = new NunnerBuskensProfessionsSimulationSummaryWriter(getExportPath() + "network-summary-professions.csv",
                     this.dgData);
         }
     }
@@ -171,7 +171,6 @@ public class NunnerBuskensNetworkGeneratorProfessions extends AbstractGenerator 
                 for (int sims = 0; sims <= umps.getSimsPerParameterCombination(); sims++) {
 
                     simStats.setSimPerUpc(sims+1);
-                    simStats.setUid(simStats.getUpc() + "-" + simStats.getSimPerUpc());
 
                     // init network
                     AssortativityConditions aic = umps.getAssortativityInitCondition();
@@ -204,7 +203,7 @@ public class NunnerBuskensNetworkGeneratorProfessions extends AbstractGenerator 
         NunnerBuskensProfessionsParameters umps = this.dgData.getUtilityModelParams();
 
         this.network = new Network("Network of the infectious kind", umps.getAssortativityConditions());
-        DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, 0, 0, 0, 0);    // not used
+        DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, 10, 0, 0.1, 0);
 
         double allC2s = 0;
 

@@ -34,6 +34,7 @@ public class GlobalAgentStats {
     private final int nS;
     private final int nI;
     private final int nR;
+    private final int nV;
     private final int nRSigmaAverse;
     private final int nRSigmaNeutral;
     private final int nRSigmaSeeking;
@@ -54,6 +55,8 @@ public class GlobalAgentStats {
      *          the amount of infected
      * @param nR
      *          the amount of recovered
+     * @param nV
+     *          the amount of vaccinated
      * @param nRSigmaAverse
      *          the amount of risk averse (disease severity)
      * @param nRSigmaNeutral
@@ -71,13 +74,14 @@ public class GlobalAgentStats {
      * @param avRPi
      *          the average risk factor (probability of infection)
      */
-    public GlobalAgentStats(int n, int nS, int nI, int nR,
+    public GlobalAgentStats(int n, int nS, int nI, int nR, int nV,
             int nRSigmaAverse, int nRSigmaNeutral, int nRSigmaSeeking, double avRSigma,
             int nRPiAverse, int nRPiNeutral, int nRPiSeeking, double avRPi) {
         this.n = n;
         this.nS = nS;
         this.nI = nI;
         this.nR = nR;
+        this.nV = nV;
         this.nRSigmaAverse = nRSigmaAverse;
         this.nRSigmaNeutral = nRSigmaNeutral;
         this.nRSigmaSeeking = nRSigmaSeeking;
@@ -170,6 +174,13 @@ public class GlobalAgentStats {
      */
     public double getAvRPi() {
         return avRPi;
+    }
+
+    /**
+     * @return the nV
+     */
+    public int getnV() {
+        return nV;
     }
 
 }

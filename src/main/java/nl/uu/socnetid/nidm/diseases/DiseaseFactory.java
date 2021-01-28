@@ -42,6 +42,8 @@ public final class DiseaseFactory {
         switch (diseaseSpecs.getDiseaseType()) {
             case SIR:
                 return new SIRDisease(diseaseSpecs);
+            case SIRV:
+                return new SIRVDisease(diseaseSpecs);
             default:
                 throw new RuntimeException("Unknown disease type: " + diseaseSpecs.getDiseaseType().toString());
         }
