@@ -163,12 +163,6 @@ public class CarayolRouxDataGenerator extends AbstractDataGenerator {
                                         <= this.dgData.getUtilityModelParams().
                                         getSimsPerParameterCombination()) {
 
-                                    // uid = "upc-sim"
-                                    this.dgData.getSimStats().setUid(
-                                            String.valueOf(this.dgData.getSimStats().getUpc()) +
-                                            "-" + String.valueOf(
-                                                    this.dgData.getSimStats().getSimPerUpc()));
-
                                     // simulate
                                     performSingleSimulation();
 

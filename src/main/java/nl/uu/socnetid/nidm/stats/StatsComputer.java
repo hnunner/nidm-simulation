@@ -160,6 +160,7 @@ public final class StatsComputer {
         int nS = 0;
         int nI = 0;
         int nR = 0;
+        int nV = 0;
 
         // risk behavior
         // disease severity
@@ -192,6 +193,10 @@ public final class StatsComputer {
                     nR++;
                     break;
 
+                case VACCINATED:
+                    nV++;
+                    break;
+
                 default:
                     logger.warn("Unknown disease group: " + agent.getDiseaseGroup());
             }
@@ -220,7 +225,7 @@ public final class StatsComputer {
         }
 
         return new GlobalAgentStats(
-                n, nS, nI, nR,
+                n, nS, nI, nR, nV,
                 nRSigmaAverse, nRSigmaNeutral, nRSigmaSeeking, cumRSigma / n,
                 nRPiAverse, nRPiNeutral, nRPiSeeking, cumRPi / n);
     }
@@ -311,6 +316,12 @@ public final class StatsComputer {
                                         directConsByDiseaseGroupAtGeographicDistance.get(DiseaseGroup.RECOVERED).get(ggd) + 1 : 1);
                         break;
 
+                    case VACCINATED:
+                        directConsByDiseaseGroupAtGeographicDistance.get(DiseaseGroup.VACCINATED).put(ggd,
+                                directConsByDiseaseGroupAtGeographicDistance.get(DiseaseGroup.VACCINATED).get(ggd) != null ?
+                                        directConsByDiseaseGroupAtGeographicDistance.get(DiseaseGroup.VACCINATED).get(ggd) + 1 : 1);
+                        break;
+
                     default:
                         logger.warn("Unhandled disease group: " + otherAgent.getDiseaseGroup());
                 }
@@ -390,6 +401,12 @@ public final class StatsComputer {
                                         consByDiseaseGroupAtGeodesicDistance.get(DiseaseGroup.RECOVERED).get(gdd) + 1 : 1);
                         break;
 
+                    case VACCINATED:
+                        consByDiseaseGroupAtGeodesicDistance.get(DiseaseGroup.VACCINATED).put(gdd,
+                                consByDiseaseGroupAtGeodesicDistance.get(DiseaseGroup.VACCINATED).get(gdd) != null ?
+                                        consByDiseaseGroupAtGeodesicDistance.get(DiseaseGroup.VACCINATED).get(gdd) + 1 : 1);
+                        break;
+
                     default:
                         logger.warn("Unhandled disease group: " + otherAgent.getDiseaseGroup());
                 }
@@ -462,11 +479,13 @@ public final class StatsComputer {
         int nS = 0;
         int nI = 0;
         int nR = 0;
+        int nV = 0;
         // ties at distance 2
         int m = 0;
         int mS = 0;
         int mI = 0;
         int mR = 0;
+        int mV = 0;
         // open triads
         int y = 0;
         // closed triads
@@ -504,6 +523,9 @@ public final class StatsComputer {
                     case RECOVERED:
                         nR++;
                         break;
+                    case VACCINATED:
+                        nV++;
+                        break;
                     default:
                         logger.warn("Unknown disease state: " + directConnection.getDiseaseGroup());
                 }
@@ -530,6 +552,9 @@ public final class StatsComputer {
                         case RECOVERED:
                             mR++;
                             break;
+                        case VACCINATED:
+                            mV++;
+                            break;
                         default:
                             logger.warn("Unknown disease state: " + directConnection.getDiseaseGroup());
                     }
@@ -555,7 +580,7 @@ public final class StatsComputer {
 
         directConnections = null;
 
-        return new LocalAgentConnectionsStats(n, nS, nI, nR, m, mS, mI, mR, y, z, netSize);
+        return new LocalAgentConnectionsStats(n, nS, nI, nR, nV, m, mS, mI, mR, mV, y, z, netSize);
     }
 
     /**
