@@ -30,7 +30,8 @@ package nl.uu.socnetid.nidm.diseases.types;
  */
 public enum DiseaseType {
 
-    SIR("generic SIR");
+    SIR("generic SIR"),
+    SIRV("SIR with vaccinations");
 
     // the name
     private String name;

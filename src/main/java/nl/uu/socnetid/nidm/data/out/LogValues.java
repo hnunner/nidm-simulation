@@ -273,19 +273,34 @@ public enum LogValues {
     IV_NB_PROF_C1("nb.prof.c1"),
     IV_NB_PROF_C2("nb.prof.c2"),
     IV_NB_PROF_ALPHA("nb.prof.alpha"),
+    IV_NB_PROF_GAMMA("nb.prof.gamma"),
+    IV_NB_PROF_TAU("nb.prof.tau"),
     IV_NB_PROF_CONSIDER_AGE("nb.prof.consider.age"),
     IV_NB_PROF_CONSIDER_PROFESSION("nb.prof.consider.profession"),
     IV_NB_PROF_ASSORTATIVITY_INIT_CONDITION("nb.prof.assortativity.init.condition"),
     IV_NB_PROF_ASSORTATIVITY_CONDITIONS("nb.prof.assortativity.conditions"),
     IV_NB_PROF_OMEGA("nb.prof.omega"),
     IV_NB_PROF_SIMS_PER_PC("nb.prof.n"),
+    IV_NB_PROF_SIM_ITERATIONS("nb.prof.m"),
     IV_NB_PROF_LOCKDOWN_CONDITIONS("nb.prof.lockdown.conditions"),
     IV_NB_PROF_DEGREE_DISTRIBUTION_CONDITIONS("nb.prof.degree.distribution.conditions"),
     IV_NB_PROF_ROUNDS_MAX("nb.prof.rounds.max"),
+    DV_NB_PROF_N("nb.prof.n."),
     DV_NB_PROF_DEGREE("nb.prof.degree."),
-    DV_NB_PROF_DEGREE_DIFF("nb.prof.degree.diff."),
+    DV_NB_PROF_DEGREE_THEORETIC("nb.prof.degree.theoretic."),
+    DV_NB_PROF_DEGREE_DIFF_TOTAL("nb.prof.degree.diff.total."),
+    DV_NB_PROF_DEGREE_DIFF_PERCENT("nb.prof.degree.diff.percent."),
     DV_NB_PROF_DEGREE_SD("nb.prof.degree.sd."),
-    DV_NB_PROF_DEGREE_SD_DIFF("nb.prof.degree.sd.diff."),
+    DV_NB_PROF_DEGREE_SD_THEORETIC("nb.prof.degree.sd.theoretic."),
+    DV_NB_PROF_DEGREE_SD_DIFF_TOTAL("nb.prof.degree.sd.diff.total."),
+    DV_NB_PROF_DEGREE_SD_DIFF_PERCENT("nb.prof.degree.sd.diff.total."),
+    IV_NB_PROF_VACCINATED("nb.prof.vaccinated"),
+    IV_NB_PROF_VACCINATED_N("nb.prof.vaccinated.n"),
+    IV_NB_PROF_VACCINATED_PERCENT("nb.prof.vaccinated.percent"),
+    IV_NB_PROF_VACCINE_EFFICACY("nb.prof.vaccine.efficacy"),
+    IV_NB_PROF_QUARANTINED("nb.prof.quarantined"),
+    IV_NB_PROF_QUARANTINED_N("nb.prof.quarantined.n"),
+    IV_NB_PROF_QUARANTINED_PERCENT("nb.prof.quarantined.percent"),
 
     // PROPERTIES (dependent variables)
     // simulation
@@ -295,6 +310,7 @@ public enum LogValues {
     DV_NET_PERCENTAGE_SUSCEPTIBLE("net.pct.sus"),
     DV_NET_PERCENTAGE_INFECTED("net.pct.inf"),
     DV_NET_PERCENTAGE_RECOVERED("net.pct.rec"),
+    DV_NET_PERCENTAGE_VACCINATED("net.pct.vac"),
     DV_NET_PERCENTAGE_SATISFIED("net.pct.satisfied"),
     DV_NET_PERCENTAGE_UNSATISFIED("net.pct.unsatisfied"),
     DV_NET_STABLE("net.stable"),
@@ -314,6 +330,9 @@ public enum LogValues {
     DV_NET_ASSORTATIVITY_PROFESSION_PRE("net.assortativity.profession.pre.epidemic"),
     DV_NET_ASSORTATIVITY_PROFESSION_POST("net.assortativity.profession.post.epidemic"),
     DV_NET_AV_DEGREE("net.degree.av"),
+    DV_NET_AV_DEGREE_THEORETIC("net.degree.av.theoretic"),
+    DV_NET_AV_DEGREE_DIFF_TOTAL("net.degree.av.diff.total"),
+    DV_NET_AV_DEGREE_DIFF_PERCENT("net.degree.av.diff.percent"),
     DV_NET_AV_DEGREE_PRE("net.degree.pre.epidemic.av"),
     DV_NET_AV_DEGREE_POST("net.degree.post.epidemic.av"),
     DV_NET_AV_DEGREE2("net.degree2.av"),
@@ -347,6 +366,10 @@ public enum LogValues {
     DV_NET_GEN_FITNESS_AV_DEGREE("net.gen.fitness.degree.av"),
     DV_NET_GEN_FITNESS_CLUSTERING("net.gen.fitness.clustering"),
     DV_NET_GEN_FITNESS_OVERALL("net.gen.fitness.overall"),
+    DV_NET_EPIDEMIC_FINAL_SIZE("net.epidemic.final.size"),
+    DV_NET_EPIDEMIC_DURATION("net.epidemic.duration"),
+    DV_NET_EPIDEMIC_PEAK_TIME("net.epidemic.peak.time"),
+    DV_NET_EPIDEMIC_PEAK_SIZE("net.epidemic.peak.size"),
     // agent
     DV_AGENT_SATISFIED("agent.satisfied"),
     DV_AGENT_UTIL("agent.util"),
@@ -378,6 +401,7 @@ public enum LogValues {
     DV_AGENT_CONS_OUT_DECLINED_EPIDEMIC("agent.cons.out.declined.epidemic"),
     DV_AGENT_CONS_IN_ACCEPTED_EPIDEMIC("agent.cons.in.accepted.epidemic"),
     DV_AGENT_CONS_IN_DECLINED_EPIDEMIC("agent.cons.in.declined.epidemic"),
+    DV_AGENT_PROFESSION("agent.profession"),
     // neighborhood
     DV_AGENT_NEIGHBORHOOD_R_SIGMA_AV("agent.neighborhood.r.sigma.av"),
     DV_AGENT_NEIGHBORHOOD_R_PI_AV("agent.neighborhood.r.pi.av"),
@@ -411,6 +435,7 @@ public enum LogValues {
     DV_INDEX_R_SIGMA_NEIGHBORHOOD("index.r.sigma.neighborhood"),
     DV_INDEX_R_PI("index.r.pi"),
     DV_INDEX_R_PI_NEIGHBORHOOD("index.r.pi.neighborhood"),
+    DV_INDEX_PROFESSION("index.profession"),
 
     // static
     DV_NET_STATIC_EPIDEMIC_DURATION("net.static.epidemic.duration"),
@@ -517,7 +542,7 @@ public enum LogValues {
 
 
     // OTHERS
-    GEXF_FILE("gexf.filename");
+    EXPORT_FILENAME("export.filename");
 
 
     // dependent variables feasible for regression analysis
