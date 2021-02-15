@@ -1566,7 +1566,8 @@ public class Network extends SingleGraph implements SimulationListener {
         int vaccs = 0;
         while (agIt.hasNext()) {
             Agent agent = agIt.next();
-            if (agent.getProfession().equals(profession)) {
+            if (!profession.equals(Professions.NONE) &&
+                    (profession.equals(Professions.ALL) || agent.getProfession().equals(profession))) {
                 double randVacc = ThreadLocalRandom.current().nextDouble();
                 if (randVacc < eta) {
                     agent.vaccinate();
