@@ -26,6 +26,11 @@
 package nl.uu.socnetid.nidm.io.generator.data;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -49,6 +54,7 @@ import nl.uu.socnetid.nidm.io.csv.NunnerBuskensProfessionsSimulationSummaryWrite
 import nl.uu.socnetid.nidm.io.generator.AbstractGenerator;
 import nl.uu.socnetid.nidm.io.network.DGSReader;
 import nl.uu.socnetid.nidm.io.network.DGSWriter;
+import nl.uu.socnetid.nidm.mains.Generator;
 import nl.uu.socnetid.nidm.networks.AssortativityConditions;
 import nl.uu.socnetid.nidm.networks.LockdownConditions;
 import nl.uu.socnetid.nidm.networks.Network;
@@ -117,6 +123,23 @@ public class NunnerBuskensProfessionsDataGenerator extends AbstractGenerator imp
      */
     public NunnerBuskensProfessionsDataGenerator(String rootExportPath) throws IOException {
         super(rootExportPath);
+
+        // copy profession files to export directory
+        try {
+            Path srcProfessions =
+                    Paths.get(Generator.class.getClassLoader().getResource("professions.csv").toURI());
+            Path dstProfessions = Paths.get(getExportPath()  + "/professions.csv");
+            Files.copy(srcProfessions, dstProfessions, StandardCopyOption.REPLACE_EXISTING);
+
+            Path srcProfessionDistribution =
+                    Paths.get(Generator.class.getClassLoader().getResource("profession-dist.csv").toURI());
+            Path dstProfessionDistribution = Paths.get(getExportPath()  + "/profession-dist.csv");
+            Files.copy(srcProfessionDistribution, dstProfessionDistribution, StandardCopyOption.REPLACE_EXISTING);
+        } catch (URISyntaxException e) {
+            logger.error(e);
+        } catch (IOException e) {
+            logger.error(e);
+        }
     }
 
 
@@ -144,7 +167,6 @@ public class NunnerBuskensProfessionsDataGenerator extends AbstractGenerator imp
         this.dgData.getUtilityModelParams().setB1(nbpParams.getB1());
         this.dgData.getUtilityModelParams().setB2(nbpParams.getB2());
         this.dgData.getUtilityModelParams().setC1(nbpParams.getC1());
-        this.dgData.getUtilityModelParams().setAlpha(nbpParams.getAlpha());
         this.dgData.getUtilityModelParams().setGamma(nbpParams.getGamma());
         this.dgData.getUtilityModelParams().setTau(nbpParams.getTau());
         this.dgData.getUtilityModelParams().setConsiderAge(nbpParams.isConsiderAge());
@@ -182,51 +204,124 @@ public class NunnerBuskensProfessionsDataGenerator extends AbstractGenerator imp
         }
     }
 
+    private class CounterMeasure {
+        private final List<String> vaccinationGroups;
+        private final List<String> quarantineGroups;
+
+        /**
+         * Constructor
+         *
+         * @param vaccinationGroups
+         *          groups to be vaccinated
+         * @param quarantineGroups
+         *          groups to be quarantined
+         */
+        public CounterMeasure(List<String> vaccinationGroups, List<String> quarantineGroups) {
+            this.vaccinationGroups = vaccinationGroups;
+            this.quarantineGroups = quarantineGroups;
+        }
+
+        /**
+         * @return the vaccinationGroups
+         */
+        public List<String> getVaccinationGroups() {
+            return vaccinationGroups;
+        }
+
+        /**
+         * @return the quarantineGroups
+         */
+        public List<String> getQuarantineGroups() {
+            return quarantineGroups;
+        }
+
+    }
+
     /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.io.generator.AbstractDataGenerator#generateData()
      */
     @Override
     protected void generate() {
 
-        // baseline scenario (no vaccinations, no quarantines)
-//        logger.info("Starting baseline epidemic (no vaccinations).");
-//        runSimulation(null, null);
+        // VARIATION OF: scenarios
+        List<CounterMeasure> scenarios = new ArrayList<CounterMeasure>();
+        // scenario 1
+        scenarios.add(new CounterMeasure(
+                // vaccinated: none
+                new ArrayList<String>(
+                        Arrays.asList(Professions.NONE)),
+                // quarantined: none
+                new ArrayList<String>(
+                        Arrays.asList(Professions.NONE))));
+        // scenario 2
+        scenarios.add(new CounterMeasure(
+                // vaccinated: all
+                new ArrayList<String>(
+                        Arrays.asList(Professions.ALL)),
+                // quarantined: all
+                new ArrayList<String>(
+                        Arrays.asList(Professions.ALL))));
+        // scenario 3
+        scenarios.add(new CounterMeasure(
+                // vaccinated: all
+                new ArrayList<String>(
+                        Arrays.asList(Professions.NONE)),
+                // quarantined: all
+                new ArrayList<String>(
+                        Arrays.asList(Professions.ALL))));
+        // scenario 4
+        scenarios.add(new CounterMeasure(
+                // vaccinated: all
+                new ArrayList<String>(
+                        Arrays.asList(Professions.ALL)),
+                // quarantined: all
+                new ArrayList<String>(
+                        Arrays.asList(Professions.NONE))));
+        // scenario 5
+        scenarios.add(new CounterMeasure(
+                // vaccinated: health-related professions
+                new ArrayList<String>(
+                        Arrays.asList("HPT", "HS")),
+                // quarantined: none
+                new ArrayList<String>(
+                        Arrays.asList(Professions.NONE))));
+        // scenario 6
+        scenarios.add(new CounterMeasure(
+                // vaccinated: health-related professions
+                new ArrayList<String>(
+                        Arrays.asList("HPT", "HS")),
+                // quarantined: rest
+                new ArrayList<String>(
+                        Arrays.asList("AE", "ADESM", "CM", "BFO", "CSS", "CM", "CE", "EIL", "FFF", "FPS", "IMR", "L",
+                                "LPSS", "M", "OAS", "PCS", "P", "PS", "S", "TMM", "R", "U"))));
 
-        // variation of vaccination groups
-        List<List<String>> vaccGroups = new ArrayList<List<String>>();
-        vaccGroups.add(null);
-        vaccGroups.add(Arrays.asList("HealthTech"));
-        vaccGroups.add(Arrays.asList("HealthTech", "EduLib", "PersCareServ"));
-        Iterator<List<String>> vIt = vaccGroups.iterator();
+        Iterator<CounterMeasure> sIt = scenarios.iterator();
+        while (sIt.hasNext()) {
+            CounterMeasure scenario = sIt.next();
 
-        // variation of quarantine groups
-        List<List<String>> quarGroups = new ArrayList<List<String>>();
-        quarGroups.add(null);
-        quarGroups.add(Arrays.asList("ArchEng", "Legal", "Manage"));
-        Iterator<List<String>> qIt = quarGroups.iterator();
+            // VARIATION OF: clustering
+            double[] alphas = {0.4, 0.6};
+            for (double alpha : alphas) {
+                this.dgData.getUtilityModelParams().setAlpha(alpha);
 
-        while (vIt.hasNext()) {
-            List<String> vaccGroup = vIt.next();
-
-            while (qIt.hasNext()) {
-                List<String> quarGroup = qIt.next();
-
-                // variation of profession assortativity
+                // VARIATION OF: profession assortativity
                 double[] omegas = {0.0, 0.9};
                 for (double omega : omegas) {
-
                     this.dgData.getUtilityModelParams().setOmega(omega);
 
-                    // vaccination
-                    // variation vaccine efficacy
-                    List<Double> etas = Arrays.asList(1.0);
-                    if (vaccGroup != null && !vaccGroup.isEmpty()) {
-                        etas = Arrays.asList(1.0, 0.8);
+                    // VARIATION OF: vaccine efficacy
+                    List<Double> etas = Arrays.asList(0.0);
+                    if (scenario.getVaccinationGroups() != null &&
+                            !scenario.getVaccinationGroups().isEmpty() &&
+                            !(scenario.getVaccinationGroups().size() == 1 &&
+                            scenario.getVaccinationGroups().get(0).equals(Professions.NONE))) {
+                        etas = Arrays.asList(0.6, 0.9);
                     }
                     for (double eta : etas) {
                         this.dgData.getUtilityModelParams().setEta(eta);
+
                         logger.info("Starting new scenario.");
-                        runSimulation(vaccGroup, quarGroup);
+                        runSimulation(scenario);
                     }
                 }
             }
@@ -239,7 +334,7 @@ public class NunnerBuskensProfessionsDataGenerator extends AbstractGenerator imp
     /**
      *
      */
-    private void runSimulation(List<String> toBeVaccinated, List<String> toBeQuarantined) {
+    private void runSimulation(CounterMeasure scenario) {
 
         NunnerBuskensProfessionsParameters umps = this.dgData.getUtilityModelParams();
         SimulationStats simStats = this.dgData.getSimStats();
@@ -259,6 +354,7 @@ public class NunnerBuskensProfessionsDataGenerator extends AbstractGenerator imp
             simStats.setSimPerUpc(sim+1);
 
             // init utilities
+            // VARIATION OF: network composition (random number per e.g. professional group)
             AssortativityConditions aic = umps.getAssortativityInitCondition();
             switch (aic) {
 
@@ -268,8 +364,9 @@ public class NunnerBuskensProfessionsDataGenerator extends AbstractGenerator imp
                     //$FALL-THROUGH$
                 default:
                 case PROFESSION:
-                    initUtilityByProfessions(toBeQuarantined);
-                    umps.setQuarantined(toBeQuarantined);
+                    List<String> quarantineGroups = scenario.getQuarantineGroups();
+                    initUtilityByProfessions(quarantineGroups);
+                    umps.setQuarantined(quarantineGroups);
                     break;
             }
 
@@ -301,13 +398,14 @@ public class NunnerBuskensProfessionsDataGenerator extends AbstractGenerator imp
                 this.network.resetDiseaseStates();
 
                 // vaccinate
-                if (toBeVaccinated != null && !toBeVaccinated.isEmpty()) {
-                    Iterator<String> tbV = toBeVaccinated.iterator();
+                List<String> vaccinationGroups = scenario.getVaccinationGroups();
+                if (vaccinationGroups != null && !vaccinationGroups.isEmpty()) {
+                    Iterator<String> tbV = vaccinationGroups.iterator();
                     while (tbV.hasNext()) {
                         this.network.vaccinate(tbV.next(), umps.getEta());
                     }
                 }
-                umps.setVaccinated(toBeVaccinated);
+                umps.setVaccinated(vaccinationGroups);
 
                 // run epidemic
                 Agent indexCase = null;
@@ -350,13 +448,13 @@ public class NunnerBuskensProfessionsDataGenerator extends AbstractGenerator imp
         this.degreesSdByProfessionTheoretic = new HashMap<String, Double>();
 
         double allC2s = 0;
+        this.quarantined = 0;
 
         for (int i = 0; i < umps.getN(); i++) {
 
             String profession = Professions.getInstance().getRandomProfession();
             double degree = 0.0;
             double degreeError = 0.0;
-            this.quarantined = 0;
 
             if (toBeQuarantined != null && toBeQuarantined.contains(profession)) {
                 degree = Professions.getInstance().getDegreeDuringLockdown(profession);
@@ -366,12 +464,15 @@ public class NunnerBuskensProfessionsDataGenerator extends AbstractGenerator imp
                 }
                 this.quarantined++;
 
+                logger.debug("Quarantined: " + profession);
+
             } else {
                 degree = Professions.getInstance().getDegreePreLockdown(profession);
                 degreeError = Professions.getInstance().getDegreeErrorPreLockdown(profession);
                 if (!this.conditionsByProfession.containsKey(profession)) {
                     this.conditionsByProfession.put(profession, LockdownConditions.PRE);
                 }
+
             }
 
             if (!this.avDegreesByProfessionTheoretic.containsKey(profession)) {
@@ -419,7 +520,7 @@ public class NunnerBuskensProfessionsDataGenerator extends AbstractGenerator imp
         this.dgData.setAgents(new ArrayList<Agent>(this.network.getAgents()));
         umps.setC2(allC2s/umps.getN());
         logger.info("Utility initialization successful with theoretic average degree: " +
-                (Math.round(this.avDegreeTheoretic * 100.0) / 100.0));
+                (Math.round(this.avDegreeTheoretic * 100.0) / 100.0) + " and quarantined agents: " + this.quarantined);
     }
 
 
