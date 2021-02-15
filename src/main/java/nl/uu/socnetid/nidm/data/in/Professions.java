@@ -29,6 +29,10 @@ public class Professions {
     // logger
     private static final Logger logger = LogManager.getLogger(Professions.class);
 
+    // constants describing no and all professional groups
+    public static final String NONE = "none";
+    public static final String ALL = "all";
+
     private List<String> professions;
     private List<String> professionDistribution;
     private Map<String, Double> degreePreLockdown;
@@ -70,6 +74,7 @@ public class Professions {
         try {
             br = Files.newBufferedReader(pathToFile, StandardCharsets.UTF_8);
             String line = br.readLine();
+            line = line.replaceAll("(?U)\\p{Cntrl}|\\p{Gc=Cf}", "");
 
             while (line != null) {
                 String[] attributes = line.split(";");
@@ -77,6 +82,8 @@ public class Professions {
                 // profession
                 String profession = attributes[0];
                 this.professions.add(profession);
+
+                logger.debug("Adding profession: " + profession);
 
                 // profession distribution
                 int i = 0;
