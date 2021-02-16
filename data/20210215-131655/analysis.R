@@ -43,7 +43,8 @@ source_libs(c("ggplot2",      # plots
               "hexbin",       # hexbin plots
               "Cairo",        # smooth plot lines
               "rsq",          # adjusted R2
-              "car"           # VIFs
+              "car",          # VIFs
+              "stringr"       # string manipulations
               # "gridExtra",   # side-by-side plots
               # "psych",       # summary statistics
 ))
@@ -88,7 +89,7 @@ COLORS                          <- c(Susceptible         = "#F0E442",   # yellow
                                      Recovered           = "#0072B2",   # blue
                                      Vaccinated          = "#669966",   # green
 
-                                     Degree              = "#888888",   # grey
+                                     Av.degree           = "#888888",   # grey
                                      Degree.index        = "#000000",   # black
 
                                      Clustering          = "#888888",   # grey
@@ -306,9 +307,16 @@ get_descriptive <- function(vec, title, row.height = 0) {
   return(out)
 }
 
-get_descriptives_table_prefix <- function() {
-  out <- paste("\\begin{table}[h]\n\\caption{Descriptive statistics", sep = "")
-  out <- paste(out, ".}\n\\label{tab:descriptives}\n", sep = "")
+get_descriptives_table_prefix <- function(scenario = NA) {
+  out <- NA
+  if (is.na(scenario)) {
+    out <- paste("\\begin{table}[h] \n", sep = "")
+    out <- paste(out, "\\caption{Descriptive statistics", sep = "")
+    out <- paste(out, ".}\n\\label{tab:descriptives}\n", sep = "")
+  } else {
+    out <- paste("\\captionof{table}{Descriptive statistics (scenario ", scenario, ")", sep = "")
+    out <- paste(out, ".}\n\\label{tab:descriptives-s", scenario, "}\n", sep = "")
+  }
   out <- paste(out, "\\begin{adjustbox}{width=1\\textwidth,center=\\textwidth}\n\\begin{tabular}{l *{5}{S[\n", sep = "")
   out <- paste(out, "input-symbols = {(- )},\ndetect-weight,\ngroup-separator = {,},\ntable-format=5.2]}}\n\\toprule\n", sep = "")
   out <- paste(out, "& \\text{\\thead{Mean}} & \\text{\\thead{SD}} & \\text{\\thead{Min}} & \\text{\\thead{Max}} & ", sep = "")
@@ -316,9 +324,13 @@ get_descriptives_table_prefix <- function() {
   return(out)
 }
 
-get_descriptives_table_suffix <- function() {
+get_descriptives_table_suffix <- function(scenario = NA) {
   out <- "\\bottomrule\n%\\multicolumn{5}{c}{\\emph{Notes:} bold numbers are significant at $p<0.001$, SEs in parentheses}\n"
-  out <- paste(out, "\\end{tabular}\n\\end{adjustbox}\n\\end{table}", sep = "")
+  if (is.na(scenario)) {
+    out <- paste(out, "\\end{tabular}\n\\end{adjustbox}\n\\end{table}", sep = "")
+  } else {
+    out <- paste(out, "\\end{tabular}\n\\end{adjustbox}", sep = "")
+  }
   return(out)
 }
 
@@ -353,7 +365,9 @@ export_descriptives <- function(data.ss = load_simulation_summary_data(),
                                 filename.ext = NA,
                                 include.groups = TRUE) {
 
-  memory.limit(9999999999)
+  if(.Platform$OS.type == "windows") {
+    memory.limit(9999999999)
+  }
 
   out <- paste(" observations: ", nrow(data.ss), "\n", sep = "")
 
@@ -419,15 +433,18 @@ export_descriptives <- function(data.ss = load_simulation_summary_data(),
       # TODO
       #   - discuss: what is best way to present size of professional groups? percentage (as is), total, both
       # size
-      out <- paste(out, get_descriptive((data.ss[grepl(paste("nb.prof.n.", tolower(prof), sep = ""), colnames(data.ss))][1] / data.ss$nb.prof.N)[,1], "N"))
-      out <- paste(out, "N (labor market) & ", round(subset(data.pr, V1 == prof)[1,2] / sum(data.pr[,2]), 2), "& & & & ", " \\", "\\ \n", sep = "")
+      out <- paste(out, get_descriptive((data.ss[grepl(paste("nb.prof.n.", tolower(prof), sep = ""),
+                                                       colnames(data.ss))][1] / data.ss$nb.prof.N)[,1], "N"))
+      out <- paste(out, "N (labor market) & ", round(subset(data.pr, V1 == prof)[1,2] / sum(data.pr[,2]), 2), "& & & & ",
+                   " \\", "\\ \n", sep = "")
 
 
       # normal
       normal.uids <- filter(data.ss, !grepl(prof, nb.prof.quarantined))$sim.uid
       normal <- subset(data.ad, sim.uid %in% normal.uids & grepl(prof, agent.profession))
       out <- paste(out, get_descriptive(normal$agent.degree, "Degree, normal"))
-      out <- paste(out, "Degree, normal (Belot) & ", subset(data.pr, V1 == prof)[1,3], " & ", subset(data.pr, V1 == prof)[1,4], " & NA & NA & NA ", " \\", "\\ \n", sep = "")
+      out <- paste(out, "Degree, normal (Belot) & ", subset(data.pr, V1 == prof)[1,3], " & ",
+                   subset(data.pr, V1 == prof)[1,4], " & NA & NA & NA ", " \\", "\\ \n", sep = "")
       # quarantined
       quarantined.uids <- filter(data.ss, grepl(prof, nb.prof.quarantined))$sim.uid
       quarantined <- subset(data.ad, sim.uid %in% quarantined.uids & grepl(prof, agent.profession))
@@ -436,7 +453,8 @@ export_descriptives <- function(data.ss = load_simulation_summary_data(),
       } else {
         out <- paste(out, "Degree, quarantined & NA & NA & NA & NA & NA ", " \\", "\\ \n", sep = "")
       }
-      out <- paste(out, "Degree, quarantined (Belot) & ", subset(data.pr, V1 == prof)[1,5], " & ", subset(data.pr, V1 == prof)[1,6], " & NA & NA & NA ", " \\", "\\ \n", sep = "")
+      out <- paste(out, "Degree, quarantined (Belot) & ", subset(data.pr, V1 == prof)[1,5], " & ",
+                   subset(data.pr, V1 == prof)[1,6], " & NA & NA & NA ", " \\", "\\ \n", sep = "")
 
       out <- paste (out, get_professions_table_suffix(), "\n\n", sep = "")
       print(paste("End descriptives for ", prof, ".", sep = ""))
@@ -461,13 +479,23 @@ export_descriptives <- function(data.ss = load_simulation_summary_data(),
 #----------------------------------------------------------------------------------------------------#
 export_descriptive_variations <- function(data.ss = load_simulation_summary_data()) {
 
-  memory.limit(9999999999)
+  if(.Platform$OS.type == "windows") {
+    memory.limit(9999999999)
+  }
 
   # begin: variations of epidemics
+  s <- 1
   rows <- 1
   row.height <- 7
   out <- ""
   table.closed <- TRUE
+
+  s.table <- paste("\\begin{table}[h]\n\\caption{Scenarios", sep = "")
+  s.table <- paste(s.table, ".}\n\\label{tab:scenarios}\n \\begin{tabular}{lllllll}\n\\toprule\n", sep = "")
+  s.table <- paste(s.table, "\\text{\\thead{Scenario}} & \\text{\\thead{Likelihood of ties \\\ to same profession}} & ", sep = "")
+  s.table <- paste(s.table, "\\text{\\thead{Min}} & \\text{\\thead{Max}} & \\text{\\thead{Skew}} & \\text{\\thead{Skew}}",
+                   " & \\text{\\thead{Table}}", " \\", "\\ \n\\midrule \n", sep = "")
+
   for (q in unique(data.ss$nb.prof.quarantined)) {
     for (v in unique(data.ss$nb.prof.vaccinated)) {
       for (a in unique(data.ss$nb.prof.alpha)) {
@@ -480,9 +508,15 @@ export_descriptive_variations <- function(data.ss = load_simulation_summary_data
                           nb.prof.alpha == a &
                           nb.prof.omega == o)
 
+
             if (nrow(d) > 0) {
               if (rows == 1) {
-                out <- paste(out, get_descriptives_table_prefix())
+                out <- paste(out,
+                             "\\begin{smashminipage} \n\n",
+                             "\\noindent \n",
+                             "\\centering \n\n",
+                             sep = "")
+                out <- paste(out, get_descriptives_table_prefix(scenario = s))
                 table.closed <- FALSE
               }
 
@@ -505,11 +539,13 @@ export_descriptive_variations <- function(data.ss = load_simulation_summary_data
                            "}}", " \\", "\\[", row.height, "pt] \n", sep = "")
 
 
+              out <- paste(out, "\\midrule \n", sep = "")
               out <- paste(out, get_descriptive(d$nb.prof.c2, "Av. marginal costs ($c_{2}$)"))
               out <- paste(out, get_descriptive(d$net.degree.av.theoretic, "Degree theoretical ($\\mathcal{D}_{G}$)*"))
               out <- paste(out, get_descriptive(d$net.degree.av, "Degree ($\\mathcal{D}_{G}$)*"))
               out <- paste(out, get_descriptive(d$net.clustering.av, "Clustering ($\\mathcal{C}_{G}$)*"))
-              out <- paste(out, get_descriptive(d$net.assortativity.profession, "Assortativity, profession ($\\mathcal{A}^{p}_{G}$)*", row.height))
+              out <- paste(out, get_descriptive(d$net.assortativity.profession,
+                                                "Assortativity, profession ($\\mathcal{A}^{p}_{G}$)*", row.height))
 
               out <- paste(out, get_descriptive(d$nb.prof.vaccinated.percent / 100, "Quarantined (proportion)"))
               out <- paste(out, get_descriptive(d$nb.prof.quarantined.percent / 100, "Vaccinated (proportion)", row.height))
@@ -521,12 +557,44 @@ export_descriptive_variations <- function(data.ss = load_simulation_summary_data
 
               rows <- rows+1
 
-              if (rows >= 3) {
-                out <- paste(out, get_descriptives_table_suffix(), "\n\n", sep = "")
+              if (rows >= 1) {
+                out <- paste(out, get_descriptives_table_suffix(scenario = s), "\n\n", sep = "")
                 rows <- 1
                 table.closed <- TRUE
               }
+
+              out <- paste(out, "\\vspace{1.3cm} \n\n", sep = "")
+
+              filename <- paste(s,
+                               "-sir",
+                               "-o_", o,
+                               "-a_", a,
+                               "-v_", v,
+                               "-e_", e,
+                               "-q_", q,
+                               sep = "")
+              filename <- str_replace_all(filename, "\\s", "")
+              filename <- str_replace_all(filename, "\\.", "")
+              filename <- paste(filename, EXPORT_FILE_EXTENSION_PLOTS, sep = "")
+              out <- paste(out,
+                           # "\\begin{figure} \n",
+                           "\\includegraphics[width=\\linewidth]{", filename, "} \n",
+                           "\\captionof{figure}{SIRV plot of scenario ", s, ".} \n",
+                           "\\label{fig:sirv-s", s, "} \n\n",
+                           # "\\end{figure} \n\n",
+                           sep = "")
+
+              out <- paste(out,
+                           "\\end{smashminipage} \n",
+                           "\\clearpage \n\n\n",
+                           sep = "")
+
+              s.table <- paste(s.table, s, " & ", o, " & ", a, " & ", v, " & ", e, " & ",
+                               q, " & \\ref{tab:descriptives-s", s, "} ", "\\", "\\ \n", sep = "")
+
+              s <- s+1
             }
+
           }
         }
       }
@@ -536,9 +604,13 @@ export_descriptive_variations <- function(data.ss = load_simulation_summary_data
     out <- paste(out, get_descriptives_table_suffix(), "\n\n", sep = "")
   }
 
+  s.table <- paste(s.table, "\\bottomrule\n%\\multicolumn{5}{c}{\\emph{Notes:} bold numbers are significant at ",
+                   "$p<0.001$, SEs in parentheses}\n", "\\end{tabular}\n\\end{table}", sep = "")
+
   # export to file
   dir.create(EXPORT_PATH_NUM, showWarnings = FALSE)
   cat(out, file = paste(EXPORT_PATH_NUM, "variations-networks-epidemics", EXPORT_FILE_EXTENSION_DESC, sep = ""))
+  cat(s.table, file = paste(EXPORT_PATH_NUM, "scenarios", EXPORT_FILE_EXTENSION_DESC, sep = ""))
   # end: variations of epidemics
 
 }
@@ -565,10 +637,11 @@ export_descriptive_variations <- function(data.ss = load_simulation_summary_data
 # return: the SIR development plot
 #----------------------------------------------------------------------------------------------------#
 plotSIRDevelopment <- function(rsData = load_round_summary_prepared_data(),
+                               ssData = load_simulation_summary_data(),
                                showLegend = TRUE,
                                showRibbons = TRUE,
-                               showAdditional = "none",
-                               showAdditionalRibbons = FALSE,
+                               showAdditional = "degree",
+                               showAdditionalRibbons = TRUE,
                                showAxes = TRUE,
                                maxRounds = NA) {
 
@@ -613,23 +686,23 @@ plotSIRDevelopment <- function(rsData = load_round_summary_prepared_data(),
   }
   if (showAdditional == "degree" ||
       showAdditional == "pathlength") {
-    scaleFactor           <- 10
+    scaleFactor           <- 0.1
   }
 
   ### DEGREE data
   if (showAdditional == "degree") {
     # preparations :: statistical summary for degrees
-    summaryDegrees       <- as.data.frame(do.call(rbind, with(rsData, tapply(net.degree.av, sim.round, summary))))
-    summaryDegreesIndex  <- as.data.frame(do.call(rbind, with(rsData, tapply(index.degree, sim.round, summary))))
+    summaryDegrees       <- as.data.frame(do.call(rbind, with(ssData, tapply(net.degree.av, sim.it, summary))))
+    # summaryDegreesIndex  <- as.data.frame(do.call(rbind, with(ssData, tapply(index.degree, sim.it, summary))))
 
     # data for lines :: median
-    degreeData          <- data.frame(rounds, "Degree", summaryDegrees$Median * scaleFactor)
+    degreeData          <- data.frame(rounds, "Av.degree", summaryDegrees$Median * scaleFactor)
     names(degreeData)   <- c("Timestep", "Measure", "Proportion")
     plotData            <- rbind(plotData, degreeData)
 
-    degreeIndexData     <- data.frame(rounds, "Degree.index", summaryDegreesIndex$Median * scaleFactor)
-    names(degreeIndexData)   <- c("Timestep", "Measure", "Proportion")
-    plotData            <- rbind(plotData, degreeIndexData)
+    # degreeIndexData     <- data.frame(rounds, "Degree.index", summaryDegreesIndex$Median * scaleFactor)
+    # names(degreeIndexData)   <- c("Timestep", "Measure", "Proportion")
+    # plotData            <- rbind(plotData, degreeIndexData)
 
     # data for ribbons :: 1st and 3rd quartile per compartment
     degreeRibbonData    <- data.frame(rounds,
@@ -639,12 +712,12 @@ plotSIRDevelopment <- function(rsData = load_round_summary_prepared_data(),
     ribbonData$DegMin       <- degreeRibbonData$DegMin[match(ribbonData$Timestep, degreeRibbonData$Timestep)]
     ribbonData$DegMax       <- degreeRibbonData$DegMax[match(ribbonData$Timestep, degreeRibbonData$Timestep)]
 
-    degreeRibbonIndexData   <- data.frame(rounds,
-                                      summaryDegreesIndex$`1st Qu.` * scaleFactor,
-                                      summaryDegreesIndex$`3rd Qu.` * scaleFactor)
-    names(degreeRibbonIndexData) <- c("Timestep", "DegIndexMin", "DegIndexMax")
-    ribbonData$DegIndexMin       <- degreeRibbonIndexData$DegIndexMin[match(ribbonData$Timestep, degreeRibbonIndexData$Timestep)]
-    ribbonData$DegIndexMax       <- degreeRibbonIndexData$DegIndexMax[match(ribbonData$Timestep, degreeRibbonIndexData$Timestep)]
+    # degreeRibbonIndexData   <- data.frame(rounds,
+    #                                   summaryDegreesIndex$`1st Qu.` * scaleFactor,
+    #                                   summaryDegreesIndex$`3rd Qu.` * scaleFactor)
+    # names(degreeRibbonIndexData) <- c("Timestep", "DegIndexMin", "DegIndexMax")
+    # ribbonData$DegIndexMin       <- degreeRibbonIndexData$DegIndexMin[match(ribbonData$Timestep, degreeRibbonIndexData$Timestep)]
+    # ribbonData$DegIndexMax       <- degreeRibbonIndexData$DegIndexMax[match(ribbonData$Timestep, degreeRibbonIndexData$Timestep)]
   }
 
   ### NETWORK CLUSTERING data
@@ -674,8 +747,10 @@ plotSIRDevelopment <- function(rsData = load_round_summary_prepared_data(),
                                               summaryClusteringIndex$`1st Qu.` * scaleFactor,
                                               summaryClusteringIndex$`3rd Qu.` * scaleFactor)
     names(clusteringIndexRibbonData) <- c("Timestep", "ClusIndexMin", "ClusIndexMax")
-    ribbonData$ClusIndexMin          <- clusteringIndexRibbonData$ClusIndexMin[match(ribbonData$Timestep, clusteringIndexRibbonData$Timestep)]
-    ribbonData$ClusIndexMax          <- clusteringIndexRibbonData$ClusIndexMax[match(ribbonData$Timestep, clusteringIndexRibbonData$Timestep)]
+    ribbonData$ClusIndexMin          <- clusteringIndexRibbonData$ClusIndexMin[match(ribbonData$Timestep,
+                                                                                     clusteringIndexRibbonData$Timestep)]
+    ribbonData$ClusIndexMax          <- clusteringIndexRibbonData$ClusIndexMax[match(ribbonData$Timestep,
+                                                                                     clusteringIndexRibbonData$Timestep)]
   }
 
   ### BETWEENNESS data
@@ -705,8 +780,10 @@ plotSIRDevelopment <- function(rsData = load_round_summary_prepared_data(),
                                               summaryBetweennessIndex$`1st Qu.` * scaleFactor,
                                               summaryBetweennessIndex$`3rd Qu.` * scaleFactor)
     names(betweennessIndexRibbonData) <- c("Timestep", "BetwIndexMin", "BetwIndexMax")
-    ribbonData$BetwIndexMin          <- betweennessIndexRibbonData$BetwIndexMin[match(ribbonData$Timestep, betweennessIndexRibbonData$Timestep)]
-    ribbonData$BetwIndexMax          <- betweennessIndexRibbonData$BetwIndexMax[match(ribbonData$Timestep, betweennessIndexRibbonData$Timestep)]
+    ribbonData$BetwIndexMin          <- betweennessIndexRibbonData$BetwIndexMin[match(ribbonData$Timestep,
+                                                                                      betweennessIndexRibbonData$Timestep)]
+    ribbonData$BetwIndexMax          <- betweennessIndexRibbonData$BetwIndexMax[match(ribbonData$Timestep,
+                                                                                      betweennessIndexRibbonData$Timestep)]
   }
 
   ### CLOSENESS data
@@ -736,8 +813,10 @@ plotSIRDevelopment <- function(rsData = load_round_summary_prepared_data(),
                                               summaryClosenessIndex$`1st Qu.` * scaleFactor,
                                               summaryClosenessIndex$`3rd Qu.` * scaleFactor)
     names(closenessIndexRibbonData) <- c("Timestep", "ClosIndexMin", "ClosIndexMax")
-    ribbonData$ClosIndexMin          <- closenessIndexRibbonData$ClosIndexMin[match(ribbonData$Timestep, closenessIndexRibbonData$Timestep)]
-    ribbonData$ClosIndexMax          <- closenessIndexRibbonData$ClosIndexMax[match(ribbonData$Timestep, closenessIndexRibbonData$Timestep)]
+    ribbonData$ClosIndexMin          <- closenessIndexRibbonData$ClosIndexMin[match(ribbonData$Timestep,
+                                                                                    closenessIndexRibbonData$Timestep)]
+    ribbonData$ClosIndexMax          <- closenessIndexRibbonData$ClosIndexMax[match(ribbonData$Timestep,
+                                                                                    closenessIndexRibbonData$Timestep)]
   }
 
   ### ASSORTATIVITY data
@@ -767,8 +846,10 @@ plotSIRDevelopment <- function(rsData = load_round_summary_prepared_data(),
                                               summaryAssortativityIndex$`1st Qu.` * scaleFactor,
                                               summaryAssortativityIndex$`3rd Qu.` * scaleFactor)
     names(assortativityIndexRibbonData) <- c("Timestep", "AssoIndexMin", "AssoIndexMax")
-    ribbonData$AssoIndexMin          <- assortativityIndexRibbonData$AssoIndexMin[match(ribbonData$Timestep, assortativityIndexRibbonData$Timestep)]
-    ribbonData$AssoIndexMax          <- assortativityIndexRibbonData$AssoIndexMax[match(ribbonData$Timestep, assortativityIndexRibbonData$Timestep)]
+    ribbonData$AssoIndexMin          <- assortativityIndexRibbonData$AssoIndexMin[match(ribbonData$Timestep,
+                                                                                        assortativityIndexRibbonData$Timestep)]
+    ribbonData$AssoIndexMax          <- assortativityIndexRibbonData$AssoIndexMax[match(ribbonData$Timestep,
+                                                                                        assortativityIndexRibbonData$Timestep)]
   }
 
   ### AVERAGE PATH LENGTH data
@@ -796,12 +877,14 @@ plotSIRDevelopment <- function(rsData = load_round_summary_prepared_data(),
   if (is.na(maxRounds)) {
     plot <- ggplot(plotData, aes(x = Timestep, y = Proportion, col = Measure)) +
       scale_y_continuous(breaks = seq(0, 1, by = 0.25)) +
+      theme(legend.title = element_blank())  +
       scale_x_continuous(labels = paste(seq(min(rounds) - 1, max(rounds), by = 25)),
                          breaks = seq(min(rounds) - 1, max(rounds), by = 25),
                          limits = c(0, max(rounds)))
   } else {
     plot <- ggplot(plotData, aes(x = Timestep, y = Proportion, col = Measure)) +
       scale_y_continuous(breaks = seq(0, 1, by = 0.25)) +
+      theme(legend.title = element_blank()) +
       scale_x_continuous(labels = paste(seq(min(rounds)-1, maxRounds, by = 25)),
                          breaks = seq(min(rounds)-1, maxRounds, by = 25),
                          limits = c(0, maxRounds))
@@ -817,13 +900,13 @@ plotSIRDevelopment <- function(rsData = load_round_summary_prepared_data(),
         geom_ribbon(data = ribbonData,
                     aes(x = Timestep, ymin = DegMin, ymax = DegMax),
                     inherit.aes = FALSE,
-                    fill = COLORS["Degree"],
-                    alpha = RIBBON_ALPHA) +
-        geom_ribbon(data = ribbonData,
-                    aes(x = Timestep, ymin = DegIndexMin, ymax = DegIndexMax),
-                    inherit.aes = FALSE,
-                    fill = COLORS["Degree.index"],
-                    alpha = RIBBON_ALPHA)
+                    fill = COLORS["Av.degree"],
+                    alpha = RIBBON_ALPHA) # +
+        # geom_ribbon(data = ribbonData,
+        #             aes(x = Timestep, ymin = DegIndexMin, ymax = DegIndexMax),
+        #             inherit.aes = FALSE,
+        #             fill = COLORS["Degree.index"],
+        #             alpha = RIBBON_ALPHA)
     }
 
     # ribbon :: clustering
@@ -944,7 +1027,7 @@ plotSIRDevelopment <- function(rsData = load_round_summary_prepared_data(),
   } else {
     if (showAdditional == "degree") {
       plot <- plot +
-        scale_y_continuous(sec.axis = sec_axis(~./scaleFactor, name = "Degree"))
+        scale_y_continuous(sec.axis = sec_axis(~./scaleFactor, name = "Av.degree"))
     } else if (showAdditional == "clustering") {
       plot <- plot +
         scale_y_continuous(sec.axis = sec_axis(~./scaleFactor, name = "Network clustering"))
@@ -972,13 +1055,14 @@ plotSIRDevelopment <- function(rsData = load_round_summary_prepared_data(),
 # param:  data.rs
 #     the round summary data
 #----------------------------------------------------------------------------------------------------#
-export_sirs <- function(data.rs = load_round_summary_prepared_data()) {
+export_sirs <- function(data.rs = load_round_summary_prepared_data(),
+                        data.ss = load_simulation_summary_data()) {
 
   # create directory if necessary
   dir.create(EXPORT_PATH_PLOTS, showWarnings = FALSE)
 
   ggsave(paste(EXPORT_PATH_PLOTS, "sir", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
-         plotSIRDevelopment(data.rs, maxRounds = 150),
+         plotSIRDevelopment(data.rs, data.ss, maxRounds = 150),
          width = 150,
          height = 50,
          units = EXPORT_SIZE_UNITS,
@@ -994,8 +1078,8 @@ export_sirs <- function(data.rs = load_round_summary_prepared_data()) {
 # param:  data.rs
 #     the round summary data
 #----------------------------------------------------------------------------------------------------#
-export_sirs_variations <- function(data.ss = load_simulation_summary_data(),
-                                   data.rs = load_round_summary_prepared_data()) {
+export_sirs_variations <- function(data.rs = load_round_summary_prepared_data(),
+                                   data.ss = load_simulation_summary_data()) {
 
   # create directory if necessary
   dir.create(EXPORT_PATH_PLOTS, showWarnings = FALSE)
@@ -1016,17 +1100,22 @@ export_sirs_variations <- function(data.ss = load_simulation_summary_data(),
                              nb.prof.omega == o)$sim.uid
 
             if (length(uids) > 0) {
-              ggsave(paste(EXPORT_PATH_PLOTS,
-                           plot.cnt,
-                           "-sir",
-                           # "-o_", o,
-                           # "-a_", a,
-                           # "-v_", v,
-                           # "-e_", e,
-                           # "-q_", q,
-                           EXPORT_FILE_EXTENSION_PLOTS,
-                           sep = ""),
-                     plotSIRDevelopment(subset(data.rs, sim.uid %in% uids), maxRounds = 150),
+              filename <- paste(EXPORT_PATH_PLOTS,
+                    plot.cnt,
+                    "-sir",
+                    "-o_", o,
+                    "-a_", a,
+                    "-v_", v,
+                    "-e_", e,
+                    "-q_", q,
+                    sep = "")
+              filename <- str_replace_all(filename, "\\s", "")
+              filename <- str_replace_all(filename, "\\.", "")
+              filename <- paste(filename, EXPORT_FILE_EXTENSION_PLOTS, sep = "")
+              ggsave(filename,
+                     plotSIRDevelopment(subset(data.rs, sim.uid %in% uids),
+                                        subset(data.ss, sim.uid %in% uids),
+                                        maxRounds = 150),
                      width = 150,
                      height = 50,
                      units = EXPORT_SIZE_UNITS,
@@ -1685,8 +1774,8 @@ export_all <- function() {
 
   # plots
   export_boxplots(data.ss = data.ss)
-  export_sirs(data.rs = data.rs)
-  export_sirs_variations(data.rs = data.rs)
+  export_sirs(data.rs = data.rs, data.ss = data.ss)
+  export_sirs_variations(data.rs = data.rs, data.ss = data.ss)
 
   # regression analysis
   export_regressions(data.ss = data.ss)
