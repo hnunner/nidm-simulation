@@ -277,23 +277,23 @@ public class NunnerBuskensProfessionsDataGenerator extends AbstractGenerator imp
                 // quarantined: all
                 new ArrayList<String>(
                         Arrays.asList(Professions.NONE))));
-        // scenario 5
-        scenarios.add(new CounterMeasure(
-                // vaccinated: health-related professions
-                new ArrayList<String>(
-                        Arrays.asList("HPT", "HS")),
-                // quarantined: none
-                new ArrayList<String>(
-                        Arrays.asList(Professions.NONE))));
+      // scenario 5
+      scenarios.add(new CounterMeasure(
+              // vaccinated: health-related professions
+              new ArrayList<String>(
+                      Arrays.asList("HPT", "EIL", "PCS")),
+              // quarantined: none
+              new ArrayList<String>(
+                      Arrays.asList(Professions.NONE))));
         // scenario 6
         scenarios.add(new CounterMeasure(
                 // vaccinated: health-related professions
                 new ArrayList<String>(
-                        Arrays.asList("HPT", "HS")),
+                        Arrays.asList("HPT", "EIL", "PCS")),
                 // quarantined: rest
                 new ArrayList<String>(
-                        Arrays.asList("AE", "ADESM", "CM", "BFO", "CSS", "CM", "CE", "EIL", "FFF", "FPS", "IMR", "L",
-                                "LPSS", "M", "OAS", "PCS", "P", "PS", "S", "TMM", "R", "U"))));
+                        Arrays.asList("AE", "ADESM", "CM", "BFO", "CSS", "CM", "CE", "FFF", "FPS", "HS", "IMR", "L",
+                                "LPSS", "M", "OAS", "P", "PS", "S", "TMM", "R", "U"))));
 
         Iterator<CounterMeasure> sIt = scenarios.iterator();
         while (sIt.hasNext()) {
@@ -456,7 +456,9 @@ public class NunnerBuskensProfessionsDataGenerator extends AbstractGenerator imp
             double degree = 0.0;
             double degreeError = 0.0;
 
-            if (toBeQuarantined != null && toBeQuarantined.contains(profession)) {
+            if (toBeQuarantined != null &&
+                    ((toBeQuarantined.size() == 1 && toBeQuarantined.contains(Professions.ALL)) ||
+                            toBeQuarantined.contains(profession))) {
                 degree = Professions.getInstance().getDegreeDuringLockdown(profession);
                 degreeError = Professions.getInstance().getDegreeErrorDuringLockdown(profession);
                 if (!this.conditionsByProfession.containsKey(profession)) {
@@ -464,7 +466,7 @@ public class NunnerBuskensProfessionsDataGenerator extends AbstractGenerator imp
                 }
                 this.quarantined++;
 
-                logger.debug("Quarantined: " + profession);
+                logger.debug("Quarantined: " + profession + "(" + degree + ")");
 
             } else {
                 degree = Professions.getInstance().getDegreePreLockdown(profession);
@@ -472,6 +474,9 @@ public class NunnerBuskensProfessionsDataGenerator extends AbstractGenerator imp
                 if (!this.conditionsByProfession.containsKey(profession)) {
                     this.conditionsByProfession.put(profession, LockdownConditions.PRE);
                 }
+
+
+                logger.debug("Not quarantined: " + profession + "(" + degree + ")");
 
             }
 
