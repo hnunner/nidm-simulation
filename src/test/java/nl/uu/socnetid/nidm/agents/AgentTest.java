@@ -128,18 +128,18 @@ public class AgentTest {
         this.networkAss = new Network("Assortativity conditions test",
                 Arrays.asList(AssortativityConditions.PROFESSION, AssortativityConditions.AGE));
         this.agentsAss = new ArrayList<Agent>(11);
-        this.agentAss = networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 90, true, "A", true);
+        this.agentAss = networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 90, true, "A", true, false);
 
-        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 80, true, "B", true));
-        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 70, true, "A", true));
-        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 91, true, "C", true));
-        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 30, true, "A", true));
-        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5,  5, true, "C", true));
-        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 50, true, "B", true));
-        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 95, true, "C", true));
-        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 20, true, "B", true));
-        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 10, true, "A", true));
-        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 60, true, "C", true));
+        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 80, true, "B", true, false));
+        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 70, true, "A", true, false));
+        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 91, true, "C", true, false));
+        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 30, true, "A", true, false));
+        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5,  5, true, "C", true, false));
+        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 50, true, "B", true, false));
+        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 95, true, "C", true, false));
+        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 20, true, "B", true, false));
+        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 10, true, "A", true, false));
+        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 60, true, "C", true, false));
     }
 
 
