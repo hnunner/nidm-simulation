@@ -83,8 +83,6 @@ public class Professions {
                 String profession = attributes[0];
                 this.professions.add(profession);
 
-                logger.debug("Adding profession: " + profession);
-
                 // profession distribution
                 int i = 0;
                 while (i < Integer.valueOf(attributes[1])) {
@@ -160,6 +158,13 @@ public class Professions {
      */
     public String getRandomProfession() {
         return this.professionDistribution.get(ThreadLocalRandom.current().nextInt(0, this.professionDistribution.size()));
+    }
+
+    /**
+     * @return the professionDistribution
+     */
+    public List<String> getProfessionDistribution() {
+        return professionDistribution;
     }
 
     /**
