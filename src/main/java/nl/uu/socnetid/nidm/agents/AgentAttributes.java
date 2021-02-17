@@ -50,6 +50,7 @@ public enum AgentAttributes {
     CONSIDER_AGE("consider.age"),
     PROFESSION("profession"),
     CONSIDER_PROFESSION("consider.profession"),
+    QUARANTINED("quarantined"),
     FORCE_INFECTED("force.infected"),
     INITIAL_INDEX_CASE_DISTANCE("initial.index.case.distance"),
     BETWEENNESS("betweenness"),

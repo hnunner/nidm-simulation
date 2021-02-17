@@ -83,7 +83,7 @@ public class ProfessionsTest {
             while (line != null) {
                 String[] attributes = line.split(";");
 
-                String profession = attributes[0];
+                String profession = attributes[0].replaceAll("(?U)\\p{Cntrl}|\\p{Gc=Cf}", "");
                 Double entries = Double.valueOf(attributes[1]);
 
                 // profession distribution
