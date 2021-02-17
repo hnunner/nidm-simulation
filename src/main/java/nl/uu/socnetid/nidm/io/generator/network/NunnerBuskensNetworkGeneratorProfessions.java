@@ -259,7 +259,8 @@ public class NunnerBuskensNetworkGeneratorProfessions extends AbstractGenerator 
                     AgeStructure.getInstance().getRandomAge(),
                     umps.isConsiderAge(),
                     profession,
-                    umps.isConsiderProfession());
+                    umps.isConsiderProfession(),
+                    false);
         }
 
         logger.info("Theoretic average degree: " + (Math.round(this.network.getTheoreticAvDegree() * 100.0) / 100.0));
