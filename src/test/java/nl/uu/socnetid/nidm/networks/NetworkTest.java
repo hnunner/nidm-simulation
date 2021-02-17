@@ -468,7 +468,8 @@ public class NetworkTest {
                 this.agent1.getAge(),
                 this.agent1.considerAge(),
                 this.agent1.getProfession(),
-                this.agent1.considerProfession());
+                this.agent1.considerProfession(),
+                this.agent1.isQuarantined());
         Agent a2 = network2.addAgent(
                 this.agent2.getUtilityFunction(),
                 this.agent2.getDiseaseSpecs(),
@@ -481,7 +482,8 @@ public class NetworkTest {
                 this.agent2.getAge(),
                 this.agent2.considerAge(),
                 this.agent2.getProfession(),
-                this.agent2.considerProfession());
+                this.agent2.considerProfession(),
+                this.agent1.isQuarantined());
         Agent a3 = network2.addAgent(
                 this.agent3.getUtilityFunction(),
                 this.agent3.getDiseaseSpecs(),
@@ -494,7 +496,8 @@ public class NetworkTest {
                 this.agent3.getAge(),
                 this.agent3.considerAge(),
                 this.agent3.getProfession(),
-                this.agent3.considerProfession());
+                this.agent3.considerProfession(),
+                this.agent1.isQuarantined());
         Agent a4 = network2.addAgent(
                 this.agent4.getUtilityFunction(),
                 this.agent4.getDiseaseSpecs(),
@@ -507,7 +510,8 @@ public class NetworkTest {
                 this.agent4.getAge(),
                 this.agent4.considerAge(),
                 this.agent4.getProfession(),
-                this.agent4.considerProfession());
+                this.agent4.considerProfession(),
+                this.agent1.isQuarantined());
         network2.addAgent(
                 this.agent5.getUtilityFunction(),
                 this.agent5.getDiseaseSpecs(),
@@ -520,7 +524,8 @@ public class NetworkTest {
                 this.agent5.getAge(),
                 this.agent5.considerAge(),
                 this.agent5.getProfession(),
-                this.agent5.considerProfession());
+                this.agent5.considerProfession(),
+                this.agent1.isQuarantined());
         a1.addConnection(a2);
         a1.addConnection(a3);
         a1.addConnection(a4);
@@ -541,7 +546,8 @@ public class NetworkTest {
                 this.agent6.getAge(),
                 this.agent6.considerAge(),
                 this.agent6.getProfession(),
-                this.agent6.considerProfession());
+                this.agent6.considerProfession(),
+                this.agent1.isQuarantined());
         assertFalse(this.network.equals(network2));
 
         a6.infect(this.ds);
