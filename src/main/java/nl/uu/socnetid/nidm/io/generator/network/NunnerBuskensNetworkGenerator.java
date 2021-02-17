@@ -308,6 +308,7 @@ public class NunnerBuskensNetworkGenerator extends AbstractGenerator implements 
                     false,
                     // TODO make profession optional
                     "NA",
+                    false,
                     false);
         }
         this.dgData.setAgents(new LinkedList<Agent>(network.getAgents()));
