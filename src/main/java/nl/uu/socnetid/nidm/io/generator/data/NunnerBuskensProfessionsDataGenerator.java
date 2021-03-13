@@ -381,10 +381,6 @@ public class NunnerBuskensProfessionsDataGenerator extends AbstractGenerator imp
 
             // get best matching network
             this.network = new DGSReader().readNetwork(this.dgsFileNameBestMatch);
-            this.dgData.setNetStatsPre(new NetworkStatsPre(this.network, this.simulation.getRounds()));
-            this.dgData.getNetStatsPre().setAvDegreeTheoretic(this.avDegreeTheoretic);
-            this.dgData.getNetStatsPre().setAvDegreesByProfessionTheoretic(this.avDegreesByProfessionTheoretic);
-            this.dgData.getNetStatsPre().setDegreesSdByProfessionTheoretic(this.degreesSdByProfessionTheoretic);
 
             int its = this.dgData.getUtilityModelParams().getSimIterations();
 
@@ -406,6 +402,11 @@ public class NunnerBuskensProfessionsDataGenerator extends AbstractGenerator imp
                     }
                 }
                 umps.setVaccinated(vaccinationGroups);
+
+                this.dgData.setNetStatsPre(new NetworkStatsPre(this.network, this.simulation.getRounds()));
+                this.dgData.getNetStatsPre().setAvDegreeTheoretic(this.avDegreeTheoretic);
+                this.dgData.getNetStatsPre().setAvDegreesByProfessionTheoretic(this.avDegreesByProfessionTheoretic);
+                this.dgData.getNetStatsPre().setDegreesSdByProfessionTheoretic(this.degreesSdByProfessionTheoretic);
 
                 // run epidemic
                 Agent indexCase = null;
@@ -455,6 +456,7 @@ public class NunnerBuskensProfessionsDataGenerator extends AbstractGenerator imp
             String profession = Professions.getInstance().getRandomProfession();
             double degree = 0.0;
             double degreeError = 0.0;
+            boolean currentQuarantined = false;
 
             if (toBeQuarantined != null &&
                     ((toBeQuarantined.size() == 1 && toBeQuarantined.contains(Professions.ALL)) ||
@@ -465,6 +467,7 @@ public class NunnerBuskensProfessionsDataGenerator extends AbstractGenerator imp
                     this.conditionsByProfession.put(profession, LockdownConditions.DURING);
                 }
                 this.quarantined++;
+                currentQuarantined = true;
 
                 logger.debug("Quarantined: " + profession + "(" + degree + ")");
 
@@ -474,7 +477,7 @@ public class NunnerBuskensProfessionsDataGenerator extends AbstractGenerator imp
                 if (!this.conditionsByProfession.containsKey(profession)) {
                     this.conditionsByProfession.put(profession, LockdownConditions.PRE);
                 }
-
+                currentQuarantined = false;
 
                 logger.debug("Not quarantined: " + profession + "(" + degree + ")");
 
@@ -517,7 +520,8 @@ public class NunnerBuskensProfessionsDataGenerator extends AbstractGenerator imp
                     AgeStructure.getInstance().getRandomAge(),
                     umps.isConsiderAge(),
                     profession,
-                    umps.isConsiderProfession());
+                    umps.isConsiderProfession(),
+                    currentQuarantined);
         }
 
         this.avDegreeTheoretic = this.network.getTheoreticAvDegree();
