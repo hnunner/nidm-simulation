@@ -114,10 +114,12 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      *          the profession of the agent
      * @param considerProfession
      *          whether profession is considered for peer selection or not
+     * @param quarantined
+     *          whether the agent is quarantined or not
      */
     public void initAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs,
             Double riskFactorSigma, Double riskFactorPi, Double phi, Double psi, Double xi, Double omega,
-            Integer age, boolean considerAge, String profession, boolean considerProfession) {
+            Integer age, boolean considerAge, String profession, boolean considerProfession, boolean quarantined) {
         this.addAttribute(AgentAttributes.UTILITY_FUNCTION, utilityFunction);
         this.addAttribute(AgentAttributes.DISEASE_SPECS, diseaseSpecs);
         DiseaseGroup diseaseGroup = DiseaseGroup.SUSCEPTIBLE;
@@ -141,6 +143,8 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         this.addAttribute(AgentAttributes.CONSIDER_AGE, considerAge);
         this.addAttribute(AgentAttributes.PROFESSION, profession);
         this.addAttribute(AgentAttributes.CONSIDER_PROFESSION, considerProfession);
+
+        this.addAttribute(AgentAttributes.QUARANTINED, quarantined);
 
         this.addAttribute(AgentAttributes.FORCE_INFECTED, false);
         this.addAttribute("ui.label", this.getId());
@@ -577,6 +581,15 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      */
     public boolean considerProfession() {
         return (boolean) this.getAttribute(AgentAttributes.CONSIDER_PROFESSION);
+    }
+
+    /**
+     * Gets whether the agent is quarantined or not.
+     *
+     * @return true when the agent is quarantined, false otherwise
+     */
+    public boolean isQuarantined() {
+        return (boolean) this.getAttribute(AgentAttributes.QUARANTINED);
     }
 
     /**
