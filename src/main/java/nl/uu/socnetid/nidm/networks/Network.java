@@ -152,6 +152,10 @@ public class Network extends SingleGraph implements SimulationListener {
         this.addAttribute(NetworkAttributes.AV_DEGREE_THEORETIC, -1.0, false);
         this.addAttribute(NetworkAttributes.AV_DEGREE_SATISFIED, -1.0, false);
         this.addAttribute(NetworkAttributes.AV_DEGREE_UNSATISFIED, -1.0, false);
+        this.addAttribute(NetworkAttributes.AV_DEGREE_VACCINATED, -1.0, false);
+        this.addAttribute(NetworkAttributes.AV_DEGREE_VACCINATED_NOT, -1.0, false);
+        this.addAttribute(NetworkAttributes.AV_DEGREE_QUARANTINED, -1.0, false);
+        this.addAttribute(NetworkAttributes.AV_DEGREE_QUARANTINED_NOT, -1.0, false);
         this.addAttribute(NetworkAttributes.AV_BETWEENNESS_ROUND_LAST_COMPUTATION, -1, false);
         this.addAttribute(NetworkAttributes.AV_BETWEENNESS, -1.0, false);
         this.addAttribute(NetworkAttributes.AV_CLOSENESS_ROUND_LAST_COMPUTATION, -1, false);
@@ -220,7 +224,7 @@ public class Network extends SingleGraph implements SimulationListener {
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs) {
         // TODO clean up addAgent methods -- too many special cases!!!
         return this.addAgent(utilityFunction, diseaseSpecs, RISK_FACTOR_NEUTRAL, RISK_FACTOR_NEUTRAL, STANDARD_PHI,
-                STANDARD_OMEGA, STANDARD_PSI, STANDARD_XI, AgeStructure.getInstance().getRandomAge(), false, "NA", false);
+                STANDARD_OMEGA, STANDARD_PSI, STANDARD_XI, AgeStructure.getInstance().getRandomAge(), false, "NA", false, false);
     }
 
     /**
@@ -245,7 +249,7 @@ public class Network extends SingleGraph implements SimulationListener {
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
             double omega) {
         return this.addAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, omega, STANDARD_PSI,
-                STANDARD_XI, AgeStructure.getInstance().getRandomAge(), false, "NA", false);
+                STANDARD_XI, AgeStructure.getInstance().getRandomAge(), false, "NA", false, false);
     }
 
     /**
@@ -277,15 +281,18 @@ public class Network extends SingleGraph implements SimulationListener {
      *          the agent's profession
      * @param considerProfession
      *          whether profession is considered for peer selection or not
+     * @param quarantined
+     *          whether the agent is quarantined or not
      * @return the newly added agent.
      */
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
-            double omega, double psi, double xi, int age, boolean considerAge, String profession, boolean considerProfession) {
+            double omega, double psi, double xi, int age, boolean considerAge, String profession, boolean considerProfession,
+            boolean quarantined) {
         Agent agent = this.addNode(String.valueOf(this.getNodeCount() + 1));
 
         // age randomly drawn from /resources/age-dist.csv
         agent.initAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, psi, xi, omega, age, considerAge,
-                profession, considerProfession);
+                profession, considerProfession, quarantined);
         notifyAgentAdded(agent);
 
         // re-position agents if auto-layout is disabled
@@ -719,6 +726,119 @@ public class Network extends SingleGraph implements SimulationListener {
         }
         return (double) this.getAttribute(NetworkAttributes.AV_DEGREE);
     }
+
+    /**
+     * Gets the average degree of vaccinated agents.
+     *
+     * @return the average degree of vaccinated agents
+     */
+    public double getAvDegreeVaccinated() {
+        double totalDegree = 0;
+        Iterator<Agent> aIt = this.getVaccinated().iterator();
+
+        if (!aIt.hasNext()) {
+            this.changeAttribute(NetworkAttributes.AV_DEGREE_VACCINATED,
+                    this.getAttribute(NetworkAttributes.AV_DEGREE_VACCINATED),
+                    -1.0);
+        } else {
+            while (aIt.hasNext()) {
+                Agent vaxAgent = aIt.next();
+                totalDegree += vaxAgent.getDegree();
+            }
+            this.changeAttribute(NetworkAttributes.AV_DEGREE_VACCINATED,
+                    this.getAttribute(NetworkAttributes.AV_DEGREE_VACCINATED),
+                    totalDegree/this.getVaccinated().size());
+        }
+        return (double) this.getAttribute(NetworkAttributes.AV_DEGREE_VACCINATED);
+    }
+
+    /**
+     * Gets the average degree of not vaccinated agents.
+     *
+     * @return the average degree of not vaccinated agents
+     */
+    public double getAvDegreeNotVaccinated() {
+        double totalDegree = 0;
+        int notVaccinated = 0;
+        Iterator<Agent> aIt = this.getAgentIterator();
+
+        while (aIt.hasNext()) {
+            Agent agent = aIt.next();
+            if (!agent.isVaccinated()) {
+                totalDegree += agent.getDegree();
+                notVaccinated++;
+            }
+        }
+
+        if (notVaccinated == 0) {
+            this.changeAttribute(NetworkAttributes.AV_DEGREE_VACCINATED_NOT,
+                    this.getAttribute(NetworkAttributes.AV_DEGREE_VACCINATED_NOT),
+                    -1.0);
+        } else {
+            this.changeAttribute(NetworkAttributes.AV_DEGREE_VACCINATED_NOT,
+                    this.getAttribute(NetworkAttributes.AV_DEGREE_VACCINATED_NOT),
+                    totalDegree/notVaccinated);
+        }
+
+        return (double) this.getAttribute(NetworkAttributes.AV_DEGREE_VACCINATED_NOT);
+    }
+
+    /**
+     * Gets the average degree of quarantined agents.
+     *
+     * @return the average degree of quarantined agents
+     */
+    public double getAvDegreeQuarantined() {
+        double totalDegree = 0;
+        Iterator<Agent> aIt = this.getQuarantined().iterator();
+        if (!aIt.hasNext()) {
+            this.changeAttribute(NetworkAttributes.AV_DEGREE_QUARANTINED,
+                    this.getAttribute(NetworkAttributes.AV_DEGREE_QUARANTINED),
+                    -1.0);
+        } else {
+            while (aIt.hasNext()) {
+                Agent quarAgent = aIt.next();
+                totalDegree += quarAgent.getDegree();
+            }
+            this.changeAttribute(NetworkAttributes.AV_DEGREE_QUARANTINED,
+                    this.getAttribute(NetworkAttributes.AV_DEGREE_QUARANTINED),
+                    totalDegree/this.getQuarantined().size());
+        }
+        return (double) this.getAttribute(NetworkAttributes.AV_DEGREE_QUARANTINED);
+    }
+
+    /**
+     * Gets the average degree of not quarantined agents.
+     *
+     * @return the average degree of not quarantined agents
+     */
+    public double getAvDegreeNotQuarantined() {
+        double totalDegree = 0;
+        int notQuarantined = 0;
+
+        Iterator<Agent> aIt = this.getAgentIterator();
+        while (aIt.hasNext()) {
+            Agent agent = aIt.next();
+            if (!agent.isQuarantined()) {
+                totalDegree += agent.getDegree();
+                notQuarantined++;
+            }
+        }
+
+        if (notQuarantined == 0) {
+            this.changeAttribute(NetworkAttributes.AV_DEGREE_QUARANTINED_NOT,
+                    this.getAttribute(NetworkAttributes.AV_DEGREE_QUARANTINED_NOT),
+                    -1.0);
+        } else {
+            this.changeAttribute(NetworkAttributes.AV_DEGREE_QUARANTINED_NOT,
+                    this.getAttribute(NetworkAttributes.AV_DEGREE_QUARANTINED_NOT),
+                    totalDegree/notQuarantined);
+        }
+
+
+        return (double) this.getAttribute(NetworkAttributes.AV_DEGREE_QUARANTINED_NOT);
+    }
+
 
     // TODO testcase
     // TODO comments
@@ -1415,6 +1535,24 @@ public class Network extends SingleGraph implements SimulationListener {
             }
         }
         return vaccinated;
+    }
+
+    /**
+     * Gets all quarantined agents within the network.
+     *
+     * @return all quarantined agents within the network.
+     */
+    public Collection<Agent> getQuarantined() {
+        List<Agent> quarantined = new LinkedList<Agent>();
+
+        Iterator<Agent> agentIt = getAgentIterator();
+        while (agentIt.hasNext()) {
+            Agent agent = agentIt.next();
+            if (agent.isQuarantined()) {
+                quarantined.add(agent);
+            }
+        }
+        return quarantined;
     }
 
     /**
