@@ -74,8 +74,14 @@ public class NunnerBuskensProfessionsSimulationSummaryWriter extends CsvFileWrit
 
         // most interesting
         cols.add(LogValues.IV_NB_PROF_N.toString());
+        cols.add(LogValues.DV_NET_N_VACCINATED.toString());
+        cols.add(LogValues.DV_NET_N_QUARANTINED.toString());
         cols.add(LogValues.DV_NET_AV_DEGREE.toString());
         cols.add(LogValues.DV_NET_AV_DEGREE_THEORETIC.toString());
+        cols.add(LogValues.DV_NET_AV_DEGREE_VACCINATED.toString());
+        cols.add(LogValues.DV_NET_AV_DEGREE_VACCINATED_NOT.toString());
+        cols.add(LogValues.DV_NET_AV_DEGREE_QUARANTINED.toString());
+        cols.add(LogValues.DV_NET_AV_DEGREE_QUARANTINED_NOT.toString());
         cols.add(LogValues.DV_NET_AV_CLUSTERING.toString());
         cols.add(LogValues.DV_NET_ASSORTATIVITY_PROFESSION.toString());
         cols.add(LogValues.IV_NB_PROF_VACCINATED.toString());
@@ -151,8 +157,18 @@ public class NunnerBuskensProfessionsSimulationSummaryWriter extends CsvFileWrit
 
         // most interesting
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getN()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPre().getNVaccinated()));
+        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getQuarantined()));
         currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvDegree()));
         currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvDegreeTheoretic()));
+        currData.add(this.dgData.getNetStatsPre().getAvDegreeVaccinated() == -1.0 ? "NA" :
+            String.valueOf(this.dgData.getNetStatsPre().getAvDegreeVaccinated()));
+        currData.add(this.dgData.getNetStatsPre().getAvDegreeVaccinatedNot() == -1.0 ? "NA" :
+            String.valueOf(this.dgData.getNetStatsPre().getAvDegreeVaccinatedNot()));
+        currData.add(this.dgData.getNetStatsPre().getAvDegreeQuarantined() == -1.0 ? "NA" :
+            String.valueOf(this.dgData.getNetStatsPre().getAvDegreeQuarantined()));
+        currData.add(this.dgData.getNetStatsPre().getAvDegreeQuarantinedNot() == -1.0 ? "NA" :
+            String.valueOf(this.dgData.getNetStatsPre().getAvDegreeQuarantinedNot()));
         currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvClustering()));
         currData.add(String.valueOf(this.dgData.getNetStatsPre().getAssortativityProfession()));
         List<String> vaccinated = this.dgData.getUtilityModelParams().getVaccinated();

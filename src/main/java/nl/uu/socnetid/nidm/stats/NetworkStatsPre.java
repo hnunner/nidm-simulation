@@ -55,6 +55,13 @@ public class NetworkStatsPre {
     private Map<String, Double> degreesSdByProfession;
     private Map<String, Double> degreesSdByProfessionTheoretic;
 
+    private final int nVaccinated;
+
+    private final double avDegreeVaccinated;
+    private final double avDegreeVaccinatedNot;
+    private final double avDegreeQuarantined;
+    private final double avDegreeQuarantinedNot;
+
 
     public NetworkStatsPre(Network network, int simRound) {
         this.network = network;
@@ -73,6 +80,13 @@ public class NetworkStatsPre {
         this.avDegreesByProfessionTheoretic = null;
         this.degreesSdByProfession = network.getDegreesSdByProfessions();
         this.degreesSdByProfessionTheoretic = null;
+
+        this.nVaccinated = network.getVaccinated().size();
+
+        this.avDegreeVaccinated = network.getAvDegreeVaccinated();
+        this.avDegreeVaccinatedNot = network.getAvDegreeNotVaccinated();
+        this.avDegreeQuarantined = network.getAvDegreeQuarantined();
+        this.avDegreeQuarantinedNot = network.getAvDegreeNotQuarantined();
     }
 
     /**
@@ -251,6 +265,41 @@ public class NetworkStatsPre {
      */
     public void setAvDegreeTheoretic(double avDegreeTheoretic) {
         this.avDegreeTheoretic = avDegreeTheoretic;
+    }
+
+    /**
+     * @return the nVaccinated
+     */
+    public int getNVaccinated() {
+        return nVaccinated;
+    }
+
+    /**
+     * @return the avDegreeVaccinated
+     */
+    public double getAvDegreeVaccinated() {
+        return avDegreeVaccinated;
+    }
+
+    /**
+     * @return the avDegreeVaccinatedNot
+     */
+    public double getAvDegreeVaccinatedNot() {
+        return avDegreeVaccinatedNot;
+    }
+
+    /**
+     * @return the avDegreeQuarantined
+     */
+    public double getAvDegreeQuarantined() {
+        return avDegreeQuarantined;
+    }
+
+    /**
+     * @return the avDegreeQuarantinedNot
+     */
+    public double getAvDegreeQuarantinedNot() {
+        return avDegreeQuarantinedNot;
     }
 
 }
