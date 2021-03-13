@@ -58,7 +58,7 @@ public class NetworkFileWriter {
      */
     public NetworkFileWriter(String path, String file, NetworkWriter networkWriter, Network network) {
         this.path = path;
-        this.file = path + file;
+        this.file = file;
         this.networkWriter = networkWriter;
         this.network = network;
     }
@@ -68,6 +68,11 @@ public class NetworkFileWriter {
      * Writes the NetworkWriter's contents to the specified file.
      */
     public void write() {
+
+        System.out.println("Exporting to: " + this.file);
+
+
+
         Path path = Paths.get(this.path);
         if (!Files.exists(path)) {
             try {
