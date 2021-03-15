@@ -35,10 +35,11 @@ public class Professions {
 
     private List<String> professions;
     private List<String> professionDistribution;
-    private Map<String, Double> degreePreLockdown;
-    private Map<String, Double> errorDegreePreLockdown;
-    private Map<String, Double> degreeDuringLockdown;
-    private Map<String, Double> errorDegreeDuringLockdown;
+    private Map<String, Double> degreesPreLockdown;
+    private Map<String, Double> errorDegreesPreLockdown;
+    private Map<String, Double> degreesDuringLockdown;
+    private Map<String, Double> errorDegreesDuringLockdown;
+    private Map<String, Double> degreeReductionsLockdown;
     private double avDegreePreLockdown;
     private double avDegreeDuringLockdown;
 
@@ -60,10 +61,11 @@ public class Professions {
     private void initProfessions() {
         this.professions = new ArrayList<String>();
         this.professionDistribution = new ArrayList<String>();
-        this.degreePreLockdown = new HashMap<String, Double>();
-        this.errorDegreePreLockdown = new HashMap<String, Double>();
-        this.degreeDuringLockdown = new HashMap<String, Double>();
-        this.errorDegreeDuringLockdown = new HashMap<String, Double>();
+        this.degreesPreLockdown = new HashMap<String, Double>();
+        this.errorDegreesPreLockdown = new HashMap<String, Double>();
+        this.degreesDuringLockdown = new HashMap<String, Double>();
+        this.errorDegreesDuringLockdown = new HashMap<String, Double>();
+        this.degreeReductionsLockdown = new HashMap<String, Double>();
 
         int n = 0;
 
@@ -93,15 +95,19 @@ public class Professions {
 
                 // profession degree pre lockdown
                 Double degPre = Double.valueOf(attributes[2]);
-                this.degreePreLockdown.put(profession, degPre);
+                this.degreesPreLockdown.put(profession, degPre);
                 this.avDegreePreLockdown += i*degPre;
-                this.errorDegreePreLockdown.put(profession, Double.valueOf(attributes[3]));
+                this.errorDegreesPreLockdown.put(profession, Double.valueOf(attributes[3]));
 
                 // profession degree during lockdown
                 Double degDuring = Double.valueOf(attributes[4]);
-                this.degreeDuringLockdown.put(profession, degDuring);
+                this.degreesDuringLockdown.put(profession, degDuring);
                 this.avDegreePreLockdown += i*degDuring;
-                this.errorDegreeDuringLockdown.put(profession, Double.valueOf(attributes[5]));
+                this.errorDegreesDuringLockdown.put(profession, Double.valueOf(attributes[5]));
+
+                // degree reductions pre and during lockdown
+                Double degreeReductionLockdown = Double.valueOf(attributes[6]);
+                this.degreeReductionsLockdown.put(profession, degreeReductionLockdown);
 
                 line = br.readLine();
             }
@@ -143,6 +149,15 @@ public class Professions {
 
 
     /**
+     * Gets all available professions.
+     *
+     * @return all available professions
+     */
+    public List<String> getProfessions() {
+        return this.professions;
+    }
+
+    /**
      * Get an iterator over all available professions.
      *
      * @return an iterator over all available professions
@@ -175,7 +190,7 @@ public class Professions {
      * @return the degree by profession before lockdown
      */
     public double getDegreePreLockdown(String profession) {
-        return this.degreePreLockdown.get(profession);
+        return this.degreesPreLockdown.get(profession);
     }
 
     /**
@@ -186,7 +201,7 @@ public class Professions {
      * @return the degree by profession during lockdown
      */
     public double getDegreeDuringLockdown(String profession) {
-        return this.degreeDuringLockdown.get(profession);
+        return this.degreesDuringLockdown.get(profession);
     }
 
     /**
@@ -197,7 +212,7 @@ public class Professions {
      * @return the degree error by profession prior to lockdown
      */
     public double getDegreeErrorPreLockdown(String profession) {
-        return errorDegreePreLockdown.get(profession);
+        return errorDegreesPreLockdown.get(profession);
     }
 
     /**
@@ -208,7 +223,18 @@ public class Professions {
      * @return the degree error by profession during lockdown
      */
     public double getDegreeErrorDuringLockdown(String profession) {
-        return errorDegreeDuringLockdown.get(profession);
+        return errorDegreesDuringLockdown.get(profession);
+    }
+
+    /**
+     * Gets the degree reduction from pre to during lockdown by profession.
+     *
+     * @param profession
+     *          the profession to get the degree reduction for
+     * @return the degree reduction from pre to during lockdown by profession
+     */
+    public double getDegreeReductionLockdown(String profession) {
+        return degreeReductionsLockdown.get(profession);
     }
 
     /**
@@ -242,7 +268,7 @@ public class Professions {
         while (it.hasNext()) {
             String profession = it.next();
             comp += compDegreePreLockdown.get(profession);
-            target += this.degreePreLockdown.get(profession);
+            target += this.degreesPreLockdown.get(profession);
         }
 
         return Math.abs((target - comp) / target);
@@ -268,7 +294,7 @@ public class Professions {
             double target = 0.0;
             switch (cbp.getValue()) {
                 case DURING:
-                    target += this.degreeDuringLockdown.get(profession);
+                    target += this.degreesDuringLockdown.get(profession);
                     break;
 
                 case POST:
@@ -276,7 +302,7 @@ public class Professions {
                     //$FALL-THROUGH$
                 default:
                 case PRE:
-                    target += this.degreePreLockdown.get(profession);
+                    target += this.degreesPreLockdown.get(profession);
                     break;
             }
 
@@ -311,7 +337,7 @@ public class Professions {
             double target = 0.0;
             switch (cbp.getValue()) {
                 case DURING:
-                    target += this.degreeDuringLockdown.get(profession);
+                    target += this.degreesDuringLockdown.get(profession);
                     break;
 
                 case POST:
@@ -319,7 +345,7 @@ public class Professions {
                     //$FALL-THROUGH$
                 default:
                 case PRE:
-                    target += this.degreePreLockdown.get(profession);
+                    target += this.degreesPreLockdown.get(profession);
                     break;
             }
 
@@ -332,6 +358,34 @@ public class Professions {
         }
 
         return professionDiff/network.getN();
+    }
+
+    /**
+     * @return the degreesPreLockdown
+     */
+    public Map<String, Double> getDegreesPreLockdown() {
+        return degreesPreLockdown;
+    }
+
+    /**
+     * @return the errorDegreesPreLockdown
+     */
+    public Map<String, Double> getDegreeErrorsPreLockdown() {
+        return errorDegreesPreLockdown;
+    }
+
+    /**
+     * @return the degreesDuringLockdown
+     */
+    public Map<String, Double> getDegreesDuringLockdown() {
+        return degreesDuringLockdown;
+    }
+
+    /**
+     * @return the errorDegreesDuringLockdown
+     */
+    public Map<String, Double> getDegreeErrorsDuringLockdown() {
+        return errorDegreesDuringLockdown;
     }
 
 }
