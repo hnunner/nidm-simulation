@@ -46,6 +46,7 @@ import nl.uu.socnetid.nidm.data.out.LogValues;
 import nl.uu.socnetid.nidm.data.out.NunnerBuskensGeneticParameters;
 import nl.uu.socnetid.nidm.data.out.NunnerBuskensParameters;
 import nl.uu.socnetid.nidm.data.out.NunnerBuskensProfessionsParameters;
+import nl.uu.socnetid.nidm.data.out.ProfessionNetworkGeneticParameters;
 import nl.uu.socnetid.nidm.networks.AssortativityConditions;
 import nl.uu.socnetid.nidm.networks.DegreeDistributionConditions;
 import nl.uu.socnetid.nidm.networks.LockdownConditions;
@@ -101,6 +102,11 @@ public class PropertiesHandler {
     // NunnerBuskens networks professions parameters
     private boolean generateNunnerBuskensNetworksProfessions;
     private NunnerBuskensProfessionsParameters nbpParameters;
+    // professions network genetic
+    private boolean generateProfessionNetworksGenetic;
+    private ProfessionNetworkGeneticParameters pngParameters;
+    // professions network lockdown
+    private boolean generateProfessionNetworksLockdown;
 
     // DATA EXPORT
     // types of data export
@@ -501,6 +507,12 @@ public class PropertiesHandler {
         nbpParameters.setDegreeDistributionConditions(ddcs);
         nbpParameters.setRoundsMax(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_ROUNDS_MAX.toString())));
 
+        // profession networks genetic
+        generateProfessionNetworksGenetic = Boolean.parseBoolean(configProps.getProperty("prof.generate.genetic"));
+
+        // profession networks lockdown
+        generateProfessionNetworksLockdown = Boolean.parseBoolean(configProps.getProperty("prof.generate.lockdown"));
+
         // types of data export
         this.exportSummary = Boolean.parseBoolean(configProps.getProperty("export.summary"));
         this.exportSummaryEachRound = Boolean.parseBoolean(configProps.getProperty("export.summary.each.round"));
@@ -510,6 +522,8 @@ public class PropertiesHandler {
 
         // analyze data?
         this.analyzeData = Boolean.parseBoolean(configProps.getProperty("analyze.data"));
+        pngParameters = new ProfessionNetworkGeneticParameters();
+        // TODO move configuration to config.properties
 
         // data import
         try {
@@ -780,6 +794,47 @@ public class PropertiesHandler {
      */
     public NunnerBuskensParameters getNunnerBuskensParameters() {
         return nbParameters;
+    }
+
+    /**
+     * Gets whether to generate profession networks using the genetic algorithm.
+     *
+     * @return true if networks ought to be generated, false otherwise
+     */
+    public boolean isGenerateProfessionNetworksGenetic() {
+        return generateProfessionNetworksGenetic;
+    }
+
+    /**
+     * @param generateProfessionNetworksGenetic the generateProfessionNetworksGenetic to set
+     */
+    public void setGenerateProfessionNetworksGenetic(boolean generateProfessionNetworksGenetic) {
+        this.generateProfessionNetworksGenetic = generateProfessionNetworksGenetic;
+    }
+
+    /**
+     * Gets whether to generate profession networks using the genetic algorithm.
+     *
+     * @return true if networks ought to be generated, false otherwise
+     */
+    public boolean isGenerateProfessionNetworksLockdown() {
+        return generateProfessionNetworksLockdown;
+    }
+
+    /**
+     * @param generateProfessionNetworksLockdown the generateProfessionNetworksLockdown to set
+     */
+    public void setGenerateProfessionNetworksLockdown(boolean generateProfessionNetworksLockdown) {
+        this.generateProfessionNetworksLockdown = generateProfessionNetworksLockdown;
+    }
+
+    /**
+     * Gets the ProfessionNetworkGeneticParameters as defined in the config.properties
+     *
+     * @return the ProfessionNetworkGeneticParameters as defined in the config.properties
+     */
+    public ProfessionNetworkGeneticParameters getProfessionNetworkGeneticParameters() {
+        return pngParameters;
     }
 
     /**
