@@ -132,8 +132,8 @@ public class NunnerBuskensProfessionsSimulationSummaryWriter extends CsvFileWrit
             cols.add(LogValues.DV_NB_PROF_N + profession.replaceAll("\\s+", "_").toLowerCase());
             cols.add(LogValues.DV_NB_PROF_DEGREE + profession.replaceAll("\\s+", "_").toLowerCase());
             cols.add(LogValues.DV_NB_PROF_DEGREE_THEORETIC + profession.replaceAll("\\s+", "_").toLowerCase());
-            cols.add(LogValues.DV_NB_PROF_DEGREE_SD + profession.replaceAll("\\s+", "_").toLowerCase());
-            cols.add(LogValues.DV_NB_PROF_DEGREE_SD_THEORETIC + profession.replaceAll("\\s+", "_").toLowerCase());
+//            cols.add(LogValues.DV_NB_PROF_DEGREE_SD + profession.replaceAll("\\s+", "_").toLowerCase());
+//            cols.add(LogValues.DV_NB_PROF_DEGREE_SD_THEORETIC + profession.replaceAll("\\s+", "_").toLowerCase());
         }
 
         // export file
@@ -235,8 +235,8 @@ public class NunnerBuskensProfessionsSimulationSummaryWriter extends CsvFileWrit
                 currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvDegreeByProfession(profession)));
                 currData.add(String.valueOf(this.dgData.getNetStatsPre().getAvDegreeByProfessionTheoretic(profession)));
                 // av degree standard deviation by profession
-                currData.add(String.valueOf(this.dgData.getNetStatsPre().getDegreeSdByProfession(profession)));
-                currData.add(String.valueOf(this.dgData.getNetStatsPre().getDegreeSdByProfessionTheoretic(profession)));
+//                currData.add(String.valueOf(this.dgData.getNetStatsPre().getDegreeSdByProfession(profession)));
+//                currData.add(String.valueOf(this.dgData.getNetStatsPre().getDegreeSdByProfessionTheoretic(profession)));
             } else {
                 // degree by profession
                 currData.add("NA");
