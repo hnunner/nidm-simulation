@@ -477,6 +477,20 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
+     * Updates the agent's utility function.
+     *
+     * @param uf
+     *          the utility function
+     */
+    public void updateUtilityFunction(UtilityFunction uf) {
+        if (uf.getClass().equals(this.getUtilityFunction().getClass())) {
+            this.changeAttribute(AgentAttributes.UTILITY_FUNCTION, this.getUtilityFunction(), uf);
+        } else {
+            logger.warn("Invalid utility function: " + uf.getClass() + ". Update aborted.");
+        }
+    }
+
+    /**
      * Gets the agent's connections.
      *
      * @return the agent's connections
