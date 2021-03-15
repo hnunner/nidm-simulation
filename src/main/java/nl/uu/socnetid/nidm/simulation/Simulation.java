@@ -223,9 +223,9 @@ public class Simulation implements Runnable {
             unfinished = true;
         }
         if (unfinished) {
-            logger.warn(sb.toString());
+//            logger.warn(sb.toString());
         } else {
-            logger.debug(sb.toString());
+//            logger.debug(sb.toString());
         }
 
         // notify simulation finished
