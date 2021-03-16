@@ -72,21 +72,56 @@ public class ProfessionsNetworkGeneratorGenetic extends AbstractGenerator implem
     private static final Logger logger = LogManager.getLogger(ProfessionsNetworkGeneratorGenetic.class);
 
     // size of first generation = iterations of number of parents
-    private static final int SIZE_OF_FIRST_GENERATION = 2; //4;          // no variations in first generation
+    private static final int SIZE_OF_FIRST_GENERATION = 4;          // no variations in first generation
     // number of parents per generation
-    private static final int NUMBER_OF_PARENTS = 2; //4;
+    private static final int NUMBER_OF_PARENTS = 4;
     // number of children per pair of parents
-    private static final int NUMBER_OF_CHILDREN = 1; //2;
+    private static final int NUMBER_OF_CHILDREN = 2;
     // number of generations to simulate
-    private static final int NUMBER_OF_GENERATIONS = 1;
+    private static final int NUMBER_OF_GENERATIONS = 20;
     // maximum number of consecutive rounds allowed without improvement
     private static final int MAX_ROUNDS_NO_IMPROVEMENT = 5;
 
-//    private static final double MUTATION_SD = 0.05;
-//    private static final int NUMBER_OF_BEST_FITS = 1;
-    private static final double[] TARGET_CLUSTERINGS = {0.3, 0.4, 0.5};
-    private static final double[] TARGET_HOMOPHILIES = {0.0, 0.4, 0.8};
-    private static final LockdownConditions[] TARGET_LOCKDOWN_CONDITIONS = {LockdownConditions.PRE, LockdownConditions.DURING};
+    // parameter variations
+//    private static final double[] TARGET_CLUSTERINGS = {0.3, 0.4, 0.5};
+//    private static final double[] TARGET_HOMOPHILIES = {0.0, 0.4, 0.8};
+//    private static final LockdownConditions[] TARGET_LOCKDOWN_CONDITIONS = {LockdownConditions.PRE, LockdownConditions.DURING};
+
+//    private static final double[] TARGET_CLUSTERINGS = {0.3};
+//    private static final double[] TARGET_HOMOPHILIES = {0.0};
+//    private static final LockdownConditions[] TARGET_LOCKDOWN_CONDITIONS = {LockdownConditions.PRE};
+//
+//    private static final double[] TARGET_CLUSTERINGS = {0.4};
+//    private static final double[] TARGET_HOMOPHILIES = {0.0};
+//    private static final LockdownConditions[] TARGET_LOCKDOWN_CONDITIONS = {LockdownConditions.PRE};
+//
+//    private static final double[] TARGET_CLUSTERINGS = {0.5};
+//    private static final double[] TARGET_HOMOPHILIES = {0.0};
+//    private static final LockdownConditions[] TARGET_LOCKDOWN_CONDITIONS = {LockdownConditions.PRE};
+//
+//    private static final double[] TARGET_CLUSTERINGS = {0.3};
+//    private static final double[] TARGET_HOMOPHILIES = {0.4};
+//    private static final LockdownConditions[] TARGET_LOCKDOWN_CONDITIONS = {LockdownConditions.PRE};
+//
+//    private static final double[] TARGET_CLUSTERINGS = {0.4};
+//    private static final double[] TARGET_HOMOPHILIES = {0.4};
+//    private static final LockdownConditions[] TARGET_LOCKDOWN_CONDITIONS = {LockdownConditions.PRE};
+//
+//    private static final double[] TARGET_CLUSTERINGS = {0.5};
+//    private static final double[] TARGET_HOMOPHILIES = {0.4};
+//    private static final LockdownConditions[] TARGET_LOCKDOWN_CONDITIONS = {LockdownConditions.PRE};
+//
+//    private static final double[] TARGET_CLUSTERINGS = {0.3};
+//    private static final double[] TARGET_HOMOPHILIES = {0.8};
+//    private static final LockdownConditions[] TARGET_LOCKDOWN_CONDITIONS = {LockdownConditions.PRE};
+//
+//    private static final double[] TARGET_CLUSTERINGS = {0.4};
+//    private static final double[] TARGET_HOMOPHILIES = {0.8};
+//    private static final LockdownConditions[] TARGET_LOCKDOWN_CONDITIONS = {LockdownConditions.PRE};
+//
+    private static final double[] TARGET_CLUSTERINGS = {0.4};
+    private static final double[] TARGET_HOMOPHILIES = {0.8};
+    private static final LockdownConditions[] TARGET_LOCKDOWN_CONDITIONS = {LockdownConditions.PRE};
 
 
     // target degrees
@@ -159,8 +194,8 @@ public class ProfessionsNetworkGeneratorGenetic extends AbstractGenerator implem
         // TODO move to config file!!!
         // PARAMETER CONSTANTS
         // network & simulation
-        this.dgData.getUtilityModelParams().setN(500);
-        this.dgData.getUtilityModelParams().setPhi(0.025);
+        this.dgData.getUtilityModelParams().setN(10000);
+        this.dgData.getUtilityModelParams().setPhi(0.001);
         this.dgData.getUtilityModelParams().setPsi(0.3);
         this.dgData.getUtilityModelParams().setXi(0.5);
         // utility
@@ -266,6 +301,7 @@ public class ProfessionsNetworkGeneratorGenetic extends AbstractGenerator implem
                     }
                     s++;
                     c++;
+                    this.dgData.getSimStats().setUpc(this.upc++);
                 }
                 h++;
             }
@@ -409,11 +445,11 @@ public class ProfessionsNetworkGeneratorGenetic extends AbstractGenerator implem
 
                 offspring.add(new ProfessionsGene(
                         generation,                                                                         // generation
-                        this.dgData.getSimStats().getUpc() + "-" +
-                        this.dgData.getUtilityModelParams().getCurrLockdownCondition().toString() + "-" +
-                        String.valueOf(generation) + "-" + String.valueOf(genMember++)
-                                + "(god:god)#" + String.valueOf(progenitor),                                // id
-                        generation + ":" + progenitor,                                                      // simpleId
+                        this.dgData.getSimStats().getUpc() + "_" +
+                        this.dgData.getUtilityModelParams().getCurrLockdownCondition().toString() + "_" +
+                        String.valueOf(generation) + "_" + String.valueOf(genMember++)
+                                + "(god-god)#" + String.valueOf(progenitor),                                // id
+                        generation + "-" + progenitor,                                                      // simpleId
                         "god", "god",                                                                       // parents
 
                         this.belotDegrees, this.belotDegrees,
@@ -504,11 +540,11 @@ public class ProfessionsNetworkGeneratorGenetic extends AbstractGenerator implem
                         // create child
                         offspring.add(new ProfessionsGene(
                                 generation,                                                                         // generation
-                                this.dgData.getSimStats().getUpc() + "-" +
-                                this.dgData.getUtilityModelParams().getCurrLockdownCondition().toString() + "-" +
-                                String.valueOf(generation) + "-" + String.valueOf(genMember++)
-                                        + "(" + mother.getSimpleId() + ":" + father.getSimpleId() + ")#" + child,   // id
-                                generation + ":" + child,                                                           // simpleId
+                                this.dgData.getSimStats().getUpc() + "_" +
+                                this.dgData.getUtilityModelParams().getCurrLockdownCondition().toString() + "_" +
+                                String.valueOf(generation) + "_" + String.valueOf(genMember++)
+                                        + "(" + mother.getSimpleId() + "-" + father.getSimpleId() + ")#" + child,   // id
+                                generation + "-" + child,                                                           // simpleId
                                 mother.getId(), father.getId(),                                                     // parents
 
                                 // parents
@@ -662,7 +698,6 @@ public class ProfessionsNetworkGeneratorGenetic extends AbstractGenerator implem
         this.simFinished = false;
 
         this.dgData.getSimStats().setUid(this.currentOffspring.getId());
-        this.dgData.getSimStats().setUpc(this.upc++);
         this.dgData.getSimStats().setSimPerUpc(1);
         this.dgData.getSimStats().resetCurrRound();
     }
@@ -676,3 +711,4 @@ public class ProfessionsNetworkGeneratorGenetic extends AbstractGenerator implem
     }
 
 }
+
