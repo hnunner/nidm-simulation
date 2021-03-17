@@ -26,6 +26,7 @@
 package nl.uu.socnetid.nidm.stats;
 
 import java.util.List;
+import java.util.Map;
 
 import nl.uu.socnetid.nidm.networks.AssortativityConditions;
 import nl.uu.socnetid.nidm.networks.Network;
@@ -41,6 +42,8 @@ public class NetworkStats {
 
     // TODO make all initializations lazy
 
+    private int n;
+    private Map<String, Integer> nByProfessions;
     private boolean stable;
     private double density;
     private List<AssortativityConditions> acs;
@@ -51,6 +54,8 @@ public class NetworkStats {
     private Double avDegree2 = null;     // lazy initialization (very costly operations)
     private double avDegreeSatisfied;
     private double avDegreeUnsatisfied;
+    private Map<String, Double> avDegreesByProfession;
+    private Map<String, Double> degreeSdsByProfession;
     private Double avBetweenness = null;     // lazy initialization (very costly operations)
     private Double avCloseness = null;     // lazy initialization (very costly operations)
     private double avClustering;
@@ -88,16 +93,20 @@ public class NetworkStats {
             return;
         }
 
+        this.n = network.getN();
+        this.nByProfessions = network.getNByProfessions();
         this.stable = network.isStable();
         this.density = network.getDensity();
         this.acs = network.getAssortativityConditions();
-        this.assortativityRiskPerception = network.getAssortativityRiskPerception(simRound);
-        this.assortativityAge = network.getAssortativityAge(simRound);
-        this.assortativityProfession = network.getAssortativityProfession(simRound);
-        this.avDegree = network.getAvDegree(simRound);
+        this.assortativityRiskPerception = network.getAssortativityRiskPerception();
+        this.assortativityAge = network.getAssortativityAge();
+        this.assortativityProfession = network.getAssortativityProfession();
+        this.avDegree = network.getAvDegree();
         this.avDegreeSatisfied = network.getAvDegreeSatisfied();
         this.avDegreeUnsatisfied = network.getAvDegreeUnsatisfied();
-        this.avClustering = network.getAvClustering(simRound);
+        this.avDegreesByProfession = network.getAvDegreesByProfessions();
+        this.degreeSdsByProfession = network.getDegreesSdByProfessions();
+        this.avClustering = network.getAvClustering();
         this.avUtility = network.getAvUtility();
         this.avSocialBenefits = network.getAvSocialBenefits();
         this.avSocialCosts = network.getAvSocialCosts();
@@ -115,6 +124,25 @@ public class NetworkStats {
         this.vaccinatedPercent = pct * this.vaccinatedTotal;
         this.satisfiedPercent = pct * this.satisfiedTotal;
         this.unsatisfiedPercent = pct * this.unsatisfiedTotal;
+    }
+
+
+    /**
+     * @return the n
+     */
+    public int getN() {
+        return n;
+    }
+
+    /**
+     * Gets the amount of agents by profession.
+     *
+     * @param profession
+     *          the profession
+     * @return the amount of agents by profession
+     */
+    public Integer getNByProfession(String profession) {
+        return nByProfessions.get(profession);
     }
 
     /**
@@ -206,6 +234,28 @@ public class NetworkStats {
      */
     public void setAvDegree(double avDegree) {
         this.avDegree = avDegree;
+    }
+
+    /**
+     * Gets the average degree by profession.
+     *
+     * @param profession
+     *          the profession
+     * @return the average degree by profession
+     */
+    public double getAvDegreeByProfession(String profession) {
+        return avDegreesByProfession.get(profession);
+    }
+
+    /**
+     * Gets the degree SD by profession.
+     *
+     * @param profession
+     *          the profession
+     * @return the degree SD by profession
+     */
+    public double getDegreeSdByProfession(String profession) {
+        return degreeSdsByProfession.get(profession);
     }
 
     /**
