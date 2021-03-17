@@ -25,22 +25,31 @@
  */
 package nl.uu.socnetid.nidm.io.generator.network;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.graphstream.graph.Edge;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.data.in.Professions;
+import nl.uu.socnetid.nidm.data.out.DataGeneratorData;
+import nl.uu.socnetid.nidm.data.out.ProfessionNetworkLockdownParameters;
+import nl.uu.socnetid.nidm.io.csv.ProfessionNetworkLockdownWriter;
 import nl.uu.socnetid.nidm.io.generator.AbstractGenerator;
 import nl.uu.socnetid.nidm.io.network.DGSReader;
+import nl.uu.socnetid.nidm.io.network.DGSWriter;
+import nl.uu.socnetid.nidm.networks.LockdownConditions;
 import nl.uu.socnetid.nidm.networks.Network;
+import nl.uu.socnetid.nidm.stats.NetworkStats;
+import nl.uu.socnetid.nidm.system.PropertiesHandler;
+import nl.uu.socnetid.nidm.utility.NunnerBuskens;
 
 /**
  * @author Hendrik Nunner
@@ -52,9 +61,20 @@ public class ProfessionsNetworkLockdownGenerator extends AbstractGenerator {
     // logger
     private static final Logger logger = LogManager.getLogger(ProfessionsNetworkLockdownGenerator.class);
 
+    // offset for lockdown
+    private static final double OFFSET_LOCKDOWN_BOUNDS = 0.03;
+
     // network files to be put in lockdown
+    // TODO write R script giving the best fitting networks per summary.csv in the appropriate format
     private static final List<String> NETWORK_FILES = Arrays.asList(
-            "/Users/hendrik/git/uu/nidm/simulation/exports/20210315-091400/networks/professions.genetic/4-2(3-1:2-2)#2.dgs");
+//            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_5_5(2-2-2-1)#1.dgs",
+//            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_2_8(1-2-1-1)#2.dgs",
+//            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_3_9(2-1-2-2)#1.dgs");
+            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_2_8(1-2-1-1)#2.dgs");
+
+    // stats & writer
+    private DataGeneratorData<ProfessionNetworkLockdownParameters> dgData;
+    private ProfessionNetworkLockdownWriter pnlWriter;
 
 
     /**
@@ -83,13 +103,22 @@ public class ProfessionsNetworkLockdownGenerator extends AbstractGenerator {
      * @see nl.uu.socnetid.nidm.io.generator.AbstractDataGenerator#initData()
      */
     @Override
-    protected void initData() { }
+    protected void initData() {
+        this.dgData = new DataGeneratorData<ProfessionNetworkLockdownParameters>(
+                new ProfessionNetworkLockdownParameters());
+    }
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.io.generator.AbstractGenerator#initWriters()
      */
     @Override
-    protected void initWriters() throws IOException { }
+    protected void initWriters() throws IOException {
+        // summary CSV
+        if (PropertiesHandler.getInstance().isExportSummary()) {
+            this.pnlWriter = new ProfessionNetworkLockdownWriter(getExportPath() +
+                    "profession-networks-lockdown.csv", this.dgData);
+        }
+    }
 
 
     /* (non-Javadoc)
@@ -101,26 +130,99 @@ public class ProfessionsNetworkLockdownGenerator extends AbstractGenerator {
 
         DGSReader dgsReader = new DGSReader();
 
+        int uid = 1;
+        int upc = 1;
         for (String networkFile : NETWORK_FILES) {
 
             logger.debug("Starting to put network " + networkFile + " in lockdown.");
             Network network = dgsReader.readNetwork(networkFile);
 
+            // copy pre lockdown network
+            File preLockdownDgsSource = new File(networkFile);
+            File preLockdownDgsDest = new File(getExportPath() + upc + "-pre.dgs");
+            try {
+                FileUtils.copyFile(preLockdownDgsSource, preLockdownDgsDest);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            // export pre lockdown stats
+            this.dgData.getSimStats().setUid(String.valueOf(uid));
+            this.dgData.getSimStats().setUpc(upc);
+            Agent agent = network.getRandomAgent();
+            this.dgData.getUtilityModelParams().setOmega(agent.getOmega());
+            this.dgData.getUtilityModelParams().setAlpha(((NunnerBuskens) (agent.getUtilityFunction())).getAlpha());
+            this.dgData.getUtilityModelParams().setCurrLockdownCondition(LockdownConditions.PRE);
+            this.dgData.setNetStatsCurrent(new NetworkStats(network, uid++));
+            this.dgData.setExportFileName(preLockdownDgsDest.getPath());
+            this.pnlWriter.writeCurrentData();
+
             logger.debug("\n\nNetwork prior to lockdown:");
             debugNetwork(network, false);
 
-            Iterator<Edge> edges = network.getEdgeIterator();
-            while (edges.hasNext()) {
-                Edge edge = edges.next();
-                Agent a0 = (Agent) edge.getNode0();
-                Agent a1 = (Agent) edge.getNode1();
 
-                if (ThreadLocalRandom.current().nextDouble() <=
-                        (Professions.getInstance().getDegreeReductionLockdown(a0.getProfession()) +
-                        (Professions.getInstance().getDegreeReductionLockdown(a1.getProfession())) / 2)) {
-                    a0.disconnectFrom(a1);
+            boolean netChangePrevRound = true;
+            while (!inLockdown(network) && netChangePrevRound) {
+
+                netChangePrevRound = false;
+                Iterator<Edge> edges = network.getEdgeIterator();
+
+                while (edges.hasNext()) {
+                    Edge edge = edges.next();
+
+                    Agent a0 = (Agent) edge.getNode0();
+                    Agent a1 = (Agent) edge.getNode1();
+
+                    if (!inLockdown(network, a0.getProfession()) && !inLockdown(network, a1.getProfession())) {
+                        a0.disconnectFrom(a1);
+                        netChangePrevRound = true;
+                    }
                 }
             }
+
+
+
+
+//            double allDs = 0;
+//            int dCnt = 1;
+//            Iterator<Edge> edges = network.getEdgeIterator();
+//            while (edges.hasNext()) {
+//                Edge edge = edges.next();
+//                Agent a0 = (Agent) edge.getNode0();
+//                Agent a1 = (Agent) edge.getNode1();
+//
+//                double d = ThreadLocalRandom.current().nextDouble();
+//                allDs += d;
+//                dCnt++;
+//
+//                double a0DegRed = Professions.getInstance().getDegreeReductionLockdown(a0.getProfession());
+//                double a1DegRed = Professions.getInstance().getDegreeReductionLockdown(a1.getProfession());
+//                double prob = (a0DegRed + a1DegRed) / 2;
+//                logger.info("a0 prob (" + a0.getProfession() + "): " + String.format("%.2f", a0DegRed));
+//                logger.info("a1 prob (" + a1.getProfession() + "): " + String.format("%.2f", a1DegRed));
+//                logger.info("overall prob: " + String.format("%.2f", prob));
+//
+//                if (d <= prob) {
+//                    a0.disconnectFrom(a1);
+//                }
+//            }
+//            logger.info("Average d: " + (allDs / dCnt));
+
+
+
+
+            // export DGS file
+            DGSWriter dgsWriter = new DGSWriter();
+            String fileName = getExportPath() + upc + "-post.dgs";
+            dgsWriter.writeNetwork(network, fileName);
+            this.dgData.setExportFileName(fileName);
+
+            // export lockdown stats
+            this.dgData.getSimStats().setUid(String.valueOf(uid));
+            this.dgData.getSimStats().setUpc(upc++);
+            this.dgData.getUtilityModelParams().setCurrLockdownCondition(LockdownConditions.DURING);
+            this.dgData.setNetStatsCurrent(new NetworkStats(network, uid++));
+            this.pnlWriter.writeCurrentData();
 
             logger.debug("\n\nNetwork in lockdown:");
             debugNetwork(network, true);
@@ -128,6 +230,38 @@ public class ProfessionsNetworkLockdownGenerator extends AbstractGenerator {
 
 
     }
+
+
+
+
+    private boolean inLockdown(Network network, String profession) {
+
+        double avDegree = network.getAvDegreeByProfession(profession);
+
+        double avDegreeLockdown = Professions.getInstance().getDegreeDuringLockdown(profession);
+        double avDegreeLockdownLowerBound = avDegreeLockdown - (avDegreeLockdown * OFFSET_LOCKDOWN_BOUNDS);
+        double avDegreeLockdownUpperBound = avDegreeLockdown + (avDegreeLockdown * OFFSET_LOCKDOWN_BOUNDS);
+
+//        boolean inLockdown = (avDegreeLockdownLowerBound <= avDegree) && (avDegree <= avDegreeLockdownUpperBound);
+        boolean inLockdown = avDegree <= avDegreeLockdownUpperBound;
+
+        return inLockdown;
+    }
+
+
+
+    private boolean inLockdown(Network network) {
+        boolean inLockdown = true;
+        Iterator<String> professions = Professions.getInstance().getDegreesDuringLockdown().keySet().iterator();
+        while (professions.hasNext()) {
+            inLockdown &= inLockdown(network, professions.next());
+        }
+
+        return inLockdown;
+    }
+
+
+
 
     /**
      * @param network
@@ -160,46 +294,3 @@ public class ProfessionsNetworkLockdownGenerator extends AbstractGenerator {
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
