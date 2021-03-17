@@ -892,6 +892,12 @@ public class Network extends SingleGraph implements SimulationListener {
 
     // TODO testcase
     // TODO comments
+    public double getAvDegreeByProfession(String profession) {
+        return this.getAvDegreesByProfessions().get(profession);
+    }
+
+    // TODO testcase
+    // TODO comments
     public Map<String, Double> getDegreesSdByProfessions() {
 
         HashMap<String, Double> degreesSdByProfessions = new HashMap<String, Double>();

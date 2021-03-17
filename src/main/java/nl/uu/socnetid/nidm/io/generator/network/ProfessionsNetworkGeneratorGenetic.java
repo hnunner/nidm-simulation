@@ -78,7 +78,7 @@ public class ProfessionsNetworkGeneratorGenetic extends AbstractGenerator implem
     // number of children per pair of parents
     private static final int NUMBER_OF_CHILDREN = 2;
     // number of generations to simulate
-    private static final int NUMBER_OF_GENERATIONS = 20;
+    private static final int NUMBER_OF_GENERATIONS = 5;
     // maximum number of consecutive rounds allowed without improvement
     private static final int MAX_ROUNDS_NO_IMPROVEMENT = 5;
 
@@ -194,8 +194,8 @@ public class ProfessionsNetworkGeneratorGenetic extends AbstractGenerator implem
         // TODO move to config file!!!
         // PARAMETER CONSTANTS
         // network & simulation
-        this.dgData.getUtilityModelParams().setN(10000);
-        this.dgData.getUtilityModelParams().setPhi(0.001);
+        this.dgData.getUtilityModelParams().setN(500);
+        this.dgData.getUtilityModelParams().setPhi(0.02);
         this.dgData.getUtilityModelParams().setPsi(0.3);
         this.dgData.getUtilityModelParams().setXi(0.5);
         // utility
