@@ -107,6 +107,8 @@ public class PropertiesHandler {
     private ProfessionNetworkGeneticParameters pngParameters;
     // professions network lockdown
     private boolean generateProfessionNetworksLockdown;
+    // professions network data
+    private boolean generateProfessionNetworksData;
 
     // DATA EXPORT
     // types of data export
@@ -513,6 +515,9 @@ public class PropertiesHandler {
         // profession networks lockdown
         generateProfessionNetworksLockdown = Boolean.parseBoolean(configProps.getProperty("prof.generate.lockdown"));
 
+        // profession networks data
+        generateProfessionNetworksData = Boolean.parseBoolean(configProps.getProperty("prof.generate.data"));
+
         // types of data export
         this.exportSummary = Boolean.parseBoolean(configProps.getProperty("export.summary"));
         this.exportSummaryEachRound = Boolean.parseBoolean(configProps.getProperty("export.summary.each.round"));
@@ -813,12 +818,21 @@ public class PropertiesHandler {
     }
 
     /**
-     * Gets whether to generate profession networks using the genetic algorithm.
+     * Gets whether to generate profession lockdown networks.
      *
      * @return true if networks ought to be generated, false otherwise
      */
     public boolean isGenerateProfessionNetworksLockdown() {
         return generateProfessionNetworksLockdown;
+    }
+
+    /**
+     * Gets whether to generate profession network data.
+     *
+     * @return true if data ought to be generated, false otherwise
+     */
+    public boolean isGenerateProfessionNetworksData() {
+        return generateProfessionNetworksData;
     }
 
     /**

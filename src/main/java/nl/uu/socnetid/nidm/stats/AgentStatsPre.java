@@ -34,6 +34,7 @@ import nl.uu.socnetid.nidm.networks.AssortativityConditions;
  */
 public class AgentStatsPre {
 
+    private String id;
     private double rSigma;
     private double rSigmaNeighborhood;
     private double rPi;
@@ -55,6 +56,7 @@ public class AgentStatsPre {
 
     public AgentStatsPre(Agent agent, int simRound) {
 
+        this.id = agent.getId();
         this.rSigma = agent.getRSigma();
         this.rPi = agent.getRPi();
         this.diseaseGroup = agent.getDiseaseGroup();
@@ -79,6 +81,13 @@ public class AgentStatsPre {
         this.profession = agent.getProfession();
     }
 
+
+    /**
+     * @return the id
+     */
+    public String getId() {
+        return id;
+    }
 
     /**
      * @return the rSigma
