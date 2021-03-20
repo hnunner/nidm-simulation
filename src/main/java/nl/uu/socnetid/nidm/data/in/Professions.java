@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -386,6 +387,65 @@ public class Professions {
      */
     public Map<String, Double> getDegreeErrorsDuringLockdown() {
         return errorDegreesDuringLockdown;
+    }
+
+    // TODO parse from file
+    public List<String> getProfessionsOrderedByAvDegreeBeforeLockdown() {
+        return Arrays.asList(
+                "HPT",
+                "PCS",
+                "EIL",
+                "L",
+                "M",
+                "S",
+                "HS",
+                "FPS",
+                "TMM",
+                "LPSS",
+                "OAS",
+                "BGCM",
+                "IMR",
+                "BFO",
+                "CE",
+                "AE",
+                "ADESM",
+                "P",
+                "CM",
+                "CSS",
+                "U",
+                "FFF",
+                "R",
+                "PS");
+    }
+
+    // TODO parse from file
+    public List<String> getProfessionsOrderedByAvDegreeDuringLockdown() {
+
+        return Arrays.asList(
+                "HPT",
+                "PCS",
+                "HS",
+                "LPSS",
+                "S",
+                "IMR",
+                "TMM",
+                "EIL",
+                "ADESM",
+                "P",
+                "CE",
+                "OAS",
+                "AE",
+                "FFF",
+                "FPS",
+                "BFO",
+                "M",
+                "BGCM",
+                "CM",
+                "CSS",
+                "PS",
+                "U",
+                "L",
+                "R");
     }
 
 }
