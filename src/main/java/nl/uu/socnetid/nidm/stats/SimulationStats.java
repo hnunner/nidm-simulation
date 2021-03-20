@@ -25,6 +25,10 @@
  */
 package nl.uu.socnetid.nidm.stats;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import nl.uu.socnetid.nidm.simulation.SimulationStage;
 
 /**
@@ -49,6 +53,10 @@ public class SimulationStats {
     private SimulationStage simStage;
     private int rounds;
     private int currRound = 0;
+
+    private int shotsGiven;
+    private int agentsImmunized;
+    private Map<String, Integer> professionsReceivedShots;
 
 
     /**
@@ -301,6 +309,61 @@ public class SimulationStats {
     }
 
     /**
+     * @return the shotsGiven
+     */
+    public int getShotsGiven() {
+        return shotsGiven;
+    }
+
+    /**
+     * @param shotsGiven the shotsGiven to set
+     */
+    public void setShotsGiven(int shotsGiven) {
+        this.shotsGiven = shotsGiven;
+    }
+
+    /**
+     * @return the agentsImmunized
+     */
+    public int getAgentsImmunized() {
+        return agentsImmunized;
+    }
+
+    /**
+     * @param agentsImmunized the agentsImmunized to set
+     */
+    public void setAgentsImmunized(int agentsImmunized) {
+        this.agentsImmunized = agentsImmunized;
+    }
+
+    /**
+     * @return the professionsReceivedShots
+     */
+    public String getProfessionsReceivedShots() {
+        StringBuilder sb = new StringBuilder();
+
+        if (professionsReceivedShots != null) {
+            Iterator<String> professions = this.professionsReceivedShots.keySet().iterator();
+            while (professions.hasNext()) {
+                String profession = professions.next();
+                if (sb.toString().length() > 0) {
+                    sb.append(",");
+                }
+                sb.append(profession).append("_").append(this.professionsReceivedShots.get(profession));
+            }
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * @param professionsReceivedShots the professionsReceivedShots to set
+     */
+    public void setProfessionsReceivedShots(Map<String, Integer> professionsReceivedShots) {
+        this.professionsReceivedShots = professionsReceivedShots;
+    }
+
+    /**
      * Resets the epidemic stats (duration, peak, max infections)
      */
     public void resetEpidemicStats() {
@@ -310,6 +373,8 @@ public class SimulationStats {
         this.epidemicPeakSizeStatic = 0;
         this.epidemicPeakDynamic = 0;
         this.epidemicPeakStatic = 0;
+        this.shotsGiven = 0;
+        this.professionsReceivedShots = new HashMap<String, Integer>();
     }
 
 }
