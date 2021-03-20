@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
@@ -70,7 +71,30 @@ public class ProfessionsNetworkLockdownGenerator extends AbstractGenerator {
 //            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_5_5(2-2-2-1)#1.dgs",
 //            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_2_8(1-2-1-1)#2.dgs",
 //            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_3_9(2-1-2-2)#1.dgs");
-            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_2_8(1-2-1-1)#2.dgs");
+//            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_2_8(1-2-1-1)#2.dgs");
+//            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/");
+
+            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_5_5(2-2-2-1)#1.dgs",
+            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_2_8(1-2-1-1)#2.dgs",
+            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_3_9(2-1-2-2)#1.dgs",
+            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_5_8(3-1-3-1)#2.dgs",
+            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_5_8(3-1-3-1)#2.dgs",
+            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_5_6(2-2-2-1)#2.dgs",
+            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_5_6(2-2-2-1)#2.dgs",
+            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_5_5(2-2-2-1)#1.dgs",
+            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_5_2(2-2-3-1)#2.dgs",
+            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_5_2(2-2-3-1)#2.dgs",
+
+            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-1615312/networks/professions.genetic/0_lc.pre_5_5(2-2-2-1)#1.dgs",
+            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-1615312/networks/professions.genetic/0_lc.pre_2_8(1-2-1-1)#2.dgs",
+            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-1615312/networks/professions.genetic/0_lc.pre_3_9(2-1-2-2)#1.dgs",
+            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-1615312/networks/professions.genetic/0_lc.pre_5_8(3-1-3-1)#2.dgs",
+            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-1615312/networks/professions.genetic/0_lc.pre_5_8(3-1-3-1)#2.dgs",
+            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-1615312/networks/professions.genetic/0_lc.pre_5_6(2-2-2-1)#2.dgs",
+            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-1615312/networks/professions.genetic/0_lc.pre_5_6(2-2-2-1)#2.dgs",
+            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-1615312/networks/professions.genetic/0_lc.pre_5_5(2-2-2-1)#1.dgs",
+            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-1615312/networks/professions.genetic/0_lc.pre_5_2(2-2-3-1)#2.dgs",
+            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-1615312/networks/professions.genetic/0_lc.pre_5_2(2-2-3-1)#2.dgs");
 
     // stats & writer
     private DataGeneratorData<ProfessionNetworkLockdownParameters> dgData;
@@ -173,47 +197,21 @@ public class ProfessionsNetworkLockdownGenerator extends AbstractGenerator {
                     Agent a0 = (Agent) edge.getNode0();
                     Agent a1 = (Agent) edge.getNode1();
 
-                    if (!inLockdown(network, a0.getProfession()) && !inLockdown(network, a1.getProfession())) {
+                    // sever tie depending on 1. chance to sever tie based on the average degree reduction per professional group,
+                    if (((ThreadLocalRandom.current().nextDouble() <=
+                            (Professions.getInstance().getDegreeReductionLockdown(a0.getProfession())
+                                    + Professions.getInstance().getDegreeReductionLockdown(a1.getProfession())) / 2))
+                            // and 2. whether both agents are not yet in lockdown
+                            && (!inLockdown(network, a0.getProfession()) && !inLockdown(network, a1.getProfession()))) {
                         a0.disconnectFrom(a1);
                         netChangePrevRound = true;
                     }
                 }
             }
 
-
-
-
-//            double allDs = 0;
-//            int dCnt = 1;
-//            Iterator<Edge> edges = network.getEdgeIterator();
-//            while (edges.hasNext()) {
-//                Edge edge = edges.next();
-//                Agent a0 = (Agent) edge.getNode0();
-//                Agent a1 = (Agent) edge.getNode1();
-//
-//                double d = ThreadLocalRandom.current().nextDouble();
-//                allDs += d;
-//                dCnt++;
-//
-//                double a0DegRed = Professions.getInstance().getDegreeReductionLockdown(a0.getProfession());
-//                double a1DegRed = Professions.getInstance().getDegreeReductionLockdown(a1.getProfession());
-//                double prob = (a0DegRed + a1DegRed) / 2;
-//                logger.info("a0 prob (" + a0.getProfession() + "): " + String.format("%.2f", a0DegRed));
-//                logger.info("a1 prob (" + a1.getProfession() + "): " + String.format("%.2f", a1DegRed));
-//                logger.info("overall prob: " + String.format("%.2f", prob));
-//
-//                if (d <= prob) {
-//                    a0.disconnectFrom(a1);
-//                }
-//            }
-//            logger.info("Average d: " + (allDs / dCnt));
-
-
-
-
             // export DGS file
             DGSWriter dgsWriter = new DGSWriter();
-            String fileName = getExportPath() + upc + "-post.dgs";
+            String fileName = getExportPath() + upc + "-during.dgs";
             dgsWriter.writeNetwork(network, fileName);
             this.dgData.setExportFileName(fileName);
 
@@ -239,7 +237,7 @@ public class ProfessionsNetworkLockdownGenerator extends AbstractGenerator {
         double avDegree = network.getAvDegreeByProfession(profession);
 
         double avDegreeLockdown = Professions.getInstance().getDegreeDuringLockdown(profession);
-        double avDegreeLockdownLowerBound = avDegreeLockdown - (avDegreeLockdown * OFFSET_LOCKDOWN_BOUNDS);
+//        double avDegreeLockdownLowerBound = avDegreeLockdown - (avDegreeLockdown * OFFSET_LOCKDOWN_BOUNDS);
         double avDegreeLockdownUpperBound = avDegreeLockdown + (avDegreeLockdown * OFFSET_LOCKDOWN_BOUNDS);
 
 //        boolean inLockdown = (avDegreeLockdownLowerBound <= avDegree) && (avDegree <= avDegreeLockdownUpperBound);
@@ -270,15 +268,20 @@ public class ProfessionsNetworkLockdownGenerator extends AbstractGenerator {
         logger.debug("Av. degree (overall): \t\t" + String.format("%.2f", network.getAvDegree()));
         logger.debug("Av. clustering (overall): \t\t" + String.format("%.2f", network.getAvClustering()));
 
+        int disconnected = 0;
+        Iterator<Agent> agents = network.getAgentIterator();
+        while (agents.hasNext()) {
+            Agent agent = agents.next();
+            if (agent.getConnections().size() == 0) {
+                disconnected++;
+            }
+        }
+        logger.debug("Agents disconnected: \t\t" + disconnected);
+
         Map<String, Double> degProf = network.getAvDegreesByProfessions();
 
         for (String profession : Professions.getInstance().getProfessions()) {
-
             String tabs = "\t\t\t";
-//            if (profession.length() >= 5) {
-//                tabs = "\t\t\t";
-//            }
-
             if (duringLockdown) {
                 logger.debug("Av. degree (" + profession + "):" + tabs +
                         String.format("%.2f", degProf.get(profession)) +
@@ -288,8 +291,6 @@ public class ProfessionsNetworkLockdownGenerator extends AbstractGenerator {
                         String.format("%.2f", degProf.get(profession)) +
                         "\t(exp: " + String.format("%.2f", Professions.getInstance().getDegreePreLockdown(profession)) + ")");
             }
-
-
         }
     }
 

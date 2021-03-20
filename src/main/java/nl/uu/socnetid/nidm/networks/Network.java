@@ -1966,6 +1966,14 @@ public class Network extends SingleGraph implements SimulationListener {
         return Toolkit.density(this);
     }
 
+    public void updateDisease(DiseaseSpecs diseaseSpecs) {
+        Iterator<Agent> agents = this.getAgentIterator();
+        while (agents.hasNext()) {
+            Agent agent = agents.next();
+            agent.updateDisease(diseaseSpecs);
+        }
+    }
+
     /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.simulation.SimulationListener#notifySimulationStarted(
      * nl.uu.socnetid.nidm.simulation.Simulation)
