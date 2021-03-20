@@ -130,6 +130,15 @@ public abstract class UtilityModelParameters {
     private double etaRandomMax;
     private double[] etas;
     private double currEta;
+    // vaccine availibility
+    private boolean thetaRandom;
+    private double thetaRandomMin;
+    private double thetaRandomMax;
+    private double[] thetas;
+    private double currTheta;
+    // vaccine distribution
+    private String[] vaxDists;
+    private String currVaxDist;
 
     // SIMULATION
     // time steps network initialization stage
@@ -1161,6 +1170,104 @@ public abstract class UtilityModelParameters {
      */
     public void setEta(double currEta) {
         this.currEta = currEta;
+    }
+
+    /**
+     * @return the thetaRandom
+     */
+    public boolean isThetaRandom() {
+        return thetaRandom;
+    }
+
+    /**
+     * @param thetaRandom the thetaRandom to set
+     */
+    public void setThetaRandom(boolean thetaRandom) {
+        this.thetaRandom = thetaRandom;
+    }
+
+    /**
+     * @return the thetaRandomMin
+     */
+    public double getThetaRandomMin() {
+        return thetaRandomMin;
+    }
+
+    /**
+     * @param thetaRandomMin the thetaRandomMin to set
+     */
+    public void setThetaRandomMin(double thetaRandomMin) {
+        this.thetaRandomMin = thetaRandomMin;
+    }
+
+    /**
+     * @return the thetaRandomMax
+     */
+    public double getThetaRandomMax() {
+        return thetaRandomMax;
+    }
+
+    /**
+     * @param thetaRandomMax the thetaRandomMax to set
+     */
+    public void setThetaRandomMax(double thetaRandomMax) {
+        this.thetaRandomMax = thetaRandomMax;
+    }
+
+    /**
+     * @return the thetas
+     */
+    public double[] getThetas() {
+        return thetas;
+    }
+
+    /**
+     * @param thetas the thetas to set
+     */
+    public void setThetas(double[] thetas) {
+        this.thetas = thetas;
+    }
+
+    /**
+     * @return the currTheta
+     */
+    public double getCurrTheta() {
+        return currTheta;
+    }
+
+    /**
+     * @param currTheta the currTheta to set
+     */
+    public void setCurrTheta(double currTheta) {
+        this.currTheta = currTheta;
+    }
+
+    /**
+     * @return the vaxDists
+     */
+    public String[] getVaxDists() {
+        return vaxDists;
+    }
+
+    /**
+     * @param vaxDists the vaxDists to set
+     */
+    public void setVaxDists(String[] vaxDists) {
+        this.vaxDists = vaxDists;
+    }
+
+    /**
+     * @return the currCaxDist
+     */
+    public String getCurrVaxDist() {
+        return currVaxDist;
+    }
+
+    /**
+     * @param currVaxDist the currVaxDist to set
+     */
+    public void setCurrVaxDist(String currVaxDist) {
+        this.currVaxDist = currVaxDist;
     }
 
     /**
