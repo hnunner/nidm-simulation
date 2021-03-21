@@ -25,8 +25,20 @@
  */
 package nl.uu.socnetid.nidm.stats;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
+
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.io.importer.api.Container;
+import org.gephi.io.importer.api.EdgeDirectionDefault;
+import org.gephi.io.importer.api.ImportController;
+import org.gephi.io.processor.plugin.DefaultProcessor;
+import org.gephi.project.api.ProjectController;
+import org.gephi.project.api.Workspace;
+import org.gephi.statistics.plugin.GraphDistance;
+import org.openide.util.Lookup;
 
 import nl.uu.socnetid.nidm.networks.AssortativityConditions;
 import nl.uu.socnetid.nidm.networks.Network;
@@ -79,12 +91,22 @@ public class NetworkStats {
     private int tiesBrokenWithInfectionPresent = 0;
     private int networkChangesWithInfectionPresent = 0;
 
+    private String gexfFile;
+
 
     public NetworkStats(Network network, int simRound) {
-        this(network, simRound, true);
+        this(network, simRound, true, null);
+    }
+
+    public NetworkStats(Network network, int simRound, String gexfFile) {
+        this(network, simRound, true, gexfFile);
     }
 
     public NetworkStats(Network network, int simRound, boolean init) {
+        this(network, simRound, init, null);
+    }
+
+    public NetworkStats(Network network, int simRound, boolean init, String gexfFile) {
 
         this.network = network;
         this.simRound = simRound;
@@ -124,6 +146,8 @@ public class NetworkStats {
         this.vaccinatedPercent = pct * this.vaccinatedTotal;
         this.satisfiedPercent = pct * this.satisfiedTotal;
         this.unsatisfiedPercent = pct * this.unsatisfiedTotal;
+
+        this.gexfFile = gexfFile;
     }
 
 
@@ -288,6 +312,13 @@ public class NetworkStats {
     }
 
     /**
+     * @return the avBetweenness
+     */
+    public double getAvBetweenness() {
+        return this.avBetweenness;
+    }
+
+    /**
      * @param avBetweenness the avBetweenness to set
      */
     public void setAvBetweenness(double avBetweenness) {
@@ -304,6 +335,13 @@ public class NetworkStats {
             this.avCloseness = network.getAvCloseness(simRound);
         }
         return avCloseness;
+    }
+
+    /**
+     * @return the avCloseness
+     */
+    public double getAvCloseness() {
+        return this.avCloseness;
     }
 
     /**
@@ -337,6 +375,88 @@ public class NetworkStats {
             this.avPathLength = network.getAvPathLength(simRound);
         }
         return avPathLength;
+    }
+
+    /**
+     * @return the avPathLength
+     */
+    public double getAvPathLength() {
+        if (this.avPathLength == null) {
+            if (this.gexfFile != null & !this.gexfFile.isEmpty()) {
+
+                //Init a project - and therefore a workspace
+                ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+                pc.newProject();
+                Workspace workspace = pc.getCurrentWorkspace();
+
+                //Import file
+                ImportController importController = Lookup.getDefault().lookup(ImportController.class);
+                Container container = null;
+                try {
+                    File file = new File(this.gexfFile);
+                    container = importController.importFile(file);
+                    container.getLoader().setEdgeDefault(EdgeDirectionDefault.UNDIRECTED); //Force UNDIRECTED
+                    container.getLoader().setAllowAutoNode(false); //Don’t create missing nodes
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                //Append imported data to GraphAPI
+                importController.process(container, new DefaultProcessor(), workspace);
+
+                System.out.println("Import successfull!!!");
+
+                //Get graph model and attribute model of current workspace
+                GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+
+                //Get Centrality
+                GraphDistance distance = new GraphDistance();
+                distance.setDirected(false);
+                distance.execute(graphModel);
+                this.avPathLength = distance.getPathLength();
+
+//                Graph graph = graphModel.getGraph();
+//                HashMap<Node, Integer> indicies = distance.createIndiciesMap(graph);
+//                Map<String, double[]> metrics = distance.calculateDistanceMetrics(graph, indicies, false, false);
+    //
+    //
+//                System.out.println("indicies:");
+    //
+//                Integer minId = Integer.MAX_VALUE;
+//                Integer maxId = Integer.MIN_VALUE;
+//                Iterator<Node> keys = indicies.keySet().iterator();
+//                while (keys.hasNext()) {
+//                    Node key = keys.next();
+//                    Integer id = Integer.valueOf((String) key.getId());
+    //
+//                    if (id < minId) {
+//                        minId = id;
+//                    }
+//                    if (id > maxId) {
+//                        maxId = id;
+//                    }
+    //
+    //
+//                    System.out.println("key id: " + id);
+//                    System.out.println("key store id: " + key.getStoreId());
+//                }
+//                System.out.println("min ID: " + minId);
+//                System.out.println("max ID: " + maxId);
+    //
+    //
+////                System.out.println(indicies.keySet().iterator().next().getAttributeKeys());
+////                System.out.println(indicies.keySet().iterator().next().getId());
+////                System.out.println(indicies.keySet().iterator().next().getStoreId());
+    //
+    //
+//                double[] eccentricity = metrics.get(GraphDistance.ECCENTRICITY);
+//                double[] closeness = metrics.get(GraphDistance.CLOSENESS);
+//                double[] harmonicCloseness = metrics.get(GraphDistance.HARMONIC_CLOSENESS);
+//                double[] betweenness = metrics.get(GraphDistance.BETWEENNESS);
+    //
+//                System.out.println("Av. path length: " + this.avPathLength);
+            }
+        }
+        return this.avPathLength;
     }
 
     /**
