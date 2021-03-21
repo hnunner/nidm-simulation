@@ -202,7 +202,7 @@
 		    using mvn shell command:
 
             mvn install:install-file \
-			   -Dfile=<path-to-resources>/gephi-toolkit-0.9.2.jar \
+			   -Dfile=<path-to-resources>/gephi-toolkit-0.9.3.jar \
 			   -DgroupId=org.gephi \
 			   -DartifactId=gephi-toolkit \
 			   -Dversion=0.9.3 \
