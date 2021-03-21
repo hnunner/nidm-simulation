@@ -80,8 +80,8 @@ public class ProfessionNetworkLockdownWriter extends CsvFileWriter<ProfessionNet
         cols.add(LogValues.IV_NB_NET_SIZE.toString());
         cols.add(LogValues.DV_NET_AV_DEGREE.toString());
         cols.add(LogValues.DV_NET_AV_CLUSTERING.toString());
-        cols.add(LogValues.DV_NET_AV_BETWEENNESS.toString());
-        cols.add(LogValues.DV_NET_AV_CLOSENESS.toString());
+//        cols.add(LogValues.DV_NET_AV_BETWEENNESS.toString());
+//        cols.add(LogValues.DV_NET_AV_CLOSENESS.toString());
         cols.add(LogValues.DV_NET_AV_PATHLENGTH.toString());
         cols.add(LogValues.DV_NET_ASSORTATIVITY_PROFESSION.toString());
 
@@ -122,12 +122,12 @@ public class ProfessionNetworkLockdownWriter extends CsvFileWriter<ProfessionNet
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getN()));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvDegree()));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvClustering()));
-//        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvBetweenness(1)));
-        currData.add("NA");
-//        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvCloseness(1)));
-        currData.add("NA");
-//        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvPathLength(1)));
-        currData.add("NA");
+//        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvBetweenness()));
+//        currData.add("NA");
+//        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvCloseness()));
+//        currData.add("NA");
+        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvPathLength()));
+//        currData.add("NA");
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAssortativityProfession()));
 
         // fitness : degree
