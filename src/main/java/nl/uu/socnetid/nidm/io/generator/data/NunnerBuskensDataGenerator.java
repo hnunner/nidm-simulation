@@ -702,7 +702,7 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
         }
 
         if (PropertiesHandler.getInstance().isExportSummaryEachRound() || PropertiesHandler.getInstance().isExportAgentDetails()) {
-            this.dgData.setNetStatsCurrent(new NetworkStats(this.network, simulation.getRounds()));
+            this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
             this.dgData.setIndexCaseStatsCurrent(new AgentStatsPre(this.indexCase, simulation.getRounds()));
         }
         if (PropertiesHandler.getInstance().isExportSummaryEachRound()) {
@@ -741,7 +741,7 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
             if (PropertiesHandler.getInstance().isExportSummaryEachRound() ||
                     PropertiesHandler.getInstance().isExportAgentDetails() ||
                     PropertiesHandler.getInstance().isExportAgentDetailsReduced()) {
-                this.dgData.setNetStatsCurrent(new NetworkStats(this.network, simulation.getRounds()));
+                this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
             }
             if (PropertiesHandler.getInstance().isExportSummaryEachRound()) {
                 this.rsWriter.writeCurrentData();
