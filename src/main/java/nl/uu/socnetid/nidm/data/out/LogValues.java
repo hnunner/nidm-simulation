@@ -561,9 +561,9 @@ public enum LogValues {
     DV_INDEX_DYNAMIC_R_SIGMA("index.dynamic.r.sigma"),
     DV_INDEX_DYNAMIC_R_PI("index.dynamic.r.pi"),
 
-
     // OTHERS
-    EXPORT_FILENAME("export.filename");
+    EXPORT_FILENAME("export.filename"),
+    IMPORT_FILENAME("import.filename");
 
 
     // dependent variables feasible for regression analysis
