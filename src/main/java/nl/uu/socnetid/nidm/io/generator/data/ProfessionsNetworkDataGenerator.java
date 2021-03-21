@@ -50,6 +50,7 @@ import nl.uu.socnetid.nidm.data.out.ProfessionNetworkDataParameters;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
 import nl.uu.socnetid.nidm.io.csv.ProfessionNetworkDataWriter;
+import nl.uu.socnetid.nidm.io.csv.ProfessionNetworkRoundSummaryWriter;
 import nl.uu.socnetid.nidm.io.generator.AbstractGenerator;
 import nl.uu.socnetid.nidm.io.network.DGSReader;
 import nl.uu.socnetid.nidm.networks.Network;
@@ -57,6 +58,7 @@ import nl.uu.socnetid.nidm.simulation.Simulation;
 import nl.uu.socnetid.nidm.simulation.SimulationListener;
 import nl.uu.socnetid.nidm.simulation.SimulationStage;
 import nl.uu.socnetid.nidm.stats.AgentStatsPre;
+import nl.uu.socnetid.nidm.stats.NetworkStats;
 import nl.uu.socnetid.nidm.stats.NetworkStatsPost;
 import nl.uu.socnetid.nidm.system.PropertiesHandler;
 
@@ -71,7 +73,7 @@ public class ProfessionsNetworkDataGenerator extends AbstractGenerator implement
     private static final Logger logger = LogManager.getLogger(ProfessionsNetworkDataGenerator.class);
 
     // path to network files used to generate data
-    private static final String NETWORKS_PATH = "/Users/hendrik/git/uu/nidm/simulation/exports/20210320-105001/"
+    private static final String NETWORKS_PATH = "/Users/hendrik/git/uu/nidm/simulation/exports/20210321-200857/"
             + "networks/professions.lockdown/";
     private static final String NETWORKS_SUMMARY_FILE = NETWORKS_PATH + "profession-networks-lockdown.csv";
 
@@ -91,7 +93,6 @@ public class ProfessionsNetworkDataGenerator extends AbstractGenerator implement
             VAX_DIST_RANDOM,
             VAX_DIST_BY_AV_DEGREE_PER_PROF_GROUP);
 //    private static final int ITERATIONS = 50;
-
     private static final int ITERATIONS = 3;
 
     // network
@@ -108,6 +109,7 @@ public class ProfessionsNetworkDataGenerator extends AbstractGenerator implement
     // stats & writer
     private DataGeneratorData<ProfessionNetworkDataParameters> dgData;
     private ProfessionNetworkDataWriter pndWriter;
+    private ProfessionNetworkRoundSummaryWriter rsWriter;
 
 
     /**
@@ -156,6 +158,11 @@ public class ProfessionsNetworkDataGenerator extends AbstractGenerator implement
         if (PropertiesHandler.getInstance().isExportSummary()) {
             this.pndWriter = new ProfessionNetworkDataWriter(getExportPath() +
                     "profession-data.csv", this.dgData);
+        }
+        // round summary CSV
+        if (PropertiesHandler.getInstance().isExportSummaryEachRound()) {
+            this.rsWriter = new ProfessionNetworkRoundSummaryWriter(getExportPath() +
+                    "profession-round-summary.csv", this.dgData);
         }
     }
 
@@ -236,7 +243,7 @@ public class ProfessionsNetworkDataGenerator extends AbstractGenerator implement
 
                             // baseline
                             if (vaxDist.equals(VAX_DIST_NONE)) {
-                                logger.warn("Baseline has been simulated before. Skipping iteration!");
+                                logger.info("Baseline has been simulated before. Skipping iteration!");
                             }
 
                             // random vaccine distribution
@@ -417,6 +424,14 @@ public class ProfessionsNetworkDataGenerator extends AbstractGenerator implement
         return networkSummaryLines;
     }
 
+    /**
+     * Amends the summary file by writing a row with the current state of the network.
+     */
+    private void amendRoundWriters() {
+        this.dgData.setNetStatsCurrent(new NetworkStats(this.network, false));
+        this.rsWriter.writeCurrentData();
+    }
+
     @Override
     public void notifySimulationStarted(Simulation simulation) {
         this.epidemicPeakSize = 0;
@@ -430,6 +445,7 @@ public class ProfessionsNetworkDataGenerator extends AbstractGenerator implement
             this.dgData.getSimStats().setEpidemicPeakSizeStatic(epidemicSize);
             this.dgData.getSimStats().setEpidemicPeakStatic(simulation.getRounds());
         }
+        this.amendRoundWriters();
     }
 
     @Override
