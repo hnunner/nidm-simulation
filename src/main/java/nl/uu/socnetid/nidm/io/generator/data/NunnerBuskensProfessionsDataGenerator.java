@@ -424,7 +424,7 @@ public class NunnerBuskensProfessionsDataGenerator extends AbstractGenerator imp
 
                 logger.info("Epidemic " + (it+1) + " of " + sims + " finished after " + this.simulation.getRounds() + " rounds.");
 
-                this.dgData.setNetStatsCurrent(new NetworkStats(this.network, this.simulation.getRounds()));
+                this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
                 this.dgData.setNetStatsPostStatic(new NetworkStatsPost(this.network));
                 this.dgData.getNetStatsPostStatic().setQuarantined(this.quarantined);
                 simStats.setEpidemicDurationStatic(this.simulation.getRounds());
@@ -537,7 +537,7 @@ public class NunnerBuskensProfessionsDataGenerator extends AbstractGenerator imp
      * Amends the summary file by writing a row with the current state of the network.
      */
     private void amendRoundWriters() {
-        this.dgData.setNetStatsCurrent(new NetworkStats(this.network, this.simulation.getRounds()));
+        this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
         HashMap<String, AgentStats> agentStats = new HashMap<String, AgentStats>();
         Iterator<Agent> aIt = this.network.getAgentIterator();
         while (aIt.hasNext()) {
