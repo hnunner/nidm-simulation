@@ -49,8 +49,6 @@ import nl.uu.socnetid.nidm.networks.Network;
 public class NetworkStats {
 
     private Network network;
-    @SuppressWarnings("unused")
-    private int simRound;
 
     // TODO make all initializations lazy
 
@@ -94,22 +92,21 @@ public class NetworkStats {
     private String gexfFile;
 
 
-    public NetworkStats(Network network, int simRound) {
-        this(network, simRound, true, null);
+    public NetworkStats(Network network) {
+        this(network, true, null);
     }
 
-    public NetworkStats(Network network, int simRound, String gexfFile) {
-        this(network, simRound, true, gexfFile);
+    public NetworkStats(Network network, String gexfFile) {
+        this(network, true, gexfFile);
     }
 
-    public NetworkStats(Network network, int simRound, boolean init) {
-        this(network, simRound, init, null);
+    public NetworkStats(Network network, boolean init) {
+        this(network, init, null);
     }
 
-    public NetworkStats(Network network, int simRound, boolean init, String gexfFile) {
+    public NetworkStats(Network network, boolean init, String gexfFile) {
 
         this.network = network;
-        this.simRound = simRound;
 
         if (!init) {
             return;
@@ -589,7 +586,7 @@ public class NetworkStats {
     public double getSusceptiblePercent() {
         if (this.susceptiblePercent == null) {
             double pct = 100D / network.getAgents().size();
-            this.susceptiblePercent = pct * this.susceptiblesTotal;
+            this.susceptiblePercent = pct * this.getSusceptiblesTotal();
         }
         return susceptiblePercent;
     }
@@ -607,7 +604,7 @@ public class NetworkStats {
     public double getInfectedPercent() {
         if (this.infectedPercent == null) {
             double pct = 100D / network.getAgents().size();
-            this.infectedPercent = pct * this.infectedTotal;
+            this.infectedPercent = pct * this.getInfectedTotal();
         }
         return infectedPercent;
     }
@@ -625,7 +622,7 @@ public class NetworkStats {
     public double getRecoveredPercent() {
         if (this.recoveredPercent == null) {
             double pct = 100D / network.getAgents().size();
-            this.recoveredPercent = pct * this.recoveredTotal;
+            this.recoveredPercent = pct * this.getRecoveredTotal();
         }
         return recoveredPercent;
     }
@@ -643,7 +640,7 @@ public class NetworkStats {
     public double getVaccinatedPercent() {
         if (this.vaccinatedPercent == null) {
             double pct = 100D / network.getAgents().size();
-            this.vaccinatedPercent = pct * this.vaccinatedTotal;
+            this.vaccinatedPercent = pct * this.getVaccinatedTotal();
         }
         return vaccinatedPercent;
     }
