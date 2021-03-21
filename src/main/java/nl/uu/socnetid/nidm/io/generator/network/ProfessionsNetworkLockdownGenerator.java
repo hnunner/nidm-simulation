@@ -46,6 +46,7 @@ import nl.uu.socnetid.nidm.io.csv.ProfessionNetworkLockdownWriter;
 import nl.uu.socnetid.nidm.io.generator.AbstractGenerator;
 import nl.uu.socnetid.nidm.io.network.DGSReader;
 import nl.uu.socnetid.nidm.io.network.DGSWriter;
+import nl.uu.socnetid.nidm.io.network.GEXFWriter;
 import nl.uu.socnetid.nidm.networks.LockdownConditions;
 import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.stats.NetworkStats;
@@ -170,6 +171,11 @@ public class ProfessionsNetworkLockdownGenerator extends AbstractGenerator {
                 e.printStackTrace();
             }
 
+            // export as Gephi file
+            GEXFWriter gexfWriter = new GEXFWriter();
+            String gexfFilePre = getExportPath() + upc + "-pre.gexf";
+            gexfWriter.writeStaticNetwork(network, gexfFilePre);
+
             // export pre lockdown stats
             this.dgData.getSimStats().setUid(String.valueOf(uid));
             this.dgData.getSimStats().setUpc(upc);
@@ -177,7 +183,7 @@ public class ProfessionsNetworkLockdownGenerator extends AbstractGenerator {
             this.dgData.getUtilityModelParams().setOmega(agent.getOmega());
             this.dgData.getUtilityModelParams().setAlpha(((NunnerBuskens) (agent.getUtilityFunction())).getAlpha());
             this.dgData.getUtilityModelParams().setCurrLockdownCondition(LockdownConditions.PRE);
-            this.dgData.setNetStatsCurrent(new NetworkStats(network, uid++));
+            this.dgData.setNetStatsCurrent(new NetworkStats(network, uid++, gexfFilePre));
             this.dgData.setExportFileName(preLockdownDgsDest.getPath());
             this.pnlWriter.writeCurrentData();
 
@@ -215,11 +221,16 @@ public class ProfessionsNetworkLockdownGenerator extends AbstractGenerator {
             dgsWriter.writeNetwork(network, fileName);
             this.dgData.setExportFileName(fileName);
 
+            // export as Gephi file
+            gexfWriter = new GEXFWriter();
+            String gexfFileDuring = getExportPath() + upc + "-during.gexf";
+            gexfWriter.writeStaticNetwork(network, gexfFileDuring);
+
             // export lockdown stats
             this.dgData.getSimStats().setUid(String.valueOf(uid));
             this.dgData.getSimStats().setUpc(upc++);
             this.dgData.getUtilityModelParams().setCurrLockdownCondition(LockdownConditions.DURING);
-            this.dgData.setNetStatsCurrent(new NetworkStats(network, uid++));
+            this.dgData.setNetStatsCurrent(new NetworkStats(network, uid++, gexfFileDuring));
             this.pnlWriter.writeCurrentData();
 
             logger.debug("\n\nNetwork in lockdown:");
