@@ -36,7 +36,7 @@ import nl.uu.socnetid.nidm.data.out.ProfessionNetworkDataParameters;
 /**
  * @author Hendrik Nunner
  */
-public class ProfessionNetworkDataWriter extends CsvFileWriter<ProfessionNetworkDataParameters> {
+public class ProfessionNetworkRoundSummaryWriter extends CsvFileWriter<ProfessionNetworkDataParameters> {
 
     /**
      * Creates the writer.
@@ -50,8 +50,8 @@ public class ProfessionNetworkDataWriter extends CsvFileWriter<ProfessionNetwork
      *          than a regular file, does not exist but cannot be
      *          created, or cannot be opened for any other reason
      */
-    public ProfessionNetworkDataWriter(String fileName, DataGeneratorData<ProfessionNetworkDataParameters> dgData)
-            throws IOException {
+    public ProfessionNetworkRoundSummaryWriter(String fileName,
+            DataGeneratorData<ProfessionNetworkDataParameters> dgData) throws IOException {
         super(fileName, dgData);
     }
 
@@ -62,37 +62,25 @@ public class ProfessionNetworkDataWriter extends CsvFileWriter<ProfessionNetwork
     @Override
     protected void initCols() {
         List<String> cols = new LinkedList<String>();
-        cols.addAll(this.dgData.getUtilityModelParams().getColNames());
 
+        // FILE
+        cols.add(LogValues.IMPORT_FILENAME.toString());
+
+        // SIMULATION
         cols.add(LogValues.IV_NB_SIM_ITERATIONS.toString());
 
+        // PARAMETERS
         cols.add(LogValues.IV_NB_PROF_VACCINE_DISTRIBUTION.toString());
         cols.add(LogValues.IV_NB_PROF_VACCINE_AVAILIBILITY.toString());
         cols.add(LogValues.IV_NB_PROF_VACCINE_EFFICACY.toString());
 
-        cols.add(LogValues.IV_NB_PROF_VACCINE_SHOTS_GIVEN.toString());
-        cols.add(LogValues.IV_NB_PROF_VACCINE_AGENTS_IMMUNIZED.toString());
-        cols.add(LogValues.IV_NB_PROF_GROUPS_RECEIVED_SHOTS.toString());
-
+        // PROPERTIES
         cols.add(LogValues.DV_NET_PERCENTAGE_SUSCEPTIBLE.toString());
         cols.add(LogValues.DV_NET_PERCENTAGE_INFECTED.toString());
         cols.add(LogValues.DV_NET_PERCENTAGE_RECOVERED.toString());
         cols.add(LogValues.DV_NET_PERCENTAGE_VACCINATED.toString());
 
-        cols.add(LogValues.DV_NET_EPIDEMIC_DURATION.toString());
-        cols.add(LogValues.DV_NET_EPIDEMIC_PEAK_SIZE.toString());
-        cols.add(LogValues.DV_NET_EPIDEMIC_PEAK_TIME.toString());
-
-        cols.add(LogValues.DV_INDEX_ID.toString());
-        cols.add(LogValues.DV_INDEX_DEGREE1.toString());
-//        cols.add(LogValues.DV_INDEX_DEGREE2.toString());
-        cols.add(LogValues.DV_INDEX_CLOSENESS.toString());
-        cols.add(LogValues.DV_INDEX_CLUSTERING.toString());
-//        cols.add(LogValues.DV_INDEX_BETWEENNESS.toString());
-//        cols.add(LogValues.DV_INDEX_BETWEENNESS_NORMALIZED.toString());
-        cols.add(LogValues.DV_INDEX_PROFESSION.toString());
-        cols.add(LogValues.DV_INDEX_ASSORTATIVITY_PROFESSION.toString());
-
+        // FILE SYSTEM
         writeLine(cols);
     }
 
@@ -101,39 +89,24 @@ public class ProfessionNetworkDataWriter extends CsvFileWriter<ProfessionNetwork
      */
     @Override
     public void writeCurrentData() {
-
         List<String> currData = new LinkedList<String>();
-        currData.addAll(this.dgData.getUtilityModelParams().getCurrNetworkSummaryLine());
 
+        // FILE
+        currData.add(this.dgData.getUtilityModelParams().getCurrFile());
+
+        // SIMULATION
         currData.add(String.valueOf(this.dgData.getSimStats().getSimIt()));
 
+        // PARAMETERS
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrVaxDist()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrTheta()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrEta()));
 
-        currData.add(String.valueOf(this.dgData.getSimStats().getShotsGiven()));
-        currData.add(String.valueOf(this.dgData.getSimStats().getAgentsImmunized()));
-        currData.add(String.valueOf(this.dgData.getSimStats().getProfessionsReceivedShots()));
-
-        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getSusceptiblePercent()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getInfectedPercent()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getRecoveredPercent()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getVaccinatedPercent()));
-
-        currData.add(String.valueOf(this.dgData.getSimStats().getEpidemicDurationStatic()));
-        currData.add(String.valueOf(this.dgData.getSimStats().getEpidemicPeakSizeStatic()));
-        currData.add(String.valueOf(this.dgData.getSimStats().getEpidemicPeakStatic()));
-
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getId()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getDegree1()));
-//        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getDegree2()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getCloseness()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getClustering()));
-//        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getBetweenness()));
-        // TODO in case betweenness is added: use gephi algorithm as it performs much faster
-//        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getBetweennessNormalized()));
-        currData.add(this.dgData.getIndexCaseStats().getProfession());
-        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getAssortativityProfession()));
+        // PROPERTIES
+        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getSusceptiblePercent()));
+        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getInfectedPercent()));
+        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getRecoveredPercent()));
+        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getVaccinatedPercent()));
 
         writeLine(currData);
     }

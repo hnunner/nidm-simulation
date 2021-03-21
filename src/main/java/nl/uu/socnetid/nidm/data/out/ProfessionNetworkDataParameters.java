@@ -66,4 +66,11 @@ public class ProfessionNetworkDataParameters extends UtilityModelParameters {
         this.currFile = currFile;
     }
 
+    /**
+     * @return the currFile
+     */
+    public String getCurrFile() {
+        return currFile;
+    }
+
 }

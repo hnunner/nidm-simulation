@@ -75,25 +75,25 @@ public class ProfessionsNetworkLockdownGenerator extends AbstractGenerator {
 //            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_2_8(1-2-1-1)#2.dgs");
 //            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/");
 
-            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_5_5(2-2-2-1)#1.dgs",
-            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_2_8(1-2-1-1)#2.dgs",
-            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_3_9(2-1-2-2)#1.dgs",
-            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_5_8(3-1-3-1)#2.dgs",
-            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_5_8(3-1-3-1)#2.dgs",
-            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_5_6(2-2-2-1)#2.dgs",
-            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_5_6(2-2-2-1)#2.dgs",
-            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_5_5(2-2-2-1)#1.dgs",
-            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_5_2(2-2-3-1)#2.dgs",
-            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_5_2(2-2-3-1)#2.dgs",
-
-            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-1615312/networks/professions.genetic/0_lc.pre_5_5(2-2-2-1)#1.dgs",
-            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-1615312/networks/professions.genetic/0_lc.pre_2_8(1-2-1-1)#2.dgs",
-            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-1615312/networks/professions.genetic/0_lc.pre_3_9(2-1-2-2)#1.dgs",
-            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-1615312/networks/professions.genetic/0_lc.pre_5_8(3-1-3-1)#2.dgs",
-            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-1615312/networks/professions.genetic/0_lc.pre_5_8(3-1-3-1)#2.dgs",
-            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-1615312/networks/professions.genetic/0_lc.pre_5_6(2-2-2-1)#2.dgs",
-            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-1615312/networks/professions.genetic/0_lc.pre_5_6(2-2-2-1)#2.dgs",
-            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-1615312/networks/professions.genetic/0_lc.pre_5_5(2-2-2-1)#1.dgs",
+//            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_5_5(2-2-2-1)#1.dgs",
+//            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_2_8(1-2-1-1)#2.dgs",
+//            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_3_9(2-1-2-2)#1.dgs",
+//            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_5_8(3-1-3-1)#2.dgs",
+//            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_5_8(3-1-3-1)#2.dgs",
+//            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_5_6(2-2-2-1)#2.dgs",
+//            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_5_6(2-2-2-1)#2.dgs",
+//            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_5_5(2-2-2-1)#1.dgs",
+//            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_5_2(2-2-3-1)#2.dgs",
+//            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-161531/networks/professions.genetic/0_lc.pre_5_2(2-2-3-1)#2.dgs",
+//
+//            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-1615312/networks/professions.genetic/0_lc.pre_5_5(2-2-2-1)#1.dgs",
+//            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-1615312/networks/professions.genetic/0_lc.pre_2_8(1-2-1-1)#2.dgs",
+//            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-1615312/networks/professions.genetic/0_lc.pre_3_9(2-1-2-2)#1.dgs",
+//            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-1615312/networks/professions.genetic/0_lc.pre_5_8(3-1-3-1)#2.dgs",
+//            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-1615312/networks/professions.genetic/0_lc.pre_5_8(3-1-3-1)#2.dgs",
+//            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-1615312/networks/professions.genetic/0_lc.pre_5_6(2-2-2-1)#2.dgs",
+//            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-1615312/networks/professions.genetic/0_lc.pre_5_6(2-2-2-1)#2.dgs",
+//            "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-1615312/networks/professions.genetic/0_lc.pre_5_5(2-2-2-1)#1.dgs",
             "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-1615312/networks/professions.genetic/0_lc.pre_5_2(2-2-3-1)#2.dgs",
             "/Users/hendrik/git/uu/nidm/simulation/exports/20210316-1615312/networks/professions.genetic/0_lc.pre_5_2(2-2-3-1)#2.dgs");
 
@@ -183,7 +183,7 @@ public class ProfessionsNetworkLockdownGenerator extends AbstractGenerator {
             this.dgData.getUtilityModelParams().setOmega(agent.getOmega());
             this.dgData.getUtilityModelParams().setAlpha(((NunnerBuskens) (agent.getUtilityFunction())).getAlpha());
             this.dgData.getUtilityModelParams().setCurrLockdownCondition(LockdownConditions.PRE);
-            this.dgData.setNetStatsCurrent(new NetworkStats(network, uid++, gexfFilePre));
+            this.dgData.setNetStatsCurrent(new NetworkStats(network, gexfFilePre));
             this.dgData.setExportFileName(preLockdownDgsDest.getPath());
             this.pnlWriter.writeCurrentData();
 
@@ -230,7 +230,7 @@ public class ProfessionsNetworkLockdownGenerator extends AbstractGenerator {
             this.dgData.getSimStats().setUid(String.valueOf(uid));
             this.dgData.getSimStats().setUpc(upc++);
             this.dgData.getUtilityModelParams().setCurrLockdownCondition(LockdownConditions.DURING);
-            this.dgData.setNetStatsCurrent(new NetworkStats(network, uid++, gexfFileDuring));
+            this.dgData.setNetStatsCurrent(new NetworkStats(network, gexfFileDuring));
             this.pnlWriter.writeCurrentData();
 
             logger.debug("\n\nNetwork in lockdown:");
