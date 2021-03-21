@@ -579,7 +579,7 @@ public class ProfessionsNetworkGeneratorGenetic extends AbstractGenerator implem
      */
     private void amendSummary() {
         this.dgData.getUtilityModelParams().setOffspring(this.currentOffspring);
-        this.dgData.setNetStatsCurrent(new NetworkStats(this.network, this.simulation.getRounds()));
+        this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
         this.nsWriter.writeCurrentData();
     }
 
