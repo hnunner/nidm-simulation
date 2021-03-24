@@ -73,17 +73,25 @@ public class ProfessionsNetworkDataGenerator extends AbstractGenerator implement
     private static final Logger logger = LogManager.getLogger(ProfessionsNetworkDataGenerator.class);
 
     // path to network files used to generate data
-    private static final String NETWORKS_PATH = "/Users/hendrik/git/uu/nidm/simulation/exports/20210321-200857/"
-            + "networks/professions.lockdown/";
+    private static final String NETWORKS_PATH = "C:/Users/Hendrik/git/NIDM/simulation/exports/20210321-024702/"
+//            + "networks/professions.lockdown.1-60/";
+//            + "networks/professions.lockdown.21-30/";
+//            + "networks/professions.lockdown.31-40/";
+//            + "networks/professions.lockdown.41-50/";
+//            + "networks/professions.lockdown.51-60/";
+//            + "networks/professions.lockdown.61-70/";
+//            + "networks/professions.lockdown.71-80/";
+            + "networks/professions.lockdown.81-90/";
+
     private static final String NETWORKS_SUMMARY_FILE = NETWORKS_PATH + "profession-networks-lockdown.csv";
 
     // PARAMETER VARIATIONS
     // vaccine efficacy
-//    private static final List<Double> ETAS = Arrays.asList(0.6, 0.75, 0.9);
-    private static final List<Double> ETAS = Arrays.asList(0.6, 0.9);
+    private static final List<Double> ETAS = Arrays.asList(0.6, 0.75, 0.9);
+//    private static final List<Double> ETAS = Arrays.asList(0.6, 0.9);
     // vaccine availibility
-//    private static final List<Double> THETAS = Arrays.asList(0.05, 0.10, 0.2);
-    private static final List<Double> THETAS = Arrays.asList(0.05, 0.10);
+    private static final List<Double> THETAS = Arrays.asList(0.05, 0.10, 0.2);
+//    private static final List<Double> THETAS = Arrays.asList(0.05, 0.10);
     // vaccine distribution
     private static final String VAX_DIST_NONE = "none";
     private static final String VAX_DIST_RANDOM = "random";
@@ -92,8 +100,8 @@ public class ProfessionsNetworkDataGenerator extends AbstractGenerator implement
             VAX_DIST_NONE,
             VAX_DIST_RANDOM,
             VAX_DIST_BY_AV_DEGREE_PER_PROF_GROUP);
-//    private static final int ITERATIONS = 50;
-    private static final int ITERATIONS = 3;
+    private static final int ITERATIONS = 20;
+//    private static final int ITERATIONS = 3;
 
     // network
     private Network network;
@@ -192,11 +200,12 @@ public class ProfessionsNetworkDataGenerator extends AbstractGenerator implement
 
             // copy network
             File networkSource = new File(networkFilePath);
-            String filename = networkSource.getPath().replace(NETWORKS_PATH, "");
+            String filename = networkFilePath.replace(NETWORKS_PATH, "");
             File networkDest = new File(getExportPath() + filename);
             try {
                 FileUtils.copyFile(networkSource, networkDest);
             } catch (IOException e) {
+                logger.error("Error during copying of file '" + networkSource + "' to '" + networkDest + "'");
                 e.printStackTrace();
             }
 
@@ -340,7 +349,7 @@ public class ProfessionsNetworkDataGenerator extends AbstractGenerator implement
         this.simulation.addSimulationListener(this);
         this.dgData.setIndexCaseStats(new AgentStatsPre(indexCase, this.simulation.getRounds()));
         this.dgData.getSimStats().setSimStage(SimulationStage.ACTIVE_EPIDEMIC);
-        this.simulation.simulateUntilEpidemicFinished();
+        this.simulation.simulateDiseaseDynamicsUntilEpidemicFinished();
         this.network.resetDiseaseStates();
     }
 
@@ -445,17 +454,18 @@ public class ProfessionsNetworkDataGenerator extends AbstractGenerator implement
             this.dgData.getSimStats().setEpidemicPeakSizeStatic(epidemicSize);
             this.dgData.getSimStats().setEpidemicPeakStatic(simulation.getRounds());
         }
-        this.amendRoundWriters();
+        if (PropertiesHandler.getInstance().isExportSummaryEachRound()) {
+            this.amendRoundWriters();
+        }
     }
 
     @Override
-    public void notifyInfectionDefeated(Simulation simulation) {
-        this.dgData.setNetStatsPostStatic(new NetworkStatsPost(this.network));
-        this.dgData.getSimStats().setEpidemicDurationStatic(this.simulation.getRounds());
-    }
+    public void notifyInfectionDefeated(Simulation simulation) { }
 
     @Override
     public void notifySimulationFinished(Simulation simulation) {
+        this.dgData.setNetStatsPostStatic(new NetworkStatsPost(this.network));
+        this.dgData.getSimStats().setEpidemicDurationStatic(this.simulation.getRounds());
         this.pndWriter.writeCurrentData();
     }
 
