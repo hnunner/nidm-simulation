@@ -130,7 +130,6 @@ public class ProfessionNetworkDataWriter extends CsvFileWriter<ProfessionNetwork
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().getCloseness()));
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().getClustering()));
 //        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getBetweenness()));
-        // TODO in case betweenness is added: use gephi algorithm as it performs much faster
 //        currData.add(String.valueOf(this.dgData.getIndexCaseStats().getBetweennessNormalized()));
         currData.add(this.dgData.getIndexCaseStats().getProfession());
         currData.add(String.valueOf(this.dgData.getIndexCaseStats().getAssortativityProfession()));
@@ -139,3 +138,4 @@ public class ProfessionNetworkDataWriter extends CsvFileWriter<ProfessionNetwork
     }
 
 }
+
