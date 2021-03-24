@@ -256,6 +256,29 @@ public class Simulation implements Runnable {
     }
 
     /**
+     * Simulates the network dynamics (disease and agents) until the disease has disappeared.
+     *
+     * TODO: generalize with method above
+     */
+    public void simulateDiseaseDynamicsUntilEpidemicFinished() {
+
+        notifySimulationStarted();
+        this.rounds = 1;
+
+        while (this.network.hasActiveInfection()) {
+            computeDiseaseDynamics();
+            notifyRoundFinished();
+            this.rounds++;
+        }
+
+        // status message
+        logger.debug(new StringBuilder("Epidemic finished after " + (this.rounds-1) + " time steps.").toString());
+
+        // notify simulation finished
+        this.notifySimulationFinished();
+    }
+
+    /**
      * Computes a single round,
      * composed of disease and agent dynamics.
      */
