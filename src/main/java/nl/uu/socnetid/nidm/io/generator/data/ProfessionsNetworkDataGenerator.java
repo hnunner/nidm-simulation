@@ -74,14 +74,15 @@ public class ProfessionsNetworkDataGenerator extends AbstractGenerator implement
 
     // path to network files used to generate data
     private static final String NETWORKS_PATH = "C:/Users/Hendrik/git/NIDM/simulation/exports/20210321-024702/"
-//            + "networks/professions.lockdown.1-60/";
-//            + "networks/professions.lockdown.21-30/";
-//            + "networks/professions.lockdown.31-40/";
+//            + "networks/professions.lockdown.1-30/";
+//            + "networks/professions.lockdown.31-60/";
+            + "networks/professions.lockdown.61-90/";
+
 //            + "networks/professions.lockdown.41-50/";
 //            + "networks/professions.lockdown.51-60/";
 //            + "networks/professions.lockdown.61-70/";
 //            + "networks/professions.lockdown.71-80/";
-            + "networks/professions.lockdown.81-90/";
+//            + "networks/professions.lockdown.81-90/";
 
     private static final String NETWORKS_SUMMARY_FILE = NETWORKS_PATH + "profession-networks-lockdown.csv";
 
@@ -90,7 +91,10 @@ public class ProfessionsNetworkDataGenerator extends AbstractGenerator implement
     private static final List<Double> ETAS = Arrays.asList(0.6, 0.75, 0.9);
 //    private static final List<Double> ETAS = Arrays.asList(0.6, 0.9);
     // vaccine availibility
-    private static final List<Double> THETAS = Arrays.asList(0.05, 0.10, 0.2);
+//    private static final List<Double> THETAS = Arrays.asList(0.3);
+//    private static final List<Double> THETAS = Arrays.asList(0.4);
+    private static final List<Double> THETAS = Arrays.asList(0.5);
+//    private static final List<Double> THETAS = Arrays.asList(0.05, 0.10, 0.2);
 //    private static final List<Double> THETAS = Arrays.asList(0.05, 0.10);
     // vaccine distribution
     private static final String VAX_DIST_NONE = "none";
