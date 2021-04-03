@@ -69,7 +69,7 @@ CSV_SUMMARY_SUFFIX              <- ".csv"
 CSV_SUMMARY_PATH                <- paste(DATA_PATH, "profession-data.csv", sep = "")
 CSV_AGENT_STATS_PATH            <- paste(DATA_PATH, "profession-agent-stats.csv", sep = "")
 CSV_ROUND_SUMMARY_PATH          <- paste(DATA_PATH, "profession-round-summary.csv", sep = "")
-CSV_ROUND_SUMMARY_PREPARED_PATH <- paste(DATA_PATH, "round-summary-prepared.csv", sep = "")
+CSV_ROUND_SUMMARY_PREPARED_PATH <- paste(DATA_PATH, "profession-round-summary-prepared.csv", sep = "")
 CSV_PROFESSIONS_PATH            <- paste(DATA_PATH, "professions.csv", sep = "")
 
 # export files
@@ -219,11 +219,7 @@ load_agent_stats_data <- function() {
 #     Prepares round summary data.
 # return: the prepared round summary data
 #----------------------------------------------------------------------------------------------------#
-load_round_summary_prepared_data <- function() {
-
-  if (file.exists(CSV_ROUND_SUMMARY_PREPARED_PATH)) {
-    return(load_csv(CSV_ROUND_SUMMARY_PREPARED_PATH))
-  }
+prepare_round_summary_data <- function() {
 
   data.rs <- load_csv(CSV_ROUND_SUMMARY_PATH)
 
@@ -233,6 +229,7 @@ load_round_summary_prepared_data <- function() {
   }
 
   res <- data.rs[0,]
+  file_number <- 1
   for (uid in unique(data.rs$sim.uid)) {
 
     print(paste("preparing round summary records for uid:", uid))
@@ -245,20 +242,55 @@ load_round_summary_prepared_data <- function() {
 
     # renumber rounds
     records.rs.by.uid.filled$round <- seq(1, nrow(records.rs.by.uid.filled))
-    records.rs.by.uid.filled$sim.uid <- paste(records.rs.by.uid.filled$sim.upc, "-",
-                                              records.rs.by.uid.filled$sim.cnt, "-",
-                                              records.rs.by.uid.filled$sim.it,
-                                              sep = "")
+    records.rs.by.uid.filled$sim.uid <- rep(uid, nrow(records.rs.by.uid.filled))
 
     res <- rbind(res, records.rs.by.uid.filled)
+
+    if (nrow(res) >= 100000) {
+      # renumber rows
+      rownames(res) <- 1:nrow(res)
+      # export
+      write.table(res, file=paste(DATA_PATH, "round-summary-prepared_", file_number,".csv", sep = ""), row.names=FALSE, sep=";")
+      file_number <- file_number+1
+      res <- data.rs[0,]
+    }
+
   }
 
-  # renumber rows
-  rownames(res) <- 1:nrow(res)
+  if (nrow(res) > 0) {
+    # renumber rows
+    rownames(res) <- 1:nrow(res)
+    # export
+    write.table(res, file=paste(DATA_PATH, "round-summary-prepared_", file_number,".csv", sep = ""), row.names=FALSE, sep=";")
+    # reset
+    file_number <- file_number+1
+  }
 
-  #write.csv2(res, file=CSV_ROUND_SUMMARY_PREPARED_PATH, row.names=FALSE)
-  write.table(res, file=CSV_ROUND_SUMMARY_PREPARED_PATH, row.names=FALSE, sep=";")
-  return(res)
+}
+
+
+merge_round_summary_data <- function() {
+
+  res <- NA
+
+  for (i in seq(1, 747, 1)) {
+    currFile <- load_csv(paste(DATA_PATH, "round-summary-prepared_", i, ".csv", sep = ""))
+
+    if (i == 1) {
+      res <- currFile
+      print("Output file initialization complete.")
+    } else {
+      res <- rbind(res, currFile)
+      print(paste("Rbind complete for file:", i))
+    }
+  }
+
+  write.table(res, file=paste(CSV_ROUND_SUMMARY_PREPARED_PATH), row.names=FALSE, sep=";")
+
+}
+
+load_round_summary_prepared_data <- function() {
+  return(load_csv(CSV_ROUND_SUMMARY_PREPARED_PATH))
 }
 
 #----------------------------------------------------------------------------------------------------#
@@ -347,8 +379,6 @@ prepare_profession_data <- function() {
   write.table(wholeSummary, file=CSV_SUMMARY_PATH, row.names=FALSE, sep=";")
   write.table(wholeRoundSummary, file=CSV_ROUND_SUMMARY_PATH, row.names=FALSE, sep=";")
 }
-
-
 
 
 ############################################# DESCRIPTIVES ###########################################
@@ -1192,11 +1222,12 @@ export_overview <- function(data.ss = load_simulation_summary_data(),
 #----------------------------------------------------------------------------------------------------#
 plotSIRDevelopment <- function(rsData = load_round_summary_prepared_data(),
                                ssData = load_simulation_summary_data(),
-                               showLegend = TRUE,
+                               showLegend = FALSE,
                                showRibbons = TRUE,
-                               showAdditional = "degree",
-                               showAdditionalRibbons = TRUE,
+                               showAdditional = "none",
+                               showAdditionalRibbons = FALSE,
                                showAxes = TRUE,
+                               showAxesTitles = FALSE,
                                maxRounds = NA) {
 
   ### SHARED data
@@ -1592,6 +1623,12 @@ plotSIRDevelopment <- function(rsData = load_round_summary_prepared_data(),
             axis.ticks.length = unit(0, "mm"),
             plot.margin=grid::unit(c(0,0,0,0), "mm"))
   } else {
+
+    if (!showAxesTitles) {
+      plot <- plot +
+        theme(axis.title = element_blank())
+    }
+
     if (showAdditional == "degree") {
       plot <- plot +
         scale_y_continuous(sec.axis = sec_axis(~./scaleFactor, name = "Av.degree"),
@@ -1628,19 +1665,75 @@ plotSIRDevelopment <- function(rsData = load_round_summary_prepared_data(),
 #     the round summary data
 #----------------------------------------------------------------------------------------------------#
 export_sirs <- function(data.rs = load_round_summary_prepared_data(),
-                        data.ss = load_simulation_summary_data()) {
+                        data.ss = load_simulation_summary_data(),
+                        max.rounds = 150,
+                        p.width = 70,
+                        p.height = 50) {
 
   # create directory if necessary
   dir.create(EXPORT_PATH_PLOTS, showWarnings = FALSE)
 
-  ggsave(paste(EXPORT_PATH_PLOTS, "sir", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
-         plotSIRDevelopment(data.rs, data.ss, maxRounds = 150),
-         width = 250,
-         height = 50,
-         units = EXPORT_SIZE_UNITS,
-         dpi = EXPORT_DPI,
-         device = EXPORT_FILE_TYPE_PLOTS)
+  filename <- paste(EXPORT_PATH_PLOTS, "sirv", sep = "")
 
+  for (lc in unique(data.ss$nb.prof.lockdown.condition)) {
+
+    print(paste("Start creating SIRV plots for lockdown condition:", lc))
+
+    # file name
+    filename.lc <- paste(filename, "_", str_replace(lc, "\\.", "-"), sep = "")
+
+    # subsets by lockdown condition
+    data.ss.lc <- subset(data.ss, nb.prof.lockdown.condition == lc)
+    uids.lc <- data.ss.lc$sim.uid
+    data.rs.lc <- data.rs[data.rs$sim.uid %in% uids.lc, ]
+
+    # baseline
+    print("Start creating baseline SIRV plot.")
+
+    ggsave(paste(filename.lc, "_baseline", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+           plotSIRDevelopment(subset(data.rs.lc, nb.prof.vaccine.distribution == "none"),
+                              subset(data.ss.lc, nb.prof.vaccine.distribution == "none"),
+                              maxRounds = max.rounds),
+           width = p.width,
+           height = p.height,
+           units = EXPORT_SIZE_UNITS,
+           dpi = EXPORT_DPI,
+           device = EXPORT_FILE_TYPE_PLOTS)
+
+    for (vax.avl in c(0.05, 0.10, 0.20, 0.30, 0.40, 0.50)) {
+
+      print(paste("Start creating SIRV plots for vaccine availibility:", vax.avl))
+
+      # data preparations
+      data.rs.vax <- subset(data.rs.lc, nb.prof.vaccine.availibility == vax.avl)
+      data.ss.vax <- subset(data.ss.lc, nb.prof.vaccine.availibility == vax.avl)
+      filename.lc.vax <- paste(filename.lc, "_vax-", str_replace(format(round(vax.avl, 2), nsmall = 2), "\\.", ""), sep = "")
+
+      # random
+      print("Start creating random SIRV plot.")
+      ggsave(paste(filename.lc.vax, "_random", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+             plotSIRDevelopment(subset(data.rs.vax, nb.prof.vaccine.distribution == "random"),
+                                subset(data.ss.vax, nb.prof.vaccine.distribution == "random"),
+                                maxRounds = max.rounds),
+             width = p.width,
+             height = p.height,
+             units = EXPORT_SIZE_UNITS,
+             dpi = EXPORT_DPI,
+             device = EXPORT_FILE_TYPE_PLOTS)
+
+      # targeted
+      print("Start creating targeted SIRV plot.")
+      ggsave(paste(filename.lc.vax, "_targeted", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+             plotSIRDevelopment(subset(data.rs.vax, nb.prof.vaccine.distribution == "by.av.degree.per.prof.group"),
+                                subset(data.ss.vax, nb.prof.vaccine.distribution == "by.av.degree.per.prof.group"),
+                                maxRounds = max.rounds),
+             width = p.width,
+             height = p.height,
+             units = EXPORT_SIZE_UNITS,
+             dpi = EXPORT_DPI,
+             device = EXPORT_FILE_TYPE_PLOTS)
+    }
+  }
 }
 
 
@@ -2673,11 +2766,10 @@ export_all <- function() {
   export_epidemic_measure_relations(data.ss = data.ss, p.height = 65)
 
   # regression analysis
-  export_regressions(data.ss = data.ss)
+  #export_regressions(data.ss = data.ss)
 
   # SIR plots
   data.rs <- load_round_summary_prepared_data()
   export_sirs(data.rs = data.rs, data.ss = data.ss)
-  export_sirs_variations(data.rs = data.rs, data.ss = data.ss)
 
 }
