@@ -201,7 +201,22 @@ load_csv <- function(filePath, header = TRUE, sep = ";") {
 #----------------------------------------------------------------------------------------------------#
 load_simulation_summary_data <- function() {
   data.ss <- load_csv(CSV_SUMMARY_PATH)
-  return(data.ss)
+
+  # remove all baseline
+  data.ss.baseline <- subset(data.ss,
+                             nb.prof.vaccine.distribution == "none" &
+                               (grepl("C:/Users/Hendrik/git/NIDM/simulation/exports/20210321-024702/networks/professions.lockdown.1-60", import.filename, fixed = TRUE) |
+                                  grepl("C:/Users/Hendrik/git/NIDM/simulation/exports/20210321-024702/networks/professions.lockdown.21-30", import.filename, fixed = TRUE) |
+                                  grepl("C:/Users/Hendrik/git/NIDM/simulation/exports/20210321-024702/networks/professions.lockdown.31-40", import.filename, fixed = TRUE) |
+                                  grepl("C:/Users/Hendrik/git/NIDM/simulation/exports/20210321-024702/networks/professions.lockdown.41-50", import.filename, fixed = TRUE) |
+                                  grepl("C:/Users/Hendrik/git/NIDM/simulation/exports/20210321-024702/networks/professions.lockdown.51-60", import.filename, fixed = TRUE) |
+                                  grepl("C:/Users/Hendrik/git/NIDM/simulation/exports/20210321-024702/networks/professions.lockdown.61-70", import.filename, fixed = TRUE) |
+                                  grepl("C:/Users/Hendrik/git/NIDM/simulation/exports/20210321-024702/networks/professions.lockdown.71-80", import.filename, fixed = TRUE) |
+                                  grepl("C:/Users/Hendrik/git/NIDM/simulation/exports/20210321-024702/networks/professions.lockdown.81-90", import.filename, fixed = TRUE)))
+  data.ss.nobaseline <- subset(data.ss, nb.prof.vaccine.distribution != "none")
+  data.ss.prepared <- rbind(data.ss.baseline, data.ss.nobaseline)
+
+  return(data.ss.prepared)
 }
 
 #----------------------------------------------------------------------------------------------------#
@@ -531,6 +546,27 @@ get_descriptives_table_suffix <- function(scenario = NA) {
   return(out)
 }
 
+get_descriptives_short_table_prefix <- function() {
+
+  out <- paste("\\begin{table}[hbt!] \n", sep = "")
+  out <- paste(out, "\\caption{Comparison of mean degrees per major occupational group between empirical generated network data.", sep = "")
+  out <- paste(out, ".}\n\\label{tab:mean-degrees}\n", sep = "")
+
+  out <- paste(out, "\\begin{adjustbox}{width=1\\textwidth,center=\\textwidth}\n\\begin{tabular}{l *{4}{S[\n", sep = "")
+  out <- paste(out, "input-symbols = {(- )},\ndetect-weight,\ngroup-separator = {,},\ntable-format=3.2]}}\n\\toprule\n", sep = "")
+
+  out <- paste(out, "& \\multicolumn{2}{c}{\\textbf{Normal}} & \\multicolumn{2}{c}{\\textbf{Lockdown}}", " \\", "\\ \n", sep = "")
+  out <- paste(out, "& \\text{\\thead{Empirical}} & \\text{\\thead{Generated}} & \\text{\\thead{Empirical}} & \\text{\\thead{Generated}} \\", "\\ \n\\midrule \n", sep = "")
+
+  return(out)
+}
+
+get_descriptives_short_table_suffix <- function() {
+  out <- "\\bottomrule\n%\\multicolumn{5}{c}{\\emph{Notes:} bold numbers are significant at $p<0.001$, SEs in parentheses}\n"
+  out <- paste(out, "\\end{tabular}\n\\end{adjustbox}\n\\end{table}", sep = "")
+  return(out)
+}
+
 get_finalsize_table_prefix <- function() {
 
   out <- paste("\\begin{table}[hbt!] \n", sep = "")
@@ -712,7 +748,7 @@ export_descriptives <- function(data.ss = load_simulation_summary_data(),
   data.ss.normal <- subset(data.ss, nb.prof.lockdown.condition == "lc.pre")
   data.ss.lockdown <- subset(data.ss, nb.prof.lockdown.condition == "lc.during")
 
-  # begin: overall descriptive
+  # begin: overall descriptives
   print(paste("Begin overall descriptives."))
   out <- paste(get_descriptives_table_prefix(observations = nrow(data.ss)), sep = "")
 
@@ -812,6 +848,8 @@ export_descriptives <- function(data.ss = load_simulation_summary_data(),
 
   if (include.groups) {
 
+    out.short <- get_descriptives_short_table_prefix()
+
     t <- 1
     t.number <- 1
     table.closed <- TRUE
@@ -903,6 +941,15 @@ export_descriptives <- function(data.ss = load_simulation_summary_data(),
                      subset(data.pr, tolower(V1) == prof)[1,5], " & ",
                      subset(data.pr, tolower(V1) == prof)[1,6], " & NA & NA & NA ", " \\", "\\ \n", sep = "")
 
+        # short
+
+        out.short <- paste(out.short,
+                           subset(data.pr, tolower(V1) == prof)[1,8], " & ",
+                           subset(data.pr, tolower(V1) == prof)[1,3], " & ",
+                           round(mean(normal[,colIndex+1], na.rm = TRUE), digits = 2), " & ",
+                           subset(data.pr, tolower(V1) == prof)[1,5], " & ",
+                           round(mean(lockdown[,colIndex+1], na.rm = TRUE), digits = 2), " \\", "\\ \n", sep = "")
+
         # housekeeping
         if (t >= 4) {
           out <- paste (out, get_professions_table_suffix(), "\n\n", sep = "")
@@ -919,6 +966,10 @@ export_descriptives <- function(data.ss = load_simulation_summary_data(),
     if (!table.closed) {
       out <- paste (out, get_professions_table_suffix(), "\n\n", sep = "")
     }
+
+
+    out.short <- paste(out.short, get_descriptives_short_table_suffix())
+    out <- paste(out, out.short, sep = "")
   }
 
   # export to file
@@ -2645,165 +2696,215 @@ export_boxplots <- function(data.ss = load_simulation_summary_data()) {
 #     the simulation summary data
 #----------------------------------------------------------------------------------------------------#
 export_main_result_densities <- function(data.ss = load_simulation_summary_data(),
-                                         p.width = 200, p.height = 65) {
+                                         p.width = 100, p.height = 50) {
 
   # create directory if necessary
   dir.create(EXPORT_PATH_PLOTS, showWarnings = FALSE)
 
-  data.ss.none = subset(data.ss, data.ss$nb.prof.vaccine.distribution == "none")
+  data.ss.baseline = subset(data.ss, data.ss$nb.prof.vaccine.distribution == "none")
   data.ss.random = subset(data.ss, data.ss$nb.prof.vaccine.distribution == "random")
   data.ss.targeted = subset(data.ss, data.ss$nb.prof.vaccine.distribution == "by.av.degree.per.prof.group")
 
-  ### FINAL SIZE
-  # data preparation
-  dens.finsize <- data.frame(condition = rep("Baseline", nrow(data.ss.none)),
-                             final.size = data.ss.none$net.pct.rec)
-  dens.finsize <- rbind(dens.finsize, data.frame(condition = rep("Random", nrow(data.ss.random)),
-                                                 final.size = data.ss.random$net.pct.rec))
-  dens.finsize <- rbind(dens.finsize, data.frame(condition = rep("Targeted", nrow(data.ss.targeted)),
-                                                 final.size = data.ss.targeted$net.pct.rec))
-  means <- ddply(dens.finsize, "condition", summarise, grp.mean=mean(final.size))
-  medians <- ddply(dens.finsize, "condition", summarise, grp.median=median(final.size))
+  for (lc in c("lc.none", "lc.pre", "lc.during")) {
 
-  # plot assembly
-  p.finsize <- ggplot(dens.finsize,
-                      aes(x=final.size,
-                          fill=condition)) +
-    geom_density(alpha=0.2) +
-    geom_vline(data=means,
-               aes(xintercept=grp.mean,
-                   color=condition),
-               linetype="dashed") +
-    geom_vline(data=medians,
-               aes(xintercept=grp.median,
-                   color=condition),
-               linetype="solid") +
-    labs(x = "Final size",
-         y = "Density",
-         color = "Condition",
-         fill = "Condition") +
-    scale_fill_manual(values=COLORS.CONDITIONS) +
-    scale_color_manual(values=COLORS.CONDITIONS)
+    data.ss.baseline.lc <- data.ss.baseline
+    data.ss.random.lc <- data.ss.random
+    data.ss.targeted.lc <- data.ss.targeted
 
-  # export
-  ggsave(paste(EXPORT_PATH_PLOTS, "final-size", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
-         p.finsize,
-         width = p.width,
-         height = p.height,
-         units = EXPORT_SIZE_UNITS,
-         dpi = EXPORT_DPI,
-         device = EXPORT_FILE_TYPE_PLOTS)
+    if (lc != "lc.none") {
+      data.ss.baseline.lc <- subset(data.ss.baseline, nb.prof.lockdown.condition == lc)
+      data.ss.random.lc <- subset(data.ss.random, nb.prof.lockdown.condition == lc)
+      data.ss.targeted.lc <- subset(data.ss.targeted, nb.prof.lockdown.condition == lc)
+    }
 
-  ### DURATION
-  # data preparation
-  dens.dur <- data.frame(condition = rep("Baseline", nrow(data.ss.none)),
-                         duration = data.ss.none$net.epidemic.duration)
-  dens.dur <- rbind(dens.dur, data.frame(condition = rep("Random", nrow(data.ss.random)),
-                                         duration = data.ss.random$net.epidemic.duration))
-  dens.dur <- rbind(dens.dur, data.frame(condition = rep("Targeted", nrow(data.ss.targeted)),
-                                         duration = data.ss.targeted$net.epidemic.duration))
-  means <- ddply(dens.dur, "condition", summarise, grp.mean=mean(duration))
-  medians <- ddply(dens.dur, "condition", summarise, grp.median=median(duration))
+    ### FINAL SIZE
+    # data preparation
+    dens.finsize <- data.frame(condition = rep("Baseline", nrow(data.ss.baseline.lc)),
+                               final.size = data.ss.baseline.lc$net.pct.rec)
+    dens.finsize <- rbind(dens.finsize, data.frame(condition = rep("Random", nrow(data.ss.random.lc)),
+                                                   final.size = data.ss.random.lc$net.pct.rec))
+    dens.finsize <- rbind(dens.finsize, data.frame(condition = rep("Targeted", nrow(data.ss.targeted.lc)),
+                                                   final.size = data.ss.targeted.lc$net.pct.rec))
+    means <- ddply(dens.finsize, "condition", summarise, grp.mean=mean(final.size))
+    medians <- ddply(dens.finsize, "condition", summarise, grp.median=median(final.size))
 
-  # plot assembly
-  p.duration <- ggplot(dens.dur,
-                       aes(x=duration,
-                           fill=condition)) +
-    geom_density(alpha=0.2) +
-    geom_vline(data=means,
-               aes(xintercept=grp.mean,
-                   color=condition),
-               linetype="dashed") +
-    geom_vline(data=medians,
-               aes(xintercept=grp.median,
-                   color=condition),
-               linetype="solid") +
-    xlim(0, 200) +
-    labs(x = "Duration",
-         y = "Density",
-         color = "Condition",
-         fill = "Condition") +
-    scale_fill_manual(values=COLORS.CONDITIONS) +
-    scale_color_manual(values=COLORS.CONDITIONS)
+    # plot assembly
+    p.finsize <- ggplot(dens.finsize,
+                        aes(x=final.size,
+                            fill=condition)) +
+      geom_density(alpha=0.2) +
+      geom_vline(data=means,
+                 aes(xintercept=grp.mean,
+                     color=condition),
+                 linetype="dashed") +
+      geom_vline(data=medians,
+                 aes(xintercept=grp.median,
+                     color=condition),
+                 linetype="solid") +
+      xlim(0, 100) +
+      labs(x = "Final size",
+           y = "Density",
+           color = "Condition",
+           fill = "Condition") +
+      scale_fill_manual(values=COLORS.CONDITIONS) +
+      scale_color_manual(values=COLORS.CONDITIONS) +
+      theme(legend.position="none")
 
-  # export
-  ggsave(paste(EXPORT_PATH_PLOTS, "duration", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
-         p.duration,
-         width = p.width,
-         height = p.height,
-         units = EXPORT_SIZE_UNITS,
-         dpi = EXPORT_DPI,
-         device = EXPORT_FILE_TYPE_PLOTS)
+    # export
+    ggsave(paste(EXPORT_PATH_PLOTS, "final-size_", str_replace(lc, "\\.", ""), EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+           p.finsize,
+           width = p.width,
+           height = p.height,
+           units = EXPORT_SIZE_UNITS,
+           dpi = EXPORT_DPI,
+           device = EXPORT_FILE_TYPE_PLOTS)
 
-  ### PEAK SIZE
-  # data preparation
-  dens.psize <- data.frame(condition = rep("Baseline", nrow(data.ss.none)),
-                           peak.size = data.ss.none$net.epidemic.peak.size)
-  dens.psize <- rbind(dens.psize, data.frame(condition = rep("Random", nrow(data.ss.random)),
-                                             peak.size = data.ss.random$net.epidemic.peak.size))
-  dens.psize <- rbind(dens.psize, data.frame(condition = rep("Targeted", nrow(data.ss.targeted)),
-                                             peak.size = data.ss.targeted$net.epidemic.peak.size))
-  means <- ddply(dens.psize, "condition", summarise, grp.mean=mean(peak.size))
-  medians <- ddply(dens.psize, "condition", summarise, grp.median=median(peak.size))
+    # plot assembly for final size > 1
+    p.finsize.larger1 <- ggplot(dens.finsize,
+                                 aes(x=final.size,
+                                     fill=condition)) +
+      geom_density(alpha=0.2) +
+      geom_vline(data=means,
+                 aes(xintercept=grp.mean,
+                     color=condition),
+                 linetype="dashed") +
+      geom_vline(data=medians,
+                 aes(xintercept=grp.median,
+                     color=condition),
+                 linetype="solid") +
+      xlim(2, 100) +
+      labs(x = "Final size",
+           y = "Density",
+           color = "Condition",
+           fill = "Condition") +
+      scale_fill_manual(values=COLORS.CONDITIONS) +
+      scale_color_manual(values=COLORS.CONDITIONS) +
+      theme(legend.position="none")
 
-  # plot assembly
-  p.peaksize <- ggplot(dens.psize,
-                       aes(x=peak.size,
-                           fill=condition)) +
-    geom_density(alpha=0.2) +
-    geom_vline(data=means,
-               aes(xintercept=grp.mean,
-                   color=condition),
-               linetype="dashed") +
-    geom_vline(data=medians,
-               aes(xintercept=grp.median,
-                   color=condition),
-               linetype="solid") +
-    labs(x = "Peak size",
-         y = "Density",
-         color = "Condition",
-         fill = "Condition") +
-    scale_fill_manual(values=COLORS.CONDITIONS) +
-    scale_color_manual(values=COLORS.CONDITIONS)
+    # export
+    ggsave(paste(EXPORT_PATH_PLOTS, "final-size_", str_replace(lc, "\\.", ""), "_larger1", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+           p.finsize.larger1,
+           width = p.width,
+           height = p.height,
+           units = EXPORT_SIZE_UNITS,
+           dpi = EXPORT_DPI,
+           device = EXPORT_FILE_TYPE_PLOTS)
 
-  # export
-  ggsave(paste(EXPORT_PATH_PLOTS, "peak-size", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
-         p.peaksize,
-         width = p.width,
-         height = p.height,
-         units = EXPORT_SIZE_UNITS,
-         dpi = EXPORT_DPI,
-         device = EXPORT_FILE_TYPE_PLOTS)
+    ### DURATION
+    # data preparation
+    dens.dur <- data.frame(condition = rep("Baseline", nrow(data.ss.baseline.lc)),
+                           duration = data.ss.baseline.lc$net.epidemic.duration)
+    dens.dur <- rbind(dens.dur, data.frame(condition = rep("Random", nrow(data.ss.random.lc)),
+                                           duration = data.ss.random.lc$net.epidemic.duration))
+    dens.dur <- rbind(dens.dur, data.frame(condition = rep("Targeted", nrow(data.ss.targeted.lc)),
+                                           duration = data.ss.targeted.lc$net.epidemic.duration))
+    means <- ddply(dens.dur, "condition", summarise, grp.mean=mean(duration))
+    medians <- ddply(dens.dur, "condition", summarise, grp.median=median(duration))
 
-  # plot assembly for peak size > 1
-  p.peaksize.larger1 <- ggplot(dens.psize,
-                       aes(x=peak.size,
-                           fill=condition)) +
-    geom_density(alpha=0.2) +
-    geom_vline(data=means,
-               aes(xintercept=grp.mean,
-                   color=condition),
-               linetype="dashed") +
-    geom_vline(data=medians,
-               aes(xintercept=grp.median,
-                   color=condition),
-               linetype="solid") +
-    xlim(2, max(dens.psize$peak.size)) +
-    labs(x = "Peak size",
-         y = "Density",
-         color = "Condition",
-         fill = "Condition") +
-    scale_fill_manual(values=COLORS.CONDITIONS) +
-    scale_color_manual(values=COLORS.CONDITIONS)
+    # plot assembly
+    p.duration <- ggplot(dens.dur,
+                         aes(x=duration,
+                             fill=condition)) +
+      geom_density(alpha=0.2) +
+      geom_vline(data=means,
+                 aes(xintercept=grp.mean,
+                     color=condition),
+                 linetype="dashed") +
+      geom_vline(data=medians,
+                 aes(xintercept=grp.median,
+                     color=condition),
+                 linetype="solid") +
+      xlim(0, 200) +
+      labs(x = "Duration",
+           y = "Density",
+           color = "Condition",
+           fill = "Condition") +
+      scale_fill_manual(values=COLORS.CONDITIONS) +
+      scale_color_manual(values=COLORS.CONDITIONS) +
+      theme(legend.position="none")
 
-  # export
-  ggsave(paste(EXPORT_PATH_PLOTS, "peak-size-larger1", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
-         p.peaksize.larger1,
-         width = p.width,
-         height = p.height,
-         units = EXPORT_SIZE_UNITS,
-         dpi = EXPORT_DPI,
-         device = EXPORT_FILE_TYPE_PLOTS)
+    # export
+    ggsave(paste(EXPORT_PATH_PLOTS, "duration_", str_replace(lc, "\\.", ""), EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+           p.duration,
+           width = p.width,
+           height = p.height,
+           units = EXPORT_SIZE_UNITS,
+           dpi = EXPORT_DPI,
+           device = EXPORT_FILE_TYPE_PLOTS)
+
+    ### PEAK SIZE
+    # data preparation
+    dens.psize <- data.frame(condition = rep("Baseline", nrow(data.ss.baseline.lc)),
+                             peak.size = data.ss.baseline.lc$net.epidemic.peak.size)
+    dens.psize <- rbind(dens.psize, data.frame(condition = rep("Random", nrow(data.ss.random.lc)),
+                                               peak.size = data.ss.random.lc$net.epidemic.peak.size))
+    dens.psize <- rbind(dens.psize, data.frame(condition = rep("Targeted", nrow(data.ss.targeted.lc)),
+                                               peak.size = data.ss.targeted.lc$net.epidemic.peak.size))
+    means <- ddply(dens.psize, "condition", summarise, grp.mean=mean(peak.size))
+    medians <- ddply(dens.psize, "condition", summarise, grp.median=median(peak.size))
+
+    # plot assembly
+    p.peaksize <- ggplot(dens.psize,
+                         aes(x=peak.size,
+                             fill=condition)) +
+      geom_density(alpha=0.2) +
+      geom_vline(data=means,
+                 aes(xintercept=grp.mean,
+                     color=condition),
+                 linetype="dashed") +
+      geom_vline(data=medians,
+                 aes(xintercept=grp.median,
+                     color=condition),
+                 linetype="solid") +
+      xlim(0, 10000) +
+      labs(x = "Peak size",
+           y = "Density",
+           color = "Condition",
+           fill = "Condition") +
+      scale_fill_manual(values=COLORS.CONDITIONS) +
+      scale_color_manual(values=COLORS.CONDITIONS) +
+      theme(legend.position="none")
+
+    # export
+    ggsave(paste(EXPORT_PATH_PLOTS, "peak-size_", str_replace(lc, "\\.", ""), EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+           p.peaksize,
+           width = p.width,
+           height = p.height,
+           units = EXPORT_SIZE_UNITS,
+           dpi = EXPORT_DPI,
+           device = EXPORT_FILE_TYPE_PLOTS)
+
+    # plot assembly for peak size > 1
+    p.peaksize.larger1 <- ggplot(dens.psize,
+                         aes(x=peak.size,
+                             fill=condition)) +
+      geom_density(alpha=0.2) +
+      geom_vline(data=means,
+                 aes(xintercept=grp.mean,
+                     color=condition),
+                 linetype="dashed") +
+      geom_vline(data=medians,
+                 aes(xintercept=grp.median,
+                     color=condition),
+                 linetype="solid") +
+      xlim(10, 10000) +
+      labs(x = "Peak size",
+           y = "Density",
+           color = "Condition",
+           fill = "Condition") +
+      scale_fill_manual(values=COLORS.CONDITIONS) +
+      scale_color_manual(values=COLORS.CONDITIONS) +
+      theme(legend.position="none")
+
+    # export
+    ggsave(paste(EXPORT_PATH_PLOTS, "peak-size_", str_replace(lc, "\\.", ""), "_larger1", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+           p.peaksize.larger1,
+           width = p.width,
+           height = p.height,
+           units = EXPORT_SIZE_UNITS,
+           dpi = EXPORT_DPI,
+           device = EXPORT_FILE_TYPE_PLOTS)
+  }
 }
 
 
@@ -3516,7 +3617,7 @@ export_all <- function() {
   export_overview(data.ss = data.ss)
 
   # plots
-  export_main_result_densities(data.ss = data.ss, p.height = 65)
+  export_main_result_densities(data.ss = data.ss)
   export_epidemic_measure_relations(data.ss = data.ss, p.height = 65)
 
   # regression analysis
@@ -3527,3 +3628,4 @@ export_all <- function() {
   export_sirs(data.rs = data.rs, data.ss = data.ss)
 
 }
+
