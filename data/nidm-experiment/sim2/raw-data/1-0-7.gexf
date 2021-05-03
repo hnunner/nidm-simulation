@@ -1,0 +1,2443 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf xmlns="http://www.gexf.net/1.2draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd" version="1.2">
+ <meta lastmodifieddate="29.04.21 14:12">
+  <creator>GraphStream - org.graphstream.stream.file.FileSinkGEXF</creator>
+ </meta>
+ <graph defaultedgetype="undirected">
+  <attributes class="node">
+   <attribute id="14" title="risk.factor.pi" type="double"></attribute>
+   <attribute id="19" title="satisfied" type="boolean"></attribute>
+   <attribute id="31" title="age" type="integer"></attribute>
+   <attribute id="11" title="risk.meaning.pi" type="string"></attribute>
+   <attribute id="21" title="omega" type="double"></attribute>
+   <attribute id="26" title="clustering" type="integer"></attribute>
+   <attribute id="7" title="clustering.last.computation" type="integer"></attribute>
+   <attribute id="22" title="assortativity.age" type="integer"></attribute>
+   <attribute id="23" title="assortativity.profession" type="integer"></attribute>
+   <attribute id="29" title="assortativity.risk.perception" type="integer"></attribute>
+   <attribute id="0" title="assortativity.profession.last.computation" type="integer"></attribute>
+   <attribute id="9" title="assortativity.age.last.computation" type="integer"></attribute>
+   <attribute id="32" title="closeness.last.computation" type="integer"></attribute>
+   <attribute id="3" title="closeness" type="integer"></attribute>
+   <attribute id="10" title="disease.specs" type="string"></attribute>
+   <attribute id="2" title="disease.group" type="string"></attribute>
+   <attribute id="4" title="psi" type="double"></attribute>
+   <attribute id="12" title="risk.meaning.sigma" type="string"></attribute>
+   <attribute id="16" title="betweenness.last.computation" type="integer"></attribute>
+   <attribute id="8" title="connection.stats" type="string"></attribute>
+   <attribute id="25" title="xi" type="double"></attribute>
+   <attribute id="5" title="risk.factor.sigma" type="double"></attribute>
+   <attribute id="28" title="assortativity.risk.perception.last.computation" type="integer"></attribute>
+   <attribute id="13" title="consider.profession" type="boolean"></attribute>
+   <attribute id="15" title="profession" type="string"></attribute>
+   <attribute id="20" title="ui.label" type="string"></attribute>
+   <attribute id="30" title="utility.function" type="string"></attribute>
+   <attribute id="24" title="phi" type="double"></attribute>
+   <attribute id="1" title="force.infected" type="boolean"></attribute>
+   <attribute id="18" title="consider.age" type="boolean"></attribute>
+   <attribute id="6" title="quarantined" type="boolean"></attribute>
+   <attribute id="17" title="ui.class" type="string"></attribute>
+   <attribute id="27" title="betweenness" type="integer"></attribute>
+  </attributes>
+  <nodes>
+   <node id="1">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):0; broken ties (passive):1; accepted requests (out):2; declined requests (out):7; accepted requests (in):5; declined requests (in):49; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="EIL"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="1"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="50"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="2">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):2; broken ties (passive):0; accepted requests (out):4; declined requests (out):12; accepted requests (in):4; declined requests (in):55; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="PS"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="2"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="60"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="3">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):1; broken ties (passive):1; accepted requests (out):0; declined requests (out):15; accepted requests (in):8; declined requests (in):26; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="IMR"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="3"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="10"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="4">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):2; broken ties (passive):2; accepted requests (out):7; declined requests (out):124; accepted requests (in):2; declined requests (in):18; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="ADESM"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="false"></attvalue>
+     <attvalue for="20" value="4"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="75"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="5">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):3; broken ties (passive):3; accepted requests (out):7; declined requests (out):107; accepted requests (in):4; declined requests (in):22; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="S"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="false"></attvalue>
+     <attvalue for="20" value="5"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="5"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="6">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):2; broken ties (passive):2; accepted requests (out):7; declined requests (out):55; accepted requests (in):3; declined requests (in):41; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="IMR"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="false"></attvalue>
+     <attvalue for="20" value="6"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="20"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="7">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):2; broken ties (passive):2; accepted requests (out):6; declined requests (out):95; accepted requests (in):4; declined requests (in):70; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="HS"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="7"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="25"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="8">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):5; broken ties (passive):4; accepted requests (out):8; declined requests (out):215; accepted requests (in):5; declined requests (in):22; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="OAS"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="false"></attvalue>
+     <attvalue for="20" value="8"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="10"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="9">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):3; broken ties (passive):0; accepted requests (out):6; declined requests (out):18; accepted requests (in):3; declined requests (in):67; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="S"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="9"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="55"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="10">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):3; broken ties (passive):1; accepted requests (out):1; declined requests (out):5; accepted requests (in):9; declined requests (in):87; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="PCS"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="10"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="20"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="11">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):3; broken ties (passive):2; accepted requests (out):4; declined requests (out):7; accepted requests (in):7; declined requests (in):22; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="FPS"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="11"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="10"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="12">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):2; broken ties (passive):2; accepted requests (out):1; declined requests (out):2; accepted requests (in):9; declined requests (in):32; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="EIL"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="12"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="45"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="13">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):3; broken ties (passive):2; accepted requests (out):5; declined requests (out):99; accepted requests (in):6; declined requests (in):20; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="OAS"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="false"></attvalue>
+     <attvalue for="20" value="13"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="20"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="14">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):1; broken ties (passive):4; accepted requests (out):7; declined requests (out):59; accepted requests (in):4; declined requests (in):60; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="HS"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="false"></attvalue>
+     <attvalue for="20" value="14"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="20"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="15">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):5; broken ties (passive):8; accepted requests (out):8; declined requests (out):220; accepted requests (in):10; declined requests (in):29; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="TMM"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="false"></attvalue>
+     <attvalue for="20" value="15"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="45"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="16">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):3; broken ties (passive):1; accepted requests (out):4; declined requests (out):29; accepted requests (in):6; declined requests (in):48; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="OAS"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="false"></attvalue>
+     <attvalue for="20" value="16"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="40"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="17">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):2; broken ties (passive):0; accepted requests (out):5; declined requests (out):55; accepted requests (in):3; declined requests (in):57; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="OAS"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="17"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="65"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="18">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):1; broken ties (passive):0; accepted requests (out):5; declined requests (out):0; accepted requests (in):2; declined requests (in):40; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="R"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="18"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="15"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="19">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):2; broken ties (passive):2; accepted requests (out):9; declined requests (out):10; accepted requests (in):1; declined requests (in):93; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="R"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="19"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="60"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="20">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):4; broken ties (passive):4; accepted requests (out):6; declined requests (out):36; accepted requests (in):8; declined requests (in):100; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="EIL"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="20"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="20"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="21">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):3; broken ties (passive):2; accepted requests (out):8; declined requests (out):86; accepted requests (in):3; declined requests (in):31; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="OAS"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="false"></attvalue>
+     <attvalue for="20" value="21"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="70"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="22">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):2; broken ties (passive):6; accepted requests (out):6; declined requests (out):125; accepted requests (in):6; declined requests (in):57; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="EIL"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="false"></attvalue>
+     <attvalue for="20" value="22"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="20"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="23">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):2; broken ties (passive):3; accepted requests (out):5; declined requests (out):19; accepted requests (in):6; declined requests (in):18; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="IMR"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="23"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="0"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="24">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):2; broken ties (passive):2; accepted requests (out):3; declined requests (out):77; accepted requests (in):7; declined requests (in):24; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="HPT"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="false"></attvalue>
+     <attvalue for="20" value="24"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="15"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="25">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):3; broken ties (passive):1; accepted requests (out):8; declined requests (out):23; accepted requests (in):2; declined requests (in):37; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="OAS"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="25"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="0"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="26">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):4; broken ties (passive):3; accepted requests (out):7; declined requests (out):71; accepted requests (in):6; declined requests (in):52; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="R"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="26"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="80"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="27">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):0; broken ties (passive):4; accepted requests (out):4; declined requests (out):23; accepted requests (in):6; declined requests (in):34; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="TMM"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="27"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="55"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="28">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):7; broken ties (passive):2; accepted requests (out):9; declined requests (out):58; accepted requests (in):5; declined requests (in):54; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="R"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="false"></attvalue>
+     <attvalue for="20" value="28"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="60"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="29">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):2; broken ties (passive):2; accepted requests (out):5; declined requests (out):124; accepted requests (in):5; declined requests (in):70; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="LPSS"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="29"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="20"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="30">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):1; broken ties (passive):2; accepted requests (out):4; declined requests (out):32; accepted requests (in):5; declined requests (in):61; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="IMR"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="30"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="10"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="31">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):0; broken ties (passive):2; accepted requests (out):2; declined requests (out):55; accepted requests (in):6; declined requests (in):25; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="TMM"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="31"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="90"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="32">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):3; broken ties (passive):3; accepted requests (out):7; declined requests (out):12; accepted requests (in):5; declined requests (in):71; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="TMM"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="32"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="35"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="33">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):0; broken ties (passive):2; accepted requests (out):2; declined requests (out):46; accepted requests (in):6; declined requests (in):32; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="R"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="false"></attvalue>
+     <attvalue for="20" value="33"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="10"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="34">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):2; broken ties (passive):0; accepted requests (out):1; declined requests (out):21; accepted requests (in):7; declined requests (in):44; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="OAS"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="34"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="65"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="35">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):3; broken ties (passive):3; accepted requests (out):9; declined requests (out):83; accepted requests (in):3; declined requests (in):74; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="P"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="35"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="50"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="36">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):0; broken ties (passive):1; accepted requests (out):2; declined requests (out):162; accepted requests (in):5; declined requests (in):44; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="R"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="false"></attvalue>
+     <attvalue for="20" value="36"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="60"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="37">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):1; broken ties (passive):0; accepted requests (out):1; declined requests (out):0; accepted requests (in):6; declined requests (in):31; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="TMM"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="37"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="45"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="38">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):3; broken ties (passive):1; accepted requests (out):5; declined requests (out):22; accepted requests (in):5; declined requests (in):80; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="BFO"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="38"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="50"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="39">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):1; broken ties (passive):2; accepted requests (out):5; declined requests (out):53; accepted requests (in):4; declined requests (in):40; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="BFO"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="false"></attvalue>
+     <attvalue for="20" value="39"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="80"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="40">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):0; broken ties (passive):2; accepted requests (out):7; declined requests (out):20; accepted requests (in):1; declined requests (in):49; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="BGCM"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="40"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="50"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="41">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):0; broken ties (passive):1; accepted requests (out):3; declined requests (out):14; accepted requests (in):4; declined requests (in):23; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="EIL"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="41"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="30"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="42">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):1; broken ties (passive):0; accepted requests (out):2; declined requests (out):5; accepted requests (in):5; declined requests (in):24; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="U"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="42"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="10"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="43">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):1; broken ties (passive):2; accepted requests (out):4; declined requests (out):40; accepted requests (in):5; declined requests (in):60; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="P"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="43"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="5"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="44">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):1; broken ties (passive):2; accepted requests (out):7; declined requests (out):20; accepted requests (in):2; declined requests (in):14; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="M"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="44"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="40"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="45">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):0; broken ties (passive):0; accepted requests (out):3; declined requests (out):3; accepted requests (in):3; declined requests (in):59; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="R"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="45"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="15"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="46">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):1; broken ties (passive):0; accepted requests (out):5; declined requests (out):1; accepted requests (in):2; declined requests (in):24; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="IMR"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="46"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="60"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="47">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):1; broken ties (passive):2; accepted requests (out):4; declined requests (out):74; accepted requests (in):5; declined requests (in):18; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="R"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="false"></attvalue>
+     <attvalue for="20" value="47"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="35"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="48">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):1; broken ties (passive):1; accepted requests (out):6; declined requests (out):43; accepted requests (in):2; declined requests (in):42; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="R"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="false"></attvalue>
+     <attvalue for="20" value="48"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="25"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="49">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):1; broken ties (passive):1; accepted requests (out):7; declined requests (out):12; accepted requests (in):1; declined requests (in):62; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="S"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="49"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="25"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="50">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):1; broken ties (passive):2; accepted requests (out):5; declined requests (out):14; accepted requests (in):4; declined requests (in):16; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="FPS"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="50"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="45"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="51">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):1; broken ties (passive):2; accepted requests (out):3; declined requests (out):61; accepted requests (in):6; declined requests (in):64; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="FPS"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="false"></attvalue>
+     <attvalue for="20" value="51"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="20"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="52">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):2; broken ties (passive):0; accepted requests (out):4; declined requests (out):6; accepted requests (in):4; declined requests (in):29; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="PS"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="52"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="40"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="53">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):2; broken ties (passive):2; accepted requests (out):5; declined requests (out):6; accepted requests (in):5; declined requests (in):96; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="R"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="53"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="35"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="54">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):0; broken ties (passive):1; accepted requests (out):0; declined requests (out):35; accepted requests (in):7; declined requests (in):51; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="OAS"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="false"></attvalue>
+     <attvalue for="20" value="54"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="45"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="55">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):2; broken ties (passive):1; accepted requests (out):6; declined requests (out):11; accepted requests (in):3; declined requests (in):34; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="BGCM"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="55"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="35"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="56">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):0; broken ties (passive):4; accepted requests (out):2; declined requests (out):51; accepted requests (in):8; declined requests (in):39; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="LPSS"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="56"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="40"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="57">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):0; broken ties (passive):1; accepted requests (out):3; declined requests (out):14; accepted requests (in):4; declined requests (in):18; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="P"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="57"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="80"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="58">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):2; broken ties (passive):1; accepted requests (out):4; declined requests (out):0; accepted requests (in):5; declined requests (in):98; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="R"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="58"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="45"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="59">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):1; broken ties (passive):2; accepted requests (out):7; declined requests (out):59; accepted requests (in):2; declined requests (in):36; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="FPS"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="false"></attvalue>
+     <attvalue for="20" value="59"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="10"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+   <node id="60">
+    <attvalues>
+     <attvalue for="0" value="-1"></attvalue>
+     <attvalue for="1" value="false"></attvalue>
+     <attvalue for="2" value="susceptible"></attvalue>
+     <attvalue for="3" value="-1"></attvalue>
+     <attvalue for="4" value="0.4"></attvalue>
+     <attvalue for="5" value="1.0"></attvalue>
+     <attvalue for="6" value="false"></attvalue>
+     <attvalue for="7" value="-1"></attvalue>
+     <attvalue for="8" value="broken ties (active):5; broken ties (passive):2; accepted requests (out):5; declined requests (out):23; accepted requests (in):8; declined requests (in):81; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"></attvalue>
+     <attvalue for="9" value="-1"></attvalue>
+     <attvalue for="10" value="disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"></attvalue>
+     <attvalue for="11" value="risk neutral"></attvalue>
+     <attvalue for="12" value="risk neutral"></attvalue>
+     <attvalue for="13" value="false"></attvalue>
+     <attvalue for="14" value="1.0"></attvalue>
+     <attvalue for="15" value="FPS"></attvalue>
+     <attvalue for="16" value="-1"></attvalue>
+     <attvalue for="17" value="susceptible"></attvalue>
+     <attvalue for="18" value="false"></attvalue>
+     <attvalue for="19" value="true"></attvalue>
+     <attvalue for="20" value="60"></attvalue>
+     <attvalue for="21" value="0.0"></attvalue>
+     <attvalue for="22" value="-1"></attvalue>
+     <attvalue for="23" value="-1"></attvalue>
+     <attvalue for="24" value="0.2"></attvalue>
+     <attvalue for="25" value="0.2"></attvalue>
+     <attvalue for="26" value="-1"></attvalue>
+     <attvalue for="27" value="-1"></attvalue>
+     <attvalue for="28" value="-1"></attvalue>
+     <attvalue for="29" value="-1"></attvalue>
+     <attvalue for="30" value="type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.667;"></attvalue>
+     <attvalue for="31" value="35"></attvalue>
+     <attvalue for="32" value="-1"></attvalue>
+    </attvalues>
+   </node>
+  </nodes>
+  <edges>
+   <edge id="524" source="5" target="24"></edge>
+   <edge id="519" source="5" target="19"></edge>
+   <edge id="1938" source="19" target="38"></edge>
+   <edge id="1958" source="19" target="58"></edge>
+   <edge id="948" source="9" target="48"></edge>
+   <edge id="1947" source="19" target="47"></edge>
+   <edge id="2453" source="24" target="53"></edge>
+   <edge id="611" source="6" target="11"></edge>
+   <edge id="458" source="4" target="58"></edge>
+   <edge id="1053" source="10" target="53"></edge>
+   <edge id="4758" source="47" target="58"></edge>
+   <edge id="1058" source="10" target="58"></edge>
+   <edge id="2438" source="24" target="38"></edge>
+   <edge id="2447" source="24" target="47"></edge>
+   <edge id="1144" source="11" target="44"></edge>
+   <edge id="1047" source="10" target="47"></edge>
+   <edge id="3137" source="31" target="37"></edge>
+   <edge id="1116" source="11" target="16"></edge>
+   <edge id="553" source="5" target="53"></edge>
+   <edge id="5057" source="50" target="57"></edge>
+   <edge id="3949" source="39" target="49"></edge>
+   <edge id="3345" source="33" target="45"></edge>
+   <edge id="3853" source="38" target="53"></edge>
+   <edge id="438" source="4" target="38"></edge>
+   <edge id="3858" source="38" target="58"></edge>
+   <edge id="1019" source="10" target="19"></edge>
+   <edge id="5358" source="53" target="58"></edge>
+   <edge id="1024" source="10" target="24"></edge>
+   <edge id="2144" source="21" target="44"></edge>
+   <edge id="45" source="4" target="5"></edge>
+   <edge id="2748" source="27" target="48"></edge>
+   <edge id="355" source="3" target="55"></edge>
+   <edge id="4854" source="48" target="54"></edge>
+   <edge id="2232" source="22" target="32"></edge>
+   <edge id="4852" source="48" target="52"></edge>
+   <edge id="4148" source="41" target="48"></edge>
+   <edge id="4159" source="41" target="59"></edge>
+   <edge id="5459" source="54" target="59"></edge>
+   <edge id="1359" source="13" target="59"></edge>
+   <edge id="4050" source="40" target="50"></edge>
+   <edge id="2741" source="27" target="41"></edge>
+   <edge id="4154" source="41" target="54"></edge>
+   <edge id="4152" source="41" target="52"></edge>
+   <edge id="2552" source="25" target="52"></edge>
+   <edge id="5254" source="52" target="54"></edge>
+   <edge id="612" source="6" target="12"></edge>
+   <edge id="760" source="7" target="60"></edge>
+   <edge id="2633" source="26" target="33"></edge>
+   <edge id="2559" source="25" target="59"></edge>
+   <edge id="1726" source="17" target="26"></edge>
+   <edge id="2754" source="27" target="54"></edge>
+   <edge id="2554" source="25" target="54"></edge>
+   <edge id="1423" source="14" target="23"></edge>
+   <edge id="2527" source="25" target="27"></edge>
+   <edge id="1221" source="12" target="21"></edge>
+   <edge id="1038" source="10" target="38"></edge>
+   <edge id="1121" source="11" target="21"></edge>
+   <edge id="4955" source="49" target="55"></edge>
+   <edge id="729" source="7" target="29"></edge>
+   <edge id="1623" source="16" target="23"></edge>
+   <edge id="342" source="3" target="42"></edge>
+   <edge id="720" source="7" target="20"></edge>
+   <edge id="1216" source="12" target="16"></edge>
+   <edge id="1325" source="13" target="25"></edge>
+   <edge id="447" source="4" target="47"></edge>
+   <edge id="614" source="6" target="14"></edge>
+   <edge id="1114" source="11" target="14"></edge>
+   <edge id="1214" source="12" target="14"></edge>
+   <edge id="424" source="4" target="24"></edge>
+   <edge id="2123" source="21" target="23"></edge>
+   <edge id="644" source="6" target="44"></edge>
+   <edge id="623" source="6" target="23"></edge>
+   <edge id="616" source="6" target="16"></edge>
+   <edge id="1341" source="13" target="41"></edge>
+   <edge id="4046" source="40" target="46"></edge>
+   <edge id="1840" source="18" target="40"></edge>
+   <edge id="3140" source="31" target="40"></edge>
+   <edge id="1352" source="13" target="52"></edge>
+   <edge id="3740" source="37" target="40"></edge>
+   <edge id="1834" source="18" target="34"></edge>
+   <edge id="1837" source="18" target="37"></edge>
+   <edge id="1850" source="18" target="50"></edge>
+   <edge id="1953" source="19" target="53"></edge>
+   <edge id="1831" source="18" target="31"></edge>
+   <edge id="4246" source="42" target="46"></edge>
+   <edge id="3746" source="37" target="46"></edge>
+   <edge id="3146" source="31" target="46"></edge>
+   <edge id="2035" source="20" target="35"></edge>
+   <edge id="1846" source="18" target="46"></edge>
+   <edge id="828" source="8" target="28"></edge>
+   <edge id="1223" source="12" target="23"></edge>
+   <edge id="1123" source="11" target="23"></edge>
+   <edge id="3750" source="37" target="50"></edge>
+   <edge id="3150" source="31" target="50"></edge>
+   <edge id="4650" source="46" target="50"></edge>
+   <edge id="1327" source="13" target="27"></edge>
+   <edge id="1444" source="14" target="44"></edge>
+   <edge id="1340" source="13" target="40"></edge>
+   <edge id="1644" source="16" target="44"></edge>
+   <edge id="4957" source="49" target="57"></edge>
+   <edge id="4249" source="42" target="49"></edge>
+   <edge id="349" source="3" target="49"></edge>
+   <edge id="3034" source="30" target="34"></edge>
+   <edge id="4549" source="45" target="49"></edge>
+   <edge id="345" source="3" target="45"></edge>
+   <edge id="4245" source="42" target="45"></edge>
+   <edge id="4557" source="45" target="57"></edge>
+   <edge id="337" source="3" target="37"></edge>
+   <edge id="4257" source="42" target="57"></edge>
+   <edge id="357" source="3" target="57"></edge>
+   <edge id="5557" source="55" target="57"></edge>
+   <edge id="4555" source="45" target="55"></edge>
+   <edge id="155" source="1" target="55"></edge>
+   <edge id="934" source="9" target="34"></edge>
+   <edge id="547" source="5" target="47"></edge>
+   <edge id="4255" source="42" target="55"></edge>
+   <edge id="3456" source="34" target="56"></edge>
+   <edge id="156" source="1" target="56"></edge>
+   <edge id="134" source="1" target="34"></edge>
+   <edge id="143" source="1" target="43"></edge>
+   <edge id="3443" source="34" target="43"></edge>
+   <edge id="2228" source="22" target="28"></edge>
+   <edge id="3043" source="30" target="43"></edge>
+   <edge id="130" source="1" target="30"></edge>
+   <edge id="930" source="9" target="30"></edge>
+   <edge id="3056" source="30" target="56"></edge>
+   <edge id="3235" source="32" target="35"></edge>
+   <edge id="1244" source="12" target="44"></edge>
+   <edge id="943" source="9" target="43"></edge>
+   <edge id="956" source="9" target="56"></edge>
+   <edge id="2060" source="20" target="60"></edge>
+   <edge id="1621" source="16" target="21"></edge>
+   <edge id="3651" source="36" target="51"></edge>
+   <edge id="3351" source="33" target="51"></edge>
+   <edge id="2651" source="26" target="51"></edge>
+   <edge id="236" source="2" target="36"></edge>
+   <edge id="3336" source="33" target="36"></edge>
+   <edge id="217" source="2" target="17"></edge>
+   <edge id="233" source="2" target="33"></edge>
+   <edge id="2629" source="26" target="29"></edge>
+   <edge id="1736" source="17" target="36"></edge>
+   <edge id="1751" source="17" target="51"></edge>
+   <edge id="1739" source="17" target="39"></edge>
+   <edge id="3339" source="33" target="39"></edge>
+   <edge id="226" source="2" target="26"></edge>
+   <edge id="3639" source="36" target="39"></edge>
+   <edge id="3951" source="39" target="51"></edge>
+   <edge id="2636" source="26" target="36"></edge>
+   <edge id="1451" source="14" target="51"></edge>
+   <edge id="815" source="8" target="15"></edge>
+   <edge id="2143" source="21" target="43"></edge>
+   <edge id="2832" source="28" target="32"></edge>
+   <edge id="4356" source="43" target="56"></edge>
+   <edge id="715" source="7" target="15"></edge>
+   <edge id="732" source="7" target="32"></edge>
+   <edge id="3031" source="30" target="31"></edge>
+   <edge id="1535" source="15" target="35"></edge>
+   <edge id="3260" source="32" target="60"></edge>
+   <edge id="2028" source="20" target="28"></edge>
+   <edge id="19" source="1" target="9"></edge>
+   <edge id="2029" source="20" target="29"></edge>
+   <edge id="2032" source="20" target="32"></edge>
+   <edge id="2860" source="28" target="60"></edge>
+   <edge id="2548" source="25" target="48"></edge>
+   <edge id="1522" source="15" target="22"></edge>
+   <edge id="3560" source="35" target="60"></edge>
+   <edge id="822" source="8" target="22"></edge>
+   <edge id="2759" source="27" target="59"></edge>
+   <edge id="229" source="2" target="29"></edge>
+   <edge id="2935" source="29" target="35"></edge>
+   <edge id="5259" source="52" target="59"></edge>
+   <edge id="239" source="2" target="39"></edge>
+   <edge id="860" source="8" target="60"></edge>
+   <edge id="1729" source="17" target="29"></edge>
+   <edge id="735" source="7" target="35"></edge>
+   <edge id="1556" source="15" target="56"></edge>
+  </edges>
+ </graph>
+</gexf>

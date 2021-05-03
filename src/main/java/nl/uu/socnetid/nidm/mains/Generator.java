@@ -48,6 +48,7 @@ import nl.uu.socnetid.nidm.io.generator.data.ProfessionsNetworkDataGenerator;
 import nl.uu.socnetid.nidm.io.generator.network.NunnerBuskensNetworkGenerator;
 import nl.uu.socnetid.nidm.io.generator.network.NunnerBuskensNetworkGeneratorGenetic;
 import nl.uu.socnetid.nidm.io.generator.network.NunnerBuskensNetworkGeneratorSimple;
+import nl.uu.socnetid.nidm.io.generator.network.NunnerBuskensNetworkGeneratorSimple2;
 import nl.uu.socnetid.nidm.io.generator.network.ProfessionsNetworkGeneratorGenetic;
 import nl.uu.socnetid.nidm.io.generator.network.ProfessionsNetworkLockdownGenerator;
 import nl.uu.socnetid.nidm.system.PropertiesHandler;
@@ -199,6 +200,11 @@ public class Generator {
         // Nunner & Buskens (2019)
         if (PropertiesHandler.getInstance().isGenerateNunnerBuskensNetworksSimple()) {
             dataGenerator = new NunnerBuskensNetworkGeneratorSimple(getNetworkExportPath());
+            dataGenerator.launch();
+        }
+        // Nunner & Buskens (2019)
+        if (PropertiesHandler.getInstance().isGenerateNunnerBuskensNetworksSimple2()) {
+            dataGenerator = new NunnerBuskensNetworkGeneratorSimple2(getNetworkExportPath());
             dataGenerator.launch();
         }
         // Nunner & Buskens (2019)

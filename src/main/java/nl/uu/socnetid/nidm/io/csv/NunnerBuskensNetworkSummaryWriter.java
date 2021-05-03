@@ -69,6 +69,7 @@ public class NunnerBuskensNetworkSummaryWriter extends NetworkSummaryWriter<Nunn
         cols.add(LogValues.IV_NB_NET_SIZE.toString());
         cols.add(LogValues.IV_NB_PHI.toString());
         cols.add(LogValues.IV_NB_PSI.toString());
+        cols.add(LogValues.IV_NB_XI.toString());
         return cols;
     }
 
@@ -86,6 +87,7 @@ public class NunnerBuskensNetworkSummaryWriter extends NetworkSummaryWriter<Nunn
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrN()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrPhi()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrPsi()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrXi()));
         return currData;
     }
 

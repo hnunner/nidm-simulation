@@ -1,0 +1,2261 @@
+DGS004
+null 0 0
+cg  "av.degree.quarantined":-1.000000
+cg  "assortativity.conditions":"[ac.riskperception]"
+cg  "ring":false
+cg  "av.utility":-1.000000
+cg  "max.age":75
+cg  "timesteps.stable":1
+cg  "av.clustering.round.last.computation":-1
+cg  "N":60
+cg  "av.disease.costs":-1.000000
+cg  "empty":true
+cg  "av.path.length.round.last.computation":-1
+cg  "arrange.in.circle":false
+cg  "max.r.sigma":1.000000
+cg  "av.betweenness":-1.000000
+cg  "av.degree.vaccinated":-1.000000
+cg  "assortativity.risk.perception.round.last.computation":-1
+cg  "av.social.benefits":-1.000000
+cg  "av.degree":5.933333
+cg  "av.closeness":-1.000000
+cg  "max.r.pi":1.000000
+cg  "av.degree.satisfied":-1.000000
+cg  "star":false
+cg  "av.degree.quarantined.not":-1.000000
+cg  "has.active.infection":false
+cg  "assortativity.age.round.last.computation":-1
+cg  "av.degree.unsatisfied":-1.000000
+cg  "av.degree.vaccinated.not":-1.000000
+cg  "av.degree.round.last.computation":-1
+cg  "assortativity.profession.round.last.computation":-1
+cg  "assortativity.age":0.000000
+cg  "av.social.costs":-1.000000
+cg  "assortativity.profession":0.000000
+cg  "av.path.length":-1.000000
+cg  "av.clustering":0.090000
+cg  "av.closeness.round.last.computation":-1
+cg  "stable":true
+cg  "av.degree.2":-1.000000
+cg  "av.betweenness.round.last.computation":-1
+cg  "av.degree.theoretic":-1.000000
+cg  "assortativity.risk.perception":0.000000
+cg  "full":false
+an "1"
+cn "1"  "assortativity.profession.last.computation":-1
+cn "1"  "force.infected":false
+cn "1"  "disease.group":"susceptible"
+cn "1"  "closeness":-1
+cn "1"  "psi":0.400000
+cn "1"  "risk.factor.sigma":1.000000
+cn "1"  "quarantined":false
+cn "1"  "clustering.last.computation":-1
+cn "1"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):4; declined requests (out):8; accepted requests (in):2; declined requests (in):11; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "1"  "assortativity.age.last.computation":-1
+cn "1"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "1"  "risk.meaning.pi":"risk neutral"
+cn "1"  "risk.meaning.sigma":"risk neutral"
+cn "1"  "consider.profession":false
+cn "1"  "risk.factor.pi":1.000000
+cn "1"  "profession":"AE"
+cn "1"  "betweenness.last.computation":-1
+cn "1"  "ui.class":"susceptible"
+cn "1"  "consider.age":false
+cn "1"  "satisfied":true
+cn "1"  "ui.label":"1"
+cn "1"  "omega":0.000000
+cn "1"  "assortativity.age":-1
+cn "1"  "assortativity.profession":-1
+cn "1"  "phi":0.200000
+cn "1"  "xi":0.200000
+cn "1"  "clustering":-1
+cn "1"  "betweenness":-1
+cn "1"  "assortativity.risk.perception.last.computation":-1
+cn "1"  "assortativity.risk.perception":-1
+cn "1"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "1"  "age":45
+cn "1"  "closeness.last.computation":-1
+an "2"
+cn "2"  "assortativity.profession.last.computation":-1
+cn "2"  "force.infected":false
+cn "2"  "disease.group":"susceptible"
+cn "2"  "closeness":-1
+cn "2"  "psi":0.400000
+cn "2"  "risk.factor.sigma":1.000000
+cn "2"  "quarantined":false
+cn "2"  "clustering.last.computation":-1
+cn "2"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):5; declined requests (out):1; accepted requests (in):1; declined requests (in):10; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "2"  "assortativity.age.last.computation":-1
+cn "2"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "2"  "risk.meaning.pi":"risk neutral"
+cn "2"  "risk.meaning.sigma":"risk neutral"
+cn "2"  "consider.profession":false
+cn "2"  "risk.factor.pi":1.000000
+cn "2"  "profession":"S"
+cn "2"  "betweenness.last.computation":-1
+cn "2"  "ui.class":"susceptible"
+cn "2"  "consider.age":false
+cn "2"  "satisfied":true
+cn "2"  "ui.label":"2"
+cn "2"  "omega":0.000000
+cn "2"  "assortativity.age":-1
+cn "2"  "assortativity.profession":-1
+cn "2"  "phi":0.200000
+cn "2"  "xi":0.200000
+cn "2"  "clustering":-1
+cn "2"  "betweenness":-1
+cn "2"  "assortativity.risk.perception.last.computation":-1
+cn "2"  "assortativity.risk.perception":-1
+cn "2"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "2"  "age":60
+cn "2"  "closeness.last.computation":-1
+an "3"
+cn "3"  "assortativity.profession.last.computation":-1
+cn "3"  "force.infected":false
+cn "3"  "disease.group":"susceptible"
+cn "3"  "closeness":-1
+cn "3"  "psi":0.400000
+cn "3"  "risk.factor.sigma":1.000000
+cn "3"  "quarantined":false
+cn "3"  "clustering.last.computation":-1
+cn "3"  "connection.stats":"broken ties (active):1; broken ties (passive):0; accepted requests (out):5; declined requests (out):1; accepted requests (in):2; declined requests (in):6; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "3"  "assortativity.age.last.computation":-1
+cn "3"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "3"  "risk.meaning.pi":"risk neutral"
+cn "3"  "risk.meaning.sigma":"risk neutral"
+cn "3"  "consider.profession":false
+cn "3"  "risk.factor.pi":1.000000
+cn "3"  "profession":"FPS"
+cn "3"  "betweenness.last.computation":-1
+cn "3"  "ui.class":"susceptible"
+cn "3"  "consider.age":false
+cn "3"  "satisfied":true
+cn "3"  "ui.label":"3"
+cn "3"  "omega":0.000000
+cn "3"  "assortativity.age":-1
+cn "3"  "assortativity.profession":-1
+cn "3"  "phi":0.200000
+cn "3"  "xi":0.200000
+cn "3"  "clustering":-1
+cn "3"  "betweenness":-1
+cn "3"  "assortativity.risk.perception.last.computation":-1
+cn "3"  "assortativity.risk.perception":-1
+cn "3"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "3"  "age":35
+cn "3"  "closeness.last.computation":-1
+an "4"
+cn "4"  "assortativity.profession.last.computation":-1
+cn "4"  "force.infected":false
+cn "4"  "disease.group":"susceptible"
+cn "4"  "closeness":-1
+cn "4"  "psi":0.400000
+cn "4"  "risk.factor.sigma":1.000000
+cn "4"  "quarantined":false
+cn "4"  "clustering.last.computation":-1
+cn "4"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):3; declined requests (out):7; accepted requests (in):3; declined requests (in):5; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "4"  "assortativity.age.last.computation":-1
+cn "4"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "4"  "risk.meaning.pi":"risk neutral"
+cn "4"  "risk.meaning.sigma":"risk neutral"
+cn "4"  "consider.profession":false
+cn "4"  "risk.factor.pi":1.000000
+cn "4"  "profession":"FPS"
+cn "4"  "betweenness.last.computation":-1
+cn "4"  "ui.class":"susceptible"
+cn "4"  "consider.age":false
+cn "4"  "satisfied":true
+cn "4"  "ui.label":"4"
+cn "4"  "omega":0.000000
+cn "4"  "assortativity.age":-1
+cn "4"  "assortativity.profession":-1
+cn "4"  "phi":0.200000
+cn "4"  "xi":0.200000
+cn "4"  "clustering":-1
+cn "4"  "betweenness":-1
+cn "4"  "assortativity.risk.perception.last.computation":-1
+cn "4"  "assortativity.risk.perception":-1
+cn "4"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "4"  "age":30
+cn "4"  "closeness.last.computation":-1
+an "5"
+cn "5"  "assortativity.profession.last.computation":-1
+cn "5"  "force.infected":false
+cn "5"  "disease.group":"susceptible"
+cn "5"  "closeness":-1
+cn "5"  "psi":0.400000
+cn "5"  "risk.factor.sigma":1.000000
+cn "5"  "quarantined":false
+cn "5"  "clustering.last.computation":-1
+cn "5"  "connection.stats":"broken ties (active):2; broken ties (passive):0; accepted requests (out):2; declined requests (out):27; accepted requests (in):5; declined requests (in):7; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "5"  "assortativity.age.last.computation":-1
+cn "5"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "5"  "risk.meaning.pi":"risk neutral"
+cn "5"  "risk.meaning.sigma":"risk neutral"
+cn "5"  "consider.profession":false
+cn "5"  "risk.factor.pi":1.000000
+cn "5"  "profession":"HS"
+cn "5"  "betweenness.last.computation":-1
+cn "5"  "ui.class":"susceptible"
+cn "5"  "consider.age":false
+cn "5"  "satisfied":false
+cn "5"  "ui.label":"5"
+cn "5"  "omega":0.000000
+cn "5"  "assortativity.age":-1
+cn "5"  "assortativity.profession":-1
+cn "5"  "phi":0.200000
+cn "5"  "xi":0.200000
+cn "5"  "clustering":-1
+cn "5"  "betweenness":-1
+cn "5"  "assortativity.risk.perception.last.computation":-1
+cn "5"  "assortativity.risk.perception":-1
+cn "5"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "5"  "age":50
+cn "5"  "closeness.last.computation":-1
+an "6"
+cn "6"  "assortativity.profession.last.computation":-1
+cn "6"  "force.infected":false
+cn "6"  "disease.group":"susceptible"
+cn "6"  "closeness":-1
+cn "6"  "psi":0.400000
+cn "6"  "risk.factor.sigma":1.000000
+cn "6"  "quarantined":false
+cn "6"  "clustering.last.computation":-1
+cn "6"  "connection.stats":"broken ties (active):0; broken ties (passive):1; accepted requests (out):6; declined requests (out):3; accepted requests (in):1; declined requests (in):8; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "6"  "assortativity.age.last.computation":-1
+cn "6"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "6"  "risk.meaning.pi":"risk neutral"
+cn "6"  "risk.meaning.sigma":"risk neutral"
+cn "6"  "consider.profession":false
+cn "6"  "risk.factor.pi":1.000000
+cn "6"  "profession":"S"
+cn "6"  "betweenness.last.computation":-1
+cn "6"  "ui.class":"susceptible"
+cn "6"  "consider.age":false
+cn "6"  "satisfied":true
+cn "6"  "ui.label":"6"
+cn "6"  "omega":0.000000
+cn "6"  "assortativity.age":-1
+cn "6"  "assortativity.profession":-1
+cn "6"  "phi":0.200000
+cn "6"  "xi":0.200000
+cn "6"  "clustering":-1
+cn "6"  "betweenness":-1
+cn "6"  "assortativity.risk.perception.last.computation":-1
+cn "6"  "assortativity.risk.perception":-1
+cn "6"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "6"  "age":50
+cn "6"  "closeness.last.computation":-1
+an "7"
+cn "7"  "assortativity.profession.last.computation":-1
+cn "7"  "force.infected":false
+cn "7"  "disease.group":"susceptible"
+cn "7"  "closeness":-1
+cn "7"  "psi":0.400000
+cn "7"  "risk.factor.sigma":1.000000
+cn "7"  "quarantined":false
+cn "7"  "clustering.last.computation":-1
+cn "7"  "connection.stats":"broken ties (active):0; broken ties (passive):1; accepted requests (out):3; declined requests (out):2; accepted requests (in):4; declined requests (in):9; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "7"  "assortativity.age.last.computation":-1
+cn "7"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "7"  "risk.meaning.pi":"risk neutral"
+cn "7"  "risk.meaning.sigma":"risk neutral"
+cn "7"  "consider.profession":false
+cn "7"  "risk.factor.pi":1.000000
+cn "7"  "profession":"OAS"
+cn "7"  "betweenness.last.computation":-1
+cn "7"  "ui.class":"susceptible"
+cn "7"  "consider.age":false
+cn "7"  "satisfied":true
+cn "7"  "ui.label":"7"
+cn "7"  "omega":0.000000
+cn "7"  "assortativity.age":-1
+cn "7"  "assortativity.profession":-1
+cn "7"  "phi":0.200000
+cn "7"  "xi":0.200000
+cn "7"  "clustering":-1
+cn "7"  "betweenness":-1
+cn "7"  "assortativity.risk.perception.last.computation":-1
+cn "7"  "assortativity.risk.perception":-1
+cn "7"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "7"  "age":40
+cn "7"  "closeness.last.computation":-1
+an "8"
+cn "8"  "assortativity.profession.last.computation":-1
+cn "8"  "force.infected":false
+cn "8"  "disease.group":"susceptible"
+cn "8"  "closeness":-1
+cn "8"  "psi":0.400000
+cn "8"  "risk.factor.sigma":1.000000
+cn "8"  "quarantined":false
+cn "8"  "clustering.last.computation":-1
+cn "8"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):0; declined requests (out):0; accepted requests (in):6; declined requests (in):5; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "8"  "assortativity.age.last.computation":-1
+cn "8"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "8"  "risk.meaning.pi":"risk neutral"
+cn "8"  "risk.meaning.sigma":"risk neutral"
+cn "8"  "consider.profession":false
+cn "8"  "risk.factor.pi":1.000000
+cn "8"  "profession":"FPS"
+cn "8"  "betweenness.last.computation":-1
+cn "8"  "ui.class":"susceptible"
+cn "8"  "consider.age":false
+cn "8"  "satisfied":true
+cn "8"  "ui.label":"8"
+cn "8"  "omega":0.000000
+cn "8"  "assortativity.age":-1
+cn "8"  "assortativity.profession":-1
+cn "8"  "phi":0.200000
+cn "8"  "xi":0.200000
+cn "8"  "clustering":-1
+cn "8"  "betweenness":-1
+cn "8"  "assortativity.risk.perception.last.computation":-1
+cn "8"  "assortativity.risk.perception":-1
+cn "8"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "8"  "age":50
+cn "8"  "closeness.last.computation":-1
+an "9"
+cn "9"  "assortativity.profession.last.computation":-1
+cn "9"  "force.infected":false
+cn "9"  "disease.group":"susceptible"
+cn "9"  "closeness":-1
+cn "9"  "psi":0.400000
+cn "9"  "risk.factor.sigma":1.000000
+cn "9"  "quarantined":false
+cn "9"  "clustering.last.computation":-1
+cn "9"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):5; declined requests (out):1; accepted requests (in):1; declined requests (in):15; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "9"  "assortativity.age.last.computation":-1
+cn "9"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "9"  "risk.meaning.pi":"risk neutral"
+cn "9"  "risk.meaning.sigma":"risk neutral"
+cn "9"  "consider.profession":false
+cn "9"  "risk.factor.pi":1.000000
+cn "9"  "profession":"EIL"
+cn "9"  "betweenness.last.computation":-1
+cn "9"  "ui.class":"susceptible"
+cn "9"  "consider.age":false
+cn "9"  "satisfied":true
+cn "9"  "ui.label":"9"
+cn "9"  "omega":0.000000
+cn "9"  "assortativity.age":-1
+cn "9"  "assortativity.profession":-1
+cn "9"  "phi":0.200000
+cn "9"  "xi":0.200000
+cn "9"  "clustering":-1
+cn "9"  "betweenness":-1
+cn "9"  "assortativity.risk.perception.last.computation":-1
+cn "9"  "assortativity.risk.perception":-1
+cn "9"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "9"  "age":70
+cn "9"  "closeness.last.computation":-1
+an "10"
+cn "10"  "assortativity.profession.last.computation":-1
+cn "10"  "force.infected":false
+cn "10"  "disease.group":"susceptible"
+cn "10"  "closeness":-1
+cn "10"  "psi":0.400000
+cn "10"  "risk.factor.sigma":1.000000
+cn "10"  "quarantined":false
+cn "10"  "clustering.last.computation":-1
+cn "10"  "connection.stats":"broken ties (active):0; broken ties (passive):1; accepted requests (out):3; declined requests (out):14; accepted requests (in):4; declined requests (in):8; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "10"  "assortativity.age.last.computation":-1
+cn "10"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "10"  "risk.meaning.pi":"risk neutral"
+cn "10"  "risk.meaning.sigma":"risk neutral"
+cn "10"  "consider.profession":false
+cn "10"  "risk.factor.pi":1.000000
+cn "10"  "profession":"R"
+cn "10"  "betweenness.last.computation":-1
+cn "10"  "ui.class":"susceptible"
+cn "10"  "consider.age":false
+cn "10"  "satisfied":true
+cn "10"  "ui.label":"10"
+cn "10"  "omega":0.000000
+cn "10"  "assortativity.age":-1
+cn "10"  "assortativity.profession":-1
+cn "10"  "phi":0.200000
+cn "10"  "xi":0.200000
+cn "10"  "clustering":-1
+cn "10"  "betweenness":-1
+cn "10"  "assortativity.risk.perception.last.computation":-1
+cn "10"  "assortativity.risk.perception":-1
+cn "10"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "10"  "age":50
+cn "10"  "closeness.last.computation":-1
+an "11"
+cn "11"  "assortativity.profession.last.computation":-1
+cn "11"  "force.infected":false
+cn "11"  "disease.group":"susceptible"
+cn "11"  "closeness":-1
+cn "11"  "psi":0.400000
+cn "11"  "risk.factor.sigma":1.000000
+cn "11"  "quarantined":false
+cn "11"  "clustering.last.computation":-1
+cn "11"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):3; declined requests (out):1; accepted requests (in):3; declined requests (in):8; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "11"  "assortativity.age.last.computation":-1
+cn "11"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "11"  "risk.meaning.pi":"risk neutral"
+cn "11"  "risk.meaning.sigma":"risk neutral"
+cn "11"  "consider.profession":false
+cn "11"  "risk.factor.pi":1.000000
+cn "11"  "profession":"PCS"
+cn "11"  "betweenness.last.computation":-1
+cn "11"  "ui.class":"susceptible"
+cn "11"  "consider.age":false
+cn "11"  "satisfied":true
+cn "11"  "ui.label":"11"
+cn "11"  "omega":0.000000
+cn "11"  "assortativity.age":-1
+cn "11"  "assortativity.profession":-1
+cn "11"  "phi":0.200000
+cn "11"  "xi":0.200000
+cn "11"  "clustering":-1
+cn "11"  "betweenness":-1
+cn "11"  "assortativity.risk.perception.last.computation":-1
+cn "11"  "assortativity.risk.perception":-1
+cn "11"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "11"  "age":15
+cn "11"  "closeness.last.computation":-1
+an "12"
+cn "12"  "assortativity.profession.last.computation":-1
+cn "12"  "force.infected":false
+cn "12"  "disease.group":"susceptible"
+cn "12"  "closeness":-1
+cn "12"  "psi":0.400000
+cn "12"  "risk.factor.sigma":1.000000
+cn "12"  "quarantined":false
+cn "12"  "clustering.last.computation":-1
+cn "12"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):0; declined requests (out):9; accepted requests (in):6; declined requests (in):11; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "12"  "assortativity.age.last.computation":-1
+cn "12"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "12"  "risk.meaning.pi":"risk neutral"
+cn "12"  "risk.meaning.sigma":"risk neutral"
+cn "12"  "consider.profession":false
+cn "12"  "risk.factor.pi":1.000000
+cn "12"  "profession":"EIL"
+cn "12"  "betweenness.last.computation":-1
+cn "12"  "ui.class":"susceptible"
+cn "12"  "consider.age":false
+cn "12"  "satisfied":true
+cn "12"  "ui.label":"12"
+cn "12"  "omega":0.000000
+cn "12"  "assortativity.age":-1
+cn "12"  "assortativity.profession":-1
+cn "12"  "phi":0.200000
+cn "12"  "xi":0.200000
+cn "12"  "clustering":-1
+cn "12"  "betweenness":-1
+cn "12"  "assortativity.risk.perception.last.computation":-1
+cn "12"  "assortativity.risk.perception":-1
+cn "12"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "12"  "age":25
+cn "12"  "closeness.last.computation":-1
+an "13"
+cn "13"  "assortativity.profession.last.computation":-1
+cn "13"  "force.infected":false
+cn "13"  "disease.group":"susceptible"
+cn "13"  "closeness":-1
+cn "13"  "psi":0.400000
+cn "13"  "risk.factor.sigma":1.000000
+cn "13"  "quarantined":false
+cn "13"  "clustering.last.computation":-1
+cn "13"  "connection.stats":"broken ties (active):1; broken ties (passive):0; accepted requests (out):0; declined requests (out):0; accepted requests (in):7; declined requests (in):7; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "13"  "assortativity.age.last.computation":-1
+cn "13"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "13"  "risk.meaning.pi":"risk neutral"
+cn "13"  "risk.meaning.sigma":"risk neutral"
+cn "13"  "consider.profession":false
+cn "13"  "risk.factor.pi":1.000000
+cn "13"  "profession":"EIL"
+cn "13"  "betweenness.last.computation":-1
+cn "13"  "ui.class":"susceptible"
+cn "13"  "consider.age":false
+cn "13"  "satisfied":true
+cn "13"  "ui.label":"13"
+cn "13"  "omega":0.000000
+cn "13"  "assortativity.age":-1
+cn "13"  "assortativity.profession":-1
+cn "13"  "phi":0.200000
+cn "13"  "xi":0.200000
+cn "13"  "clustering":-1
+cn "13"  "betweenness":-1
+cn "13"  "assortativity.risk.perception.last.computation":-1
+cn "13"  "assortativity.risk.perception":-1
+cn "13"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "13"  "age":70
+cn "13"  "closeness.last.computation":-1
+an "14"
+cn "14"  "assortativity.profession.last.computation":-1
+cn "14"  "force.infected":false
+cn "14"  "disease.group":"susceptible"
+cn "14"  "closeness":-1
+cn "14"  "psi":0.400000
+cn "14"  "risk.factor.sigma":1.000000
+cn "14"  "quarantined":false
+cn "14"  "clustering.last.computation":-1
+cn "14"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):2; declined requests (out):17; accepted requests (in):4; declined requests (in):3; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "14"  "assortativity.age.last.computation":-1
+cn "14"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "14"  "risk.meaning.pi":"risk neutral"
+cn "14"  "risk.meaning.sigma":"risk neutral"
+cn "14"  "consider.profession":false
+cn "14"  "risk.factor.pi":1.000000
+cn "14"  "profession":"CE"
+cn "14"  "betweenness.last.computation":-1
+cn "14"  "ui.class":"susceptible"
+cn "14"  "consider.age":false
+cn "14"  "satisfied":true
+cn "14"  "ui.label":"14"
+cn "14"  "omega":0.000000
+cn "14"  "assortativity.age":-1
+cn "14"  "assortativity.profession":-1
+cn "14"  "phi":0.200000
+cn "14"  "xi":0.200000
+cn "14"  "clustering":-1
+cn "14"  "betweenness":-1
+cn "14"  "assortativity.risk.perception.last.computation":-1
+cn "14"  "assortativity.risk.perception":-1
+cn "14"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "14"  "age":0
+cn "14"  "closeness.last.computation":-1
+an "15"
+cn "15"  "assortativity.profession.last.computation":-1
+cn "15"  "force.infected":false
+cn "15"  "disease.group":"susceptible"
+cn "15"  "closeness":-1
+cn "15"  "psi":0.400000
+cn "15"  "risk.factor.sigma":1.000000
+cn "15"  "quarantined":false
+cn "15"  "clustering.last.computation":-1
+cn "15"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):6; declined requests (out):0; accepted requests (in):0; declined requests (in):11; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "15"  "assortativity.age.last.computation":-1
+cn "15"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "15"  "risk.meaning.pi":"risk neutral"
+cn "15"  "risk.meaning.sigma":"risk neutral"
+cn "15"  "consider.profession":false
+cn "15"  "risk.factor.pi":1.000000
+cn "15"  "profession":"CSS"
+cn "15"  "betweenness.last.computation":-1
+cn "15"  "ui.class":"susceptible"
+cn "15"  "consider.age":false
+cn "15"  "satisfied":true
+cn "15"  "ui.label":"15"
+cn "15"  "omega":0.000000
+cn "15"  "assortativity.age":-1
+cn "15"  "assortativity.profession":-1
+cn "15"  "phi":0.200000
+cn "15"  "xi":0.200000
+cn "15"  "clustering":-1
+cn "15"  "betweenness":-1
+cn "15"  "assortativity.risk.perception.last.computation":-1
+cn "15"  "assortativity.risk.perception":-1
+cn "15"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "15"  "age":55
+cn "15"  "closeness.last.computation":-1
+an "16"
+cn "16"  "assortativity.profession.last.computation":-1
+cn "16"  "force.infected":false
+cn "16"  "disease.group":"susceptible"
+cn "16"  "closeness":-1
+cn "16"  "psi":0.400000
+cn "16"  "risk.factor.sigma":1.000000
+cn "16"  "quarantined":false
+cn "16"  "clustering.last.computation":-1
+cn "16"  "connection.stats":"broken ties (active):0; broken ties (passive):2; accepted requests (out):3; declined requests (out):10; accepted requests (in):5; declined requests (in):4; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "16"  "assortativity.age.last.computation":-1
+cn "16"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "16"  "risk.meaning.pi":"risk neutral"
+cn "16"  "risk.meaning.sigma":"risk neutral"
+cn "16"  "consider.profession":false
+cn "16"  "risk.factor.pi":1.000000
+cn "16"  "profession":"R"
+cn "16"  "betweenness.last.computation":-1
+cn "16"  "ui.class":"susceptible"
+cn "16"  "consider.age":false
+cn "16"  "satisfied":true
+cn "16"  "ui.label":"16"
+cn "16"  "omega":0.000000
+cn "16"  "assortativity.age":-1
+cn "16"  "assortativity.profession":-1
+cn "16"  "phi":0.200000
+cn "16"  "xi":0.200000
+cn "16"  "clustering":-1
+cn "16"  "betweenness":-1
+cn "16"  "assortativity.risk.perception.last.computation":-1
+cn "16"  "assortativity.risk.perception":-1
+cn "16"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "16"  "age":50
+cn "16"  "closeness.last.computation":-1
+an "17"
+cn "17"  "assortativity.profession.last.computation":-1
+cn "17"  "force.infected":false
+cn "17"  "disease.group":"susceptible"
+cn "17"  "closeness":-1
+cn "17"  "psi":0.400000
+cn "17"  "risk.factor.sigma":1.000000
+cn "17"  "quarantined":false
+cn "17"  "clustering.last.computation":-1
+cn "17"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):4; declined requests (out):50; accepted requests (in):2; declined requests (in):1; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "17"  "assortativity.age.last.computation":-1
+cn "17"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "17"  "risk.meaning.pi":"risk neutral"
+cn "17"  "risk.meaning.sigma":"risk neutral"
+cn "17"  "consider.profession":false
+cn "17"  "risk.factor.pi":1.000000
+cn "17"  "profession":"S"
+cn "17"  "betweenness.last.computation":-1
+cn "17"  "ui.class":"susceptible"
+cn "17"  "consider.age":false
+cn "17"  "satisfied":false
+cn "17"  "ui.label":"17"
+cn "17"  "omega":0.000000
+cn "17"  "assortativity.age":-1
+cn "17"  "assortativity.profession":-1
+cn "17"  "phi":0.200000
+cn "17"  "xi":0.200000
+cn "17"  "clustering":-1
+cn "17"  "betweenness":-1
+cn "17"  "assortativity.risk.perception.last.computation":-1
+cn "17"  "assortativity.risk.perception":-1
+cn "17"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "17"  "age":35
+cn "17"  "closeness.last.computation":-1
+an "18"
+cn "18"  "assortativity.profession.last.computation":-1
+cn "18"  "force.infected":false
+cn "18"  "disease.group":"susceptible"
+cn "18"  "closeness":-1
+cn "18"  "psi":0.400000
+cn "18"  "risk.factor.sigma":1.000000
+cn "18"  "quarantined":false
+cn "18"  "clustering.last.computation":-1
+cn "18"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):5; declined requests (out):2; accepted requests (in):1; declined requests (in):10; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "18"  "assortativity.age.last.computation":-1
+cn "18"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "18"  "risk.meaning.pi":"risk neutral"
+cn "18"  "risk.meaning.sigma":"risk neutral"
+cn "18"  "consider.profession":false
+cn "18"  "risk.factor.pi":1.000000
+cn "18"  "profession":"R"
+cn "18"  "betweenness.last.computation":-1
+cn "18"  "ui.class":"susceptible"
+cn "18"  "consider.age":false
+cn "18"  "satisfied":true
+cn "18"  "ui.label":"18"
+cn "18"  "omega":0.000000
+cn "18"  "assortativity.age":-1
+cn "18"  "assortativity.profession":-1
+cn "18"  "phi":0.200000
+cn "18"  "xi":0.200000
+cn "18"  "clustering":-1
+cn "18"  "betweenness":-1
+cn "18"  "assortativity.risk.perception.last.computation":-1
+cn "18"  "assortativity.risk.perception":-1
+cn "18"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "18"  "age":40
+cn "18"  "closeness.last.computation":-1
+an "19"
+cn "19"  "assortativity.profession.last.computation":-1
+cn "19"  "force.infected":false
+cn "19"  "disease.group":"susceptible"
+cn "19"  "closeness":-1
+cn "19"  "psi":0.400000
+cn "19"  "risk.factor.sigma":1.000000
+cn "19"  "quarantined":false
+cn "19"  "clustering.last.computation":-1
+cn "19"  "connection.stats":"broken ties (active):0; broken ties (passive):1; accepted requests (out):5; declined requests (out):13; accepted requests (in):2; declined requests (in):10; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "19"  "assortativity.age.last.computation":-1
+cn "19"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "19"  "risk.meaning.pi":"risk neutral"
+cn "19"  "risk.meaning.sigma":"risk neutral"
+cn "19"  "consider.profession":false
+cn "19"  "risk.factor.pi":1.000000
+cn "19"  "profession":"LPSS"
+cn "19"  "betweenness.last.computation":-1
+cn "19"  "ui.class":"susceptible"
+cn "19"  "consider.age":false
+cn "19"  "satisfied":true
+cn "19"  "ui.label":"19"
+cn "19"  "omega":0.000000
+cn "19"  "assortativity.age":-1
+cn "19"  "assortativity.profession":-1
+cn "19"  "phi":0.200000
+cn "19"  "xi":0.200000
+cn "19"  "clustering":-1
+cn "19"  "betweenness":-1
+cn "19"  "assortativity.risk.perception.last.computation":-1
+cn "19"  "assortativity.risk.perception":-1
+cn "19"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "19"  "age":40
+cn "19"  "closeness.last.computation":-1
+an "20"
+cn "20"  "assortativity.profession.last.computation":-1
+cn "20"  "force.infected":false
+cn "20"  "disease.group":"susceptible"
+cn "20"  "closeness":-1
+cn "20"  "psi":0.400000
+cn "20"  "risk.factor.sigma":1.000000
+cn "20"  "quarantined":false
+cn "20"  "clustering.last.computation":-1
+cn "20"  "connection.stats":"broken ties (active):0; broken ties (passive):1; accepted requests (out):4; declined requests (out):5; accepted requests (in):3; declined requests (in):6; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "20"  "assortativity.age.last.computation":-1
+cn "20"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "20"  "risk.meaning.pi":"risk neutral"
+cn "20"  "risk.meaning.sigma":"risk neutral"
+cn "20"  "consider.profession":false
+cn "20"  "risk.factor.pi":1.000000
+cn "20"  "profession":"R"
+cn "20"  "betweenness.last.computation":-1
+cn "20"  "ui.class":"susceptible"
+cn "20"  "consider.age":false
+cn "20"  "satisfied":false
+cn "20"  "ui.label":"20"
+cn "20"  "omega":0.000000
+cn "20"  "assortativity.age":-1
+cn "20"  "assortativity.profession":-1
+cn "20"  "phi":0.200000
+cn "20"  "xi":0.200000
+cn "20"  "clustering":-1
+cn "20"  "betweenness":-1
+cn "20"  "assortativity.risk.perception.last.computation":-1
+cn "20"  "assortativity.risk.perception":-1
+cn "20"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "20"  "age":30
+cn "20"  "closeness.last.computation":-1
+an "21"
+cn "21"  "assortativity.profession.last.computation":-1
+cn "21"  "force.infected":false
+cn "21"  "disease.group":"susceptible"
+cn "21"  "closeness":-1
+cn "21"  "psi":0.400000
+cn "21"  "risk.factor.sigma":1.000000
+cn "21"  "quarantined":false
+cn "21"  "clustering.last.computation":-1
+cn "21"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):4; declined requests (out):4; accepted requests (in):2; declined requests (in):10; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "21"  "assortativity.age.last.computation":-1
+cn "21"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "21"  "risk.meaning.pi":"risk neutral"
+cn "21"  "risk.meaning.sigma":"risk neutral"
+cn "21"  "consider.profession":false
+cn "21"  "risk.factor.pi":1.000000
+cn "21"  "profession":"TMM"
+cn "21"  "betweenness.last.computation":-1
+cn "21"  "ui.class":"susceptible"
+cn "21"  "consider.age":false
+cn "21"  "satisfied":true
+cn "21"  "ui.label":"21"
+cn "21"  "omega":0.000000
+cn "21"  "assortativity.age":-1
+cn "21"  "assortativity.profession":-1
+cn "21"  "phi":0.200000
+cn "21"  "xi":0.200000
+cn "21"  "clustering":-1
+cn "21"  "betweenness":-1
+cn "21"  "assortativity.risk.perception.last.computation":-1
+cn "21"  "assortativity.risk.perception":-1
+cn "21"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "21"  "age":10
+cn "21"  "closeness.last.computation":-1
+an "22"
+cn "22"  "assortativity.profession.last.computation":-1
+cn "22"  "force.infected":false
+cn "22"  "disease.group":"susceptible"
+cn "22"  "closeness":-1
+cn "22"  "psi":0.400000
+cn "22"  "risk.factor.sigma":1.000000
+cn "22"  "quarantined":false
+cn "22"  "clustering.last.computation":-1
+cn "22"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):5; declined requests (out):3; accepted requests (in):1; declined requests (in):9; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "22"  "assortativity.age.last.computation":-1
+cn "22"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "22"  "risk.meaning.pi":"risk neutral"
+cn "22"  "risk.meaning.sigma":"risk neutral"
+cn "22"  "consider.profession":false
+cn "22"  "risk.factor.pi":1.000000
+cn "22"  "profession":"IMR"
+cn "22"  "betweenness.last.computation":-1
+cn "22"  "ui.class":"susceptible"
+cn "22"  "consider.age":false
+cn "22"  "satisfied":true
+cn "22"  "ui.label":"22"
+cn "22"  "omega":0.000000
+cn "22"  "assortativity.age":-1
+cn "22"  "assortativity.profession":-1
+cn "22"  "phi":0.200000
+cn "22"  "xi":0.200000
+cn "22"  "clustering":-1
+cn "22"  "betweenness":-1
+cn "22"  "assortativity.risk.perception.last.computation":-1
+cn "22"  "assortativity.risk.perception":-1
+cn "22"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "22"  "age":0
+cn "22"  "closeness.last.computation":-1
+an "23"
+cn "23"  "assortativity.profession.last.computation":-1
+cn "23"  "force.infected":false
+cn "23"  "disease.group":"susceptible"
+cn "23"  "closeness":-1
+cn "23"  "psi":0.400000
+cn "23"  "risk.factor.sigma":1.000000
+cn "23"  "quarantined":false
+cn "23"  "clustering.last.computation":-1
+cn "23"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):3; declined requests (out):3; accepted requests (in):3; declined requests (in):13; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "23"  "assortativity.age.last.computation":-1
+cn "23"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "23"  "risk.meaning.pi":"risk neutral"
+cn "23"  "risk.meaning.sigma":"risk neutral"
+cn "23"  "consider.profession":false
+cn "23"  "risk.factor.pi":1.000000
+cn "23"  "profession":"OAS"
+cn "23"  "betweenness.last.computation":-1
+cn "23"  "ui.class":"susceptible"
+cn "23"  "consider.age":false
+cn "23"  "satisfied":true
+cn "23"  "ui.label":"23"
+cn "23"  "omega":0.000000
+cn "23"  "assortativity.age":-1
+cn "23"  "assortativity.profession":-1
+cn "23"  "phi":0.200000
+cn "23"  "xi":0.200000
+cn "23"  "clustering":-1
+cn "23"  "betweenness":-1
+cn "23"  "assortativity.risk.perception.last.computation":-1
+cn "23"  "assortativity.risk.perception":-1
+cn "23"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "23"  "age":60
+cn "23"  "closeness.last.computation":-1
+an "24"
+cn "24"  "assortativity.profession.last.computation":-1
+cn "24"  "force.infected":false
+cn "24"  "disease.group":"susceptible"
+cn "24"  "closeness":-1
+cn "24"  "psi":0.400000
+cn "24"  "risk.factor.sigma":1.000000
+cn "24"  "quarantined":false
+cn "24"  "clustering.last.computation":-1
+cn "24"  "connection.stats":"broken ties (active):0; broken ties (passive):1; accepted requests (out):2; declined requests (out):16; accepted requests (in):5; declined requests (in):11; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "24"  "assortativity.age.last.computation":-1
+cn "24"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "24"  "risk.meaning.pi":"risk neutral"
+cn "24"  "risk.meaning.sigma":"risk neutral"
+cn "24"  "consider.profession":false
+cn "24"  "risk.factor.pi":1.000000
+cn "24"  "profession":"U"
+cn "24"  "betweenness.last.computation":-1
+cn "24"  "ui.class":"susceptible"
+cn "24"  "consider.age":false
+cn "24"  "satisfied":true
+cn "24"  "ui.label":"24"
+cn "24"  "omega":0.000000
+cn "24"  "assortativity.age":-1
+cn "24"  "assortativity.profession":-1
+cn "24"  "phi":0.200000
+cn "24"  "xi":0.200000
+cn "24"  "clustering":-1
+cn "24"  "betweenness":-1
+cn "24"  "assortativity.risk.perception.last.computation":-1
+cn "24"  "assortativity.risk.perception":-1
+cn "24"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "24"  "age":15
+cn "24"  "closeness.last.computation":-1
+an "25"
+cn "25"  "assortativity.profession.last.computation":-1
+cn "25"  "force.infected":false
+cn "25"  "disease.group":"susceptible"
+cn "25"  "closeness":-1
+cn "25"  "psi":0.400000
+cn "25"  "risk.factor.sigma":1.000000
+cn "25"  "quarantined":false
+cn "25"  "clustering.last.computation":-1
+cn "25"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):5; declined requests (out):1; accepted requests (in):1; declined requests (in):8; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "25"  "assortativity.age.last.computation":-1
+cn "25"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "25"  "risk.meaning.pi":"risk neutral"
+cn "25"  "risk.meaning.sigma":"risk neutral"
+cn "25"  "consider.profession":false
+cn "25"  "risk.factor.pi":1.000000
+cn "25"  "profession":"R"
+cn "25"  "betweenness.last.computation":-1
+cn "25"  "ui.class":"susceptible"
+cn "25"  "consider.age":false
+cn "25"  "satisfied":true
+cn "25"  "ui.label":"25"
+cn "25"  "omega":0.000000
+cn "25"  "assortativity.age":-1
+cn "25"  "assortativity.profession":-1
+cn "25"  "phi":0.200000
+cn "25"  "xi":0.200000
+cn "25"  "clustering":-1
+cn "25"  "betweenness":-1
+cn "25"  "assortativity.risk.perception.last.computation":-1
+cn "25"  "assortativity.risk.perception":-1
+cn "25"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "25"  "age":35
+cn "25"  "closeness.last.computation":-1
+an "26"
+cn "26"  "assortativity.profession.last.computation":-1
+cn "26"  "force.infected":false
+cn "26"  "disease.group":"susceptible"
+cn "26"  "closeness":-1
+cn "26"  "psi":0.400000
+cn "26"  "risk.factor.sigma":1.000000
+cn "26"  "quarantined":false
+cn "26"  "clustering.last.computation":-1
+cn "26"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):0; declined requests (out):0; accepted requests (in):6; declined requests (in):11; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "26"  "assortativity.age.last.computation":-1
+cn "26"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "26"  "risk.meaning.pi":"risk neutral"
+cn "26"  "risk.meaning.sigma":"risk neutral"
+cn "26"  "consider.profession":false
+cn "26"  "risk.factor.pi":1.000000
+cn "26"  "profession":"R"
+cn "26"  "betweenness.last.computation":-1
+cn "26"  "ui.class":"susceptible"
+cn "26"  "consider.age":false
+cn "26"  "satisfied":true
+cn "26"  "ui.label":"26"
+cn "26"  "omega":0.000000
+cn "26"  "assortativity.age":-1
+cn "26"  "assortativity.profession":-1
+cn "26"  "phi":0.200000
+cn "26"  "xi":0.200000
+cn "26"  "clustering":-1
+cn "26"  "betweenness":-1
+cn "26"  "assortativity.risk.perception.last.computation":-1
+cn "26"  "assortativity.risk.perception":-1
+cn "26"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "26"  "age":10
+cn "26"  "closeness.last.computation":-1
+an "27"
+cn "27"  "assortativity.profession.last.computation":-1
+cn "27"  "force.infected":false
+cn "27"  "disease.group":"susceptible"
+cn "27"  "closeness":-1
+cn "27"  "psi":0.400000
+cn "27"  "risk.factor.sigma":1.000000
+cn "27"  "quarantined":false
+cn "27"  "clustering.last.computation":-1
+cn "27"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):5; declined requests (out):0; accepted requests (in):1; declined requests (in):12; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "27"  "assortativity.age.last.computation":-1
+cn "27"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "27"  "risk.meaning.pi":"risk neutral"
+cn "27"  "risk.meaning.sigma":"risk neutral"
+cn "27"  "consider.profession":false
+cn "27"  "risk.factor.pi":1.000000
+cn "27"  "profession":"FPS"
+cn "27"  "betweenness.last.computation":-1
+cn "27"  "ui.class":"susceptible"
+cn "27"  "consider.age":false
+cn "27"  "satisfied":true
+cn "27"  "ui.label":"27"
+cn "27"  "omega":0.000000
+cn "27"  "assortativity.age":-1
+cn "27"  "assortativity.profession":-1
+cn "27"  "phi":0.200000
+cn "27"  "xi":0.200000
+cn "27"  "clustering":-1
+cn "27"  "betweenness":-1
+cn "27"  "assortativity.risk.perception.last.computation":-1
+cn "27"  "assortativity.risk.perception":-1
+cn "27"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "27"  "age":35
+cn "27"  "closeness.last.computation":-1
+an "28"
+cn "28"  "assortativity.profession.last.computation":-1
+cn "28"  "force.infected":false
+cn "28"  "disease.group":"susceptible"
+cn "28"  "closeness":-1
+cn "28"  "psi":0.400000
+cn "28"  "risk.factor.sigma":1.000000
+cn "28"  "quarantined":false
+cn "28"  "clustering.last.computation":-1
+cn "28"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):3; declined requests (out):9; accepted requests (in):3; declined requests (in):7; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "28"  "assortativity.age.last.computation":-1
+cn "28"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "28"  "risk.meaning.pi":"risk neutral"
+cn "28"  "risk.meaning.sigma":"risk neutral"
+cn "28"  "consider.profession":false
+cn "28"  "risk.factor.pi":1.000000
+cn "28"  "profession":"P"
+cn "28"  "betweenness.last.computation":-1
+cn "28"  "ui.class":"susceptible"
+cn "28"  "consider.age":false
+cn "28"  "satisfied":true
+cn "28"  "ui.label":"28"
+cn "28"  "omega":0.000000
+cn "28"  "assortativity.age":-1
+cn "28"  "assortativity.profession":-1
+cn "28"  "phi":0.200000
+cn "28"  "xi":0.200000
+cn "28"  "clustering":-1
+cn "28"  "betweenness":-1
+cn "28"  "assortativity.risk.perception.last.computation":-1
+cn "28"  "assortativity.risk.perception":-1
+cn "28"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "28"  "age":45
+cn "28"  "closeness.last.computation":-1
+an "29"
+cn "29"  "assortativity.profession.last.computation":-1
+cn "29"  "force.infected":false
+cn "29"  "disease.group":"susceptible"
+cn "29"  "closeness":-1
+cn "29"  "psi":0.400000
+cn "29"  "risk.factor.sigma":1.000000
+cn "29"  "quarantined":false
+cn "29"  "clustering.last.computation":-1
+cn "29"  "connection.stats":"broken ties (active):1; broken ties (passive):0; accepted requests (out):0; declined requests (out):3; accepted requests (in):7; declined requests (in):12; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "29"  "assortativity.age.last.computation":-1
+cn "29"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "29"  "risk.meaning.pi":"risk neutral"
+cn "29"  "risk.meaning.sigma":"risk neutral"
+cn "29"  "consider.profession":false
+cn "29"  "risk.factor.pi":1.000000
+cn "29"  "profession":"BGCM"
+cn "29"  "betweenness.last.computation":-1
+cn "29"  "ui.class":"susceptible"
+cn "29"  "consider.age":false
+cn "29"  "satisfied":true
+cn "29"  "ui.label":"29"
+cn "29"  "omega":0.000000
+cn "29"  "assortativity.age":-1
+cn "29"  "assortativity.profession":-1
+cn "29"  "phi":0.200000
+cn "29"  "xi":0.200000
+cn "29"  "clustering":-1
+cn "29"  "betweenness":-1
+cn "29"  "assortativity.risk.perception.last.computation":-1
+cn "29"  "assortativity.risk.perception":-1
+cn "29"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "29"  "age":25
+cn "29"  "closeness.last.computation":-1
+an "30"
+cn "30"  "assortativity.profession.last.computation":-1
+cn "30"  "force.infected":false
+cn "30"  "disease.group":"susceptible"
+cn "30"  "closeness":-1
+cn "30"  "psi":0.400000
+cn "30"  "risk.factor.sigma":1.000000
+cn "30"  "quarantined":false
+cn "30"  "clustering.last.computation":-1
+cn "30"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):1; declined requests (out):11; accepted requests (in):5; declined requests (in):2; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "30"  "assortativity.age.last.computation":-1
+cn "30"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "30"  "risk.meaning.pi":"risk neutral"
+cn "30"  "risk.meaning.sigma":"risk neutral"
+cn "30"  "consider.profession":false
+cn "30"  "risk.factor.pi":1.000000
+cn "30"  "profession":"FPS"
+cn "30"  "betweenness.last.computation":-1
+cn "30"  "ui.class":"susceptible"
+cn "30"  "consider.age":false
+cn "30"  "satisfied":true
+cn "30"  "ui.label":"30"
+cn "30"  "omega":0.000000
+cn "30"  "assortativity.age":-1
+cn "30"  "assortativity.profession":-1
+cn "30"  "phi":0.200000
+cn "30"  "xi":0.200000
+cn "30"  "clustering":-1
+cn "30"  "betweenness":-1
+cn "30"  "assortativity.risk.perception.last.computation":-1
+cn "30"  "assortativity.risk.perception":-1
+cn "30"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "30"  "age":60
+cn "30"  "closeness.last.computation":-1
+an "31"
+cn "31"  "assortativity.profession.last.computation":-1
+cn "31"  "force.infected":false
+cn "31"  "disease.group":"susceptible"
+cn "31"  "closeness":-1
+cn "31"  "psi":0.400000
+cn "31"  "risk.factor.sigma":1.000000
+cn "31"  "quarantined":false
+cn "31"  "clustering.last.computation":-1
+cn "31"  "connection.stats":"broken ties (active):0; broken ties (passive):1; accepted requests (out):6; declined requests (out):2; accepted requests (in):1; declined requests (in):5; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "31"  "assortativity.age.last.computation":-1
+cn "31"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "31"  "risk.meaning.pi":"risk neutral"
+cn "31"  "risk.meaning.sigma":"risk neutral"
+cn "31"  "consider.profession":false
+cn "31"  "risk.factor.pi":1.000000
+cn "31"  "profession":"TMM"
+cn "31"  "betweenness.last.computation":-1
+cn "31"  "ui.class":"susceptible"
+cn "31"  "consider.age":false
+cn "31"  "satisfied":true
+cn "31"  "ui.label":"31"
+cn "31"  "omega":0.000000
+cn "31"  "assortativity.age":-1
+cn "31"  "assortativity.profession":-1
+cn "31"  "phi":0.200000
+cn "31"  "xi":0.200000
+cn "31"  "clustering":-1
+cn "31"  "betweenness":-1
+cn "31"  "assortativity.risk.perception.last.computation":-1
+cn "31"  "assortativity.risk.perception":-1
+cn "31"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "31"  "age":50
+cn "31"  "closeness.last.computation":-1
+an "32"
+cn "32"  "assortativity.profession.last.computation":-1
+cn "32"  "force.infected":false
+cn "32"  "disease.group":"susceptible"
+cn "32"  "closeness":-1
+cn "32"  "psi":0.400000
+cn "32"  "risk.factor.sigma":1.000000
+cn "32"  "quarantined":false
+cn "32"  "clustering.last.computation":-1
+cn "32"  "connection.stats":"broken ties (active):0; broken ties (passive):1; accepted requests (out):4; declined requests (out):3; accepted requests (in):3; declined requests (in):3; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "32"  "assortativity.age.last.computation":-1
+cn "32"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "32"  "risk.meaning.pi":"risk neutral"
+cn "32"  "risk.meaning.sigma":"risk neutral"
+cn "32"  "consider.profession":false
+cn "32"  "risk.factor.pi":1.000000
+cn "32"  "profession":"M"
+cn "32"  "betweenness.last.computation":-1
+cn "32"  "ui.class":"susceptible"
+cn "32"  "consider.age":false
+cn "32"  "satisfied":true
+cn "32"  "ui.label":"32"
+cn "32"  "omega":0.000000
+cn "32"  "assortativity.age":-1
+cn "32"  "assortativity.profession":-1
+cn "32"  "phi":0.200000
+cn "32"  "xi":0.200000
+cn "32"  "clustering":-1
+cn "32"  "betweenness":-1
+cn "32"  "assortativity.risk.perception.last.computation":-1
+cn "32"  "assortativity.risk.perception":-1
+cn "32"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "32"  "age":25
+cn "32"  "closeness.last.computation":-1
+an "33"
+cn "33"  "assortativity.profession.last.computation":-1
+cn "33"  "force.infected":false
+cn "33"  "disease.group":"susceptible"
+cn "33"  "closeness":-1
+cn "33"  "psi":0.400000
+cn "33"  "risk.factor.sigma":1.000000
+cn "33"  "quarantined":false
+cn "33"  "clustering.last.computation":-1
+cn "33"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):5; declined requests (out):5; accepted requests (in):1; declined requests (in):18; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "33"  "assortativity.age.last.computation":-1
+cn "33"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "33"  "risk.meaning.pi":"risk neutral"
+cn "33"  "risk.meaning.sigma":"risk neutral"
+cn "33"  "consider.profession":false
+cn "33"  "risk.factor.pi":1.000000
+cn "33"  "profession":"R"
+cn "33"  "betweenness.last.computation":-1
+cn "33"  "ui.class":"susceptible"
+cn "33"  "consider.age":false
+cn "33"  "satisfied":true
+cn "33"  "ui.label":"33"
+cn "33"  "omega":0.000000
+cn "33"  "assortativity.age":-1
+cn "33"  "assortativity.profession":-1
+cn "33"  "phi":0.200000
+cn "33"  "xi":0.200000
+cn "33"  "clustering":-1
+cn "33"  "betweenness":-1
+cn "33"  "assortativity.risk.perception.last.computation":-1
+cn "33"  "assortativity.risk.perception":-1
+cn "33"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "33"  "age":15
+cn "33"  "closeness.last.computation":-1
+an "34"
+cn "34"  "assortativity.profession.last.computation":-1
+cn "34"  "force.infected":false
+cn "34"  "disease.group":"susceptible"
+cn "34"  "closeness":-1
+cn "34"  "psi":0.400000
+cn "34"  "risk.factor.sigma":1.000000
+cn "34"  "quarantined":false
+cn "34"  "clustering.last.computation":-1
+cn "34"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):0; declined requests (out):0; accepted requests (in):6; declined requests (in):16; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "34"  "assortativity.age.last.computation":-1
+cn "34"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "34"  "risk.meaning.pi":"risk neutral"
+cn "34"  "risk.meaning.sigma":"risk neutral"
+cn "34"  "consider.profession":false
+cn "34"  "risk.factor.pi":1.000000
+cn "34"  "profession":"TMM"
+cn "34"  "betweenness.last.computation":-1
+cn "34"  "ui.class":"susceptible"
+cn "34"  "consider.age":false
+cn "34"  "satisfied":true
+cn "34"  "ui.label":"34"
+cn "34"  "omega":0.000000
+cn "34"  "assortativity.age":-1
+cn "34"  "assortativity.profession":-1
+cn "34"  "phi":0.200000
+cn "34"  "xi":0.200000
+cn "34"  "clustering":-1
+cn "34"  "betweenness":-1
+cn "34"  "assortativity.risk.perception.last.computation":-1
+cn "34"  "assortativity.risk.perception":-1
+cn "34"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "34"  "age":45
+cn "34"  "closeness.last.computation":-1
+an "35"
+cn "35"  "assortativity.profession.last.computation":-1
+cn "35"  "force.infected":false
+cn "35"  "disease.group":"susceptible"
+cn "35"  "closeness":-1
+cn "35"  "psi":0.400000
+cn "35"  "risk.factor.sigma":1.000000
+cn "35"  "quarantined":false
+cn "35"  "clustering.last.computation":-1
+cn "35"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):1; declined requests (out):4; accepted requests (in):5; declined requests (in):7; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "35"  "assortativity.age.last.computation":-1
+cn "35"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "35"  "risk.meaning.pi":"risk neutral"
+cn "35"  "risk.meaning.sigma":"risk neutral"
+cn "35"  "consider.profession":false
+cn "35"  "risk.factor.pi":1.000000
+cn "35"  "profession":"CE"
+cn "35"  "betweenness.last.computation":-1
+cn "35"  "ui.class":"susceptible"
+cn "35"  "consider.age":false
+cn "35"  "satisfied":true
+cn "35"  "ui.label":"35"
+cn "35"  "omega":0.000000
+cn "35"  "assortativity.age":-1
+cn "35"  "assortativity.profession":-1
+cn "35"  "phi":0.200000
+cn "35"  "xi":0.200000
+cn "35"  "clustering":-1
+cn "35"  "betweenness":-1
+cn "35"  "assortativity.risk.perception.last.computation":-1
+cn "35"  "assortativity.risk.perception":-1
+cn "35"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "35"  "age":30
+cn "35"  "closeness.last.computation":-1
+an "36"
+cn "36"  "assortativity.profession.last.computation":-1
+cn "36"  "force.infected":false
+cn "36"  "disease.group":"susceptible"
+cn "36"  "closeness":-1
+cn "36"  "psi":0.400000
+cn "36"  "risk.factor.sigma":1.000000
+cn "36"  "quarantined":false
+cn "36"  "clustering.last.computation":-1
+cn "36"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):2; declined requests (out):5; accepted requests (in):4; declined requests (in):7; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "36"  "assortativity.age.last.computation":-1
+cn "36"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "36"  "risk.meaning.pi":"risk neutral"
+cn "36"  "risk.meaning.sigma":"risk neutral"
+cn "36"  "consider.profession":false
+cn "36"  "risk.factor.pi":1.000000
+cn "36"  "profession":"R"
+cn "36"  "betweenness.last.computation":-1
+cn "36"  "ui.class":"susceptible"
+cn "36"  "consider.age":false
+cn "36"  "satisfied":true
+cn "36"  "ui.label":"36"
+cn "36"  "omega":0.000000
+cn "36"  "assortativity.age":-1
+cn "36"  "assortativity.profession":-1
+cn "36"  "phi":0.200000
+cn "36"  "xi":0.200000
+cn "36"  "clustering":-1
+cn "36"  "betweenness":-1
+cn "36"  "assortativity.risk.perception.last.computation":-1
+cn "36"  "assortativity.risk.perception":-1
+cn "36"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "36"  "age":65
+cn "36"  "closeness.last.computation":-1
+an "37"
+cn "37"  "assortativity.profession.last.computation":-1
+cn "37"  "force.infected":false
+cn "37"  "disease.group":"susceptible"
+cn "37"  "closeness":-1
+cn "37"  "psi":0.400000
+cn "37"  "risk.factor.sigma":1.000000
+cn "37"  "quarantined":false
+cn "37"  "clustering.last.computation":-1
+cn "37"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):2; declined requests (out):7; accepted requests (in):4; declined requests (in):5; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "37"  "assortativity.age.last.computation":-1
+cn "37"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "37"  "risk.meaning.pi":"risk neutral"
+cn "37"  "risk.meaning.sigma":"risk neutral"
+cn "37"  "consider.profession":false
+cn "37"  "risk.factor.pi":1.000000
+cn "37"  "profession":"R"
+cn "37"  "betweenness.last.computation":-1
+cn "37"  "ui.class":"susceptible"
+cn "37"  "consider.age":false
+cn "37"  "satisfied":true
+cn "37"  "ui.label":"37"
+cn "37"  "omega":0.000000
+cn "37"  "assortativity.age":-1
+cn "37"  "assortativity.profession":-1
+cn "37"  "phi":0.200000
+cn "37"  "xi":0.200000
+cn "37"  "clustering":-1
+cn "37"  "betweenness":-1
+cn "37"  "assortativity.risk.perception.last.computation":-1
+cn "37"  "assortativity.risk.perception":-1
+cn "37"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "37"  "age":75
+cn "37"  "closeness.last.computation":-1
+an "38"
+cn "38"  "assortativity.profession.last.computation":-1
+cn "38"  "force.infected":false
+cn "38"  "disease.group":"susceptible"
+cn "38"  "closeness":-1
+cn "38"  "psi":0.400000
+cn "38"  "risk.factor.sigma":1.000000
+cn "38"  "quarantined":false
+cn "38"  "clustering.last.computation":-1
+cn "38"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):5; declined requests (out):5; accepted requests (in):1; declined requests (in):8; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "38"  "assortativity.age.last.computation":-1
+cn "38"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "38"  "risk.meaning.pi":"risk neutral"
+cn "38"  "risk.meaning.sigma":"risk neutral"
+cn "38"  "consider.profession":false
+cn "38"  "risk.factor.pi":1.000000
+cn "38"  "profession":"FPS"
+cn "38"  "betweenness.last.computation":-1
+cn "38"  "ui.class":"susceptible"
+cn "38"  "consider.age":false
+cn "38"  "satisfied":true
+cn "38"  "ui.label":"38"
+cn "38"  "omega":0.000000
+cn "38"  "assortativity.age":-1
+cn "38"  "assortativity.profession":-1
+cn "38"  "phi":0.200000
+cn "38"  "xi":0.200000
+cn "38"  "clustering":-1
+cn "38"  "betweenness":-1
+cn "38"  "assortativity.risk.perception.last.computation":-1
+cn "38"  "assortativity.risk.perception":-1
+cn "38"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "38"  "age":55
+cn "38"  "closeness.last.computation":-1
+an "39"
+cn "39"  "assortativity.profession.last.computation":-1
+cn "39"  "force.infected":false
+cn "39"  "disease.group":"susceptible"
+cn "39"  "closeness":-1
+cn "39"  "psi":0.400000
+cn "39"  "risk.factor.sigma":1.000000
+cn "39"  "quarantined":false
+cn "39"  "clustering.last.computation":-1
+cn "39"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):3; declined requests (out):8; accepted requests (in):3; declined requests (in):4; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "39"  "assortativity.age.last.computation":-1
+cn "39"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "39"  "risk.meaning.pi":"risk neutral"
+cn "39"  "risk.meaning.sigma":"risk neutral"
+cn "39"  "consider.profession":false
+cn "39"  "risk.factor.pi":1.000000
+cn "39"  "profession":"S"
+cn "39"  "betweenness.last.computation":-1
+cn "39"  "ui.class":"susceptible"
+cn "39"  "consider.age":false
+cn "39"  "satisfied":true
+cn "39"  "ui.label":"39"
+cn "39"  "omega":0.000000
+cn "39"  "assortativity.age":-1
+cn "39"  "assortativity.profession":-1
+cn "39"  "phi":0.200000
+cn "39"  "xi":0.200000
+cn "39"  "clustering":-1
+cn "39"  "betweenness":-1
+cn "39"  "assortativity.risk.perception.last.computation":-1
+cn "39"  "assortativity.risk.perception":-1
+cn "39"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "39"  "age":10
+cn "39"  "closeness.last.computation":-1
+an "40"
+cn "40"  "assortativity.profession.last.computation":-1
+cn "40"  "force.infected":false
+cn "40"  "disease.group":"susceptible"
+cn "40"  "closeness":-1
+cn "40"  "psi":0.400000
+cn "40"  "risk.factor.sigma":1.000000
+cn "40"  "quarantined":false
+cn "40"  "clustering.last.computation":-1
+cn "40"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):1; declined requests (out):5; accepted requests (in):5; declined requests (in):9; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "40"  "assortativity.age.last.computation":-1
+cn "40"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "40"  "risk.meaning.pi":"risk neutral"
+cn "40"  "risk.meaning.sigma":"risk neutral"
+cn "40"  "consider.profession":false
+cn "40"  "risk.factor.pi":1.000000
+cn "40"  "profession":"R"
+cn "40"  "betweenness.last.computation":-1
+cn "40"  "ui.class":"susceptible"
+cn "40"  "consider.age":false
+cn "40"  "satisfied":true
+cn "40"  "ui.label":"40"
+cn "40"  "omega":0.000000
+cn "40"  "assortativity.age":-1
+cn "40"  "assortativity.profession":-1
+cn "40"  "phi":0.200000
+cn "40"  "xi":0.200000
+cn "40"  "clustering":-1
+cn "40"  "betweenness":-1
+cn "40"  "assortativity.risk.perception.last.computation":-1
+cn "40"  "assortativity.risk.perception":-1
+cn "40"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "40"  "age":55
+cn "40"  "closeness.last.computation":-1
+an "41"
+cn "41"  "assortativity.profession.last.computation":-1
+cn "41"  "force.infected":false
+cn "41"  "disease.group":"susceptible"
+cn "41"  "closeness":-1
+cn "41"  "psi":0.400000
+cn "41"  "risk.factor.sigma":1.000000
+cn "41"  "quarantined":false
+cn "41"  "clustering.last.computation":-1
+cn "41"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):3; declined requests (out):8; accepted requests (in):3; declined requests (in):11; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "41"  "assortativity.age.last.computation":-1
+cn "41"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "41"  "risk.meaning.pi":"risk neutral"
+cn "41"  "risk.meaning.sigma":"risk neutral"
+cn "41"  "consider.profession":false
+cn "41"  "risk.factor.pi":1.000000
+cn "41"  "profession":"LPSS"
+cn "41"  "betweenness.last.computation":-1
+cn "41"  "ui.class":"susceptible"
+cn "41"  "consider.age":false
+cn "41"  "satisfied":true
+cn "41"  "ui.label":"41"
+cn "41"  "omega":0.000000
+cn "41"  "assortativity.age":-1
+cn "41"  "assortativity.profession":-1
+cn "41"  "phi":0.200000
+cn "41"  "xi":0.200000
+cn "41"  "clustering":-1
+cn "41"  "betweenness":-1
+cn "41"  "assortativity.risk.perception.last.computation":-1
+cn "41"  "assortativity.risk.perception":-1
+cn "41"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "41"  "age":5
+cn "41"  "closeness.last.computation":-1
+an "42"
+cn "42"  "assortativity.profession.last.computation":-1
+cn "42"  "force.infected":false
+cn "42"  "disease.group":"susceptible"
+cn "42"  "closeness":-1
+cn "42"  "psi":0.400000
+cn "42"  "risk.factor.sigma":1.000000
+cn "42"  "quarantined":false
+cn "42"  "clustering.last.computation":-1
+cn "42"  "connection.stats":"broken ties (active):0; broken ties (passive):1; accepted requests (out):6; declined requests (out):12; accepted requests (in):1; declined requests (in):9; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "42"  "assortativity.age.last.computation":-1
+cn "42"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "42"  "risk.meaning.pi":"risk neutral"
+cn "42"  "risk.meaning.sigma":"risk neutral"
+cn "42"  "consider.profession":false
+cn "42"  "risk.factor.pi":1.000000
+cn "42"  "profession":"R"
+cn "42"  "betweenness.last.computation":-1
+cn "42"  "ui.class":"susceptible"
+cn "42"  "consider.age":false
+cn "42"  "satisfied":true
+cn "42"  "ui.label":"42"
+cn "42"  "omega":0.000000
+cn "42"  "assortativity.age":-1
+cn "42"  "assortativity.profession":-1
+cn "42"  "phi":0.200000
+cn "42"  "xi":0.200000
+cn "42"  "clustering":-1
+cn "42"  "betweenness":-1
+cn "42"  "assortativity.risk.perception.last.computation":-1
+cn "42"  "assortativity.risk.perception":-1
+cn "42"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "42"  "age":5
+cn "42"  "closeness.last.computation":-1
+an "43"
+cn "43"  "assortativity.profession.last.computation":-1
+cn "43"  "force.infected":false
+cn "43"  "disease.group":"susceptible"
+cn "43"  "closeness":-1
+cn "43"  "psi":0.400000
+cn "43"  "risk.factor.sigma":1.000000
+cn "43"  "quarantined":false
+cn "43"  "clustering.last.computation":-1
+cn "43"  "connection.stats":"broken ties (active):1; broken ties (passive):0; accepted requests (out):1; declined requests (out):5; accepted requests (in):6; declined requests (in):7; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "43"  "assortativity.age.last.computation":-1
+cn "43"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "43"  "risk.meaning.pi":"risk neutral"
+cn "43"  "risk.meaning.sigma":"risk neutral"
+cn "43"  "consider.profession":false
+cn "43"  "risk.factor.pi":1.000000
+cn "43"  "profession":"CM"
+cn "43"  "betweenness.last.computation":-1
+cn "43"  "ui.class":"susceptible"
+cn "43"  "consider.age":false
+cn "43"  "satisfied":true
+cn "43"  "ui.label":"43"
+cn "43"  "omega":0.000000
+cn "43"  "assortativity.age":-1
+cn "43"  "assortativity.profession":-1
+cn "43"  "phi":0.200000
+cn "43"  "xi":0.200000
+cn "43"  "clustering":-1
+cn "43"  "betweenness":-1
+cn "43"  "assortativity.risk.perception.last.computation":-1
+cn "43"  "assortativity.risk.perception":-1
+cn "43"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "43"  "age":65
+cn "43"  "closeness.last.computation":-1
+an "44"
+cn "44"  "assortativity.profession.last.computation":-1
+cn "44"  "force.infected":false
+cn "44"  "disease.group":"susceptible"
+cn "44"  "closeness":-1
+cn "44"  "psi":0.400000
+cn "44"  "risk.factor.sigma":1.000000
+cn "44"  "quarantined":false
+cn "44"  "clustering.last.computation":-1
+cn "44"  "connection.stats":"broken ties (active):0; broken ties (passive):1; accepted requests (out):0; declined requests (out):0; accepted requests (in):7; declined requests (in):14; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "44"  "assortativity.age.last.computation":-1
+cn "44"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "44"  "risk.meaning.pi":"risk neutral"
+cn "44"  "risk.meaning.sigma":"risk neutral"
+cn "44"  "consider.profession":false
+cn "44"  "risk.factor.pi":1.000000
+cn "44"  "profession":"P"
+cn "44"  "betweenness.last.computation":-1
+cn "44"  "ui.class":"susceptible"
+cn "44"  "consider.age":false
+cn "44"  "satisfied":true
+cn "44"  "ui.label":"44"
+cn "44"  "omega":0.000000
+cn "44"  "assortativity.age":-1
+cn "44"  "assortativity.profession":-1
+cn "44"  "phi":0.200000
+cn "44"  "xi":0.200000
+cn "44"  "clustering":-1
+cn "44"  "betweenness":-1
+cn "44"  "assortativity.risk.perception.last.computation":-1
+cn "44"  "assortativity.risk.perception":-1
+cn "44"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "44"  "age":40
+cn "44"  "closeness.last.computation":-1
+an "45"
+cn "45"  "assortativity.profession.last.computation":-1
+cn "45"  "force.infected":false
+cn "45"  "disease.group":"susceptible"
+cn "45"  "closeness":-1
+cn "45"  "psi":0.400000
+cn "45"  "risk.factor.sigma":1.000000
+cn "45"  "quarantined":false
+cn "45"  "clustering.last.computation":-1
+cn "45"  "connection.stats":"broken ties (active):2; broken ties (passive):0; accepted requests (out):5; declined requests (out):3; accepted requests (in):3; declined requests (in):7; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "45"  "assortativity.age.last.computation":-1
+cn "45"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "45"  "risk.meaning.pi":"risk neutral"
+cn "45"  "risk.meaning.sigma":"risk neutral"
+cn "45"  "consider.profession":false
+cn "45"  "risk.factor.pi":1.000000
+cn "45"  "profession":"PCS"
+cn "45"  "betweenness.last.computation":-1
+cn "45"  "ui.class":"susceptible"
+cn "45"  "consider.age":false
+cn "45"  "satisfied":true
+cn "45"  "ui.label":"45"
+cn "45"  "omega":0.000000
+cn "45"  "assortativity.age":-1
+cn "45"  "assortativity.profession":-1
+cn "45"  "phi":0.200000
+cn "45"  "xi":0.200000
+cn "45"  "clustering":-1
+cn "45"  "betweenness":-1
+cn "45"  "assortativity.risk.perception.last.computation":-1
+cn "45"  "assortativity.risk.perception":-1
+cn "45"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "45"  "age":0
+cn "45"  "closeness.last.computation":-1
+an "46"
+cn "46"  "assortativity.profession.last.computation":-1
+cn "46"  "force.infected":false
+cn "46"  "disease.group":"susceptible"
+cn "46"  "closeness":-1
+cn "46"  "psi":0.400000
+cn "46"  "risk.factor.sigma":1.000000
+cn "46"  "quarantined":false
+cn "46"  "clustering.last.computation":-1
+cn "46"  "connection.stats":"broken ties (active):1; broken ties (passive):0; accepted requests (out):5; declined requests (out):3; accepted requests (in):2; declined requests (in):10; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "46"  "assortativity.age.last.computation":-1
+cn "46"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "46"  "risk.meaning.pi":"risk neutral"
+cn "46"  "risk.meaning.sigma":"risk neutral"
+cn "46"  "consider.profession":false
+cn "46"  "risk.factor.pi":1.000000
+cn "46"  "profession":"CE"
+cn "46"  "betweenness.last.computation":-1
+cn "46"  "ui.class":"susceptible"
+cn "46"  "consider.age":false
+cn "46"  "satisfied":true
+cn "46"  "ui.label":"46"
+cn "46"  "omega":0.000000
+cn "46"  "assortativity.age":-1
+cn "46"  "assortativity.profession":-1
+cn "46"  "phi":0.200000
+cn "46"  "xi":0.200000
+cn "46"  "clustering":-1
+cn "46"  "betweenness":-1
+cn "46"  "assortativity.risk.perception.last.computation":-1
+cn "46"  "assortativity.risk.perception":-1
+cn "46"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "46"  "age":40
+cn "46"  "closeness.last.computation":-1
+an "47"
+cn "47"  "assortativity.profession.last.computation":-1
+cn "47"  "force.infected":false
+cn "47"  "disease.group":"susceptible"
+cn "47"  "closeness":-1
+cn "47"  "psi":0.400000
+cn "47"  "risk.factor.sigma":1.000000
+cn "47"  "quarantined":false
+cn "47"  "clustering.last.computation":-1
+cn "47"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):0; declined requests (out):0; accepted requests (in):6; declined requests (in):8; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "47"  "assortativity.age.last.computation":-1
+cn "47"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "47"  "risk.meaning.pi":"risk neutral"
+cn "47"  "risk.meaning.sigma":"risk neutral"
+cn "47"  "consider.profession":false
+cn "47"  "risk.factor.pi":1.000000
+cn "47"  "profession":"HPT"
+cn "47"  "betweenness.last.computation":-1
+cn "47"  "ui.class":"susceptible"
+cn "47"  "consider.age":false
+cn "47"  "satisfied":true
+cn "47"  "ui.label":"47"
+cn "47"  "omega":0.000000
+cn "47"  "assortativity.age":-1
+cn "47"  "assortativity.profession":-1
+cn "47"  "phi":0.200000
+cn "47"  "xi":0.200000
+cn "47"  "clustering":-1
+cn "47"  "betweenness":-1
+cn "47"  "assortativity.risk.perception.last.computation":-1
+cn "47"  "assortativity.risk.perception":-1
+cn "47"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "47"  "age":0
+cn "47"  "closeness.last.computation":-1
+an "48"
+cn "48"  "assortativity.profession.last.computation":-1
+cn "48"  "force.infected":false
+cn "48"  "disease.group":"susceptible"
+cn "48"  "closeness":-1
+cn "48"  "psi":0.400000
+cn "48"  "risk.factor.sigma":1.000000
+cn "48"  "quarantined":false
+cn "48"  "clustering.last.computation":-1
+cn "48"  "connection.stats":"broken ties (active):1; broken ties (passive):0; accepted requests (out):2; declined requests (out):21; accepted requests (in):5; declined requests (in):7; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "48"  "assortativity.age.last.computation":-1
+cn "48"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "48"  "risk.meaning.pi":"risk neutral"
+cn "48"  "risk.meaning.sigma":"risk neutral"
+cn "48"  "consider.profession":false
+cn "48"  "risk.factor.pi":1.000000
+cn "48"  "profession":"BFO"
+cn "48"  "betweenness.last.computation":-1
+cn "48"  "ui.class":"susceptible"
+cn "48"  "consider.age":false
+cn "48"  "satisfied":false
+cn "48"  "ui.label":"48"
+cn "48"  "omega":0.000000
+cn "48"  "assortativity.age":-1
+cn "48"  "assortativity.profession":-1
+cn "48"  "phi":0.200000
+cn "48"  "xi":0.200000
+cn "48"  "clustering":-1
+cn "48"  "betweenness":-1
+cn "48"  "assortativity.risk.perception.last.computation":-1
+cn "48"  "assortativity.risk.perception":-1
+cn "48"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "48"  "age":5
+cn "48"  "closeness.last.computation":-1
+an "49"
+cn "49"  "assortativity.profession.last.computation":-1
+cn "49"  "force.infected":false
+cn "49"  "disease.group":"susceptible"
+cn "49"  "closeness":-1
+cn "49"  "psi":0.400000
+cn "49"  "risk.factor.sigma":1.000000
+cn "49"  "quarantined":false
+cn "49"  "clustering.last.computation":-1
+cn "49"  "connection.stats":"broken ties (active):0; broken ties (passive):1; accepted requests (out):4; declined requests (out):61; accepted requests (in):1; declined requests (in):0; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "49"  "assortativity.age.last.computation":-1
+cn "49"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "49"  "risk.meaning.pi":"risk neutral"
+cn "49"  "risk.meaning.sigma":"risk neutral"
+cn "49"  "consider.profession":false
+cn "49"  "risk.factor.pi":1.000000
+cn "49"  "profession":"IMR"
+cn "49"  "betweenness.last.computation":-1
+cn "49"  "ui.class":"susceptible"
+cn "49"  "consider.age":false
+cn "49"  "satisfied":false
+cn "49"  "ui.label":"49"
+cn "49"  "omega":0.000000
+cn "49"  "assortativity.age":-1
+cn "49"  "assortativity.profession":-1
+cn "49"  "phi":0.200000
+cn "49"  "xi":0.200000
+cn "49"  "clustering":-1
+cn "49"  "betweenness":-1
+cn "49"  "assortativity.risk.perception.last.computation":-1
+cn "49"  "assortativity.risk.perception":-1
+cn "49"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "49"  "age":55
+cn "49"  "closeness.last.computation":-1
+an "50"
+cn "50"  "assortativity.profession.last.computation":-1
+cn "50"  "force.infected":false
+cn "50"  "disease.group":"susceptible"
+cn "50"  "closeness":-1
+cn "50"  "psi":0.400000
+cn "50"  "risk.factor.sigma":1.000000
+cn "50"  "quarantined":false
+cn "50"  "clustering.last.computation":-1
+cn "50"  "connection.stats":"broken ties (active):1; broken ties (passive):0; accepted requests (out):3; declined requests (out):53; accepted requests (in):3; declined requests (in):3; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "50"  "assortativity.age.last.computation":-1
+cn "50"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "50"  "risk.meaning.pi":"risk neutral"
+cn "50"  "risk.meaning.sigma":"risk neutral"
+cn "50"  "consider.profession":false
+cn "50"  "risk.factor.pi":1.000000
+cn "50"  "profession":"OAS"
+cn "50"  "betweenness.last.computation":-1
+cn "50"  "ui.class":"susceptible"
+cn "50"  "consider.age":false
+cn "50"  "satisfied":false
+cn "50"  "ui.label":"50"
+cn "50"  "omega":0.000000
+cn "50"  "assortativity.age":-1
+cn "50"  "assortativity.profession":-1
+cn "50"  "phi":0.200000
+cn "50"  "xi":0.200000
+cn "50"  "clustering":-1
+cn "50"  "betweenness":-1
+cn "50"  "assortativity.risk.perception.last.computation":-1
+cn "50"  "assortativity.risk.perception":-1
+cn "50"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "50"  "age":10
+cn "50"  "closeness.last.computation":-1
+an "51"
+cn "51"  "assortativity.profession.last.computation":-1
+cn "51"  "force.infected":false
+cn "51"  "disease.group":"susceptible"
+cn "51"  "closeness":-1
+cn "51"  "psi":0.400000
+cn "51"  "risk.factor.sigma":1.000000
+cn "51"  "quarantined":false
+cn "51"  "clustering.last.computation":-1
+cn "51"  "connection.stats":"broken ties (active):1; broken ties (passive):0; accepted requests (out):2; declined requests (out):1; accepted requests (in):5; declined requests (in):7; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "51"  "assortativity.age.last.computation":-1
+cn "51"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "51"  "risk.meaning.pi":"risk neutral"
+cn "51"  "risk.meaning.sigma":"risk neutral"
+cn "51"  "consider.profession":false
+cn "51"  "risk.factor.pi":1.000000
+cn "51"  "profession":"FPS"
+cn "51"  "betweenness.last.computation":-1
+cn "51"  "ui.class":"susceptible"
+cn "51"  "consider.age":false
+cn "51"  "satisfied":true
+cn "51"  "ui.label":"51"
+cn "51"  "omega":0.000000
+cn "51"  "assortativity.age":-1
+cn "51"  "assortativity.profession":-1
+cn "51"  "phi":0.200000
+cn "51"  "xi":0.200000
+cn "51"  "clustering":-1
+cn "51"  "betweenness":-1
+cn "51"  "assortativity.risk.perception.last.computation":-1
+cn "51"  "assortativity.risk.perception":-1
+cn "51"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "51"  "age":60
+cn "51"  "closeness.last.computation":-1
+an "52"
+cn "52"  "assortativity.profession.last.computation":-1
+cn "52"  "force.infected":false
+cn "52"  "disease.group":"susceptible"
+cn "52"  "closeness":-1
+cn "52"  "psi":0.400000
+cn "52"  "risk.factor.sigma":1.000000
+cn "52"  "quarantined":false
+cn "52"  "clustering.last.computation":-1
+cn "52"  "connection.stats":"broken ties (active):0; broken ties (passive):1; accepted requests (out):4; declined requests (out):18; accepted requests (in):3; declined requests (in):1; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "52"  "assortativity.age.last.computation":-1
+cn "52"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "52"  "risk.meaning.pi":"risk neutral"
+cn "52"  "risk.meaning.sigma":"risk neutral"
+cn "52"  "consider.profession":false
+cn "52"  "risk.factor.pi":1.000000
+cn "52"  "profession":"OAS"
+cn "52"  "betweenness.last.computation":-1
+cn "52"  "ui.class":"susceptible"
+cn "52"  "consider.age":false
+cn "52"  "satisfied":false
+cn "52"  "ui.label":"52"
+cn "52"  "omega":0.000000
+cn "52"  "assortativity.age":-1
+cn "52"  "assortativity.profession":-1
+cn "52"  "phi":0.200000
+cn "52"  "xi":0.200000
+cn "52"  "clustering":-1
+cn "52"  "betweenness":-1
+cn "52"  "assortativity.risk.perception.last.computation":-1
+cn "52"  "assortativity.risk.perception":-1
+cn "52"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "52"  "age":10
+cn "52"  "closeness.last.computation":-1
+an "53"
+cn "53"  "assortativity.profession.last.computation":-1
+cn "53"  "force.infected":false
+cn "53"  "disease.group":"susceptible"
+cn "53"  "closeness":-1
+cn "53"  "psi":0.400000
+cn "53"  "risk.factor.sigma":1.000000
+cn "53"  "quarantined":false
+cn "53"  "clustering.last.computation":-1
+cn "53"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):4; declined requests (out):6; accepted requests (in):2; declined requests (in):7; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "53"  "assortativity.age.last.computation":-1
+cn "53"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "53"  "risk.meaning.pi":"risk neutral"
+cn "53"  "risk.meaning.sigma":"risk neutral"
+cn "53"  "consider.profession":false
+cn "53"  "risk.factor.pi":1.000000
+cn "53"  "profession":"BFO"
+cn "53"  "betweenness.last.computation":-1
+cn "53"  "ui.class":"susceptible"
+cn "53"  "consider.age":false
+cn "53"  "satisfied":true
+cn "53"  "ui.label":"53"
+cn "53"  "omega":0.000000
+cn "53"  "assortativity.age":-1
+cn "53"  "assortativity.profession":-1
+cn "53"  "phi":0.200000
+cn "53"  "xi":0.200000
+cn "53"  "clustering":-1
+cn "53"  "betweenness":-1
+cn "53"  "assortativity.risk.perception.last.computation":-1
+cn "53"  "assortativity.risk.perception":-1
+cn "53"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "53"  "age":40
+cn "53"  "closeness.last.computation":-1
+an "54"
+cn "54"  "assortativity.profession.last.computation":-1
+cn "54"  "force.infected":false
+cn "54"  "disease.group":"susceptible"
+cn "54"  "closeness":-1
+cn "54"  "psi":0.400000
+cn "54"  "risk.factor.sigma":1.000000
+cn "54"  "quarantined":false
+cn "54"  "clustering.last.computation":-1
+cn "54"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):5; declined requests (out):3; accepted requests (in):1; declined requests (in):5; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "54"  "assortativity.age.last.computation":-1
+cn "54"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "54"  "risk.meaning.pi":"risk neutral"
+cn "54"  "risk.meaning.sigma":"risk neutral"
+cn "54"  "consider.profession":false
+cn "54"  "risk.factor.pi":1.000000
+cn "54"  "profession":"S"
+cn "54"  "betweenness.last.computation":-1
+cn "54"  "ui.class":"susceptible"
+cn "54"  "consider.age":false
+cn "54"  "satisfied":true
+cn "54"  "ui.label":"54"
+cn "54"  "omega":0.000000
+cn "54"  "assortativity.age":-1
+cn "54"  "assortativity.profession":-1
+cn "54"  "phi":0.200000
+cn "54"  "xi":0.200000
+cn "54"  "clustering":-1
+cn "54"  "betweenness":-1
+cn "54"  "assortativity.risk.perception.last.computation":-1
+cn "54"  "assortativity.risk.perception":-1
+cn "54"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "54"  "age":30
+cn "54"  "closeness.last.computation":-1
+an "55"
+cn "55"  "assortativity.profession.last.computation":-1
+cn "55"  "force.infected":false
+cn "55"  "disease.group":"susceptible"
+cn "55"  "closeness":-1
+cn "55"  "psi":0.400000
+cn "55"  "risk.factor.sigma":1.000000
+cn "55"  "quarantined":false
+cn "55"  "clustering.last.computation":-1
+cn "55"  "connection.stats":"broken ties (active):1; broken ties (passive):0; accepted requests (out):5; declined requests (out):5; accepted requests (in):2; declined requests (in):16; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "55"  "assortativity.age.last.computation":-1
+cn "55"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "55"  "risk.meaning.pi":"risk neutral"
+cn "55"  "risk.meaning.sigma":"risk neutral"
+cn "55"  "consider.profession":false
+cn "55"  "risk.factor.pi":1.000000
+cn "55"  "profession":"R"
+cn "55"  "betweenness.last.computation":-1
+cn "55"  "ui.class":"susceptible"
+cn "55"  "consider.age":false
+cn "55"  "satisfied":true
+cn "55"  "ui.label":"55"
+cn "55"  "omega":0.000000
+cn "55"  "assortativity.age":-1
+cn "55"  "assortativity.profession":-1
+cn "55"  "phi":0.200000
+cn "55"  "xi":0.200000
+cn "55"  "clustering":-1
+cn "55"  "betweenness":-1
+cn "55"  "assortativity.risk.perception.last.computation":-1
+cn "55"  "assortativity.risk.perception":-1
+cn "55"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "55"  "age":20
+cn "55"  "closeness.last.computation":-1
+an "56"
+cn "56"  "assortativity.profession.last.computation":-1
+cn "56"  "force.infected":false
+cn "56"  "disease.group":"susceptible"
+cn "56"  "closeness":-1
+cn "56"  "psi":0.400000
+cn "56"  "risk.factor.sigma":1.000000
+cn "56"  "quarantined":false
+cn "56"  "clustering.last.computation":-1
+cn "56"  "connection.stats":"broken ties (active):1; broken ties (passive):0; accepted requests (out):2; declined requests (out):2; accepted requests (in):5; declined requests (in):12; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "56"  "assortativity.age.last.computation":-1
+cn "56"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "56"  "risk.meaning.pi":"risk neutral"
+cn "56"  "risk.meaning.sigma":"risk neutral"
+cn "56"  "consider.profession":false
+cn "56"  "risk.factor.pi":1.000000
+cn "56"  "profession":"CE"
+cn "56"  "betweenness.last.computation":-1
+cn "56"  "ui.class":"susceptible"
+cn "56"  "consider.age":false
+cn "56"  "satisfied":true
+cn "56"  "ui.label":"56"
+cn "56"  "omega":0.000000
+cn "56"  "assortativity.age":-1
+cn "56"  "assortativity.profession":-1
+cn "56"  "phi":0.200000
+cn "56"  "xi":0.200000
+cn "56"  "clustering":-1
+cn "56"  "betweenness":-1
+cn "56"  "assortativity.risk.perception.last.computation":-1
+cn "56"  "assortativity.risk.perception":-1
+cn "56"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "56"  "age":0
+cn "56"  "closeness.last.computation":-1
+an "57"
+cn "57"  "assortativity.profession.last.computation":-1
+cn "57"  "force.infected":false
+cn "57"  "disease.group":"susceptible"
+cn "57"  "closeness":-1
+cn "57"  "psi":0.400000
+cn "57"  "risk.factor.sigma":1.000000
+cn "57"  "quarantined":false
+cn "57"  "clustering.last.computation":-1
+cn "57"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):3; declined requests (out):7; accepted requests (in):3; declined requests (in):9; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "57"  "assortativity.age.last.computation":-1
+cn "57"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "57"  "risk.meaning.pi":"risk neutral"
+cn "57"  "risk.meaning.sigma":"risk neutral"
+cn "57"  "consider.profession":false
+cn "57"  "risk.factor.pi":1.000000
+cn "57"  "profession":"OAS"
+cn "57"  "betweenness.last.computation":-1
+cn "57"  "ui.class":"susceptible"
+cn "57"  "consider.age":false
+cn "57"  "satisfied":true
+cn "57"  "ui.label":"57"
+cn "57"  "omega":0.000000
+cn "57"  "assortativity.age":-1
+cn "57"  "assortativity.profession":-1
+cn "57"  "phi":0.200000
+cn "57"  "xi":0.200000
+cn "57"  "clustering":-1
+cn "57"  "betweenness":-1
+cn "57"  "assortativity.risk.perception.last.computation":-1
+cn "57"  "assortativity.risk.perception":-1
+cn "57"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "57"  "age":5
+cn "57"  "closeness.last.computation":-1
+an "58"
+cn "58"  "assortativity.profession.last.computation":-1
+cn "58"  "force.infected":false
+cn "58"  "disease.group":"susceptible"
+cn "58"  "closeness":-1
+cn "58"  "psi":0.400000
+cn "58"  "risk.factor.sigma":1.000000
+cn "58"  "quarantined":false
+cn "58"  "clustering.last.computation":-1
+cn "58"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):5; declined requests (out):0; accepted requests (in):1; declined requests (in):11; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "58"  "assortativity.age.last.computation":-1
+cn "58"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "58"  "risk.meaning.pi":"risk neutral"
+cn "58"  "risk.meaning.sigma":"risk neutral"
+cn "58"  "consider.profession":false
+cn "58"  "risk.factor.pi":1.000000
+cn "58"  "profession":"EIL"
+cn "58"  "betweenness.last.computation":-1
+cn "58"  "ui.class":"susceptible"
+cn "58"  "consider.age":false
+cn "58"  "satisfied":true
+cn "58"  "ui.label":"58"
+cn "58"  "omega":0.000000
+cn "58"  "assortativity.age":-1
+cn "58"  "assortativity.profession":-1
+cn "58"  "phi":0.200000
+cn "58"  "xi":0.200000
+cn "58"  "clustering":-1
+cn "58"  "betweenness":-1
+cn "58"  "assortativity.risk.perception.last.computation":-1
+cn "58"  "assortativity.risk.perception":-1
+cn "58"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "58"  "age":30
+cn "58"  "closeness.last.computation":-1
+an "59"
+cn "59"  "assortativity.profession.last.computation":-1
+cn "59"  "force.infected":false
+cn "59"  "disease.group":"susceptible"
+cn "59"  "closeness":-1
+cn "59"  "psi":0.400000
+cn "59"  "risk.factor.sigma":1.000000
+cn "59"  "quarantined":false
+cn "59"  "clustering.last.computation":-1
+cn "59"  "connection.stats":"broken ties (active):1; broken ties (passive):1; accepted requests (out):6; declined requests (out):10; accepted requests (in):2; declined requests (in):8; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "59"  "assortativity.age.last.computation":-1
+cn "59"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "59"  "risk.meaning.pi":"risk neutral"
+cn "59"  "risk.meaning.sigma":"risk neutral"
+cn "59"  "consider.profession":false
+cn "59"  "risk.factor.pi":1.000000
+cn "59"  "profession":"CM"
+cn "59"  "betweenness.last.computation":-1
+cn "59"  "ui.class":"susceptible"
+cn "59"  "consider.age":false
+cn "59"  "satisfied":true
+cn "59"  "ui.label":"59"
+cn "59"  "omega":0.000000
+cn "59"  "assortativity.age":-1
+cn "59"  "assortativity.profession":-1
+cn "59"  "phi":0.200000
+cn "59"  "xi":0.200000
+cn "59"  "clustering":-1
+cn "59"  "betweenness":-1
+cn "59"  "assortativity.risk.perception.last.computation":-1
+cn "59"  "assortativity.risk.perception":-1
+cn "59"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "59"  "age":50
+cn "59"  "closeness.last.computation":-1
+an "60"
+cn "60"  "assortativity.profession.last.computation":-1
+cn "60"  "force.infected":false
+cn "60"  "disease.group":"susceptible"
+cn "60"  "closeness":-1
+cn "60"  "psi":0.400000
+cn "60"  "risk.factor.sigma":1.000000
+cn "60"  "quarantined":false
+cn "60"  "clustering.last.computation":-1
+cn "60"  "connection.stats":"broken ties (active):0; broken ties (passive):0; accepted requests (out):3; declined requests (out):5; accepted requests (in):3; declined requests (in):4; broken ties (active) - epidemic:0; broken ties (passive) - epidemic:0; accepted requests (out) - epidemic:0; declined requests (out) - epidemic:0; accepted requests (in) - epidemic:0; declined requests (in) - epidemic:0"
+cn "60"  "assortativity.age.last.computation":-1
+cn "60"  "disease.specs":"disease type:generic SIR; tau:0; sigma:0.0; gamma:0.0; mu:0.0"
+cn "60"  "risk.meaning.pi":"risk neutral"
+cn "60"  "risk.meaning.sigma":"risk neutral"
+cn "60"  "consider.profession":false
+cn "60"  "risk.factor.pi":1.000000
+cn "60"  "profession":"S"
+cn "60"  "betweenness.last.computation":-1
+cn "60"  "ui.class":"susceptible"
+cn "60"  "consider.age":false
+cn "60"  "satisfied":true
+cn "60"  "ui.label":"60"
+cn "60"  "omega":0.000000
+cn "60"  "assortativity.age":-1
+cn "60"  "assortativity.profession":-1
+cn "60"  "phi":0.200000
+cn "60"  "xi":0.200000
+cn "60"  "clustering":-1
+cn "60"  "betweenness":-1
+cn "60"  "assortativity.risk.perception.last.computation":-1
+cn "60"  "assortativity.risk.perception":-1
+cn "60"  "utility.function":"type:NB;b1:1.0;b2:0.5;c1:0.2;c2:0.06666666666666667;alpha:0.067;"
+cn "60"  "age":25
+cn "60"  "closeness.last.computation":-1
+ae "1529" "15"  "29"
+ae "1115" "11"  "15"
+ae "1215" "12"  "15"
+ae "1526" "15"  "26"
+ae "1538" "15"  "38"
+ae "915" "9"  "15"
+ae "138" "1"  "38"
+ae "3851" "38"  "51"
+ae "3848" "38"  "48"
+ae "3840" "38"  "40"
+ae "3856" "38"  "56"
+ae "19" "1"  "9"
+ae "921" "9"  "21"
+ae "910" "9"  "10"
+ae "89" "8"  "9"
+ae "914" "9"  "14"
+ae "144" "1"  "44"
+ae "129" "1"  "29"
+ae "122" "1"  "22"
+ae "153" "1"  "53"
+ae "2224" "22"  "24"
+ae "2229" "22"  "29"
+ae "2234" "22"  "34"
+ae "2225" "22"  "25"
+ae "2259" "22"  "59"
+ae "2544" "25"  "44"
+ae "2536" "25"  "36"
+ae "2527" "25"  "27"
+ae "2325" "23"  "25"
+ae "2552" "25"  "52"
+ae "2745" "27"  "45"
+ae "2748" "27"  "48"
+ae "2744" "27"  "44"
+ae "2743" "27"  "43"
+ae "2731" "27"  "31"
+ae "1359" "13"  "59"
+ae "4659" "46"  "59"
+ae "542" "5"  "42"
+ae "259" "2"  "59"
+ae "449" "4"  "49"
+ae "1146" "11"  "46"
+ae "546" "5"  "46"
+ae "4656" "46"  "56"
+ae "1720" "17"  "20"
+ae "1046" "10"  "46"
+ae "220" "2"  "20"
+ae "210" "2"  "10"
+ae "230" "2"  "30"
+ae "234" "2"  "34"
+ae "256" "2"  "56"
+ae "514" "5"  "14"
+ae "1649" "16"  "49"
+ae "4547" "45"  "47"
+ae "2645" "26"  "45"
+ae "3345" "33"  "45"
+ae "733" "7"  "33"
+ae "2633" "26"  "33"
+ae "3358" "33"  "58"
+ae "3033" "30"  "33"
+ae "3344" "33"  "44"
+ae "2358" "23"  "58"
+ae "4458" "44"  "58"
+ae "4258" "42"  "58"
+ae "5558" "55"  "58"
+ae "1958" "19"  "58"
+ae "1255" "12"  "55"
+ae "4355" "43"  "55"
+ae "1453" "14"  "53"
+ae "2355" "23"  "55"
+ae "1355" "13"  "55"
+ae "619" "6"  "19"
+ae "1954" "19"  "54"
+ae "1934" "19"  "34"
+ae "1932" "19"  "32"
+ae "1449" "14"  "49"
+ae "659" "6"  "59"
+ae "611" "6"  "11"
+ae "629" "6"  "29"
+ae "635" "6"  "35"
+ae "1736" "17"  "36"
+ae "3240" "32"  "40"
+ae "2632" "26"  "32"
+ae "3248" "32"  "48"
+ae "339" "3"  "39"
+ae "337" "3"  "37"
+ae "348" "3"  "48"
+ae "326" "3"  "26"
+ae "340" "3"  "40"
+ae "723" "7"  "23"
+ae "1223" "12"  "23"
+ae "323" "3"  "23"
+ae "2442" "24"  "42"
+ae "3542" "35"  "42"
+ae "3242" "32"  "42"
+ae "4260" "42"  "60"
+ae "2943" "29"  "43"
+ae "3147" "31"  "47"
+ae "2131" "21"  "31"
+ae "3134" "31"  "34"
+ae "1831" "18"  "31"
+ae "1750" "17"  "50"
+ae "1844" "18"  "44"
+ae "1834" "18"  "34"
+ae "818" "8"  "18"
+ae "1843" "18"  "43"
+ae "1840" "18"  "40"
+ae "1113" "11"  "13"
+ae "1156" "11"  "56"
+ae "1116" "11"  "16"
+ae "2157" "21"  "57"
+ae "2135" "21"  "35"
+ae "2143" "21"  "43"
+ae "821" "8"  "21"
+ae "2456" "24"  "56"
+ae "856" "8"  "56"
+ae "5457" "54"  "57"
+ae "2954" "29"  "54"
+ae "2654" "26"  "54"
+ae "3454" "34"  "54"
+ae "854" "8"  "54"
+ae "4851" "48"  "51"
+ae "1959" "19"  "59"
+ae "4753" "47"  "53"
+ae "3753" "37"  "53"
+ae "5357" "53"  "57"
+ae "739" "7"  "39"
+ae "741" "7"  "41"
+ae "713" "7"  "13"
+ae "1043" "10"  "43"
+ae "1013" "10"  "13"
+ae "3940" "39"  "40"
+ae "3739" "37"  "39"
+ae "3539" "35"  "39"
+ae "4757" "47"  "57"
+ae "3757" "37"  "57"
+ae "3557" "35"  "57"
+ae "824" "8"  "24"
+ae "2055" "20"  "55"
+ae "420" "4"  "20"
+ae "2046" "20"  "46"
+ae "1252" "12"  "52"
+ae "3252" "32"  "52"
+ae "5152" "51"  "52"
+ae "45" "4"  "5"
+ae "412" "4"  "12"
+ae "413" "4"  "13"
+ae "2835" "28"  "35"
+ae "428" "4"  "28"
+ae "2839" "28"  "39"
+ae "2860" "28"  "60"
+ae "4151" "41"  "51"
+ae "5160" "51"  "60"
+ae "1647" "16"  "47"
+ae "645" "6"  "45"
+ae "2836" "28"  "36"
+ae "1636" "16"  "36"
+ae "3637" "36"  "37"
+ae "2437" "24"  "37"
+ae "1630" "16"  "30"
+ae "4560" "45"  "60"
+ae "4760" "47"  "60"
+ae "5260" "52"  "60"
+ae "4041" "40"  "41"
+ae "2841" "28"  "41"
+ae "4150" "41"  "50"
+ae "1241" "12"  "41"
+ae "550" "5"  "50"
+ae "3050" "30"  "50"
+ae "1450" "14"  "50"
+ae "3151" "31"  "51"
+ae "753" "7"  "53"
+ae "1030" "10"  "30"
+ae "2436" "24"  "36"
+ae "1730" "17"  "30"
+ae "1749" "17"  "49"
+ae "1416" "14"  "16"
+ae "2048" "20"  "48"
+ae "1752" "17"  "52"

@@ -69,9 +69,6 @@ public class NetworkFileWriter {
      */
     public void write() {
 
-        System.out.println("Exporting to: " + this.file);
-
-
 
         Path path = Paths.get(this.path);
         if (!Files.exists(path)) {
@@ -82,7 +79,9 @@ public class NetworkFileWriter {
             }
         }
 
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(this.file))) {
+        System.out.println("Exporting to: " + this.path + this.file);
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(this.path + "/" + this.file))) {
             String netString = "";
             int numAgents = 10;
             do {

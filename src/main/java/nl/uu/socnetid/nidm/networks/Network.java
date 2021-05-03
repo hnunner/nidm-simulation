@@ -1980,8 +1980,7 @@ public class Network extends SingleGraph implements SimulationListener {
      */
     @Override
     public void notifySimulationStarted(Simulation simulation) {
-        // XXX STABILITY COMPUTATION TURNED OFF AT SIMULATION START
-//        computeStability();
+        computeStability();
     }
 
     /* (non-Javadoc)
@@ -1990,8 +1989,7 @@ public class Network extends SingleGraph implements SimulationListener {
      */
     @Override
     public void notifyRoundFinished(Simulation simulation) {
-        // XXX STABILITY COMPUTATION TURNED OFF AT SIMULATION END
-//        computeStability();
+        computeStability();
     }
 
     /* (non-Javadoc)
