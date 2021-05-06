@@ -227,6 +227,11 @@ public class Generator {
             dataGenerator = new ProfessionsNetworkDataGenerator(getNetworkExportPath());
             dataGenerator.launch();
         }
+        // Professions agent stats
+//        if (PropertiesHandler.getInstance().isGenerateProfessionNetworksAgentStats()) {
+//            dataGenerator = new ProfessionsNetworkAgentStatsGenerator(getNetworkExportPath());
+//            dataGenerator.launch();
+//        }
 
     }
 
