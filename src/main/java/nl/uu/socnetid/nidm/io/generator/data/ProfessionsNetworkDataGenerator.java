@@ -81,7 +81,6 @@ public class ProfessionsNetworkDataGenerator extends AbstractGenerator implement
 //            + "networks/professions.lockdown.51-60/";
 //            + "networks/professions.lockdown.61-70/";
 //            + "networks/professions.lockdown.71-80/";
-//            + "networks/professions.lockdown.81-90/";
             + "networks/professions.lockdown.81-90/";
 
     private static final String NETWORKS_SUMMARY_FILE = NETWORKS_PATH + "profession-networks-lockdown.csv";
@@ -99,7 +98,6 @@ public class ProfessionsNetworkDataGenerator extends AbstractGenerator implement
             VAX_DIST_NONE,
             VAX_DIST_RANDOM,
             VAX_DIST_BY_AV_DEGREE_PER_PROF_GROUP);
-
     private static final int ITERATIONS = 20;
 //    private static final int ITERATIONS = 3;
 
