@@ -88,10 +88,8 @@ public class ProfessionsNetworkDataGenerator extends AbstractGenerator implement
     // PARAMETER VARIATIONS
     // vaccine efficacy
     private static final List<Double> ETAS = Arrays.asList(0.6, 0.75, 0.9);
-//    private static final List<Double> ETAS = Arrays.asList(0.6, 0.9);
     // vaccine availibility
     private static final List<Double> THETAS = Arrays.asList(0.05, 0.10, 0.2);
-//    private static final List<Double> THETAS = Arrays.asList(0.05, 0.10);
     // vaccine distribution
     private static final String VAX_DIST_NONE = "none";
     private static final String VAX_DIST_RANDOM = "random";
