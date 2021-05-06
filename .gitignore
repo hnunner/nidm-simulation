@@ -32,4 +32,4 @@ bfg-report*
 
 # file system
 /exports
-/data/*.csv
+/data/**/*.csv
