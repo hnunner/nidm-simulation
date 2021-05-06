@@ -26,6 +26,7 @@
 package nl.uu.socnetid.nidm.io.generator.data;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -72,39 +74,23 @@ public class ProfessionsNetworkDataGenerator extends AbstractGenerator implement
 
     // path to network files used to generate data
     private static final String NETWORKS_PATH = "C:/Users/Hendrik/git/NIDM/simulation/exports/!c19-professions/networks/"
-            + "0-5"
-
-
-            + "/";
-
-
-
-
-//            + "networks/professions.lockdown.1-30/";
-//            + "networks/professions.lockdown.31-60/";
-//            + "networks/professions.lockdown.61-90/";
-
+//            + "networks/professions.lockdown.1-60/";
+//            + "networks/professions.lockdown.21-30/";
+//            + "networks/professions.lockdown.31-40/";
 //            + "networks/professions.lockdown.41-50/";
 //            + "networks/professions.lockdown.51-60/";
 //            + "networks/professions.lockdown.61-70/";
 //            + "networks/professions.lockdown.71-80/";
 //            + "networks/professions.lockdown.81-90/";
+            + "networks/professions.lockdown.81-90/";
 
     private static final String NETWORKS_SUMMARY_FILE = NETWORKS_PATH + "profession-networks-lockdown.csv";
 
     // PARAMETER VARIATIONS
     // vaccine efficacy
     private static final List<Double> ETAS = Arrays.asList(0.6, 0.75, 0.9);
-//    private static final List<Double> ETAS = Arrays.asList(0.6, 0.9);
-
     // vaccine availibility
-    private static final List<Double> THETAS = Arrays.asList(0.05, 0.1, 0.2, 0.3, 0.4, 0.5);
-//    private static final List<Double> THETAS = Arrays.asList(0.3);
-//    private static final List<Double> THETAS = Arrays.asList(0.4);
-//    private static final List<Double> THETAS = Arrays.asList(0.5);
-//    private static final List<Double> THETAS = Arrays.asList(0.05, 0.10, 0.2);
-//    private static final List<Double> THETAS = Arrays.asList(0.05, 0.10);
-
+    private static final List<Double> THETAS = Arrays.asList(0.05, 0.10, 0.2);
     // vaccine distribution
     private static final String VAX_DIST_NONE = "none";
     private static final String VAX_DIST_RANDOM = "random";
@@ -114,8 +100,7 @@ public class ProfessionsNetworkDataGenerator extends AbstractGenerator implement
             VAX_DIST_RANDOM,
             VAX_DIST_BY_AV_DEGREE_PER_PROF_GROUP);
 
-    // iterations per parameter combination
-    private static final int ITERATIONS = 3;
+    private static final int ITERATIONS = 20;
 //    private static final int ITERATIONS = 3;
 
     // network
@@ -214,15 +199,15 @@ public class ProfessionsNetworkDataGenerator extends AbstractGenerator implement
             }
 
             // copy network
-//            File networkSource = new File(networkFilePath);
-//            String filename = networkFilePath.replace(NETWORKS_PATH, "");
-//            File networkDest = new File(getExportPath() + filename);
-//            try {
-//                FileUtils.copyFile(networkSource, networkDest);
-//            } catch (IOException e) {
-//                logger.error("Error during copying of file '" + networkSource + "' to '" + networkDest + "'");
-//                e.printStackTrace();
-//            }
+            File networkSource = new File(networkFilePath);
+            String filename = networkFilePath.replace(NETWORKS_PATH, "");
+            File networkDest = new File(getExportPath() + filename);
+            try {
+                FileUtils.copyFile(networkSource, networkDest);
+            } catch (IOException e) {
+                logger.error("Error during copying of file '" + networkSource + "' to '" + networkDest + "'");
+                e.printStackTrace();
+            }
 
             // prepare network
             this.network = dgsReader.readNetwork(networkFilePath);
@@ -244,8 +229,6 @@ public class ProfessionsNetworkDataGenerator extends AbstractGenerator implement
                         this.dgData.getSimStats().setShotsGiven(0);
                         this.dgData.getSimStats().setAgentsImmunized(0);
                         this.dgData.getSimStats().setProfessionsReceivedShots(null);
-                        this.dgData.getUtilityModelParams().setCurrTheta(0.0);
-                        this.dgData.getUtilityModelParams().setCurrEta(0.0);
 
                         runEpidemic(preLockdown);
                     }
