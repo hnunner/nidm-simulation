@@ -109,11 +109,8 @@ public class PropertiesHandler {
     private boolean generateProfessionNetworksLockdown;
     // professions network data
     private boolean generateProfessionNetworksData;
-<<<<<<< HEAD
     // profession network agent stats
     private boolean generateProfessionNetworksAgentStats;
-=======
->>>>>>> a4dc1d7e84ac4e8e9879b832f606bdadf707a086
 
     // DATA EXPORT
     // types of data export
@@ -846,6 +843,7 @@ public class PropertiesHandler {
     /**
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
      * @return the generateProfessionNetworksAgentStats
      */
     public boolean isGenerateProfessionNetworksAgentStats() {
@@ -853,6 +851,8 @@ public class PropertiesHandler {
     }
 
     /**
+=======
+>>>>>>> a4dc1d7e84ac4e8e9879b832f606bdadf707a086
 =======
 >>>>>>> a4dc1d7e84ac4e8e9879b832f606bdadf707a086
 =======
