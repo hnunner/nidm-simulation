@@ -1,0 +1,411 @@
+\begin{table}[hbt!] 
+\caption{Descriptive statistics (observations: 144000).}
+\label{tab:descriptives}
+\begin{adjustbox}{width=1\textwidth,center=\textwidth}
+\begin{tabular}{l *{6}{S[
+input-symbols = {(- )},
+detect-weight,
+group-separator = {,},
+table-format=5.2]}}
+\toprule
+& \text{\thead{Mean}} & \text{\thead{SD}} & \text{\thead{Median}} & \text{\thead{Min}} & \text{\thead{Max}} & \text{\thead{Skew}} \\ 
+\midrule 
+\midrule 
+\multicolumn{7}{l}{\textbf{\textit{I. Network}}} \\[6pt] 
+\multicolumn{7}{l}{\textit{I.I. Normal}} \\ 
+ Av. degree ($\mathcal{D}_{G}$) & 4.92 & 0.21 & 4.92 & 4.46 & 5.3 & -0.18 \\[0pt] 
+ Clustering ($\mathcal{C}_{G}$) & 0.38 & 0.1 & 0.4 & 0.21 & 0.56 & -0.18 \\[0pt] 
+ Av. path length ($\mathcal{L}_{G}$) & 7.72 & 0.82 & 7.7 & 6.38 & 9.97 & 0.32 \\[0pt] 
+ Assortativity, profession ($\mathcal{A}^{p}_{G}$) & 0.12 & 0.05 & 0.09 & 0.06 & 0.2 & 0.29 \\[6pt] 
+\multicolumn{7}{l}{\textit{I.II. Lockdown}} \\ 
+ Av. degree ($\mathcal{D}_{G}$) & 2.1 & 0.02 & 2.1 & 2.06 & 2.16 & 0.52 \\[0pt] 
+ Clustering ($\mathcal{C}_{G}$) & 0.12 & 0.03 & 0.11 & 0.06 & 0.18 & 0.16 \\[0pt] 
+ Av. path length ($\mathcal{L}_{G}$) & 13.83 & 1.55 & 14.01 & 11.28 & 18.31 & 0.11 \\[0pt] 
+ Assortativity, profession ($\mathcal{A}^{p}_{G}$) & 0.07 & 0.02 & 0.06 & 0.04 & 0.11 & 0.39 \\[0pt] 
+\midrule 
+\multicolumn{7}{l}{\textbf{\textit{II. Index case}}} \\[6pt] 
+\multicolumn{7}{l}{\textit{II.I. Normal}} \\ 
+ Degree & 4.56 & 3.61 & 4 & 1 & 85 & 3.87 \\[0pt] 
+ Clustering & 0.39 & 0.26 & 0.33 & 0 & 1 & 0.31 \\[0pt] 
+ Closeness & 0.96 & 0.12 & 0.98 & 0 & 1 & -7.64 \\[0pt] 
+ Assortativity (profession) & 0.09 & 0.18 & 0 & 0 & 1 & 2.4 \\[6pt] 
+\multicolumn{7}{l}{\textit{II.II. Lockdown}} \\ 
+ Degree & 1.99 & 1.77 & 2 & 0 & 26 & 1.73 \\[0pt] 
+ Clustering & 0.12 & 0.26 & 0 & 0 & 1 & 2.41 \\[0pt] 
+ Closeness & 0.44 & 0.32 & 0.64 & 0 & 0.74 & -0.6 \\[0pt] 
+ Assortativity (profession) & 0.06 & 0.18 & 0 & 0 & 1 & 3.69 \\[0pt] 
+\midrule 
+\multicolumn{7}{l}{\textbf{\textit{III. Epidemic}}} \\[6pt] 
+\multicolumn{7}{l}{\textit{III.I. Normal}} \\ 
+ Final size & 53.74 & 36.47 & 65.78 & 0.01 & 98.28 & -0.5 \\[0pt] 
+ Duration & 71.4 & 44.89 & 70 & 10 & 484 & 1.18 \\[0pt] 
+ Epidemic peak size & 3186.9 & 2609.66 & 3166 & 1 & 8408 & 0.15 \\[6pt] 
+\multicolumn{7}{l}{\textit{III.II. Lockdown}} \\ 
+ Final size & 8.59 & 17.21 & 0.03 & 0.01 & 61.96 & 1.75 \\[0pt] 
+ Duration & 48.27 & 60.76 & 17 & 10 & 511 & 1.7 \\[0pt] 
+ Epidemic peak size & 244.62 & 540.64 & 3 & 1 & 2772 & 2.34 \\[0pt] 
+\midrule 
+\multicolumn{7}{l}{\textbf{\textit{IV. Counter measures}}} \\[6pt] 
+\multicolumn{7}{l}{\textit{IV.I. Vaccinations}} \\ 
+ Vaccinated (proportion) & 0.23 & 0.17 & 0.2 & 0 & 0.5 & 0.22 \\[0pt] 
+ Immunized (proportion) & 0.17 & 0.13 & 0.16 & 0 & 0.46 & 0.41 \\[6pt] 
+\multicolumn{7}{l}{\textit{IV.II. Baseline}} \\ 
+ Final size & 58.4 & 39.73 & 59.56 & 0.01 & 98.28 & -0.49 \\[0pt] 
+ Duration & 66.84 & 42.84 & 62 & 10 & 263 & 0.53 \\[0pt] 
+ Peak size & 3758.78 & 3192.67 & 2429 & 1 & 8408 & 0.07 \\[6pt] 
+\multicolumn{7}{l}{\textit{IV.III. Random vaccine distribution}} \\ 
+ Final size & 35.72 & 35.11 & 34.58 & 0.01 & 94.85 & 0.27 \\[0pt] 
+ Duration & 62.85 & 49.21 & 63 & 10 & 394 & 0.93 \\[0pt] 
+ Peak size & 2077.23 & 2425.01 & 899 & 1 & 7978 & 0.78 \\[6pt] 
+\multicolumn{7}{l}{\textit{IV.IV. Vaccine distribution prioritizing professional groups by largest degree}} \\ 
+ Final size & 20.56 & 32.52 & 0.06 & 0.01 & 94.35 & 1.18 \\[0pt] 
+ Duration & 55.27 & 61.39 & 22 & 10 & 511 & 1.64 \\[0pt] 
+ Peak size & 900.29 & 1682.96 & 5 & 1 & 7130 & 1.88 \\[6pt] 
+\bottomrule
+%\multicolumn{7}{c}{\emph{Notes:} bold numbers are significant at $p<0.001$, SEs in parentheses}
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\begin{table}[hbt!]
+\caption{Professional groups, part 1.}
+\label{tab:professions1}
+\begin{adjustbox}{width=1\textwidth,center=\textwidth}
+\begin{tabular}{l *{6}{S[
+input-symbols = {(- )},
+detect-weight,
+group-separator = {,},
+table-format=5.2]}}
+\toprule
+& \text{\thead{Mean}} & \text{\thead{SD}} & \text{\thead{Median}} & \text{\thead{Min}} & \text{\thead{Max}} & \text{\thead{Skew}} \\ 
+\midrule\midrule 
+\multicolumn{7}{l}{\textbf{Architecture and Engineering Occupations}} \\[6pt] 
+ N & 0.01 & 0 & 0.01 & 0.01 & 0.02 & 0.09 \\[0pt] 
+N (labor market) & 0.01& & & &  \\[6pt] 
+ Degree, normal (network av.) & 3.6 & 0.41 & 3.62 & 3.23 & 3.92 & -0.28 \\[0pt] 
+ Degree, normal (nodes) & 3.6 & 0.9 & 4 & 0 & 6 & -1 \\[0pt] 
+Degree, normal (Belot) & 3.47 & 8.99 & NA & NA & NA  \\[6pt] 
+ Degree, lockdown (network av.) & 1.93 & 0.25 & 1.93 & 1.93 & 1.94 & -0.24 \\[0pt] 
+ Degree, lockdown (nodes) & 1.93 & 1.21 & 2 & 0 & 5 & 0.26 \\[0pt] 
+Degree, lockdown (Belot) & 1.88 & 6.31 & NA & NA & NA  \\ 
+\midrule 
+\multicolumn{7}{l}{\textbf{Arts, Design, Entertainment, Sports, and Media Occupations}} \\[6pt] 
+ N & 0.01 & 0 & 0.01 & 0.01 & 0.02 & -0.19 \\[0pt] 
+N (labor market) & 0.01& & & &  \\[6pt] 
+ Degree, normal (network av.) & 3.32 & 0.39 & 3.31 & 2.9 & 3.86 & 0.14 \\[0pt] 
+ Degree, normal (nodes) & 3.32 & 0.82 & 3 & 0 & 5 & -0.85 \\[0pt] 
+Degree, normal (Belot) & 3.23 & 11.03 & NA & NA & NA  \\[6pt] 
+ Degree, lockdown (network av.) & 2.58 & 0.32 & 2.58 & 2.58 & 2.59 & -0.12 \\[0pt] 
+ Degree, lockdown (nodes) & 2.58 & 1.04 & 3 & 0 & 5 & -0.39 \\[0pt] 
+Degree, lockdown (Belot) & 2.51 & 21.18 & NA & NA & NA  \\ 
+\midrule 
+\multicolumn{7}{l}{\textbf{Building and Grounds Cleaning and Maintenance Occupations}} \\[6pt] 
+ N & 0.03 & 0 & 0.03 & 0.02 & 0.03 & 0.22 \\[0pt] 
+N (labor market) & 0.03& & & &  \\[6pt] 
+ Degree, normal (network av.) & 3.94 & 0.65 & 3.92 & 3.36 & 4.46 & 0.05 \\[0pt] 
+ Degree, normal (nodes) & 3.94 & 0.98 & 4 & 0 & 6 & -1.04 \\[0pt] 
+Degree, normal (Belot) & 3.93 & 15.38 & NA & NA & NA  \\[6pt] 
+ Degree, lockdown (network av.) & 1.3 & 0.27 & 1.3 & 1.29 & 1.42 & 5 \\[0pt] 
+ Degree, lockdown (nodes) & 1.3 & 1.12 & 1 & 0 & 6 & 0.72 \\[0pt] 
+Degree, lockdown (Belot) & 1.26 & 4.95 & NA & NA & NA  \\ 
+\midrule 
+\multicolumn{7}{l}{\textbf{Business and Financial Operations Occupations}} \\[6pt] 
+ N & 0.04 & 0 & 0.04 & 0.04 & 0.05 & -0.09 \\[0pt] 
+N (labor market) & 0.04& & & &  \\[6pt] 
+ Degree, normal (network av.) & 3.72 & 0.76 & 3.75 & 3.34 & 3.89 & -1.32 \\[0pt] 
+ Degree, normal (nodes) & 3.72 & 0.93 & 4 & 0 & 6 & -1.03 \\[0pt] 
+Degree, normal (Belot) & 3.66 & 15.98 & NA & NA & NA  \\[6pt] 
+ Degree, lockdown (network av.) & 1.56 & 0.39 & 1.56 & 1.56 & 1.57 & -1.07 \\[0pt] 
+ Degree, lockdown (nodes) & 1.56 & 1.17 & 1 & 0 & 6 & 0.52 \\[0pt] 
+Degree, lockdown (Belot) & 1.52 & 5.49 & NA & NA & NA  \\ 
+\bottomrule
+%\multicolumn{7}{c}{\emph{Notes:} bold numbers are significant at $p<0.001$, SEs in parentheses}
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\begin{table}[hbt!]
+\caption{Professional groups, part 2.}
+\label{tab:professions2}
+\begin{adjustbox}{width=1\textwidth,center=\textwidth}
+\begin{tabular}{l *{6}{S[
+input-symbols = {(- )},
+detect-weight,
+group-separator = {,},
+table-format=5.2]}}
+\toprule
+& \text{\thead{Mean}} & \text{\thead{SD}} & \text{\thead{Median}} & \text{\thead{Min}} & \text{\thead{Max}} & \text{\thead{Skew}} \\ 
+\midrule\midrule 
+\multicolumn{7}{l}{\textbf{Community and Social Service Occupations}} \\[6pt] 
+ N & 0.01 & 0 & 0.01 & 0.01 & 0.02 & 0.24 \\[0pt] 
+N (labor market) & 0.01& & & &  \\[6pt] 
+ Degree, normal (network av.) & 2.91 & 0.34 & 2.9 & 2.72 & 3.09 & 0.23 \\[0pt] 
+ Degree, normal (nodes) & 2.91 & 0.66 & 3 & 0 & 5 & -1.46 \\[0pt] 
+Degree, normal (Belot) & 2.84 & 8.85 & NA & NA & NA  \\[6pt] 
+ Degree, lockdown (network av.) & 1.11 & 0.16 & 1.11 & 1.1 & 1.11 & -1.23 \\[0pt] 
+ Degree, lockdown (nodes) & 1.11 & 0.95 & 1 & 0 & 4 & 0.51 \\[0pt] 
+Degree, lockdown (Belot) & 1.08 & 2.61 & NA & NA & NA  \\ 
+\midrule 
+\multicolumn{7}{l}{\textbf{Computer and Mathematical Occupations}} \\[6pt] 
+ N & 0.02 & 0 & 0.02 & 0.02 & 0.03 & -0.24 \\[0pt] 
+N (labor market) & 0.02& & & &  \\[6pt] 
+ Degree, normal (network av.) & 2.92 & 0.44 & 2.93 & 2.73 & 3.06 & -0.32 \\[0pt] 
+ Degree, normal (nodes) & 2.92 & 0.69 & 3 & 0 & 5 & -1.26 \\[0pt] 
+Degree, normal (Belot) & 2.85 & 7.77 & NA & NA & NA  \\[6pt] 
+ Degree, lockdown (network av.) & 1.24 & 0.24 & 1.24 & 1.24 & 1.25 & -1.3 \\[0pt] 
+ Degree, lockdown (nodes) & 1.24 & 0.99 & 1 & 0 & 5 & 0.44 \\[0pt] 
+Degree, lockdown (Belot) & 1.21 & 3.89 & NA & NA & NA  \\ 
+\midrule 
+\multicolumn{7}{l}{\textbf{Construction and Extraction Occupations}} \\[6pt] 
+ N & 0.03 & 0 & 0.03 & 0.03 & 0.04 & 0.12 \\[0pt] 
+N (labor market) & 0.03& & & &  \\[6pt] 
+ Degree, normal (network av.) & 3.67 & 0.68 & 3.68 & 3.3 & 3.91 & -0.81 \\[0pt] 
+ Degree, normal (nodes) & 3.67 & 0.91 & 4 & 0 & 6 & -1.07 \\[0pt] 
+Degree, normal (Belot) & 3.6 & 18.53 & NA & NA & NA  \\[6pt] 
+ Degree, lockdown (network av.) & 2.05 & 0.43 & 2.05 & 2.05 & 2.05 & -0.39 \\[0pt] 
+ Degree, lockdown (nodes) & 2.05 & 1.25 & 2 & 0 & 6 & 0.18 \\[0pt] 
+Degree, lockdown (Belot) & 1.99 & 11.58 & NA & NA & NA  \\ 
+\midrule 
+\multicolumn{7}{l}{\textbf{Educational Instruction and Library Occupations}} \\[6pt] 
+ N & 0.04 & 0 & 0.04 & 0.04 & 0.05 & -0.47 \\[0pt] 
+N (labor market) & 0.04& & & &  \\[6pt] 
+ Degree, normal (network av.) & 11.87 & 2.67 & 11.97 & 9.82 & 13.26 & -0.65 \\[0pt] 
+ Degree, normal (nodes) & 11.86 & 5.07 & 13 & 0 & 33 & -0.31 \\[0pt] 
+Degree, normal (Belot) & 12.76 & 62.44 & NA & NA & NA  \\[6pt] 
+ Degree, lockdown (network av.) & 3.08 & 0.78 & 3.06 & 2.69 & 3.61 & 0.4 \\[0pt] 
+ Degree, lockdown (nodes) & 3.08 & 2.18 & 3 & 0 & 16 & 0.83 \\[0pt] 
+Degree, lockdown (Belot) & 2.61 & 18.87 & NA & NA & NA  \\ 
+\bottomrule
+%\multicolumn{7}{c}{\emph{Notes:} bold numbers are significant at $p<0.001$, SEs in parentheses}
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\begin{table}[hbt!]
+\caption{Professional groups, part 3.}
+\label{tab:professions3}
+\begin{adjustbox}{width=1\textwidth,center=\textwidth}
+\begin{tabular}{l *{6}{S[
+input-symbols = {(- )},
+detect-weight,
+group-separator = {,},
+table-format=5.2]}}
+\toprule
+& \text{\thead{Mean}} & \text{\thead{SD}} & \text{\thead{Median}} & \text{\thead{Min}} & \text{\thead{Max}} & \text{\thead{Skew}} \\ 
+\midrule\midrule 
+\multicolumn{7}{l}{\textbf{Farming, Fishing, and Forestry Occupations}} \\[6pt] 
+ N & 0 & 0 & 0 & 0 & 0.01 & -0.36 \\[0pt] 
+N (labor market) & 0.01& & & &  \\[6pt] 
+ Degree, normal (network av.) & 2.23 & 0.16 & 2.18 & 0.98 & 2.9 & -1.06 \\[0pt] 
+ Degree, normal (nodes) & 2.23 & 0.79 & 2 & 0 & 4 & -0.45 \\[0pt] 
+Degree, normal (Belot) & 2.15 & 4.98 & NA & NA & NA  \\[6pt] 
+ Degree, lockdown (network av.) & 1.7 & 0.13 & 1.8 & 0.98 & 1.81 & -2.28 \\[0pt] 
+ Degree, lockdown (nodes) & 1.7 & 0.81 & 2 & 0 & 4 & -0.07 \\[0pt] 
+Degree, lockdown (Belot) & 1.76 & 4.98 & NA & NA & NA  \\ 
+\midrule 
+\multicolumn{7}{l}{\textbf{Food Preparation and Serving Related Occupations}} \\[6pt] 
+ N & 0.06 & 0 & 0.06 & 0.06 & 0.07 & -0.01 \\[0pt] 
+N (labor market) & 0.06& & & &  \\[6pt] 
+ Degree, normal (network av.) & 5.32 & 1.35 & 5.31 & 4.92 & 5.62 & -0.3 \\[0pt] 
+ Degree, normal (nodes) & 5.32 & 1.43 & 6 & 0 & 9 & -1.26 \\[0pt] 
+Degree, normal (Belot) & 5.32 & 22.29 & NA & NA & NA  \\[6pt] 
+ Degree, lockdown (network av.) & 1.62 & 0.52 & 1.62 & 1.61 & 1.75 & 3.5 \\[0pt] 
+ Degree, lockdown (nodes) & 1.62 & 1.32 & 1 & 0 & 8 & 0.78 \\[0pt] 
+Degree, lockdown (Belot) & 1.57 & 5.86 & NA & NA & NA  \\ 
+\midrule 
+\multicolumn{7}{l}{\textbf{Healthcare Practitioners and Technical Occupations}} \\[6pt] 
+ N & 0.04 & 0 & 0.04 & 0.04 & 0.05 & -0.38 \\[0pt] 
+N (labor market) & 0.04& & & &  \\[6pt] 
+ Degree, normal (network av.) & 15.5 & 3.56 & 14.03 & 10.67 & 20.71 & 0.19 \\[0pt] 
+ Degree, normal (nodes) & 15.5 & 9.02 & 14 & 0 & 97 & 0.93 \\[0pt] 
+Degree, normal (Belot) & 20.17 & 256.51 & NA & NA & NA  \\[6pt] 
+ Degree, lockdown (network av.) & 5.34 & 1.28 & 5.34 & 5.34 & 5.35 & -0.79 \\[0pt] 
+ Degree, lockdown (nodes) & 5.34 & 3.49 & 5 & 0 & 40 & 1.05 \\[0pt] 
+Degree, lockdown (Belot) & 5.19 & 23.75 & NA & NA & NA  \\ 
+\midrule 
+\multicolumn{7}{l}{\textbf{Healthcare Support Occupations}} \\[6pt] 
+ N & 0.03 & 0 & 0.03 & 0.03 & 0.04 & 0.03 \\[0pt] 
+N (labor market) & 0.03& & & &  \\[6pt] 
+ Degree, normal (network av.) & 5.45 & 1 & 5.45 & 4.98 & 5.83 & -0.21 \\[0pt] 
+ Degree, normal (nodes) & 5.46 & 1.43 & 6 & 0 & 9 & -1.34 \\[0pt] 
+Degree, normal (Belot) & 5.44 & 19.44 & NA & NA & NA  \\[6pt] 
+ Degree, lockdown (network av.) & 3.81 & 0.73 & 3.81 & 3.81 & 3.81 & 0.02 \\[0pt] 
+ Degree, lockdown (nodes) & 3.81 & 1.57 & 4 & 0 & 9 & -0.11 \\[0pt] 
+Degree, lockdown (Belot) & 3.7 & 12.65 & NA & NA & NA  \\ 
+\bottomrule
+%\multicolumn{7}{c}{\emph{Notes:} bold numbers are significant at $p<0.001$, SEs in parentheses}
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\begin{table}[hbt!]
+\caption{Professional groups, part 4.}
+\label{tab:professions4}
+\begin{adjustbox}{width=1\textwidth,center=\textwidth}
+\begin{tabular}{l *{6}{S[
+input-symbols = {(- )},
+detect-weight,
+group-separator = {,},
+table-format=5.2]}}
+\toprule
+& \text{\thead{Mean}} & \text{\thead{SD}} & \text{\thead{Median}} & \text{\thead{Min}} & \text{\thead{Max}} & \text{\thead{Skew}} \\ 
+\midrule\midrule 
+\multicolumn{7}{l}{\textbf{Installation, Maintenance, and Repair Occupations}} \\[6pt] 
+ N & 0.03 & 0 & 0.03 & 0.02 & 0.03 & 0.17 \\[0pt] 
+N (labor market) & 0.03& & & &  \\[6pt] 
+ Degree, normal (network av.) & 3.81 & 0.65 & 3.81 & 3.52 & 4.1 & -0.09 \\[0pt] 
+ Degree, normal (nodes) & 3.82 & 0.95 & 4 & 0 & 6 & -1.15 \\[0pt] 
+Degree, normal (Belot) & 3.76 & 12.36 & NA & NA & NA  \\[6pt] 
+ Degree, lockdown (network av.) & 2.91 & 0.52 & 2.91 & 2.91 & 2.91 & -0.56 \\[0pt] 
+ Degree, lockdown (nodes) & 2.91 & 1.18 & 3 & 0 & 6 & -0.3 \\[0pt] 
+Degree, lockdown (Belot) & 2.83 & 11.24 & NA & NA & NA  \\ 
+\midrule 
+\multicolumn{7}{l}{\textbf{Legal Occupations}} \\[6pt] 
+ N & 0.01 & 0 & 0.01 & 0 & 0.01 & 0.2 \\[0pt] 
+N (labor market) & 0.01& & & &  \\[6pt] 
+ Degree, normal (network av.) & 8.12 & 0.65 & 8.19 & 6.83 & 8.93 & -0.87 \\[0pt] 
+ Degree, normal (nodes) & 8.13 & 2.22 & 9 & 0 & 14 & -1.61 \\[0pt] 
+Degree, normal (Belot) & 8.28 & 22.06 & NA & NA & NA  \\[6pt] 
+ Degree, lockdown (network av.) & 1.84 & 0.19 & 1.82 & 1.22 & 2.72 & 0.52 \\[0pt] 
+ Degree, lockdown (nodes) & 1.84 & 1.67 & 1 & 0 & 10 & 1.1 \\[0pt] 
+Degree, lockdown (Belot) & 0.92 & 2.98 & NA & NA & NA  \\ 
+\midrule 
+\multicolumn{7}{l}{\textbf{Life, Physical, and Social Science Occupations}} \\[6pt] 
+ N & 0.01 & 0 & 0.01 & 0 & 0.01 & 0.21 \\[0pt] 
+N (labor market) & 0.01& & & &  \\[6pt] 
+ Degree, normal (network av.) & 4.67 & 0.39 & 4.67 & 4.32 & 5.05 & 0.04 \\[0pt] 
+ Degree, normal (nodes) & 4.67 & 1.15 & 5 & 0 & 7 & -1.06 \\[0pt] 
+Degree, normal (Belot) & 4.63 & 14.67 & NA & NA & NA  \\[6pt] 
+ Degree, lockdown (network av.) & 3.65 & 0.31 & 3.65 & 3.64 & 3.66 & -0.16 \\[0pt] 
+ Degree, lockdown (nodes) & 3.65 & 1.34 & 4 & 0 & 7 & -0.27 \\[0pt] 
+Degree, lockdown (Belot) & 3.55 & 18.64 & NA & NA & NA  \\ 
+\midrule 
+\multicolumn{7}{l}{\textbf{Management Occupations}} \\[6pt] 
+ N & 0.05 & 0 & 0.05 & 0.04 & 0.05 & -0.37 \\[0pt] 
+N (labor market) & 0.05& & & &  \\[6pt] 
+ Degree, normal (network av.) & 5.83 & 1.31 & 5.85 & 5.47 & 6.05 & -0.79 \\[0pt] 
+ Degree, normal (nodes) & 5.83 & 1.54 & 6 & 0 & 10 & -1.4 \\[0pt] 
+Degree, normal (Belot) & 5.84 & 23.54 & NA & NA & NA  \\[6pt] 
+ Degree, lockdown (network av.) & 1.56 & 0.45 & 1.55 & 1.37 & 1.78 & 0.31 \\[0pt] 
+ Degree, lockdown (nodes) & 1.56 & 1.34 & 1 & 0 & 8 & 0.89 \\[0pt] 
+Degree, lockdown (Belot) & 1.32 & 4.79 & NA & NA & NA  \\ 
+\bottomrule
+%\multicolumn{7}{c}{\emph{Notes:} bold numbers are significant at $p<0.001$, SEs in parentheses}
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\begin{table}[hbt!]
+\caption{Professional groups, part 5.}
+\label{tab:professions5}
+\begin{adjustbox}{width=1\textwidth,center=\textwidth}
+\begin{tabular}{l *{6}{S[
+input-symbols = {(- )},
+detect-weight,
+group-separator = {,},
+table-format=5.2]}}
+\toprule
+& \text{\thead{Mean}} & \text{\thead{SD}} & \text{\thead{Median}} & \text{\thead{Min}} & \text{\thead{Max}} & \text{\thead{Skew}} \\ 
+\midrule\midrule 
+\multicolumn{7}{l}{\textbf{Office and Administrative Support Occupations}} \\[6pt] 
+ N & 0.1 & 0 & 0.09 & 0.09 & 0.1 & -0.29 \\[0pt] 
+N (labor market) & 0.09& & & &  \\[6pt] 
+ Degree, normal (network av.) & 4.46 & 1.35 & 4.46 & 4.11 & 4.68 & -0.5 \\[0pt] 
+ Degree, normal (nodes) & 4.46 & 1.15 & 5 & 0 & 7 & -1.15 \\[0pt] 
+Degree, normal (Belot) & 4.42 & 16.51 & NA & NA & NA  \\[6pt] 
+ Degree, lockdown (network av.) & 2 & 0.72 & 2 & 2 & 2 & -2.58 \\[0pt] 
+ Degree, lockdown (nodes) & 2 & 1.37 & 2 & 0 & 7 & 0.52 \\[0pt] 
+Degree, lockdown (Belot) & 1.94 & 7.66 & NA & NA & NA  \\ 
+\midrule 
+\multicolumn{7}{l}{\textbf{Personal Care and Service Occupations}} \\[6pt] 
+ N & 0.02 & 0 & 0.02 & 0.02 & 0.03 & -0.06 \\[0pt] 
+N (labor market) & 0.02& & & &  \\[6pt] 
+ Degree, normal (network av.) & 11.84 & 1.88 & 11.99 & 9.71 & 13.2 & -0.53 \\[0pt] 
+ Degree, normal (nodes) & 11.84 & 5.05 & 13 & 0 & 29 & -0.28 \\[0pt] 
+Degree, normal (Belot) & 12.82 & 79.3 & NA & NA & NA  \\[6pt] 
+ Degree, lockdown (network av.) & 4.71 & 0.81 & 4.71 & 4.71 & 4.72 & -0.73 \\[0pt] 
+ Degree, lockdown (nodes) & 4.71 & 2.89 & 4 & 0 & 24 & 0.72 \\[0pt] 
+Degree, lockdown (Belot) & 4.58 & 41.84 & NA & NA & NA  \\ 
+\midrule 
+\multicolumn{7}{l}{\textbf{Production Occupations}} \\[6pt] 
+ N & 0.04 & 0 & 0.04 & 0.04 & 0.05 & 0.2 \\[0pt] 
+N (labor market) & 0.04& & & &  \\[6pt] 
+ Degree, normal (network av.) & 2.91 & 0.61 & 2.91 & 2.74 & 3.08 & 0.03 \\[0pt] 
+ Degree, normal (nodes) & 2.91 & 0.67 & 3 & 0 & 5 & -1.37 \\[0pt] 
+Degree, normal (Belot) & 2.87 & 9.51 & NA & NA & NA  \\[6pt] 
+ Degree, lockdown (network av.) & 2.25 & 0.5 & 2.25 & 2.25 & 2.26 & -0.2 \\[0pt] 
+ Degree, lockdown (nodes) & 2.25 & 0.93 & 2 & 0 & 5 & -0.44 \\[0pt] 
+Degree, lockdown (Belot) & 2.19 & 8.86 & NA & NA & NA  \\ 
+\midrule 
+\multicolumn{7}{l}{\textbf{Protective Service Occupations}} \\[6pt] 
+ N & 0.02 & 0 & 0.02 & 0.01 & 0.02 & 0.3 \\[0pt] 
+N (labor market) & 0.02& & & &  \\[6pt] 
+ Degree, normal (network av.) & 0.99 & 0.13 & 0.99 & 0.96 & 1 & -1.02 \\[0pt] 
+ Degree, normal (nodes) & 0.99 & 0.1 & 1 & 0 & 1 & -10.33 \\[0pt] 
+Degree, normal (Belot) & 1.12 & 3.3 & NA & NA & NA  \\[6pt] 
+ Degree, lockdown (network av.) & 0.99 & 0.13 & 0.99 & 0.96 & 1 & -1.02 \\[0pt] 
+ Degree, lockdown (nodes) & 0.99 & 0.1 & 1 & 0 & 1 & -10.33 \\[0pt] 
+Degree, lockdown (Belot) & 1.05 & 2.37 & NA & NA & NA  \\ 
+\bottomrule
+%\multicolumn{7}{c}{\emph{Notes:} bold numbers are significant at $p<0.001$, SEs in parentheses}
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\begin{table}[hbt!]
+\caption{Professional groups, part 6.}
+\label{tab:professions6}
+\begin{adjustbox}{width=1\textwidth,center=\textwidth}
+\begin{tabular}{l *{6}{S[
+input-symbols = {(- )},
+detect-weight,
+group-separator = {,},
+table-format=5.2]}}
+\toprule
+& \text{\thead{Mean}} & \text{\thead{SD}} & \text{\thead{Median}} & \text{\thead{Min}} & \text{\thead{Max}} & \text{\thead{Skew}} \\ 
+\midrule\midrule 
+\multicolumn{7}{l}{\textbf{Sales and Related Occupations}} \\[6pt] 
+ N & 0.07 & 0 & 0.07 & 0.06 & 0.08 & -0.11 \\[0pt] 
+N (labor market) & 0.07& & & &  \\[6pt] 
+ Degree, normal (network av.) & 5.58 & 1.48 & 5.6 & 5.2 & 5.79 & -0.94 \\[0pt] 
+ Degree, normal (nodes) & 5.58 & 1.45 & 6 & 0 & 9 & -1.4 \\[0pt] 
+Degree, normal (Belot) & 5.59 & 16.91 & NA & NA & NA  \\[6pt] 
+ Degree, lockdown (network av.) & 3.4 & 0.98 & 3.4 & 3.4 & 3.4 & -0.99 \\[0pt] 
+ Degree, lockdown (nodes) & 3.4 & 1.71 & 3 & 0 & 9 & 0.07 \\[0pt] 
+Degree, lockdown (Belot) & 3.3 & 25.59 & NA & NA & NA  \\ 
+\midrule 
+\multicolumn{7}{l}{\textbf{Transportation and Material Moving Occupations}} \\[6pt] 
+ N & 0.06 & 0 & 0.06 & 0.06 & 0.06 & -0.07 \\[0pt] 
+N (labor market) & 0.06& & & &  \\[6pt] 
+ Degree, normal (network av.) & 5.3 & 1.31 & 5.32 & 4.99 & 5.54 & -0.54 \\[0pt] 
+ Degree, normal (nodes) & 5.3 & 1.43 & 6 & 0 & 9 & -1.22 \\[0pt] 
+Degree, normal (Belot) & 5.31 & 21.69 & NA & NA & NA  \\[6pt] 
+ Degree, lockdown (network av.) & 2.77 & 0.77 & 2.77 & 2.77 & 2.77 & -0.42 \\[0pt] 
+ Degree, lockdown (nodes) & 2.77 & 1.65 & 3 & 0 & 9 & 0.36 \\[0pt] 
+Degree, lockdown (Belot) & 2.69 & 9.08 & NA & NA & NA  \\ 
+\midrule 
+\multicolumn{7}{l}{\textbf{Unemployed}} \\[6pt] 
+ N & 0.05 & 0 & 0.05 & 0.04 & 0.05 & -0.09 \\[0pt] 
+N (labor market) & 0.05& & & &  \\[6pt] 
+ Degree, normal (network av.) & 2.62 & 0.57 & 2.7 & 0.99 & 3 & -2.08 \\[0pt] 
+ Degree, normal (nodes) & 2.61 & 0.7 & 3 & 0 & 4 & -1.35 \\[0pt] 
+Degree, normal (Belot) & 2.34 & 12.45 & NA & NA & NA  \\[6pt] 
+ Degree, lockdown (network av.) & 0.99 & 0.28 & 0.99 & 0.98 & 1.01 & 7.52 \\[0pt] 
+ Degree, lockdown (nodes) & 0.99 & 0.88 & 1 & 0 & 4 & 0.54 \\[0pt] 
+Degree, lockdown (Belot) & 0.96 & 5.08 & NA & NA & NA  \\ 
+\midrule 
+\multicolumn{7}{l}{\textbf{Retired}} \\[6pt] 
+ N & 0.21 & 0 & 0.21 & 0.2 & 0.22 & 0.11 \\[0pt] 
+N (labor market) & 0.21& & & &  \\[6pt] 
+ Degree, normal (network av.) & 2.47 & 1.04 & 2.6 & 1.76 & 2.89 & -0.42 \\[0pt] 
+ Degree, normal (nodes) & 2.47 & 0.69 & 3 & 0 & 4 & -0.94 \\[0pt] 
+Degree, normal (Belot) & 2.13 & 12.56 & NA & NA & NA  \\[6pt] 
+ Degree, lockdown (network av.) & 0.9 & 0.53 & 0.9 & 0.9 & 0.92 & 9.18 \\[0pt] 
+ Degree, lockdown (nodes) & 0.9 & 0.84 & 1 & 0 & 4 & 0.58 \\[0pt] 
+Degree, lockdown (Belot) & 0.87 & 5.12 & NA & NA & NA  \\ 
+\bottomrule
+%\multicolumn{7}{c}{\emph{Notes:} bold numbers are significant at $p<0.001$, SEs in parentheses}
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
