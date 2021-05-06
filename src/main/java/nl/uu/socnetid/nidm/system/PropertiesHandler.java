@@ -841,6 +841,7 @@ public class PropertiesHandler {
     }
 
     /**
+<<<<<<< HEAD
      * @return the generateProfessionNetworksAgentStats
      */
     public boolean isGenerateProfessionNetworksAgentStats() {
@@ -848,6 +849,8 @@ public class PropertiesHandler {
     }
 
     /**
+=======
+>>>>>>> a4dc1d7e84ac4e8e9879b832f606bdadf707a086
      * @param generateProfessionNetworksLockdown the generateProfessionNetworksLockdown to set
      */
     public void setGenerateProfessionNetworksLockdown(boolean generateProfessionNetworksLockdown) {
