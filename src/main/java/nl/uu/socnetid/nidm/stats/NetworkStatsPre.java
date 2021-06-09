@@ -70,10 +70,10 @@ public class NetworkStatsPre {
         this.assortativityRiskPerception = network.getAssortativityRiskPerception(simRound);
         this.assortativityAge = network.getAssortativityAge(simRound);
         this.assortativityProfession = network.getAssortativityProfession(simRound);
-        this.avBetweenness = -1.0;                                          //network.getAvBetweenness(simRound);
-        this.avCloseness = -1.0;                                            // network.getAvCloseness(simRound);
+        this.avBetweenness = network.getAvBetweenness(simRound);                                          //network.getAvBetweenness(simRound);
+        this.avCloseness = network.getAvCloseness(simRound);                                            // network.getAvCloseness(simRound);
         this.avClustering = network.getAvClustering(simRound);
-        this.avPathLength = -1.0;                                           // network.getAvPathLength(simRound);
+        this.avPathLength = network.getAvPathLength(simRound);                                           // network.getAvPathLength(simRound);
 
         this.nByProfession = network.getNByProfessions();
         this.avDegreesByProfession = network.getAvDegreesByProfessions();

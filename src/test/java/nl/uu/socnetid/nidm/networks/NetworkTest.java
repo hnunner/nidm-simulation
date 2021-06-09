@@ -103,7 +103,7 @@ public class NetworkTest {
         this.agent1.addConnection(this.agent4);
         this.agent3.addConnection(this.agent4);
 
-        this.agent6.infect(ds);
+        this.agent6.infect(ds, 0);
 
         // ring arranged network
         this.ringArrangedNetwork = new Network("Ring arranged Network Test", true);
@@ -550,7 +550,7 @@ public class NetworkTest {
                 this.agent1.isQuarantined());
         assertFalse(this.network.equals(network2));
 
-        a6.infect(this.ds);
+        a6.infect(this.ds, 0);
         assertTrue(this.network.equals(network2));
     }
 

@@ -792,7 +792,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
     private void infectRandomAgent() {
         Agent agent = this.network.getRandomNotInfectedAgent();
         if (agent != null) {
-            agent.infect(getDiseaseSpecs());
+            agent.infect(getDiseaseSpecs(), this.simulation.getRounds());
         }
     }
 

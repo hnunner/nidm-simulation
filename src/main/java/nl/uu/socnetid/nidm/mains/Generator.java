@@ -42,6 +42,7 @@ import nl.uu.socnetid.nidm.io.generator.AbstractGenerator;
 import nl.uu.socnetid.nidm.io.generator.data.BurgerBuskensDataGenerator;
 import nl.uu.socnetid.nidm.io.generator.data.CarayolRouxDataGenerator;
 import nl.uu.socnetid.nidm.io.generator.data.CidmDataGenerator;
+import nl.uu.socnetid.nidm.io.generator.data.ExperimentDataGenerator;
 import nl.uu.socnetid.nidm.io.generator.data.NunnerBuskensDataGenerator;
 import nl.uu.socnetid.nidm.io.generator.data.NunnerBuskensProfessionsDataGenerator;
 import nl.uu.socnetid.nidm.io.generator.data.ProfessionsNetworkDataGenerator;
@@ -227,12 +228,10 @@ public class Generator {
             dataGenerator = new ProfessionsNetworkDataGenerator(getNetworkExportPath());
             dataGenerator.launch();
         }
-        // Professions agent stats
-//        if (PropertiesHandler.getInstance().isGenerateProfessionNetworksAgentStats()) {
-//            dataGenerator = new ProfessionsNetworkAgentStatsGenerator(getNetworkExportPath());
-//            dataGenerator.launch();
-//        }
-
+        // Professions data
+        if (PropertiesHandler.getInstance().isGenerateExperimentData()) {
+            dataGenerator = new ExperimentDataGenerator(getNetworkExportPath());
+            dataGenerator.launch();
+        }
     }
-
 }

@@ -238,7 +238,7 @@ public class AgentTest {
     @Test
     public void testGetDiseaseGroup() {
         assertEquals(DiseaseGroup.SUSCEPTIBLE, this.agent1.getDiseaseGroup());
-        this.agent1.infect(this.ds);
+        this.agent1.infect(this.ds, 0);
         assertEquals(DiseaseGroup.INFECTED, this.agent1.getDiseaseGroup());
         this.agent1.cure();
         assertEquals(DiseaseGroup.RECOVERED, this.agent1.getDiseaseGroup());
@@ -282,7 +282,7 @@ public class AgentTest {
     public void testValidInfect() {
         assertTrue(this.agent1.isSusceptible());
         DiseaseSpecs dsValid = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
-        this.agent1.infect(dsValid);
+        this.agent1.infect(dsValid, 0);
         assertTrue(this.agent1.isInfected());
     }
 
@@ -292,7 +292,7 @@ public class AgentTest {
     @Test(expected = RuntimeException.class)
     public void testInvalidInfect() {
         DiseaseSpecs dsInvalid = new DiseaseSpecs(DiseaseType.SIR, tau+1, s, gamma, mu);
-        this.agent1.infect(dsInvalid);
+        this.agent1.infect(dsInvalid, 0);
     }
 
     /**

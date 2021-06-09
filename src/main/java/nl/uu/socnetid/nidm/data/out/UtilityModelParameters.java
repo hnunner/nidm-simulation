@@ -669,10 +669,24 @@ public abstract class UtilityModelParameters {
     }
 
     /**
+     * @return the sigma
+     */
+    public double getSigma() {
+        return currSigma;
+    }
+
+    /**
      * @return the currSigma
      */
     public double getCurrSigma() {
         return currSigma;
+    }
+
+    /**
+     * @param sigma the sigma to set
+     */
+    public void setSigma(double sigma) {
+        this.currSigma = sigma;
     }
 
     /**

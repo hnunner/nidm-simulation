@@ -68,7 +68,7 @@ public class SIRDiseaseTest {
         UtilityFunction uf = new Cumulative();
         this.ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
         this.agent1 = this.network.addAgent(uf, this.ds);
-        this.agent1.infect(ds);
+        this.agent1.infect(ds, 0);
     }
 
 

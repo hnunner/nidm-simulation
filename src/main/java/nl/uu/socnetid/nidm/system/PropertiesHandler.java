@@ -111,6 +111,8 @@ public class PropertiesHandler {
     private boolean generateProfessionNetworksData;
     // profession network agent stats
     private boolean generateProfessionNetworksAgentStats;
+    // experiment data
+    private boolean generateExperimentData;
 
     // DATA EXPORT
     // types of data export
@@ -523,6 +525,9 @@ public class PropertiesHandler {
         // profession networks agent stats
         generateProfessionNetworksAgentStats = Boolean.parseBoolean(configProps.getProperty("prof.generate.agent.stats"));
 
+        // experiment data
+        generateExperimentData = Boolean.parseBoolean(configProps.getProperty("exp.generate.data"));
+
         // types of data export
         this.exportSummary = Boolean.parseBoolean(configProps.getProperty("export.summary"));
         this.exportSummaryEachRound = Boolean.parseBoolean(configProps.getProperty("export.summary.each.round"));
@@ -841,9 +846,6 @@ public class PropertiesHandler {
     }
 
     /**
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
      * @return the generateProfessionNetworksAgentStats
      */
     public boolean isGenerateProfessionNetworksAgentStats() {
@@ -851,12 +853,13 @@ public class PropertiesHandler {
     }
 
     /**
-=======
->>>>>>> a4dc1d7e84ac4e8e9879b832f606bdadf707a086
-=======
->>>>>>> a4dc1d7e84ac4e8e9879b832f606bdadf707a086
-=======
->>>>>>> a4dc1d7e84ac4e8e9879b832f606bdadf707a086
+     * @return the generateExperimentData
+     */
+    public boolean isGenerateExperimentData() {
+        return generateExperimentData;
+    }
+
+    /**
      * @param generateProfessionNetworksLockdown the generateProfessionNetworksLockdown to set
      */
     public void setGenerateProfessionNetworksLockdown(boolean generateProfessionNetworksLockdown) {

@@ -147,6 +147,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         this.addAttribute(AgentAttributes.QUARANTINED, quarantined);
 
         this.addAttribute(AgentAttributes.FORCE_INFECTED, false);
+        this.addAttribute(AgentAttributes.WHEN_INFECTED, -1);
         this.addAttribute("ui.label", this.getId());
         this.addAttribute(AgentAttributes.CLOSENESS, -1);
         this.addAttribute(AgentAttributes.CLOSENESS_LAST_COMPUTATION, -1);
@@ -383,6 +384,25 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
+     * Updates the agent's risk factor for disease severity.
+     * @param rSigma
+     *          the new factor for disease severity
+     */
+    public void updateRSigma(double rSigma) {
+        this.changeAttribute(AgentAttributes.RISK_FACTOR_SIGMA, this.getRPi(), rSigma);
+    }
+
+    /**
+     * Updates the agent's risk scores.
+     * @param r
+     *          the new risk score
+     */
+    public void updateRiskScores(double r) {
+        this.updateRSigma(r);
+        this.updateRPi(r);
+    }
+
+    /**
      * Gets the agent's neighborhood's risk factor for disease severity.
      *
      * @return the agent's neighborhood's risk factor for disease severity
@@ -409,6 +429,15 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      */
     public double getRPi() {
         return (double) this.getAttribute(AgentAttributes.RISK_FACTOR_PI);
+    }
+
+    /**
+     * Updates the agent's risk factor for probability of infections.
+     * @param rPi
+     *          the new factor for probability of infections
+     */
+    public void updateRPi(double rPi) {
+        this.changeAttribute(AgentAttributes.RISK_FACTOR_PI, this.getRPi(), rPi);
     }
 
     /**
@@ -551,6 +580,33 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         List<Agent> coAgents = new ArrayList<Agent>(getNetwork().getAgents());
         coAgents.remove(this);
         return coAgents;
+    }
+
+    /**
+     * Gets the agent's co-agent ids sorted by distance, starting with the closest agents.
+     *
+     * @return the agent's co-agent ids sorted by distance, starting with the closest agents
+     */
+    public TreeMap<Integer, List<String>> getCoAgentsByDistance() {
+
+        TreeMap<Integer, List<String>> coAgentsByDistance = new TreeMap<Integer, List<String>>();
+
+        List<Agent> coAgents = new ArrayList<Agent>(getNetwork().getAgents());
+        coAgents.remove(this);
+
+        Iterator<Agent> aIt = coAgents.iterator();
+        while (aIt.hasNext()) {
+            Agent coAgent = aIt.next();
+            Integer dist = this.getGeodesicDistanceTo(coAgent);
+            List<String> currCoAgentsByDistance = coAgentsByDistance.get(dist);
+            if (currCoAgentsByDistance == null) {
+                currCoAgentsByDistance = new ArrayList<>();
+            }
+            currCoAgentsByDistance.add(coAgent.getId());
+            coAgentsByDistance.put(dist, currCoAgentsByDistance);
+        }
+
+        return coAgentsByDistance;
     }
 
     /**
@@ -1588,6 +1644,15 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
+     * Gets the simulation round the agent was infected.
+     *
+     * @return the simulation round the agent was infected
+     */
+    public int getWhenInfected() {
+        return (int) this.getAttribute(AgentAttributes.WHEN_INFECTED);
+    }
+
+    /**
      * Checks whether the agent is recovered.
      *
      * @return true if the agent is recovered, false otherwise
@@ -1618,6 +1683,8 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         // --> no listener notifications
         this.changeAttribute(AgentAttributes.UI_CLASS,
                 prevDiseaseGroup.toString(), DiseaseGroup.SUSCEPTIBLE.toString(), false);
+
+        this.addAttribute(AgentAttributes.WHEN_INFECTED, -1);
     }
 
     /**
@@ -1634,13 +1701,16 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
 
     /**
      * Computes whether the agent is being infected by one of his infected connections.
+     *
+     * @param simRound
+     *          the simulation round of the infection
      */
-    public void computeDiseaseTransmission() {
+    public void computeDiseaseTransmission(int simRound) {
         if (this.isSusceptible()) {
             int nI = StatsComputer.computeLocalAgentConnectionsStats(this).getnI();
             if (ThreadLocalRandom.current().nextDouble() <=
                     StatsComputer.computeProbabilityOfInfection(this, nI)) {
-                this.infect(this.getDiseaseSpecs());
+                this.infect(this.getDiseaseSpecs(), simRound);
             }
         }
     }
@@ -1650,12 +1720,14 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      *
      * @param diseaseSpecs
      *          the specificationso of the disease the agent is infected with
+     * @param simRound
+     *          the simulation round of the infection
      */
-    public void infect(DiseaseSpecs diseaseSpecs) {
+    public void infect(DiseaseSpecs diseaseSpecs, int simRound) {
         if (isRecovered()) {
             return;
         }
-        this.infect(diseaseSpecs, false);
+        this.infect(diseaseSpecs, false, simRound);
     }
 
     /**
@@ -1665,10 +1737,22 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      *          the specificationso of the disease the agent is infected with
      */
     public void forceInfect(DiseaseSpecs diseaseSpecs) {
-        this.infect(diseaseSpecs, true);
+        this.infect(diseaseSpecs, true, 0);
     }
 
-    private void infect(DiseaseSpecs diseaseSpecs, boolean forceInfect) {
+    /**
+     * Forces an infection onto the agent no matter whether the agent is immune or not.
+     *
+     * @param diseaseSpecs
+     *          the specificationso of the disease the agent is infected with
+     * @param simRound
+     *          the simulation round of the infection
+     */
+    public void forceInfect(DiseaseSpecs diseaseSpecs, int simRound) {
+        this.infect(diseaseSpecs, true, simRound);
+    }
+
+    private void infect(DiseaseSpecs diseaseSpecs, boolean forceInfect, int simRound) {
         // coherence check
         if (!this.getDiseaseSpecs().equals(diseaseSpecs)) {
             throw new RuntimeException("Known disease and caught disease mismatch!");
@@ -1687,6 +1771,8 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
             // set force infected flag
             this.changeAttribute(AgentAttributes.FORCE_INFECTED, false, true);
         }
+
+        this.changeAttribute(AgentAttributes.WHEN_INFECTED, -1, simRound);
     }
 
     /**
