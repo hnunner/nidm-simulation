@@ -148,7 +148,7 @@ public class SimulationStats {
      */
     public String getUid() {
         if (this.uid == null) {
-            return this.getUpc() + "-" + this.getSimPerUpc() + "-" + this.getSimIt();
+            return this.getUpc() + "#" + this.getSimPerUpc() + "#" + this.getSimIt();
         }
         return this.uid;
     }

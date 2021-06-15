@@ -163,6 +163,8 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         this.addAttribute(AgentAttributes.ASSORTATIVITY_AGE_LAST_COMPUTATION, -1);
         this.addAttribute(AgentAttributes.ASSORTATIVITY_PROFESSION, -1);
         this.addAttribute(AgentAttributes.ASSORTATIVITY_PROFESSION_LAST_COMPUTATION, -1);
+
+        this.addAttribute(AgentAttributes.INITIAL_INDEX_CASE_DISTANCE, -1);
     }
 
     /**

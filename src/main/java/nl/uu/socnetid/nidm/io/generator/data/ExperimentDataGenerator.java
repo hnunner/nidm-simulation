@@ -271,7 +271,6 @@ public class ExperimentDataGenerator extends AbstractDataGenerator implements Si
                         this.dgData.getSimStats().resetEpidemicStats();
                         this.indexCase.forceInfect(ds);
 
-
                         // initialize simulation
                         this.simulation = new Simulation(network, false);
                         this.simulation.addSimulationListener(this);
@@ -279,7 +278,6 @@ public class ExperimentDataGenerator extends AbstractDataGenerator implements Si
                         // store data before the epidemic
                         this.dgData.setAgents(new ArrayList<Agent>(this.network.getAgents()));
                         this.dgData.setNetStatsPre(new NetworkStatsPre(this.network, this.simulation.getRounds()));
-                        this.dgData.setIndexCaseStats(new AgentStatsPre(this.indexCase, this.simulation.getRounds()));
                         HashMap<String, AgentStatsPre> agentStats = new HashMap<String, AgentStatsPre>();
                         Iterator<Agent> aIt = this.network.getAgentIterator();
                         while (aIt.hasNext()) {
@@ -288,6 +286,7 @@ public class ExperimentDataGenerator extends AbstractDataGenerator implements Si
                             agentStats.put(agent.getId(), new AgentStatsPre(agent, this.simulation.getRounds()));
                         }
                         this.dgData.setAgentStatsPre(agentStats);
+                        this.dgData.setIndexCaseStats(new AgentStatsPre(this.indexCase, this.simulation.getRounds()));
 
                         this.dgData.getSimStats().setSimStage(SimulationStage.ACTIVE_EPIDEMIC);
                         this.dgData.getSimStats().setRoundStartInfection(this.simulation.getRounds());
