@@ -71,9 +71,7 @@ if (length(args) == 0) {
 # file names of generated data
 CSV_SUMMARY_PATH                <- paste(DATA_PATH, "simulation-summary.csv", sep = "")
 CSV_AGENT_DETAILS_PATH          <- paste(DATA_PATH, "agent-details.csv", sep = "")
-CSV_AGENT_DETAILS_PREPARED_PATH <- paste(DATA_PATH, "agent-details-prepared.csv", sep = "")
 CSV_ROUND_SUMMARY_PATH          <- paste(DATA_PATH, "round-summary.csv", sep = "")
-CSV_ROUND_SUMMARY_PREPARED_PATH <- paste(DATA_PATH, "round-summary-prepared.csv", sep = "")
 # export files
 EXPORT_DIR_NUM                  <- "numerical/"
 EXPORT_PATH_NUM                 <- paste(DATA_PATH, EXPORT_DIR_NUM, sep = "")
@@ -210,18 +208,8 @@ THEME_BASE_SIZE                 <- 44
 # return: the CSV file data as data frame
 #----------------------------------------------------------------------------------------------------#
 load_csv <- function(filePath) {
-  csv <- read.csv(file=filePath, header=TRUE, sep=",")
+  csv <- read.csv(file=filePath, header=TRUE, sep=";")
   return(csv)
-}
-
-#----------------------------------------------------------------------------------------------------#
-# function: remove_exclusions_simulation_summary_data
-#     Removes excluded records from simulation summary data.
-# return: the simulation summary data cleaned from excluded data records
-#----------------------------------------------------------------------------------------------------#
-remove_exclusions_simulation_summary_data <- function(data.ss) {
-  data.ss <- subset(data.ss, net.pathlength.pre.epidemic.av <= 80 & net.stable.pre == 1)
-  return(data.ss)
 }
 
 #----------------------------------------------------------------------------------------------------#
@@ -229,12 +217,8 @@ remove_exclusions_simulation_summary_data <- function(data.ss) {
 #     Loads summary data for NIDM simulations.
 # return: the summary data for NIDM simulations
 #----------------------------------------------------------------------------------------------------#
-load_simulation_summary_data <- function(remove_exclusions = TRUE) {
-  data.ss <- load_csv(CSV_SUMMARY_PATH)
-  if (remove_exclusions) {
-    data.ss <- remove_exclusions_simulation_summary_data(data.ss)
-  }
-  return(data.ss)
+load_simulation_summary_data <- function() {
+  return(load_csv(CSV_SUMMARY_PATH))
 }
 
 #----------------------------------------------------------------------------------------------------#
@@ -247,30 +231,12 @@ load_agent_details_data <- function() {
 }
 
 #----------------------------------------------------------------------------------------------------#
-# function: load_agent_details_prepared_data
-#     Loads readily prepared agent details data.
-# return: the agent details data
-#----------------------------------------------------------------------------------------------------#
-load_agent_details_prepared_data <- function() {
-  return(load_csv(CSV_AGENT_DETAILS_PREPARED_PATH))
-}
-
-#----------------------------------------------------------------------------------------------------#
 # function: load_round_summary_data
 #     Loads round summary data.
 # return: the round summary data
 #----------------------------------------------------------------------------------------------------#
 load_round_summary_data <- function() {
   return(load_csv(CSV_ROUND_SUMMARY_PATH))
-}
-
-#----------------------------------------------------------------------------------------------------#
-# function: load_round_summary_prepared_data
-#     Loads readily prepared round summary data.
-# return: the round summary data
-#----------------------------------------------------------------------------------------------------#
-load_round_summary_prepared_data <- function() {
-  return(load_csv(CSV_ROUND_SUMMARY_PREPARED_PATH))
 }
 
 
@@ -307,63 +273,47 @@ export_descriptives <- function(data.ss = load_simulation_summary_data(),
                                 data.ad = load_agent_details_prepared_data()) {
 
   # observations
-  obs <- nrow(load_simulation_summary_data(remove_exclusions = FALSE))
+  obs <- nrow(load_simulation_summary_data())
   out <- paste(" observations: ", obs, "\n", sep = "")
   out <- paste(out, " exclusions:   ", obs - nrow(data.ss), "\n\n", sep = "")
 
   # data
 
-  data.ss.dynamic.arsmall <- subset(data.ss, net.dynamic.pct.rec <= CUT_OFF_SMALL_ATTACK_RATE)
-  data.ss.dynamic.arlarge <- subset(data.ss, net.dynamic.pct.rec >= CUT_OFF_LARGE_ATTACK_RATE)
-
-  data.ss.static.arsmall <- subset(data.ss, net.static.pct.rec <= CUT_OFF_SMALL_ATTACK_RATE)
-  data.ss.static.arlarge <- subset(data.ss, net.static.pct.rec >= CUT_OFF_LARGE_ATTACK_RATE)
+  data.ss.arsmall <- subset(data.ss, net.pct.rec <= CUT_OFF_SMALL_ATTACK_RATE)
+  data.ss.arlarge <- subset(data.ss, net.pct.rec >= CUT_OFF_LARGE_ATTACK_RATE)
 
   out <- paste(out, "\\midrule \n", sep = "")
-  out <- paste(out, "\\multicolumn{6}{l}{\\textbf{I.I. Epidemic, dynamic}}", " \\", "\\ \n", sep = "")
-  out <- paste(out, get_descriptive(data.ss$net.dynamic.pct.rec, "Attack rate"))
-  out <- paste(out, get_descriptive(data.ss$net.dynamic.epidemic.duration, "Duration"))
-  out <- paste(out, get_descriptive(data.ss.dynamic.arsmall$net.dynamic.epidemic.duration, "Duration (attack rates $\\leq 10\\%$)"))
-  out <- paste(out, get_descriptive(data.ss.dynamic.arlarge$net.dynamic.epidemic.duration, "Duration (attack rates $\\geq 90\\%$)"))
-  # out <- paste(out, get_descriptive(data.ss$net.dynamic.epidemic.peak, "Epidemic peak"))
-  # out <- paste(out, get_descriptive(data.ss.arlarge$net.dynamic.epidemic.peak, "Epidemic peak (attack rates 90\\%+)"))
-  out <- paste(out, get_descriptive(data.ss$net.dynamic.epidemic.peak.size, "Epidemic peak size"))
-  out <- paste(out, get_descriptive(data.ss.dynamic.arsmall$net.dynamic.epidemic.peak.size, "Epidemic peak size (attack rates $\\leq 10\\%$)"))
-  out <- paste(out, get_descriptive(data.ss.dynamic.arlarge$net.dynamic.epidemic.peak.size, "Epidemic peak size (attack rates $\\geq 90\\%$)"))
-  # out <- paste(out, get_descriptive(data.ss$net.dynamic.ties.broken.active.epidemic, "Ties broken"))
-  # out <- paste(out, get_descriptive(data.ss$net.dynamic.ties.out.accepted.epidemic, "Ties formed"))
+  out <- paste(out, "\\multicolumn{6}{l}{\\textbf{I.I. Epidemic}}", " \\", "\\ \n", sep = "")
+  out <- paste(out, get_descriptive(data.ss$net.pct.rec, "Attack rate"))
+  out <- paste(out, get_descriptive(data.ss$net.epidemic.duration, "Duration"))
+  out <- paste(out, get_descriptive(data.ss.arsmall$net.epidemic.duration, "Duration (attack rates $\\leq 10\\%$)"))
+  out <- paste(out, get_descriptive(data.ss.arlarge$net.epidemic.duration, "Duration (attack rates $\\geq 90\\%$)"))
+  out <- paste(out, get_descriptive(data.ss$net.epidemic.peak.time, "Epidemic peak time"))
+  out <- paste(out, get_descriptive(data.ss.arsmall$net.epidemic.peak.time, "Epidemic peak time (attack rates $\\leq 10\\%$)"))
+  out <- paste(out, get_descriptive(data.ss.arlarge$net.epidemic.peak.time, "Epidemic peak time (attack rates 90\\%+)"))
+  out <- paste(out, get_descriptive(data.ss$net.epidemic.peak.size, "Epidemic peak size"))
+  out <- paste(out, get_descriptive(data.ss.arsmall$net.epidemic.peak.size, "Epidemic peak size (attack rates $\\leq 10\\%$)"))
+  out <- paste(out, get_descriptive(data.ss.arlarge$net.epidemic.peak.size, "Epidemic peak size (attack rates $\\geq 90\\%$)"))
+  out <- paste(out, get_descriptive(data.ss$net.dynamic.ties.broken.active.epidemic, "Ties broken"))
+  out <- paste(out, get_descriptive(data.ss$net.dynamic.ties.out.accepted.epidemic, "Ties formed"))
   out <- paste(out, get_descriptive(data.ss$net.dynamic.ties.broken.active.epidemic, "Number of broken ties ($t^{-}_{G}$)"))
   out <- paste(out, get_descriptive(data.ss$net.dynamic.ties.out.accepted.epidemic, "Number of created ties ($t^{+}_{G}$)"))
-  out <- paste(out, "\n\\multicolumn{6}{l}{\\textbf{I.II. Epidemic, static}}", " \\", "\\ \n", sep = "")
-  out <- paste(out, get_descriptive(data.ss$net.static.pct.rec, "Attack rate"))
-  out <- paste(out, get_descriptive(data.ss$net.static.epidemic.duration, "Duration"))
-  out <- paste(out, get_descriptive(data.ss.static.arsmall$net.static.epidemic.duration, "Duration (attack rates $\\leq 10\\%$)"))
-  out <- paste(out, get_descriptive(data.ss.static.arlarge$net.static.epidemic.duration, "Duration (attack rates $\\geq 90\\%$)"))
-  # out <- paste(out, get_descriptive(data.ss$net.static.epidemic.peak, "Epidemic peak"))
-  # out <- paste(out, get_descriptive(data.ss.arlarge$net.static.epidemic.peak, "Epidemic peak (attack rates 90\\%+)"))
-  out <- paste(out, get_descriptive(data.ss$net.static.epidemic.peak.size, "Epidemic peak size"))
-  out <- paste(out, get_descriptive(data.ss.static.arsmall$net.static.epidemic.peak.size, "Epidemic peak size (attack rates $\\leq 10\\%$)"))
-  out <- paste(out, get_descriptive(data.ss.static.arlarge$net.static.epidemic.peak.size, "Epidemic peak size (attack rates $\\geq 90\\%$)"))
-  # out <- paste(out, get_descriptive(data.ss$net.static.ties.broken.active.epidemic, "Ties broken"))
-  # out <- paste(out, get_descriptive(data.ss$net.static.ties.out.accepted.epidemic - data.ss$net.static.ties.broken.epidemic, "Ties formed"))
-  out <- paste(out, get_descriptive(data.ss$net.static.ties.broken.active.epidemic, "Number of broken ties ($t^{-}_{G}$)"))
-  out <- paste(out, get_descriptive(data.ss$net.static.ties.out.accepted.epidemic, "Number of created ties ($t^{+}_{G}$)"))
 
   out <- paste(out, "\n\\midrule \n", sep = "")
   out <- paste(out, "\\multicolumn{6}{l}{\\textbf{II. Agent, independent}}", " \\", "\\ \n", sep = "")
   out <- paste(out, get_descriptive(data.ss$nb.alpha, "Preferred proportion of closed triads ($\\alpha$)"))
   out <- paste(out, get_descriptive(data.ss$nb.omega, "Likelihood of ties similar in risk perception ($\\omega$)"))
   out <- paste(out, get_descriptive(data.ad$nb.r.sigma, "Risk perception ($r_{\\sigma, \\pi}$)"))
-  # out <- paste(out, "\\multicolumn{6}{l}{\\textbf{III.II. Agent, dependent}}", " \\", "\\ \n", sep = "")
-  # out <- paste(out, get_descriptive(data.ad$agent.degree, "Degree ($\\mathcal{D}_{i}$)*"))
-  # out <- paste(out, get_descriptive(data.ad$agent.clustering, "Clustering ($\\mathcal{C}_{i}$)*"))
-  # out <- paste(out, get_descriptive(data.ad$agent.betweenness.normalized, "Betweenness ($\\mathcal{B}_{i}$)*"))
-  # out <- paste(out, get_descriptive(data.ad$nb.r.sigma.neighborhood, "Risk perception of direct ties ($r^{t_{i}}_{\\sigma, \\gamma})$"))
-  # out <- paste(out, "\\multicolumn{6}{l}{\\textbf{III.II. Agent, dependent (index case)}}", " \\", "\\ \n", sep = "")
-  # out <- paste(out, get_descriptive(data.ss$index.degree, "Degree ($\\mathcal{D}_{index}$)*"))
-  # out <- paste(out, get_descriptive(data.ss$index.clustering, "Clustering ($\\mathcal{C}_{index}$)*"))
-  # out <- paste(out, get_descriptive(data.ss$index.betweenness.normalized, "Betweenness ($\\mathcal{B}_{index}$)*"))
-  # out <- paste(out, get_descriptive(data.ss$index.r.sigma.neighborhood, "Risk perception of direct ties ($r^{t_{index}}_{\\sigma, \\gamma})$"))
+  out <- paste(out, "\\multicolumn{6}{l}{\\textbf{III.II. Agent, dependent}}", " \\", "\\ \n", sep = "")
+  out <- paste(out, get_descriptive(data.ad$agent.degree, "Degree ($\\mathcal{D}_{i}$)*"))
+  out <- paste(out, get_descriptive(data.ad$agent.clustering, "Clustering ($\\mathcal{C}_{i}$)*"))
+  out <- paste(out, get_descriptive(data.ad$agent.betweenness.normalized, "Betweenness ($\\mathcal{B}_{i}$)*"))
+  out <- paste(out, get_descriptive(data.ad$nb.r.sigma.neighborhood, "Risk perception of direct ties ($r^{t_{i}}_{\\sigma, \\gamma})$"))
+  out <- paste(out, "\\multicolumn{6}{l}{\\textbf{III.II. Agent, dependent (index case)}}", " \\", "\\ \n", sep = "")
+  out <- paste(out, get_descriptive(data.ss$index.degree, "Degree ($\\mathcal{D}_{index}$)*"))
+  out <- paste(out, get_descriptive(data.ss$index.clustering, "Clustering ($\\mathcal{C}_{index}$)*"))
+  out <- paste(out, get_descriptive(data.ss$index.betweenness.normalized, "Betweenness ($\\mathcal{B}_{index}$)*"))
+  out <- paste(out, get_descriptive(data.ss$index.r.sigma.neighborhood, "Risk perception of direct ties ($r^{t_{index}}_{\\sigma, \\gamma})$"))
 
   out <- paste(out, "\n\\midrule \n", sep = "")
   out <- paste(out, "\\multicolumn{6}{l}{\\textbf{III.I. Network, independent}}", " \\", "\\ \n", sep = "")
@@ -372,13 +322,14 @@ export_descriptives <- function(data.ss = load_simulation_summary_data(),
   out <- paste(out, "\n\\multicolumn{6}{l}{\\textbf{III.II. Network, dependent}}", " \\", "\\ \n", sep = "")
   out <- paste(out, get_descriptive(data.ss$net.clustering.pre.epidemic.av, "Clustering ($\\mathcal{C}_{G}$)*"))
   out <- paste(out, get_descriptive(data.ss$net.pathlength.pre.epidemic.av, "Path length ($\\mathcal{L}_{G}$)*"))
-  out <- paste(out, get_descriptive(data.ss$net.assortativity.pre.epidemic, "Homophily ($\\mathcal{H}_{G}$)*"))
+  out <- paste(out, get_descriptive(data.ss$net.assortativity.risk.perception.pre.epidemic, "Homophily ($\\mathcal{H}_{G}$)*"))
   out <- paste(out, get_descriptive(data.ss$net.degree.pre.epidemic.av, "Av. degree ($\\mathcal{D}_{G}$)*"))
-  out <- paste(out, get_descriptive(data.ss$nb.r.sigma.av, "Av. risk perception ($r_{\\sigma, \\pi}$)"))
+  out <- paste(out, get_descriptive(data.ss$nb.r.av, "Av. risk perception ($r_{\\sigma, \\pi}$)"))
 
   out <- paste(out, "\n\\midrule \n", sep = "")
   out <- paste(out, "\\multicolumn{6}{l}{\\textbf{IV. Infectious diseases, independent}}", " \\", "\\ \n", sep = "")
   out <- paste(out, get_descriptive(data.ss$nb.sigma, "Disease severity ($\\sigma$)"))
+  out <- paste(out, get_descriptive(data.ss$nb.tau, "Recovery time ($\\tau$)"))
   out <- paste(out, get_descriptive(data.ss$nb.gamma, "Probability of disease transmission per contact ($\\gamma$)"))
 
   # export to file
@@ -791,7 +742,7 @@ export_correlations <- function(data.ss = load_simulation_summary_data()) {
   # # plot
   # ggsave(paste(EXPORT_PATH_PLOTS, "cor-6-attackrate-duration-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
   #        plot_correlation(data.ss,
-  #                         data.ss$net.dynamic.pct.rec, data.ss$net.dynamic.epidemic.duration,
+  #                         data.ss$net.pct.rec, data.ss$net.epidemic.duration,
   #                         "Attack rate", "Duration",
   #                         c(0, 100), c(5, 50),
   #                         seq(0, 100, 25), seq(5, 50, 5)),
@@ -801,35 +752,16 @@ export_correlations <- function(data.ss = load_simulation_summary_data()) {
   #        dpi = EXPORT_DPI,
   #        device = EXPORT_FILE_TYPE_PLOTS)
   # # correlation
-  # out <- paste(out, get_correlation_text(data.ss$net.dynamic.pct.rec,
-  #                                        data.ss$net.dynamic.epidemic.duration,
+  # out <- paste(out, get_correlation_text(data.ss$net.pct.rec,
+  #                                        data.ss$net.epidemic.duration,
   #                                        "attack rate (dynamic)",
   #                                        "duration (dynamic)"),
   #              sep = "")
   #
   # # plot
-  # ggsave(paste(EXPORT_PATH_PLOTS, "cor-6-attackrate-duration-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
-  #        plot_correlation(data.ss,
-  #                         data.ss$net.static.pct.rec, data.ss$net.static.epidemic.duration,
-  #                         "Attack rate", "Duration",
-  #                         c(0, 100), c(5, 50),
-  #                         seq(0, 100, 25), seq(5, 50, 5)),
-  #        width = EXPORT_PLOT_HEIGHT,
-  #        height = EXPORT_PLOT_HEIGHT,
-  #        units = EXPORT_SIZE_UNITS,
-  #        dpi = EXPORT_DPI,
-  #        device = EXPORT_FILE_TYPE_PLOTS)
-  # # correlation
-  # out <- paste(out, get_correlation_text(data.ss$net.static.pct.rec,
-  #                                        data.ss$net.static.epidemic.duration,
-  #                                        "attack rate (static)",
-  #                                        "duration (static)"),
-  #              sep = "")
-  #
-  # # plot
   # ggsave(paste(EXPORT_PATH_PLOTS, "cor-7-attackrate-peak-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
   #        plot_correlation(data.ss,
-  #                         data.ss$net.dynamic.pct.rec, data.ss$net.dynamic.epidemic.peak,
+  #                         data.ss$net.pct.rec, data.ss$net.epidemic.peak,
   #                         "Attack rate", "Peak",
   #                         c(0, 100), c(5, 50),
   #                         seq(0, 100, 25), seq(5, 50, 5)),
@@ -839,35 +771,16 @@ export_correlations <- function(data.ss = load_simulation_summary_data()) {
   #        dpi = EXPORT_DPI,
   #        device = EXPORT_FILE_TYPE_PLOTS)
   # # correlation
-  # out <- paste(out, get_correlation_text(data.ss$net.dynamic.pct.rec,
-  #                                        data.ss$net.dynamic.epidemic.peak,
+  # out <- paste(out, get_correlation_text(data.ss$net.pct.rec,
+  #                                        data.ss$net.epidemic.peak,
   #                                        "attack rate (dynamic)",
   #                                        "peak (dynamic)"),
   #              sep = "")
   #
   # # plot
-  # ggsave(paste(EXPORT_PATH_PLOTS, "cor-7-attackrate-peak-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
-  #        plot_correlation(data.ss,
-  #                         data.ss$net.static.pct.rec, data.ss$net.static.epidemic.peak,
-  #                         "Attack rate", "Peak",
-  #                         c(0, 100), c(5, 50),
-  #                         seq(0, 100, 25), seq(5, 50, 5)),
-  #        width = EXPORT_PLOT_HEIGHT,
-  #        height = EXPORT_PLOT_HEIGHT,
-  #        units = EXPORT_SIZE_UNITS,
-  #        dpi = EXPORT_DPI,
-  #        device = EXPORT_FILE_TYPE_PLOTS)
-  # # correlation
-  # out <- paste(out, get_correlation_text(data.ss$net.static.pct.rec,
-  #                                        data.ss$net.static.epidemic.peak,
-  #                                        "attack rate (static)",
-  #                                        "peak (static)"),
-  #              sep = "")
-  #
-  # # plot
   # ggsave(paste(EXPORT_PATH_PLOTS, "cor-8-duration-peak-dynamic", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
   #        plot_correlation(data.ss,
-  #                         data.ss$net.dynamic.epidemic.duration, data.ss$net.dynamic.epidemic.peak,
+  #                         data.ss$net.epidemic.duration, data.ss$net.epidemic.peak,
   #                         "Attack rate", "Peak",
   #                         c(5, 50), c(5, 50),
   #                         seq(5, 50, 5), seq(5, 50, 5)),
@@ -877,30 +790,12 @@ export_correlations <- function(data.ss = load_simulation_summary_data()) {
   #        dpi = EXPORT_DPI,
   #        device = EXPORT_FILE_TYPE_PLOTS)
   # # correlation
-  # out <- paste(out, get_correlation_text(data.ss$net.dynamic.epidemic.duration,
-  #                                        data.ss$net.dynamic.epidemic.peak,
+  # out <- paste(out, get_correlation_text(data.ss$net.epidemic.duration,
+  #                                        data.ss$net.epidemic.peak,
   #                                        "duration (dynamic)",
   #                                        "peak (dynamic)"),
   #              sep = "")
   #
-  # # plot
-  # ggsave(paste(EXPORT_PATH_PLOTS, "cor-8-duration-peak-static", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
-  #        plot_correlation(data.ss,
-  #                         data.ss$net.static.epidemic.duration, data.ss$net.static.epidemic.peak,
-  #                         "Attack rate", "Peak",
-  #                         c(5, 50), c(5, 50),
-  #                         seq(5, 50, 5), seq(5, 50, 5)),
-  #        width = EXPORT_PLOT_HEIGHT,
-  #        height = EXPORT_PLOT_HEIGHT,
-  #        units = EXPORT_SIZE_UNITS,
-  #        dpi = EXPORT_DPI,
-  #        device = EXPORT_FILE_TYPE_PLOTS)
-  # # correlation
-  # out <- paste(out, get_correlation_text(data.ss$net.static.epidemic.duration,
-  #                                        data.ss$net.static.epidemic.peak,
-  #                                        "duration (static)",
-  #                                        "peak (static)"),
-  #              sep = "")
 
   ##### EXPORT
   # dir.create(EXPORT_PATH_NUM, showWarnings = FALSE)
@@ -1574,10 +1469,8 @@ plot_levels <- function(df.1,
 #----------------------------------------------------------------------------------------------------#
 plot_c1_a <- function(data.ss = load_simulation_summary_data()) {
   # data
-  d <- data.frame("structure"    = rep("static", nrow(data.ss)),
-                  "attack.rate"  = data.ss$net.static.pct.rec)
   d <- rbind(d, data.frame("structure"    = rep("dynamic", nrow(data.ss)),
-                           "attack.rate"  = data.ss$net.dynamic.pct.rec))
+                           "attack.rate"  = data.ss$net.pct.rec))
   d$structure <- factor(d$structure, levels = c("dynamic", "static"))
 
   # plot
@@ -1634,26 +1527,26 @@ plot_c1_b_duration <- function(data.ss = load_simulation_summary_data(), show.le
 
 
   # dynamic: 0-10
-  d.small.dynamic <- subset(data.ss, net.dynamic.pct.rec <= CUT_OFF_SMALL_ATTACK_RATE)
-  d <- rbind(d, data.frame("structure"   = rep("dynamic", nrow(d.small.dynamic)),
-                  "attack.rate" = rep("small", nrow(d.small.dynamic)),
-                  "duration"    = d.small.dynamic$net.dynamic.epidemic.duration,
-                  "color"       = rep("small", nrow(d.small.dynamic))))
+  d.small <- subset(data.ss, net.pct.rec <= CUT_OFF_SMALL_ATTACK_RATE)
+  d <- rbind(d, data.frame("structure"   = rep("dynamic", nrow(d.small)),
+                  "attack.rate" = rep("small", nrow(d.small)),
+                  "duration"    = d.small$net.epidemic.duration,
+                  "color"       = rep("small", nrow(d.small))))
 
   # dynamic: 10-90
-  d.med.dynamic <- subset(data.ss, net.dynamic.pct.rec > CUT_OFF_SMALL_ATTACK_RATE &
-                           net.dynamic.pct.rec < CUT_OFF_LARGE_ATTACK_RATE)
-  d <- rbind(d, data.frame("structure"   = rep("dynamic", nrow(d.med.dynamic)),
-                  "attack.rate" = rep("med", nrow(d.med.dynamic)),
-                  "duration"    = d.med.dynamic$net.dynamic.epidemic.duration,
-                  "color"       = rep("med", nrow(d.med.dynamic))))
+  d.med <- subset(data.ss, net.pct.rec > CUT_OFF_SMALL_ATTACK_RATE &
+                           net.pct.rec < CUT_OFF_LARGE_ATTACK_RATE)
+  d <- rbind(d, data.frame("structure"   = rep("dynamic", nrow(d.med)),
+                  "attack.rate" = rep("med", nrow(d.med)),
+                  "duration"    = d.med$net.epidemic.duration,
+                  "color"       = rep("med", nrow(d.med))))
 
   # dynamic: 90-100
-  d.large.dynamic <- subset(data.ss, net.dynamic.pct.rec >= CUT_OFF_LARGE_ATTACK_RATE)
-  d <- rbind(d, data.frame("structure"   = rep("dynamic", nrow(d.large.dynamic)),
-                           "attack.rate" = rep("large", nrow(d.large.dynamic)),
-                           "duration"    = d.large.dynamic$net.dynamic.epidemic.duration,
-                           "color"       = rep("large", nrow(d.large.dynamic))))
+  d.large <- subset(data.ss, net.pct.rec >= CUT_OFF_LARGE_ATTACK_RATE)
+  d <- rbind(d, data.frame("structure"   = rep("dynamic", nrow(d.large)),
+                           "attack.rate" = rep("large", nrow(d.large)),
+                           "duration"    = d.large$net.epidemic.duration,
+                           "color"       = rep("large", nrow(d.large))))
 
   d$structure <- factor(d$structure, levels = c("dynamic", "static"))
   d$color <- factor(d$color, c("small", "med", "large"))
@@ -1725,27 +1618,27 @@ plot_c1_b_peak <- function(data.ss = load_simulation_summary_data(), show.legend
 
   d <- rbind(d, data.frame("structure"   = rep("dynamic", nrow(data.ss)),
                            "attack.rate" = rep("average", nrow(data.ss)),
-                           "peak"        = data.ss$net.dynamic.epidemic.peak,
-                           "color"       = rep("average.dynamic", nrow(data.ss))))
+                           "peak"        = data.ss$net.epidemic.peak,
+                           "color"       = rep("average", nrow(data.ss))))
 
-  d.90.dynamic <- subset(data.ss, net.dynamic.pct.rec >= CUT_OFF_LARGE_ATTACK_RATE)
-  d <- rbind(d, data.frame("structure"   = rep("dynamic", nrow(d.90.dynamic)),
-                           "attack.rate" = rep("90-100%", nrow(d.90.dynamic)),
-                           "peak"        = d.90.dynamic$net.dynamic.epidemic.peak,
-                           "color"       = rep("90-100%.dynamic", nrow(d.90.dynamic))))
+  d.90 <- subset(data.ss, net.pct.rec >= CUT_OFF_LARGE_ATTACK_RATE)
+  d <- rbind(d, data.frame("structure"   = rep("dynamic", nrow(d.90)),
+                           "attack.rate" = rep("90-100%", nrow(d.90)),
+                           "peak"        = d.90$net.epidemic.peak,
+                           "color"       = rep("90-100%", nrow(d.90))))
 
   d$structure <- factor(d$structure, levels = c("dynamic", "static"))
-  d$color <- factor(d$color, c("average.dynamic", "90-100%.dynamic", "average.static", "90-100%.static"))
+  d$color <- factor(d$color, c("average", "90-100%", "average.static", "90-100%.static"))
 
   # plot
   p.peak <- ggplot(d, aes(x = structure, y = peak, fill = color)) +
     geom_boxplot(lwd = 2.5, fatten = 1.5, outlier.size = 3) +
-    scale_color_manual(values = c("average.dynamic" = "#D55E00",
-                                  "90-100%.dynamic" = "#ffbd88",
+    scale_color_manual(values = c("average" = "#D55E00",
+                                  "90-100%" = "#ffbd88",
                                   "average.static"  = "#0072B2",
                                   "90-100%.static"  = "#64c7ff")) +
-    scale_fill_manual(values = c("average.dynamic"  = "#D55E00",
-                                 "90-100%.dynamic"  = "#ffbd88",
+    scale_fill_manual(values = c("average"  = "#D55E00",
+                                 "90-100%"  = "#ffbd88",
                                  "average.static"   = "#0072B2",
                                  "90-100%.static"   = "#64c7ff")) +
     scale_x_discrete(name="Network during epidemic") +
@@ -1806,26 +1699,26 @@ plot_c1_b_peaksize <- function(data.ss = load_simulation_summary_data(), show.le
 
 
   # dynamic: 0-10
-  d.small.dynamic <- subset(data.ss, net.dynamic.pct.rec <= CUT_OFF_SMALL_ATTACK_RATE)
-  d <- rbind(d, data.frame("structure"   = rep("dynamic", nrow(d.small.dynamic)),
-                           "attack.rate" = rep("small", nrow(d.small.dynamic)),
-                           "peak.size"    = d.small.dynamic$net.dynamic.epidemic.peak.size,
-                           "color"       = rep("small", nrow(d.small.dynamic))))
+  d.small <- subset(data.ss, net.pct.rec <= CUT_OFF_SMALL_ATTACK_RATE)
+  d <- rbind(d, data.frame("structure"   = rep("dynamic", nrow(d.small)),
+                           "attack.rate" = rep("small", nrow(d.small)),
+                           "peak.size"    = d.small$net.epidemic.peak.size,
+                           "color"       = rep("small", nrow(d.small))))
 
   # dynamic: 10-90
-  d.med.dynamic <- subset(data.ss, net.dynamic.pct.rec > CUT_OFF_SMALL_ATTACK_RATE &
-                            net.dynamic.pct.rec < CUT_OFF_LARGE_ATTACK_RATE)
-  d <- rbind(d, data.frame("structure"   = rep("dynamic", nrow(d.med.dynamic)),
-                           "attack.rate" = rep("med", nrow(d.med.dynamic)),
-                           "peak.size"    = d.med.dynamic$net.dynamic.epidemic.peak.size,
-                           "color"       = rep("med", nrow(d.med.dynamic))))
+  d.med <- subset(data.ss, net.pct.rec > CUT_OFF_SMALL_ATTACK_RATE &
+                            net.pct.rec < CUT_OFF_LARGE_ATTACK_RATE)
+  d <- rbind(d, data.frame("structure"   = rep("dynamic", nrow(d.med)),
+                           "attack.rate" = rep("med", nrow(d.med)),
+                           "peak.size"    = d.med$net.epidemic.peak.size,
+                           "color"       = rep("med", nrow(d.med))))
 
   # dynamic: 90-100
-  d.large.dynamic <- subset(data.ss, net.dynamic.pct.rec >= CUT_OFF_LARGE_ATTACK_RATE)
-  d <- rbind(d, data.frame("structure"   = rep("dynamic", nrow(d.large.dynamic)),
-                           "attack.rate" = rep("large", nrow(d.large.dynamic)),
-                           "peak.size"    = d.large.dynamic$net.dynamic.epidemic.peak.size,
-                           "color"       = rep("large", nrow(d.large.dynamic))))
+  d.large <- subset(data.ss, net.pct.rec >= CUT_OFF_LARGE_ATTACK_RATE)
+  d <- rbind(d, data.frame("structure"   = rep("dynamic", nrow(d.large)),
+                           "attack.rate" = rep("large", nrow(d.large)),
+                           "peak.size"    = d.large$net.epidemic.peak.size,
+                           "color"       = rep("large", nrow(d.large))))
 
   d$structure <- factor(d$structure, levels = c("dynamic", "static"))
   d$color <- factor(d$color, c("small", "med", "large"))
@@ -1881,9 +1774,9 @@ get_plots_dynamics <- function(data.ss = load_simulation_summary_data()) {
 
 
   plots <- c(plots,
-             list(plot_levels(df.1 = data.frame(x = data.ss$net.dynamic.ties.broken.active.epidemic +
-                                                  data.ss$net.dynamic.ties.out.accepted.epidemic,
-                                                y = data.ss$net.dynamic.pct.rec),
+             list(plot_levels(df.1 = data.frame(x = data.ss$net.ties.broken.active.epidemic +
+                                                  data.ss$net.ties.out.accepted.epidemic,
+                                                y = data.ss$net.pct.rec),
 
                               df.2 = data.frame(x = data.ss$net.static.ties.broken.active.epidemic +
                                                   data.ss$net.static.ties.out.accepted.epidemic,
@@ -1903,9 +1796,9 @@ get_plots_dynamics <- function(data.ss = load_simulation_summary_data()) {
              "0-04-netchanges-attackrate")
 
   plots <- c(plots,
-             list(plot_levels(df.1 = data.frame(x = data.ss$net.dynamic.pct.rec,
-                                                y = data.ss$net.dynamic.ties.broken.active.epidemic +
-                                                  data.ss$net.dynamic.ties.out.accepted.epidemic),
+             list(plot_levels(df.1 = data.frame(x = data.ss$net.pct.rec,
+                                                y = data.ss$net.ties.broken.active.epidemic +
+                                                  data.ss$net.ties.out.accepted.epidemic),
 
                               df.2 = data.frame(x = data.ss$net.static.pct.rec,
                                                 y = data.ss$net.static.ties.broken.active.epidemic +
@@ -1925,9 +1818,9 @@ get_plots_dynamics <- function(data.ss = load_simulation_summary_data()) {
              "0-04-attackrate-netchanges")
 
   plots <- c(plots,
-             list(plot_levels(df.1 = data.frame(x = data.ss$net.dynamic.epidemic.duration,
-                                                y = data.ss$net.dynamic.ties.broken.active.epidemic +
-                                                  data.ss$net.dynamic.ties.out.accepted.epidemic),
+             list(plot_levels(df.1 = data.frame(x = data.ss$net.epidemic.duration,
+                                                y = data.ss$net.ties.broken.active.epidemic +
+                                                  data.ss$net.ties.out.accepted.epidemic),
 
                               df.2 = data.frame(x = data.ss$net.static.epidemic.duration,
                                                 y = data.ss$net.static.ties.broken.active.epidemic +
@@ -1947,9 +1840,9 @@ get_plots_dynamics <- function(data.ss = load_simulation_summary_data()) {
              "0-05-netchanges-duration")
 
   plots <- c(plots,
-             list(plot_levels(df.1 = data.frame(x = data.ss$net.dynamic.epidemic.peak.size,
-                                                y = data.ss$net.dynamic.ties.broken.active.epidemic +
-                                                  data.ss$net.dynamic.ties.out.accepted.epidemic),
+             list(plot_levels(df.1 = data.frame(x = data.ss$net.epidemic.peak.size,
+                                                y = data.ss$net.ties.broken.active.epidemic +
+                                                  data.ss$net.ties.out.accepted.epidemic),
 
                               df.2 = data.frame(x = data.ss$net.static.epidemic.peak.size,
                                                 y = data.ss$net.static.ties.broken.active.epidemic +
@@ -1969,8 +1862,8 @@ get_plots_dynamics <- function(data.ss = load_simulation_summary_data()) {
              "0-06-netchanges-peaksize")
 
    plots <- c(plots,
-             list(plot_levels(df.1 = data.frame(x = data.ss$net.dynamic.pct.rec,
-                                                y = data.ss$net.dynamic.epidemic.duration),
+             list(plot_levels(df.1 = data.frame(x = data.ss$net.pct.rec,
+                                                y = data.ss$net.epidemic.duration),
 
                               df.2 = data.frame(x = data.ss$net.static.pct.rec,
                                                 y = data.ss$net.static.epidemic.duration),
@@ -1989,8 +1882,8 @@ get_plots_dynamics <- function(data.ss = load_simulation_summary_data()) {
              "0-07-attackrate-duration")
 
   # plots <- c(plots,
-  #            list(plot_levels(df.1 = data.frame(x = data.ss$net.dynamic.pct.rec,
-  #                                               y = data.ss$net.dynamic.epidemic.peak),
+  #            list(plot_levels(df.1 = data.frame(x = data.ss$net.pct.rec,
+  #                                               y = data.ss$net.epidemic.peak),
   #
   #                             df.2 = data.frame(x = data.ss$net.static.pct.rec,
   #                                               y = data.ss$net.static.epidemic.peak),
@@ -2009,8 +1902,8 @@ get_plots_dynamics <- function(data.ss = load_simulation_summary_data()) {
   #            "0-06-attackrate-peak")
 
   plots <- c(plots,
-             list(plot_levels(df.1 = data.frame(x = data.ss$net.dynamic.pct.rec,
-                                                y = data.ss$net.dynamic.epidemic.peak.size),
+             list(plot_levels(df.1 = data.frame(x = data.ss$net.pct.rec,
+                                                y = data.ss$net.epidemic.peak.size),
 
                               df.2 = data.frame(x = data.ss$net.static.pct.rec,
                                                 y = data.ss$net.static.epidemic.peak.size),
@@ -2029,8 +1922,8 @@ get_plots_dynamics <- function(data.ss = load_simulation_summary_data()) {
              "0-08-attackrate-peaksize")
 
   # plots <- c(plots,
-  #            list(plot_levels(df.1 = data.frame(x = data.ss$net.dynamic.epidemic.duration,
-  #                                               y = data.ss$net.dynamic.epidemic.peak),
+  #            list(plot_levels(df.1 = data.frame(x = data.ss$net.epidemic.duration,
+  #                                               y = data.ss$net.epidemic.peak),
   #
   #                             df.2 = data.frame(x = data.ss$net.static.epidemic.duration,
   #                                               y = data.ss$net.static.epidemic.peak),
@@ -2049,8 +1942,8 @@ get_plots_dynamics <- function(data.ss = load_simulation_summary_data()) {
   #            "0-08-duration-peak")
 
   plots <- c(plots,
-             list(plot_levels(df.1 = data.frame(x = data.ss$net.dynamic.epidemic.duration,
-                                                y = data.ss$net.dynamic.epidemic.peak.size),
+             list(plot_levels(df.1 = data.frame(x = data.ss$net.epidemic.duration,
+                                                y = data.ss$net.epidemic.peak.size),
 
                               df.2 = data.frame(x = data.ss$net.static.epidemic.duration,
                                                 y = data.ss$net.static.epidemic.peak.size),
@@ -2069,8 +1962,8 @@ get_plots_dynamics <- function(data.ss = load_simulation_summary_data()) {
              "0-09-duration-peaksize")
 
   # plots <- c(plots,
-  #            list(plot_levels(df.1 = data.frame(x = data.ss$net.dynamic.epidemic.peak,
-  #                                               y = data.ss$net.dynamic.epidemic.peak.size),
+  #            list(plot_levels(df.1 = data.frame(x = data.ss$net.epidemic.peak,
+  #                                               y = data.ss$net.epidemic.peak.size),
   #
   #                             df.2 = data.frame(x = data.ss$net.static.epidemic.peak,
   #                                               y = data.ss$net.static.epidemic.peak.size),
@@ -2288,8 +2181,8 @@ get_plots_netchanges <- function(#data.ad = load_agent_details_prepared_data(),
 
   if (ep.structure == "dynamic") {
     plots <- c(list(plot_levels(df.1 = data.frame(x = data.ss$nb.r.sigma.av,
-                                                  y = data.ss$net.dynamic.ties.broken.active.epidemic +
-                                                    data.ss$net.dynamic.ties.out.accepted.epidemic),
+                                                  y = data.ss$net.ties.broken.active.epidemic +
+                                                    data.ss$net.ties.out.accepted.epidemic),
 
                                 name.x   = LABEL_RISKPERCEPTION,
                                 limits.x = LIMITS_RISKPERCEPTION,
@@ -2343,8 +2236,8 @@ get_plots_netchanges <- function(#data.ad = load_agent_details_prepared_data(),
   if (ep.structure == "dynamic") {
     plots <- c(plots,
                list(plot_levels(df.1 = data.frame(x = data.ss$net.degree.pre.epidemic.av,
-                                                  y = data.ss$net.dynamic.ties.broken.active.epidemic +
-                                                    data.ss$net.dynamic.ties.out.accepted.epidemic),
+                                                  y = data.ss$net.ties.broken.active.epidemic +
+                                                    data.ss$net.ties.out.accepted.epidemic),
 
                                 name.x   = LABEL_DEGREE,
                                 limits.x = LIMITS_DEGREE,
@@ -2399,8 +2292,8 @@ get_plots_netchanges <- function(#data.ad = load_agent_details_prepared_data(),
   if (ep.structure == "dynamic") {
     plots <- c(plots,
                list(plot_levels(df.1 = data.frame(x = data.ss$net.clustering.pre.epidemic.av,
-                                                  y = data.ss$net.dynamic.ties.broken.active.epidemic +
-                                                    data.ss$net.dynamic.ties.out.accepted.epidemic),
+                                                  y = data.ss$net.ties.broken.active.epidemic +
+                                                    data.ss$net.ties.out.accepted.epidemic),
 
                                 name.x   = LABEL_CLUSTERING,
                                 limits.x = LIMITS_CLUSTERING,
@@ -2455,8 +2348,8 @@ get_plots_netchanges <- function(#data.ad = load_agent_details_prepared_data(),
   if (ep.structure == "dynamic") {
     plots <- c(plots,
                list(plot_levels(df.1 = data.frame(x = data.ss$net.pathlength.pre.epidemic.av,
-                                                  y = data.ss$net.dynamic.ties.broken.active.epidemic +
-                                                    data.ss$net.dynamic.ties.out.accepted.epidemic),
+                                                  y = data.ss$net.ties.broken.active.epidemic +
+                                                    data.ss$net.ties.out.accepted.epidemic),
 
                                 name.x   = LABEL_PATHLENGTH,
                                 limits.x = LIMITS_PATHLENGTH,
@@ -2511,8 +2404,8 @@ get_plots_netchanges <- function(#data.ad = load_agent_details_prepared_data(),
   # if (ep.structure == "dynamic") {
   #   plots <- c(plots,
   #              list(plot_levels(df.1 = data.frame(x = data.ss$index.betweenness.normalized,
-  #                                                 y = data.ss$net.dynamic.ties.broken.active.epidemic +
-  #                                                   data.ss$net.dynamic.ties.out.accepted.epidemic),
+  #                                                 y = data.ss$net.ties.broken.active.epidemic +
+  #                                                   data.ss$net.ties.out.accepted.epidemic),
   #
   #                               name.x   = LABEL_BETWEENNESS,
   #                               limits.x = LIMITS_BETWEENNESS,
@@ -2567,8 +2460,8 @@ get_plots_netchanges <- function(#data.ad = load_agent_details_prepared_data(),
   if (ep.structure == "dynamic") {
     plots <- c(plots,
                list(plot_levels(df.1 = data.frame(x = data.ss$net.assortativity.pre.epidemic,
-                                                  y = data.ss$net.dynamic.ties.broken.active.epidemic +
-                                                    data.ss$net.dynamic.ties.out.accepted.epidemic),
+                                                  y = data.ss$net.ties.broken.active.epidemic +
+                                                    data.ss$net.ties.out.accepted.epidemic),
 
                                 name.x   = LABEL_ASSORTATIVITY,
                                 limits.x = LIMITS_ASSORTATIVITY,
@@ -2623,8 +2516,8 @@ get_plots_netchanges <- function(#data.ad = load_agent_details_prepared_data(),
   if (ep.structure == "dynamic") {
     plots <- c(plots,
                list(plot_levels(df.1 = data.frame(x = data.ss$nb.sigma,
-                                                  y = data.ss$net.dynamic.ties.broken.active.epidemic +
-                                                    data.ss$net.dynamic.ties.out.accepted.epidemic),
+                                                  y = data.ss$net.ties.broken.active.epidemic +
+                                                    data.ss$net.ties.out.accepted.epidemic),
 
                                 name.x   = LABEL_SIGMA,
                                 limits.x = LIMITS_SIGMA,
@@ -2679,8 +2572,8 @@ get_plots_netchanges <- function(#data.ad = load_agent_details_prepared_data(),
   if (ep.structure == "dynamic") {
     plots <- c(plots,
                list(plot_levels(df.1 = data.frame(x = data.ss$nb.gamma,
-                                                  y = data.ss$net.dynamic.ties.broken.active.epidemic +
-                                                    data.ss$net.dynamic.ties.out.accepted.epidemic),
+                                                  y = data.ss$net.ties.broken.active.epidemic +
+                                                    data.ss$net.ties.out.accepted.epidemic),
 
                                 name.x   = LABEL_GAMMA,
                                 limits.x = LIMITS_GAMMA,
@@ -2720,9 +2613,9 @@ get_plots_netchanges <- function(#data.ad = load_agent_details_prepared_data(),
 get_plots_attackrate <- function(data.ss = load_simulation_summary_data()) {
 
   # net changes
-  plots <- c(list(plot_levels(df.1 = data.frame(x = data.ss$net.dynamic.ties.broken.active.epidemic +
-                                                  data.ss$net.dynamic.ties.out.accepted.epidemic,
-                                                y = data.ss$net.dynamic.pct.rec),
+  plots <- c(list(plot_levels(df.1 = data.frame(x = data.ss$net.ties.broken.active.epidemic +
+                                                  data.ss$net.ties.out.accepted.epidemic,
+                                                y = data.ss$net.pct.rec),
 
                               name.x   = LABEL_NETDECISIONS,
                               limits.x = LIMITS_NETDECISIONS_NETWORK,
@@ -2756,9 +2649,9 @@ get_plots_attackrate <- function(data.ss = load_simulation_summary_data()) {
   # risk perception
   plots <- c(plots,
              list(plot_levels(df.1 = data.frame(x = data.ss$nb.r.sigma.av,
-                                                y = data.ss$net.dynamic.pct.rec),
+                                                y = data.ss$net.pct.rec),
                               # df.2 = data.frame(x = data.ss$index.r.sigma.neighborhood,
-                              #                   y = data.ss$net.dynamic.pct.rec),
+                              #                   y = data.ss$net.pct.rec),
 
                               name.x   = LABEL_RISKPERCEPTION,
                               limits.x = LIMITS_RISKPERCEPTION,
@@ -2793,7 +2686,7 @@ get_plots_attackrate <- function(data.ss = load_simulation_summary_data()) {
   # degree
   plots <- c(plots,
              list(plot_levels(df.1 = data.frame(x = data.ss$net.degree.pre.epidemic.av,
-                                                y = data.ss$net.dynamic.pct.rec),
+                                                y = data.ss$net.pct.rec),
 
                               name.x   = LABEL_DEGREE,
                               limits.x = LIMITS_DEGREE,
@@ -2826,9 +2719,9 @@ get_plots_attackrate <- function(data.ss = load_simulation_summary_data()) {
   # clustering
   plots <- c(plots,
              list(plot_levels(df.1 = data.frame(x = data.ss$net.clustering.pre.epidemic.av,
-                                                y = data.ss$net.dynamic.pct.rec),
+                                                y = data.ss$net.pct.rec),
                               # df.2 = data.frame(x = data.ss$index.clustering,
-                              #                   y = data.ss$net.dynamic.pct.rec),
+                              #                   y = data.ss$net.pct.rec),
 
                               name.x   = LABEL_CLUSTERING,
                               limits.x = LIMITS_CLUSTERING,
@@ -2863,7 +2756,7 @@ get_plots_attackrate <- function(data.ss = load_simulation_summary_data()) {
   # path length
   plots <- c(plots,
              list(plot_levels(df.1 = data.frame(x = data.ss$net.pathlength.pre.epidemic.av,
-                                                y = data.ss$net.dynamic.pct.rec),
+                                                y = data.ss$net.pct.rec),
 
                               name.x   = LABEL_PATHLENGTH,
                               limits.x = LIMITS_PATHLENGTH,
@@ -2896,7 +2789,7 @@ get_plots_attackrate <- function(data.ss = load_simulation_summary_data()) {
   # # betweenness (normalized)
   # plots <- c(plots,
   #            list(plot_levels(df.1 = data.frame(x = data.ss$index.betweenness.normalized,
-  #                                               y = data.ss$net.dynamic.pct.rec),
+  #                                               y = data.ss$net.pct.rec),
   #
   #                             name.x   = LABEL_BETWEENNESS,
   #                             limits.x = LIMITS_BETWEENNESS,
@@ -2929,7 +2822,7 @@ get_plots_attackrate <- function(data.ss = load_simulation_summary_data()) {
   # assortativity
   plots <- c(plots,
              list(plot_levels(df.1 = data.frame(x = data.ss$net.assortativity.pre.epidemic,
-                                                y = data.ss$net.dynamic.pct.rec),
+                                                y = data.ss$net.pct.rec),
 
                               name.x   = LABEL_ASSORTATIVITY,
                               limits.x = LIMITS_ASSORTATIVITY,
@@ -2962,7 +2855,7 @@ get_plots_attackrate <- function(data.ss = load_simulation_summary_data()) {
   # sigma
   plots <- c(plots,
              list(plot_levels(df.1 = data.frame(x = data.ss$nb.sigma,
-                                                y = data.ss$net.dynamic.pct.rec),
+                                                y = data.ss$net.pct.rec),
 
                               name.x   = LABEL_SIGMA,
                               limits.x = LIMITS_SIGMA,
@@ -2995,7 +2888,7 @@ get_plots_attackrate <- function(data.ss = load_simulation_summary_data()) {
   # gamma
   plots <- c(plots,
              list(plot_levels(df.1 = data.frame(x = data.ss$nb.gamma,
-                                                y = data.ss$net.dynamic.pct.rec),
+                                                y = data.ss$net.pct.rec),
 
                               name.x   = LABEL_GAMMA,
                               limits.x = LIMITS_GAMMA,
@@ -3031,10 +2924,10 @@ get_plots_attackrate <- function(data.ss = load_simulation_summary_data()) {
 
 get_plots_duration <- function(data.ss = load_simulation_summary_data()) {
 
-  data.ss.arsmall.dyn <- subset(data.ss, net.dynamic.pct.rec <= CUT_OFF_SMALL_ATTACK_RATE)
-  data.ss.arlarge.dyn <- subset(data.ss, net.dynamic.pct.rec >= CUT_OFF_LARGE_ATTACK_RATE)
-  data.ss.armid.dyn   <- subset(data.ss, net.dynamic.pct.rec > CUT_OFF_SMALL_ATTACK_RATE &
-                                  net.dynamic.pct.rec < CUT_OFF_LARGE_ATTACK_RATE)
+  data.ss.arsmall.dyn <- subset(data.ss, net.pct.rec <= CUT_OFF_SMALL_ATTACK_RATE)
+  data.ss.arlarge.dyn <- subset(data.ss, net.pct.rec >= CUT_OFF_LARGE_ATTACK_RATE)
+  data.ss.armid.dyn   <- subset(data.ss, net.pct.rec > CUT_OFF_SMALL_ATTACK_RATE &
+                                  net.pct.rec < CUT_OFF_LARGE_ATTACK_RATE)
 
   data.ss.arsmall.stat <- subset(data.ss, net.static.pct.rec <= CUT_OFF_SMALL_ATTACK_RATE)
   data.ss.arlarge.stat <- subset(data.ss, net.static.pct.rec >= CUT_OFF_LARGE_ATTACK_RATE)
@@ -3042,17 +2935,17 @@ get_plots_duration <- function(data.ss = load_simulation_summary_data()) {
                                    net.static.pct.rec < CUT_OFF_LARGE_ATTACK_RATE)
 
   # net changes
-  plots <- c(list(plot_levels(df.1 = data.frame(x = data.ss.armid.dyn$net.dynamic.ties.broken.active.epidemic +
-                                                  data.ss.armid.dyn$net.dynamic.ties.out.accepted.epidemic,
-                                                y = data.ss.armid.dyn$net.dynamic.epidemic.duration),
+  plots <- c(list(plot_levels(df.1 = data.frame(x = data.ss.armid.dyn$net.ties.broken.active.epidemic +
+                                                  data.ss.armid.dyn$net.ties.out.accepted.epidemic,
+                                                y = data.ss.armid.dyn$net.epidemic.duration),
 
-                              df.2 = data.frame(x = data.ss.arsmall.dyn$net.dynamic.ties.broken.active.epidemic +
-                                                  data.ss.arsmall.dyn$net.dynamic.ties.out.accepted.epidemic,
-                                                y = data.ss.arsmall.dyn$net.dynamic.epidemic.duration),
+                              df.2 = data.frame(x = data.ss.arsmall.dyn$net.ties.broken.active.epidemic +
+                                                  data.ss.arsmall.dyn$net.ties.out.accepted.epidemic,
+                                                y = data.ss.arsmall.dyn$net.epidemic.duration),
 
-                              df.3 = data.frame(x = data.ss.arlarge.dyn$net.dynamic.ties.broken.active.epidemic +
-                                                  data.ss.arlarge.dyn$net.dynamic.ties.out.accepted.epidemic,
-                                                y = data.ss.arlarge.dyn$net.dynamic.epidemic.duration),
+                              df.3 = data.frame(x = data.ss.arlarge.dyn$net.ties.broken.active.epidemic +
+                                                  data.ss.arlarge.dyn$net.ties.out.accepted.epidemic,
+                                                y = data.ss.arlarge.dyn$net.epidemic.duration),
 
                               name.x   = LABEL_NETDECISIONS,
                               limits.x = LIMITS_NETDECISIONS_NETWORK,
@@ -3069,15 +2962,15 @@ get_plots_duration <- function(data.ss = load_simulation_summary_data()) {
   plots <- c(plots,
              list(plot_levels(df.1 = data.frame(x = data.ss.armid.stat$net.static.ties.broken.active.epidemic +
                                                   data.ss.armid.stat$net.static.ties.out.accepted.epidemic,
-                                                y = data.ss.armid.stat$net.dynamic.epidemic.duration),
+                                                y = data.ss.armid.stat$net.epidemic.duration),
 
                               df.2 = data.frame(x = data.ss.arsmall.stat$net.static.ties.broken.active.epidemic +
                                                   data.ss.arsmall.stat$net.static.ties.out.accepted.epidemic,
-                                                y = data.ss.arsmall.stat$net.dynamic.epidemic.duration),
+                                                y = data.ss.arsmall.stat$net.epidemic.duration),
 
                               df.3 = data.frame(x = data.ss.arlarge.stat$net.static.ties.broken.active.epidemic +
                                                   data.ss.arlarge.stat$net.static.ties.out.accepted.epidemic,
-                                                y = data.ss.arlarge.stat$net.dynamic.epidemic.duration),
+                                                y = data.ss.arlarge.stat$net.epidemic.duration),
 
                               name.x   = LABEL_NETDECISIONS,
                               limits.x = LIMITS_NETDECISIONS_NETWORK,
@@ -3094,13 +2987,13 @@ get_plots_duration <- function(data.ss = load_simulation_summary_data()) {
   # risk perception
   plots <- c(plots,
              list(plot_levels(df.1 = data.frame(x = data.ss.armid.dyn$nb.r.sigma.av,
-                                                y = data.ss.armid.dyn$net.dynamic.epidemic.duration),
+                                                y = data.ss.armid.dyn$net.epidemic.duration),
 
                               df.2 = data.frame(x = data.ss.arsmall.dyn$nb.r.sigma.av,
-                                                y = data.ss.arsmall.dyn$net.dynamic.epidemic.duration),
+                                                y = data.ss.arsmall.dyn$net.epidemic.duration),
 
                               df.3 = data.frame(x = data.ss.arlarge.dyn$nb.r.sigma.av,
-                                                y = data.ss.arlarge.dyn$net.dynamic.epidemic.duration),
+                                                y = data.ss.arlarge.dyn$net.epidemic.duration),
 
                               name.x   = LABEL_RISKPERCEPTION,
                               limits.x = LIMITS_RISKPERCEPTION,
@@ -3139,13 +3032,13 @@ get_plots_duration <- function(data.ss = load_simulation_summary_data()) {
   # degree
   plots <- c(plots,
              list(plot_levels(df.1 = data.frame(x = data.ss.armid.dyn$net.degree.pre.epidemic.av,
-                                                y = data.ss.armid.dyn$net.dynamic.epidemic.duration),
+                                                y = data.ss.armid.dyn$net.epidemic.duration),
 
                               df.2 = data.frame(x = data.ss.arsmall.dyn$net.degree.pre.epidemic.av,
-                                                y = data.ss.arsmall.dyn$net.dynamic.epidemic.duration),
+                                                y = data.ss.arsmall.dyn$net.epidemic.duration),
 
                               df.3 = data.frame(x = data.ss.arlarge.dyn$net.degree.pre.epidemic.av,
-                                                y = data.ss.arlarge.dyn$net.dynamic.epidemic.duration),
+                                                y = data.ss.arlarge.dyn$net.epidemic.duration),
 
                               name.x   = LABEL_DEGREE,
                               limits.x = LIMITS_DEGREE,
@@ -3184,13 +3077,13 @@ get_plots_duration <- function(data.ss = load_simulation_summary_data()) {
   # clustering
   plots <- c(plots,
              list(plot_levels(df.1 = data.frame(x = data.ss.armid.dyn$net.clustering.pre.epidemic.av,
-                                                y = data.ss.armid.dyn$net.dynamic.epidemic.duration),
+                                                y = data.ss.armid.dyn$net.epidemic.duration),
 
                               df.2 = data.frame(x = data.ss.arsmall.dyn$net.clustering.pre.epidemic.av,
-                                                y = data.ss.arsmall.dyn$net.dynamic.epidemic.duration),
+                                                y = data.ss.arsmall.dyn$net.epidemic.duration),
 
                               df.3 = data.frame(x = data.ss.arlarge.dyn$net.clustering.pre.epidemic.av,
-                                                y = data.ss.arlarge.dyn$net.dynamic.epidemic.duration),
+                                                y = data.ss.arlarge.dyn$net.epidemic.duration),
 
                               name.x   = LABEL_CLUSTERING,
                               limits.x = LIMITS_CLUSTERING,
@@ -3229,13 +3122,13 @@ get_plots_duration <- function(data.ss = load_simulation_summary_data()) {
   # path length
   plots <- c(plots,
              list(plot_levels(df.1 = data.frame(x = data.ss.armid.dyn$net.pathlength.pre.epidemic.av,
-                                                y = data.ss.armid.dyn$net.dynamic.epidemic.duration),
+                                                y = data.ss.armid.dyn$net.epidemic.duration),
 
                               df.2 = data.frame(x = data.ss.arsmall.dyn$net.pathlength.pre.epidemic.av,
-                                                y = data.ss.arsmall.dyn$net.dynamic.epidemic.duration),
+                                                y = data.ss.arsmall.dyn$net.epidemic.duration),
 
                               df.3 = data.frame(x = data.ss.arlarge.dyn$net.pathlength.pre.epidemic.av,
-                                                y = data.ss.arlarge.dyn$net.dynamic.epidemic.duration),
+                                                y = data.ss.arlarge.dyn$net.epidemic.duration),
 
                               name.x   = LABEL_PATHLENGTH,
                               limits.x = LIMITS_PATHLENGTH,
@@ -3274,10 +3167,10 @@ get_plots_duration <- function(data.ss = load_simulation_summary_data()) {
   # # betweenness (normalized)
   # plots <- c(plots,
   #            list(plot_levels(df.1 = data.frame(x = data.ss$index.betweenness.normalized,
-  #                                               y = data.ss$net.dynamic.epidemic.duration),
+  #                                               y = data.ss$net.epidemic.duration),
   #
   #                             df.2 = data.frame(x = data.ss.arlarge$index.betweenness.normalized,
-  #                                               y = data.ss.arlarge$net.dynamic.epidemic.duration),
+  #                                               y = data.ss.arlarge$net.epidemic.duration),
   #
   #                             name.x   = LABEL_BETWEENNESS,
   #                             limits.x = LIMITS_BETWEENNESS,
@@ -3313,13 +3206,13 @@ get_plots_duration <- function(data.ss = load_simulation_summary_data()) {
   # assortativity
   plots <- c(plots,
              list(plot_levels(df.1 = data.frame(x = data.ss.armid.dyn$net.assortativity.pre.epidemic,
-                                                y = data.ss.armid.dyn$net.dynamic.epidemic.duration),
+                                                y = data.ss.armid.dyn$net.epidemic.duration),
 
                               df.2 = data.frame(x = data.ss.arsmall.dyn$net.assortativity.pre.epidemic,
-                                                y = data.ss.arsmall.dyn$net.dynamic.epidemic.duration),
+                                                y = data.ss.arsmall.dyn$net.epidemic.duration),
 
                               df.3 = data.frame(x = data.ss.arlarge.dyn$net.assortativity.pre.epidemic,
-                                                y = data.ss.arlarge.dyn$net.dynamic.epidemic.duration),
+                                                y = data.ss.arlarge.dyn$net.epidemic.duration),
 
                               name.x   = LABEL_ASSORTATIVITY,
                               limits.x = LIMITS_ASSORTATIVITY,
@@ -3358,13 +3251,13 @@ get_plots_duration <- function(data.ss = load_simulation_summary_data()) {
   # sigma
   plots <- c(plots,
              list(plot_levels(df.1 = data.frame(x = data.ss.armid.dyn$nb.sigma,
-                                                y = data.ss.armid.dyn$net.dynamic.epidemic.duration),
+                                                y = data.ss.armid.dyn$net.epidemic.duration),
 
                               df.2 = data.frame(x = data.ss.arsmall.dyn$nb.sigma,
-                                                y = data.ss.arsmall.dyn$net.dynamic.epidemic.duration),
+                                                y = data.ss.arsmall.dyn$net.epidemic.duration),
 
                               df.3 = data.frame(x = data.ss.arlarge.dyn$nb.sigma,
-                                                y = data.ss.arlarge.dyn$net.dynamic.epidemic.duration),
+                                                y = data.ss.arlarge.dyn$net.epidemic.duration),
 
                               name.x   = LABEL_SIGMA,
                               limits.x = LIMITS_SIGMA,
@@ -3403,13 +3296,13 @@ get_plots_duration <- function(data.ss = load_simulation_summary_data()) {
   # gamma
   plots <- c(plots,
              list(plot_levels(df.1 = data.frame(x = data.ss.armid.dyn$nb.gamma,
-                                                y = data.ss.armid.dyn$net.dynamic.epidemic.duration),
+                                                y = data.ss.armid.dyn$net.epidemic.duration),
 
                               df.2 = data.frame(x = data.ss.arsmall.dyn$nb.gamma,
-                                                y = data.ss.arsmall.dyn$net.dynamic.epidemic.duration),
+                                                y = data.ss.arsmall.dyn$net.epidemic.duration),
 
                               df.3 = data.frame(x = data.ss.arlarge.dyn$nb.gamma,
-                                                y = data.ss.arlarge.dyn$net.dynamic.epidemic.duration),
+                                                y = data.ss.arlarge.dyn$net.epidemic.duration),
 
                               name.x   = LABEL_GAMMA,
                               limits.x = LIMITS_GAMMA,
@@ -3451,16 +3344,16 @@ get_plots_duration <- function(data.ss = load_simulation_summary_data()) {
 
 # get_plots_peak <- function(data.ss = load_simulation_summary_data()) {
 #
-#   data.ss.arlarge <- subset(data.ss, net.dynamic.pct.rec >= CUT_OFF_LARGE_ATTACK_RATE)
+#   data.ss.arlarge <- subset(data.ss, net.pct.rec >= CUT_OFF_LARGE_ATTACK_RATE)
 #
 #   # net changes
-#   plots <- c(list(plot_levels(df.1 = data.frame(x = data.ss$net.dynamic.ties.broken.active.epidemic +
-#                                                   data.ss$net.dynamic.ties.out.accepted.epidemic,
-#                                                 y = data.ss$net.dynamic.epidemic.peak),
+#   plots <- c(list(plot_levels(df.1 = data.frame(x = data.ss$net.ties.broken.active.epidemic +
+#                                                   data.ss$net.ties.out.accepted.epidemic,
+#                                                 y = data.ss$net.epidemic.peak),
 #
-#                               df.2 = data.frame(x = data.ss.arlarge$net.dynamic.ties.broken.active.epidemic +
-#                                                   data.ss.arlarge$net.dynamic.ties.out.accepted.epidemic,
-#                                                 y = data.ss.arlarge$net.dynamic.epidemic.peak),
+#                               df.2 = data.frame(x = data.ss.arlarge$net.ties.broken.active.epidemic +
+#                                                   data.ss.arlarge$net.ties.out.accepted.epidemic,
+#                                                 y = data.ss.arlarge$net.epidemic.peak),
 #
 #                               name.x   = LABEL_NETDECISIONS,
 #                               limits.x = LIMITS_NETDECISIONS_NETWORK,
@@ -3477,11 +3370,11 @@ get_plots_duration <- function(data.ss = load_simulation_summary_data()) {
 #   plots <- c(plots,
 #              list(plot_levels(df.1 = data.frame(x = data.ss$net.static.ties.broken.active.epidemic +
 #                                                   data.ss$net.static.ties.out.accepted.epidemic,
-#                                                 y = data.ss$net.dynamic.epidemic.peak),
+#                                                 y = data.ss$net.epidemic.peak),
 #
 #                               df.2 = data.frame(x = data.ss.arlarge$net.static.ties.broken.active.epidemic +
 #                                                   data.ss.arlarge$net.static.ties.out.accepted.epidemic,
-#                                                 y = data.ss.arlarge$net.dynamic.epidemic.peak),
+#                                                 y = data.ss.arlarge$net.epidemic.peak),
 #
 #                               name.x   = LABEL_NETDECISIONS,
 #                               limits.x = LIMITS_NETDECISIONS_NETWORK,
@@ -3497,10 +3390,10 @@ get_plots_duration <- function(data.ss = load_simulation_summary_data()) {
 #
 #   plots <- c(plots,
 #              list(plot_levels(df.1 = data.frame(x = data.ss$nb.r.sigma.av,
-#                                                 y = data.ss$net.dynamic.epidemic.peak),
+#                                                 y = data.ss$net.epidemic.peak),
 #
 #                               df.2 = data.frame(x = data.ss.arlarge$nb.r.sigma.av,
-#                                                 y = data.ss.arlarge$net.dynamic.epidemic.peak),
+#                                                 y = data.ss.arlarge$net.epidemic.peak),
 #
 #                               name.x   = LABEL_RISKPERCEPTION,
 #                               limits.x = LIMITS_RISKPERCEPTION,
@@ -3536,10 +3429,10 @@ get_plots_duration <- function(data.ss = load_simulation_summary_data()) {
 #   # degree
 #   plots <- c(plots,
 #              list(plot_levels(df.1 = data.frame(x = data.ss$net.degree.pre.epidemic.av,
-#                                                 y = data.ss$net.dynamic.epidemic.peak),
+#                                                 y = data.ss$net.epidemic.peak),
 #
 #                               df.2 = data.frame(x = data.ss.arlarge$net.degree.pre.epidemic.av,
-#                                                 y = data.ss.arlarge$net.dynamic.epidemic.peak),
+#                                                 y = data.ss.arlarge$net.epidemic.peak),
 #
 #                               name.x   = LABEL_DEGREE,
 #                               limits.x = LIMITS_DEGREE,
@@ -3574,10 +3467,10 @@ get_plots_duration <- function(data.ss = load_simulation_summary_data()) {
 #
 #   plots <- c(plots,
 #              list(plot_levels(df.1 = data.frame(x = data.ss$net.clustering.pre.epidemic.av,
-#                                                 y = data.ss$net.dynamic.epidemic.peak),
+#                                                 y = data.ss$net.epidemic.peak),
 #
 #                               df.2 = data.frame(x = data.ss.arlarge$net.clustering.pre.epidemic.av,
-#                                                 y = data.ss.arlarge$net.dynamic.epidemic.peak),
+#                                                 y = data.ss.arlarge$net.epidemic.peak),
 #
 #                               name.x   = LABEL_CLUSTERING,
 #                               limits.x = LIMITS_CLUSTERING,
@@ -3612,10 +3505,10 @@ get_plots_duration <- function(data.ss = load_simulation_summary_data()) {
 #
 #   plots <- c(plots,
 #              list(plot_levels(df.1 = data.frame(x = data.ss$net.pathlength.pre.epidemic.av,
-#                                                 y = data.ss$net.dynamic.epidemic.peak),
+#                                                 y = data.ss$net.epidemic.peak),
 #
 #                               df.2 = data.frame(x = data.ss.arlarge$net.pathlength.pre.epidemic.av,
-#                                                 y = data.ss.arlarge$net.dynamic.epidemic.peak),
+#                                                 y = data.ss.arlarge$net.epidemic.peak),
 #
 #                               name.x   = LABEL_PATHLENGTH,
 #                               limits.x = LIMITS_PATHLENGTH,
@@ -3650,10 +3543,10 @@ get_plots_duration <- function(data.ss = load_simulation_summary_data()) {
 #
 #   # plots <- c(plots,
 #   #            list(plot_levels(df.1 = data.frame(x = data.ss$index.betweenness.normalized,
-#   #                                               y = data.ss$net.dynamic.epidemic.peak),
+#   #                                               y = data.ss$net.epidemic.peak),
 #   #
 #   #                             df.2 = data.frame(x = data.ss.arlarge$index.betweenness.normalized,
-#   #                                               y = data.ss.arlarge$net.dynamic.epidemic.peak),
+#   #                                               y = data.ss.arlarge$net.epidemic.peak),
 #   #
 #   #                             name.x   = LABEL_BETWEENNESS,
 #   #                             limits.x = LIMITS_BETWEENNESS,
@@ -3688,10 +3581,10 @@ get_plots_duration <- function(data.ss = load_simulation_summary_data()) {
 #
 #   plots <- c(plots,
 #              list(plot_levels(df.1 = data.frame(x = data.ss$net.assortativity.pre.epidemic,
-#                                                 y = data.ss$net.dynamic.epidemic.peak),
+#                                                 y = data.ss$net.epidemic.peak),
 #
 #                               df.2 = data.frame(x = data.ss.arlarge$net.assortativity.pre.epidemic,
-#                                                 y = data.ss.arlarge$net.dynamic.epidemic.peak),
+#                                                 y = data.ss.arlarge$net.epidemic.peak),
 #
 #                               name.x   = LABEL_ASSORTATIVITY,
 #                               limits.x = LIMITS_ASSORTATIVITY,
@@ -3727,10 +3620,10 @@ get_plots_duration <- function(data.ss = load_simulation_summary_data()) {
 #   # sigma
 #   plots <- c(plots,
 #              list(plot_levels(df.1 = data.frame(x = data.ss$nb.sigma,
-#                                                 y = data.ss$net.dynamic.epidemic.peak),
+#                                                 y = data.ss$net.epidemic.peak),
 #
 #                               df.2 = data.frame(x = data.ss.arlarge$nb.sigma,
-#                                                 y = data.ss.arlarge$net.dynamic.epidemic.peak),
+#                                                 y = data.ss.arlarge$net.epidemic.peak),
 #
 #                               name.x   = LABEL_SIGMA,
 #                               limits.x = LIMITS_SIGMA,
@@ -3766,10 +3659,10 @@ get_plots_duration <- function(data.ss = load_simulation_summary_data()) {
 #   # gamma
 #   plots <- c(plots,
 #              list(plot_levels(df.1 = data.frame(x = data.ss$nb.gamma,
-#                                                 y = data.ss$net.dynamic.epidemic.peak),
+#                                                 y = data.ss$net.epidemic.peak),
 #
 #                               df.2 = data.frame(x = data.ss.arlarge$nb.gamma,
-#                                                 y = data.ss.arlarge$net.dynamic.epidemic.peak),
+#                                                 y = data.ss.arlarge$net.epidemic.peak),
 #
 #                               name.x   = LABEL_GAMMA,
 #                               limits.x = LIMITS_GAMMA,
@@ -3809,10 +3702,10 @@ get_plots_duration <- function(data.ss = load_simulation_summary_data()) {
 
 get_plots_peaksize <- function(data.ss = load_simulation_summary_data()) {
 
-  data.ss.armid.dyn <- subset(data.ss, net.dynamic.pct.rec > CUT_OFF_SMALL_ATTACK_RATE &
-                                net.dynamic.pct.rec < CUT_OFF_LARGE_ATTACK_RATE)
-  data.ss.arsmall.dyn <- subset(data.ss, net.dynamic.pct.rec <= CUT_OFF_SMALL_ATTACK_RATE)
-  data.ss.arlarge.dyn <- subset(data.ss, net.dynamic.pct.rec >= CUT_OFF_LARGE_ATTACK_RATE)
+  data.ss.armid.dyn <- subset(data.ss, net.pct.rec > CUT_OFF_SMALL_ATTACK_RATE &
+                                net.pct.rec < CUT_OFF_LARGE_ATTACK_RATE)
+  data.ss.arsmall.dyn <- subset(data.ss, net.pct.rec <= CUT_OFF_SMALL_ATTACK_RATE)
+  data.ss.arlarge.dyn <- subset(data.ss, net.pct.rec >= CUT_OFF_LARGE_ATTACK_RATE)
 
   data.ss.armid.stat <- subset(data.ss, net.static.pct.rec > CUT_OFF_SMALL_ATTACK_RATE &
                                 net.static.pct.rec < CUT_OFF_LARGE_ATTACK_RATE)
@@ -3820,17 +3713,17 @@ get_plots_peaksize <- function(data.ss = load_simulation_summary_data()) {
   data.ss.arlarge.stat <- subset(data.ss, net.static.pct.rec >= CUT_OFF_LARGE_ATTACK_RATE)
 
   # net changes
-  plots <- c(list(plot_levels(df.1 = data.frame(x = data.ss.armid.dyn$net.dynamic.ties.broken.active.epidemic +
-                                                  data.ss.armid.dyn$net.dynamic.ties.out.accepted.epidemic,
-                                                y = data.ss.armid.dyn$net.dynamic.epidemic.peak.size),
+  plots <- c(list(plot_levels(df.1 = data.frame(x = data.ss.armid.dyn$net.ties.broken.active.epidemic +
+                                                  data.ss.armid.dyn$net.ties.out.accepted.epidemic,
+                                                y = data.ss.armid.dyn$net.epidemic.peak.size),
 
-                              df.2 = data.frame(x = data.ss.arsmall.dyn$net.dynamic.ties.broken.active.epidemic +
-                                                  data.ss.arsmall.dyn$net.dynamic.ties.out.accepted.epidemic,
-                                                y = data.ss.arsmall.dyn$net.dynamic.epidemic.peak.size),
+                              df.2 = data.frame(x = data.ss.arsmall.dyn$net.ties.broken.active.epidemic +
+                                                  data.ss.arsmall.dyn$net.ties.out.accepted.epidemic,
+                                                y = data.ss.arsmall.dyn$net.epidemic.peak.size),
 
-                              df.3 = data.frame(x = data.ss.arlarge.dyn$net.dynamic.ties.broken.active.epidemic +
-                                                  data.ss.arlarge.dyn$net.dynamic.ties.out.accepted.epidemic,
-                                                y = data.ss.arlarge.dyn$net.dynamic.epidemic.peak.size),
+                              df.3 = data.frame(x = data.ss.arlarge.dyn$net.ties.broken.active.epidemic +
+                                                  data.ss.arlarge.dyn$net.ties.out.accepted.epidemic,
+                                                y = data.ss.arlarge.dyn$net.epidemic.peak.size),
 
                               name.x   = LABEL_NETDECISIONS,
                               limits.x = LIMITS_NETDECISIONS_NETWORK,
@@ -3847,15 +3740,15 @@ get_plots_peaksize <- function(data.ss = load_simulation_summary_data()) {
   plots <- c(plots,
              list(plot_levels(df.1 = data.frame(x = data.ss.armid.stat$net.static.ties.broken.active.epidemic +
                                                   data.ss.armid.stat$net.static.ties.out.accepted.epidemic,
-                                                y = data.ss.armid.stat$net.dynamic.epidemic.peak.size),
+                                                y = data.ss.armid.stat$net.epidemic.peak.size),
 
                               df.2 = data.frame(x = data.ss.arsmall.stat$net.static.ties.broken.active.epidemic +
                                                   data.ss.arsmall.stat$net.static.ties.out.accepted.epidemic,
-                                                y = data.ss.arsmall.stat$net.dynamic.epidemic.peak.size),
+                                                y = data.ss.arsmall.stat$net.epidemic.peak.size),
 
                               df.3 = data.frame(x = data.ss.arlarge.stat$net.static.ties.broken.active.epidemic +
                                                   data.ss.arlarge.stat$net.static.ties.out.accepted.epidemic,
-                                                y = data.ss.arlarge.stat$net.dynamic.epidemic.peak.size),
+                                                y = data.ss.arlarge.stat$net.epidemic.peak.size),
 
                               name.x   = LABEL_NETDECISIONS,
                               limits.x = LIMITS_NETDECISIONS_NETWORK,
@@ -3871,13 +3764,13 @@ get_plots_peaksize <- function(data.ss = load_simulation_summary_data()) {
 
   plots <- c(plots,
              list(plot_levels(df.1 = data.frame(x = data.ss.armid.dyn$nb.r.sigma.av,
-                                                y = data.ss.armid.dyn$net.dynamic.epidemic.peak.size),
+                                                y = data.ss.armid.dyn$net.epidemic.peak.size),
 
                               df.2 = data.frame(x = data.ss.arsmall.dyn$nb.r.sigma.av,
-                                                y = data.ss.arsmall.dyn$net.dynamic.epidemic.peak.size),
+                                                y = data.ss.arsmall.dyn$net.epidemic.peak.size),
 
                               df.3 = data.frame(x = data.ss.arlarge.dyn$nb.r.sigma.av,
-                                                y = data.ss.arlarge.dyn$net.dynamic.epidemic.peak.size),
+                                                y = data.ss.arlarge.dyn$net.epidemic.peak.size),
 
                               name.x   = LABEL_RISKPERCEPTION,
                               limits.x = LIMITS_RISKPERCEPTION,
@@ -3916,13 +3809,13 @@ get_plots_peaksize <- function(data.ss = load_simulation_summary_data()) {
   # degree
   plots <- c(plots,
              list(plot_levels(df.1 = data.frame(x = data.ss.armid.dyn$net.degree.pre.epidemic.av,
-                                                y = data.ss.armid.dyn$net.dynamic.epidemic.peak.size),
+                                                y = data.ss.armid.dyn$net.epidemic.peak.size),
 
                               df.2 = data.frame(x = data.ss.arsmall.dyn$net.degree.pre.epidemic.av,
-                                                y = data.ss.arsmall.dyn$net.dynamic.epidemic.peak.size),
+                                                y = data.ss.arsmall.dyn$net.epidemic.peak.size),
 
                               df.3 = data.frame(x = data.ss.arlarge.dyn$net.degree.pre.epidemic.av,
-                                                y = data.ss.arlarge.dyn$net.dynamic.epidemic.peak.size),
+                                                y = data.ss.arlarge.dyn$net.epidemic.peak.size),
 
                               name.x   = LABEL_DEGREE,
                               limits.x = LIMITS_DEGREE,
@@ -3960,13 +3853,13 @@ get_plots_peaksize <- function(data.ss = load_simulation_summary_data()) {
 
   plots <- c(plots,
              list(plot_levels(df.1 = data.frame(x = data.ss.armid.dyn$net.clustering.pre.epidemic.av,
-                                                y = data.ss.armid.dyn$net.dynamic.epidemic.peak.size),
+                                                y = data.ss.armid.dyn$net.epidemic.peak.size),
 
                               df.2 = data.frame(x = data.ss.arsmall.dyn$net.clustering.pre.epidemic.av,
-                                                y = data.ss.arsmall.dyn$net.dynamic.epidemic.peak.size),
+                                                y = data.ss.arsmall.dyn$net.epidemic.peak.size),
 
                               df.3 = data.frame(x = data.ss.arlarge.dyn$net.clustering.pre.epidemic.av,
-                                                y = data.ss.arlarge.dyn$net.dynamic.epidemic.peak.size),
+                                                y = data.ss.arlarge.dyn$net.epidemic.peak.size),
 
                               name.x   = LABEL_CLUSTERING,
                               limits.x = LIMITS_CLUSTERING,
@@ -4004,13 +3897,13 @@ get_plots_peaksize <- function(data.ss = load_simulation_summary_data()) {
 
   plots <- c(plots,
              list(plot_levels(df.1 = data.frame(x = data.ss.armid.dyn$net.pathlength.pre.epidemic.av,
-                                                y = data.ss.armid.dyn$net.dynamic.epidemic.peak.size),
+                                                y = data.ss.armid.dyn$net.epidemic.peak.size),
 
                               df.2 = data.frame(x = data.ss.arsmall.dyn$net.pathlength.pre.epidemic.av,
-                                                y = data.ss.arsmall.dyn$net.dynamic.epidemic.peak.size),
+                                                y = data.ss.arsmall.dyn$net.epidemic.peak.size),
 
                               df.3 = data.frame(x = data.ss.arlarge.dyn$net.pathlength.pre.epidemic.av,
-                                                y = data.ss.arlarge.dyn$net.dynamic.epidemic.peak.size),
+                                                y = data.ss.arlarge.dyn$net.epidemic.peak.size),
 
                               name.x   = LABEL_PATHLENGTH,
                               limits.x = LIMITS_PATHLENGTH,
@@ -4048,10 +3941,10 @@ get_plots_peaksize <- function(data.ss = load_simulation_summary_data()) {
 
   # plots <- c(plots,
   #            list(plot_levels(df.1 = data.frame(x = data.ss$index.betweenness.normalized,
-  #                                               y = data.ss$net.dynamic.epidemic.peak.size),
+  #                                               y = data.ss$net.epidemic.peak.size),
   #
   #                             df.2 = data.frame(x = data.ss.arlarge$index.betweenness.normalized,
-  #                                               y = data.ss.arlarge$net.dynamic.epidemic.peak.size),
+  #                                               y = data.ss.arlarge$net.epidemic.peak.size),
   #
   #                             name.x   = LABEL_BETWEENNESS,
   #                             limits.x = LIMITS_BETWEENNESS,
@@ -4086,13 +3979,13 @@ get_plots_peaksize <- function(data.ss = load_simulation_summary_data()) {
 
   plots <- c(plots,
              list(plot_levels(df.1 = data.frame(x = data.ss.armid.dyn$net.assortativity.pre.epidemic,
-                                                y = data.ss.armid.dyn$net.dynamic.epidemic.peak.size),
+                                                y = data.ss.armid.dyn$net.epidemic.peak.size),
 
                               df.2 = data.frame(x = data.ss.arsmall.dyn$net.assortativity.pre.epidemic,
-                                                y = data.ss.arsmall.dyn$net.dynamic.epidemic.peak.size),
+                                                y = data.ss.arsmall.dyn$net.epidemic.peak.size),
 
                               df.3 = data.frame(x = data.ss.arlarge.dyn$net.assortativity.pre.epidemic,
-                                                y = data.ss.arlarge.dyn$net.dynamic.epidemic.peak.size),
+                                                y = data.ss.arlarge.dyn$net.epidemic.peak.size),
 
                               name.x   = LABEL_ASSORTATIVITY,
                               limits.x = LIMITS_ASSORTATIVITY,
@@ -4131,13 +4024,13 @@ get_plots_peaksize <- function(data.ss = load_simulation_summary_data()) {
   # sigma
   plots <- c(plots,
              list(plot_levels(df.1 = data.frame(x = data.ss.armid.dyn$nb.sigma,
-                                                y = data.ss.armid.dyn$net.dynamic.epidemic.peak.size),
+                                                y = data.ss.armid.dyn$net.epidemic.peak.size),
 
                               df.2 = data.frame(x = data.ss.arsmall.dyn$nb.sigma,
-                                                y = data.ss.arsmall.dyn$net.dynamic.epidemic.peak.size),
+                                                y = data.ss.arsmall.dyn$net.epidemic.peak.size),
 
                               df.3 = data.frame(x = data.ss.arlarge.dyn$nb.sigma,
-                                                y = data.ss.arlarge.dyn$net.dynamic.epidemic.peak.size),
+                                                y = data.ss.arlarge.dyn$net.epidemic.peak.size),
 
                               name.x   = LABEL_SIGMA,
                               limits.x = LIMITS_SIGMA,
@@ -4176,13 +4069,13 @@ get_plots_peaksize <- function(data.ss = load_simulation_summary_data()) {
   # gamma
   plots <- c(plots,
              list(plot_levels(df.1 = data.frame(x = data.ss.armid.dyn$nb.gamma,
-                                                y = data.ss.armid.dyn$net.dynamic.epidemic.peak.size),
+                                                y = data.ss.armid.dyn$net.epidemic.peak.size),
 
                               df.2 = data.frame(x = data.ss.arsmall.dyn$nb.gamma,
-                                                y = data.ss.arsmall.dyn$net.dynamic.epidemic.peak.size),
+                                                y = data.ss.arsmall.dyn$net.epidemic.peak.size),
 
                               df.3 = data.frame(x = data.ss.arlarge.dyn$nb.gamma,
-                                                y = data.ss.arlarge.dyn$net.dynamic.epidemic.peak.size),
+                                                y = data.ss.arlarge.dyn$net.epidemic.peak.size),
 
                               name.x   = LABEL_GAMMA,
                               limits.x = LIMITS_GAMMA,
@@ -4394,8 +4287,8 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
   ##### DYNAMIC #####
   ### INDEPENDENT ###
   ## MAIN EFFECTS
-  net.changes                   <- prepare_predictor(data.ss$net.dynamic.ties.broken.active.epidemic +
-                                                       data.ss$net.dynamic.ties.out.accepted.epidemic)
+  net.changes                   <- prepare_predictor(data.ss$net.ties.broken.active.epidemic +
+                                                       data.ss$net.ties.out.accepted.epidemic)
   degree.av                     <- prepare_predictor(data.ss$net.degree.pre.epidemic.av)
   clustering.av                 <- prepare_predictor(data.ss$net.clustering.pre.epidemic.av)
   pathlength.av                 <- prepare_predictor(data.ss$net.pathlength.pre.epidemic.av)
@@ -4404,43 +4297,43 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
   gamma                         <- prepare_predictor(data.ss$nb.gamma)
   r.sigma.av                    <- prepare_predictor(data.ss$nb.r.sigma.av)
 
-  attack.rate.dyn.iv            <- prepare_predictor(data.ss$net.dynamic.pct.rec)
+  attack.rate.dyn.iv            <- prepare_predictor(data.ss$net.pct.rec)
   attack.rate.stat.iv           <- prepare_predictor(data.ss$net.static.pct.rec)
 
   ### DEPENDENT ###
-  net.changes.dv <- data.ss$net.dynamic.ties.broken.active.epidemic + data.ss$net.dynamic.ties.out.accepted.epidemic
-  attack.rate    <- data.ss$net.dynamic.pct.rec / 100
-  duration       <- data.ss$net.dynamic.epidemic.duration
-  peak           <- data.ss$net.dynamic.epidemic.peak
-  peak.size      <- data.ss$net.dynamic.epidemic.peak.size
+  net.changes.dv <- data.ss$net.ties.broken.active.epidemic + data.ss$net.ties.out.accepted.epidemic
+  attack.rate    <- data.ss$net.pct.rec / 100
+  duration       <- data.ss$net.epidemic.duration
+  peak           <- data.ss$net.epidemic.peak
+  peak.size      <- data.ss$net.epidemic.peak.size
 
   ## MAIN EFFECTS (NETWORK DYNAMICS)
   # attack rate
-  model.1.attackrate.dynamic <- glm(attack.rate ~
+  model.1.attackrate <- glm(attack.rate ~
                                       net.changes,
                                     family = binomial)
   if (print.summaries) {
-    print(summary(model.1.attackrate.dynamic))
-    print(print_r2(model.1.attackrate.dynamic))
+    print(summary(model.1.attackrate))
+    print(print_r2(model.1.attackrate))
   }
   # duration
-  model.1.duration.dynamic <- lm(duration ~
+  model.1.duration <- lm(duration ~
                                    net.changes)
   if (print.summaries) {
-    print(summary(model.1.duration.dynamic))
-    print(print_r2(model.1.duration.dynamic))
+    print(summary(model.1.duration))
+    print(print_r2(model.1.duration))
   }
   # peak size
-  model.1.peak.size.dynamic <- lm(peak.size ~
+  model.1.peak.size <- lm(peak.size ~
                                     net.changes)
   if (print.summaries) {
-    print(summary(model.1.peak.size.dynamic))
-    print(print_r2(model.1.peak.size.dynamic))
+    print(summary(model.1.peak.size))
+    print(print_r2(model.1.peak.size))
   }
 
   ## MAIN EFFECTS (ACTUAL NETWORK PROPERTIES RATHER THAN PARAMETERS TO CONTROL NETWORK PROPERTIES)
   # network changes
-  model.2.netchanges.dynamic <- lm(net.changes.dv ~
+  model.2.netchanges <- lm(net.changes.dv ~
                                      degree.av +
                                      clustering.av +
                                      pathlength.av +
@@ -4450,8 +4343,8 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
                                      r.sigma.av
   )
   if (print.summaries) {
-    print(summary(model.2.netchanges.dynamic))
-    print(vif(model.2.netchanges.dynamic))
+    print(summary(model.2.netchanges))
+    print(vif(model.2.netchanges))
   }
 
   # export_interactions(c("degree.av",
@@ -4483,7 +4376,7 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
   sigma.X.gamma                      <- sigma               * gamma
   sigma.X.r.sigma.av                 <- sigma               * r.sigma.av
   gamma.X.r.sigma.av                 <- gamma               * r.sigma.av
-  model.3.netchanges.dynamic <- lm(net.changes.dv ~
+  model.3.netchanges <- lm(net.changes.dv ~
                                      degree.av +
                                      clustering.av +
                                      pathlength.av +
@@ -4515,12 +4408,12 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
                                      # gamma.X.r.sigma.av
   )
   if (print.summaries) {
-    print(summary(model.3.netchanges.dynamic))
-    print(vif(model.3.netchanges.dynamic))
+    print(summary(model.3.netchanges))
+    print(vif(model.3.netchanges))
   }
 
   # attack rate
-  model.2.attackrate.dynamic <- glm(attack.rate ~
+  model.2.attackrate <- glm(attack.rate ~
                                       net.changes +
                                       degree.av +
                                       clustering.av +
@@ -4531,9 +4424,9 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
                                       r.sigma.av,
                                     family = binomial)
   if (print.summaries) {
-    print(summary(model.2.attackrate.dynamic))
-    print(vif(model.2.attackrate.dynamic))
-    print(print_r2(model.2.attackrate.dynamic))
+    print(summary(model.2.attackrate))
+    print(vif(model.2.attackrate))
+    print(print_r2(model.2.attackrate))
   }
 
   # export_interactions(c("net.changes",
@@ -4574,7 +4467,7 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
   sigma.X.r.sigma.av                 <- sigma               * r.sigma.av
   gamma.X.r.sigma.av                 <- gamma               * r.sigma.av
 
-  model.3.attackrate.dynamic <- glm(attack.rate ~
+  model.3.attackrate <- glm(attack.rate ~
                                       net.changes +
                                       degree.av +
                                       clustering.av +
@@ -4615,13 +4508,13 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
                                     ,
                                     family = binomial)
   if (print.summaries) {
-    print(summary(model.3.attackrate.dynamic))
-    print(print_r2(model.3.attackrate.dynamic))
-    print(vif(model.3.attackrate.dynamic))
+    print(summary(model.3.attackrate))
+    print(print_r2(model.3.attackrate))
+    print(vif(model.3.attackrate))
   }
 
   # duration
-  model.2.duration.dynamic <- lm(duration ~
+  model.2.duration <- lm(duration ~
                                    net.changes +
                                    degree.av +
                                    clustering.av +
@@ -4634,10 +4527,10 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
                                    attack.rate.dyn.iv
                                  )
   if (print.summaries) {
-    print(summary(model.2.duration.dynamic))
-    print(vif(model.2.duration.dynamic))
+    print(summary(model.2.duration))
+    print(vif(model.2.duration))
   }
-  model.3.duration.dynamic <- lm(duration ~
+  model.3.duration <- lm(duration ~
                                    net.changes +
                                    degree.av +
                                    clustering.av +
@@ -4679,12 +4572,12 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
                                    # gamma.X.r.sigma.av
   )
   if (print.summaries) {
-    print(summary(model.3.duration.dynamic))
-    print(vif(model.3.duration.dynamic))
+    print(summary(model.3.duration))
+    print(vif(model.3.duration))
   }
 
   # peak size
-  model.2.peak.size.dynamic <- lm(peak.size ~
+  model.2.peak.size <- lm(peak.size ~
                                     net.changes +
                                     degree.av +
                                     clustering.av +
@@ -4695,11 +4588,11 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
                                     r.sigma.av
                                   )
   if (print.summaries) {
-    print(summary(model.2.peak.size.dynamic))
-    print(vif(model.2.peak.size.dynamic))
+    print(summary(model.2.peak.size))
+    print(vif(model.2.peak.size))
   }
 
-  model.3.peak.size.dynamic <- lm(peak.size ~
+  model.3.peak.size <- lm(peak.size ~
                                     net.changes +
                                     degree.av +
                                     clustering.av +
@@ -4739,8 +4632,8 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
                                     # gamma.X.r.sigma.av
   )
   if (print.summaries) {
-    print(summary(model.3.peak.size.dynamic))
-    print(vif(model.3.peak.size.dynamic))
+    print(summary(model.3.peak.size))
+    print(vif(model.3.peak.size))
   }
 
   ### FILE EXPORT ###
@@ -4748,29 +4641,29 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
   if (filenamname.appendix != "") {
     filename <- paste(filename, "-", filenamname.appendix, sep = "")
   }
-  exportModels(list(model.2.netchanges.dynamic,
-                    model.3.netchanges.dynamic), filename)
+  exportModels(list(model.2.netchanges,
+                    model.3.netchanges), filename)
   filename <- "dynamic-reg-02-attackrate"
   if (filenamname.appendix != "") {
     filename <- paste(filename, "-", filenamname.appendix, sep = "")
   }
-  exportModels(list(model.1.attackrate.dynamic,
-                    model.2.attackrate.dynamic,
-                    model.3.attackrate.dynamic), filename)
+  exportModels(list(model.1.attackrate,
+                    model.2.attackrate,
+                    model.3.attackrate), filename)
   filename <- "dynamic-reg-03-duration"
   if (filenamname.appendix != "") {
     filename <- paste(filename, "-", filenamname.appendix, sep = "")
   }
-  exportModels(list(model.1.duration.dynamic,
-                    model.2.duration.dynamic,
-                    model.3.duration.dynamic), filename)
+  exportModels(list(model.1.duration,
+                    model.2.duration,
+                    model.3.duration), filename)
   filename <- "dynamic-reg-04-peaksize"
   if (filenamname.appendix != "") {
     filename <- paste(filename, "-", filenamname.appendix, sep = "")
   }
-  exportModels(list(model.1.peak.size.dynamic,
-                    model.2.peak.size.dynamic,
-                    model.3.peak.size.dynamic), filename)
+  exportModels(list(model.1.peak.size,
+                    model.2.peak.size,
+                    model.3.peak.size), filename)
 
 
 
@@ -5060,54 +4953,54 @@ export_agent_models <- function(data.ad = load_agent_details_prepared_data(), fi
   #     is.na(data.ad$net.assortativity), ]                           # none - otherwise: remove
   #
   # # in case of categorical or boolean predictors, use xtab to check whether there are enough date for each factor, for example:
-  # xtabs(~ net.dynamic.pct.rec + net.stable.pre, data = data.ad)
+  # xtabs(~ net.pct.rec + net.stable.pre, data = data.ad)
 
   data.ad <- subset(data.ad, agent.force.infected == 0)
 
   ###### DYNAMIC NETWORKS ######
-  data.ad.dynamic <- subset(data.ad, nb.ep.structure == "dynamic")
+  data.ad <- subset(data.ad, nb.ep.structure == "dynamic")
 
   #### DATA PREPARATIONS ####
   ### DEPENDENT ###
-  prob.infection                <- data.ad.dynamic$agent.infected
+  prob.infection                <- data.ad$agent.infected
   ### INDEPENDENT ###
   ## MAIN EFFECTS
-  net.changes                   <- prepare_predictor(data.ad.dynamic$agent.cons.broken.active.epidemic +
-                                                       data.ad.dynamic$agent.cons.out.accepted.epidemic)
-  sigma                         <- prepare_predictor(data.ad.dynamic$nb.sigma)
-  gamma                         <- prepare_predictor(data.ad.dynamic$nb.gamma)
-  degree.av                     <- prepare_predictor(data.ad.dynamic$net.degree.pre.epidemic.av)
-  clustering.av                 <- prepare_predictor(data.ad.dynamic$net.clustering.pre.epidemic.av)
-  pathlength.av                 <- prepare_predictor(data.ad.dynamic$net.pathlength.pre.epidemic.av)
-  # betweenness.av                <- prepare_predictor(data.ad.dynamic$net.betweenness.pre.epidemic.av)
-  # closeness.av                  <- prepare_predictor(data.ad.dynamic$net.closeness.pre.epidemic.av)
-  assortativity.av              <- prepare_predictor(data.ad.dynamic$net.assortativity.pre.epidemic)
-  # r.sigma.av                    <- prepare_predictor(data.ad.dynamic$nb.r.sigma.av)
-  # degree.index                  <- prepare_predictor(data.ad.dynamic$index.degree)
-  # clustering.index              <- prepare_predictor(data.ad.dynamic$index.clustering)
-  betweenness.index             <- prepare_predictor(data.ad.dynamic$index.betweenness.normalized)
-  # closeness.index               <- prepare_predictor(data.ad.dynamic$index.closeness)
-  # assortativity.index           <- prepare_predictor(data.ad.dynamic$index.assortativity)
-  # r.sigma.index                 <- prepare_predictor(data.ad.dynamic$index.r.sigma)
-  # r.sigma.neighborhood.index    <- prepare_predictor(data.ad.dynamic$index.r.sigma.neighborhood)
-  # degree.agent                  <- prepare_predictor(data.ad.dynamic$agent.degree)
-  # clustering.agent              <- prepare_predictor(data.ad.dynamic$agent.clustering)
-  # betweenness.agent             <- prepare_predictor(data.ad.dynamic$agent.betweenness.normalized)
-  # closeness.agent               <- prepare_predictor(data.ad.dynamic$agent.closeness)
-  # assortativity.agent           <- prepare_predictor(data.ad.dynamic$agent.assortativity)
-  index.distance.agent          <- prepare_predictor(data.ad.dynamic$agent.index.distance)
-  r.sigma.agent                 <- prepare_predictor(data.ad.dynamic$nb.r.sigma)
-  # r.sigma.agent.neighborhood    <- prepare_predictor(data.ad.dynamic$nb.r.sigma.neighborhood)
+  net.changes                   <- prepare_predictor(data.ad$agent.cons.broken.active.epidemic +
+                                                       data.ad$agent.cons.out.accepted.epidemic)
+  sigma                         <- prepare_predictor(data.ad$nb.sigma)
+  gamma                         <- prepare_predictor(data.ad$nb.gamma)
+  degree.av                     <- prepare_predictor(data.ad$net.degree.pre.epidemic.av)
+  clustering.av                 <- prepare_predictor(data.ad$net.clustering.pre.epidemic.av)
+  pathlength.av                 <- prepare_predictor(data.ad$net.pathlength.pre.epidemic.av)
+  # betweenness.av                <- prepare_predictor(data.ad$net.betweenness.pre.epidemic.av)
+  # closeness.av                  <- prepare_predictor(data.ad$net.closeness.pre.epidemic.av)
+  assortativity.av              <- prepare_predictor(data.ad$net.assortativity.pre.epidemic)
+  # r.sigma.av                    <- prepare_predictor(data.ad$nb.r.sigma.av)
+  # degree.index                  <- prepare_predictor(data.ad$index.degree)
+  # clustering.index              <- prepare_predictor(data.ad$index.clustering)
+  betweenness.index             <- prepare_predictor(data.ad$index.betweenness.normalized)
+  # closeness.index               <- prepare_predictor(data.ad$index.closeness)
+  # assortativity.index           <- prepare_predictor(data.ad$index.assortativity)
+  # r.sigma.index                 <- prepare_predictor(data.ad$index.r.sigma)
+  # r.sigma.neighborhood.index    <- prepare_predictor(data.ad$index.r.sigma.neighborhood)
+  # degree.agent                  <- prepare_predictor(data.ad$agent.degree)
+  # clustering.agent              <- prepare_predictor(data.ad$agent.clustering)
+  # betweenness.agent             <- prepare_predictor(data.ad$agent.betweenness.normalized)
+  # closeness.agent               <- prepare_predictor(data.ad$agent.closeness)
+  # assortativity.agent           <- prepare_predictor(data.ad$agent.assortativity)
+  index.distance.agent          <- prepare_predictor(data.ad$agent.index.distance)
+  r.sigma.agent                 <- prepare_predictor(data.ad$nb.r.sigma)
+  # r.sigma.agent.neighborhood    <- prepare_predictor(data.ad$nb.r.sigma.neighborhood)
 
   # dynamics
-  log.1.dynamic <- glm(prob.infection ~
+  log.1 <- glm(prob.infection ~
                          net.changes,
                        family = binomial)
-  summary(log.1.dynamic)
-  print_r2(log.1.dynamic)
+  summary(log.1)
+  print_r2(log.1)
 
   # main effects
-  log.2.dynamic <- glm(prob.infection ~
+  log.2 <- glm(prob.infection ~
                          net.changes +
                          sigma +
                          gamma +
@@ -5136,9 +5029,9 @@ export_agent_models <- function(data.ad = load_agent_details_prepared_data(), fi
                          # assortativity.agent,
 
                        family = binomial)
-  summary(log.2.dynamic)
-  vif(log.2.dynamic)
-  print_r2(log.2.dynamic)
+  summary(log.2)
+  vif(log.2)
+  print_r2(log.2)
 
   # INTERACTION EFFECTS (export significant main effects)
   # export_interactions(c("net.changes",
@@ -5214,7 +5107,7 @@ export_agent_models <- function(data.ad = load_agent_details_prepared_data(), fi
   # betweenness.index.X.r.sigma.agent                 <- betweenness.index             * r.sigma.agent
   # index.distance.agent.X.r.sigma.agent              <- index.distance.agent          * r.sigma.agent
 
-  log.3.dynamic <- glm(prob.infection ~
+  log.3 <- glm(prob.infection ~
                          net.changes +
                          sigma +
                          gamma +
@@ -5275,18 +5168,18 @@ export_agent_models <- function(data.ad = load_agent_details_prepared_data(), fi
                          # index.distance.agent.X.r.sigma.agent
                        ,
                        family = binomial)
-  summary(log.3.dynamic)
-  print_r2(log.3.dynamic)
-  vif(log.3.dynamic)
+  summary(log.3)
+  print_r2(log.3)
+  vif(log.3)
 
   ### FILE EXPORT ###
   filename <- "dynamic-reg-01-probinfections"
   if (filenamname.appendix != "") {
     filename <- paste(filename, "-", filenamname.appendix, sep = "")
   }
-  exportModels(list(log.1.dynamic,
-                    log.2.dynamic,
-                    log.3.dynamic), filename)
+  exportModels(list(log.1,
+                    log.2,
+                    log.3), filename)
 
 
   ###### STATIC NETWORKS ######
@@ -5497,262 +5390,514 @@ export_agent_models <- function(data.ad = load_agent_details_prepared_data(), fi
 
 }
 
+
+
+
+
+export_experiment_plots <- function(data.ss = load_simulation_summary_data(), addendum = "", filename.prefix = "") {
+
+
+  p1 <- ggplot(data.ss,
+               aes(x = nb.r.av,
+                   y = net.pct.rec)) +
+    geom_point() +
+    geom_smooth(method=lm) +
+    labs(title = "Attack by average risk scores per simulation",
+         x = "Mean risk score",
+         y = "Attack rate")
+
+  # create directory if necessary
+  dir.create(EXPORT_PATH_PLOTS, showWarnings = FALSE)
+
+  ggsave(paste(EXPORT_PATH_PLOTS, filename.prefix, "-attackrate", "-all", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         p1,
+         width = 230,
+         height = 230,
+         units = "mm",
+         dpi = 600,
+         device = EXPORT_FILE_TYPE_PLOTS)
+
+
+
+  data.ss.above.av <- subset(data.ss, nb.r.av.above == "true")
+  data.ss.below.av <- subset(data.ss, nb.r.av.above == "false")
+
+  # additional information
+  wt <- wilcox.test(data.ss.above.av$net.pct.rec, data.ss.below.av$net.pct.rec)     # non-parametric independent samples t-test
+                                                                                    # for final size (non-normal distribution)
+  wt.out <- paste("W = ", wt$statistic, sep = "")
+  wt.p <- wt$p.value
+  if (wt.p < 0.001) {
+    wt.out <- paste(wt.out, ", p < 0.001", sep = "")
+  } else {
+    wt.out <- paste(wt.out, ", p = ", round(wt$p.value, digits = 3), sep = "")
+  }
+
+  dur.above.mean <- mean(data.ss.above.av$net.epidemic.duration)                    # duration - above average
+  dur.above.sd   <- sd(data.ss.above.av$net.epidemic.duration)
+  dur.above.max   <- max(data.ss.above.av$net.epidemic.duration)
+  dur.below.mean <- mean(data.ss.below.av$net.epidemic.duration)                    # duration - below average
+  dur.below.sd   <- sd(data.ss.below.av$net.epidemic.duration)
+  dur.below.max   <- max(data.ss.below.av$net.epidemic.duration)
+
+  peak.time.above.mean <- mean(data.ss.above.av$net.epidemic.peak.time)              # peak time - above average
+  peak.time.above.sd   <- sd(data.ss.above.av$net.epidemic.peak.time)
+  peak.time.above.max   <- max(data.ss.above.av$net.epidemic.peak.time)
+  peak.time.below.mean <- mean(data.ss.below.av$net.epidemic.peak.time)              # peak time - below average
+  peak.time.below.sd   <- sd(data.ss.below.av$net.epidemic.peak.time)
+  peak.time.below.max   <- max(data.ss.below.av$net.epidemic.peak.time)
+
+  m.ean <- ddply(data.ss, "nb.r.av.above", summarise, grp.mean=mean(net.pct.rec))
+  m.edian <- ddply(data.ss, "nb.r.av.above", summarise, grp.median=median(net.pct.rec))
+
+  p2 <- ggplot(data.ss,
+               aes(x = net.pct.rec,
+                   fill = nb.r.av.above)) +
+    geom_density(alpha = 0.3) +
+    geom_vline(data = m.ean,
+               aes(xintercept = grp.mean,
+                   color = nb.r.av.above),
+               linetype="solid") +
+    geom_vline(data = m.edian,
+               aes(xintercept = grp.median,
+                   color = nb.r.av.above),
+               linetype="dashed") +
+    labs(title = "Final size between simulations differing in average risk scores",
+         x = "Final size",
+         y = "Density",
+         fill = "More risk\navoiding than\naverage (>=1.27)",
+         color = "More risk\navoiding than\naverage (>=1.27)",
+         caption = paste("\nWilcoxon Signed Rank: ", wt.out, "\n",
+                         "Duration (risk avoiding): mean = ", round(dur.above.mean, digits = 2), " (", round(dur.above.sd, digits = 2), "), ",
+                         "max: ", dur.above.max, "\n",
+                         "Duration (risk seeking): mean = ", round(dur.below.mean, digits = 2), " (", round(dur.below.sd, digits = 2), "), ",
+                         "max: ", dur.below.max, "\n",
+                         "Peak time (risk avoiding): mean = ", round(peak.time.above.mean, digits = 2), " (", round(peak.time.above.sd, digits = 2), "), ",
+                         "max: ", peak.time.above.max, "\n",
+                         "Peak time (risk seeking): mean = ", round(peak.time.below.mean, digits = 2), " (", round(peak.time.below.sd, digits = 2), "), ",
+                         "max: ", peak.time.below.max, "\n",
+                         "\n", addendum, sep = ""))  +
+    scale_fill_brewer(palette="Dark2") +
+    scale_color_brewer(palette="Dark2") +
+    ylim(0.0, 0.025)
+
+  ggsave(paste(EXPORT_PATH_PLOTS, filename.prefix, "-attackrate", "-split", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         p2,
+         width = 230,
+         height = 230,
+         units = "mm",
+         dpi = 600,
+         device = EXPORT_FILE_TYPE_PLOTS)
+
+
+
+
+}
+
+
+export_infected_plots <- function(data.ad = load_agent_details_data(), addendum = "", filename.prefix = "") {
+
+  r <- c()
+  inf.cnt <- c()
+  agents.cnt <- c()
+  dis.cnt <- c()
+  dis.total <- 0
+  for (i in seq(0.0, 1.9, 0.1)) {
+    data.ad.sub <- subset(data.ad, nb.r.sigma == i)
+    r <- c(r, i)
+
+    data.ad.curr.r <- subset(data.ad, (nb.r.sigma > i & nb.r.sigma <= i+0.1))
+
+    inf.cnt <- c(inf.cnt, nrow(subset(data.ad, (nb.r.sigma > i & nb.r.sigma <= i+0.1) & agent.infected == 1)))
+    agents.cnt <- c(agents.cnt, nrow(data.ad.curr.r))
+
+    curr.r.cons.broken <- sum(data.ad.curr.r$agent.cons.broken.active.epidemic)
+    dis.cnt <- c(dis.cnt, curr.r.cons.broken)
+    dis.total <- dis.total + curr.r.cons.broken
+  }
+  inf.pct <- inf.cnt / agents.cnt
+  dis.pct <- dis.cnt / dis.total
+  dis.per.agent <- dis.cnt / agents.cnt
+
+  data.ad.prep <- data.frame(r, inf.pct, dis.pct, dis.per.agent)
+
+  p1 <- ggplot(data.ad.prep,
+               aes(x = r,
+                   y = inf.pct)) +
+    geom_bar(stat="identity", width = 0.09, position = position_nudge(x = 0.05)) +
+    labs(title = "Proportion of agents getting infected per risk score",
+         x = "Risk score",
+         y = "Proportion of infect agents",
+         caption = addendum) +
+    ylim(0.0, 1.0)
+
+  # create directory if necessary
+  dir.create(EXPORT_PATH_PLOTS, showWarnings = FALSE)
+
+  ggsave(paste(EXPORT_PATH_PLOTS, filename.prefix, "-infections-", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         p1,
+         width = 230,
+         height = 230,
+         units = "mm",
+         dpi = 600,
+         device = EXPORT_FILE_TYPE_PLOTS)
+
+  p2 <- ggplot(data.ad.prep,
+               aes(x = r,
+                   y = dis.per.agent)) +
+    geom_bar(stat="identity", width = 0.09, position = position_nudge(x = 0.05)) +
+    labs(title = "Average number of disconnects over all agents with similar risk score",
+         x = "Risk score",
+         y = "Average number of disconnects",
+         caption = addendum) +
+    ylim(0.0, 1.0)
+
+  ggsave(paste(EXPORT_PATH_PLOTS, filename.prefix, "-disconnects", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         p2,
+         width = 230,
+         height = 230,
+         units = "mm",
+         dpi = 600,
+         device = EXPORT_FILE_TYPE_PLOTS)
+
+}
+
+
+get_averages <- function(data.ss = load_simulation_summary_data(),
+                         data.ad = load_agent_details_data(),
+                         param.name, param.value) {
+
+  data.ss.by.param <- data.ss[ data.ss[[param.name]] == param.value , ]
+  data.ad.by.param <- data.ad[ data.ad[[param.name]] == param.value , ]
+
+  out <- paste(param.name, " = ", param.value, "\n", sep = "")
+  out <- paste(out, "     mean attack rate (overall):\t\t",
+               round(mean(data.ss.by.param$net.pct.rec), digits = 2),
+               " (", round(sd(data.ss.by.param$net.pct.rec), digits = 2), ")\n", sep = "")
+  out <- paste(out, "     mean attack rate (risk seeking):\t",
+               round(mean(subset(data.ss.by.param, nb.r.av.above == "false")$net.pct.rec), digits = 2),
+               " (", round(sd(subset(data.ss.by.param, nb.r.av.above == "false")$net.pct.rec), digits = 2), ")\n", sep = "")
+  out <- paste(out, "     mean attack rate (risk avoiding):\t",
+               round(mean(subset(data.ss.by.param, nb.r.av.above == "true")$net.pct.rec), digits = 2),
+               " (", round(sd(subset(data.ss.by.param, nb.r.av.above == "true")$net.pct.rec), digits = 2), ")\n\n", sep = "")
+
+  out <- paste(out, "     mean connections broken per agent (overall):\t\t",
+               round(mean(data.ad.by.param$agent.cons.broken.active.epidemic), digits = 2),
+               " (", round(sd(data.ad.by.param$agent.cons.broken.active.epidemic), digits = 2), ")\n", sep = "")
+  out <- paste(out, "     mean connections broken per agent (risk seeking):\t",
+               round(mean(subset(data.ad.by.param, nb.r.av.above == "false")$agent.cons.broken.active.epidemic), digits = 2),
+               " (", round(sd(subset(data.ad.by.param, nb.r.av.above == "false")$agent.cons.broken.active.epidemic), digits = 2), ")\n", sep = "")
+  out <- paste(out, "     mean connections broken per agent (risk avoiding):\t",
+               round(mean(subset(data.ad.by.param, nb.r.av.above == "true")$agent.cons.broken.active.epidemic), digits = 2),
+               " (", round(sd(subset(data.ad.by.param, nb.r.av.above == "true")$agent.cons.broken.active.epidemic), digits = 2), ")\n\n", sep = "")
+
+  out <- paste(out, "     mean duration (overall):\t",
+               round(mean(data.ss.by.param$net.epidemic.duration), digits = 2),
+               " (", round(sd(data.ss.by.param$net.epidemic.duration), digits = 2), ")\n", sep = "")
+  out <- paste(out, "     mean peak time (overall):\t",
+               round(mean(data.ss.by.param$net.epidemic.peak.time), digits = 2),
+               " (", round(sd(data.ss.by.param$net.epidemic.peak.time), digits = 2), ")\n\n\n", sep = "")
+
+  return(out)
+}
+
+
+
+
 export_all <- function() {
+
   data.ss <- load_simulation_summary_data()
-  data.ad <- load_agent_details_prepared_data()
+  data.ad <- load_agent_details_data()
+
+  out <- ""
+  for (gamma in unique(data.ss$nb.gamma)) {
+    out <- paste(out, get_averages(data.ss = data.ss, data.ad = data.ad, param.name = "nb.gamma", param.value =  gamma))
+
+    addendum <- paste("gamma = ", gamma, sep = "")
+    filename.prefix <- paste("gamma-", gsub(".", "_", gamma, fixed = TRUE), sep = "")
+
+    export_experiment_plots(data.ss = subset(data.ss, nb.gamma == gamma), filename.prefix = filename.prefix)
+    export_infected_plots(data.ad = subset(data.ad, nb.gamma == gamma),  addendum = addendum, filename.prefix = filename.prefix)
+  }
+  for (tau in unique(data.ss$nb.tau)) {
+    out <- paste(out, get_averages(data.ss = data.ss, data.ad = data.ad, param.name = "nb.tau", param.value =  tau))
+
+    addendum <- paste("tau = ", tau, sep = "")
+    filename.prefix <- paste("tau-", gsub(".", "_", tau, fixed = TRUE), sep = "")
+
+    export_experiment_plots(data.ss = subset(data.ss, nb.tau == tau), filename.prefix = filename.prefix)
+    export_infected_plots(data.ad = subset(data.ad, nb.tau == tau),  addendum = addendum, filename.prefix = filename.prefix)
+  }
+  for (phi in unique(data.ss$nb.phi)) {
+    out <- paste(out, get_averages(data.ss = data.ss, data.ad = data.ad, param.name = "nb.phi", param.value =  phi))
+
+    addendum <- paste("phi = ", tau, sep = "")
+    filename.prefix <- paste("phi-", gsub(".", "_", phi, fixed = TRUE), sep = "")
+
+    export_experiment_plots(data.ss = subset(data.ss, nb.phi == phi), filename.prefix = filename.prefix)
+    export_infected_plots(data.ad = subset(data.ad, nb.phi == phi),  addendum = addendum, filename.prefix = filename.prefix)
+  }
+  for (psi in unique(data.ss$nb.psi)) {
+    out <- paste(out, get_averages(data.ss = data.ss, data.ad = data.ad, param.name = "nb.psi", param.value =  psi))
+
+    addendum <- paste("psi = ", tau, sep = "")
+    filename.prefix <- paste("psi-", gsub(".", "_", psi, fixed = TRUE), sep = "")
+
+    export_experiment_plots(data.ss = subset(data.ss, nb.psi == psi), filename.prefix = filename.prefix)
+    export_infected_plots(data.ad = subset(data.ad, nb.psi == psi),  addendum = addendum, filename.prefix = filename.prefix)
+  }
+  for (xi in unique(data.ss$nb.xi)) {
+    out <- paste(out, get_averages(data.ss = data.ss, data.ad = data.ad, param.name = "nb.xi", param.value =  xi))
+
+    addendum <- paste("xi = ", tau, sep = "")
+    filename.prefix <- paste("xi-", gsub(".", "_", xi, fixed = TRUE), sep = "")
+
+    export_experiment_plots(data.ss = subset(data.ss, nb.xi == xi), filename.prefix = filename.prefix)
+    export_infected_plots(data.ad = subset(data.ad, nb.xi == xi),  addendum = addendum, filename.prefix = filename.prefix)
+  }
+
+  # export to file
+  dir.create(EXPORT_PATH_NUM, showWarnings = FALSE)
+  cat(out, file = paste(EXPORT_PATH_NUM,
+                        "averages",
+                        EXPORT_FILE_EXTENSION_DESC,
+                        sep = ""))
+
+
+  # finding the best settings
+  out <- "Wilcoxon Signed Rank tests for final size between above and below average groups over all parameter combinations\n"
+  i <- 1
+  for (gamma in unique(data.ss$nb.gamma)) {
+    for (tau in unique(data.ss$nb.tau)) {
+      for (phi in unique(data.ss$nb.phi)) {
+        for (psi in unique(data.ss$nb.psi)) {
+          for (xi in unique(data.ss$nb.xi)) {
+
+            out <- paste(out, "\tgamma = ", gamma, ", ",
+                         "tau = ", tau, ", ",
+                         "phi = ", phi, ", ",
+                         "psi = ", psi, ", ",
+                         "xi = ", xi,
+                         ":\t\t", sep = "")
+
+            data.ss.curr <- subset(data.ss,
+                                   nb.gamma == gamma &
+                                     nb.tau == tau &
+                                     nb.phi == phi &
+                                     nb.psi == psi &
+                                     nb.xi == xi)
+
+            data.ss.curr.above.av <- subset(data.ss.curr, nb.r.av.above == "true")
+            data.ss.curr.below.av <- subset(data.ss.curr, nb.r.av.above == "false")
+
+            wt <- wilcox.test(data.ss.curr.above.av$net.pct.rec, data.ss.curr.below.av$net.pct.rec)     # non-parametric independent samples t-test
+                                                                                                        # for final size (non-normal distribution)
+            wt.out <- paste("W = ", wt$statistic, sep = "")
+            wt.p <- wt$p.value
+            if (wt.p < 0.001) {
+              wt.out <- paste(wt.out, ",\tp < 0.001", sep = "")
+            } else {
+              wt.out <- paste(wt.out, ",\tp = ", round(wt$p.value, digits = 3), sep = "")
+            }
+
+            out <- paste(out, wt.out, "\n", sep = "")
+
+          }
+        }
+      }
+    }
+  }
+
+  # export to file
+  dir.create(EXPORT_PATH_NUM, showWarnings = FALSE)
+  cat(out, file = paste(EXPORT_PATH_NUM,
+                        "wilcoxon-final-size",
+                        EXPORT_FILE_EXTENSION_DESC,
+                        sep = ""))
+
+
+
+
+
+
+
+
+  # "best" settings
+  gamma <- 0.1
+  tau   <- 5
+  phi   <- 0.1
+  psi   <- 0.5
+  xi    <- 0.3
+
+  data.ss.curr <- subset(data.ss,
+                         nb.gamma == gamma &
+                           nb.tau == tau &
+                           nb.phi == phi &
+                           nb.psi == psi &
+                           nb.xi == xi)
+
+  data.ad.curr <- subset(data.ad,
+                         nb.gamma == gamma &
+                           nb.tau == tau &
+                           nb.phi == phi &
+                           nb.psi == psi &
+                           nb.xi == xi)
+
+  addendum <- paste("Simulation parameters: ",
+                    "gamma = ", gamma,
+                    ", tau = ", tau,
+                    ", phi = ", phi,
+                    ", psi = ", psi,
+                    ", xi = ", xi,
+                    sep = "")
+  filename.prefix <- "!best"
+
+  export_experiment_plots(data.ss = data.ss.curr, addendum = addendum, filename.prefix = filename.prefix)
+  export_infected_plots(data.ad = data.ad.curr, addendum = addendum, filename.prefix = filename.prefix)
+
+
+  # robustness (random samples)
+  out <- "Repeated Wilcoxon Signed Rank test for random samples of best parameter setting\n\n"
+
+  it <- 1
+  out <- paste(out, "\tall data:\n")
+  while (it <= 100) {
+    sim.all <- unique(data.ss.curr$sim.cnt)
+    sim.sampled <- c()
+    while (length(sim.sampled) < 48) {
+      sample.from <- setdiff(sim.all, sim.sampled)
+      sampled <- sample(sample.from, 1)
+      if (!sampled %in% sim.sampled) {
+        sim.sampled <- c(sim.sampled, sampled)
+      }
+    }
+    data.ss.curr.sampled <- subset(data.ss.curr, sim.cnt %in% sim.sampled)
+
+    data.ss.curr.sampled.above.av <- subset(data.ss.curr.sampled, nb.r.av.above == "true")
+    data.ss.curr.sampled.below.av <- subset(data.ss.curr.sampled, nb.r.av.above == "false")
+
+    wt <- wilcox.test(data.ss.curr.sampled.above.av$net.pct.rec, data.ss.curr.sampled.below.av$net.pct.rec)     # non-parametric independent samples t-test
+                                                                                                                # for final size (non-normal distribution)
+    wt.out <- paste("W = ", wt$statistic, sep = "")
+    wt.p <- wt$p.value
+    if (wt.p < 0.001) {
+      wt.out <- paste(wt.out, ",\tp < 0.001", sep = "")
+    } else {
+      wt.out <- paste(wt.out, ",\tp = ", round(wt$p.value, digits = 3), sep = "")
+    }
+
+    out <- paste(out, "\t\tsample ", it, ":\t", wt.out, "\n", sep = "")
+
+    it <- it+1
+
+  }
+  for (omega in unique(data.ss.curr$nb.omega)) {
+    for (alpha in unique(data.ss.curr$nb.alpha)) {
+
+      data.ss.curr.condition <- subset(data.ss.curr, nb.omega == omega & nb.alpha == alpha)
+
+      it <- 1
+      out <- paste(out, "\n\n\tomega = ", omega, ", alpha: ", alpha, ":\n")
+      while (it <= 100) {
+        sim.all <- unique(data.ss.curr.condition$sim.cnt)
+        sim.sampled <- c()
+        while (length(sim.sampled) < 48) {
+          sample.from <- setdiff(sim.all, sim.sampled)
+          sampled <- sample(sample.from, 1)
+          if (!sampled %in% sim.sampled) {
+            sim.sampled <- c(sim.sampled, sampled)
+          }
+        }
+        data.ss.curr.condition.sampled <- subset(data.ss.curr.condition, sim.cnt %in% sim.sampled)
+
+        data.ss.curr.condition.sampled.above.av <- subset(data.ss.curr.condition.sampled, nb.r.av.above == "true")
+        data.ss.curr.condition.sampled.below.av <- subset(data.ss.curr.condition.sampled, nb.r.av.above == "false")
+
+        wt <- wilcox.test(data.ss.curr.condition.sampled.above.av$net.pct.rec,     # non-parametric independent samples t-test
+                          data.ss.curr.condition.sampled.below.av$net.pct.rec)     # for final size (non-normal distribution)
+        wt.out <- paste("W = ", wt$statistic, sep = "")
+        wt.p <- wt$p.value
+        if (wt.p < 0.001) {
+          wt.out <- paste(wt.out, ",\tp < 0.001", sep = "")
+        } else {
+          wt.out <- paste(wt.out, ",\tp = ", round(wt$p.value, digits = 3), sep = "")
+        }
+
+        out <- paste(out, "\t\tsample ", it, ":\t", wt.out, "\n", sep = "")
+
+        it <- it+1
+
+      }
+    }
+  }
+
+
+
+  # export to file
+  dir.create(EXPORT_PATH_NUM, showWarnings = FALSE)
+  cat(out, file = paste(EXPORT_PATH_NUM,
+                        "robustness",
+                        EXPORT_FILE_EXTENSION_DESC,
+                        sep = ""))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  # data.ad <- load_agent_details_data()
+  # export_infected_plots(data.ad = data.ad, filename.appendix = "all")
+  # export_infected_plots(data.ad = subset(data.ad, nb.omega == 0.0),  filename.appendix = "random")
+  # export_infected_plots(data.ad = subset(data.ad, nb.omega == 0.8),  filename.appendix = "assortative")
+
+
+  # TODO: move this into the loop above
+  #       add addendum
+  #       start with number, then attackrate-all / attackrate-byavriskscore / infections / disconnects
 
   export_descriptives(data.ss = data.ss, data.ad = data.ad)
-  export_correlations(data.ss = data.ss)
-  export_all_plots(data.ss = data.ss)
-  export_network_models(data.ss = data.ss)
-  # export_agent_models(data.ad = data.ad)
 
-  data.rs <- load_round_summary_prepared_data()
-  export_sirs(data.rs = data.rs)
-}
-
-
-get_guide_max <- function(plot) {
-  tmp <- ggplot_gtable(ggplot_build(plot))
-  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
-  legend <- tmp$grobs[[leg]]
-  # legend$grobs[[1]]$grobs[[4]]$children[[1]]$children[[1]]$label
-  return(max(legend$grobs[[1]]$grobs[[3]]$children[[1]]$label, na.rm = TRUE))
-}
-
-
-plot_agent_terns <- function(data.ad = load_agent_details_prepared_data()) {
-
-  data.id.infected <- subset(data.ad, agent.infected == 1)
-
-  data.ad.rescaled <- data.frame(cl = rescale(data.ss$net.clustering.pre.epidemic.av, c(0, 100)),
-                                 pl = rescale(data.ss$net.pathlength.pre.epidemic.av, c(10, 100)),
-                                 as = rescale(data.ss$net.assortativity.pre.epidemic, c(0, 100)))
-
-  ggtern(data    = data.ad.rescaled,
-         mapping = aes(x = cl,
-                       y = pl,
-                       z = as)) +
-
-    scale_T_continuous(name = "Av. path length") +
-    scale_L_continuous(name = "Clustering") +
-    scale_R_continuous(name = "Assortativity") +
-
-    labs(
-         Tarrow = "Av. path length",
-         Larrow = "Clustering",
-         Rarrow = "Assortativity") +
-
-    stat_density_tern(geom = 'polygon',
-                      aes(fill  = ..level..,
-                          alpha = ..level..),
-                      bins = 10) +
-
-    scale_fill_gradient(low  = rgb(0.0, 0.0, 1.0),
-                        high = rgb(1.0, 0.0, 0.0)) +
-
-    # geom_point(alpha = 0.005) +
-
-    guides(color = "none",
-           alpha = "none") +
-
-    theme_showarrows()
-
-
+  # export_correlations(data.ss = data.ss)
+  # export_all_plots(data.ss = data.ss)
+  # export_network_models(data.ss = data.ss)
+  # # export_agent_models(data.ad = data.ad)
+  #
+  #
+  #
+  #
+  # data.rs <- load_round_summary_data()
+  # export_sirs(data.rs = data.rs)
 }
 
 
 
-plot_all_terns <- function(data.ss = load_simulation_summary_data(), ep.structure, dp) {
 
 
-  data.ss.rescaled <- data.frame(cl = rescale(data.ss$net.clustering.pre.epidemic.av, c(0, 100)),
-                                 pl = rescale(data.ss$net.pathlength.pre.epidemic.av, c(10, 100)),
-                                 as = rescale(data.ss$net.assortativity.pre.epidemic, c(0, 100)))
-
-  title <- ""
-
-  if (ep.structure == "dynamic") {
-    if (dp == "nc") {
-      title <- "Network changes"
-      data.ss.rescaled$dp <- data.ss$net.dynamic.ties.broken.active.epidemic + data.ss$net.dynamic.ties.out.accepted.epidemic
-    } else if (dp == "ar") {
-      title <- "Attack rate"
-      data.ss.rescaled$dp <- data.ss$net.dynamic.pct.rec
-    } else if (dp == "du") {
-      title <- "Duration"
-      data.ss.rescaled$dp <- data.ss$net.dynamic.epidemic.duration
-    } else if (dp == "ps") {
-      title <- "Peak size"
-      data.ss.rescaled$dp <- data.ss$net.dynamic.epidemic.peak.size
-    }
-  }
-  if (ep.structure == "static") {
-    if (dp == "nc") {
-      title <- "Network changes"
-      data.ss.rescaled$dp <- data.ss$net.static.ties.broken.active.epidemic + data.ss$net.static.ties.out.accepted.epidemic
-    } else if (dp == "ar") {
-      title <- "Attack rate"
-      data.ss.rescaled$dp <- data.ss$net.static.pct.rec
-    } else if (dp == "du") {
-      title <- "Duration"
-      data.ss.rescaled$dp <- data.ss$net.static.epidemic.duration
-    } else if (dp == "ps") {
-      title <- "Peak size"
-      data.ss.rescaled$dp <- data.ss$net.static.epidemic.peak.size
-    }
-  }
-
-  plots <- c(list((ggtern(data    = data.ss.rescaled,
-                          mapping = aes(x = cl,
-                                        y = pl,
-                                        z = as)) +
-
-                     scale_T_continuous(name = "Av. path length") +
-                     scale_L_continuous(name = "Clustering") +
-                     scale_R_continuous(name = "Assortativity") +
-
-                     labs(title  = paste(title, " (complete)", sep = ""),
-                          fill   = "Density (kde2d)",
-                          Tarrow = "Av. path length",
-                          Larrow = "Clustering",
-                          Rarrow = "Assortativity") +
-
-                     stat_density_tern(geom = 'polygon',
-                                       aes(fill  = ..level..,
-                                           alpha = ..level..),
-                                       bins = 10) +
-
-                     scale_fill_gradient(low  = rgb(0.0, 0.0, 1.0),
-                                         high = rgb(1.0, 0.0, 0.0)) +
-
-                     # geom_point(alpha = 0.005) +
-
-                     guides(color = "none",
-                            alpha = "none")
-  )),
-  paste(ep.structure, "-tern-", dp, "-all", sep = ""))
-
-
-  data.ss.rescaled.sorted <- data.ss.rescaled[order(data.ss.rescaled$dp),]
-  bin.prev <- 0.00
-  for (bin in seq(0, nrow(data.ss.rescaled.sorted), nrow(data.ss.rescaled.sorted)/5)) {
-    bin <- ceiling(bin)
-    data.ss.rescaled.sorted.binned <- data.ss.rescaled.sorted[bin.prev:bin,]
-
-
-    plots <- c(plots,
-               list((ggtern(data    = data.ss.rescaled.sorted.binned,
-                            mapping = aes(x = cl,
-                                          y = pl,
-                                          z = as)) +
-
-                       scale_T_continuous(name = "Av. path length") +
-                       scale_L_continuous(name = "Clustering") +
-                       scale_R_continuous(name = "Assortativity") +
-
-                       labs(title  = paste(title, " (",
-                                           min(data.ss.rescaled.sorted.binned$dp), " - ",
-                                           max(data.ss.rescaled.sorted.binned$dp), ")", sep = ""),
-                            fill   = "Density (kde2d)",
-                            Tarrow = "Av. path length",
-                            Larrow = "Clustering",
-                            Rarrow = "Assortativity") +
-
-                       stat_density_tern(geom = 'polygon',
-                                         aes(fill  = ..level..,
-                                             alpha = ..level..),
-                                         bins = 10) +
-
-                       # scale_fill_gradient(low  = rgb(0.0, 0.0, 1.0),
-                       #                     high = rgb(1.0, 0.0, 0.0)) +
-
-                       scale_fill_gradient(low  = rgb(0.0, 0.0, 1.0),
-                                           high = rgb(1.0, 0.0, 0.0)) +
-
-                       # geom_point(alpha = 0.001) +
-
-                       guides(color = "none",
-                              alpha = "none")
-               )),
-               paste(ep.structure, "-tern-", dp, "-",
-                     min(data.ss.rescaled.sorted.binned$dp), "-",
-                     max(data.ss.rescaled.sorted.binned$dp), sep = ""))
-
-    bin.prev <- bin
-  }
-
-  export_plots(plots, plot.square = TRUE)
-
-}
-
-export_all_terns <- function(data.ss = load_simulation_summary_data()) {
-
- ep.structures <- c("dynamic", "static")
- dps <- c("nc", "ar", "du", "ps")
-
- for (ep.structure in ep.structures) {
-   for (dp in dps) {
-     plot_all_terns(data.ss = data.ss, ep.structure = ep.structure, dp = dp)
-   }
- }
-
-}
-
-
-
-additional_tests <- function() {
-
-
-  library(ggpubr)
-
-  ggqqplot(data.ss$net.dynamic.pct.rec)
-  ggqqplot(data.ss$net.dynamic.epidemic.duration)
-  ggqqplot(data.ss$net.dynamic.epidemic.peak.size)
-
-  cor.test(data.ss$net.dynamic.pct.rec, data.ss$net.dynamic.epidemic.duration,  method = "kendall")
-  cor.test(data.ss$net.dynamic.pct.rec, data.ss$net.dynamic.epidemic.peak.size,  method = "kendall")
-
-  data.ss$net.changes.dyn <- data.ss$net.dynamic.ties.broken.active.epidemic + data.ss$net.dynamic.ties.out.accepted.epidemic
-  data.ss$net.changes.stat <- data.ss$net.static.ties.broken.active.epidemic + data.ss$net.static.ties.out.accepted.epidemic
-
-  ss.sorted <- data.ss[order(data.ss$net.changes.dyn),]
-  ss.sorted.dyn <- subset(ss.sorted, net.dynamic.pct.rec >= CUT_OFF_LARGE_ATTACK_RATE)
-  ss.sorted.sta <- subset(ss.sorted, net.static.pct.rec >= CUT_OFF_LARGE_ATTACK_RATE)
-
-  # duration
-  mean(tail(ss.sorted.dyn, 305)$net.dynamic.epidemic.duration)
-  sd(tail(ss.sorted.dyn, 305)$net.dynamic.epidemic.duration)
-  mean(tail(ss.sorted.sta, 305)$net.dynamic.epidemic.duration)
-  sd(tail(ss.sorted.sta, 305)$net.dynamic.epidemic.duration)
-
-  # peak size
-  mean(tail(ss.sorted.dyn, 305)$net.dynamic.epidemic.peak.size)
-  sd(tail(ss.sorted.dyn, 305)$net.dynamic.epidemic.peak.size)
-  mean(tail(ss.sorted.sta, 305)$net.static.epidemic.peak.size)
-  sd(tail(ss.sorted.sta, 305)$net.static.epidemic.peak.size)
-
-
-
-}
-
-
-omega_to_assortativity <- function(data.ss = load_simulation_summary_data()) {
-
-  ggplot(data.ss,
-         aes(x = nb.omega,
-             y = net.assortativity.pre.epidemic)
-         ) +
-    geom_point(alpha = 0.02) +
-    geom_smooth(method = lm,
-                se = FALSE)
-
-  data.ss$nb.omega
-  omega.80 <- subset(data.ss, nb.omega > 0.78 & nb.omega < 0.82)
-
-  summary(omega.80$net.assortativity.pre.epidemic)
-
-
-}
 
 

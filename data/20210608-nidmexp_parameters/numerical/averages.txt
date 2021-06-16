@@ -1,0 +1,104 @@
+ nb.gamma = 0.1
+     mean attack rate (overall):		55.23 (36.41)
+     mean attack rate (risk seeking):	58.65 (35.5)
+     mean attack rate (risk avoiding):	51.86 (36.98)
+
+     mean connections broken per agent (overall):		0.11 (0.36)
+     mean connections broken per agent (risk seeking):	0.08 (0.3)
+     mean connections broken per agent (risk avoiding):	0.15 (0.41)
+
+     mean duration (overall):	20.62 (10.21)
+     mean peak time (overall):	9.58 (6.39)
+
+
+ nb.tau = 4
+     mean attack rate (overall):		45.82 (34.98)
+     mean attack rate (risk seeking):	48.81 (34.65)
+     mean attack rate (risk avoiding):	42.77 (35.06)
+
+     mean connections broken per agent (overall):		0.11 (0.35)
+     mean connections broken per agent (risk seeking):	0.07 (0.29)
+     mean connections broken per agent (risk avoiding):	0.14 (0.4)
+
+     mean duration (overall):	17.74 (9.39)
+     mean peak time (overall):	8.13 (5.9)
+
+
+ nb.tau = 5
+     mean attack rate (overall):		64.64 (35.36)
+     mean attack rate (risk seeking):	68.78 (33.47)
+     mean attack rate (risk avoiding):	60.69 (36.66)
+
+     mean connections broken per agent (overall):		0.12 (0.37)
+     mean connections broken per agent (risk seeking):	0.08 (0.3)
+     mean connections broken per agent (risk avoiding):	0.16 (0.42)
+
+     mean duration (overall):	23.49 (10.2)
+     mean peak time (overall):	11.03 (6.53)
+
+
+ nb.phi = 0.1
+     mean attack rate (overall):		55.42 (36.48)
+     mean attack rate (risk seeking):	58.62 (35.61)
+     mean attack rate (risk avoiding):	51.98 (37.11)
+
+     mean connections broken per agent (overall):		0.11 (0.36)
+     mean connections broken per agent (risk seeking):	0.07 (0.29)
+     mean connections broken per agent (risk avoiding):	0.15 (0.41)
+
+     mean duration (overall):	20.62 (10.29)
+     mean peak time (overall):	9.65 (6.51)
+
+
+ nb.phi = 0.2
+     mean attack rate (overall):		55.04 (36.33)
+     mean attack rate (risk seeking):	58.68 (35.39)
+     mean attack rate (risk avoiding):	51.74 (36.87)
+
+     mean connections broken per agent (overall):		0.12 (0.36)
+     mean connections broken per agent (risk seeking):	0.08 (0.3)
+     mean connections broken per agent (risk avoiding):	0.15 (0.41)
+
+     mean duration (overall):	20.61 (10.14)
+     mean peak time (overall):	9.52 (6.27)
+
+
+ nb.psi = 0.4
+     mean attack rate (overall):		54.99 (36.38)
+     mean attack rate (risk seeking):	58.43 (35.52)
+     mean attack rate (risk avoiding):	51.8 (36.88)
+
+     mean connections broken per agent (overall):		0.12 (0.36)
+     mean connections broken per agent (risk seeking):	0.07 (0.29)
+     mean connections broken per agent (risk avoiding):	0.15 (0.41)
+
+     mean duration (overall):	20.52 (10.23)
+     mean peak time (overall):	9.56 (6.45)
+
+
+ nb.psi = 0.5
+     mean attack rate (overall):		55.46 (36.44)
+     mean attack rate (risk seeking):	58.86 (35.49)
+     mean attack rate (risk avoiding):	51.92 (37.09)
+
+     mean connections broken per agent (overall):		0.11 (0.36)
+     mean connections broken per agent (risk seeking):	0.08 (0.3)
+     mean connections broken per agent (risk avoiding):	0.15 (0.41)
+
+     mean duration (overall):	20.72 (10.2)
+     mean peak time (overall):	9.61 (6.33)
+
+
+ nb.xi = 0.3
+     mean attack rate (overall):		55.23 (36.41)
+     mean attack rate (risk seeking):	58.65 (35.5)
+     mean attack rate (risk avoiding):	51.86 (36.98)
+
+     mean connections broken per agent (overall):		0.11 (0.36)
+     mean connections broken per agent (risk seeking):	0.08 (0.3)
+     mean connections broken per agent (risk avoiding):	0.15 (0.41)
+
+     mean duration (overall):	20.62 (10.21)
+     mean peak time (overall):	9.58 (6.39)
+
+

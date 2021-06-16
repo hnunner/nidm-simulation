@@ -1,0 +1,9 @@
+Wilcoxon Signed Rank tests for final size between above and below average groups over all parameter combinations
+	gamma = 0.1, tau = 4, phi = 0.1, psi = 0.4, xi = 0.3:		W = 113395.5,	p = 0.011
+	gamma = 0.1, tau = 4, phi = 0.1, psi = 0.5, xi = 0.3:		W = 114691.5,	p = 0.038
+	gamma = 0.1, tau = 4, phi = 0.2, psi = 0.4, xi = 0.3:		W = 107532.5,	p < 0.001
+	gamma = 0.1, tau = 4, phi = 0.2, psi = 0.5, xi = 0.3:		W = 110446.5,	p = 0.001
+	gamma = 0.1, tau = 5, phi = 0.1, psi = 0.4, xi = 0.3:		W = 108989.5,	p < 0.001
+	gamma = 0.1, tau = 5, phi = 0.1, psi = 0.5, xi = 0.3:		W = 106006.5,	p < 0.001
+	gamma = 0.1, tau = 5, phi = 0.2, psi = 0.4, xi = 0.3:		W = 111819,	p = 0.008
+	gamma = 0.1, tau = 5, phi = 0.2, psi = 0.5, xi = 0.3:		W = 109546.5,	p < 0.001
