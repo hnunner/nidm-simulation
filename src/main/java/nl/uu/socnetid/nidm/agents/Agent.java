@@ -531,6 +531,12 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         this.changeAttribute(AgentAttributes.DISEASE_SPECS, this.getDiseaseSpecs(), disease);
     }
 
+    public void updateAgentSelection(double phi, double psi, double xi) {
+        this.changeAttribute(AgentAttributes.PHI, this.getPhi(), phi);
+        this.changeAttribute(AgentAttributes.PSI, this.getPsi(), psi);
+        this.changeAttribute(AgentAttributes.XI, this.getXi(), xi);
+    }
+
     /**
      * Gets the agent's connections.
      *

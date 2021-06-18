@@ -1991,6 +1991,14 @@ public class Network extends SingleGraph implements SimulationListener {
         }
     }
 
+    public void updateAgentSelection(double phi, double psi, double xi) {
+        Iterator<Agent> agents = this.getAgentIterator();
+        while (agents.hasNext()) {
+            Agent agent = agents.next();
+            agent.updateAgentSelection(phi, psi, xi);
+        }
+    }
+
     /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.simulation.SimulationListener#notifySimulationStarted(
      * nl.uu.socnetid.nidm.simulation.Simulation)

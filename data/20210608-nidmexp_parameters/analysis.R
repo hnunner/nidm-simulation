@@ -5609,6 +5609,13 @@ export_all <- function() {
   data.ss <- load_simulation_summary_data()
   data.ad <- load_agent_details_data()
 
+
+
+  mean(data.ad$nb.r.sigma)
+  sd(data.ad$nb.r.sigma)
+
+
+
   out <- ""
   for (gamma in unique(data.ss$nb.gamma)) {
     out <- paste(out, get_averages(data.ss = data.ss, data.ad = data.ad, param.name = "nb.gamma", param.value =  gamma))
@@ -5722,10 +5729,13 @@ export_all <- function() {
 
 
 
+  data.ss <- load_simulation_summary_data()
+  data.ad <- load_agent_details_data()
+
   # "best" settings
-  gamma <- 0.1
-  tau   <- 5
-  phi   <- 0.1
+  gamma <- 0.2
+  tau   <- 4
+  phi   <- 0.2
   psi   <- 0.5
   xi    <- 0.3
 
@@ -5757,10 +5767,27 @@ export_all <- function() {
 
 
   # robustness (random samples)
-  out <- "Repeated Wilcoxon Signed Rank test for random samples of best parameter setting\n\n"
+  out <- paste("Repeated Wilcoxon Signed Rank test for random samples of best parameter setting\n",
+               "(gamma = ", gamma, ", tau = ", tau, ", phi = ", phi, ", psi = ", psi, " xi = ", xi, ")\n\n", sep = "")
+
+  out <- paste(out, "\tall data:\n")
+
+  data.ss.curr.above.av <- subset(data.ss.curr, nb.r.av.above == "true")
+  data.ss.curr.below.av <- subset(data.ss.curr, nb.r.av.above == "false")
+
+  wt <- wilcox.test(data.ss.curr.above.av$net.pct.rec,     # non-parametric independent samples t-test
+                    data.ss.curr.below.av$net.pct.rec)     # for final size (non-normal distribution)
+  wt.out <- paste("W = ", wt$statistic, sep = "")
+  wt.p <- wt$p.value
+  if (wt.p < 0.001) {
+    wt.out <- paste(wt.out, ",\tp < 0.001", sep = "")
+  } else {
+    wt.out <- paste(wt.out, ",\tp = ", round(wt$p.value, digits = 3), sep = "")
+  }
+
+  out <- paste(out, "\t\tall (", nrow(data.ss.curr)," observations):\t\t", wt.out, "\n", sep = "")
 
   it <- 1
-  out <- paste(out, "\tall data:\n")
   while (it <= 100) {
     sim.all <- unique(data.ss.curr$sim.cnt)
     sim.sampled <- c()
@@ -5786,7 +5813,13 @@ export_all <- function() {
       wt.out <- paste(wt.out, ",\tp = ", round(wt$p.value, digits = 3), sep = "")
     }
 
-    out <- paste(out, "\t\tsample ", it, ":\t", wt.out, "\n", sep = "")
+    if (i >= 10) {
+      out <- paste(out, "\t\tsample ", it, " (", nrow(data.ss.curr.sampled)," observations):\t", wt.out, "\n", sep = "")
+    } else {
+      out <- paste(out, "\t\tsample  ", it, " (", nrow(data.ss.curr.sampled)," observations):\t", wt.out, "\n", sep = "")
+    }
+
+
 
     it <- it+1
 
@@ -5796,8 +5829,25 @@ export_all <- function() {
 
       data.ss.curr.condition <- subset(data.ss.curr, nb.omega == omega & nb.alpha == alpha)
 
-      it <- 1
+
       out <- paste(out, "\n\n\tomega = ", omega, ", alpha: ", alpha, ":\n")
+
+      data.ss.curr.condition.above.av <- subset(data.ss.curr.condition, nb.r.av.above == "true")
+      data.ss.curr.condition.below.av <- subset(data.ss.curr.condition, nb.r.av.above == "false")
+
+      wt <- wilcox.test(data.ss.curr.condition.above.av$net.pct.rec,     # non-parametric independent samples t-test
+                        data.ss.curr.condition.below.av$net.pct.rec)     # for final size (non-normal distribution)
+      wt.out <- paste("W = ", wt$statistic, sep = "")
+      wt.p <- wt$p.value
+      if (wt.p < 0.001) {
+        wt.out <- paste(wt.out, ",\tp < 0.001", sep = "")
+      } else {
+        wt.out <- paste(wt.out, ",\tp = ", round(wt$p.value, digits = 3), sep = "")
+      }
+
+      out <- paste(out, "\t\tall (", nrow(data.ss.curr.condition)," observations):\t\t\t", wt.out, "\n", sep = "")
+
+      it <- 1
       while (it <= 100) {
         sim.all <- unique(data.ss.curr.condition$sim.cnt)
         sim.sampled <- c()
@@ -5823,7 +5873,11 @@ export_all <- function() {
           wt.out <- paste(wt.out, ",\tp = ", round(wt$p.value, digits = 3), sep = "")
         }
 
-        out <- paste(out, "\t\tsample ", it, ":\t", wt.out, "\n", sep = "")
+        if (i >= 10) {
+          out <- paste(out, "\t\tsample ", it, " (", nrow(data.ss.curr.condition.sampled)," observations):\t", wt.out, "\n", sep = "")
+        } else {
+          out <- paste(out, "\t\tsample  ", it, " (", nrow(data.ss.curr.condition.sampled)," observations):\t", wt.out, "\n", sep = "")
+        }
 
         it <- it+1
 
@@ -5856,9 +5910,16 @@ export_all <- function() {
 
 
 
+  mean(subset(data.ss, nb.r.av.above == "true")$nb.r.av)
+  mean(subset(data.ss, nb.r.av.above == "false")$nb.r.av)
 
 
 
+
+  unique(data.ss$nb.alpha)
+
+  mean(subset(data.ss, nb.alpha == 0.000)$net.clustering.pre.epidemic.av)
+  mean(subset(data.ss, nb.alpha == 0.667)$net.clustering.pre.epidemic.av)
 
 
 
@@ -5895,6 +5956,65 @@ export_all <- function() {
   # export_sirs(data.rs = data.rs)
 }
 
+
+
+
+
+new_analysis <- function() {
+
+  data.ss <- load_simulation_summary_data()
+  data.ad <- load_agent_details_data()
+
+  r <- c()
+  inf.cnt <- c()
+  agents.cnt <- c()
+  dis.cnt <- c()
+
+  for (i in seq(0.0, 1.9, 0.1)) {
+    r <- c(r, i)
+
+    data.ad.sub <- subset(data.ad, nb.r.sigma == i)
+
+    data.ad.curr.r <- subset(data.ad, (nb.r.sigma > i & nb.r.sigma <= i+0.1))
+
+    inf.cnt <- c(inf.cnt, nrow(subset(data.ad.curr.r, agent.infected == 1)))
+    agents.cnt <- c(agents.cnt, nrow(data.ad.curr.r))
+
+    curr.r.cons.broken <- sum(data.ad.curr.r$agent.cons.broken.active.epidemic)
+    dis.cnt <- c(dis.cnt, curr.r.cons.broken)
+  }
+
+  data.ad.prep <- data.frame(r, agents.cnt) #, inf.cnt, dis.cnt)
+
+  data.ad.prep$inf.cnt <- inf.cnt
+  data.ad.prep$inf.prop <- data.ad.prep$inf.cnt / data.ad.prep$agents.cnt
+
+  data.ad.prep$dis.cnt <- dis.cnt
+  data.ad.prep$dis.prop <- data.ad.prep$dis.cnt / data.ad.prep$agents.cnt
+
+
+  mean(data.ss$net.pct.rec)
+  sd(data.ss$net.pct.rec)
+  max(data.ss$net.pct.rec)
+  min(data.ss$net.pct.rec)
+
+  mean(data.ss$net.epidemic.duration)
+  sd(data.ss$net.epidemic.duration)
+  max(data.ss$net.epidemic.duration)
+
+  mean(data.ss$net.epidemic.peak.time)
+  sd(data.ss$net.epidemic.peak.time)
+  max(data.ss$net.epidemic.peak.time)
+
+  mean(data.ss$net.epidemic.peak.size)
+  sd(data.ss$net.epidemic.peak.size)
+  max(data.ss$net.epidemic.peak.size)
+  min(data.ss$net.epidemic.peak.size)
+
+  # best sigma: 0.34
+
+
+}
 
 
 

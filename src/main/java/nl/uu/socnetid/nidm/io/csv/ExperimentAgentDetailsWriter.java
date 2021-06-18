@@ -81,7 +81,12 @@ public class ExperimentAgentDetailsWriter extends CsvFileWriter<ExperimentParame
         cols.add(LogValues.IV_NB_GAMMA.toString());
         cols.add(LogValues.IV_NB_TAU.toString());
         cols.add(LogValues.IV_NB_R_AV.toString());
-        cols.add(LogValues.IV_NB_R_ABOVE_AV.toString());
+//        cols.add(LogValues.IV_NB_R_ABOVE_AV.toString());
+        cols.add(LogValues.IV_NB_R_SIGMA.toString());
+        cols.add(LogValues.IV_NB_R_SIGMA_NEIGHBORHOOD.toString());
+        cols.add(LogValues.IV_NB_PHI.toString());
+        cols.add(LogValues.IV_NB_PSI.toString());
+        cols.add(LogValues.IV_NB_XI.toString());
 
         // PRE-EPIDEMIC
         // agent
@@ -136,11 +141,18 @@ public class ExperimentAgentDetailsWriter extends CsvFileWriter<ExperimentParame
             currData.add(String.valueOf(this.dgData.getUtilityModelParams().getGamma()));
             currData.add(String.valueOf(this.dgData.getUtilityModelParams().getTau()));
             currData.add(String.valueOf(this.dgData.getUtilityModelParams().getAverageRiskScore()));
-            currData.add(String.valueOf(this.dgData.getUtilityModelParams().isAboveAverage()));
+//            currData.add(String.valueOf(this.dgData.getUtilityModelParams().isAboveAverage()));
+
+            AgentStatsPre agentStatsPre = this.dgData.getAgentStatsPre().get(agent.getId());
+            currData.add(String.valueOf(agentStatsPre.getrSigma()));
+            currData.add(String.valueOf(agentStatsPre.getrSigmaNeighborhood()));
+
+            currData.add(String.valueOf(this.dgData.getUtilityModelParams().getPhi()));
+            currData.add(String.valueOf(this.dgData.getUtilityModelParams().getPsi()));
+            currData.add(String.valueOf(this.dgData.getUtilityModelParams().getXi()));
 
             // PRE-EPIDEMIC
             // agent
-            AgentStatsPre agentStatsPre = this.dgData.getAgentStatsPre().get(agent.getId());
             currData.add(String.valueOf(agentStatsPre.getDegree1()));
             currData.add(String.valueOf(agentStatsPre.getClustering()));
             currData.add(String.valueOf(agentStatsPre.getBetweennessNormalized()));

@@ -77,7 +77,12 @@ public class ExperimentSimulationSummaryWriter extends CsvFileWriter<ExperimentP
         cols.add(LogValues.IV_NB_GAMMA.toString());
         cols.add(LogValues.IV_NB_TAU.toString());
         cols.add(LogValues.IV_NB_R_AV.toString());
-        cols.add(LogValues.IV_NB_R_ABOVE_AV.toString());
+//        cols.add(LogValues.IV_NB_R_ABOVE_AV.toString());
+        cols.add(LogValues.IV_NB_R_MIN.toString());
+        cols.add(LogValues.IV_NB_R_MAX.toString());
+        cols.add(LogValues.IV_NB_PHI.toString());
+        cols.add(LogValues.IV_NB_PSI.toString());
+        cols.add(LogValues.IV_NB_XI.toString());
 
         // PRE-EPIDEMIC
         // network
@@ -133,7 +138,12 @@ public class ExperimentSimulationSummaryWriter extends CsvFileWriter<ExperimentP
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getGamma()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getTau()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getAverageRiskScore()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().isAboveAverage()));
+//        currData.add(String.valueOf(this.dgData.getUtilityModelParams().isAboveAverage()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrRMin()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrRMax()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getPhi()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getPsi()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getXi()));
 
         // PRE-EPIDEMIC
         // network
