@@ -81,7 +81,6 @@ public class ExperimentAgentDetailsWriter extends CsvFileWriter<ExperimentParame
         cols.add(LogValues.IV_NB_GAMMA.toString());
         cols.add(LogValues.IV_NB_TAU.toString());
         cols.add(LogValues.IV_NB_R_AV.toString());
-//        cols.add(LogValues.IV_NB_R_ABOVE_AV.toString());
         cols.add(LogValues.IV_NB_R_SIGMA.toString());
         cols.add(LogValues.IV_NB_R_SIGMA_NEIGHBORHOOD.toString());
         cols.add(LogValues.IV_NB_PHI.toString());
@@ -141,7 +140,6 @@ public class ExperimentAgentDetailsWriter extends CsvFileWriter<ExperimentParame
             currData.add(String.valueOf(this.dgData.getUtilityModelParams().getGamma()));
             currData.add(String.valueOf(this.dgData.getUtilityModelParams().getTau()));
             currData.add(String.valueOf(this.dgData.getUtilityModelParams().getAverageRiskScore()));
-//            currData.add(String.valueOf(this.dgData.getUtilityModelParams().isAboveAverage()));
 
             AgentStatsPre agentStatsPre = this.dgData.getAgentStatsPre().get(agent.getId());
             currData.add(String.valueOf(agentStatsPre.getrSigma()));

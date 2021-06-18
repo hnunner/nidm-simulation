@@ -35,7 +35,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.logging.log4j.LogManager;
@@ -143,7 +142,7 @@ public class ExperimentDataGenerator extends AbstractDataGenerator implements Si
         ep.setGamma(0.15);
         ep.setSigma(0.34);
 
-        ep.setSimsPerParameterCombination(200);
+        ep.setSimsPerParameterCombination(1000);
         //        ep.setSimsPerParameterCombination(500);
 
         this.dgData = new DataGeneratorData<ExperimentParameters>(ep);
@@ -204,25 +203,15 @@ public class ExperimentDataGenerator extends AbstractDataGenerator implements Si
 
                             // CREATE EXPERIMENTAL SESSION WITH SAME SUBJECTS FOR CLUSTERING CONDITIONS
                             List<Double> riskScores = new ArrayList<>();
-                            boolean aboveAverage = ThreadLocalRandom.current().nextBoolean();
-                            ump.setAboveAverage(aboveAverage);
                             while (riskScores.size() < ump.getN()) {
                                 // expected average risk score and standard deviation - taken from Vriens & Buskens (2021) and
                                 // rescaled to range between 0.0 and 2.0: 19.7/31*2 = 1.27, 6.98/31*2 = 0.45
                                 NormalDistribution nd = new NormalDistribution(1.27, 0.45);
-                                double riskScore1 = -1.0;
-                                while (riskScore1 > 2.0 || riskScore1 < 0.54) {
-                                    riskScore1 = nd.sample();
+                                double riskScore = -1.0;
+                                while (riskScore > 2.0 || riskScore < 0.3) {
+                                    riskScore = nd.sample();
                                 }
-                                double riskScore2 = -1.0;
-                                while (riskScore2 > 2.0 || riskScore2 < 0.54) {
-                                    riskScore2 = nd.sample();
-                                }
-                                if(aboveAverage) {
-                                    riskScores.add(riskScore1 > riskScore2 ? riskScore1 : riskScore2);
-                                } else {
-                                    riskScores.add(riskScore1 < riskScore2 ? riskScore1 : riskScore2);
-                                }
+                                riskScores.add(riskScore);
                             }
                             double averageRiskScore = riskScores.stream().mapToDouble(Double::doubleValue).sum() /
                                     riskScores.size();

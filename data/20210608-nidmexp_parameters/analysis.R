@@ -6011,13 +6011,104 @@ new_analysis <- function() {
   max(data.ss$net.epidemic.peak.size)
   min(data.ss$net.epidemic.peak.size)
 
-  # best sigma: 0.34
+
+
+
+  # robustness (random samples)
+  out <- paste("Main dependent measures for random samples of parameter setting\n",
+               "(gamma = ", unique(data.ss$nb.gamma),
+               ", sigma = ", unique(data.ss$nb.sigma),
+               ", tau = ", unique(data.ss$nb.tau),
+               ", phi = ", unique(data.ss$nb.phi),
+               ", psi = ", unique(data.ss$nb.psi),
+               " xi = ", unique(data.ss$nb.xi),
+               ")\n\n", sep = "")
+  out <- paste(out, "\tall data:\n\t\tall (", nrow(data.ss)," observations):\t\t",
+               "final size = ", format(round(mean(data.ss$net.pct.rec), digits = 2), nsmall = 2), " (", format(round(sd(data.ss$net.pct.rec), digits = 2), nsmall = 2), "), ",
+               "duration   = ", format(round(mean(data.ss$net.epidemic.duration), digits = 2), nsmall = 2), " (", format(round(sd(data.ss$net.epidemic.duration), digits = 2), nsmall = 2), "), ",
+               "peak time  = ", format(round(mean(data.ss$net.epidemic.peak.time), digits = 2), nsmall = 2), " (", format(round(sd(data.ss$net.epidemic.peak.time), digits = 2), nsmall = 2), "), ",
+               "peak size  = ", format(round(mean(data.ss$net.epidemic.peak.size), digits = 2), nsmall = 2), " (", format(round(sd(data.ss$net.epidemic.peak.size), digits = 2), nsmall = 2), ")",
+               "\n", sep = "")
+
+  it <- 1
+  while (it <= 20) {
+    sim.all <- unique(data.ss$sim.cnt)
+    sim.sampled <- c()
+    while (length(sim.sampled) < 48) {
+      sample.from <- setdiff(sim.all, sim.sampled)
+      sampled <- sample(sample.from, 1)
+      if (!sampled %in% sim.sampled) {
+        sim.sampled <- c(sim.sampled, sampled)
+      }
+    }
+    data.ss.sampled <- subset(data.ss, sim.cnt %in% sim.sampled)
+
+    if (it < 10) {
+      out <- paste(out, "\t\tsample ", it, " (", nrow(data.ss.sampled)," observations):\t\t", sep = "")
+    } else {
+      out <- paste(out, "\t\tsample ", it, " (", nrow(data.ss.sampled)," observations):\t", sep = "")
+    }
+    out <- paste(out,
+                 "final size = ", format(round(mean(data.ss.sampled$net.pct.rec), digits = 2), nsmall = 2), " (", format(round(sd(data.ss$net.pct.rec), digits = 2), nsmall = 2), "), ",
+                 "duration   = ", format(round(mean(data.ss.sampled$net.epidemic.duration), digits = 2), nsmall = 2), " (", format(round(sd(data.ss$net.epidemic.duration), digits = 2), nsmall = 2), "), ",
+                 "peak time  = ", format(round(mean(data.ss.sampled$net.epidemic.peak.time), digits = 2), nsmall = 2), " (", format(round(sd(data.ss$net.epidemic.peak.time), digits = 2), nsmall = 2), "), ",
+                 "peak size  = ", format(round(mean(data.ss.sampled$net.epidemic.peak.size), digits = 2), nsmall = 2), " (", format(round(sd(data.ss$net.epidemic.peak.size), digits = 2), nsmall = 2), ")",
+                 "\n", sep = "")
+
+    it <- it+1
+  }
+
+  for (omega in unique(data.ss$nb.omega)) {
+    for (alpha in unique(data.ss$nb.alpha)) {
+
+      data.ss.condition <- subset(data.ss, nb.omega == omega & nb.alpha == alpha)
+
+      out <- paste(out, "\n\n\tomega = ", omega, ", alpha: ", alpha, ":\n")
+      out <- paste(out, "\t\tall (", nrow(data.ss.condition)," observations):\t\t\t",
+                   "final size = ", format(round(mean(data.ss.condition$net.pct.rec), digits = 2), nsmall = 2), " (", format(round(sd(data.ss$net.pct.rec), digits = 2), nsmall = 2), "), ",
+                   "duration   = ", format(round(mean(data.ss.condition$net.epidemic.duration), digits = 2), nsmall = 2), " (", format(round(sd(data.ss$net.epidemic.duration), digits = 2), nsmall = 2), "), ",
+                   "peak time  = ", format(round(mean(data.ss.condition$net.epidemic.peak.time), digits = 2), nsmall = 2), " (", format(round(sd(data.ss$net.epidemic.peak.time), digits = 2), nsmall = 2), "), ",
+                   "peak size  = ", format(round(mean(data.ss.condition$net.epidemic.peak.size), digits = 2), nsmall = 2), " (", format(round(sd(data.ss$net.epidemic.peak.size), digits = 2), nsmall = 2), ")",
+                   "\n", sep = "")
+
+      it <- 1
+      while (it <= 20) {
+        sim.all <- unique(data.ss.condition$sim.cnt)
+        sim.sampled <- c()
+        while (length(sim.sampled) < 48) {
+          sample.from <- setdiff(sim.all, sim.sampled)
+          sampled <- sample(sample.from, 1)
+          if (!sampled %in% sim.sampled) {
+            sim.sampled <- c(sim.sampled, sampled)
+          }
+        }
+        data.ss.condition.sampled <- subset(data.ss.condition, sim.cnt %in% sim.sampled)
+        if (it < 10) {
+          out <- paste(out, "\t\tsample ", it, " (", nrow(data.ss.condition.sampled)," observations):\t\t", sep = "")
+        } else {
+          out <- paste(out, "\t\tsample ", it, " (", nrow(data.ss.condition.sampled)," observations):\t", sep = "")
+        }
+        out <- paste(out,
+                     "final size = ", format(round(mean(data.ss.condition.sampled$net.pct.rec), digits = 2), nsmall = 2), " (", format(round(sd(data.ss$net.pct.rec), digits = 2), nsmall = 2), "), ",
+                     "duration   = ", format(round(mean(data.ss.condition.sampled$net.epidemic.duration), digits = 2), nsmall = 2), " (", format(round(sd(data.ss$net.epidemic.duration), digits = 2), nsmall = 2), "), ",
+                     "peak time  = ", format(round(mean(data.ss.condition.sampled$net.epidemic.peak.time), digits = 2), nsmall = 2), " (", format(round(sd(data.ss$net.epidemic.peak.time), digits = 2), nsmall = 2), "), ",
+                     "peak size  = ", format(round(mean(data.ss.condition.sampled$net.epidemic.peak.size), digits = 2), nsmall = 2), " (", format(round(sd(data.ss$net.epidemic.peak.size), digits = 2), nsmall = 2), ")",
+                     "\n", sep = "")
+
+        it <- it+1
+      }
+    }
+  }
+
+  # export to file
+  dir.create(EXPORT_PATH_NUM, showWarnings = FALSE)
+  cat(out, file = paste(EXPORT_PATH_NUM,
+                        "robustness",
+                        EXPORT_FILE_EXTENSION_DESC,
+                        sep = ""))
 
 
 }
-
-
-
 
 
 
