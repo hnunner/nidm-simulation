@@ -2963,7 +2963,7 @@ export_main_result_densities <- function(data.ss = load_simulation_summary_data(
                  aes(xintercept=grp.median,
                      color=condition),
                  linetype="solid") +
-      xlim(10, 10000) +
+      xlim(2, 10000) +
       labs(x = "Peak size",
            y = "Density",
            color = "Condition",
