@@ -54,7 +54,7 @@ source_libs(c("ggplot2",      # plots
 ########################################### GLOBAL CONSTANTS ##########################################
 ### IO ###
 # input/output directory
-DATA_PATH                   <- ""
+DATA_PATH                       <- ""
 args = commandArgs(trailingOnly=TRUE)
 if (length(args) == 0) {
   DATA_PATH                     <- paste(dirname(sys.frame(1)$ofile), "/", sep = "")
@@ -71,6 +71,8 @@ CSV_AGENT_STATS_PATH            <- paste(DATA_PATH, "profession-agent-stats.csv"
 CSV_ROUND_SUMMARY_PATH          <- paste(DATA_PATH, "profession-round-summary.csv", sep = "")
 CSV_ROUND_SUMMARY_PREPARED_PATH <- paste(DATA_PATH, "profession-round-summary-prepared.csv", sep = "")
 CSV_PROFESSIONS_PATH            <- paste(DATA_PATH, "professions.csv", sep = "")
+BELOT_PUBLIC_DATA_PATH  <- paste(DATA_PATH, "belot-public.csv", sep = "")
+SOC_PROFESSION_STRUCTURE_PATH <- paste(DATA_PATH, "soc-profession-structure.csv", sep = "")
 
 # export files
 EXPORT_DIR_NUM                  <- "numerical/"
@@ -393,6 +395,24 @@ prepare_profession_data <- function() {
 
   write.table(wholeSummary, file=CSV_SUMMARY_PATH, row.names=FALSE, sep=";")
   write.table(wholeRoundSummary, file=CSV_ROUND_SUMMARY_PATH, row.names=FALSE, sep=";")
+}
+
+#----------------------------------------------------------------------------------------------------#
+# function: load_belot_public_data
+#     Loads the publicly accessible data from Belot et al. (2020)
+# return: the publicly accessible data from Belot et al. (2020)
+#----------------------------------------------------------------------------------------------------#
+load_belot_public_data <- function() {
+  return(load_csv(BELOT_PUBLIC_DATA_PATH, sep = ","))
+}
+
+#----------------------------------------------------------------------------------------------------#
+# function: load_soc_profession_structure
+#     Loads occupational hierarchy data (SOC - https://www.bls.gov/soc/2018/home.htm)
+# return: occupational hierarchy data (SOC - https://www.bls.gov/soc/2018/home.htm)
+#----------------------------------------------------------------------------------------------------#
+load_soc_profession_structure <- function() {
+  return(load_csv(SOC_PROFESSION_STRUCTURE_PATH))
 }
 
 
@@ -846,7 +866,24 @@ export_descriptives <- function(data.ss = load_simulation_summary_data(),
   print(paste("End overall descriptives."))
   # end: overall descriptive
 
+
+  # begin: occupational groups
   if (include.groups) {
+
+    ######### PREPARATIONS BELOT DATA #########
+    belot <- load_belot_public_data()
+    # removing implausible data point with degree of 2*10^12
+    belot <- subset(belot, close_recentint_less15_child < 2000000000000)
+
+    # exclusion criteria: no industry, no profession, not employed
+    belot <- subset(belot, belot$industry != "")
+    belot <- subset(belot, belot$profession != "")
+    belot <- subset(belot, belot$labor_status != "Not in employment")
+
+    # adding occupational hierarchy (SOC - https://www.bls.gov/soc/2018/home.htm)
+    soc <- load_soc_profession_structure()
+    belot_soc <- merge(belot, soc, by.x = "profession", by.y = "detailed_occupation", all.x = TRUE)
+    belot_soc <- subset(belot_soc, !is.na(major_group))
 
     out.short <- get_descriptives_short_table_prefix()
 
@@ -861,8 +898,23 @@ export_descriptives <- function(data.ss = load_simulation_summary_data(),
       if (grepl('^nb.prof.n.', col)) {
 
         prof <- str_replace(col, "nb.prof.n.", "")
+        prof.full.name <- subset(data.pr, tolower(V1) == prof)[1,8]
+        print(paste("Begin descriptives for: ", prof.full.name, sep = ""))
 
-        print(paste("Begin descriptives for: ", prof, sep = ""))
+        # preparing Belot data
+        belot_soc_mg <- subset(belot_soc, major_group == prof.full.name)
+        belot_soc_mg_normal <- c(belot_soc_mg$close_workint_less15_child,
+                                 belot_soc_mg$close_workint_less15_adult,
+                                 belot_soc_mg$close_workint_less15_elder,
+                                 belot_soc_mg$close_workint_more15_child,
+                                 belot_soc_mg$close_workint_more15_adult,
+                                 belot_soc_mg$close_workint_more15_elder)
+        belot_soc_mg_lockdown <- c(belot_soc_mg$close_recentint_less15_child,
+                                   belot_soc_mg$close_recentint_less15_adult,
+                                   belot_soc_mg$close_recentint_less15_elder,
+                                   belot_soc_mg$close_recentint_more15_child,
+                                   belot_soc_mg$close_recentint_more15_adult,
+                                   belot_soc_mg$close_recentint_more15_elder)
 
         if (t == 1) {
           out <- paste (out, get_professions_table_prefix(t.number), sep = "")
@@ -870,33 +922,45 @@ export_descriptives <- function(data.ss = load_simulation_summary_data(),
         }
 
         out <- paste(out, "\\midrule \n", sep = "")
-        out <- paste(out, "\\multicolumn{7}{l}{\\textbf{", subset(data.pr, tolower(V1) == prof)[1,8], "}}", " \\", "\\[", (row.height + 6), "pt] \n", sep = "")
+        out <- paste(out, "\\multicolumn{7}{l}{\\textbf{", prof.full.name, "}}", " \\", "\\[", (row.height + 6), "pt] \n", sep = "")
 
         ### DATA
         # N
-        out <- paste(out, get_descriptive(data.ss[,colIndex] / data.ss$nb.N, "N"))
-        out <- paste(out, "N (labor market) & ",
+        out <- paste(out, "Share of the labor market (empirical) & ",
                      round(subset(data.pr, tolower(V1) == prof)[1,2] / sum(data.pr[,2]), 2),
-                     "& & & & ", " \\", "\\[", (row.height + 6), "pt] \n", sep = "")
+                     "& & & & ", " \\", "\\[", row.height, "pt] \n", sep = "")
+        out <- paste(out, get_descriptive(data.ss[,colIndex] / data.ss$nb.N, "Share of the labor market (generated)", row.height = row.height+6))
 
         # degree, normal
-        normal <- subset(data.ss, nb.prof.lockdown.condition == "lc.pre")
         out <- paste(out,
                      paste(
-                       "Degree, normal (network av.)",
-                       round(mean(normal[,colIndex+1], na.rm = TRUE), digits = 2),               # mean av. degree
-                       round(mean(normal[,colIndex+3], na.rm = TRUE), digits = 2),               # sd of av. degree
-                       round(median(normal[,colIndex+1], na.rm = TRUE), digits = 2),             # median av. degree
-                       round(min(normal[,colIndex+1], na.rm = TRUE), digits = 2),                # min av. degree
-                       round(max(normal[,colIndex+1], na.rm = TRUE), digits = 2),                # max av. degree
-                       round(skewness(normal[,colIndex+1], na.rm = TRUE), digits = 2),           # skewness av. degree
+                       "Degree, normal (empirical)",
+                       round(mean(belot_soc_mg_normal, na.rm = TRUE), digits = 2),               # mean av. degree
+                       round(sd(belot_soc_mg_normal, na.rm = TRUE), digits = 2),                 # sd of av. degree
+                       round(median(belot_soc_mg_normal, na.rm = TRUE), digits = 2),             # median av. degree
+                       round(min(belot_soc_mg_normal, na.rm = TRUE), digits = 2),                # min av. degree
+                       round(max(belot_soc_mg_normal, na.rm = TRUE), digits = 2),                # max av. degree
+                       round(skewness(belot_soc_mg_normal, na.rm = TRUE), digits = 2),           # skewness av. degree
                        sep = " & "))
         out <- paste(out, " \\", "\\[", row.height, "pt]", " \n", sep = "")
+
+        normal <- subset(data.ss, nb.prof.lockdown.condition == "lc.pre")
+        # out <- paste(out,
+        #              paste(
+        #                "Degree, normal (network av.)",
+        #                round(mean(normal[,colIndex+1], na.rm = TRUE), digits = 2),               # mean av. degree
+        #                round(mean(normal[,colIndex+3], na.rm = TRUE), digits = 2),               # sd of av. degree
+        #                round(median(normal[,colIndex+1], na.rm = TRUE), digits = 2),             # median av. degree
+        #                round(min(normal[,colIndex+1], na.rm = TRUE), digits = 2),                # min av. degree
+        #                round(max(normal[,colIndex+1], na.rm = TRUE), digits = 2),                # max av. degree
+        #                round(skewness(normal[,colIndex+1], na.rm = TRUE), digits = 2),           # skewness av. degree
+        #                sep = " & "))
+        # out <- paste(out, " \\", "\\[", row.height, "pt]", " \n", sep = "")
 
         data.as.prof.pre <- subset(data.as, tolower(agent.profession) == prof & nb.prof.lockdown.condition == "lc.pre")
         out <- paste(out,
                      paste(
-                       "Degree, normal (nodes)",
+                       "Degree, normal (generated)",
                        round(mean(data.as.prof.pre$agent.degree, na.rm = TRUE), digits = 2),     # mean av. degree
                        round(sd(data.as.prof.pre$agent.degree, na.rm = TRUE), digits = 2),       # sd of av. degree
                        round(median(data.as.prof.pre$agent.degree, na.rm = TRUE), digits = 2),   # median av. degree
@@ -904,30 +968,42 @@ export_descriptives <- function(data.ss = load_simulation_summary_data(),
                        round(max(data.as.prof.pre$agent.degree, na.rm = TRUE), digits = 2),      # max av. degree
                        round(skewness(data.as.prof.pre$agent.degree, na.rm = TRUE), digits = 2), # skewness av. degree
                        sep = " & "))
-        out <- paste(out, " \\", "\\[", row.height, "pt]", " \n", sep = "")
+        out <- paste(out, " \\", "\\[", (row.height+6), "pt]", " \n", sep = "")
 
-        out <- paste(out, "Degree, normal (Belot) & ",
-                     subset(data.pr, tolower(V1) == prof)[1,3], " & ",
-                     subset(data.pr, tolower(V1) == prof)[1,4], " & NA & NA & NA ", " \\", "\\[", (row.height + 6), "pt] \n", sep = "")
+        # out <- paste(out, "Degree, normal (Belot) & ",
+        #              subset(data.pr, tolower(V1) == prof)[1,3], " & ",
+        #              subset(data.pr, tolower(V1) == prof)[1,4], " & NA & NA & NA ", " \\", "\\[", (row.height + 6), "pt] \n", sep = "")
 
         # degree, lockdown
-        lockdown <- subset(data.ss, nb.prof.lockdown.condition == "lc.during")
         out <- paste(out,
                      paste(
-                       "Degree, lockdown (network av.)",
-                       round(mean(lockdown[,colIndex+1], na.rm = TRUE), digits = 2),               # mean av. degree
-                       round(mean(lockdown[,colIndex+3], na.rm = TRUE), digits = 2),               # sd of av. degree
-                       round(median(lockdown[,colIndex+1], na.rm = TRUE), digits = 2),             # median av. degree
-                       round(min(lockdown[,colIndex+1], na.rm = TRUE), digits = 2),                # min av. degree
-                       round(max(lockdown[,colIndex+1], na.rm = TRUE), digits = 2),                # max av. degree
-                       round(skewness(lockdown[,colIndex+1], na.rm = TRUE), digits = 2),           # skewness av. degree
+                       "Degree, lockdown (empirical)",
+                       round(mean(belot_soc_mg_lockdown, na.rm = TRUE), digits = 2),               # mean av. degree
+                       round(sd(belot_soc_mg_lockdown, na.rm = TRUE), digits = 2),                 # sd of av. degree
+                       round(median(belot_soc_mg_lockdown, na.rm = TRUE), digits = 2),             # median av. degree
+                       round(min(belot_soc_mg_lockdown, na.rm = TRUE), digits = 2),                # min av. degree
+                       round(max(belot_soc_mg_lockdown, na.rm = TRUE), digits = 2),                # max av. degree
+                       round(skewness(belot_soc_mg_lockdown, na.rm = TRUE), digits = 2),           # skewness av. degree
                        sep = " & "))
         out <- paste(out, " \\", "\\[", row.height, "pt]", " \n", sep = "")
+
+        lockdown <- subset(data.ss, nb.prof.lockdown.condition == "lc.during")
+        # out <- paste(out,
+        #              paste(
+        #                "Degree, lockdown (network av.)",
+        #                round(mean(lockdown[,colIndex+1], na.rm = TRUE), digits = 2),               # mean av. degree
+        #                round(mean(lockdown[,colIndex+3], na.rm = TRUE), digits = 2),               # sd of av. degree
+        #                round(median(lockdown[,colIndex+1], na.rm = TRUE), digits = 2),             # median av. degree
+        #                round(min(lockdown[,colIndex+1], na.rm = TRUE), digits = 2),                # min av. degree
+        #                round(max(lockdown[,colIndex+1], na.rm = TRUE), digits = 2),                # max av. degree
+        #                round(skewness(lockdown[,colIndex+1], na.rm = TRUE), digits = 2),           # skewness av. degree
+        #                sep = " & "))
+        # out <- paste(out, " \\", "\\[", row.height, "pt]", " \n", sep = "")
 
         data.as.prof.lockdown <- subset(data.as, tolower(agent.profession) == prof & nb.prof.lockdown.condition == "lc.during")
         out <- paste(out,
                      paste(
-                       "Degree, lockdown (nodes)",
+                       "Degree, lockdown (generated)",
                        round(mean(data.as.prof.lockdown$agent.degree, na.rm = TRUE), digits = 2),     # mean av. degree
                        round(sd(data.as.prof.lockdown$agent.degree, na.rm = TRUE), digits = 2),       # sd of av. degree
                        round(median(data.as.prof.lockdown$agent.degree, na.rm = TRUE), digits = 2),   # median av. degree
@@ -937,9 +1013,9 @@ export_descriptives <- function(data.ss = load_simulation_summary_data(),
                        sep = " & "))
         out <- paste(out, " \\", "\\[", row.height, "pt]", " \n", sep = "")
 
-        out <- paste(out, "Degree, lockdown (Belot) & ",
-                     subset(data.pr, tolower(V1) == prof)[1,5], " & ",
-                     subset(data.pr, tolower(V1) == prof)[1,6], " & NA & NA & NA ", " \\", "\\ \n", sep = "")
+        # out <- paste(out, "Degree, lockdown (Belot) & ",
+        #              subset(data.pr, tolower(V1) == prof)[1,5], " & ",
+        #              subset(data.pr, tolower(V1) == prof)[1,6], " & NA & NA & NA ", " \\", "\\ \n", sep = "")
 
         # short
 
@@ -951,7 +1027,7 @@ export_descriptives <- function(data.ss = load_simulation_summary_data(),
                            round(mean(lockdown[,colIndex+1], na.rm = TRUE), digits = 2), " \\", "\\ \n", sep = "")
 
         # housekeeping
-        if (t >= 4) {
+        if (t >= 6) {
           out <- paste (out, get_professions_table_suffix(), "\n\n", sep = "")
           t <- 1
           table.closed <- TRUE
@@ -3628,4 +3704,3 @@ export_all <- function() {
   export_sirs(data.rs = data.rs, data.ss = data.ss)
 
 }
-
