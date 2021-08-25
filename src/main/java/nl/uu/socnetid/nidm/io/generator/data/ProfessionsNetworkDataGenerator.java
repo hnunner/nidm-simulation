@@ -73,15 +73,9 @@ public class ProfessionsNetworkDataGenerator extends AbstractGenerator implement
     private static final Logger logger = LogManager.getLogger(ProfessionsNetworkDataGenerator.class);
 
     // path to network files used to generate data
-    private static final String NETWORKS_PATH = "C:/Users/Hendrik/git/NIDM/simulation/exports/20210321-024702/"
-//            + "networks/professions.lockdown.1-60/";
-//            + "networks/professions.lockdown.21-30/";
-//            + "networks/professions.lockdown.31-40/";
-//            + "networks/professions.lockdown.41-50/";
-//            + "networks/professions.lockdown.51-60/";
-//            + "networks/professions.lockdown.61-70/";
-//            + "networks/professions.lockdown.71-80/";
-            + "networks/professions.lockdown.81-90/";
+    private static final String NETWORKS_PATH =
+            "/Users/hendrik/git/uu/nidm/simulation/exports/20210825-151227/"
+            + "networks/professions.lockdown/";
 
     private static final String NETWORKS_SUMMARY_FILE = NETWORKS_PATH + "profession-networks-lockdown.csv";
 

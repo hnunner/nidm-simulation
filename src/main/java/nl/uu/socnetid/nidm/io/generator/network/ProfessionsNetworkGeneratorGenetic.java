@@ -83,9 +83,9 @@ public class ProfessionsNetworkGeneratorGenetic extends AbstractGenerator implem
     private static final int MAX_ROUNDS_NO_IMPROVEMENT = 5;
 
     // parameter variations
-//    private static final double[] TARGET_CLUSTERINGS = {0.3, 0.4, 0.5};
-//    private static final double[] TARGET_HOMOPHILIES = {0.0, 0.4, 0.8};
-//    private static final LockdownConditions[] TARGET_LOCKDOWN_CONDITIONS = {LockdownConditions.PRE, LockdownConditions.DURING};
+    private static final double[] TARGET_CLUSTERINGS = {0.3, 0.4, 0.5};
+    private static final double[] TARGET_HOMOPHILIES = {0.0, 0.4, 0.8};
+    private static final LockdownConditions[] TARGET_LOCKDOWN_CONDITIONS = {LockdownConditions.PRE};
 
 //    private static final double[] TARGET_CLUSTERINGS = {0.3};
 //    private static final double[] TARGET_HOMOPHILIES = {0.0};
@@ -119,9 +119,9 @@ public class ProfessionsNetworkGeneratorGenetic extends AbstractGenerator implem
 //    private static final double[] TARGET_HOMOPHILIES = {0.8};
 //    private static final LockdownConditions[] TARGET_LOCKDOWN_CONDITIONS = {LockdownConditions.PRE};
 //
-    private static final double[] TARGET_CLUSTERINGS = {0.4};
-    private static final double[] TARGET_HOMOPHILIES = {0.8};
-    private static final LockdownConditions[] TARGET_LOCKDOWN_CONDITIONS = {LockdownConditions.PRE};
+//    private static final double[] TARGET_CLUSTERINGS = {0.4};
+//    private static final double[] TARGET_HOMOPHILIES = {0.8};
+//    private static final LockdownConditions[] TARGET_LOCKDOWN_CONDITIONS = {LockdownConditions.PRE};
 
 
     // target degrees
