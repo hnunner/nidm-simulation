@@ -38,14 +38,15 @@ source_libs(c("ggplot2",      # plots
               "texreg",       # html export
               "QuantPsyc",    # 'meanCenter' function
               "dplyr",        # 'select' function
+              "plyr",         # 'ddply' function
               "ggpubr",       # arranging a list of plots with one common legend
               "e1071",        # skewness
               "hexbin",       # hexbin plots
               "Cairo",        # smooth plot lines
               "rsq",          # adjusted R2
               "car",          # VIFs
-              "stringr"       # string manipulations
-              # "gridExtra",   # side-by-side plots
+              "stringr",      # string manipulations
+              "gridExtra"     # side-by-side plots
               # "psych",       # summary statistics
 ))
 
@@ -53,21 +54,25 @@ source_libs(c("ggplot2",      # plots
 ########################################### GLOBAL CONSTANTS ##########################################
 ### IO ###
 # input/output directory
-DATA_PATH                   <- ""
+DATA_PATH                       <- ""
 args = commandArgs(trailingOnly=TRUE)
 if (length(args) == 0) {
   DATA_PATH                     <- paste(dirname(sys.frame(1)$ofile), "/", sep = "")
 } else {
   DATA_PATH                     <- args[1]
 }
+# file name prefixes and suffixes
+CSV_SUMMARY_PREFIX              <- "profession-data_"
+CSV_ROUND_SUMMARY_PREFIX        <- "profession-round-summary_"
+CSV_SUMMARY_SUFFIX              <- ".csv"
 # file names of generated data
-CSV_SUMMARY_PATH                <- paste(DATA_PATH, "simulation-summary.csv", sep = "")
-CSV_AGENT_DETAILS_PATH          <- paste(DATA_PATH, "agent-details.csv", sep = "")
-CSV_ROUND_SUMMARY_PATH          <- paste(DATA_PATH, "round-summary.csv", sep = "")
-CSV_ROUND_SUMMARY_PREPARED_PATH <- paste(DATA_PATH, "round-summary-prepared.csv", sep = "")
+CSV_SUMMARY_PATH                <- paste(DATA_PATH, "profession-data.csv", sep = "")
+CSV_AGENT_STATS_PATH            <- paste(DATA_PATH, "profession-agent-stats.csv", sep = "")
+CSV_ROUND_SUMMARY_PATH          <- paste(DATA_PATH, "profession-round-summary.csv", sep = "")
+CSV_ROUND_SUMMARY_PREPARED_PATH <- paste(DATA_PATH, "profession-round-summary-prepared.csv", sep = "")
 CSV_PROFESSIONS_PATH            <- paste(DATA_PATH, "professions.csv", sep = "")
-CSV_PROFESSION_DISTRIBUTION_PATH<- paste(DATA_PATH, "profession-dist.csv", sep = "")
-CSV_BELOT_PATH                  <- paste(DATA_PATH, "belot-public.csv", sep = "")
+BELOT_PUBLIC_DATA_PATH  <- paste(DATA_PATH, "belot-public.csv", sep = "")
+SOC_PROFESSION_STRUCTURE_PATH <- paste(DATA_PATH, "soc-profession-structure.csv", sep = "")
 
 # export files
 EXPORT_DIR_NUM                  <- "numerical/"
@@ -107,6 +112,10 @@ COLORS                          <- c(Susceptible         = "#F0E442",   # yellow
 
                                      Assortativity       = "#888888",   # grey
                                      Assortativity.index = "#000000")   # white
+
+COLORS.CONDITIONS               <- c(Baseline = "#D81B60",
+                                     Random   = "#FFC107",
+                                     Targeted = "#1E88E5")
 # general
 BINS                            <- 100
 POINT_SIZE                      <- 0.6
@@ -194,18 +203,32 @@ load_csv <- function(filePath, header = TRUE, sep = ";") {
 #----------------------------------------------------------------------------------------------------#
 load_simulation_summary_data <- function() {
   data.ss <- load_csv(CSV_SUMMARY_PATH)
-  return(data.ss)
+
+  # remove all baseline
+  data.ss.baseline <- subset(data.ss,
+                             nb.prof.vaccine.distribution == "none" &
+                               (grepl("C:/Users/Hendrik/git/NIDM/simulation/exports/20210321-024702/networks/professions.lockdown.1-60", import.filename, fixed = TRUE) |
+                                  grepl("C:/Users/Hendrik/git/NIDM/simulation/exports/20210321-024702/networks/professions.lockdown.21-30", import.filename, fixed = TRUE) |
+                                  grepl("C:/Users/Hendrik/git/NIDM/simulation/exports/20210321-024702/networks/professions.lockdown.31-40", import.filename, fixed = TRUE) |
+                                  grepl("C:/Users/Hendrik/git/NIDM/simulation/exports/20210321-024702/networks/professions.lockdown.41-50", import.filename, fixed = TRUE) |
+                                  grepl("C:/Users/Hendrik/git/NIDM/simulation/exports/20210321-024702/networks/professions.lockdown.51-60", import.filename, fixed = TRUE) |
+                                  grepl("C:/Users/Hendrik/git/NIDM/simulation/exports/20210321-024702/networks/professions.lockdown.61-70", import.filename, fixed = TRUE) |
+                                  grepl("C:/Users/Hendrik/git/NIDM/simulation/exports/20210321-024702/networks/professions.lockdown.71-80", import.filename, fixed = TRUE) |
+                                  grepl("C:/Users/Hendrik/git/NIDM/simulation/exports/20210321-024702/networks/professions.lockdown.81-90", import.filename, fixed = TRUE)))
+  data.ss.nobaseline <- subset(data.ss, nb.prof.vaccine.distribution != "none")
+  data.ss.prepared <- rbind(data.ss.baseline, data.ss.nobaseline)
+
+  return(data.ss.prepared)
 }
 
 #----------------------------------------------------------------------------------------------------#
-# function: load_agent_details_data
-#     Loads agent details data.
-# return: the agent details data
+# function: load_simulation_summary_data
+#     Loads summary data for NIDM simulations.
+# return: the summary data for NIDM simulations
 #----------------------------------------------------------------------------------------------------#
-load_agent_details_data <- function() {
-  agents_data <- load_csv(CSV_AGENT_DETAILS_PATH)
-  agents_data$agent.profession <- gsub("ï»¿", "", agents_data$agent.profession)       # in case CSV contains byte order mark
-  return(agents_data)
+load_agent_stats_data <- function() {
+  data.as <- load_csv(CSV_AGENT_STATS_PATH)
+  return(data.as)
 }
 
 #----------------------------------------------------------------------------------------------------#
@@ -213,46 +236,78 @@ load_agent_details_data <- function() {
 #     Prepares round summary data.
 # return: the prepared round summary data
 #----------------------------------------------------------------------------------------------------#
-load_round_summary_prepared_data <- function() {
-
-  if (file.exists(CSV_ROUND_SUMMARY_PREPARED_PATH)) {
-    return(load_csv(CSV_ROUND_SUMMARY_PREPARED_PATH))
-  }
+prepare_round_summary_data <- function() {
 
   data.rs <- load_csv(CSV_ROUND_SUMMARY_PATH)
 
-  round.max <- max(data.rs$sim.round)
+  round.max <- max(data.rs$round)
   while (round.max %% 10 != 0) {
     round.max <- round.max + 1
   }
 
   res <- data.rs[0,]
+  file_number <- 1
   for (uid in unique(data.rs$sim.uid)) {
 
     print(paste("preparing round summary records for uid:", uid))
 
     records.rs.by.uid <- subset(data.rs, sim.uid == uid)
-    finished <- do.call("rbind", replicate(n = round.max - max(records.rs.by.uid$sim.round),
-                                           expr =  records.rs.by.uid[max(records.rs.by.uid$sim.round),],
+    finished <- do.call("rbind", replicate(n = round.max - max(records.rs.by.uid$round),
+                                           expr =  records.rs.by.uid[max(records.rs.by.uid$round),],
                                            simplify = FALSE))
     records.rs.by.uid.filled <- rbind(records.rs.by.uid, finished)
 
     # renumber rounds
-    records.rs.by.uid.filled$sim.round <- seq(1, nrow(records.rs.by.uid.filled))
-    records.rs.by.uid.filled$sim.uid <- paste(records.rs.by.uid.filled$sim.upc, "-",
-                                              records.rs.by.uid.filled$sim.cnt, "-",
-                                              records.rs.by.uid.filled$sim.it,
-                                              sep = "")
+    records.rs.by.uid.filled$round <- seq(1, nrow(records.rs.by.uid.filled))
+    records.rs.by.uid.filled$sim.uid <- rep(uid, nrow(records.rs.by.uid.filled))
 
     res <- rbind(res, records.rs.by.uid.filled)
+
+    if (nrow(res) >= 100000) {
+      # renumber rows
+      rownames(res) <- 1:nrow(res)
+      # export
+      write.table(res, file=paste(DATA_PATH, "round-summary-prepared_", file_number,".csv", sep = ""), row.names=FALSE, sep=";")
+      file_number <- file_number+1
+      res <- data.rs[0,]
+    }
+
   }
 
-  # renumber rows
-  rownames(res) <- 1:nrow(res)
+  if (nrow(res) > 0) {
+    # renumber rows
+    rownames(res) <- 1:nrow(res)
+    # export
+    write.table(res, file=paste(DATA_PATH, "round-summary-prepared_", file_number,".csv", sep = ""), row.names=FALSE, sep=";")
+    # reset
+    file_number <- file_number+1
+  }
 
-  #write.csv2(res, file=CSV_ROUND_SUMMARY_PREPARED_PATH, row.names=FALSE)
-  write.table(res, file=CSV_ROUND_SUMMARY_PREPARED_PATH, row.names=FALSE, sep=";")
-  return(res)
+}
+
+
+merge_round_summary_data <- function() {
+
+  res <- NA
+
+  for (i in seq(1, 747, 1)) {
+    currFile <- load_csv(paste(DATA_PATH, "round-summary-prepared_", i, ".csv", sep = ""))
+
+    if (i == 1) {
+      res <- currFile
+      print("Output file initialization complete.")
+    } else {
+      res <- rbind(res, currFile)
+      print(paste("Rbind complete for file:", i))
+    }
+  }
+
+  write.table(res, file=paste(CSV_ROUND_SUMMARY_PREPARED_PATH), row.names=FALSE, sep=";")
+
+}
+
+load_round_summary_prepared_data <- function() {
+  return(load_csv(CSV_ROUND_SUMMARY_PREPARED_PATH))
 }
 
 #----------------------------------------------------------------------------------------------------#
@@ -275,22 +330,89 @@ load_professions_data <- function() {
   return(professions_data)
 }
 
-#----------------------------------------------------------------------------------------------------#
-# function: load_profession_distribution_data
-#     Loads profession distribution data.
-# return: the profession distribution data
-#----------------------------------------------------------------------------------------------------#
-load_profession_distribution_data <- function() {
-  return(load_csv(CSV_PROFESSION_DISTRIBUTION_PATH, header = FALSE))
+
+
+
+prepare_profession_data <- function() {
+
+  wholeSummary <- NA
+  wholeRoundSummary <- NA
+
+  filesImported <- 1
+
+  for (range in c("gen-1",
+                  "gen-2")) {
+
+    currSummary <- load_csv(paste(DATA_PATH, CSV_SUMMARY_PREFIX, range, CSV_SUMMARY_SUFFIX, sep = ""))
+    currRoundSummary <- load_csv(paste(DATA_PATH, CSV_ROUND_SUMMARY_PREFIX, range, CSV_SUMMARY_SUFFIX, sep = ""))
+
+    if (filesImported == 1) {
+      wholeSummary <- currSummary
+      wholeRoundSummary <- currRoundSummary
+    } else {
+      wholeSummary <- rbind(wholeSummary, currSummary)
+      wholeRoundSummary <- rbind(wholeRoundSummary, currRoundSummary)
+    }
+
+    filesImported <- filesImported+1
+  }
+
+  # # corrections
+  # # only 20 iterations
+  # wholeSummary <- subset(wholeSummary, nb.m <= 20)
+  # rownames(wholeSummary) <- 1:nrow(wholeSummary)
+  # wholeRoundSummary <- subset(wholeRoundSummary, nb.m <= 20)
+  # rownames(wholeRoundSummary) <- 1:nrow(wholeRoundSummary)
+  #
+  # # rounds was erroneously increased once more after end of epidemic
+  # wholeSummary$net.epidemic.duration <- wholeSummary$net.epidemic.duration-1
+
+  # unique parameter combinations are after every 20 iterations
+  upcs <- c()
+  for (i in seq(1, nrow(wholeSummary)/20)) {
+    upcs <- c(upcs, rep(i, 20))
+  }
+  wholeSummary$sim.upc <- upcs
+
+  # uids as combination of upcs and iterations
+  uids <- with(wholeSummary, paste0(sim.upc, "#", nb.m))
+  wholeSummary$sim.uid <- uids
+
+  # add rounds and uids to round summaries
+  rounds <- c()
+  uids <- c()
+  for (i in seq(1, nrow(wholeSummary))) {
+
+    if (i %% 1000 == 0) {
+      print(paste(i, "of", nrow((wholeSummary))))
+    }
+
+    rounds <- c(rounds, seq(1:wholeSummary[i,]$net.epidemic.duration))
+    uids <- c(uids, rep(wholeSummary[i,]$sim.uid, wholeSummary[i,]$net.epidemic.duration))
+  }
+  wholeRoundSummary$round <- rounds
+  wholeRoundSummary$sim.uid <- uids
+
+  write.table(wholeSummary, file=CSV_SUMMARY_PATH, row.names=FALSE, sep=";")
+  write.table(wholeRoundSummary, file=CSV_ROUND_SUMMARY_PATH, row.names=FALSE, sep=";")
 }
 
 #----------------------------------------------------------------------------------------------------#
-# function: load_belot_data
-#     Loads Belot data.
-# return: the Belot data
+# function: load_belot_public_data
+#     Loads the publicly accessible data from Belot et al. (2020)
+# return: the publicly accessible data from Belot et al. (2020)
 #----------------------------------------------------------------------------------------------------#
-load_belot_data <- function() {
-  return(load_csv(CSV_BELOT_PATH, sep = ","))
+load_belot_public_data <- function() {
+  return(load_csv(BELOT_PUBLIC_DATA_PATH, sep = ","))
+}
+
+#----------------------------------------------------------------------------------------------------#
+# function: load_soc_profession_structure
+#     Loads occupational hierarchy data (SOC - https://www.bls.gov/soc/2018/home.htm)
+# return: occupational hierarchy data (SOC - https://www.bls.gov/soc/2018/home.htm)
+#----------------------------------------------------------------------------------------------------#
+load_soc_profession_structure <- function() {
+  return(load_csv(SOC_PROFESSION_STRUCTURE_PATH))
 }
 
 
@@ -308,10 +430,105 @@ get_descriptive <- function(vec, title, row.height = 0) {
   out <- paste(title,
                round(mean(vec, na.rm = TRUE), digits = 2),
                round(sd(vec, na.rm = TRUE), digits = 2),
+               round(median(vec, na.rm = TRUE), digits = 2),
                round(min(vec, na.rm = TRUE), digits = 2),
                round(max(vec, na.rm = TRUE), digits = 2),
                round(skewness(vec, na.rm = TRUE), digits = 2),
                sep = " & ")
+  out <- paste(out, " \\", "\\[", row.height, "pt]", " \n", sep = "")
+
+  return(out)
+}
+
+get_descriptive_compressed <- function(vec1, vec2, vec3, title, row.height = 0) {
+
+  if (is.na(vec1)) {
+    out <- paste(title,
+
+                 "",
+                 "",
+                 "",
+
+                 round(mean(vec2, na.rm = TRUE), digits = 2),
+                 round(sd(vec2, na.rm = TRUE), digits = 2),
+                 round(median(vec2, na.rm = TRUE), digits = 2),
+
+                 round(mean(vec3, na.rm = TRUE), digits = 2),
+                 round(sd(vec3, na.rm = TRUE), digits = 2),
+                 round(median(vec3, na.rm = TRUE), digits = 2),
+
+                 sep = " & ")
+
+  } else {
+    out <- paste(title,
+
+                 round(mean(vec1, na.rm = TRUE), digits = 2),
+                 round(sd(vec1, na.rm = TRUE), digits = 2),
+                 round(median(vec1, na.rm = TRUE), digits = 2),
+
+                 round(mean(vec2, na.rm = TRUE), digits = 2),
+                 round(sd(vec2, na.rm = TRUE), digits = 2),
+                 round(median(vec2, na.rm = TRUE), digits = 2),
+
+                 round(mean(vec3, na.rm = TRUE), digits = 2),
+                 round(sd(vec3, na.rm = TRUE), digits = 2),
+                 round(median(vec3, na.rm = TRUE), digits = 2),
+
+                 sep = " & ")
+  }
+  out <- paste(out, " \\", "\\[", row.height, "pt]", " \n", sep = "")
+
+  return(out)
+}
+
+get_descriptive_summary <- function(vec1, vec2, vec3, title, show.vec1 = TRUE, row.height = 0, increase = FALSE, alpha = 0.8) {
+
+  color.imp <- "color-improvement"
+  color.dec <- "color-decline"
+
+  mean.vec1 <- mean(vec1, na.rm = TRUE)
+  mean.vec2 <- mean(vec2, na.rm = TRUE)
+  mean.vec3 <- mean(vec3, na.rm = TRUE)
+
+  diff.vec1.vec2 <- mean.vec2-mean.vec1
+  diff.vec1.vec3 <- mean.vec3-mean.vec1
+  diff.vec2.vec3 <- mean.vec3-mean.vec2
+
+  out <- paste(title, " & ", sep = "")
+
+  if (show.vec1) {
+    out <- paste(out, format(round(mean.vec1, digits = 2), nsmall = 2), " & ", sep = "")
+  } else {
+    out <- paste(out, "", " & ", sep = "")
+  }
+
+  if (diff.vec1.vec2 >= 0) {
+    out <- paste(out, "\\cellcolor{", color.dec, sep = "")
+  } else {
+    out <- paste(out, "\\cellcolor{", color.imp, sep = "")
+  }
+  out <- paste(out, "!", (abs(round(diff.vec1.vec2*alpha, digits = 0))), "}",
+               format(round(diff.vec1.vec2, digits = 2), nsmall = 2), " & ",
+               sep = "")
+
+  if (diff.vec1.vec3 >= 0) {
+    out <- paste(out, "\\cellcolor{", color.dec, sep = "")
+  } else {
+    out <- paste(out, "\\cellcolor{", color.imp, sep = "")
+  }
+  out <- paste(out, "!", (abs(round(diff.vec1.vec3*alpha, digits = 0))), "}",
+               format(round(diff.vec1.vec3, digits = 2), nsmall = 2), " & ",
+               sep = "")
+
+  if (diff.vec2.vec3 >= 0) {
+    out <- paste(out, "\\cellcolor{", color.dec, sep = "")
+  } else {
+    out <- paste(out, "\\cellcolor{", color.imp, sep = "")
+  }
+  out <- paste(out, "!", (abs(round(diff.vec2.vec3*alpha, digits = 0))), "}",
+               format(round(diff.vec2.vec3, digits = 2), nsmall = 2),
+               sep = "")
+
   out <- paste(out, " \\", "\\[", row.height, "pt]", " \n", sep = "")
 
   return(out)
@@ -325,18 +542,22 @@ get_descriptives_table_prefix <- function(observations, scenario = NA) {
     out <- paste(out, " (observations: ", observations, ")", sep = "")
     out <- paste(out, ".}\n\\label{tab:descriptives}\n", sep = "")
   } else {
-    out <- paste("\\captionof{table}{Descriptive statistics (scenario ", scenario, ", observations: ", observations, ")", sep = "")
-    out <- paste(out, ".}\n\\label{tab:descriptives-s", scenario, "}\n", sep = "")
+    out <- paste("\\begin{table}[hbt!] \n", sep = "")
+    out <- paste(out, "\\captionof{table}{Descriptive statistics ", scenario, " (observations: ", observations, ")", sep = "")
+    out <- paste(out, ".}\n\\label{tab:descriptives-", scenario, "}\n", sep = "")
   }
-  out <- paste(out, "\\begin{adjustbox}{width=1\\textwidth,center=\\textwidth}\n\\begin{tabular}{l *{5}{S[\n", sep = "")
+  out <- paste(out, "\\begin{adjustbox}{width=1\\textwidth,center=\\textwidth}\n\\begin{tabular}{l *{6}{S[\n", sep = "")
   out <- paste(out, "input-symbols = {(- )},\ndetect-weight,\ngroup-separator = {,},\ntable-format=5.2]}}\n\\toprule\n", sep = "")
-  out <- paste(out, "& \\text{\\thead{Mean}} & \\text{\\thead{SD}} & \\text{\\thead{Min}} & \\text{\\thead{Max}} & ", sep = "")
-  out <- paste(out, "\\text{\\thead{Skew}}", " \\", "\\ \n\\midrule", sep = "")
+
+
+  out <- paste(out, "& \\text{\\thead{Mean}} & \\text{\\thead{SD}} & \\text{\\thead{Median}} & \\text{\\thead{Min}} & \\text{\\thead{Max}} & ", sep = "")
+  out <- paste(out, "\\text{\\thead{Skew}}", " \\", "\\ \n\\midrule \n", sep = "")
+
   return(out)
 }
 
 get_descriptives_table_suffix <- function(scenario = NA) {
-  out <- "\\bottomrule\n%\\multicolumn{5}{c}{\\emph{Notes:} bold numbers are significant at $p<0.001$, SEs in parentheses}\n"
+  out <- "\\bottomrule\n%\\multicolumn{7}{c}{\\emph{Notes:} bold numbers are significant at $p<0.001$, SEs in parentheses}\n"
   if (is.na(scenario)) {
     out <- paste(out, "\\end{tabular}\n\\end{adjustbox}\n\\end{table}", sep = "")
   } else {
@@ -345,18 +566,180 @@ get_descriptives_table_suffix <- function(scenario = NA) {
   return(out)
 }
 
+get_descriptives_short_table_prefix <- function() {
+
+  out <- paste("\\begin{table}[hbt!] \n", sep = "")
+  out <- paste(out, "\\caption{Comparison of mean degrees per major occupational group between empirical generated network data.", sep = "")
+  out <- paste(out, ".}\n\\label{tab:mean-degrees}\n", sep = "")
+
+  out <- paste(out, "\\begin{adjustbox}{width=1\\textwidth,center=\\textwidth}\n\\begin{tabular}{l *{4}{S[\n", sep = "")
+  out <- paste(out, "input-symbols = {(- )},\ndetect-weight,\ngroup-separator = {,},\ntable-format=3.2]}}\n\\toprule\n", sep = "")
+
+  out <- paste(out, "& \\multicolumn{2}{c}{\\textbf{Normal}} & \\multicolumn{2}{c}{\\textbf{Lockdown}}", " \\", "\\ \n", sep = "")
+  out <- paste(out, "& \\text{\\thead{Empirical}} & \\text{\\thead{Generated}} & \\text{\\thead{Empirical}} & \\text{\\thead{Generated}} \\", "\\ \n\\midrule \n", sep = "")
+
+  return(out)
+}
+
+get_descriptives_short_table_suffix <- function() {
+  out <- "\\bottomrule\n%\\multicolumn{5}{c}{\\emph{Notes:} bold numbers are significant at $p<0.001$, SEs in parentheses}\n"
+  out <- paste(out, "\\end{tabular}\n\\end{adjustbox}\n\\end{table}", sep = "")
+  return(out)
+}
+
+get_finalsize_table_prefix <- function() {
+
+  out <- paste("\\begin{table}[hbt!] \n", sep = "")
+  out <- paste(out, "\\caption{Final sizes by conditions and controls", sep = "")
+  out <- paste(out, ".}\n\\label{tab:final-sizes-by-conditions}\n", sep = "")
+  out <- paste(out, "\\begin{adjustbox}{width=1\\textwidth,center=\\textwidth}\n\\begin{tabular}{l|ccc|ccc|ccc}\n\\toprule\n", sep = "")
+
+  out <- paste(out, "& \\multicolumn{3}{c}{\\textbf{Baseline}} & \\multicolumn{3}{c}{\\textbf{Random}} & \\multicolumn{3}{c}{\\textbf{Targeted}}", " \\", "\\ \n", sep = "")
+
+  out <- paste(out, "& \\textbf{Mean} & \\textbf{SD} & \\textbf{Median}", sep = "")
+  out <- paste(out, "& \\textbf{Mean} & \\textbf{SD} & \\textbf{Median}", sep = "")
+  out <- paste(out, "& \\textbf{Mean} & \\textbf{SD} & \\textbf{Median}", " \\", "\\ \n\\midrule\n", sep = "")
+
+  # out <- paste("\\begin{table}[hbt!] \n", sep = "")
+  # out <- paste(out, "\\caption{Final sizes by conditions and controls", sep = "")
+  # out <- paste(out, ".}\n\\label{tab:final-sizes-by-conditions}\n", sep = "")
+  # out <- paste(out, "\\begin{adjustbox}{width=1\\textwidth,center=\\textwidth}\n\\begin{tabular}{l *{9}{S[\n", sep = "")
+  # out <- paste(out, "input-symbols = {(- )},\ndetect-weight,\ngroup-separator = {,},\ntable-format=3.2]}}\n\\toprule\n", sep = "")
+  #
+  # out <- paste(out, "& \\multicolumn{3}{|c}{\\textbf{Baseline}} & \\multicolumn{3}{|c}{\\textbf{Random}} & \\multicolumn{3}{|c}{\\textbf{Targeted}}", " \\", "\\ \n", sep = "")
+  #
+  # out <- paste(out, "& \\multicolumn{1}{|c}{\\textbf{Mean}} & \\multicolumn{1}{c}{\\textbf{SD}} & \\multicolumn{1}{c}{\\textbf{Median}}", sep = "")
+  # out <- paste(out, "& \\multicolumn{1}{|c}{\\textbf{Mean}} & \\multicolumn{1}{c}{\\textbf{SD}} & \\multicolumn{1}{c}{\\textbf{Median}}", sep = "")
+  # out <- paste(out, "& \\multicolumn{1}{|c}{\\textbf{Mean}} & \\multicolumn{1}{c}{\\textbf{SD}} & \\multicolumn{1}{c}{\\textbf{Median}}", " \\", "\\ \n\\midrule\n", sep = "")
+}
+
+get_duration_table_prefix <- function() {
+
+  out <- paste("\\begin{table}[hbt!] \n", sep = "")
+  out <- paste(out, "\\caption{Duration by conditions and controls", sep = "")
+  out <- paste(out, ".}\n\\label{tab:duration-by-conditions}\n", sep = "")
+  out <- paste(out, "\\begin{adjustbox}{width=1\\textwidth,center=\\textwidth}\n\\begin{tabular}{l|ccc|ccc|ccc}\n\\toprule\n", sep = "")
+
+  out <- paste(out, "& \\multicolumn{3}{c}{\\textbf{Baseline}} & \\multicolumn{3}{c}{\\textbf{Random}} & \\multicolumn{3}{c}{\\textbf{Targeted}}", " \\", "\\ \n", sep = "")
+
+  out <- paste(out, "& \\textbf{Mean} & \\textbf{SD} & \\textbf{Median}", sep = "")
+  out <- paste(out, "& \\textbf{Mean} & \\textbf{SD} & \\textbf{Median}", sep = "")
+  out <- paste(out, "& \\textbf{Mean} & \\textbf{SD} & \\textbf{Median}", " \\", "\\ \n\\midrule\n", sep = "")
+
+  # out <- paste("\\begin{table}[hbt!] \n", sep = "")
+  # out <- paste(out, "\\caption{Final sizes by conditions and controls", sep = "")
+  # out <- paste(out, ".}\n\\label{tab:final-sizes-by-conditions}\n", sep = "")
+  # out <- paste(out, "\\begin{adjustbox}{width=1\\textwidth,center=\\textwidth}\n\\begin{tabular}{l *{9}{S[\n", sep = "")
+  # out <- paste(out, "input-symbols = {(- )},\ndetect-weight,\ngroup-separator = {,},\ntable-format=3.2]}}\n\\toprule\n", sep = "")
+  #
+  # out <- paste(out, "& \\multicolumn{3}{|c}{\\textbf{Baseline}} & \\multicolumn{3}{|c}{\\textbf{Random}} & \\multicolumn{3}{|c}{\\textbf{Targeted}}", " \\", "\\ \n", sep = "")
+  #
+  # out <- paste(out, "& \\multicolumn{1}{|c}{\\textbf{Mean}} & \\multicolumn{1}{c}{\\textbf{SD}} & \\multicolumn{1}{c}{\\textbf{Median}}", sep = "")
+  # out <- paste(out, "& \\multicolumn{1}{|c}{\\textbf{Mean}} & \\multicolumn{1}{c}{\\textbf{SD}} & \\multicolumn{1}{c}{\\textbf{Median}}", sep = "")
+  # out <- paste(out, "& \\multicolumn{1}{|c}{\\textbf{Mean}} & \\multicolumn{1}{c}{\\textbf{SD}} & \\multicolumn{1}{c}{\\textbf{Median}}", " \\", "\\ \n\\midrule\n", sep = "")
+}
+
+get_peaksize_table_prefix <- function() {
+
+  out <- paste("\\begin{table}[hbt!] \n", sep = "")
+  out <- paste(out, "\\caption{Peak sizes by conditions and controls", sep = "")
+  out <- paste(out, ".}\n\\label{tab:peak-sizes-by-conditions}\n", sep = "")
+  out <- paste(out, "\\begin{adjustbox}{width=1\\textwidth,center=\\textwidth}\n\\begin{tabular}{l|ccc|ccc|ccc}\n\\toprule\n", sep = "")
+
+  out <- paste(out, "& \\multicolumn{3}{c}{\\textbf{Baseline}} & \\multicolumn{3}{c}{\\textbf{Random}} & \\multicolumn{3}{c}{\\textbf{Targeted}}", " \\", "\\ \n", sep = "")
+
+  out <- paste(out, "& \\textbf{Mean} & \\textbf{SD} & \\textbf{Median}", sep = "")
+  out <- paste(out, "& \\textbf{Mean} & \\textbf{SD} & \\textbf{Median}", sep = "")
+  out <- paste(out, "& \\textbf{Mean} & \\textbf{SD} & \\textbf{Median}", " \\", "\\ \n\\midrule\n", sep = "")
+
+  # out <- paste("\\begin{table}[hbt!] \n", sep = "")
+  # out <- paste(out, "\\caption{Final sizes by conditions and controls", sep = "")
+  # out <- paste(out, ".}\n\\label{tab:final-sizes-by-conditions}\n", sep = "")
+  # out <- paste(out, "\\begin{adjustbox}{width=1\\textwidth,center=\\textwidth}\n\\begin{tabular}{l *{9}{S[\n", sep = "")
+  # out <- paste(out, "input-symbols = {(- )},\ndetect-weight,\ngroup-separator = {,},\ntable-format=3.2]}}\n\\toprule\n", sep = "")
+  #
+  # out <- paste(out, "& \\multicolumn{3}{|c}{\\textbf{Baseline}} & \\multicolumn{3}{|c}{\\textbf{Random}} & \\multicolumn{3}{|c}{\\textbf{Targeted}}", " \\", "\\ \n", sep = "")
+  #
+  # out <- paste(out, "& \\multicolumn{1}{|c}{\\textbf{Mean}} & \\multicolumn{1}{c}{\\textbf{SD}} & \\multicolumn{1}{c}{\\textbf{Median}}", sep = "")
+  # out <- paste(out, "& \\multicolumn{1}{|c}{\\textbf{Mean}} & \\multicolumn{1}{c}{\\textbf{SD}} & \\multicolumn{1}{c}{\\textbf{Median}}", sep = "")
+  # out <- paste(out, "& \\multicolumn{1}{|c}{\\textbf{Mean}} & \\multicolumn{1}{c}{\\textbf{SD}} & \\multicolumn{1}{c}{\\textbf{Median}}", " \\", "\\ \n\\midrule\n", sep = "")
+}
+
+
+get_finalsize_table_suffix <- function(scenario = NA) {
+  out <- "\\bottomrule\n%\\multicolumn{10}{c}{\\emph{Notes:} bold numbers are significant at $p<0.001$, SEs in parentheses}\n"
+  out <- paste(out, "\\end{tabular}\n\\end{adjustbox}\n\\end{table}", sep = "")
+  return(out)
+}
+
+get_finalsize_summary_table_prefix <- function() {
+
+  out <- paste("\\begin{table}[hbt!] \n", sep = "")
+  out <- paste(out, "\\caption{Mean final size of baseline condition and reduction by test condition in percent", sep = "")
+  out <- paste(out, ".}\n\\label{tab:final-sizes-by-conditions-summary}\n", sep = "")
+  out <- paste(out, "\\begin{adjustbox}{width=1\\textwidth,center=\\textwidth}\n\\begin{tabular}{l|c|c|cc}\n\\toprule\n", sep = "")
+
+  out <- paste(out, "& \\textbf{Baseline} & \\textbf{Random} & \\multicolumn{2}{c}{\\textbf{Targeted}}", " \\", "\\ \n", sep = "")
+
+  out <- paste(out, "& ", sep = "")
+  out <- paste(out, "& \\textbf{to baseline} ", sep = "")
+  out <- paste(out, "& \\textbf{to baseline} & \\textbf{to Random} ", " \\", "\\ \n\\midrule\n", sep = "")
+
+  return(out)
+}
+
+get_duration_summary_table_prefix <- function() {
+
+  out <- paste("\\begin{table}[hbt!] \n", sep = "")
+  out <- paste(out, "\\caption{Mean duration of baseline condition and reduction by test condition in percent", sep = "")
+  out <- paste(out, ".}\n\\label{tab:duration-by-conditions-summary}\n", sep = "")
+  out <- paste(out, "\\begin{adjustbox}{width=1\\textwidth,center=\\textwidth}\n\\begin{tabular}{l|c|c|cc}\n\\toprule\n", sep = "")
+
+  out <- paste(out, "& \\textbf{Baseline} & \\textbf{Random} & \\multicolumn{2}{c}{\\textbf{Targeted}}", " \\", "\\ \n", sep = "")
+
+  out <- paste(out, "& ", sep = "")
+  out <- paste(out, "& \\textbf{to baseline} ", sep = "")
+  out <- paste(out, "& \\textbf{to baseline} & \\textbf{to Random} ", " \\", "\\ \n\\midrule\n", sep = "")
+
+  return(out)
+}
+
+get_peaksize_summary_table_prefix <- function() {
+
+  out <- paste("\\begin{table}[hbt!] \n", sep = "")
+  out <- paste(out, "\\caption{Mean peak size of baseline condition and reduction by test condition in percent", sep = "")
+  out <- paste(out, ".}\n\\label{tab:peak-sizes-by-conditions-summary}\n", sep = "")
+  out <- paste(out, "\\begin{adjustbox}{width=1\\textwidth,center=\\textwidth}\n\\begin{tabular}{l|c|c|cc}\n\\toprule\n", sep = "")
+
+  out <- paste(out, "& \\textbf{Baseline} & \\textbf{Random} & \\multicolumn{2}{c}{\\textbf{Targeted}}", " \\", "\\ \n", sep = "")
+
+  out <- paste(out, "& ", sep = "")
+  out <- paste(out, "& \\textbf{to baseline} ", sep = "")
+  out <- paste(out, "& \\textbf{to baseline} & \\textbf{to Random} ", " \\", "\\ \n\\midrule\n", sep = "")
+
+  return(out)
+}
+
+get_summary_table_suffix <- function(scenario = NA) {
+  out <- "\\bottomrule\n\\multicolumn{5}{c}{\\emph{Notes:} ...}\n"
+  out <- paste(out, "\\end{tabular}\n\\end{adjustbox}\n\\end{table}", sep = "")
+  return(out)
+}
+
 get_professions_table_prefix <- function(number) {
   out <- paste("\\begin{table}[hbt!]\n\\caption{Professional groups, part ", number, sep = "")
-  out <- paste(out, ".}\n\\label{tab:professions", number, "}\n \\begin{tabular}{l *{5}{S[\n", sep = "")
+  out <- paste(out, ".}\n\\label{tab:professions", number, "}\n", sep = "")
+  out <- paste(out, "\\begin{adjustbox}{width=1\\textwidth,center=\\textwidth}\n", sep = "")
+  out <- paste(out, "\\begin{tabular}{l *{6}{S[\n", sep = "")
   out <- paste(out, "input-symbols = {(- )},\ndetect-weight,\ngroup-separator = {,},\ntable-format=5.2]}}\n\\toprule\n", sep = "")
-  out <- paste(out, "& \\text{\\thead{Mean}} & \\text{\\thead{SD}} & \\text{\\thead{Min}} & \\text{\\thead{Max}} & ", sep = "")
+  out <- paste(out, "& \\text{\\thead{Mean}} & \\text{\\thead{SD}} & \\text{\\thead{Median}} & \\text{\\thead{Min}} & \\text{\\thead{Max}} & ", sep = "")
   out <- paste(out, "\\text{\\thead{Skew}}", " \\", "\\ \n\\midrule", sep = "")
   return(out)
 }
 
 get_professions_table_suffix <- function() {
-  out <- "\\bottomrule\n%\\multicolumn{5}{c}{\\emph{Notes:} bold numbers are significant at $p<0.001$, SEs in parentheses}\n"
-  out <- paste(out, "\\end{tabular}\n\\end{table}", sep = "")
+  out <- "\\bottomrule\n%\\multicolumn{7}{c}{\\emph{Notes:} bold numbers are significant at $p<0.001$, SEs in parentheses}\n"
+  out <- paste(out, "\\end{tabular}\n\\end{adjustbox}\n\\end{table}", sep = "")
   return(out)
 }
 
@@ -365,14 +748,16 @@ get_professions_table_suffix <- function() {
 #     Exports general descriptive statistics.
 # param:  data.ss
 #     the simulation summary data
+# param:  data.as
+#     the agent stats data
 # param:  data.pr
 #     the professions data
 # param:  data.ad
 #     the agent details data
 #----------------------------------------------------------------------------------------------------#
 export_descriptives <- function(data.ss = load_simulation_summary_data(),
+                                # data.as = load_agent_stats_data(),
                                 data.pr = load_professions_data(),
-                                data.ad = load_agent_details_data(),
                                 filename.ext = NA,
                                 include.groups = TRUE) {
 
@@ -380,305 +765,1121 @@ export_descriptives <- function(data.ss = load_simulation_summary_data(),
     memory.limit(9999999999)
   }
 
-  # begin: overall descriptive
+  data.ss.normal <- subset(data.ss, nb.prof.lockdown.condition == "lc.pre")
+  data.ss.lockdown <- subset(data.ss, nb.prof.lockdown.condition == "lc.during")
+
+  # begin: overall descriptives
   print(paste("Begin overall descriptives."))
   out <- paste(get_descriptives_table_prefix(observations = nrow(data.ss)), sep = "")
 
   out <- paste(out, "\\midrule \n", sep = "")
-  out <- paste(out, "\\multicolumn{6}{l}{\\textbf{I. Network}}", " \\", "\\ \n", sep = "")
-  out <- paste(out, get_descriptive(data.ss$net.n.vaccinated, "N, vaccinated ($\\mathcal{N}^{v}$)"))
-  out <- paste(out, get_descriptive(data.ss$net.n.quarantined, "N, quarantined ($\\mathcal{N}^{q}$)"))
-  out <- paste(out, get_descriptive(data.ss$net.degree.av, "Degree ($\\mathcal{D}_{G}$)"))
-  out <- paste(out, get_descriptive(data.ss$net.degree.av.theoretic, "Degree, theoretical ($\\mathcal{D}^{t}_{G}$)"))
-  out <- paste(out, get_descriptive(data.ss$net.degree.av.vaccinated, "Degree, vaccinated ($\\mathcal{D}^{v}_{G}$)"))
-  out <- paste(out, get_descriptive(data.ss$net.degree.av.vaccinated.not, "Degree, not vaccinated ($\\mathcal{D}^{!v}_{G}$)"))
-  out <- paste(out, get_descriptive(data.ss$net.degree.av.quarantined, "Degree, quarantined ($\\mathcal{D}^{q}_{G}$)"))
-  out <- paste(out, get_descriptive(data.ss$net.degree.av.quarantined.not, "Degree, not quarantined ($\\mathcal{D}^{!q}_{G}$)"))
-  out <- paste(out, get_descriptive(data.ss$net.clustering.av, "Clustering ($\\mathcal{C}_{G}$)"))
-  out <- paste(out, get_descriptive(data.ss$net.assortativity.profession, "Assortativity, profession ($\\mathcal{A}^{p}_{G}$)"))
+  out <- paste(out, "\\multicolumn{7}{l}{\\textbf{\\textit{I. Network}}}", " \\", "\\[6pt] \n", sep = "")
+  # out <- paste(out, "\\multicolumn{7}{l}{\\textit{I.I. Overall}}", " \\", "\\ \n", sep = "")
+  # out <- paste(out, get_descriptive(data.ss$net.degree.av, "Degree ($\\mathcal{D}_{G}$)"))
+  # out <- paste(out, get_descriptive(data.ss$net.clustering.av, "Clustering ($\\mathcal{C}_{G}$)"))
+  # out <- paste(out, get_descriptive(data.ss$net.pathlength.av, "Path length ($\\mathcal{L}_{G}$)"))
+  # out <- paste(out, get_descriptive(data.ss$net.assortativity.profession, "Assortativity, profession ($\\mathcal{A}^{p}_{G}$)"))
+
+  out <- paste(out, "\\multicolumn{7}{l}{\\textit{I.I. Normal}}", " \\", "\\ \n", sep = "")
+  out <- paste(out, get_descriptive(data.ss.normal$net.degree.av, "Av. degree ($\\mathcal{D}_{G}$)"))
+  out <- paste(out, get_descriptive(data.ss.normal$net.clustering.av, "Clustering ($\\mathcal{C}_{G}$)"))
+  out <- paste(out, get_descriptive(data.ss.normal$net.pathlength.av, "Av. path length ($\\mathcal{L}_{G}$)"))
+  out <- paste(out, get_descriptive(data.ss.normal$net.assortativity.profession,
+                                    "Assortativity, profession ($\\mathcal{A}^{p}_{G}$)", row.height = 6))
+
+  out <- paste(out, "\\multicolumn{7}{l}{\\textit{I.II. Lockdown}}", " \\", "\\ \n", sep = "")
+  out <- paste(out, get_descriptive(data.ss.lockdown$net.degree.av, "Av. degree ($\\mathcal{D}_{G}$)"))
+  out <- paste(out, get_descriptive(data.ss.lockdown$net.clustering.av, "Clustering ($\\mathcal{C}_{G}$)"))
+  out <- paste(out, get_descriptive(data.ss.lockdown$net.pathlength.av, "Av. path length ($\\mathcal{L}_{G}$)"))
+  out <- paste(out, get_descriptive(data.ss.lockdown$net.assortativity.profession, "Assortativity, profession ($\\mathcal{A}^{p}_{G}$)"))
 
   out <- paste(out, "\\midrule \n", sep = "")
-  out <- paste(out, "\\multicolumn{6}{l}{\\textbf{II. Index case}}", " \\", "\\ \n", sep = "")
-  out <- paste(out, get_descriptive(data.ss$index.degree, "Degree"))
-  out <- paste(out, get_descriptive(data.ss$index.clustering, "Clustering"))
-  out <- paste(out, get_descriptive(data.ss$index.betweenness.normalized, "Betweenness (normalized)"))
-  out <- paste(out, get_descriptive(data.ss$index.closeness, "Closeness"))
-  out <- paste(out, get_descriptive(data.ss$index.assortativity.profession, "Assortativity (profession)"))
+  out <- paste(out, "\\multicolumn{7}{l}{\\textbf{\\textit{II. Index case}}}", " \\", "\\[6pt] \n", sep = "")
+  # out <- paste(out, "\\multicolumn{7}{l}{\\textit{II.I. Overall}}", " \\", "\\ \n", sep = "")
+  # out <- paste(out, get_descriptive(data.ss$index.degree, "Degree"))
+  # out <- paste(out, get_descriptive(data.ss$index.clustering, "Clustering"))
+  # out <- paste(out, get_descriptive(data.ss$index.closeness, "Closeness"))
+  # out <- paste(out, get_descriptive(data.ss$index.assortativity.profession, "Assortativity (profession)"))
+
+  out <- paste(out, "\\multicolumn{7}{l}{\\textit{II.I. Normal}}", " \\", "\\ \n", sep = "")
+  out <- paste(out, get_descriptive(data.ss.normal$index.degree, "Degree"))
+  out <- paste(out, get_descriptive(data.ss.normal$index.clustering, "Clustering"))
+  out <- paste(out, get_descriptive(data.ss.normal$index.closeness, "Closeness"))
+  out <- paste(out, get_descriptive(data.ss.normal$index.assortativity.profession,
+                                    "Assortativity (profession)", row.height = 6))
+
+  out <- paste(out, "\\multicolumn{7}{l}{\\textit{II.II. Lockdown}}", " \\", "\\ \n", sep = "")
+  out <- paste(out, get_descriptive(data.ss.lockdown$index.degree, "Degree"))
+  out <- paste(out, get_descriptive(data.ss.lockdown$index.clustering, "Clustering"))
+  out <- paste(out, get_descriptive(data.ss.lockdown$index.closeness, "Closeness"))
+  out <- paste(out, get_descriptive(data.ss.lockdown$index.assortativity.profession, "Assortativity (profession)"))
 
   out <- paste(out, "\\midrule \n", sep = "")
-  out <- paste(out, "\\multicolumn{6}{l}{\\textbf{III. Counter measures}}", " \\", "\\ \n", sep = "")
-  out <- paste(out, get_descriptive(data.ss$nb.prof.vaccinated.percent / 100, "Vaccinated (proportion)"))
-  out <- paste(out, get_descriptive(data.ss$nb.prof.vaccine.efficacy, "Vaccine efficacy"))
-  out <- paste(out, get_descriptive(data.ss$nb.prof.quarantined.percent / 100, "Quarantined (proportion)"))
+  out <- paste(out, "\\multicolumn{7}{l}{\\textbf{\\textit{III. Epidemic}}}", " \\", "\\[6pt] \n", sep = "")
+  # out <- paste(out, "\\multicolumn{7}{l}{\\textit{III.I. Overall}}", " \\", "\\ \n", sep = "")
+  # out <- paste(out, get_descriptive(data.ss$net.pct.rec, "Final size"))
+  # out <- paste(out, get_descriptive(data.ss$net.epidemic.duration, "Duration"))
+  # # out <- paste(out, get_descriptive(data.ss$net.epidemic.peak.time, "Epidemic peak time"))
+  # out <- paste(out, get_descriptive(data.ss$net.epidemic.peak.size, "Epidemic peak size"))
+
+  out <- paste(out, "\\multicolumn{7}{l}{\\textit{III.I. Normal}}", " \\", "\\ \n", sep = "")
+  out <- paste(out, get_descriptive(data.ss.normal$net.pct.rec, "Final size"))
+  out <- paste(out, get_descriptive(data.ss.normal$net.epidemic.duration, "Duration"))
+  # out <- paste(out, get_descriptive(data.ss.normal$net.epidemic.peak.time, "Epidemic peak time"))
+  out <- paste(out, get_descriptive(data.ss.normal$net.epidemic.peak.size, "Epidemic peak size", row.height = 6))
+
+  out <- paste(out, "\\multicolumn{7}{l}{\\textit{III.II. Lockdown}}", " \\", "\\ \n", sep = "")
+  out <- paste(out, get_descriptive(data.ss.lockdown$net.pct.rec, "Final size"))
+  out <- paste(out, get_descriptive(data.ss.lockdown$net.epidemic.duration, "Duration"))
+  # out <- paste(out, get_descriptive(data.ss.lockdown$net.epidemic.peak.time, "Epidemic peak time"))
+  out <- paste(out, get_descriptive(data.ss.lockdown$net.epidemic.peak.size, "Epidemic peak size"))
 
   out <- paste(out, "\\midrule \n", sep = "")
-  out <- paste(out, "\\multicolumn{6}{l}{\\textbf{IV. Epidemic}}", " \\", "\\ \n", sep = "")
-  out <- paste(out, get_descriptive(data.ss$net.epidemic.final.size, "Final size"))
-  out <- paste(out, get_descriptive(data.ss$net.epidemic.duration, "Duration"))
-  out <- paste(out, get_descriptive(data.ss$net.epidemic.peak.time, "Epidemic peak time"))
-  out <- paste(out, get_descriptive(data.ss$net.epidemic.peak.size, "Epidemic peak size"))
+  out <- paste(out, "\\multicolumn{7}{l}{\\textbf{\\textit{IV. Counter measures}}}", " \\", "\\[6pt] \n", sep = "")
+  out <- paste(out, "\\multicolumn{7}{l}{\\textit{IV.I. Vaccinations}}", " \\", "\\ \n", sep = "")
+  out <- paste(out, get_descriptive(data.ss$nb.prof.vaccine.shots.given / data.ss$nb.N, "Vaccinated (proportion)"))
+  out <- paste(out, get_descriptive(data.ss$net.pct.vac / 100, "Immunized (proportion)", row.height = 6))
+
+  data.ss.baseline = subset(data.ss, data.ss$nb.prof.vaccine.distribution == "none")
+  out <- paste(out, "\\multicolumn{7}{l}{\\textit{IV.II. Baseline}}", " \\", "\\ \n", sep = "")
+  out <- paste(out, get_descriptive(data.ss.baseline$net.pct.rec, "Final size"))
+  out <- paste(out, get_descriptive(data.ss.baseline$net.epidemic.duration, "Duration"))
+  out <- paste(out, get_descriptive(data.ss.baseline$net.epidemic.peak.size, "Peak size", row.height = 6))
+  # out <- paste(out, get_descriptive(data.ss.baseline$net.epidemic.peak.time, "Peak time"))
+
+  data.ss.random = subset(data.ss, data.ss$nb.prof.vaccine.distribution == "random")
+  out <- paste(out, "\\multicolumn{7}{l}{\\textit{IV.III. Random vaccine distribution}}", " \\", "\\ \n", sep = "")
+  out <- paste(out, get_descriptive(data.ss.random$net.pct.rec, "Final size"))
+  out <- paste(out, get_descriptive(data.ss.random$net.epidemic.duration, "Duration"))
+  out <- paste(out, get_descriptive(data.ss.random$net.epidemic.peak.size, "Peak size", row.height = 6))
+  # out <- paste(out, get_descriptive(data.ss.random$net.epidemic.peak.time, "Peak time"))
+
+  data.ss.targeted = subset(data.ss, data.ss$nb.prof.vaccine.distribution == "by.av.degree.per.prof.group")
+  out <- paste(out, "\\multicolumn{7}{l}{\\textit{IV.IV. Vaccine distribution prioritizing professional groups by largest degree}}", " \\", "\\ \n", sep = "")
+  out <- paste(out, get_descriptive(data.ss.targeted$net.pct.rec, "Final size"))
+  out <- paste(out, get_descriptive(data.ss.targeted$net.epidemic.duration, "Duration"))
+  out <- paste(out, get_descriptive(data.ss.targeted$net.epidemic.peak.size, "Peak size"))
+  # out <- paste(out, get_descriptive(data.ss.targeted$net.epidemic.peak.time, "Peak time"))
+
 
   out <- paste(out, get_descriptives_table_suffix(), "\n\n", sep = "")
   print(paste("End overall descriptives."))
   # end: overall descriptive
 
 
+  # begin: occupational groups
   if (include.groups) {
+
+    ######### PREPARATIONS BELOT DATA #########
+    belot <- load_belot_public_data()
+    # removing implausible data point with degree of 2*10^12
+    belot <- subset(belot, close_recentint_less15_child < 2000000000000)
+
+    # exclusion criteria: no industry, no profession, not employed
+    belot <- subset(belot, belot$industry != "")
+    belot <- subset(belot, belot$profession != "")
+    belot <- subset(belot, belot$labor_status != "Not in employment")
+
+    # adding occupational hierarchy (SOC - https://www.bls.gov/soc/2018/home.htm)
+    soc <- load_soc_profession_structure()
+    belot_soc <- merge(belot, soc, by.x = "profession", by.y = "detailed_occupation", all.x = TRUE)
+    belot_soc <- subset(belot_soc, !is.na(major_group))
+
+    out.short <- get_descriptives_short_table_prefix()
+
     t <- 1
     t.number <- 1
     table.closed <- TRUE
-    for (prof in unique(data.pr$V1)) {
-      print(paste("Begin descriptives for ", prof, ".", sep = ""))
+    row.height <- 0
 
-      if (t == 1) {
-        out <- paste (out, get_professions_table_prefix(t.number), sep = "")
-        table.closed <- FALSE
+    colIndex <- 1
+    for (col in colnames(data.ss)) {
+
+      if (grepl('^nb.prof.n.', col)) {
+
+        prof <- str_replace(col, "nb.prof.n.", "")
+        prof.full.name <- subset(data.pr, tolower(V1) == prof)[1,8]
+        print(paste("Begin descriptives for: ", prof.full.name, sep = ""))
+
+        # preparing Belot data
+        belot_soc_mg <- subset(belot_soc, major_group == prof.full.name)
+        belot_soc_mg_normal <- c(belot_soc_mg$close_workint_less15_child,
+                                 belot_soc_mg$close_workint_less15_adult,
+                                 belot_soc_mg$close_workint_less15_elder,
+                                 belot_soc_mg$close_workint_more15_child,
+                                 belot_soc_mg$close_workint_more15_adult,
+                                 belot_soc_mg$close_workint_more15_elder)
+        belot_soc_mg_lockdown <- c(belot_soc_mg$close_recentint_less15_child,
+                                   belot_soc_mg$close_recentint_less15_adult,
+                                   belot_soc_mg$close_recentint_less15_elder,
+                                   belot_soc_mg$close_recentint_more15_child,
+                                   belot_soc_mg$close_recentint_more15_adult,
+                                   belot_soc_mg$close_recentint_more15_elder)
+
+        if (t == 1) {
+          out <- paste (out, get_professions_table_prefix(t.number), sep = "")
+          table.closed <- FALSE
+        }
+
+        out <- paste(out, "\\midrule \n", sep = "")
+        out <- paste(out, "\\multicolumn{7}{l}{\\textbf{", prof.full.name, "}}", " \\", "\\[", (row.height + 6), "pt] \n", sep = "")
+
+        ### DATA
+        # N
+        out <- paste(out, "Share of the labor market (empirical) & ",
+                     round(subset(data.pr, tolower(V1) == prof)[1,2] / sum(data.pr[,2]), 2),
+                     "& & & & ", " \\", "\\[", row.height, "pt] \n", sep = "")
+        out <- paste(out, get_descriptive(data.ss[,colIndex] / data.ss$nb.N, "Share of the labor market (generated)", row.height = row.height+6))
+
+        # degree, normal
+        out <- paste(out,
+                     paste(
+                       "Degree, normal (empirical)",
+                       round(mean(belot_soc_mg_normal, na.rm = TRUE), digits = 2),               # mean av. degree
+                       round(sd(belot_soc_mg_normal, na.rm = TRUE), digits = 2),                 # sd of av. degree
+                       round(median(belot_soc_mg_normal, na.rm = TRUE), digits = 2),             # median av. degree
+                       round(min(belot_soc_mg_normal, na.rm = TRUE), digits = 2),                # min av. degree
+                       round(max(belot_soc_mg_normal, na.rm = TRUE), digits = 2),                # max av. degree
+                       round(skewness(belot_soc_mg_normal, na.rm = TRUE), digits = 2),           # skewness av. degree
+                       sep = " & "))
+        out <- paste(out, " \\", "\\[", row.height, "pt]", " \n", sep = "")
+
+        normal <- subset(data.ss, nb.prof.lockdown.condition == "lc.pre")
+        out <- paste(out,
+                     paste(
+                       "Degree, normal (network av.)",
+                       round(mean(normal[,colIndex+1], na.rm = TRUE), digits = 2),               # mean av. degree
+                       round(mean(normal[,colIndex+3], na.rm = TRUE), digits = 2),               # sd of av. degree
+                       round(median(normal[,colIndex+1], na.rm = TRUE), digits = 2),             # median av. degree
+                       round(min(normal[,colIndex+1], na.rm = TRUE), digits = 2),                # min av. degree
+                       round(max(normal[,colIndex+1], na.rm = TRUE), digits = 2),                # max av. degree
+                       round(skewness(normal[,colIndex+1], na.rm = TRUE), digits = 2),           # skewness av. degree
+                       sep = " & "))
+        out <- paste(out, " \\", "\\[", row.height, "pt]", " \n", sep = "")
+
+        # data.as.prof.pre <- subset(data.as, tolower(agent.profession) == prof & nb.prof.lockdown.condition == "lc.pre")
+        # out <- paste(out,
+        #              paste(
+        #                "Degree, normal (generated)",
+        #                round(mean(data.as.prof.pre$agent.degree, na.rm = TRUE), digits = 2),     # mean av. degree
+        #                round(sd(data.as.prof.pre$agent.degree, na.rm = TRUE), digits = 2),       # sd of av. degree
+        #                round(median(data.as.prof.pre$agent.degree, na.rm = TRUE), digits = 2),   # median av. degree
+        #                round(min(data.as.prof.pre$agent.degree, na.rm = TRUE), digits = 2),      # min av. degree
+        #                round(max(data.as.prof.pre$agent.degree, na.rm = TRUE), digits = 2),      # max av. degree
+        #                round(skewness(data.as.prof.pre$agent.degree, na.rm = TRUE), digits = 2), # skewness av. degree
+        #                sep = " & "))
+        # out <- paste(out, " \\", "\\[", (row.height+6), "pt]", " \n", sep = "")
+
+        # out <- paste(out, "Degree, normal (Belot) & ",
+        #              subset(data.pr, tolower(V1) == prof)[1,3], " & ",
+        #              subset(data.pr, tolower(V1) == prof)[1,4], " & NA & NA & NA ", " \\", "\\[", (row.height + 6), "pt] \n", sep = "")
+
+        # degree, lockdown
+        out <- paste(out,
+                     paste(
+                       "Degree, lockdown (empirical)",
+                       round(mean(belot_soc_mg_lockdown, na.rm = TRUE), digits = 2),               # mean av. degree
+                       round(sd(belot_soc_mg_lockdown, na.rm = TRUE), digits = 2),                 # sd of av. degree
+                       round(median(belot_soc_mg_lockdown, na.rm = TRUE), digits = 2),             # median av. degree
+                       round(min(belot_soc_mg_lockdown, na.rm = TRUE), digits = 2),                # min av. degree
+                       round(max(belot_soc_mg_lockdown, na.rm = TRUE), digits = 2),                # max av. degree
+                       round(skewness(belot_soc_mg_lockdown, na.rm = TRUE), digits = 2),           # skewness av. degree
+                       sep = " & "))
+        out <- paste(out, " \\", "\\[", row.height, "pt]", " \n", sep = "")
+
+        lockdown <- subset(data.ss, nb.prof.lockdown.condition == "lc.during")
+        out <- paste(out,
+                     paste(
+                       "Degree, lockdown (network av.)",
+                       round(mean(lockdown[,colIndex+1], na.rm = TRUE), digits = 2),               # mean av. degree
+                       round(mean(lockdown[,colIndex+3], na.rm = TRUE), digits = 2),               # sd of av. degree
+                       round(median(lockdown[,colIndex+1], na.rm = TRUE), digits = 2),             # median av. degree
+                       round(min(lockdown[,colIndex+1], na.rm = TRUE), digits = 2),                # min av. degree
+                       round(max(lockdown[,colIndex+1], na.rm = TRUE), digits = 2),                # max av. degree
+                       round(skewness(lockdown[,colIndex+1], na.rm = TRUE), digits = 2),           # skewness av. degree
+                       sep = " & "))
+        out <- paste(out, " \\", "\\[", row.height, "pt]", " \n", sep = "")
+
+        # data.as.prof.lockdown <- subset(data.as, tolower(agent.profession) == prof & nb.prof.lockdown.condition == "lc.during")
+        # out <- paste(out,
+        #              paste(
+        #                "Degree, lockdown (generated)",
+        #                round(mean(data.as.prof.lockdown$agent.degree, na.rm = TRUE), digits = 2),     # mean av. degree
+        #                round(sd(data.as.prof.lockdown$agent.degree, na.rm = TRUE), digits = 2),       # sd of av. degree
+        #                round(median(data.as.prof.lockdown$agent.degree, na.rm = TRUE), digits = 2),   # median av. degree
+        #                round(min(data.as.prof.lockdown$agent.degree, na.rm = TRUE), digits = 2),      # min av. degree
+        #                round(max(data.as.prof.lockdown$agent.degree, na.rm = TRUE), digits = 2),      # max av. degree
+        #                round(skewness(data.as.prof.lockdown$agent.degree, na.rm = TRUE), digits = 2), # skewness av. degree
+        #                sep = " & "))
+        # out <- paste(out, " \\", "\\[", row.height, "pt]", " \n", sep = "")
+
+        # out <- paste(out, "Degree, lockdown (Belot) & ",
+        #              subset(data.pr, tolower(V1) == prof)[1,5], " & ",
+        #              subset(data.pr, tolower(V1) == prof)[1,6], " & NA & NA & NA ", " \\", "\\ \n", sep = "")
+
+        # short
+
+        out.short <- paste(out.short,
+                           subset(data.pr, tolower(V1) == prof)[1,8], " & ",
+                           subset(data.pr, tolower(V1) == prof)[1,3], " & ",
+                           round(mean(normal[,colIndex+1], na.rm = TRUE), digits = 2), " & ",
+                           subset(data.pr, tolower(V1) == prof)[1,5], " & ",
+                           round(mean(lockdown[,colIndex+1], na.rm = TRUE), digits = 2), " \\", "\\ \n", sep = "")
+
+        # housekeeping
+        if (t >= 6) {
+          out <- paste (out, get_professions_table_suffix(), "\n\n", sep = "")
+          t <- 1
+          table.closed <- TRUE
+          t.number <- t.number+1
+        } else {
+          t <- t+1
+        }
+
       }
-
-      out <- paste(out, "\\midrule \n", sep = "")
-      out <- paste(out, "\\multicolumn{6}{l}{\\textbf{", subset(data.pr, V1 == prof)[1,7], "}}", " \\", "\\ \n", sep = "")
-
-      # TODO
-      #   - discuss: what is best way to present size of professional groups? percentage (as is), total, both
-      # size
-      out <- paste(out, get_descriptive((data.ss[grepl(paste("nb.prof.n.", tolower(prof), sep = ""),
-                                                       colnames(data.ss))][1] / data.ss$nb.prof.N)[,1], "N"))
-      out <- paste(out, "N (labor market) & ", round(subset(data.pr, V1 == prof)[1,2] / sum(data.pr[,2]), 2), "& & & & ",
-                   " \\", "\\ \n", sep = "")
-
-      # normal
-      normal.uids <- filter(data.ss, !grepl(prof, nb.prof.quarantined))$sim.uid
-      normal <- subset(data.ad, sim.uid %in% normal.uids & grepl(prof, agent.profession))
-      out <- paste(out, get_descriptive(normal$agent.degree, "Degree, normal"))
-      out <- paste(out, "Degree, normal (Belot) & ", subset(data.pr, V1 == prof)[1,3], " & ",
-                   subset(data.pr, V1 == prof)[1,4], " & NA & NA & NA ", " \\", "\\ \n", sep = "")
-      # quarantined
-      quarantined.uids <- filter(data.ss, grepl(prof, nb.prof.quarantined))$sim.uid
-      quarantined <- subset(data.ad, sim.uid %in% quarantined.uids & grepl(prof, agent.profession))
-      if (nrow(quarantined) > 1) {
-        out <- paste(out, get_descriptive(quarantined$agent.degree, "Degree, quarantined"))
-      } else {
-        out <- paste(out, "Degree, quarantined & NA & NA & NA & NA & NA ", " \\", "\\ \n", sep = "")
-      }
-      out <- paste(out, "Degree, quarantined (Belot) & ", subset(data.pr, V1 == prof)[1,5], " & ",
-                   subset(data.pr, V1 == prof)[1,6], " & NA & NA & NA ", " \\", "\\ \n", sep = "")
-
-      if (t >= 5) {
-        out <- paste (out, get_professions_table_suffix(), "\n\n", sep = "")
-        t <- 1
-        table.closed <- TRUE
-        t.number <- t.number+1
-      } else {
-        t <- t+1
-      }
-
-      print(paste("End descriptives for ", prof, ".", sep = ""))
+      colIndex <- colIndex+1
     }
     if (!table.closed) {
       out <- paste (out, get_professions_table_suffix(), "\n\n", sep = "")
     }
+
+
+    out.short <- paste(out.short, get_descriptives_short_table_suffix())
+    out <- paste(out, out.short, sep = "")
   }
 
   # export to file
   dir.create(EXPORT_PATH_NUM, showWarnings = FALSE)
   filename <- paste(EXPORT_PATH_NUM, "descriptives", sep = "")
   if (!is.na(filename.ext)) {
-    paste(filename, "-", filename.ext, sep = "")
+    filename <- paste(filename, "-", filename.ext, sep = "")
   }
   filename <- paste(filename, EXPORT_FILE_EXTENSION_DESC, sep = "")
   cat(out, file = filename)
 }
 
-#----------------------------------------------------------------------------------------------------#
-# function: export_descriptive_variations
-#     Exports descriptive statistics for parameter variations.
-# param:  data.ss
-#     the simulation summary data
-#----------------------------------------------------------------------------------------------------#
-export_descriptive_variations <- function(data.ss = load_simulation_summary_data()) {
+
+
+
+export_overview <- function(data.ss = load_simulation_summary_data(),
+                            filename.ext = NA) {
+
+  alpha.finsize <- 1.0
+  alpha.duration <- 1.3
+  alpha.peaksize <- 1.3
 
   if(.Platform$OS.type == "windows") {
     memory.limit(9999999999)
   }
 
-  # begin: variations of epidemics
-  s <- 1
-  rows <- 1
-  row.height <- 7
-  out <- ""
-  table.closed <- TRUE
+  data.ss.baseline = subset(data.ss, data.ss$nb.prof.vaccine.distribution == "none")
+  data.ss.random = subset(data.ss, data.ss$nb.prof.vaccine.distribution == "random")
+  data.ss.targeted = subset(data.ss, data.ss$nb.prof.vaccine.distribution == "by.av.degree.per.prof.group")
 
-  s.table <- paste("\\begin{sidewaystable}[hbt!]\n\\caption{Scenarios.}\n", sep = "")
-  s.table <- paste(s.table, "\\label{tab:scenarios}\n", sep = "")
-  s.table <- paste(s.table, "\\begin{adjustbox}{scale=0.7,center}\n", sep = "")
-  s.table <- paste(s.table, "\\begin{tabular}{ccccccccccccccc}\n\\toprule\n", sep = "")
-  s.table <- paste(s.table, "& \\text{\\thead{Likelihood\\",
-                   "\\of ties to same\\",
-                   "\\profession (\\pmb{$\\omega$})}} & ", sep = "")
-  s.table <- paste(s.table, "\\text{\\thead{Optimal\\",
-                   "\\share of closed\\",
-                   "\\triads (\\pmb{$\\alpha$})}} & ", sep = "")
-  s.table <- paste(s.table, "\\text{\\thead{Vaccinated}} & ", sep = "")
-  s.table <- paste(s.table, "\\text{\\thead{Vaccine\\",
-                   "\\efficacy (\\pmb{$\\eta$})}} & ", sep = "")
-  s.table <- paste(s.table, "\\text{\\thead{Quarantined}} & ", sep = "")
+  out.finsize <- paste(get_finalsize_table_prefix(), sep = "")
+  out.finsize.summary <- paste(get_finalsize_summary_table_prefix(), sep = "")
 
-  s.table <- paste(s.table, "\\multicolumn{2}{c}{\\text{\\thead{Final\\", "\\size}}} & ", sep = "")
-  s.table <- paste(s.table, "\\multicolumn{2}{c}{\\text{\\thead{Epidemic\\", "\\duration}}} & ", sep = "")
-  s.table <- paste(s.table, "\\multicolumn{2}{c}{\\text{\\thead{Epidemic\\", "\\peak time}}} & ", sep = "")
-  s.table <- paste(s.table, "\\multicolumn{2}{c}{\\text{\\thead{Epidemic\\", "\\peak size}}} & ", sep = "")
+  out.duration <- paste(get_duration_table_prefix(), sep = "")
+  out.duration.summary <- paste(get_duration_summary_table_prefix(), sep = "")
 
-  s.table <- paste(s.table, "\\text{\\thead{Table}} \\", "\\ \n\\midrule \n", sep = "")
+  out.peaksize <- paste(get_peaksize_table_prefix(), sep = "")
+  out.peaksize.summary <- paste(get_peaksize_summary_table_prefix(), sep = "")
 
-  for (q in unique(data.ss$nb.prof.quarantined)) {
-    for (v in unique(data.ss$nb.prof.vaccinated)) {
-      for (a in unique(data.ss$nb.prof.alpha)) {
-        for (o in unique(data.ss$nb.prof.omega)) {
-          for (e in unique(data.ss$nb.prof.vaccine.efficacy)) {
+  for (lc in c("lc.pre", "lc.during")) {
 
-            d <- subset(data.ss, nb.prof.vaccinated == v &
-                          nb.prof.quarantined == q &
-                          nb.prof.vaccine.efficacy == e &
-                          nb.prof.alpha == a &
-                          nb.prof.omega == o)
+    data.ss.baseline.lc <- subset(data.ss.baseline, nb.prof.lockdown.condition == lc)
+    data.ss.random.lc <- subset(data.ss.random, nb.prof.lockdown.condition == lc)
+    data.ss.targeted.lc <- subset(data.ss.targeted, nb.prof.lockdown.condition == lc)
 
+    if (lc == "lc.pre") {
+      out.finsize <- paste(out.finsize, "\\textbf{I. No lockdown} & & & & & & & & &", " \\", "\\ \n", sep = "")
+      out.finsize <- paste(out.finsize, "\\midrule \n", sep = "")
 
-            if (nrow(d) > 0) {
-              if (rows == 1) {
-                out <- paste(out,
-                             "\\begin{smashminipage} \n\n",
-                             "\\noindent \n",
-                             "\\centering \n\n",
-                             sep = "")
-                out <- paste(out, get_descriptives_table_prefix(observations = nrow(d), scenario = s))
-                table.closed <- FALSE
-              }
+      out.finsize.summary <- paste(out.finsize.summary, "\\textbf{I. No lockdown} & & & &", " \\", "\\ \n", sep = "")
+      out.finsize.summary <- paste(out.finsize.summary, "\\midrule \n", sep = "")
 
-              out <- paste(out, "\\midrule \n", sep = "")
-              out <- paste(out, "\\multicolumn{6}{l}{\\textbf{",
-                           "likelihood of ties to same profession (\\pmb{$\\omega=", o, "$}),",
-                           "}}", " \\", "\\ \n", sep = "")
-              out <- paste(out, "\\multicolumn{6}{l}{\\textbf{",
-                           "optimal share of closed triads (\\pmb{$\\alpha=", a, "$}),",
-                           "}}", " \\", "\\ \n", sep = "")
-              out <- paste(out, "\\multicolumn{6}{l}{\\textbf{",
-                           "vaccinated \\pmb{$=", ifelse(nchar(v) > 0, v, "[]"), "$}, ",
-                           "\\pmb{$\\eta=", e, "$}, ",
-                           "}}", " \\", "\\ \n", sep = "")
-              out <- paste(out, "\\multicolumn{6}{l}{\\textbf{",
-                           "quarantined \\pmb{$=", ifelse(nchar(q) > 0, q, "[]"), "$}",
-                           "}}", " \\", "\\[", row.height, "pt] \n", sep = "")
+      out.duration <- paste(out.duration, "\\textbf{I. No lockdown} & & & & & & & & &", " \\", "\\ \n", sep = "")
+      out.duration <- paste(out.duration, "\\midrule \n", sep = "")
 
+      out.duration.summary <- paste(out.duration.summary, "\\textbf{I. No lockdown} & & & &", " \\", "\\ \n", sep = "")
+      out.duration.summary <- paste(out.duration.summary, "\\midrule \n", sep = "")
 
-              out <- paste(out, "\\midrule \n", sep = "")
-              out <- paste(out, get_descriptive(d$nb.prof.c2, "Av. marginal costs ($c_{2}$)"))
-              out <- paste(out, get_descriptive(d$net.degree.av, "Degree ($\\mathcal{D}_{G}$)*"))
-              out <- paste(out, get_descriptive(d$net.degree.av.theoretic, "Degree, theoretical ($\\mathcal{D}^{t}_{G}$)*"))
-              out <- paste(out, get_descriptive(d$net.degree.av.vaccinated, "Degree, vaccinated ($\\mathcal{D}^{v}_{G}$)"))
-              out <- paste(out, get_descriptive(d$net.degree.av.vaccinated.not, "Degree, not vaccinated ($\\mathcal{D}^{!v}_{G}$)"))
-              out <- paste(out, get_descriptive(d$net.degree.av.quarantined, "Degree, quarantined ($\\mathcal{D}^{q}_{G}$)"))
-              out <- paste(out, get_descriptive(d$net.degree.av.quarantined.not, "Degree, not quarantined ($\\mathcal{D}^{!q}_{G}$)"))
-              out <- paste(out, get_descriptive(d$net.clustering.av, "Clustering ($\\mathcal{C}_{G}$)*"))
-              out <- paste(out, get_descriptive(d$net.assortativity.profession,
-                                                "Assortativity, profession ($\\mathcal{A}^{p}_{G}$)*", row.height))
+      out.peaksize <- paste(out.peaksize, "\\textbf{I. No lockdown} & & & & & & & & &", " \\", "\\ \n", sep = "")
+      out.peaksize <- paste(out.peaksize, "\\midrule \n", sep = "")
 
-              out <- paste(out, get_descriptive(d$nb.prof.vaccinated.percent / 100, "Quarantined (proportion)"))
-              out <- paste(out, get_descriptive(d$nb.prof.quarantined.percent / 100, "Vaccinated (proportion)", row.height))
+      out.peaksize.summary <- paste(out.peaksize.summary, "\\textbf{I. No lockdown} & & & &", " \\", "\\ \n", sep = "")
+      out.peaksize.summary <- paste(out.peaksize.summary, "\\midrule \n", sep = "")
 
-              out <- paste(out, get_descriptive(d$net.epidemic.final.size, "Final size"))
-              out <- paste(out, get_descriptive(d$net.epidemic.duration, "Epidemic duration"))
-              out <- paste(out, get_descriptive(d$net.epidemic.peak.time, "Epidemic peak time"))
-              out <- paste(out, get_descriptive(d$net.epidemic.peak.size, "Epidemic peak size"))
+    } else {
+      out.finsize <- paste(out.finsize, "\\midrule \n", sep = "")
+      out.finsize <- paste(out.finsize, "\\textbf{II. Lockdown} & & & & & & & & &", " \\", "\\ \n", sep = "")
+      out.finsize <- paste(out.finsize, "\\midrule \n", sep = "")
 
-              rows <- rows+1
+      out.finsize.summary <- paste(out.finsize.summary, "\\midrule \n", sep = "")
+      out.finsize.summary <- paste(out.finsize.summary, "\\textbf{II. Lockdown} & & & &", " \\", "\\ \n", sep = "")
+      out.finsize.summary <- paste(out.finsize.summary, "\\midrule \n", sep = "")
 
-              if (rows >= 1) {
-                out <- paste(out, get_descriptives_table_suffix(scenario = s), "\n\n", sep = "")
-                rows <- 1
-                table.closed <- TRUE
-              }
+      out.duration <- paste(out.duration, "\\midrule \n", sep = "")
+      out.duration <- paste(out.duration, "\\textbf{II. Lockdown} & & & & & & & & &", " \\", "\\ \n", sep = "")
+      out.duration <- paste(out.duration, "\\midrule \n", sep = "")
 
-              out <- paste(out, "\\vspace{1.3cm} \n\n", sep = "")
+      out.duration.summary <- paste(out.duration.summary, "\\midrule \n", sep = "")
+      out.duration.summary <- paste(out.duration.summary, "\\textbf{II. Lockdown} & & & &", " \\", "\\ \n", sep = "")
+      out.duration.summary <- paste(out.duration.summary, "\\midrule \n", sep = "")
 
-              filename <- paste(s,
-                               "-sir",
-                               "-o_", o,
-                               "-a_", a,
-                               "-v_", v,
-                               "-e_", e,
-                               "-q_", q,
-                               sep = "")
-              filename <- str_replace_all(filename, "\\s", "")
-              filename <- str_replace_all(filename, "\\.", "")
-              filename <- paste(filename, EXPORT_FILE_EXTENSION_PLOTS, sep = "")
-              out <- paste(out,
-                           # "\\begin{figure} \n",
-                           "\\includegraphics[width=\\linewidth]{", filename, "} \n",
-                           "\\captionof{figure}{SIRV plot of scenario ", s, ".} \n",
-                           "\\label{fig:sirv-s", s, "} \n\n",
-                           # "\\end{figure} \n\n",
-                           sep = "")
+      out.peaksize <- paste(out.peaksize, "\\midrule \n", sep = "")
+      out.peaksize <- paste(out.peaksize, "\\textbf{II. Lockdown} & & & & & & & & &", " \\", "\\ \n", sep = "")
+      out.peaksize <- paste(out.peaksize, "\\midrule \n", sep = "")
 
-              out <- paste(out,
-                           "\\end{smashminipage} \n",
-                           "\\clearpage \n\n\n",
-                           sep = "")
-
-              s.table <- paste(s.table, s, " & ", o, " & ", a, " & ", sep = "")
-
-              if (v == "[all]") {
-                s.table <- paste(s.table, "$\\mathds{P}$", sep = "")
-              } else if (v == "[none]") {
-                s.table <- paste(s.table, "$\\varnothing$", sep = "")
-              } else {
-                vax <- str_replace_all(v, "\\[", "\\\\{")
-                vax <- str_replace_all(vax, "\\]", "\\\\}")
-                #vax <- cat(vax)
-                s.table <- paste(s.table, "$", vax, "$", sep = "")
-              }
-              s.table <- paste(s.table, " & ", e, " & ", sep = "")
-              if (q == "[all]") {
-                s.table <- paste(s.table, "$\\mathds{P}$", sep = "")
-              } else if (q == "[none]") {
-                s.table <- paste(s.table, "$\\varnothing$", sep = "")
-              } else {
-                vax <- str_replace_all(v, "\\[", "\\\\{")
-                vax <- str_replace_all(vax, "\\]", "\\\\}")
-                s.table <- paste(s.table, "$\\mathds{P} \\setminus ", vax, "$", sep = "")
-              }
-
-              s.table <- paste(s.table, " & $", round(mean(d$net.epidemic.final.size), 2),
-                               "$ & $(",  round(sd(d$net.epidemic.final.size), 2), ")$", sep = "")
-              s.table <- paste(s.table, " & $",  round(mean(d$net.epidemic.duration), 2),
-                               "$ & $(",  round(sd(d$net.epidemic.duration), 2), ")$", sep = "")
-              s.table <- paste(s.table, " & $",  round(mean(d$net.epidemic.peak.time), 2),
-                               "$ & $(",  round(sd(d$net.epidemic.peak.time), 2), ")$", sep = "")
-              s.table <- paste(s.table, " & $",  round(mean(d$net.epidemic.peak.size), 2),
-                               "$ & $(",  round(sd(d$net.epidemic.peak.size), 2), ")$", sep = "")
-
-              s.table <- paste(s.table, " & \\autoref{tab:descriptives-s", s, "} ", "\\", "\\ \n", sep = "")
-              s <- s+1
-            }
-
-          }
-        }
-      }
+      out.peaksize.summary <- paste(out.peaksize.summary, "\\midrule \n", sep = "")
+      out.peaksize.summary <- paste(out.peaksize.summary, "\\textbf{II. Lockdown} & & & &", " \\", "\\ \n", sep = "")
+      out.peaksize.summary <- paste(out.peaksize.summary, "\\midrule \n", sep = "")
     }
-  }
-  if (!table.closed) {
-    out <- paste(out, get_descriptives_table_suffix(), "\n\n", sep = "")
+
+    ### OVERALL
+    out.finsize <- paste(out.finsize, get_descriptive_compressed(data.ss.baseline.lc$net.pct.rec,
+                                                                 data.ss.random.lc$net.pct.rec,
+                                                                 data.ss.targeted.lc$net.pct.rec,
+                                                                 "Overall"))
+    out.finsize <- paste(out.finsize, "\\midrule \n", sep = "")
+
+    out.finsize.summary <- paste(out.finsize.summary, get_descriptive_summary(data.ss.baseline.lc$net.pct.rec,
+                                                                              data.ss.random.lc$net.pct.rec,
+                                                                              data.ss.targeted.lc$net.pct.rec,
+                                                                              "Overall", alpha = alpha.finsize))
+    out.finsize.summary <- paste(out.finsize.summary, "\\midrule \n", sep = "")
+
+    out.duration <- paste(out.duration, get_descriptive_compressed(data.ss.baseline.lc$net.epidemic.duration,
+                                                                 data.ss.random.lc$net.epidemic.duration,
+                                                                 data.ss.targeted.lc$net.epidemic.duration,
+                                                                 "Overall"))
+    out.duration <- paste(out.duration, "\\midrule \n", sep = "")
+
+    out.duration.summary <- paste(out.duration.summary, get_descriptive_summary(data.ss.baseline.lc$net.epidemic.duration,
+                                                                              data.ss.random.lc$net.epidemic.duration,
+                                                                              data.ss.targeted.lc$net.epidemic.duration,
+                                                                              "Overall", alpha = alpha.duration))
+    out.duration.summary <- paste(out.duration.summary, "\\midrule \n", sep = "")
+
+    out.peaksize <- paste(out.peaksize, get_descriptive_compressed(data.ss.baseline.lc$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 data.ss.random.lc$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 data.ss.targeted.lc$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 "Overall"))
+    out.peaksize <- paste(out.peaksize, "\\midrule \n", sep = "")
+
+    out.peaksize.summary <- paste(out.peaksize.summary, get_descriptive_summary(data.ss.baseline.lc$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              data.ss.random.lc$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              data.ss.targeted.lc$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              "Overall", alpha = alpha.peaksize))
+    out.peaksize.summary <- paste(out.peaksize.summary, "\\midrule \n", sep = "")
+
+    ### VACCINE AVAILIBILITY
+    out.finsize <- paste(out.finsize, get_descriptive_compressed(NA,                 # data.ss.baseline.lc$net.pct.rec,
+                                                                 subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.05)$net.pct.rec,
+                                                                 subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.05)$net.pct.rec,
+                                                                 "Vax. availibility 5\\%"))
+    out.finsize <- paste(out.finsize, get_descriptive_compressed(NA,                 # data.ss.baseline.lc$net.pct.rec,
+                                                                 subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.1)$net.pct.rec,
+                                                                 subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.1)$net.pct.rec,
+                                                                 "Vax. availibility 10\\%"))
+    out.finsize <- paste(out.finsize, get_descriptive_compressed(NA,                 # data.ss.baseline.lc$net.pct.rec,
+                                                                 subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.2)$net.pct.rec,
+                                                                 subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.2)$net.pct.rec,
+                                                                 "Vax. availibility 20\\%"))
+    out.finsize <- paste(out.finsize, get_descriptive_compressed(NA,                 # data.ss.baseline.lc$net.pct.rec,
+                                                                 subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.3)$net.pct.rec,
+                                                                 subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.3)$net.pct.rec,
+                                                                 "Vax. availibility 30\\%"))
+    out.finsize <- paste(out.finsize, get_descriptive_compressed(NA,                 # data.ss.baseline.lc$net.pct.rec,
+                                                                 subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.4)$net.pct.rec,
+                                                                 subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.4)$net.pct.rec,
+                                                                 "Vax. availibility 40\\%"))
+    out.finsize <- paste(out.finsize, get_descriptive_compressed(NA,                 # data.ss.baseline.lc$net.pct.rec,
+                                                                 subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.5)$net.pct.rec,
+                                                                 subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.5)$net.pct.rec,
+                                                                 "Vax. availibility 50\\%"))
+    out.finsize <- paste(out.finsize, "\\midrule \n", sep = "")
+
+    out.finsize.summary <- paste(out.finsize.summary, get_descriptive_summary(data.ss.baseline.lc$net.pct.rec,
+                                                                              subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.05)$net.pct.rec,
+                                                                              subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.05)$net.pct.rec,
+                                                                              "Vax. availibility 5\\%", show.vec1 = FALSE, alpha = alpha.finsize))
+    out.finsize.summary <- paste(out.finsize.summary, get_descriptive_summary(data.ss.baseline.lc$net.pct.rec,
+                                                                              subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.1)$net.pct.rec,
+                                                                              subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.1)$net.pct.rec,
+                                                                              "Vax. availibility 10\\%", show.vec1 = FALSE, alpha = alpha.finsize))
+    out.finsize.summary <- paste(out.finsize.summary, get_descriptive_summary(data.ss.baseline.lc$net.pct.rec,
+                                                                              subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.2)$net.pct.rec,
+                                                                              subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.2)$net.pct.rec,
+                                                                              "Vax. availibility 20\\%", show.vec1 = FALSE, alpha = alpha.finsize))
+    out.finsize.summary <- paste(out.finsize.summary, get_descriptive_summary(data.ss.baseline.lc$net.pct.rec,
+                                                                              subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.3)$net.pct.rec,
+                                                                              subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.3)$net.pct.rec,
+                                                                              "Vax. availibility 30\\%", show.vec1 = FALSE, alpha = alpha.finsize))
+    out.finsize.summary <- paste(out.finsize.summary, get_descriptive_summary(data.ss.baseline.lc$net.pct.rec,
+                                                                              subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.4)$net.pct.rec,
+                                                                              subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.4)$net.pct.rec,
+                                                                              "Vax. availibility 40\\%", show.vec1 = FALSE, alpha = alpha.finsize))
+    out.finsize.summary <- paste(out.finsize.summary, get_descriptive_summary(data.ss.baseline.lc$net.pct.rec,
+                                                                              subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.5)$net.pct.rec,
+                                                                              subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.5)$net.pct.rec,
+                                                                              "Vax. availibility 50\\%", show.vec1 = FALSE, alpha = alpha.finsize))
+    out.finsize.summary <- paste(out.finsize.summary, "\\midrule \n", sep = "")
+
+
+    out.duration <- paste(out.duration, get_descriptive_compressed(NA,                 # data.ss.baseline.lc$net.epidemic.duration,
+                                                                 subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.05)$net.epidemic.duration,
+                                                                 subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.05)$net.epidemic.duration,
+                                                                 "Vax. availibility 5\\%"))
+    out.duration <- paste(out.duration, get_descriptive_compressed(NA,                 # data.ss.baseline.lc$net.epidemic.duration,
+                                                                 subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.1)$net.epidemic.duration,
+                                                                 subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.1)$net.epidemic.duration,
+                                                                 "Vax. availibility 10\\%"))
+    out.duration <- paste(out.duration, get_descriptive_compressed(NA,                 # data.ss.baseline.lc$net.epidemic.duration,
+                                                                 subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.2)$net.epidemic.duration,
+                                                                 subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.2)$net.epidemic.duration,
+                                                                 "Vax. availibility 20\\%"))
+    out.duration <- paste(out.duration, get_descriptive_compressed(NA,                 # data.ss.baseline.lc$net.epidemic.duration,
+                                                                 subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.3)$net.epidemic.duration,
+                                                                 subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.3)$net.epidemic.duration,
+                                                                 "Vax. availibility 30\\%"))
+    out.duration <- paste(out.duration, get_descriptive_compressed(NA,                 # data.ss.baseline.lc$net.epidemic.duration,
+                                                                 subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.4)$net.epidemic.duration,
+                                                                 subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.4)$net.epidemic.duration,
+                                                                 "Vax. availibility 40\\%"))
+    out.duration <- paste(out.duration, get_descriptive_compressed(NA,                 # data.ss.baseline.lc$net.epidemic.duration,
+                                                                 subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.5)$net.epidemic.duration,
+                                                                 subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.5)$net.epidemic.duration,
+                                                                 "Vax. availibility 50\\%"))
+    out.duration <- paste(out.duration, "\\midrule \n", sep = "")
+
+    out.duration.summary <- paste(out.duration.summary, get_descriptive_summary(data.ss.baseline.lc$net.epidemic.duration,
+                                                                              subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.05)$net.epidemic.duration,
+                                                                              subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.05)$net.epidemic.duration,
+                                                                              "Vax. availibility 5\\%", show.vec1 = FALSE, alpha = alpha.duration))
+    out.duration.summary <- paste(out.duration.summary, get_descriptive_summary(data.ss.baseline.lc$net.epidemic.duration,
+                                                                              subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.1)$net.epidemic.duration,
+                                                                              subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.1)$net.epidemic.duration,
+                                                                              "Vax. availibility 10\\%", show.vec1 = FALSE, alpha = alpha.duration))
+    out.duration.summary <- paste(out.duration.summary, get_descriptive_summary(data.ss.baseline.lc$net.epidemic.duration,
+                                                                              subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.2)$net.epidemic.duration,
+                                                                              subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.2)$net.epidemic.duration,
+                                                                              "Vax. availibility 20\\%", show.vec1 = FALSE, alpha = alpha.duration))
+    out.duration.summary <- paste(out.duration.summary, get_descriptive_summary(data.ss.baseline.lc$net.epidemic.duration,
+                                                                              subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.3)$net.epidemic.duration,
+                                                                              subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.3)$net.epidemic.duration,
+                                                                              "Vax. availibility 30\\%", show.vec1 = FALSE, alpha = alpha.duration))
+    out.duration.summary <- paste(out.duration.summary, get_descriptive_summary(data.ss.baseline.lc$net.epidemic.duration,
+                                                                              subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.4)$net.epidemic.duration,
+                                                                              subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.4)$net.epidemic.duration,
+                                                                              "Vax. availibility 40\\%", show.vec1 = FALSE, alpha = alpha.duration))
+    out.duration.summary <- paste(out.duration.summary, get_descriptive_summary(data.ss.baseline.lc$net.epidemic.duration,
+                                                                              subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.5)$net.epidemic.duration,
+                                                                              subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.5)$net.epidemic.duration,
+                                                                              "Vax. availibility 50\\%", show.vec1 = FALSE, alpha = alpha.duration))
+    out.duration.summary <- paste(out.duration.summary, "\\midrule \n", sep = "")
+
+
+    out.peaksize <- paste(out.peaksize, get_descriptive_compressed(NA,                 # data.ss.baseline.lc$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.05)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.05)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 "Vax. availibility 5\\%"))
+    out.peaksize <- paste(out.peaksize, get_descriptive_compressed(NA,                 # data.ss.baseline.lc$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.1)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.1)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 "Vax. availibility 10\\%"))
+    out.peaksize <- paste(out.peaksize, get_descriptive_compressed(NA,                 # data.ss.baseline.lc$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.2)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.2)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 "Vax. availibility 20\\%"))
+    out.peaksize <- paste(out.peaksize, get_descriptive_compressed(NA,                 # data.ss.baseline.lc$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.3)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.3)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 "Vax. availibility 30\\%"))
+    out.peaksize <- paste(out.peaksize, get_descriptive_compressed(NA,                 # data.ss.baseline.lc$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.4)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.4)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 "Vax. availibility 40\\%"))
+    out.peaksize <- paste(out.peaksize, get_descriptive_compressed(NA,                 # data.ss.baseline.lc$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.5)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.5)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 "Vax. availibility 50\\%"))
+    out.peaksize <- paste(out.peaksize, "\\midrule \n", sep = "")
+
+    out.peaksize.summary <- paste(out.peaksize.summary, get_descriptive_summary(data.ss.baseline.lc$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.05)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.05)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              "Vax. availibility 5\\%", show.vec1 = FALSE, alpha = alpha.peaksize))
+    out.peaksize.summary <- paste(out.peaksize.summary, get_descriptive_summary(data.ss.baseline.lc$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.1)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.1)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              "Vax. availibility 10\\%", show.vec1 = FALSE, alpha = alpha.peaksize))
+    out.peaksize.summary <- paste(out.peaksize.summary, get_descriptive_summary(data.ss.baseline.lc$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.2)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.2)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              "Vax. availibility 20\\%", show.vec1 = FALSE, alpha = alpha.peaksize))
+    out.peaksize.summary <- paste(out.peaksize.summary, get_descriptive_summary(data.ss.baseline.lc$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.3)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.3)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              "Vax. availibility 30\\%", show.vec1 = FALSE, alpha = alpha.peaksize))
+    out.peaksize.summary <- paste(out.peaksize.summary, get_descriptive_summary(data.ss.baseline.lc$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.4)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.4)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              "Vax. availibility 40\\%", show.vec1 = FALSE, alpha = alpha.peaksize))
+    out.peaksize.summary <- paste(out.peaksize.summary, get_descriptive_summary(data.ss.baseline.lc$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              subset(data.ss.random.lc, nb.prof.vaccine.availibility == 0.5)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              subset(data.ss.targeted.lc, nb.prof.vaccine.availibility == 0.5)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              "Vax. availibility 50\\%", show.vec1 = FALSE, alpha = alpha.peaksize))
+    out.peaksize.summary <- paste(out.peaksize.summary, "\\midrule \n", sep = "")
+
+
+
+    ### VACCINE EFFECTIVITY
+    out.finsize <- paste(out.finsize, get_descriptive_compressed(NA,                 # data.ss.baseline.lc$net.pct.rec,
+                                                 subset(data.ss.random.lc, nb.prof.vaccine.efficacy == 0.6)$net.pct.rec,
+                                                 subset(data.ss.targeted.lc, nb.prof.vaccine.efficacy == 0.6)$net.pct.rec,
+                                                 "Vax. effectivity 60\\%"))
+    out.finsize <- paste(out.finsize, get_descriptive_compressed(NA,                 # data.ss.baseline.lc$net.pct.rec,
+                                                 subset(data.ss.random.lc, nb.prof.vaccine.efficacy == 0.75)$net.pct.rec,
+                                                 subset(data.ss.targeted.lc, nb.prof.vaccine.efficacy == 0.75)$net.pct.rec,
+                                                 "Vax. effectivity 75\\%"))
+    out.finsize <- paste(out.finsize, get_descriptive_compressed(NA,                 # data.ss.baseline.lc$net.pct.rec,
+                                                 subset(data.ss.random.lc, nb.prof.vaccine.efficacy == 0.9)$net.pct.rec,
+                                                 subset(data.ss.targeted.lc, nb.prof.vaccine.efficacy == 0.9)$net.pct.rec,
+                                                 "Vax. effectivity 90\\%"))
+    out.finsize <- paste(out.finsize, "\\midrule \n", sep = "")
+
+    out.finsize.summary <- paste(out.finsize.summary, get_descriptive_summary(data.ss.baseline.lc$net.pct.rec,
+                                                              subset(data.ss.random.lc, nb.prof.vaccine.efficacy == 0.6)$net.pct.rec,
+                                                              subset(data.ss.targeted.lc, nb.prof.vaccine.efficacy == 0.6)$net.pct.rec,
+                                                              "Vax. effectivity 60\\%", show.vec1 = FALSE, alpha = alpha.finsize))
+    out.finsize.summary <- paste(out.finsize.summary, get_descriptive_summary(data.ss.baseline.lc$net.pct.rec,
+                                                              subset(data.ss.random.lc, nb.prof.vaccine.efficacy == 0.75)$net.pct.rec,
+                                                              subset(data.ss.targeted.lc, nb.prof.vaccine.efficacy == 0.75)$net.pct.rec,
+                                                              "Vax. effectivity 75\\%", show.vec1 = FALSE, alpha = alpha.finsize))
+    out.finsize.summary <- paste(out.finsize.summary, get_descriptive_summary(data.ss.baseline.lc$net.pct.rec,
+                                                              subset(data.ss.random.lc, nb.prof.vaccine.efficacy == 0.9)$net.pct.rec,
+                                                              subset(data.ss.targeted.lc, nb.prof.vaccine.efficacy == 0.9)$net.pct.rec,
+                                                              "Vax. effectivity 90\\%", show.vec1 = FALSE, alpha = alpha.finsize))
+    out.finsize.summary <- paste(out.finsize.summary, "\\midrule \n", sep = "")
+
+    out.duration <- paste(out.duration, get_descriptive_compressed(NA,                 # data.ss.baseline.lc$net.epidemic.duration,
+                                                                 subset(data.ss.random.lc, nb.prof.vaccine.efficacy == 0.6)$net.epidemic.duration,
+                                                                 subset(data.ss.targeted.lc, nb.prof.vaccine.efficacy == 0.6)$net.epidemic.duration,
+                                                                 "Vax. effectivity 60\\%"))
+    out.duration <- paste(out.duration, get_descriptive_compressed(NA,                 # data.ss.baseline.lc$net.epidemic.duration,
+                                                                 subset(data.ss.random.lc, nb.prof.vaccine.efficacy == 0.75)$net.epidemic.duration,
+                                                                 subset(data.ss.targeted.lc, nb.prof.vaccine.efficacy == 0.75)$net.epidemic.duration,
+                                                                 "Vax. effectivity 75\\%"))
+    out.duration <- paste(out.duration, get_descriptive_compressed(NA,                 # data.ss.baseline.lc$net.epidemic.duration,
+                                                                 subset(data.ss.random.lc, nb.prof.vaccine.efficacy == 0.9)$net.epidemic.duration,
+                                                                 subset(data.ss.targeted.lc, nb.prof.vaccine.efficacy == 0.9)$net.epidemic.duration,
+                                                                 "Vax. effectivity 90\\%"))
+    out.duration <- paste(out.duration, "\\midrule \n", sep = "")
+
+    out.duration.summary <- paste(out.duration.summary, get_descriptive_summary(data.ss.baseline.lc$net.epidemic.duration,
+                                                                              subset(data.ss.random.lc, nb.prof.vaccine.efficacy == 0.6)$net.epidemic.duration,
+                                                                              subset(data.ss.targeted.lc, nb.prof.vaccine.efficacy == 0.6)$net.epidemic.duration,
+                                                                              "Vax. effectivity 60\\%", show.vec1 = FALSE, alpha = alpha.duration))
+    out.duration.summary <- paste(out.duration.summary, get_descriptive_summary(data.ss.baseline.lc$net.epidemic.duration,
+                                                                              subset(data.ss.random.lc, nb.prof.vaccine.efficacy == 0.75)$net.epidemic.duration,
+                                                                              subset(data.ss.targeted.lc, nb.prof.vaccine.efficacy == 0.75)$net.epidemic.duration,
+                                                                              "Vax. effectivity 75\\%", show.vec1 = FALSE, alpha = alpha.duration))
+    out.duration.summary <- paste(out.duration.summary, get_descriptive_summary(data.ss.baseline.lc$net.epidemic.duration,
+                                                                              subset(data.ss.random.lc, nb.prof.vaccine.efficacy == 0.9)$net.epidemic.duration,
+                                                                              subset(data.ss.targeted.lc, nb.prof.vaccine.efficacy == 0.9)$net.epidemic.duration,
+                                                                              "Vax. effectivity 90\\%", show.vec1 = FALSE, alpha = alpha.duration))
+    out.duration.summary <- paste(out.duration.summary, "\\midrule \n", sep = "")
+
+    out.peaksize <- paste(out.peaksize, get_descriptive_compressed(NA,                 # data.ss.baseline.lc$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 subset(data.ss.random.lc, nb.prof.vaccine.efficacy == 0.6)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 subset(data.ss.targeted.lc, nb.prof.vaccine.efficacy == 0.6)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 "Vax. effectivity 60\\%"))
+    out.peaksize <- paste(out.peaksize, get_descriptive_compressed(NA,                 # data.ss.baseline.lc$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 subset(data.ss.random.lc, nb.prof.vaccine.efficacy == 0.75)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 subset(data.ss.targeted.lc, nb.prof.vaccine.efficacy == 0.75)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 "Vax. effectivity 75\\%"))
+    out.peaksize <- paste(out.peaksize, get_descriptive_compressed(NA,                 # data.ss.baseline.lc$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 subset(data.ss.random.lc, nb.prof.vaccine.efficacy == 0.9)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 subset(data.ss.targeted.lc, nb.prof.vaccine.efficacy == 0.9)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 "Vax. effectivity 90\\%"))
+    out.peaksize <- paste(out.peaksize, "\\midrule \n", sep = "")
+
+    out.peaksize.summary <- paste(out.peaksize.summary, get_descriptive_summary(data.ss.baseline.lc$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              subset(data.ss.random.lc, nb.prof.vaccine.efficacy == 0.6)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              subset(data.ss.targeted.lc, nb.prof.vaccine.efficacy == 0.6)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              "Vax. effectivity 60\\%", show.vec1 = FALSE, alpha = alpha.peaksize))
+    out.peaksize.summary <- paste(out.peaksize.summary, get_descriptive_summary(data.ss.baseline.lc$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              subset(data.ss.random.lc, nb.prof.vaccine.efficacy == 0.75)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              subset(data.ss.targeted.lc, nb.prof.vaccine.efficacy == 0.75)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              "Vax. effectivity 75\\%", show.vec1 = FALSE, alpha = alpha.peaksize))
+    out.peaksize.summary <- paste(out.peaksize.summary, get_descriptive_summary(data.ss.baseline.lc$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              subset(data.ss.random.lc, nb.prof.vaccine.efficacy == 0.9)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              subset(data.ss.targeted.lc, nb.prof.vaccine.efficacy == 0.9)$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              "Vax. effectivity 90\\%", show.vec1 = FALSE, alpha = alpha.peaksize))
+    out.peaksize.summary <- paste(out.peaksize.summary, "\\midrule \n", sep = "")
+
+    ### AV. DEGREE
+    degree.min <- min(min(data.ss.baseline.lc$net.degree.av),
+                      min(data.ss.random.lc$net.degree.av),
+                      min(data.ss.targeted.lc$net.degree.av))
+    degree.max <- max(max(data.ss.baseline.lc$net.degree.av),
+                      max(data.ss.random.lc$net.degree.av),
+                      max(data.ss.targeted.lc$net.degree.av))
+    degree.step.size <- (degree.max - degree.min) / 3
+
+    degree.lo.max <- degree.min + degree.step.size
+    degree.me.max <- degree.min + 2*degree.step.size
+
+    data.ss.baseline.lc.degree.lo <- subset(data.ss.baseline.lc, net.degree.av <= degree.lo.max)
+    data.ss.random.lc.degree.lo <- subset(data.ss.random.lc, net.degree.av <= degree.lo.max)
+    data.ss.targeted.lc.degree.lo <- subset(data.ss.targeted.lc, net.degree.av <= degree.lo.max)
+
+    data.ss.baseline.lc.degree.me <- subset(data.ss.baseline.lc, net.degree.av > degree.lo.max & net.degree.av <= degree.me.max)
+    data.ss.random.lc.degree.me <- subset(data.ss.random.lc, net.degree.av > degree.lo.max & net.degree.av <= degree.me.max)
+    data.ss.targeted.lc.degree.me <- subset(data.ss.targeted.lc, net.degree.av > degree.lo.max & net.degree.av <= degree.me.max)
+
+    data.ss.baseline.lc.degree.hi <- subset(data.ss.baseline.lc, net.degree.av > degree.me.max)
+    data.ss.random.lc.degree.hi <- subset(data.ss.random.lc, net.degree.av > degree.me.max)
+    data.ss.targeted.lc.degree.hi <- subset(data.ss.targeted.lc, net.degree.av > degree.me.max)
+
+    out.finsize <- paste(out.finsize, get_descriptive_compressed(data.ss.baseline.lc.degree.lo$net.pct.rec,
+                                                 data.ss.random.lc.degree.lo$net.pct.rec,
+                                                 data.ss.targeted.lc.degree.lo$net.pct.rec,
+                                                 paste("Low av. degree (", round(degree.min, 2), "-", round(degree.lo.max, 2), ")",  sep = "")))
+    out.finsize <- paste(out.finsize, get_descriptive_compressed(data.ss.baseline.lc.degree.me$net.pct.rec,
+                                                 data.ss.random.lc.degree.me$net.pct.rec,
+                                                 data.ss.targeted.lc.degree.me$net.pct.rec,
+                                                 paste("Medium av. degree (", round(degree.lo.max, 2), "-", round(degree.me.max, 2), ")",  sep = "")))
+    out.finsize <- paste(out.finsize, get_descriptive_compressed(data.ss.baseline.lc.degree.hi$net.pct.rec,
+                                                 data.ss.random.lc.degree.hi$net.pct.rec,
+                                                 data.ss.targeted.lc.degree.hi$net.pct.rec,
+                                                 paste("High av. degree (", round(degree.me.max, 2), "-", round(degree.max, 2), ")",  sep = "")))
+    out.finsize <- paste(out.finsize, "\\midrule \n", sep = "")
+
+    # out.finsize.summary <- paste(out.finsize.summary, get_descriptive_summary(data.ss.baseline.lc.degree.lo$net.pct.rec,
+    #                                                           data.ss.random.lc.degree.lo$net.pct.rec,
+    #                                                           data.ss.targeted.lc.degree.lo$net.pct.rec,
+    #                                                           paste("Low av. degree (", round(degree.min, 2), "-", round(degree.lo.max, 2), ")",  sep = "")))
+    # out.finsize.summary <- paste(out.finsize.summary, get_descriptive_summary(data.ss.baseline.lc.degree.me$net.pct.rec,
+    #                                                           data.ss.random.lc.degree.me$net.pct.rec,
+    #                                                           data.ss.targeted.lc.degree.me$net.pct.rec,
+    #                                                           paste("Medium av. degree (", round(degree.lo.max, 2), "-", round(degree.me.max, 2), ")",  sep = "")))
+    # out.finsize.summary <- paste(out.finsize.summary, get_descriptive_summary(data.ss.baseline.lc.degree.hi$net.pct.rec,
+    #                                                           data.ss.random.lc.degree.hi$net.pct.rec,
+    #                                                           data.ss.targeted.lc.degree.hi$net.pct.rec,
+    #                                                           paste("High av. degree (", round(degree.me.max, 2), "-", round(degree.max, 2), ")",  sep = "")))
+    # out.finsize.summary <- paste(out.finsize.summary, "\\midrule \n", sep = "")
+
+
+    out.duration <- paste(out.duration, get_descriptive_compressed(data.ss.baseline.lc.degree.lo$net.epidemic.duration,
+                                                                 data.ss.random.lc.degree.lo$net.epidemic.duration,
+                                                                 data.ss.targeted.lc.degree.lo$net.epidemic.duration,
+                                                                 paste("Low av. degree (", round(degree.min, 2), "-", round(degree.lo.max, 2), ")",  sep = "")))
+    out.duration <- paste(out.duration, get_descriptive_compressed(data.ss.baseline.lc.degree.me$net.epidemic.duration,
+                                                                 data.ss.random.lc.degree.me$net.epidemic.duration,
+                                                                 data.ss.targeted.lc.degree.me$net.epidemic.duration,
+                                                                 paste("Medium av. degree (", round(degree.lo.max, 2), "-", round(degree.me.max, 2), ")",  sep = "")))
+    out.duration <- paste(out.duration, get_descriptive_compressed(data.ss.baseline.lc.degree.hi$net.epidemic.duration,
+                                                                 data.ss.random.lc.degree.hi$net.epidemic.duration,
+                                                                 data.ss.targeted.lc.degree.hi$net.epidemic.duration,
+                                                                 paste("High av. degree (", round(degree.me.max, 2), "-", round(degree.max, 2), ")",  sep = "")))
+    out.duration <- paste(out.duration, "\\midrule \n", sep = "")
+
+    # out.duration.summary <- paste(out.duration.summary, get_descriptive_summary(data.ss.baseline.lc.degree.lo$net.epidemic.duration,
+    #                                                                           data.ss.random.lc.degree.lo$net.epidemic.duration,
+    #                                                                           data.ss.targeted.lc.degree.lo$net.epidemic.duration,
+    #                                                                           paste("Low av. degree (", round(degree.min, 2), "-", round(degree.lo.max, 2), ")",  sep = "")))
+    # out.duration.summary <- paste(out.duration.summary, get_descriptive_summary(data.ss.baseline.lc.degree.me$net.epidemic.duration,
+    #                                                                           data.ss.random.lc.degree.me$net.epidemic.duration,
+    #                                                                           data.ss.targeted.lc.degree.me$net.epidemic.duration,
+    #                                                                           paste("Medium av. degree (", round(degree.lo.max, 2), "-", round(degree.me.max, 2), ")",  sep = "")))
+    # out.duration.summary <- paste(out.duration.summary, get_descriptive_summary(data.ss.baseline.lc.degree.hi$net.epidemic.duration,
+    #                                                                           data.ss.random.lc.degree.hi$net.epidemic.duration,
+    #                                                                           data.ss.targeted.lc.degree.hi$net.epidemic.duration,
+    #                                                                           paste("High av. degree (", round(degree.me.max, 2), "-", round(degree.max, 2), ")",  sep = "")))
+    # out.duration.summary <- paste(out.duration.summary, "\\midrule \n", sep = "")
+
+
+    out.peaksize <- paste(out.peaksize, get_descriptive_compressed(data.ss.baseline.lc.degree.lo$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 data.ss.random.lc.degree.lo$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 data.ss.targeted.lc.degree.lo$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 paste("Low av. degree (", round(degree.min, 2), "-", round(degree.lo.max, 2), ")",  sep = "")))
+    out.peaksize <- paste(out.peaksize, get_descriptive_compressed(data.ss.baseline.lc.degree.me$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 data.ss.random.lc.degree.me$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 data.ss.targeted.lc.degree.me$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 paste("Medium av. degree (", round(degree.lo.max, 2), "-", round(degree.me.max, 2), ")",  sep = "")))
+    out.peaksize <- paste(out.peaksize, get_descriptive_compressed(data.ss.baseline.lc.degree.hi$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 data.ss.random.lc.degree.hi$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 data.ss.targeted.lc.degree.hi$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 paste("High av. degree (", round(degree.me.max, 2), "-", round(degree.max, 2), ")",  sep = "")))
+    out.peaksize <- paste(out.peaksize, "\\midrule \n", sep = "")
+
+    # out.peaksize.summary <- paste(out.peaksize.summary, get_descriptive_summary(data.ss.baseline.lc.degree.lo$net.epidemic.peak.size/data.ss$nb.N*100,
+    #                                                                           data.ss.random.lc.degree.lo$net.epidemic.peak.size/data.ss$nb.N*100,
+    #                                                                           data.ss.targeted.lc.degree.lo$net.epidemic.peak.size/data.ss$nb.N*100,
+    #                                                                           paste("Low av. degree (", round(degree.min, 2), "-", round(degree.lo.max, 2), ")",  sep = ""), alpha = 0.01))
+    # out.peaksize.summary <- paste(out.peaksize.summary, get_descriptive_summary(data.ss.baseline.lc.degree.me$net.epidemic.peak.size/data.ss$nb.N*100,
+    #                                                                           data.ss.random.lc.degree.me$net.epidemic.peak.size/data.ss$nb.N*100,
+    #                                                                           data.ss.targeted.lc.degree.me$net.epidemic.peak.size/data.ss$nb.N*100,
+    #                                                                           paste("Medium av. degree (", round(degree.lo.max, 2), "-", round(degree.me.max, 2), ")",  sep = ""), alpha = 0.01))
+    # out.peaksize.summary <- paste(out.peaksize.summary, get_descriptive_summary(data.ss.baseline.lc.degree.hi$net.epidemic.peak.size/data.ss$nb.N*100,
+    #                                                                           data.ss.random.lc.degree.hi$net.epidemic.peak.size/data.ss$nb.N*100,
+    #                                                                           data.ss.targeted.lc.degree.hi$net.epidemic.peak.size/data.ss$nb.N*100,
+    #                                                                           paste("High av. degree (", round(degree.me.max, 2), "-", round(degree.max, 2), ")",  sep = ""), alpha = 0.01))
+    # out.peaksize.summary <- paste(out.peaksize.summary, "\\midrule \n", sep = "")
+
+    ### CLUSTERING
+    cluster.min <- min(min(data.ss.baseline.lc$net.clustering.av),
+                       min(data.ss.random.lc$net.clustering.av),
+                       min(data.ss.targeted.lc$net.clustering.av))
+    cluster.max <- max(max(data.ss.baseline.lc$net.clustering.av),
+                       max(data.ss.random.lc$net.clustering.av),
+                       max(data.ss.targeted.lc$net.clustering.av))
+    cluster.step.size <- (cluster.max - cluster.min) / 3
+
+    cluster.lo.max <- cluster.min + cluster.step.size
+    cluster.me.max <- cluster.min + 2*cluster.step.size
+
+    data.ss.baseline.lc.cluster.lo <- subset(data.ss.baseline.lc, net.clustering.av <= cluster.lo.max)
+    data.ss.random.lc.cluster.lo <- subset(data.ss.random.lc, net.clustering.av <= cluster.lo.max)
+    data.ss.targeted.lc.cluster.lo <- subset(data.ss.targeted.lc, net.clustering.av <= cluster.lo.max)
+
+    data.ss.baseline.lc.cluster.me <- subset(data.ss.baseline.lc, net.clustering.av > cluster.lo.max & net.clustering.av <= cluster.me.max)
+    data.ss.random.lc.cluster.me <- subset(data.ss.random.lc, net.clustering.av > cluster.lo.max & net.clustering.av <= cluster.me.max)
+    data.ss.targeted.lc.cluster.me <- subset(data.ss.targeted.lc, net.clustering.av > cluster.lo.max & net.clustering.av <= cluster.me.max)
+
+    data.ss.baseline.lc.cluster.hi <- subset(data.ss.baseline.lc, net.clustering.av > cluster.me.max)
+    data.ss.random.lc.cluster.hi <- subset(data.ss.random.lc, net.clustering.av > cluster.me.max)
+    data.ss.targeted.lc.cluster.hi <- subset(data.ss.targeted.lc, net.clustering.av > cluster.me.max)
+
+    out.finsize <- paste(out.finsize, get_descriptive_compressed(data.ss.baseline.lc.cluster.lo$net.pct.rec,
+                                                                 data.ss.random.lc.cluster.lo$net.pct.rec,
+                                                                 data.ss.targeted.lc.cluster.lo$net.pct.rec,
+                                                                 paste("Low clustering (", round(cluster.min, 2), "-", round(cluster.lo.max, 2), ")",  sep = "")))
+    out.finsize <- paste(out.finsize, get_descriptive_compressed(data.ss.baseline.lc.cluster.me$net.pct.rec,
+                                                                 data.ss.random.lc.cluster.me$net.pct.rec,
+                                                                 data.ss.targeted.lc.cluster.me$net.pct.rec,
+                                                                 paste("Medium clustering (", round(cluster.lo.max, 2), "-", round(cluster.me.max, 2), ")",  sep = "")))
+    out.finsize <- paste(out.finsize, get_descriptive_compressed(data.ss.baseline.lc.cluster.hi$net.pct.rec,
+                                                                 data.ss.random.lc.cluster.hi$net.pct.rec,
+                                                                 data.ss.targeted.lc.cluster.hi$net.pct.rec,
+                                                                 paste("High clustering (", round(cluster.me.max, 2), "-", round(cluster.max, 2), ")",  sep = "")))
+    out.finsize <- paste(out.finsize, "\\midrule \n", sep = "")
+
+    out.finsize.summary <- paste(out.finsize.summary, get_descriptive_summary(data.ss.baseline.lc.cluster.lo$net.pct.rec,
+                                                                              data.ss.random.lc.cluster.lo$net.pct.rec,
+                                                                              data.ss.targeted.lc.cluster.lo$net.pct.rec,
+                                                                              paste("Low clustering",  sep = ""), alpha = alpha.finsize))
+    out.finsize.summary <- paste(out.finsize.summary, get_descriptive_summary(data.ss.baseline.lc.cluster.me$net.pct.rec,
+                                                                              data.ss.random.lc.cluster.me$net.pct.rec,
+                                                                              data.ss.targeted.lc.cluster.me$net.pct.rec,
+                                                                              paste("Medium clustering",  sep = ""), alpha = alpha.finsize))
+    out.finsize.summary <- paste(out.finsize.summary, get_descriptive_summary(data.ss.baseline.lc.cluster.hi$net.pct.rec,
+                                                                              data.ss.random.lc.cluster.hi$net.pct.rec,
+                                                                              data.ss.targeted.lc.cluster.hi$net.pct.rec,
+                                                                              paste("High clustering",  sep = ""), alpha = alpha.finsize))
+    out.finsize.summary <- paste(out.finsize.summary, "\\midrule \n", sep = "")
+
+
+    out.duration <- paste(out.duration, get_descriptive_compressed(data.ss.baseline.lc.cluster.lo$net.epidemic.duration,
+                                                                 data.ss.random.lc.cluster.lo$net.epidemic.duration,
+                                                                 data.ss.targeted.lc.cluster.lo$net.epidemic.duration,
+                                                                 paste("Low clustering (", round(cluster.min, 2), "-", round(cluster.lo.max, 2), ")",  sep = "")))
+    out.duration <- paste(out.duration, get_descriptive_compressed(data.ss.baseline.lc.cluster.me$net.epidemic.duration,
+                                                                 data.ss.random.lc.cluster.me$net.epidemic.duration,
+                                                                 data.ss.targeted.lc.cluster.me$net.epidemic.duration,
+                                                                 paste("Medium clustering (", round(cluster.lo.max, 2), "-", round(cluster.me.max, 2), ")",  sep = "")))
+    out.duration <- paste(out.duration, get_descriptive_compressed(data.ss.baseline.lc.cluster.hi$net.epidemic.duration,
+                                                                 data.ss.random.lc.cluster.hi$net.epidemic.duration,
+                                                                 data.ss.targeted.lc.cluster.hi$net.epidemic.duration,
+                                                                 paste("High clustering (", round(cluster.me.max, 2), "-", round(cluster.max, 2), ")",  sep = "")))
+    out.duration <- paste(out.duration, "\\midrule \n", sep = "")
+
+    out.duration.summary <- paste(out.duration.summary, get_descriptive_summary(data.ss.baseline.lc.cluster.lo$net.epidemic.duration,
+                                                                              data.ss.random.lc.cluster.lo$net.epidemic.duration,
+                                                                              data.ss.targeted.lc.cluster.lo$net.epidemic.duration,
+                                                                              paste("Low clustering",  sep = ""), alpha = alpha.duration))
+    out.duration.summary <- paste(out.duration.summary, get_descriptive_summary(data.ss.baseline.lc.cluster.me$net.epidemic.duration,
+                                                                              data.ss.random.lc.cluster.me$net.epidemic.duration,
+                                                                              data.ss.targeted.lc.cluster.me$net.epidemic.duration,
+                                                                              paste("Medium clustering",  sep = ""), alpha = alpha.duration))
+    out.duration.summary <- paste(out.duration.summary, get_descriptive_summary(data.ss.baseline.lc.cluster.hi$net.epidemic.duration,
+                                                                              data.ss.random.lc.cluster.hi$net.epidemic.duration,
+                                                                              data.ss.targeted.lc.cluster.hi$net.epidemic.duration,
+                                                                              paste("High clustering",  sep = ""), alpha = alpha.duration))
+    out.duration.summary <- paste(out.duration.summary, "\\midrule \n", sep = "")
+
+
+    out.peaksize <- paste(out.peaksize, get_descriptive_compressed(data.ss.baseline.lc.cluster.lo$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 data.ss.random.lc.cluster.lo$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 data.ss.targeted.lc.cluster.lo$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 paste("Low clustering (", round(cluster.min, 2), "-", round(cluster.lo.max, 2), ")",  sep = "")))
+    out.peaksize <- paste(out.peaksize, get_descriptive_compressed(data.ss.baseline.lc.cluster.me$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 data.ss.random.lc.cluster.me$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 data.ss.targeted.lc.cluster.me$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 paste("Medium clustering (", round(cluster.lo.max, 2), "-", round(cluster.me.max, 2), ")",  sep = "")))
+    out.peaksize <- paste(out.peaksize, get_descriptive_compressed(data.ss.baseline.lc.cluster.hi$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 data.ss.random.lc.cluster.hi$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 data.ss.targeted.lc.cluster.hi$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 paste("High clustering (", round(cluster.me.max, 2), "-", round(cluster.max, 2), ")",  sep = "")))
+    out.peaksize <- paste(out.peaksize, "\\midrule \n", sep = "")
+
+    out.peaksize.summary <- paste(out.peaksize.summary, get_descriptive_summary(data.ss.baseline.lc.cluster.lo$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              data.ss.random.lc.cluster.lo$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              data.ss.targeted.lc.cluster.lo$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              paste("Low clustering",  sep = ""), alpha = alpha.peaksize))
+    out.peaksize.summary <- paste(out.peaksize.summary, get_descriptive_summary(data.ss.baseline.lc.cluster.me$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              data.ss.random.lc.cluster.me$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              data.ss.targeted.lc.cluster.me$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              paste("Medium clustering",  sep = ""), alpha = alpha.peaksize))
+    out.peaksize.summary <- paste(out.peaksize.summary, get_descriptive_summary(data.ss.baseline.lc.cluster.hi$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              data.ss.random.lc.cluster.hi$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              data.ss.targeted.lc.cluster.hi$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              paste("High clustering",  sep = ""), alpha = alpha.peaksize))
+    out.peaksize.summary <- paste(out.peaksize.summary, "\\midrule \n", sep = "")
+
+    ### PATH LENGTH
+    plength.min <- min(min(data.ss.baseline.lc$net.pathlength.av),
+                       min(data.ss.random.lc$net.pathlength.av),
+                       min(data.ss.targeted.lc$net.pathlength.av))
+    plength.max <- max(max(data.ss.baseline.lc$net.pathlength.av),
+                       max(data.ss.random.lc$net.pathlength.av),
+                       max(data.ss.targeted.lc$net.pathlength.av))
+    plength.step.size <- (plength.max - plength.min) / 3
+
+    plength.lo.max <- plength.min + plength.step.size
+    plength.me.max <- plength.min + 2*plength.step.size
+
+    data.ss.baseline.lc.plength.lo <- subset(data.ss.baseline.lc, net.pathlength.av <= plength.lo.max)
+    data.ss.random.lc.plength.lo <- subset(data.ss.random.lc, net.pathlength.av <= plength.lo.max)
+    data.ss.targeted.lc.plength.lo <- subset(data.ss.targeted.lc, net.pathlength.av <= plength.lo.max)
+
+    data.ss.baseline.lc.plength.me <- subset(data.ss.baseline.lc, net.pathlength.av > plength.lo.max & net.pathlength.av <= plength.me.max)
+    data.ss.random.lc.plength.me <- subset(data.ss.random.lc, net.pathlength.av > plength.lo.max & net.pathlength.av <= plength.me.max)
+    data.ss.targeted.lc.plength.me <- subset(data.ss.targeted.lc, net.pathlength.av > plength.lo.max & net.pathlength.av <= plength.me.max)
+
+    data.ss.baseline.lc.plength.hi <- subset(data.ss.baseline.lc, net.pathlength.av > plength.me.max)
+    data.ss.random.lc.plength.hi <- subset(data.ss.random.lc, net.pathlength.av > plength.me.max)
+    data.ss.targeted.lc.plength.hi <- subset(data.ss.targeted.lc, net.pathlength.av > plength.me.max)
+
+    out.finsize <- paste(out.finsize, get_descriptive_compressed(data.ss.baseline.lc.plength.lo$net.pct.rec,
+                                                                 data.ss.random.lc.plength.lo$net.pct.rec,
+                                                                 data.ss.targeted.lc.plength.lo$net.pct.rec,
+                                                                 paste("Low av. path length (", round(plength.min, 2), "-", round(plength.lo.max, 2), ")",  sep = "")))
+    out.finsize <- paste(out.finsize, get_descriptive_compressed(data.ss.baseline.lc.plength.me$net.pct.rec,
+                                                                 data.ss.random.lc.plength.me$net.pct.rec,
+                                                                 data.ss.targeted.lc.plength.me$net.pct.rec,
+                                                                 paste("Medium av. path length (", round(plength.lo.max, 2), "-", round(plength.me.max, 2), ")",  sep = "")))
+    out.finsize <- paste(out.finsize, get_descriptive_compressed(data.ss.baseline.lc.plength.hi$net.pct.rec,
+                                                                 data.ss.random.lc.plength.hi$net.pct.rec,
+                                                                 data.ss.targeted.lc.plength.hi$net.pct.rec,
+                                                                 paste("High av. path length (", round(plength.me.max, 2), "-", round(plength.max, 2), ")",  sep = "")))
+    out.finsize <- paste(out.finsize, "\\midrule \n", sep = "")
+
+    # out.finsize.summary <- paste(out.finsize.summary, get_descriptive_summary(data.ss.baseline.lc.plength.lo$net.pct.rec,
+    #                                                                           data.ss.random.lc.plength.lo$net.pct.rec,
+    #                                                                           data.ss.targeted.lc.plength.lo$net.pct.rec,
+    #                                                                           paste("Low av. path length (", round(plength.min, 2), "-", round(plength.lo.max, 2), ")",  sep = "")))
+    # out.finsize.summary <- paste(out.finsize.summary, get_descriptive_summary(data.ss.baseline.lc.plength.me$net.pct.rec,
+    #                                                                           data.ss.random.lc.plength.me$net.pct.rec,
+    #                                                                           data.ss.targeted.lc.plength.me$net.pct.rec,
+    #                                                                           paste("Medium av. path length (", round(plength.lo.max, 2), "-", round(plength.me.max, 2), ")",  sep = "")))
+    # out.finsize.summary <- paste(out.finsize.summary, get_descriptive_summary(data.ss.baseline.lc.plength.hi$net.pct.rec,
+    #                                                                           data.ss.random.lc.plength.hi$net.pct.rec,
+    #                                                                           data.ss.targeted.lc.plength.hi$net.pct.rec,
+    #                                                                           paste("High av. path length (", round(plength.me.max, 2), "-", round(plength.max, 2), ")",  sep = "")))
+    # out.finsize.summary <- paste(out.finsize.summary, "\\midrule \n", sep = "")
+
+    out.duration <- paste(out.duration, get_descriptive_compressed(data.ss.baseline.lc.plength.lo$net.epidemic.duration,
+                                                                 data.ss.random.lc.plength.lo$net.epidemic.duration,
+                                                                 data.ss.targeted.lc.plength.lo$net.epidemic.duration,
+                                                                 paste("Low av. path length (", round(plength.min, 2), "-", round(plength.lo.max, 2), ")",  sep = "")))
+    out.duration <- paste(out.duration, get_descriptive_compressed(data.ss.baseline.lc.plength.me$net.epidemic.duration,
+                                                                 data.ss.random.lc.plength.me$net.epidemic.duration,
+                                                                 data.ss.targeted.lc.plength.me$net.epidemic.duration,
+                                                                 paste("Medium av. path length (", round(plength.lo.max, 2), "-", round(plength.me.max, 2), ")",  sep = "")))
+    out.duration <- paste(out.duration, get_descriptive_compressed(data.ss.baseline.lc.plength.hi$net.epidemic.duration,
+                                                                 data.ss.random.lc.plength.hi$net.epidemic.duration,
+                                                                 data.ss.targeted.lc.plength.hi$net.epidemic.duration,
+                                                                 paste("High av. path length (", round(plength.me.max, 2), "-", round(plength.max, 2), ")",  sep = "")))
+    out.duration <- paste(out.duration, "\\midrule \n", sep = "")
+
+    # out.duration.summary <- paste(out.duration.summary, get_descriptive_summary(data.ss.baseline.lc.plength.lo$net.epidemic.duration,
+    #                                                                           data.ss.random.lc.plength.lo$net.epidemic.duration,
+    #                                                                           data.ss.targeted.lc.plength.lo$net.epidemic.duration,
+    #                                                                           paste("Low av. path length (", round(plength.min, 2), "-", round(plength.lo.max, 2), ")",  sep = "")))
+    # out.duration.summary <- paste(out.duration.summary, get_descriptive_summary(data.ss.baseline.lc.plength.me$net.epidemic.duration,
+    #                                                                           data.ss.random.lc.plength.me$net.epidemic.duration,
+    #                                                                           data.ss.targeted.lc.plength.me$net.epidemic.duration,
+    #                                                                           paste("Medium av. path length (", round(plength.lo.max, 2), "-", round(plength.me.max, 2), ")",  sep = "")))
+    # out.duration.summary <- paste(out.duration.summary, get_descriptive_summary(data.ss.baseline.lc.plength.hi$net.epidemic.duration,
+    #                                                                           data.ss.random.lc.plength.hi$net.epidemic.duration,
+    #                                                                           data.ss.targeted.lc.plength.hi$net.epidemic.duration,
+    #                                                                           paste("High av. path length (", round(plength.me.max, 2), "-", round(plength.max, 2), ")",  sep = "")))
+    # out.duration.summary <- paste(out.duration.summary, "\\midrule \n", sep = "")
+
+    out.peaksize <- paste(out.peaksize, get_descriptive_compressed(data.ss.baseline.lc.plength.lo$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 data.ss.random.lc.plength.lo$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 data.ss.targeted.lc.plength.lo$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 paste("Low av. path length (", round(plength.min, 2), "-", round(plength.lo.max, 2), ")",  sep = "")))
+    out.peaksize <- paste(out.peaksize, get_descriptive_compressed(data.ss.baseline.lc.plength.me$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 data.ss.random.lc.plength.me$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 data.ss.targeted.lc.plength.me$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 paste("Medium av. path length (", round(plength.lo.max, 2), "-", round(plength.me.max, 2), ")",  sep = "")))
+    out.peaksize <- paste(out.peaksize, get_descriptive_compressed(data.ss.baseline.lc.plength.hi$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 data.ss.random.lc.plength.hi$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 data.ss.targeted.lc.plength.hi$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 paste("High av. path length (", round(plength.me.max, 2), "-", round(plength.max, 2), ")",  sep = "")))
+    out.peaksize <- paste(out.peaksize, "\\midrule \n", sep = "")
+
+    # out.peaksize.summary <- paste(out.peaksize.summary, get_descriptive_summary(data.ss.baseline.lc.plength.lo$net.epidemic.peak.size/data.ss$nb.N*100,
+    #                                                                           data.ss.random.lc.plength.lo$net.epidemic.peak.size/data.ss$nb.N*100,
+    #                                                                           data.ss.targeted.lc.plength.lo$net.epidemic.peak.size/data.ss$nb.N*100,
+    #                                                                           paste("Low av. path length (", round(plength.min, 2), "-", round(plength.lo.max, 2), ")",  sep = ""), alpha = 0.01))
+    # out.peaksize.summary <- paste(out.peaksize.summary, get_descriptive_summary(data.ss.baseline.lc.plength.me$net.epidemic.peak.size/data.ss$nb.N*100,
+    #                                                                           data.ss.random.lc.plength.me$net.epidemic.peak.size/data.ss$nb.N*100,
+    #                                                                           data.ss.targeted.lc.plength.me$net.epidemic.peak.size/data.ss$nb.N*100,
+    #                                                                           paste("Medium av. path length (", round(plength.lo.max, 2), "-", round(plength.me.max, 2), ")",  sep = ""), alpha = 0.01))
+    # out.peaksize.summary <- paste(out.peaksize.summary, get_descriptive_summary(data.ss.baseline.lc.plength.hi$net.epidemic.peak.size/data.ss$nb.N*100,
+    #                                                                           data.ss.random.lc.plength.hi$net.epidemic.peak.size/data.ss$nb.N*100,
+    #                                                                           data.ss.targeted.lc.plength.hi$net.epidemic.peak.size/data.ss$nb.N*100,
+    #                                                                           paste("High av. path length (", round(plength.me.max, 2), "-", round(plength.max, 2), ")",  sep = ""), alpha = 0.01))
+    # out.peaksize.summary <- paste(out.peaksize.summary, "\\midrule \n", sep = "")
+
+    ### HOMOPHILY
+    homo.min <- min(min(data.ss.baseline.lc$net.assortativity.profession),
+                          min(data.ss.random.lc$net.assortativity.profession),
+                          min(data.ss.targeted.lc$net.assortativity.profession))
+    homo.max <- max(max(data.ss.baseline.lc$net.assortativity.profession),
+                          max(data.ss.random.lc$net.assortativity.profession),
+                          max(data.ss.targeted.lc$net.assortativity.profession))
+    homo.step.size <- (homo.max - homo.min) / 3
+
+    homo.lo.max <- homo.min + homo.step.size
+    homo.me.max <- homo.min + 2*homo.step.size
+
+    data.ss.baseline.lc.homo.lo <- subset(data.ss.baseline.lc, net.assortativity.profession <= homo.lo.max)
+    data.ss.random.lc.homo.lo <- subset(data.ss.random.lc, net.assortativity.profession <= homo.lo.max)
+    data.ss.targeted.lc.homo.lo <- subset(data.ss.targeted.lc, net.assortativity.profession <= homo.lo.max)
+
+    data.ss.baseline.lc.homo.me <- subset(data.ss.baseline.lc, net.assortativity.profession > homo.lo.max & net.assortativity.profession <= homo.me.max)
+    data.ss.random.lc.homo.me <- subset(data.ss.random.lc, net.assortativity.profession > homo.lo.max & net.assortativity.profession <= homo.me.max)
+    data.ss.targeted.lc.homo.me <- subset(data.ss.targeted.lc, net.assortativity.profession > homo.lo.max & net.assortativity.profession <= homo.me.max)
+
+    data.ss.baseline.lc.homo.hi <- subset(data.ss.baseline.lc, net.assortativity.profession > homo.me.max)
+    data.ss.random.lc.homo.hi <- subset(data.ss.random.lc, net.assortativity.profession > homo.me.max)
+    data.ss.targeted.lc.homo.hi <- subset(data.ss.targeted.lc, net.assortativity.profession > homo.me.max)
+
+    out.finsize <- paste(out.finsize, get_descriptive_compressed(data.ss.baseline.lc.homo.lo$net.pct.rec,
+                                                                 data.ss.random.lc.homo.lo$net.pct.rec,
+                                                                 data.ss.targeted.lc.homo.lo$net.pct.rec,
+                                                                 paste("Low homophily (", round(homo.min, 2), "-", round(homo.lo.max, 2), ")",  sep = "")))
+    out.finsize <- paste(out.finsize, get_descriptive_compressed(data.ss.baseline.lc.homo.me$net.pct.rec,
+                                                                 data.ss.random.lc.homo.me$net.pct.rec,
+                                                                 data.ss.targeted.lc.homo.me$net.pct.rec,
+                                                                 paste("Medium homophily (", round(homo.lo.max, 2), "-", round(homo.me.max, 2), ")",  sep = "")))
+    out.finsize <- paste(out.finsize, get_descriptive_compressed(data.ss.baseline.lc.homo.hi$net.pct.rec,
+                                                                 data.ss.random.lc.homo.hi$net.pct.rec,
+                                                                 data.ss.targeted.lc.homo.hi$net.pct.rec,
+                                                                 paste("High homophily (", round(homo.me.max, 2), "-", round(homo.max, 2), ")",  sep = "")))
+
+    out.finsize.summary <- paste(out.finsize.summary, get_descriptive_summary(data.ss.baseline.lc.homo.lo$net.pct.rec,
+                                                                              data.ss.random.lc.homo.lo$net.pct.rec,
+                                                                              data.ss.targeted.lc.homo.lo$net.pct.rec,
+                                                                              paste("Low homophily",  sep = ""), alpha = alpha.finsize))
+    out.finsize.summary <- paste(out.finsize.summary, get_descriptive_summary(data.ss.baseline.lc.homo.me$net.pct.rec,
+                                                                              data.ss.random.lc.homo.me$net.pct.rec,
+                                                                              data.ss.targeted.lc.homo.me$net.pct.rec,
+                                                                              paste("Medium homophily",  sep = ""), alpha = alpha.finsize))
+    out.finsize.summary <- paste(out.finsize.summary, get_descriptive_summary(data.ss.baseline.lc.homo.hi$net.pct.rec,
+                                                                              data.ss.random.lc.homo.hi$net.pct.rec,
+                                                                              data.ss.targeted.lc.homo.hi$net.pct.rec,
+                                                                              paste("High homophily",  sep = ""), alpha = alpha.finsize))
+
+
+    out.duration <- paste(out.duration, get_descriptive_compressed(data.ss.baseline.lc.homo.lo$net.epidemic.duration,
+                                                                 data.ss.random.lc.homo.lo$net.epidemic.duration,
+                                                                 data.ss.targeted.lc.homo.lo$net.epidemic.duration,
+                                                                 paste("Low homophily (", round(homo.min, 2), "-", round(homo.lo.max, 2), ")",  sep = "")))
+    out.duration <- paste(out.duration, get_descriptive_compressed(data.ss.baseline.lc.homo.me$net.epidemic.duration,
+                                                                 data.ss.random.lc.homo.me$net.epidemic.duration,
+                                                                 data.ss.targeted.lc.homo.me$net.epidemic.duration,
+                                                                 paste("Medium homophily (", round(homo.lo.max, 2), "-", round(homo.me.max, 2), ")",  sep = "")))
+    out.duration <- paste(out.duration, get_descriptive_compressed(data.ss.baseline.lc.homo.hi$net.epidemic.duration,
+                                                                 data.ss.random.lc.homo.hi$net.epidemic.duration,
+                                                                 data.ss.targeted.lc.homo.hi$net.epidemic.duration,
+                                                                 paste("High homophily (", round(homo.me.max, 2), "-", round(homo.max, 2), ")",  sep = "")))
+
+    out.duration.summary <- paste(out.duration.summary, get_descriptive_summary(data.ss.baseline.lc.homo.lo$net.epidemic.duration,
+                                                                              data.ss.random.lc.homo.lo$net.epidemic.duration,
+                                                                              data.ss.targeted.lc.homo.lo$net.epidemic.duration,
+                                                                              paste("Low homophily",  sep = ""), alpha = alpha.duration))
+    out.duration.summary <- paste(out.duration.summary, get_descriptive_summary(data.ss.baseline.lc.homo.me$net.epidemic.duration,
+                                                                              data.ss.random.lc.homo.me$net.epidemic.duration,
+                                                                              data.ss.targeted.lc.homo.me$net.epidemic.duration,
+                                                                              paste("Medium homophily",  sep = ""), alpha = alpha.duration))
+    out.duration.summary <- paste(out.duration.summary, get_descriptive_summary(data.ss.baseline.lc.homo.hi$net.epidemic.duration,
+                                                                              data.ss.random.lc.homo.hi$net.epidemic.duration,
+                                                                              data.ss.targeted.lc.homo.hi$net.epidemic.duration,
+                                                                              paste("High homophily",  sep = ""), alpha = alpha.duration))
+
+
+    out.peaksize <- paste(out.peaksize, get_descriptive_compressed(data.ss.baseline.lc.homo.lo$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 data.ss.random.lc.homo.lo$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 data.ss.targeted.lc.homo.lo$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 paste("Low homophily (", round(homo.min, 2), "-", round(homo.lo.max, 2), ")",  sep = "")))
+    out.peaksize <- paste(out.peaksize, get_descriptive_compressed(data.ss.baseline.lc.homo.me$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 data.ss.random.lc.homo.me$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 data.ss.targeted.lc.homo.me$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 paste("Medium homophily (", round(homo.lo.max, 2), "-", round(homo.me.max, 2), ")",  sep = "")))
+    out.peaksize <- paste(out.peaksize, get_descriptive_compressed(data.ss.baseline.lc.homo.hi$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 data.ss.random.lc.homo.hi$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 data.ss.targeted.lc.homo.hi$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                 paste("High homophily (", round(homo.me.max, 2), "-", round(homo.max, 2), ")",  sep = "")))
+
+    out.peaksize.summary <- paste(out.peaksize.summary, get_descriptive_summary(data.ss.baseline.lc.homo.lo$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              data.ss.random.lc.homo.lo$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              data.ss.targeted.lc.homo.lo$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              paste("Low homophily",  sep = ""), alpha = alpha.peaksize))
+    out.peaksize.summary <- paste(out.peaksize.summary, get_descriptive_summary(data.ss.baseline.lc.homo.me$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              data.ss.random.lc.homo.me$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              data.ss.targeted.lc.homo.me$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              paste("Medium homophily",  sep = ""), alpha = alpha.peaksize))
+    out.peaksize.summary <- paste(out.peaksize.summary, get_descriptive_summary(data.ss.baseline.lc.homo.hi$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              data.ss.random.lc.homo.hi$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              data.ss.targeted.lc.homo.hi$net.epidemic.peak.size/data.ss$nb.N*100,
+                                                                              paste("High homophily",  sep = ""), alpha = alpha.peaksize))
+
   }
 
-  s.table <- paste(s.table, "\\bottomrule\n%\\multicolumn{5}{c}{\\emph{Notes:} bold numbers are significant at ",
-                   "$p<0.001$, SEs in parentheses}\n", "\\end{tabular}\n\\end{adjustbox}\n\\end{sidewaystable}", sep = "")
+  out.finsize <- paste(out.finsize, get_finalsize_table_suffix(), sep = "")
+  out.finsize.summary <- paste(out.finsize.summary, get_summary_table_suffix(), sep = "")
+
+  out.duration <- paste(out.duration, get_finalsize_table_suffix(), sep = "")
+  out.duration.summary <- paste(out.duration.summary, get_summary_table_suffix(), sep = "")
+
+  out.peaksize <- paste(out.peaksize, get_finalsize_table_suffix(), sep = "")
+  out.peaksize.summary <- paste(out.peaksize.summary, get_summary_table_suffix(), sep = "")
+
+  out <- paste(out.finsize, "\n\n\n",
+               out.duration, "\n\n\n",
+               out.peaksize, "\n\n\n",
+               out.finsize.summary, "\n\n\n",
+               out.duration.summary, "\n\n\n",
+               out.peaksize.summary,
+               sep = "")
 
   # export to file
   dir.create(EXPORT_PATH_NUM, showWarnings = FALSE)
-  cat(out, file = paste(EXPORT_PATH_NUM, "variations-networks-epidemics", EXPORT_FILE_EXTENSION_DESC, sep = ""))
-  cat(s.table, file = paste(EXPORT_PATH_NUM, "scenarios", EXPORT_FILE_EXTENSION_DESC, sep = ""))
-  # end: variations of epidemics
-
+  filename <- paste(EXPORT_PATH_NUM, "overview", sep = "")
+  if (!is.na(filename.ext)) {
+    filename <- paste(filename, "-", filename.ext, sep = "")
+  }
+  filename <- paste(filename, EXPORT_FILE_EXTENSION_DESC, sep = "")
+  cat(out, file = filename)
 }
+
 
 
 ################################################ PLOTS ###############################################
@@ -703,22 +1904,23 @@ export_descriptive_variations <- function(data.ss = load_simulation_summary_data
 #----------------------------------------------------------------------------------------------------#
 plotSIRDevelopment <- function(rsData = load_round_summary_prepared_data(),
                                ssData = load_simulation_summary_data(),
-                               showLegend = TRUE,
+                               showLegend = FALSE,
                                showRibbons = TRUE,
-                               showAdditional = "degree",
-                               showAdditionalRibbons = TRUE,
+                               showAdditional = "none",
+                               showAdditionalRibbons = FALSE,
                                showAxes = TRUE,
+                               showAxesTitles = FALSE,
                                maxRounds = NA) {
 
   ### SHARED data
-  rounds                <- min(rsData$sim.round):max(rsData$sim.round)
+  rounds                <- min(rsData$round):max(rsData$round)
 
   ### SIR data
   # preparations :: statistical summaries per compartment
-  summarySus            <- as.data.frame(do.call(rbind, with(rsData, tapply(net.pct.sus/100, sim.round, summary))))
-  summaryInf            <- as.data.frame(do.call(rbind, with(rsData, tapply(net.pct.inf/100, sim.round, summary))))
-  summaryRec            <- as.data.frame(do.call(rbind, with(rsData, tapply(net.pct.rec/100, sim.round, summary))))
-  summaryVac            <- as.data.frame(do.call(rbind, with(rsData, tapply(net.pct.vac/100, sim.round, summary))))
+  summarySus            <- as.data.frame(do.call(rbind, with(rsData, tapply(net.pct.sus/100, round, summary))))
+  summaryInf            <- as.data.frame(do.call(rbind, with(rsData, tapply(net.pct.inf/100, round, summary))))
+  summaryRec            <- as.data.frame(do.call(rbind, with(rsData, tapply(net.pct.rec/100, round, summary))))
+  summaryVac            <- as.data.frame(do.call(rbind, with(rsData, tapply(net.pct.vac/100, round, summary))))
 
   # data for lines :: medians for all compartments
   plotData              <- data.frame(rounds,
@@ -790,8 +1992,8 @@ plotSIRDevelopment <- function(rsData = load_round_summary_prepared_data(),
   ### NETWORK CLUSTERING data
   if (showAdditional == "clustering") {
     # preparations :: statistical summary for clustering
-    summaryClustering      <- as.data.frame(do.call(rbind, with(rsData, tapply(net.clustering.av, sim.round, summary))))
-    summaryClusteringIndex <- as.data.frame(do.call(rbind, with(rsData, tapply(index.clustering, sim.round, summary))))
+    summaryClustering      <- as.data.frame(do.call(rbind, with(rsData, tapply(net.clustering.av, round, summary))))
+    summaryClusteringIndex <- as.data.frame(do.call(rbind, with(rsData, tapply(index.clustering, round, summary))))
 
     # data for lines :: median
     clusteringData        <- data.frame(rounds, "Clustering", summaryClustering$Median * scaleFactor)
@@ -823,8 +2025,8 @@ plotSIRDevelopment <- function(rsData = load_round_summary_prepared_data(),
   ### BETWEENNESS data
   if (showAdditional == "betweenness") {
     # preparations :: statistical summary for betweenness
-    summaryBetweenness      <- as.data.frame(do.call(rbind, with(rsData, tapply(net.betweenness.av, sim.round, summary))))
-    summaryBetweennessIndex <- as.data.frame(do.call(rbind, with(rsData, tapply(index.betweenness.normalized, sim.round, summary))))
+    summaryBetweenness      <- as.data.frame(do.call(rbind, with(rsData, tapply(net.betweenness.av, round, summary))))
+    summaryBetweennessIndex <- as.data.frame(do.call(rbind, with(rsData, tapply(index.betweenness.normalized, round, summary))))
 
     # data for lines :: median
     betweennessData        <- data.frame(rounds, "Betweenness", summaryBetweenness$Median * scaleFactor)
@@ -856,8 +2058,8 @@ plotSIRDevelopment <- function(rsData = load_round_summary_prepared_data(),
   ### CLOSENESS data
   if (showAdditional == "closeness") {
     # preparations :: statistical summary for closeness
-    summaryCloseness      <- as.data.frame(do.call(rbind, with(rsData, tapply(net.closeness.av, sim.round, summary))))
-    summaryClosenessIndex <- as.data.frame(do.call(rbind, with(rsData, tapply(index.closeness, sim.round, summary))))
+    summaryCloseness      <- as.data.frame(do.call(rbind, with(rsData, tapply(net.closeness.av, round, summary))))
+    summaryClosenessIndex <- as.data.frame(do.call(rbind, with(rsData, tapply(index.closeness, round, summary))))
 
     # data for lines :: median
     closenessData        <- data.frame(rounds, "Closeness", summaryCloseness$Median * scaleFactor)
@@ -889,8 +2091,8 @@ plotSIRDevelopment <- function(rsData = load_round_summary_prepared_data(),
   ### ASSORTATIVITY data
   if (showAdditional == "assortativity") {
     # preparations :: statistical summary for assortativity
-    summaryAssortativity      <- as.data.frame(do.call(rbind, with(rsData, tapply(net.assortativity, sim.round, summary))))
-    summaryAssortativityIndex <- as.data.frame(do.call(rbind, with(rsData, tapply(index.assortativity, sim.round, summary))))
+    summaryAssortativity      <- as.data.frame(do.call(rbind, with(rsData, tapply(net.assortativity, round, summary))))
+    summaryAssortativityIndex <- as.data.frame(do.call(rbind, with(rsData, tapply(index.assortativity, round, summary))))
 
     # data for lines :: median
     assortativityData        <- data.frame(rounds, "Assortativity", summaryAssortativity$Median * scaleFactor)
@@ -922,7 +2124,7 @@ plotSIRDevelopment <- function(rsData = load_round_summary_prepared_data(),
   ### AVERAGE PATH LENGTH data
   if (showAdditional == "pathlength") {
     # preparations :: statistical summary for pathlength
-    summaryPathlength      <- as.data.frame(do.call(rbind, with(rsData, tapply(net.pathlength.av, sim.round, summary))))
+    summaryPathlength      <- as.data.frame(do.call(rbind, with(rsData, tapply(net.pathlength.av, round, summary))))
 
     # data for lines :: median
     pathlengthData        <- data.frame(rounds, "Pathlength", summaryPathlength$Median * scaleFactor)
@@ -1103,6 +2305,12 @@ plotSIRDevelopment <- function(rsData = load_round_summary_prepared_data(),
             axis.ticks.length = unit(0, "mm"),
             plot.margin=grid::unit(c(0,0,0,0), "mm"))
   } else {
+
+    if (!showAxesTitles) {
+      plot <- plot +
+        theme(axis.title = element_blank())
+    }
+
     if (showAdditional == "degree") {
       plot <- plot +
         scale_y_continuous(sec.axis = sec_axis(~./scaleFactor, name = "Av.degree"),
@@ -1139,79 +2347,249 @@ plotSIRDevelopment <- function(rsData = load_round_summary_prepared_data(),
 #     the round summary data
 #----------------------------------------------------------------------------------------------------#
 export_sirs <- function(data.rs = load_round_summary_prepared_data(),
-                        data.ss = load_simulation_summary_data()) {
+                        data.ss = load_simulation_summary_data(),
+                        max.rounds = 150,
+                        p.width = 60,
+                        p.height = 35) {
 
   # create directory if necessary
   dir.create(EXPORT_PATH_PLOTS, showWarnings = FALSE)
 
-  ggsave(paste(EXPORT_PATH_PLOTS, "sir", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
-         plotSIRDevelopment(data.rs, data.ss, maxRounds = 150),
-         width = 250,
-         height = 50,
-         units = EXPORT_SIZE_UNITS,
-         dpi = EXPORT_DPI,
-         device = EXPORT_FILE_TYPE_PLOTS)
+  filename <- paste(EXPORT_PATH_PLOTS, "sirv", sep = "")
 
-}
+  for (lc in c("lc.pre")) { # unique(data.ss$nb.prof.lockdown.condition)) {
 
+    print(paste("Start creating SIRV plots for lockdown condition:", lc))
 
-#----------------------------------------------------------------------------------------------------#
-# function: export_sirs_variations
-#     Exports SIRV development plots for parameter variations.
-# param:  data.rs
-#     the round summary data
-#----------------------------------------------------------------------------------------------------#
-export_sirs_variations <- function(data.rs = load_round_summary_prepared_data(),
-                                   data.ss = load_simulation_summary_data()) {
+    # file name
+    filename.lc <- paste(filename, "_", str_replace(lc, "\\.", "-"), sep = "")
 
-  # create directory if necessary
-  dir.create(EXPORT_PATH_PLOTS, showWarnings = FALSE)
+    # subsets by lockdown condition
+    data.ss.lc <- subset(data.ss, nb.prof.lockdown.condition == lc)
+    uids.lc <- data.ss.lc$sim.uid
+    data.rs.lc <- data.rs[data.rs$sim.uid %in% uids.lc, ]
 
-  plot.cnt <- 1
+    # OVERALL DATA
+    print("Start creating OVERALL SIRV plots.")
+    # baseline
+    ggsave(paste(filename.lc, "_01-overall_baseline", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+           plotSIRDevelopment(subset(data.rs.lc, nb.prof.vaccine.distribution == "none"),
+                              subset(data.ss.lc, nb.prof.vaccine.distribution == "none"),
+                              maxRounds = max.rounds),
+           width = p.width,
+           height = p.height,
+           units = EXPORT_SIZE_UNITS,
+           dpi = EXPORT_DPI,
+           device = EXPORT_FILE_TYPE_PLOTS)
+    # random
+    ggsave(paste(filename.lc, "_01-overall_random", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+           plotSIRDevelopment(subset(data.rs.lc, nb.prof.vaccine.distribution == "random"),
+                              subset(data.ss.lc, nb.prof.vaccine.distribution == "random"),
+                              maxRounds = max.rounds),
+           width = p.width,
+           height = p.height,
+           units = EXPORT_SIZE_UNITS,
+           dpi = EXPORT_DPI,
+           device = EXPORT_FILE_TYPE_PLOTS)
+    # targeted
+    ggsave(paste(filename.lc, "_01-overall_targeted", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+           plotSIRDevelopment(subset(data.rs.lc, nb.prof.vaccine.distribution == "by.av.degree.per.prof.group"),
+                              subset(data.ss.lc, nb.prof.vaccine.distribution == "by.av.degree.per.prof.group"),
+                              maxRounds = max.rounds),
+           width = p.width,
+           height = p.height,
+           units = EXPORT_SIZE_UNITS,
+           dpi = EXPORT_DPI,
+           device = EXPORT_FILE_TYPE_PLOTS)
 
-  # begin: variations of epidemics
-  for (q in unique(data.ss$nb.prof.quarantined)) {
-    for (v in unique(data.ss$nb.prof.vaccinated)) {
-      for (a in unique(data.ss$nb.prof.alpha)) {
-        for (o in unique(data.ss$nb.prof.omega)) {
-          for (e in unique(data.ss$nb.prof.vaccine.efficacy)) {
+    # VACCINATION AVAILIBILITY
+    for (vax.avl in c(0.05, 0.10, 0.20, 0.30, 0.40, 0.50)) {
 
-            uids <- subset(data.ss, nb.prof.vaccinated == v &
-                             nb.prof.quarantined == q &
-                             nb.prof.vaccine.efficacy == e &
-                             nb.prof.alpha == a &
-                             nb.prof.omega == o)$sim.uid
+      print(paste("Start creating SIRV plots for vaccine availibility:", vax.avl))
 
-            if (length(uids) > 0) {
-              filename <- paste(EXPORT_PATH_PLOTS,
-                    plot.cnt,
-                    "-sir",
-                    "-o_", o,
-                    "-a_", a,
-                    "-v_", v,
-                    "-e_", e,
-                    "-q_", q,
-                    sep = "")
-              filename <- str_replace_all(filename, "\\s", "")
-              filename <- str_replace_all(filename, "\\.", "")
-              filename <- paste(filename, EXPORT_FILE_EXTENSION_PLOTS, sep = "")
-              ggsave(filename,
-                     plotSIRDevelopment(subset(data.rs, sim.uid %in% uids),
-                                        subset(data.ss, sim.uid %in% uids),
-                                        maxRounds = 250),
-                     width = 150,
-                     height = 50,
-                     units = EXPORT_SIZE_UNITS,
-                     dpi = EXPORT_DPI,
-                     device = EXPORT_FILE_TYPE_PLOTS)
+      # data preparations
+      data.rs.vax <- subset(data.rs.lc, nb.prof.vaccine.availibility == vax.avl)
+      data.ss.vax <- subset(data.ss.lc, nb.prof.vaccine.availibility == vax.avl)
+      filename.lc.vax <- paste(filename.lc, "_02-vaxavl-", str_replace(format(round(vax.avl, 2), nsmall = 2), "\\.", ""), sep = "")
 
-              plot.cnt <- plot.cnt+1
+      # random
+      print("Start creating random SIRV plot.")
+      ggsave(paste(filename.lc.vax, "_random", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+             plotSIRDevelopment(subset(data.rs.vax, nb.prof.vaccine.distribution == "random"),
+                                subset(data.ss.vax, nb.prof.vaccine.distribution == "random"),
+                                maxRounds = max.rounds),
+             width = p.width,
+             height = p.height,
+             units = EXPORT_SIZE_UNITS,
+             dpi = EXPORT_DPI,
+             device = EXPORT_FILE_TYPE_PLOTS)
 
-            }
-          }
-        }
-      }
+      # targeted
+      print("Start creating targeted SIRV plot.")
+      ggsave(paste(filename.lc.vax, "_targeted", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+             plotSIRDevelopment(subset(data.rs.vax, nb.prof.vaccine.distribution == "by.av.degree.per.prof.group"),
+                                subset(data.ss.vax, nb.prof.vaccine.distribution == "by.av.degree.per.prof.group"),
+                                maxRounds = max.rounds),
+             width = p.width,
+             height = p.height,
+             units = EXPORT_SIZE_UNITS,
+             dpi = EXPORT_DPI,
+             device = EXPORT_FILE_TYPE_PLOTS)
     }
+
+    # VACCINATION EFFECTIVENESS
+    for (vax.eff in c(0.60, 0.75, 0.90)) {
+
+      print(paste("Start creating SIRV plots for vaccine effectiveness:", vax.eff))
+
+      # data preparations
+      data.rs.vax <- subset(data.rs.lc, nb.prof.vaccine.efficacy == vax.eff)
+      data.ss.vax <- subset(data.ss.lc, nb.prof.vaccine.efficacy == vax.eff)
+      filename.lc.vax <- paste(filename.lc, "_03-vaxeff-", str_replace(format(round(vax.eff, 2), nsmall = 2), "\\.", ""), sep = "")
+
+      # random
+      print("Start creating random SIRV plot.")
+      ggsave(paste(filename.lc.vax, "_random", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+             plotSIRDevelopment(subset(data.rs.vax, nb.prof.vaccine.distribution == "random"),
+                                subset(data.ss.vax, nb.prof.vaccine.distribution == "random"),
+                                maxRounds = max.rounds),
+             width = p.width,
+             height = p.height,
+             units = EXPORT_SIZE_UNITS,
+             dpi = EXPORT_DPI,
+             device = EXPORT_FILE_TYPE_PLOTS)
+
+      # targeted
+      print("Start creating targeted SIRV plot.")
+      ggsave(paste(filename.lc.vax, "_targeted", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+             plotSIRDevelopment(subset(data.rs.vax, nb.prof.vaccine.distribution == "by.av.degree.per.prof.group"),
+                                subset(data.ss.vax, nb.prof.vaccine.distribution == "by.av.degree.per.prof.group"),
+                                maxRounds = max.rounds),
+             width = p.width,
+             height = p.height,
+             units = EXPORT_SIZE_UNITS,
+             dpi = EXPORT_DPI,
+             device = EXPORT_FILE_TYPE_PLOTS)
+    }
+
+    # CLUSTERING
+    cluster.min <- min(data.ss.lc$net.clustering.av)
+    cluster.max <- max(data.ss.lc$net.clustering.av)
+    cluster.step.size <- (cluster.max - cluster.min) / 3
+    cluster.lo.max <- cluster.min + cluster.step.size
+    cluster.me.max <- cluster.min + 2*cluster.step.size
+
+    for (clus in list(c(cluster.min, cluster.lo.max),
+                   c(cluster.lo.max, cluster.me.max),
+                   c(cluster.me.max, cluster.max))) {
+
+      print(paste("Start creating SIRV plots for clustering:", clus[1], "-", clus[2]))
+
+      # data preparations
+      data.ss.clus <- subset(data.ss.lc, net.clustering.av >= clus[1] & net.clustering.av < clus[2])
+      uids.clus <- data.ss.clus$sim.uid
+      data.rs.clus <- data.rs[data.rs$sim.uid %in% uids.clus, ]
+      filename.lc.clus <- paste(filename.lc, "_04-clus",
+                                str_replace(format(round(clus[1], 2), nsmall = 2), "\\.", ""), "-",
+                                str_replace(format(round(clus[2], 2), nsmall = 2), "\\.", ""),
+                                sep = "")
+
+      # baseline
+      print("Start creating baseline SIRV plot.")
+      ggsave(paste(filename.lc.clus, "_baseline", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+             plotSIRDevelopment(subset(data.rs.clus, nb.prof.vaccine.distribution == "none"),
+                                subset(data.ss.clus, nb.prof.vaccine.distribution == "none"),
+                                maxRounds = max.rounds),
+             width = p.width,
+             height = p.height,
+             units = EXPORT_SIZE_UNITS,
+             dpi = EXPORT_DPI,
+             device = EXPORT_FILE_TYPE_PLOTS)
+
+      # random
+      print("Start creating random SIRV plot.")
+      ggsave(paste(filename.lc.clus, "_random", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+             plotSIRDevelopment(subset(data.rs.clus, nb.prof.vaccine.distribution == "random"),
+                                subset(data.ss.clus, nb.prof.vaccine.distribution == "random"),
+                                maxRounds = max.rounds),
+             width = p.width,
+             height = p.height,
+             units = EXPORT_SIZE_UNITS,
+             dpi = EXPORT_DPI,
+             device = EXPORT_FILE_TYPE_PLOTS)
+
+      # targeted
+      print("Start creating targeted SIRV plot.")
+      ggsave(paste(filename.lc.clus, "_targeted", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+             plotSIRDevelopment(subset(data.rs.clus, nb.prof.vaccine.distribution == "by.av.degree.per.prof.group"),
+                                subset(data.ss.clus, nb.prof.vaccine.distribution == "by.av.degree.per.prof.group"),
+                                maxRounds = max.rounds),
+             width = p.width,
+             height = p.height,
+             units = EXPORT_SIZE_UNITS,
+             dpi = EXPORT_DPI,
+             device = EXPORT_FILE_TYPE_PLOTS)
+    }
+
+    # HOMOPHILY
+    homo.min <- min(data.ss.lc$net.assortativity.profession)
+    homo.max <- max(data.ss.lc$net.assortativity.profession)
+    homo.step.size <- (homo.max - homo.min) / 3
+    homo.lo.max <- homo.min + homo.step.size
+    homo.me.max <- homo.min + 2*homo.step.size
+
+    for (homo in list(c(homo.min, homo.lo.max),
+                   c(homo.lo.max, homo.me.max),
+                   c(homo.me.max, homo.max))) {
+
+      print(paste("Start creating SIRV plots for homophily:", homo))
+
+      # data preparations
+      data.ss.homo <- subset(data.ss.lc, net.assortativity.profession >= homo[1] & net.assortativity.profession < homo[2])
+      uids.homo <- data.ss.homo$sim.uid
+      data.rs.homo <- data.rs[data.rs$sim.uid %in% uids.homo, ]
+      filename.lc.homo <- paste(filename.lc, "_homo",
+                                str_replace(format(round(homo[1], 2), nsmall = 2), "\\.", ""), "-",
+                                str_replace(format(round(homo[2], 2), nsmall = 2), "\\.", ""),
+                                sep = "")
+
+      # baseline
+      print("Start creating baseline SIRV plot.")
+      ggsave(paste(filename.lc.homo, "_baseline", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+             plotSIRDevelopment(subset(data.rs.homo, nb.prof.vaccine.distribution == "none"),
+                                subset(data.ss.homo, nb.prof.vaccine.distribution == "none"),
+                                maxRounds = max.rounds),
+             width = p.width,
+             height = p.height,
+             units = EXPORT_SIZE_UNITS,
+             dpi = EXPORT_DPI,
+             device = EXPORT_FILE_TYPE_PLOTS)
+
+      # random
+      print("Start creating random SIRV plot.")
+      ggsave(paste(filename.lc.homo, "_random", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+             plotSIRDevelopment(subset(data.rs.homo, nb.prof.vaccine.distribution == "random"),
+                                subset(data.ss.homo, nb.prof.vaccine.distribution == "random"),
+                                maxRounds = max.rounds),
+             width = p.width,
+             height = p.height,
+             units = EXPORT_SIZE_UNITS,
+             dpi = EXPORT_DPI,
+             device = EXPORT_FILE_TYPE_PLOTS)
+
+      # targeted
+      print("Start creating targeted SIRV plot.")
+      ggsave(paste(filename.lc.homo, "_targeted", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+             plotSIRDevelopment(subset(data.rs.homo, nb.prof.vaccine.distribution == "by.av.degree.per.prof.group"),
+                                subset(data.ss.homo, nb.prof.vaccine.distribution == "by.av.degree.per.prof.group"),
+                                maxRounds = max.rounds),
+             width = p.width,
+             height = p.height,
+             units = EXPORT_SIZE_UNITS,
+             dpi = EXPORT_DPI,
+             device = EXPORT_FILE_TYPE_PLOTS)
+    }
+
   }
 }
 
@@ -1387,6 +2765,332 @@ export_boxplots <- function(data.ss = load_simulation_summary_data()) {
   }
 }
 
+#----------------------------------------------------------------------------------------------------#
+# function: export_main_result_densities
+#     Exports density plots for the main results
+# param:  data.ss
+#     the simulation summary data
+#----------------------------------------------------------------------------------------------------#
+export_main_result_densities <- function(data.ss = load_simulation_summary_data(),
+                                         p.width = 100, p.height = 50) {
+
+  # create directory if necessary
+  dir.create(EXPORT_PATH_PLOTS, showWarnings = FALSE)
+
+  data.ss.baseline = subset(data.ss, data.ss$nb.prof.vaccine.distribution == "none")
+  data.ss.random = subset(data.ss, data.ss$nb.prof.vaccine.distribution == "random")
+  data.ss.targeted = subset(data.ss, data.ss$nb.prof.vaccine.distribution == "by.av.degree.per.prof.group")
+
+  for (lc in c("lc.none", "lc.pre", "lc.during")) {
+
+    data.ss.baseline.lc <- data.ss.baseline
+    data.ss.random.lc <- data.ss.random
+    data.ss.targeted.lc <- data.ss.targeted
+
+    if (lc != "lc.none") {
+      data.ss.baseline.lc <- subset(data.ss.baseline, nb.prof.lockdown.condition == lc)
+      data.ss.random.lc <- subset(data.ss.random, nb.prof.lockdown.condition == lc)
+      data.ss.targeted.lc <- subset(data.ss.targeted, nb.prof.lockdown.condition == lc)
+    }
+
+    ### FINAL SIZE
+    # data preparation
+    dens.finsize <- data.frame(condition = rep("Baseline", nrow(data.ss.baseline.lc)),
+                               final.size = data.ss.baseline.lc$net.pct.rec)
+    dens.finsize <- rbind(dens.finsize, data.frame(condition = rep("Random", nrow(data.ss.random.lc)),
+                                                   final.size = data.ss.random.lc$net.pct.rec))
+    dens.finsize <- rbind(dens.finsize, data.frame(condition = rep("Targeted", nrow(data.ss.targeted.lc)),
+                                                   final.size = data.ss.targeted.lc$net.pct.rec))
+    means <- ddply(dens.finsize, "condition", summarise, grp.mean=mean(final.size))
+    medians <- ddply(dens.finsize, "condition", summarise, grp.median=median(final.size))
+
+    # plot assembly
+    p.finsize <- ggplot(dens.finsize,
+                        aes(x=final.size,
+                            fill=condition)) +
+      geom_density(alpha=0.2) +
+      geom_vline(data=means,
+                 aes(xintercept=grp.mean,
+                     color=condition),
+                 linetype="dashed") +
+      geom_vline(data=medians,
+                 aes(xintercept=grp.median,
+                     color=condition),
+                 linetype="solid") +
+      xlim(0, 100) +
+      labs(x = "Final size",
+           y = "Density",
+           color = "Condition",
+           fill = "Condition") +
+      scale_fill_manual(values=COLORS.CONDITIONS) +
+      scale_color_manual(values=COLORS.CONDITIONS) +
+      theme(legend.position="none")
+
+    # export
+    ggsave(paste(EXPORT_PATH_PLOTS, "final-size_", str_replace(lc, "\\.", ""), EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+           p.finsize,
+           width = p.width,
+           height = p.height,
+           units = EXPORT_SIZE_UNITS,
+           dpi = EXPORT_DPI,
+           device = EXPORT_FILE_TYPE_PLOTS)
+
+    # plot assembly for final size > 1
+    p.finsize.larger1 <- ggplot(dens.finsize,
+                                 aes(x=final.size,
+                                     fill=condition)) +
+      geom_density(alpha=0.2) +
+      geom_vline(data=means,
+                 aes(xintercept=grp.mean,
+                     color=condition),
+                 linetype="dashed") +
+      geom_vline(data=medians,
+                 aes(xintercept=grp.median,
+                     color=condition),
+                 linetype="solid") +
+      xlim(2, 100) +
+      labs(x = "Final size",
+           y = "Density",
+           color = "Condition",
+           fill = "Condition") +
+      scale_fill_manual(values=COLORS.CONDITIONS) +
+      scale_color_manual(values=COLORS.CONDITIONS) +
+      theme(legend.position="none")
+
+    # export
+    ggsave(paste(EXPORT_PATH_PLOTS, "final-size_", str_replace(lc, "\\.", ""), "_larger1", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+           p.finsize.larger1,
+           width = p.width,
+           height = p.height,
+           units = EXPORT_SIZE_UNITS,
+           dpi = EXPORT_DPI,
+           device = EXPORT_FILE_TYPE_PLOTS)
+
+    ### DURATION
+    # data preparation
+    dens.dur <- data.frame(condition = rep("Baseline", nrow(data.ss.baseline.lc)),
+                           duration = data.ss.baseline.lc$net.epidemic.duration)
+    dens.dur <- rbind(dens.dur, data.frame(condition = rep("Random", nrow(data.ss.random.lc)),
+                                           duration = data.ss.random.lc$net.epidemic.duration))
+    dens.dur <- rbind(dens.dur, data.frame(condition = rep("Targeted", nrow(data.ss.targeted.lc)),
+                                           duration = data.ss.targeted.lc$net.epidemic.duration))
+    means <- ddply(dens.dur, "condition", summarise, grp.mean=mean(duration))
+    medians <- ddply(dens.dur, "condition", summarise, grp.median=median(duration))
+
+    # plot assembly
+    p.duration <- ggplot(dens.dur,
+                         aes(x=duration,
+                             fill=condition)) +
+      geom_density(alpha=0.2) +
+      geom_vline(data=means,
+                 aes(xintercept=grp.mean,
+                     color=condition),
+                 linetype="dashed") +
+      geom_vline(data=medians,
+                 aes(xintercept=grp.median,
+                     color=condition),
+                 linetype="solid") +
+      xlim(0, 200) +
+      labs(x = "Duration",
+           y = "Density",
+           color = "Condition",
+           fill = "Condition") +
+      scale_fill_manual(values=COLORS.CONDITIONS) +
+      scale_color_manual(values=COLORS.CONDITIONS) +
+      theme(legend.position="none")
+
+    # export
+    ggsave(paste(EXPORT_PATH_PLOTS, "duration_", str_replace(lc, "\\.", ""), EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+           p.duration,
+           width = p.width,
+           height = p.height,
+           units = EXPORT_SIZE_UNITS,
+           dpi = EXPORT_DPI,
+           device = EXPORT_FILE_TYPE_PLOTS)
+
+    ### PEAK SIZE
+    # data preparation
+    dens.psize <- data.frame(condition = rep("Baseline", nrow(data.ss.baseline.lc)),
+                             peak.size = data.ss.baseline.lc$net.epidemic.peak.size)
+    dens.psize <- rbind(dens.psize, data.frame(condition = rep("Random", nrow(data.ss.random.lc)),
+                                               peak.size = data.ss.random.lc$net.epidemic.peak.size))
+    dens.psize <- rbind(dens.psize, data.frame(condition = rep("Targeted", nrow(data.ss.targeted.lc)),
+                                               peak.size = data.ss.targeted.lc$net.epidemic.peak.size))
+    means <- ddply(dens.psize, "condition", summarise, grp.mean=mean(peak.size))
+    medians <- ddply(dens.psize, "condition", summarise, grp.median=median(peak.size))
+
+    # plot assembly
+    p.peaksize <- ggplot(dens.psize,
+                         aes(x=peak.size,
+                             fill=condition)) +
+      geom_density(alpha=0.2) +
+      geom_vline(data=means,
+                 aes(xintercept=grp.mean,
+                     color=condition),
+                 linetype="dashed") +
+      geom_vline(data=medians,
+                 aes(xintercept=grp.median,
+                     color=condition),
+                 linetype="solid") +
+      xlim(0, 10000) +
+      labs(x = "Peak size",
+           y = "Density",
+           color = "Condition",
+           fill = "Condition") +
+      scale_fill_manual(values=COLORS.CONDITIONS) +
+      scale_color_manual(values=COLORS.CONDITIONS) +
+      theme(legend.position="none")
+
+    # export
+    ggsave(paste(EXPORT_PATH_PLOTS, "peak-size_", str_replace(lc, "\\.", ""), EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+           p.peaksize,
+           width = p.width,
+           height = p.height,
+           units = EXPORT_SIZE_UNITS,
+           dpi = EXPORT_DPI,
+           device = EXPORT_FILE_TYPE_PLOTS)
+
+    # plot assembly for peak size > 1
+    p.peaksize.larger1 <- ggplot(dens.psize,
+                         aes(x=peak.size,
+                             fill=condition)) +
+      geom_density(alpha=0.2) +
+      geom_vline(data=means,
+                 aes(xintercept=grp.mean,
+                     color=condition),
+                 linetype="dashed") +
+      geom_vline(data=medians,
+                 aes(xintercept=grp.median,
+                     color=condition),
+                 linetype="solid") +
+      xlim(2, 10000) +
+      labs(x = "Peak size",
+           y = "Density",
+           color = "Condition",
+           fill = "Condition") +
+      scale_fill_manual(values=COLORS.CONDITIONS) +
+      scale_color_manual(values=COLORS.CONDITIONS) +
+      theme(legend.position="none")
+
+    # export
+    ggsave(paste(EXPORT_PATH_PLOTS, "peak-size_", str_replace(lc, "\\.", ""), "_larger1", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+           p.peaksize.larger1,
+           width = p.width,
+           height = p.height,
+           units = EXPORT_SIZE_UNITS,
+           dpi = EXPORT_DPI,
+           device = EXPORT_FILE_TYPE_PLOTS)
+  }
+}
+
+
+export_epidemic_measure_relations <- function(data.ss = load_simulation_summary_data(),
+                                              p.width = 200, p.height = 65) {
+
+  d <- data.frame(fin.size  = data.ss$net.pct.rec,
+                  duration  = data.ss$net.epidemic.duration,
+                  peak.size = data.ss$net.epidemic.peak.size,
+                  condition = data.ss$nb.prof.vaccine.distribution)
+
+  d$condition[d$condition == "none"] <- "Baseline"
+  d$condition[d$condition == "random"] <- "Random"
+  d$condition[d$condition == "by.av.degree.per.prof.group"] <- "Targeted"
+
+
+  # final size - duration
+  p.fd <- ggplot(d, aes(x=fin.size,
+                        y=duration,
+                        shape=condition,
+                        color=condition)) +
+    stat_summary_bin(fun.data=mean_se,
+                     bins  = 100,
+                     size  = 0.4,
+                     alpha = 0.6) +
+    labs(x = "Final size",
+         y = "Duration",
+         color = "Condition",
+         shape = "Condition") +
+    scale_color_manual(values=COLORS.CONDITIONS)
+  # export
+  ggsave(paste(EXPORT_PATH_PLOTS, "finalsize-duration", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         p.fd,
+         width = p.width,
+         height = p.height,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+
+  # final size - peak size
+  p.fp <- ggplot(d, aes(x=fin.size,
+                        y=peak.size,
+                        shape=condition,
+                        color=condition)) +
+    stat_summary_bin(fun.data=mean_se,
+                     bins  = 100,
+                     size  = 0.4,
+                     alpha = 0.6) +
+    labs(x = "Final size",
+         y = "Peak size",
+         color = "Condition",
+         shape = "Condition") +
+    scale_color_manual(values=COLORS.CONDITIONS)
+  # export
+  ggsave(paste(EXPORT_PATH_PLOTS, "finalsize-peaksize", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         p.fp,
+         width = p.width,
+         height = p.height,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+
+  # peak size - duration
+  p.pd <- ggplot(d, aes(x=peak.size,
+                        y=duration,
+                        shape=condition,
+                        color=condition)) +
+    stat_summary_bin(fun.data=mean_se,
+                     bins  = 100,
+                     size  = 0.4,
+                     alpha = 0.6) +
+    labs(x = "Peak size",
+         y = "Duration",
+         color = "Condition",
+         shape = "Condition") +
+    scale_color_manual(values=COLORS.CONDITIONS)
+  # export
+  ggsave(paste(EXPORT_PATH_PLOTS, "peaksize-duration", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         p.pd,
+         width = p.width,
+         height = p.height,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+
+  # multiple plots in one
+  p.fd <- p.fd + theme(legend.position = "top")
+  legend <- get_legend(p.fd)
+  p.fd <- p.fd + theme(legend.position="none")
+  p.fp <- p.fp + theme(legend.position="none")
+
+
+  # export
+  ggsave(paste(EXPORT_PATH_PLOTS, "finsize-duration_finsize-peaksize", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         grid.arrange(legend,
+                      p.fd,
+                      p.fp,
+                      ncol = 2,
+                      nrow = 2,
+                      layout_matrix = rbind(c(1,1), c(2,3)),
+                      widths=c(2.7, 2.7),
+                      heights=c(0.2, 2.5)),
+         width = p.width,
+         height = p.height,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+
+
+}
 
 ############################################ REGRESSIONS #############################################
 #----------------------------------------------------------------------------------------------------#
@@ -1607,7 +3311,6 @@ export_regressions <- function(data.ss = load_simulation_summary_data(), filenam
   ### DEPENDENT ###
   final.size                        <- data.ss$net.epidemic.final.size / 100
   duration                          <- data.ss$net.epidemic.duration
-  peak.time                         <- data.ss$net.epidemic.peak.time
   peak.size                         <- data.ss$net.epidemic.peak.size
 
 
@@ -1968,9 +3671,6 @@ check_belot <- function() {
 }
 
 
-
-
-
 ############################################ COMPOSITION #############################################
 #----------------------------------------------------------------------------------------------------#
 # function: export_all
@@ -1980,20 +3680,29 @@ export_all <- function() {
 
   # data preparation
   data.ss <- load_simulation_summary_data()
-  data.rs <- load_round_summary_prepared_data()
+  # data.as <- load_agent_stats_data()
   data.pr <- load_professions_data()
-  data.ad <- load_agent_details_data()
 
   # descriptive statistics
-  export_descriptives(data.ss = data.ss, data.pr = data.pr, data.ad = data.ad)
-  export_descriptive_variations(data.ss = data.ss)
+  export_descriptives(data.ss = data.ss,
+                      # data.as = data.as,
+                      data.pr = data.pr)
+  # export_descriptives(data.ss = subset(data.ss, nb.prof.lockdown.condition == "lc.pre"),
+  #                     data.pr = data.pr, filename.ext = "pre", include.groups = FALSE)
+  # export_descriptives(data.ss = subset(data.ss, nb.prof.lockdown.condition == "lc.during"),
+  #                     data.pr = data.pr, filename.ext = "during", include.groups = FALSE)
+
+  export_overview(data.ss = data.ss)
 
   # plots
-  export_boxplots(data.ss = data.ss)
-  export_sirs(data.rs = data.rs, data.ss = data.ss)
-  export_sirs_variations(data.rs = data.rs, data.ss = data.ss)
+  export_main_result_densities(data.ss = data.ss)
+  export_epidemic_measure_relations(data.ss = data.ss, p.height = 65)
 
   # regression analysis
-  export_regressions(data.ss = data.ss)
+  #export_regressions(data.ss = data.ss)
+
+  # SIR plots
+  data.rs <- load_round_summary_prepared_data()
+  export_sirs(data.rs = data.rs, data.ss = data.ss)
 
 }
