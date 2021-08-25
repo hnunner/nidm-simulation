@@ -31,6 +31,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
+import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -873,6 +874,12 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
      * Runs the actual simulation of the network game.
      */
     private void startSimulation() {
+
+        Iterator<Agent> agentIterator = this.network.getAgentIterator();
+        while (agentIterator.hasNext()) {
+            Agent agent = agentIterator.next();
+            System.out.println(((NunnerBuskens) agent.getUtilityFunction()).getAlpha());
+        }
 
         // initializations
         // this.simulation = new ThreadedSimulation(this.network);

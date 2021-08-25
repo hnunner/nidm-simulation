@@ -241,7 +241,7 @@ public abstract class SharedUtilityPanel extends DeactivatablePanel {
         txtOmega.setColumns(10);
         txtOmega.setBounds(245, 589, 50, 20);
         add(txtOmega);
-        txtOmega.setValue(new Double(0.8));
+        txtOmega.setValue(new Double(0.01));
         txtOmega.setInputVerifier(PERCENT_VERIFIER);
 
         rdbtnRRandomNo = new JRadioButton("manual");
