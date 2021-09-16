@@ -56,6 +56,7 @@ public class AgentStatsPost {
     private int declinedRequestsOutEpidemic;
     private int declinedRequestsInEpidemic;
     private Integer initialIndexCaseDistance;
+    private int whenInfected;
 
 
     public AgentStatsPost(Agent agent) {
@@ -87,6 +88,8 @@ public class AgentStatsPost {
         this.acceptedRequestsInEpidemic = agent.getConnectionStats().getAcceptedRequestsInEpidemic();
         this.declinedRequestsOutEpidemic = agent.getConnectionStats().getDeclinedRequestsOutEpidemic();
         this.declinedRequestsInEpidemic = agent.getConnectionStats().getDeclinedRequestsInEpidemic();
+
+        this.whenInfected = agent.getWhenInfected();
     }
 
 
@@ -249,6 +252,13 @@ public class AgentStatsPost {
      */
     public int getDeclinedRequestsInEpidemic() {
         return declinedRequestsInEpidemic;
+    }
+
+    /**
+     * @return the whenInfected
+     */
+    public int getWhenInfected() {
+        return whenInfected;
     }
 
 }

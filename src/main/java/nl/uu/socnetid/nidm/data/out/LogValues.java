@@ -210,6 +210,9 @@ public enum LogValues {
     IV_NB_R_PI_RANDOM_HOMOGENEOUS("nb.r.pi.random.homogeneous"),
     IV_NB_R_PI("nb.r.pi"),
     IV_NB_R_PI_AV("nb.r.pi.av"),
+    IV_NB_R_AV("nb.r.av"),
+    IV_NB_R_ABOVE_AV("nb.r.av.above"),
+    IV_NB_R_NEIGHBORHOOD("nb.r.neighborhood"),
     IV_NB_NET_SIZE_RANDOM("nb.N.random"),
     IV_NB_NET_SIZE_RANDOM_MIN("nb.N.random.min"),
     IV_NB_NET_SIZE_RANDOM_MAX("nb.N.random.max"),
@@ -400,6 +403,7 @@ public enum LogValues {
     DV_AGENT_DISEASE_ROUNDS_REMAINING("agent.dis.rounds.remaining"),
     DV_AGENT_INFECTED("agent.infected"),
     DV_AGENT_FORCE_INFECTED("agent.force.infected"),
+    DV_AGENT_WHEN_INFECTED("agent.infected.when"),
     DV_AGENT_DEGREE1("agent.degree"),
     DV_AGENT_DEGREE2("agent.degree2"),
     DV_AGENT_CLOSENESS("agent.closeness"),
@@ -636,3 +640,4 @@ public enum LogValues {
     }
 
 }
+

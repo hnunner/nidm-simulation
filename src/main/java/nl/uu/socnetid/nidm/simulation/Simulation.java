@@ -349,7 +349,7 @@ public class Simulation implements Runnable {
             if (agent.isInfected()) {
                 agent.fightDisease();
             }
-            agent.computeDiseaseTransmission();
+            agent.computeDiseaseTransmission(this.getRounds());
         }
     }
 

@@ -186,11 +186,11 @@ public class GEXFWriterTest {
         dynamicAgent1.addConnection(dynamicAgent4);
         dynamicAgent3.addConnection(dynamicAgent4);
 
-        dynamicAgent1.infect(this.ds);
-        dynamicAgent2.infect(this.ds);
-        dynamicAgent3.infect(this.ds);
+        dynamicAgent1.infect(this.ds, 0);
+        dynamicAgent2.infect(this.ds, 0);
+        dynamicAgent3.infect(this.ds, 0);
         dynamicAgent1.cure();
-        dynamicAgent4.infect(this.ds);
+        dynamicAgent4.infect(this.ds, 0);
         dynamicAgent2.cure();
         dynamicAgent1.makeSusceptible();
 

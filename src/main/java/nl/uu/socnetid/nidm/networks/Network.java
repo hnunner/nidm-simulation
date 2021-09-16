@@ -1966,11 +1966,36 @@ public class Network extends SingleGraph implements SimulationListener {
         return Toolkit.density(this);
     }
 
+    public void updateRiskScores(double r) {
+        Iterator<Agent> agents = this.getAgentIterator();
+        while (agents.hasNext()) {
+            Agent agent = agents.next();
+            agent.updateRSigma(r);
+            agent.updateRPi(r);
+        }
+    }
+
+    public void updateUtility(UtilityFunction utilityFunction) {
+        Iterator<Agent> agents = this.getAgentIterator();
+        while (agents.hasNext()) {
+            Agent agent = agents.next();
+            agent.updateUtilityFunction(utilityFunction);
+        }
+    }
+
     public void updateDisease(DiseaseSpecs diseaseSpecs) {
         Iterator<Agent> agents = this.getAgentIterator();
         while (agents.hasNext()) {
             Agent agent = agents.next();
             agent.updateDisease(diseaseSpecs);
+        }
+    }
+
+    public void updateAgentSelection(double phi, double psi, double xi) {
+        Iterator<Agent> agents = this.getAgentIterator();
+        while (agents.hasNext()) {
+            Agent agent = agents.next();
+            agent.updateAgentSelection(phi, psi, xi);
         }
     }
 
