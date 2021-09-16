@@ -1,0 +1,259 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Statistical models</title>
+<style type="text/css">
+table {
+border: none;
+}
+th {
+text-align: left;
+border-top: 2px solid black;
+border-bottom: 1px solid black;
+padding-right: 12px;
+}
+.midRule {
+border-top: 1px solid black;
+}
+.bottomRule {
+border-bottom: 2px solid black;
+}
+td {
+padding-right: 12px;
+border: none;
+}
+sup {
+vertical-align: 0px;
+}
+</style>
+</head>
+
+<body>
+<table cellspacing="0" align="center">
+<caption align="bottom" style="margin-top:0.3em;">Statistical models</caption>
+<tr>
+<th><b></b></th>
+<th><b>Model 1</b></th>
+<th><b>Model 2</b></th>
+<th><b>Model 3</b></th>
+</tr>
+<tr>
+<td>(Intercept)</td>
+<td>21.85<sup>***</sup></td>
+<td>21.85<sup>***</sup></td>
+<td>17.81<sup>***</sup></td>
+</tr>
+<tr>
+<td></td>
+<td>(0.06)</td>
+<td>(0.04)</td>
+<td>(0.05)</td>
+</tr>
+<tr>
+<td>net.changes</td>
+<td>15.04<sup>***</sup></td>
+<td>6.37<sup>***</sup></td>
+<td>5.93<sup>***</sup></td>
+</tr>
+<tr>
+<td></td>
+<td>(0.06)</td>
+<td>(0.05)</td>
+<td>(0.04)</td>
+</tr>
+<tr>
+<td>degree.av</td>
+<td></td>
+<td>-1.16<sup>***</sup></td>
+<td>0.14</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>(0.11)</td>
+<td>(0.09)</td>
+</tr>
+<tr>
+<td>clustering.av</td>
+<td></td>
+<td>-4.15<sup>***</sup></td>
+<td>-5.81<sup>***</sup></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>(0.13)</td>
+<td>(0.10)</td>
+</tr>
+<tr>
+<td>pathlength.av</td>
+<td></td>
+<td>-2.27<sup>***</sup></td>
+<td>-0.02</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>(0.12)</td>
+<td>(0.09)</td>
+</tr>
+<tr>
+<td>assortativity.av</td>
+<td></td>
+<td>-5.50<sup>***</sup></td>
+<td>-7.35<sup>***</sup></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>(0.04)</td>
+<td>(0.03)</td>
+</tr>
+<tr>
+<td>sigma</td>
+<td></td>
+<td>-0.70<sup>***</sup></td>
+<td>-0.76<sup>***</sup></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>(0.04)</td>
+<td>(0.03)</td>
+</tr>
+<tr>
+<td>gamma</td>
+<td></td>
+<td>13.04<sup>***</sup></td>
+<td>14.08<sup>***</sup></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>(0.05)</td>
+<td>(0.04)</td>
+</tr>
+<tr>
+<td>r.sigma.av</td>
+<td></td>
+<td>-0.72<sup>***</sup></td>
+<td>-0.79<sup>***</sup></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>(0.04)</td>
+<td>(0.03)</td>
+</tr>
+<tr>
+<td>net.changes.X.clustering.av</td>
+<td></td>
+<td></td>
+<td>-3.01<sup>***</sup></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td>(0.05)</td>
+</tr>
+<tr>
+<td>net.changes.X.assortativity.av</td>
+<td></td>
+<td></td>
+<td>-1.89<sup>***</sup></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td>(0.04)</td>
+</tr>
+<tr>
+<td>net.changes.X.gamma</td>
+<td></td>
+<td></td>
+<td>5.38<sup>***</sup></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td>(0.05)</td>
+</tr>
+<tr>
+<td>clustering.av.X.assortativity.av</td>
+<td></td>
+<td></td>
+<td>2.55<sup>***</sup></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td>(0.03)</td>
+</tr>
+<tr>
+<td>pathlength.av.X.gamma</td>
+<td></td>
+<td></td>
+<td>-2.91<sup>***</sup></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td>(0.04)</td>
+</tr>
+<tr>
+<td>assortativity.av.X.gamma</td>
+<td></td>
+<td></td>
+<td>-3.97<sup>***</sup></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td>(0.04)</td>
+</tr>
+<tr>
+<td class="midRule">R<sup>2</sup></td>
+<td class="midRule">0.43</td>
+<td class="midRule">0.73</td>
+<td class="midRule">0.85</td>
+</tr>
+<tr>
+<td>Adj. R<sup>2</sup></td>
+<td>0.43</td>
+<td>0.73</td>
+<td>0.85</td>
+</tr>
+<tr>
+<td>Num. obs.</td>
+<td>80305</td>
+<td>80305</td>
+<td>80305</td>
+</tr>
+<tr>
+<td class="bottomRule">RMSE</td>
+<td class="bottomRule">17.46</td>
+<td class="bottomRule">11.98</td>
+<td class="bottomRule">8.82</td>
+</tr>
+<tr>
+<td colspan="5"><span style="font-size:0.8em"></span></td>
+</tr>
+<tr>
+<td class="bottomRule">adjusted R<sup>2</sup></td>
+<td class="bottomRule">0.4259 ()</td>
+<td class="bottomRule">0.73 ()</td>
+<td class="bottomRule">0.8534 ()</td>
+ </span></td>
+</tr><tr>
+<td colspan="4"><span style="font-size:0.8em"><sup>***</sup>p &lt; 0.001, <sup>**</sup>p &lt; 0.01, <sup>*</sup>p &lt; 0.05</span></td></span></td>
+</tr>
+</table>
+</body>
+</html>

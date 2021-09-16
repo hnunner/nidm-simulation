@@ -26,6 +26,7 @@
 package nl.uu.socnetid.nidm.networks;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -102,7 +103,7 @@ public class NetworkTest {
         this.agent1.addConnection(this.agent4);
         this.agent3.addConnection(this.agent4);
 
-        this.agent6.infect(ds);
+        this.agent6.infect(ds, 0);
 
         // ring arranged network
         this.ringArrangedNetwork = new Network("Ring arranged Network Test", true);
@@ -379,70 +380,6 @@ public class NetworkTest {
      * Test whether the average degree is computed correctly.
      */
     @Test
-    public void testGetAverageDegree() {
-        Network network = new Network("Network Average Degree Test");
-
-        // f(5) = 2.28
-        for (int i = 0; i < 5; i++) {
-            network.addAgent(uf, ds);
-        }
-        assertEquals(5, network.getN());
-        assertEquals(2.28, network.getAverageDegree(), 0.2);
-
-        // f(10) = 3.58
-        for (int i = 0; i < 5; i++) {
-            network.addAgent(uf, ds);
-        }
-        assertEquals(10, network.getN());
-        assertEquals(3.58, network.getAverageDegree(), 0.2);
-
-        // f(15) = 4.62
-        for (int i = 0; i < 5; i++) {
-            network.addAgent(uf, ds);
-        }
-        assertEquals(15, network.getN());
-        assertEquals(4.62, network.getAverageDegree(), 0.2);
-
-        // f(20) = 5.49
-        for (int i = 0; i < 5; i++) {
-            network.addAgent(uf, ds);
-        }
-        assertEquals(20, network.getN());
-        assertEquals(5.49, network.getAverageDegree(), 0.2);
-
-        // f(25) = 6.25
-        for (int i = 0; i < 5; i++) {
-            network.addAgent(uf, ds);
-        }
-        assertEquals(25, network.getN());
-        assertEquals(6.25, network.getAverageDegree(), 0.2);
-
-        // f(50) = 9.93
-        for (int i = 0; i < 25; i++) {
-            network.addAgent(uf, ds);
-        }
-        assertEquals(50, network.getN());
-        assertEquals(9.93, network.getAverageDegree(), 0.2);
-
-        // f(75) = 12.8
-        for (int i = 0; i < 25; i++) {
-            network.addAgent(uf, ds);
-        }
-        assertEquals(75, network.getN());
-        assertEquals(12.8, network.getAverageDegree(), 0.2);
-
-        // f(100) = 15.31
-        for (int i = 0; i < 25; i++) {
-            network.addAgent(uf, ds);
-        }
-        assertEquals(100, network.getN());
-        assertEquals(15.31, network.getAverageDegree(), 0.2);
-    }
-
-    /**
-     * Test whether the average degree is computed correctly.
-     */
-    @Test
     public void testGetAvDegree() {
         assertEquals(6, this.network.getN());
         assertEquals(1.33, this.network.getAvDegree(1), 0.01);
@@ -509,6 +446,112 @@ public class NetworkTest {
         assertEquals(1.73, this.ringAgent1.getGeographicDistanceTo(this.ringAgent3), 0.01);
         assertEquals(2, this.ringAgent1.getGeographicDistanceTo(this.ringAgent4), 0.01);
         assertEquals(1.73, this.ringAgent1.getGeographicDistanceTo(this.ringAgent5), 0.01);
+    }
+
+    /**
+     * Tests whether two networks are equal.
+     */
+    @Test
+    public void testEquals() {
+
+        Network network2 = new Network("Network Test - Comparator");
+
+        Agent a1 = network2.addAgent(
+                this.agent1.getUtilityFunction(),
+                this.agent1.getDiseaseSpecs(),
+                this.agent1.getRSigma(),
+                this.agent1.getRPi(),
+                this.agent1.getPhi(),
+                this.agent1.getOmega(),
+                this.agent1.getPsi(),
+                this.agent1.getXi(),
+                this.agent1.getAge(),
+                this.agent1.considerAge(),
+                this.agent1.getProfession(),
+                this.agent1.considerProfession(),
+                this.agent1.isQuarantined());
+        Agent a2 = network2.addAgent(
+                this.agent2.getUtilityFunction(),
+                this.agent2.getDiseaseSpecs(),
+                this.agent2.getRSigma(),
+                this.agent2.getRPi(),
+                this.agent2.getPhi(),
+                this.agent2.getOmega(),
+                this.agent2.getPsi(),
+                this.agent2.getXi(),
+                this.agent2.getAge(),
+                this.agent2.considerAge(),
+                this.agent2.getProfession(),
+                this.agent2.considerProfession(),
+                this.agent1.isQuarantined());
+        Agent a3 = network2.addAgent(
+                this.agent3.getUtilityFunction(),
+                this.agent3.getDiseaseSpecs(),
+                this.agent3.getRSigma(),
+                this.agent3.getRPi(),
+                this.agent3.getPhi(),
+                this.agent3.getOmega(),
+                this.agent3.getPsi(),
+                this.agent3.getXi(),
+                this.agent3.getAge(),
+                this.agent3.considerAge(),
+                this.agent3.getProfession(),
+                this.agent3.considerProfession(),
+                this.agent1.isQuarantined());
+        Agent a4 = network2.addAgent(
+                this.agent4.getUtilityFunction(),
+                this.agent4.getDiseaseSpecs(),
+                this.agent4.getRSigma(),
+                this.agent4.getRPi(),
+                this.agent4.getPhi(),
+                this.agent4.getOmega(),
+                this.agent4.getPsi(),
+                this.agent4.getXi(),
+                this.agent4.getAge(),
+                this.agent4.considerAge(),
+                this.agent4.getProfession(),
+                this.agent4.considerProfession(),
+                this.agent1.isQuarantined());
+        network2.addAgent(
+                this.agent5.getUtilityFunction(),
+                this.agent5.getDiseaseSpecs(),
+                this.agent5.getRSigma(),
+                this.agent5.getRPi(),
+                this.agent5.getPhi(),
+                this.agent5.getOmega(),
+                this.agent5.getPsi(),
+                this.agent5.getXi(),
+                this.agent5.getAge(),
+                this.agent5.considerAge(),
+                this.agent5.getProfession(),
+                this.agent5.considerProfession(),
+                this.agent1.isQuarantined());
+        a1.addConnection(a2);
+        a1.addConnection(a3);
+        a1.addConnection(a4);
+        assertFalse(this.network.equals(network2));
+
+        a3.addConnection(a4);
+        assertFalse(this.network.equals(network2));
+
+        Agent a6 = network2.addAgent(
+                this.agent6.getUtilityFunction(),
+                this.agent6.getDiseaseSpecs(),
+                this.agent6.getRSigma(),
+                this.agent6.getRPi(),
+                this.agent6.getPhi(),
+                this.agent6.getOmega(),
+                this.agent6.getPsi(),
+                this.agent6.getXi(),
+                this.agent6.getAge(),
+                this.agent6.considerAge(),
+                this.agent6.getProfession(),
+                this.agent6.considerProfession(),
+                this.agent1.isQuarantined());
+        assertFalse(this.network.equals(network2));
+
+        a6.infect(this.ds, 0);
+        assertTrue(this.network.equals(network2));
     }
 
 }

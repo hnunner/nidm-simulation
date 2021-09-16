@@ -32,8 +32,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.junit.Before;
@@ -43,6 +46,7 @@ import org.junit.Test;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseGroup;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
+import nl.uu.socnetid.nidm.networks.AssortativityConditions;
 import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.utility.Cumulative;
 import nl.uu.socnetid.nidm.utility.UtilityFunction;
@@ -55,6 +59,7 @@ import nl.uu.socnetid.nidm.utility.UtilityFunction;
  */
 public class AgentTest {
 
+    // GENERAL TESTS
     // network
     private Network network;
 
@@ -77,6 +82,13 @@ public class AgentTest {
 
     private UtilityFunction uf;
     private DiseaseSpecs ds;
+
+
+    // ASSORTATIVITY TESTS
+    // networks
+    private Network networkAss;
+    private List<Agent> agentsAss;
+    private Agent agentAss;
 
 
     /**
@@ -111,6 +123,23 @@ public class AgentTest {
         this.agent1.setXY(0, 0);
         this.agent2.setXY(1, 1);
         this.agent3.setXY(3, 1);
+
+
+        this.networkAss = new Network("Assortativity conditions test",
+                Arrays.asList(AssortativityConditions.PROFESSION, AssortativityConditions.AGE));
+        this.agentsAss = new ArrayList<Agent>(11);
+        this.agentAss = networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 90, true, "A", true, false);
+
+        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 80, true, "B", true, false));
+        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 70, true, "A", true, false));
+        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 91, true, "C", true, false));
+        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 30, true, "A", true, false));
+        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5,  5, true, "C", true, false));
+        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 50, true, "B", true, false));
+        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 95, true, "C", true, false));
+        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 20, true, "B", true, false));
+        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 10, true, "A", true, false));
+        this.agentsAss.add(networkAss.addAgent(uf, ds, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 60, true, "C", true, false));
     }
 
 
@@ -209,7 +238,7 @@ public class AgentTest {
     @Test
     public void testGetDiseaseGroup() {
         assertEquals(DiseaseGroup.SUSCEPTIBLE, this.agent1.getDiseaseGroup());
-        this.agent1.infect(this.ds);
+        this.agent1.infect(this.ds, 0);
         assertEquals(DiseaseGroup.INFECTED, this.agent1.getDiseaseGroup());
         this.agent1.cure();
         assertEquals(DiseaseGroup.RECOVERED, this.agent1.getDiseaseGroup());
@@ -253,7 +282,7 @@ public class AgentTest {
     public void testValidInfect() {
         assertTrue(this.agent1.isSusceptible());
         DiseaseSpecs dsValid = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
-        this.agent1.infect(dsValid);
+        this.agent1.infect(dsValid, 0);
         assertTrue(this.agent1.isInfected());
     }
 
@@ -263,7 +292,7 @@ public class AgentTest {
     @Test(expected = RuntimeException.class)
     public void testInvalidInfect() {
         DiseaseSpecs dsInvalid = new DiseaseSpecs(DiseaseType.SIR, tau+1, s, gamma, mu);
-        this.agent1.infect(dsInvalid);
+        this.agent1.infect(dsInvalid, 0);
     }
 
     /**
@@ -580,6 +609,46 @@ public class AgentTest {
         assertEquals(0, this.agent4.getBetweennessNormalized(1), 0.01);
         assertEquals(0, this.agent5.getBetweennessNormalized(1), 0.01);
         assertEquals(0, this.agent6.getBetweennessNormalized(1), 0.01);
+    }
+
+    /**
+     * Test whether agents are sorted by assortativity conditions.
+     */
+    @Test
+    public void testSortByProfessionAndAge() {
+
+        agentAss.sortByAssortativityConditions(agentsAss);
+
+        assertEquals("A", agentsAss.get(0).getProfession());
+        assertEquals(70, agentsAss.get(0).getAge());
+
+        assertEquals("A", agentsAss.get(1).getProfession());
+        assertEquals(30, agentsAss.get(1).getAge());
+
+        assertEquals("A", agentsAss.get(2).getProfession());
+        assertEquals(10, agentsAss.get(2).getAge());
+
+        assertEquals("C", agentsAss.get(3).getProfession());
+        assertEquals(91, agentsAss.get(3).getAge());
+
+        assertEquals("C", agentsAss.get(4).getProfession());
+        assertEquals(95, agentsAss.get(4).getAge());
+
+        assertEquals("B", agentsAss.get(5).getProfession());
+        assertEquals(80, agentsAss.get(5).getAge());
+
+        assertEquals("C", agentsAss.get(6).getProfession());
+        assertEquals(60, agentsAss.get(6).getAge());
+
+        assertEquals("B", agentsAss.get(7).getProfession());
+        assertEquals(50, agentsAss.get(7).getAge());
+
+        assertEquals("B", agentsAss.get(8).getProfession());
+        assertEquals(20, agentsAss.get(8).getAge());
+
+        assertEquals("C", agentsAss.get(9).getProfession());
+        assertEquals(5, agentsAss.get(9).getAge());
+
     }
 
 }

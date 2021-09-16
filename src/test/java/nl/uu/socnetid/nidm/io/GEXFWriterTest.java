@@ -90,7 +90,7 @@ public class GEXFWriterTest {
      */
     @Before
     public void initNetwork() {
-        this.network = new Network("GEXFWriter Test");
+        this.network = new Network("GEXFWriter Test", true);
 
         this.uf = new Irtc(alpha, beta, c);
         this.ds = new DiseaseSpecs(DiseaseType.SIR, tau, s, gamma, mu);
@@ -136,18 +136,18 @@ public class GEXFWriterTest {
         gexfWriter.writeStaticNetwork(this.network, file);
 
         // read the file
-        Graph graph = new SingleGraph("GEXFWriter Test");
+        Network n = new Network();
         FileSource fs = FileSourceFactory.sourceFor(file);
-        fs.addSink(graph);
+        fs.addSink(n);
         fs.readAll(file);
 
         // tests
-        assertEquals(this.network.getEdgeSet().size(), graph.getEdgeSet().size());
-        assertEquals(this.network.getNodeSet().size(), graph.getNodeSet().size());
+        assertEquals(this.network.getEdgeSet().size(), n.getEdgeSet().size());
+        assertEquals(this.network.getNodeSet().size(), n.getNodeSet().size());
         for (int i = 0; i < 20; i++) {
             Agent agent = this.network.getRandomAgent();
             Node expectedNode = this.network.getNode(agent.getId());
-            Node actualNode = graph.getNode(agent.getId());
+            Node actualNode = n.getNode(agent.getId());
             assertEquals(expectedNode.getId(), actualNode.getId());
             assertEquals(expectedNode.getAttributeCount(), actualNode.getAttributeCount());
             String expectedDiseaseGroup = expectedNode.getAttribute(
@@ -186,11 +186,11 @@ public class GEXFWriterTest {
         dynamicAgent1.addConnection(dynamicAgent4);
         dynamicAgent3.addConnection(dynamicAgent4);
 
-        dynamicAgent1.infect(this.ds);
-        dynamicAgent2.infect(this.ds);
-        dynamicAgent3.infect(this.ds);
+        dynamicAgent1.infect(this.ds, 0);
+        dynamicAgent2.infect(this.ds, 0);
+        dynamicAgent3.infect(this.ds, 0);
         dynamicAgent1.cure();
-        dynamicAgent4.infect(this.ds);
+        dynamicAgent4.infect(this.ds, 0);
         dynamicAgent2.cure();
         dynamicAgent1.makeSusceptible();
 

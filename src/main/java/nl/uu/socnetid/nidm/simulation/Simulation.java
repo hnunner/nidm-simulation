@@ -223,9 +223,9 @@ public class Simulation implements Runnable {
             unfinished = true;
         }
         if (unfinished) {
-            logger.warn(sb.toString());
+//            logger.warn(sb.toString());
         } else {
-            logger.debug(sb.toString());
+//            logger.debug(sb.toString());
         }
 
         // notify simulation finished
@@ -233,7 +233,7 @@ public class Simulation implements Runnable {
     }
 
     /**
-     * Simulates the network dynamics (disease and agents) until the network is stable.
+     * Simulates the network dynamics (disease and agents) until the disease has disappeared.
      *
      * TODO: generalize with method above
      */
@@ -246,6 +246,29 @@ public class Simulation implements Runnable {
 
         while (this.network.hasActiveInfection() && !this.stopped) {
             computeSingleRound();
+        }
+
+        // status message
+        logger.debug(new StringBuilder("Epidemic finished after " + (this.rounds-1) + " time steps.").toString());
+
+        // notify simulation finished
+        this.notifySimulationFinished();
+    }
+
+    /**
+     * Simulates the network dynamics (disease and agents) until the disease has disappeared.
+     *
+     * TODO: generalize with method above
+     */
+    public void simulateDiseaseDynamicsUntilEpidemicFinished() {
+
+        notifySimulationStarted();
+        this.rounds = 1;
+
+        while (this.network.hasActiveInfection()) {
+            computeDiseaseDynamics();
+            notifyRoundFinished();
+            this.rounds++;
         }
 
         // status message
@@ -326,7 +349,7 @@ public class Simulation implements Runnable {
             if (agent.isInfected()) {
                 agent.fightDisease();
             }
-            agent.computeDiseaseTransmission();
+            agent.computeDiseaseTransmission(this.getRounds());
         }
     }
 

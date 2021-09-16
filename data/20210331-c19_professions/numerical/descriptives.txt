@@ -1,0 +1,371 @@
+\begin{table}[hbt!] 
+\caption{Descriptive statistics (observations: 133200).}
+\label{tab:descriptives}
+\begin{adjustbox}{width=1\textwidth,center=\textwidth}
+\begin{tabular}{l *{6}{S[
+input-symbols = {(- )},
+detect-weight,
+group-separator = {,},
+table-format=5.2]}}
+\toprule
+& \text{\thead{Mean}} & \text{\thead{SD}} & \text{\thead{Median}} & \text{\thead{Min}} & \text{\thead{Max}} & \text{\thead{Skew}} \\ 
+\midrule 
+\midrule 
+\multicolumn{7}{l}{\textbf{\textit{I. Network}}} \\[6pt] 
+\multicolumn{7}{l}{\textit{I.I. Normal}} \\ 
+ Av. degree ($\mathcal{D}_{G}$) & 4.92 & 0.21 & 4.92 & 4.46 & 5.3 & -0.18 \\[0pt] 
+ Clustering ($\mathcal{C}_{G}$) & 0.38 & 0.1 & 0.4 & 0.21 & 0.56 & -0.18 \\[0pt] 
+ Av. path length ($\mathcal{L}_{G}$) & 7.72 & 0.82 & 7.7 & 6.38 & 9.97 & 0.32 \\[0pt] 
+ Assortativity, profession ($\mathcal{A}^{p}_{G}$) & 0.12 & 0.05 & 0.09 & 0.06 & 0.2 & 0.29 \\[6pt] 
+\multicolumn{7}{l}{\textit{I.II. Lockdown}} \\ 
+ Av. degree ($\mathcal{D}_{G}$) & 2.1 & 0.02 & 2.1 & 2.06 & 2.16 & 0.52 \\[0pt] 
+ Clustering ($\mathcal{C}_{G}$) & 0.12 & 0.03 & 0.11 & 0.06 & 0.18 & 0.16 \\[0pt] 
+ Av. path length ($\mathcal{L}_{G}$) & 13.83 & 1.55 & 14.01 & 11.28 & 18.31 & 0.11 \\[0pt] 
+ Assortativity, profession ($\mathcal{A}^{p}_{G}$) & 0.07 & 0.02 & 0.06 & 0.04 & 0.11 & 0.39 \\[0pt] 
+\midrule 
+\multicolumn{7}{l}{\textbf{\textit{II. Index case}}} \\[6pt] 
+\multicolumn{7}{l}{\textit{II.I. Normal}} \\ 
+ Degree & 4.53 & 3.57 & 4 & 1 & 85 & 3.96 \\[0pt] 
+ Clustering & 0.39 & 0.26 & 0.33 & 0 & 1 & 0.3 \\[0pt] 
+ Closeness & 0.96 & 0.12 & 0.98 & 0 & 1 & -7.58 \\[0pt] 
+ Assortativity (profession) & 0.09 & 0.18 & 0 & 0 & 1 & 2.4 \\[6pt] 
+\multicolumn{7}{l}{\textit{II.II. Lockdown}} \\ 
+ Degree & 1.98 & 1.76 & 2 & 0 & 26 & 1.73 \\[0pt] 
+ Clustering & 0.12 & 0.26 & 0 & 0 & 1 & 2.41 \\[0pt] 
+ Closeness & 0.44 & 0.32 & 0.64 & 0 & 0.74 & -0.6 \\[0pt] 
+ Assortativity (profession) & 0.06 & 0.18 & 0 & 0 & 1 & 3.69 \\[0pt] 
+\midrule 
+\multicolumn{7}{l}{\textbf{\textit{III. Epidemic}}} \\[6pt] 
+\multicolumn{7}{l}{\textit{III.I. Normal}} \\ 
+ Final size & 50.8 & 35.86 & 62.11 & 0.01 & 98.24 & -0.42 \\[0pt] 
+ Duration & 72.24 & 46.4 & 72 & 10 & 484 & 1.11 \\[0pt] 
+ Epidemic peak size & 2908.22 & 2466.26 & 2886 & 1 & 8395 & 0.22 \\[6pt] 
+\multicolumn{7}{l}{\textit{III.II. Lockdown}} \\ 
+ Final size & 7.14 & 15.34 & 0.03 & 0.01 & 61.95 & 1.96 \\[0pt] 
+ Duration & 46.3 & 60.5 & 16 & 10 & 511 & 1.85 \\[0pt] 
+ Epidemic peak size & 193.57 & 460.08 & 3 & 1 & 2716 & 2.64 \\[0pt] 
+\midrule 
+\multicolumn{7}{l}{\textbf{\textit{IV. Counter measures}}} \\[6pt] 
+\multicolumn{7}{l}{\textit{IV.I. Vaccinations}} \\ 
+ Vaccinated (proportion) & 0.25 & 0.16 & 0.2 & 0 & 0.5 & 0.16 \\[0pt] 
+ Immunized (proportion) & 0.19 & 0.13 & 0.18 & 0 & 0.46 & 0.37 \\[6pt] 
+\multicolumn{7}{l}{\textit{IV.II. Baseline}} \\ 
+ Final size & 58.81 & 39.63 & 59.64 & 0.01 & 98.24 & -0.51 \\[0pt] 
+ Duration & 66.73 & 41.91 & 63 & 10 & 208 & 0.49 \\[0pt] 
+ Peak size & 3787.89 & 3188.37 & 2454.5 & 1 & 8395 & 0.05 \\[6pt] 
+\multicolumn{7}{l}{\textit{IV.III. Random vaccine distribution}} \\ 
+ Final size & 35.72 & 35.11 & 34.58 & 0.01 & 94.85 & 0.27 \\[0pt] 
+ Duration & 62.85 & 49.21 & 63 & 10 & 394 & 0.93 \\[0pt] 
+ Peak size & 2077.23 & 2425.01 & 899 & 1 & 7978 & 0.78 \\[6pt] 
+\multicolumn{7}{l}{\textit{IV.IV. Vaccine distribution prioritizing professional groups by largest degree}} \\ 
+ Final size & 20.56 & 32.52 & 0.06 & 0.01 & 94.35 & 1.18 \\[0pt] 
+ Duration & 55.27 & 61.39 & 22 & 10 & 511 & 1.64 \\[0pt] 
+ Peak size & 900.29 & 1682.96 & 5 & 1 & 7130 & 1.88 \\[0pt] 
+\bottomrule
+%\multicolumn{7}{c}{\emph{Notes:} bold numbers are significant at $p<0.001$, SEs in parentheses}
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\begin{table}[hbt!]
+\caption{Professional groups, part 1.}
+\label{tab:professions1}
+\begin{adjustbox}{width=1\textwidth,center=\textwidth}
+\begin{tabular}{l *{6}{S[
+input-symbols = {(- )},
+detect-weight,
+group-separator = {,},
+table-format=5.2]}}
+\toprule
+& \text{\thead{Mean}} & \text{\thead{SD}} & \text{\thead{Median}} & \text{\thead{Min}} & \text{\thead{Max}} & \text{\thead{Skew}} \\ 
+\midrule\midrule 
+\multicolumn{7}{l}{\textbf{Architecture and Engineering Occupations}} \\[6pt] 
+Share of the labor market (empirical) & 0.01& & & &  \\[0pt] 
+ Share of the labor market (generated) & 0.01 & 0 & 0.01 & 0.01 & 0.02 & 0.09 \\[6pt] 
+ Degree, normal (empirical) & 3.47 & 8.99 & 0 & 0 & 150 & 8.35 \\[0pt] 
+ Degree, normal (generated) & 3.6 & 0.9 & 4 & 0 & 6 & -1 \\[6pt] 
+ Degree, lockdown (empirical) & 1.88 & 6.31 & 0 & 0 & 100 & 8.73 \\[0pt] 
+ Degree, lockdown (generated) & 1.93 & 1.21 & 2 & 0 & 5 & 0.26 \\[0pt] 
+\midrule 
+\multicolumn{7}{l}{\textbf{Arts, Design, Entertainment, Sports, and Media Occupations}} \\[6pt] 
+Share of the labor market (empirical) & 0.01& & & &  \\[0pt] 
+ Share of the labor market (generated) & 0.01 & 0 & 0.01 & 0.01 & 0.02 & -0.19 \\[6pt] 
+ Degree, normal (empirical) & 3.23 & 11.03 & 0 & 0 & 200 & 10.5 \\[0pt] 
+ Degree, normal (generated) & 3.32 & 0.82 & 3 & 0 & 5 & -0.85 \\[6pt] 
+ Degree, lockdown (empirical) & 2.51 & 21.18 & 0 & 0 & 500 & 20.67 \\[0pt] 
+ Degree, lockdown (generated) & 2.58 & 1.04 & 3 & 0 & 5 & -0.39 \\[0pt] 
+\midrule 
+\multicolumn{7}{l}{\textbf{Building and Grounds Cleaning and Maintenance Occupations}} \\[6pt] 
+Share of the labor market (empirical) & 0.03& & & &  \\[0pt] 
+ Share of the labor market (generated) & 0.03 & 0 & 0.03 & 0.02 & 0.03 & 0.22 \\[6pt] 
+ Degree, normal (empirical) & 3.93 & 15.38 & 0 & 0 & 100 & 5.46 \\[0pt] 
+ Degree, normal (generated) & 3.94 & 0.98 & 4 & 0 & 6 & -1.04 \\[6pt] 
+ Degree, lockdown (empirical) & 1.26 & 4.95 & 0 & 0 & 60 & 9.41 \\[0pt] 
+ Degree, lockdown (generated) & 1.3 & 1.12 & 1 & 0 & 6 & 0.72 \\[0pt] 
+\midrule 
+\multicolumn{7}{l}{\textbf{Business and Financial Operations Occupations}} \\[6pt] 
+Share of the labor market (empirical) & 0.04& & & &  \\[0pt] 
+ Share of the labor market (generated) & 0.04 & 0 & 0.04 & 0.04 & 0.05 & -0.09 \\[6pt] 
+ Degree, normal (empirical) & 3.66 & 15.98 & 0 & 0 & 400 & 15.75 \\[0pt] 
+ Degree, normal (generated) & 3.72 & 0.93 & 4 & 0 & 6 & -1.03 \\[6pt] 
+ Degree, lockdown (empirical) & 1.52 & 5.49 & 0 & 0 & 100 & 11.51 \\[0pt] 
+ Degree, lockdown (generated) & 1.56 & 1.17 & 1 & 0 & 6 & 0.52 \\[0pt] 
+\midrule 
+\multicolumn{7}{l}{\textbf{Community and Social Service Occupations}} \\[6pt] 
+Share of the labor market (empirical) & 0.01& & & &  \\[0pt] 
+ Share of the labor market (generated) & 0.01 & 0 & 0.01 & 0.01 & 0.02 & 0.24 \\[6pt] 
+ Degree, normal (empirical) & 2.84 & 8.85 & 0 & 0 & 100 & 7.43 \\[0pt] 
+ Degree, normal (generated) & 2.91 & 0.66 & 3 & 0 & 5 & -1.46 \\[6pt] 
+ Degree, lockdown (empirical) & 1.08 & 2.61 & 0 & 0 & 20 & 4.38 \\[0pt] 
+ Degree, lockdown (generated) & 1.11 & 0.95 & 1 & 0 & 4 & 0.51 \\[0pt] 
+\midrule 
+\multicolumn{7}{l}{\textbf{Computer and Mathematical Occupations}} \\[6pt] 
+Share of the labor market (empirical) & 0.02& & & &  \\[0pt] 
+ Share of the labor market (generated) & 0.02 & 0 & 0.02 & 0.02 & 0.03 & -0.24 \\[6pt] 
+ Degree, normal (empirical) & 2.85 & 7.77 & 0 & 0 & 75 & 5.34 \\[0pt] 
+ Degree, normal (generated) & 2.92 & 0.69 & 3 & 0 & 5 & -1.26 \\[6pt] 
+ Degree, lockdown (empirical) & 1.21 & 3.89 & 0 & 0 & 54 & 7.2 \\[0pt] 
+ Degree, lockdown (generated) & 1.24 & 0.99 & 1 & 0 & 5 & 0.44 \\[0pt] 
+\bottomrule
+%\multicolumn{7}{c}{\emph{Notes:} bold numbers are significant at $p<0.001$, SEs in parentheses}
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\begin{table}[hbt!]
+\caption{Professional groups, part 2.}
+\label{tab:professions2}
+\begin{adjustbox}{width=1\textwidth,center=\textwidth}
+\begin{tabular}{l *{6}{S[
+input-symbols = {(- )},
+detect-weight,
+group-separator = {,},
+table-format=5.2]}}
+\toprule
+& \text{\thead{Mean}} & \text{\thead{SD}} & \text{\thead{Median}} & \text{\thead{Min}} & \text{\thead{Max}} & \text{\thead{Skew}} \\ 
+\midrule\midrule 
+\multicolumn{7}{l}{\textbf{Construction and Extraction Occupations}} \\[6pt] 
+Share of the labor market (empirical) & 0.03& & & &  \\[0pt] 
+ Share of the labor market (generated) & 0.03 & 0 & 0.03 & 0.03 & 0.04 & 0.12 \\[6pt] 
+ Degree, normal (empirical) & 3.6 & 18.53 & 0 & 0 & 400 & 15.28 \\[0pt] 
+ Degree, normal (generated) & 3.67 & 0.91 & 4 & 0 & 6 & -1.07 \\[6pt] 
+ Degree, lockdown (empirical) & 1.99 & 11.58 & 0 & 0 & 300 & 19.52 \\[0pt] 
+ Degree, lockdown (generated) & 2.05 & 1.25 & 2 & 0 & 6 & 0.18 \\[0pt] 
+\midrule 
+\multicolumn{7}{l}{\textbf{Educational Instruction and Library Occupations}} \\[6pt] 
+Share of the labor market (empirical) & 0.04& & & &  \\[0pt] 
+ Share of the labor market (generated) & 0.04 & 0 & 0.04 & 0.04 & 0.05 & -0.47 \\[6pt] 
+ Degree, normal (empirical) & 12.76 & 62.44 & 0 & 0 & 1100 & 12.45 \\[0pt] 
+ Degree, normal (generated) & 11.86 & 5.07 & 13 & 0 & 33 & -0.31 \\[6pt] 
+ Degree, lockdown (empirical) & 2.61 & 18.87 & 0 & 0 & 500 & 20.5 \\[0pt] 
+ Degree, lockdown (generated) & 3.08 & 2.18 & 3 & 0 & 16 & 0.83 \\[0pt] 
+\midrule 
+\multicolumn{7}{l}{\textbf{Farming, Fishing, and Forestry Occupations}} \\[6pt] 
+Share of the labor market (empirical) & 0.01& & & &  \\[0pt] 
+ Share of the labor market (generated) & 0 & 0 & 0 & 0 & 0.01 & -0.36 \\[6pt] 
+ Degree, normal (empirical) & 2.15 & 4.98 & 0 & 0 & 36 & 3.75 \\[0pt] 
+ Degree, normal (generated) & 2.23 & 0.79 & 2 & 0 & 4 & -0.45 \\[6pt] 
+ Degree, lockdown (empirical) & 1.76 & 4.98 & 0 & 0 & 50 & 5.72 \\[0pt] 
+ Degree, lockdown (generated) & 1.7 & 0.81 & 2 & 0 & 4 & -0.07 \\[0pt] 
+\midrule 
+\multicolumn{7}{l}{\textbf{Food Preparation and Serving Related Occupations}} \\[6pt] 
+Share of the labor market (empirical) & 0.06& & & &  \\[0pt] 
+ Share of the labor market (generated) & 0.06 & 0 & 0.06 & 0.06 & 0.07 & -0.01 \\[6pt] 
+ Degree, normal (empirical) & 5.32 & 22.29 & 0 & 0 & 300 & 9.43 \\[0pt] 
+ Degree, normal (generated) & 5.32 & 1.43 & 6 & 0 & 9 & -1.26 \\[6pt] 
+ Degree, lockdown (empirical) & 1.57 & 5.86 & 0 & 0 & 80 & 8.41 \\[0pt] 
+ Degree, lockdown (generated) & 1.62 & 1.32 & 1 & 0 & 8 & 0.78 \\[0pt] 
+\midrule 
+\multicolumn{7}{l}{\textbf{Healthcare Practitioners and Technical Occupations}} \\[6pt] 
+Share of the labor market (empirical) & 0.04& & & &  \\[0pt] 
+ Share of the labor market (generated) & 0.04 & 0 & 0.04 & 0.04 & 0.05 & -0.38 \\[6pt] 
+ Degree, normal (empirical) & 20.17 & 256.51 & 0 & 0 & 5000 & 19.07 \\[0pt] 
+ Degree, normal (generated) & 15.5 & 9.02 & 14 & 0 & 97 & 0.93 \\[6pt] 
+ Degree, lockdown (empirical) & 5.19 & 23.75 & 0 & 0 & 440 & 11.49 \\[0pt] 
+ Degree, lockdown (generated) & 5.34 & 3.49 & 5 & 0 & 40 & 1.05 \\[0pt] 
+\midrule 
+\multicolumn{7}{l}{\textbf{Healthcare Support Occupations}} \\[6pt] 
+Share of the labor market (empirical) & 0.03& & & &  \\[0pt] 
+ Share of the labor market (generated) & 0.03 & 0 & 0.03 & 0.03 & 0.04 & 0.03 \\[6pt] 
+ Degree, normal (empirical) & 5.44 & 19.44 & 0 & 0 & 200 & 6.62 \\[0pt] 
+ Degree, normal (generated) & 5.46 & 1.43 & 6 & 0 & 9 & -1.34 \\[6pt] 
+ Degree, lockdown (empirical) & 3.7 & 12.65 & 0 & 0 & 100 & 5.61 \\[0pt] 
+ Degree, lockdown (generated) & 3.81 & 1.57 & 4 & 0 & 9 & -0.11 \\[0pt] 
+\bottomrule
+%\multicolumn{7}{c}{\emph{Notes:} bold numbers are significant at $p<0.001$, SEs in parentheses}
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\begin{table}[hbt!]
+\caption{Professional groups, part 3.}
+\label{tab:professions3}
+\begin{adjustbox}{width=1\textwidth,center=\textwidth}
+\begin{tabular}{l *{6}{S[
+input-symbols = {(- )},
+detect-weight,
+group-separator = {,},
+table-format=5.2]}}
+\toprule
+& \text{\thead{Mean}} & \text{\thead{SD}} & \text{\thead{Median}} & \text{\thead{Min}} & \text{\thead{Max}} & \text{\thead{Skew}} \\ 
+\midrule\midrule 
+\multicolumn{7}{l}{\textbf{Installation, Maintenance, and Repair Occupations}} \\[6pt] 
+Share of the labor market (empirical) & 0.03& & & &  \\[0pt] 
+ Share of the labor market (generated) & 0.03 & 0 & 0.03 & 0.02 & 0.03 & 0.17 \\[6pt] 
+ Degree, normal (empirical) & 3.76 & 12.36 & 0 & 0 & 200 & 8.04 \\[0pt] 
+ Degree, normal (generated) & 3.82 & 0.95 & 4 & 0 & 6 & -1.15 \\[6pt] 
+ Degree, lockdown (empirical) & 2.83 & 11.24 & 0 & 0 & 200 & 10.1 \\[0pt] 
+ Degree, lockdown (generated) & 2.91 & 1.18 & 3 & 0 & 6 & -0.3 \\[0pt] 
+\midrule 
+\multicolumn{7}{l}{\textbf{Legal Occupations}} \\[6pt] 
+Share of the labor market (empirical) & 0.01& & & &  \\[0pt] 
+ Share of the labor market (generated) & 0.01 & 0 & 0.01 & 0 & 0.01 & 0.2 \\[6pt] 
+ Degree, normal (empirical) & 8.28 & 22.06 & 0 & 0 & 110 & 3.38 \\[0pt] 
+ Degree, normal (generated) & 8.13 & 2.22 & 9 & 0 & 14 & -1.61 \\[6pt] 
+ Degree, lockdown (empirical) & 0.92 & 2.98 & 0 & 0 & 28 & 6.73 \\[0pt] 
+ Degree, lockdown (generated) & 1.84 & 1.67 & 1 & 0 & 10 & 1.1 \\[0pt] 
+\midrule 
+\multicolumn{7}{l}{\textbf{Life, Physical, and Social Science Occupations}} \\[6pt] 
+Share of the labor market (empirical) & 0.01& & & &  \\[0pt] 
+ Share of the labor market (generated) & 0.01 & 0 & 0.01 & 0 & 0.01 & 0.21 \\[6pt] 
+ Degree, normal (empirical) & 4.63 & 14.67 & 0 & 0 & 200 & 6.4 \\[0pt] 
+ Degree, normal (generated) & 4.67 & 1.15 & 5 & 0 & 7 & -1.06 \\[6pt] 
+ Degree, lockdown (empirical) & 3.55 & 18.64 & 0 & 0 & 300 & 13.06 \\[0pt] 
+ Degree, lockdown (generated) & 3.65 & 1.34 & 4 & 0 & 7 & -0.27 \\[0pt] 
+\midrule 
+\multicolumn{7}{l}{\textbf{Management Occupations}} \\[6pt] 
+Share of the labor market (empirical) & 0.05& & & &  \\[0pt] 
+ Share of the labor market (generated) & 0.05 & 0 & 0.05 & 0.04 & 0.05 & -0.37 \\[6pt] 
+ Degree, normal (empirical) & 5.84 & 23.54 & 0 & 0 & 500 & 10.79 \\[0pt] 
+ Degree, normal (generated) & 5.83 & 1.54 & 6 & 0 & 10 & -1.4 \\[6pt] 
+ Degree, lockdown (empirical) & 1.32 & 4.79 & 0 & 0 & 100 & 9.7 \\[0pt] 
+ Degree, lockdown (generated) & 1.56 & 1.34 & 1 & 0 & 8 & 0.89 \\[0pt] 
+\midrule 
+\multicolumn{7}{l}{\textbf{Office and Administrative Support Occupations}} \\[6pt] 
+Share of the labor market (empirical) & 0.09& & & &  \\[0pt] 
+ Share of the labor market (generated) & 0.1 & 0 & 0.09 & 0.09 & 0.1 & -0.29 \\[6pt] 
+ Degree, normal (empirical) & 4.42 & 16.51 & 0 & 0 & 300 & 9.91 \\[0pt] 
+ Degree, normal (generated) & 4.46 & 1.15 & 5 & 0 & 7 & -1.15 \\[6pt] 
+ Degree, lockdown (empirical) & 1.94 & 7.66 & 0 & 0 & 100 & 9.04 \\[0pt] 
+ Degree, lockdown (generated) & 2 & 1.37 & 2 & 0 & 7 & 0.52 \\[0pt] 
+\midrule 
+\multicolumn{7}{l}{\textbf{Personal Care and Service Occupations}} \\[6pt] 
+Share of the labor market (empirical) & 0.02& & & &  \\[0pt] 
+ Share of the labor market (generated) & 0.02 & 0 & 0.02 & 0.02 & 0.03 & -0.06 \\[6pt] 
+ Degree, normal (empirical) & 12.82 & 79.3 & 0 & 0 & 1000 & 10.31 \\[0pt] 
+ Degree, normal (generated) & 11.84 & 5.05 & 13 & 0 & 29 & -0.28 \\[6pt] 
+ Degree, lockdown (empirical) & 4.58 & 41.84 & 0 & 0 & 891 & 17.9 \\[0pt] 
+ Degree, lockdown (generated) & 4.71 & 2.89 & 4 & 0 & 24 & 0.72 \\[0pt] 
+\bottomrule
+%\multicolumn{7}{c}{\emph{Notes:} bold numbers are significant at $p<0.001$, SEs in parentheses}
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\begin{table}[hbt!]
+\caption{Professional groups, part 4.}
+\label{tab:professions4}
+\begin{adjustbox}{width=1\textwidth,center=\textwidth}
+\begin{tabular}{l *{6}{S[
+input-symbols = {(- )},
+detect-weight,
+group-separator = {,},
+table-format=5.2]}}
+\toprule
+& \text{\thead{Mean}} & \text{\thead{SD}} & \text{\thead{Median}} & \text{\thead{Min}} & \text{\thead{Max}} & \text{\thead{Skew}} \\ 
+\midrule\midrule 
+\multicolumn{7}{l}{\textbf{Production Occupations}} \\[6pt] 
+Share of the labor market (empirical) & 0.04& & & &  \\[0pt] 
+ Share of the labor market (generated) & 0.04 & 0 & 0.04 & 0.04 & 0.05 & 0.2 \\[6pt] 
+ Degree, normal (empirical) & 2.87 & 9.51 & 0 & 0 & 100 & 6.54 \\[0pt] 
+ Degree, normal (generated) & 2.91 & 0.67 & 3 & 0 & 5 & -1.37 \\[6pt] 
+ Degree, lockdown (empirical) & 2.19 & 8.86 & 0 & 0 & 200 & 12.15 \\[0pt] 
+ Degree, lockdown (generated) & 2.25 & 0.93 & 2 & 0 & 5 & -0.44 \\[0pt] 
+\midrule 
+\multicolumn{7}{l}{\textbf{Protective Service Occupations}} \\[6pt] 
+Share of the labor market (empirical) & 0.02& & & &  \\[0pt] 
+ Share of the labor market (generated) & 0.02 & 0 & 0.02 & 0.01 & 0.02 & 0.3 \\[6pt] 
+ Degree, normal (empirical) & 1.12 & 3.3 & 0 & 0 & 20 & 3.83 \\[0pt] 
+ Degree, normal (generated) & 0.99 & 0.1 & 1 & 0 & 1 & -10.33 \\[6pt] 
+ Degree, lockdown (empirical) & 1.05 & 2.37 & 0 & 0 & 10 & 2.66 \\[0pt] 
+ Degree, lockdown (generated) & 0.99 & 0.1 & 1 & 0 & 1 & -10.33 \\[0pt] 
+\midrule 
+\multicolumn{7}{l}{\textbf{Sales and Related Occupations}} \\[6pt] 
+Share of the labor market (empirical) & 0.07& & & &  \\[0pt] 
+ Share of the labor market (generated) & 0.07 & 0 & 0.07 & 0.06 & 0.08 & -0.11 \\[6pt] 
+ Degree, normal (empirical) & 5.59 & 16.91 & 0 & 0 & 210 & 6.75 \\[0pt] 
+ Degree, normal (generated) & 5.58 & 1.45 & 6 & 0 & 9 & -1.4 \\[6pt] 
+ Degree, lockdown (empirical) & 3.3 & 25.59 & 0 & 0 & 500 & 16.87 \\[0pt] 
+ Degree, lockdown (generated) & 3.4 & 1.71 & 3 & 0 & 9 & 0.07 \\[0pt] 
+\midrule 
+\multicolumn{7}{l}{\textbf{Transportation and Material Moving Occupations}} \\[6pt] 
+Share of the labor market (empirical) & 0.06& & & &  \\[0pt] 
+ Share of the labor market (generated) & 0.06 & 0 & 0.06 & 0.06 & 0.06 & -0.07 \\[6pt] 
+ Degree, normal (empirical) & 5.31 & 21.69 & 0 & 0 & 400 & 11.17 \\[0pt] 
+ Degree, normal (generated) & 5.3 & 1.43 & 6 & 0 & 9 & -1.22 \\[6pt] 
+ Degree, lockdown (empirical) & 2.69 & 9.08 & 0 & 0 & 100 & 6.91 \\[0pt] 
+ Degree, lockdown (generated) & 2.77 & 1.65 & 3 & 0 & 9 & 0.36 \\[0pt] 
+\midrule 
+\multicolumn{7}{l}{\textbf{Unemployed}} \\[6pt] 
+Share of the labor market (empirical) & 0.05& & & &  \\[0pt] 
+ Share of the labor market (generated) & 0.05 & 0 & 0.05 & 0.04 & 0.05 & -0.09 \\[6pt] 
+ Degree, normal (empirical) & NaN & NA & NA & Inf & -Inf & NaN \\[0pt] 
+ Degree, normal (generated) & 2.61 & 0.7 & 3 & 0 & 4 & -1.35 \\[6pt] 
+ Degree, lockdown (empirical) & NaN & NA & NA & Inf & -Inf & NaN \\[0pt] 
+ Degree, lockdown (generated) & 0.99 & 0.88 & 1 & 0 & 4 & 0.54 \\[0pt] 
+\midrule 
+\multicolumn{7}{l}{\textbf{Retired}} \\[6pt] 
+Share of the labor market (empirical) & 0.21& & & &  \\[0pt] 
+ Share of the labor market (generated) & 0.21 & 0 & 0.21 & 0.2 & 0.22 & 0.11 \\[6pt] 
+ Degree, normal (empirical) & NaN & NA & NA & Inf & -Inf & NaN \\[0pt] 
+ Degree, normal (generated) & 2.47 & 0.69 & 3 & 0 & 4 & -0.94 \\[6pt] 
+ Degree, lockdown (empirical) & NaN & NA & NA & Inf & -Inf & NaN \\[0pt] 
+ Degree, lockdown (generated) & 0.9 & 0.84 & 1 & 0 & 4 & 0.58 \\[0pt] 
+\bottomrule
+%\multicolumn{7}{c}{\emph{Notes:} bold numbers are significant at $p<0.001$, SEs in parentheses}
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\begin{table}[hbt!] 
+\caption{Comparison of mean degrees per major occupational group between empirical generated network data..}
+\label{tab:mean-degrees}
+\begin{adjustbox}{width=1\textwidth,center=\textwidth}
+\begin{tabular}{l *{4}{S[
+input-symbols = {(- )},
+detect-weight,
+group-separator = {,},
+table-format=3.2]}}
+\toprule
+& \multicolumn{2}{c}{\textbf{Normal}} & \multicolumn{2}{c}{\textbf{Lockdown}} \\ 
+& \text{\thead{Empirical}} & \text{\thead{Generated}} & \text{\thead{Empirical}} & \text{\thead{Generated}} \\ 
+\midrule 
+Architecture and Engineering Occupations & 3.47 & 3.6 & 1.88 & 1.93 \\ 
+Arts, Design, Entertainment, Sports, and Media Occupations & 3.23 & 3.32 & 2.51 & 2.58 \\ 
+Building and Grounds Cleaning and Maintenance Occupations & 3.93 & 3.94 & 1.26 & 1.3 \\ 
+Business and Financial Operations Occupations & 3.66 & 3.72 & 1.52 & 1.56 \\ 
+Community and Social Service Occupations & 2.84 & 2.91 & 1.08 & 1.11 \\ 
+Computer and Mathematical Occupations & 2.85 & 2.92 & 1.21 & 1.24 \\ 
+Construction and Extraction Occupations & 3.6 & 3.67 & 1.99 & 2.05 \\ 
+Educational Instruction and Library Occupations & 12.76 & 11.87 & 2.61 & 3.08 \\ 
+Farming, Fishing, and Forestry Occupations & 2.15 & 2.23 & 1.76 & 1.7 \\ 
+Food Preparation and Serving Related Occupations & 5.32 & 5.32 & 1.57 & 1.62 \\ 
+Healthcare Practitioners and Technical Occupations & 20.17 & 15.5 & 5.19 & 5.34 \\ 
+Healthcare Support Occupations & 5.44 & 5.45 & 3.7 & 3.81 \\ 
+Installation, Maintenance, and Repair Occupations & 3.76 & 3.81 & 2.83 & 2.91 \\ 
+Legal Occupations & 8.28 & 8.12 & 0.92 & 1.84 \\ 
+Life, Physical, and Social Science Occupations & 4.63 & 4.67 & 3.55 & 3.65 \\ 
+Management Occupations & 5.84 & 5.83 & 1.32 & 1.56 \\ 
+Office and Administrative Support Occupations & 4.42 & 4.46 & 1.94 & 2 \\ 
+Personal Care and Service Occupations & 12.82 & 11.84 & 4.58 & 4.71 \\ 
+Production Occupations & 2.87 & 2.91 & 2.19 & 2.25 \\ 
+Protective Service Occupations & 1.12 & 0.99 & 1.05 & 0.99 \\ 
+Sales and Related Occupations & 5.59 & 5.58 & 3.3 & 3.4 \\ 
+Transportation and Material Moving Occupations & 5.31 & 5.3 & 2.69 & 2.77 \\ 
+Unemployed & 2.34 & 2.62 & 0.96 & 0.99 \\ 
+Retired & 2.13 & 2.47 & 0.87 & 0.9 \\ 
+ \bottomrule
+%\multicolumn{5}{c}{\emph{Notes:} bold numbers are significant at $p<0.001$, SEs in parentheses}
+\end{tabular}
+\end{adjustbox}
+\end{table}

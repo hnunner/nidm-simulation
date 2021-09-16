@@ -191,12 +191,6 @@ public class NunnerBuskensNetworkGenerator extends AbstractGenerator implements 
                                                     <= this.dgData.getUtilityModelParams().
                                                     getSimsPerParameterCombination()) {
 
-                                                // uid = "upc-sim"
-                                                this.dgData.getSimStats().setUid(
-                                                        String.valueOf(this.dgData.getSimStats().getUpc()) +
-                                                        "-" + String.valueOf(
-                                                                this.dgData.getSimStats().getSimPerUpc()));
-
                                                 // simulate
                                                 performSingleSimulation();
 
@@ -309,7 +303,12 @@ public class NunnerBuskensNetworkGenerator extends AbstractGenerator implements 
                     0.0,
                     this.dgData.getUtilityModelParams().getCurrPsi(),
                     this.dgData.getUtilityModelParams().getXi(),
+                    // TODO make age optional
                     AgeStructure.getInstance().getRandomAge(),
+                    false,
+                    // TODO make profession optional
+                    "NA",
+                    false,
                     false);
         }
         this.dgData.setAgents(new LinkedList<Agent>(network.getAgents()));
@@ -331,7 +330,7 @@ public class NunnerBuskensNetworkGenerator extends AbstractGenerator implements 
      * Amends the summary file by writing a row with the current state of the network.
      */
     private void amendSummary() {
-        this.dgData.setNetStatsCurrent(new NetworkStats(this.network, this.simulation.getRounds()));
+        this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
         this.nsWriter.writeCurrentData();
     }
 

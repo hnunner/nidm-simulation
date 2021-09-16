@@ -27,148 +27,178 @@ package nl.uu.socnetid.nidm.stats;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseGroup;
+import nl.uu.socnetid.nidm.networks.AssortativityConditions;
 
 /**
  * @author Hendrik Nunner
  */
 public class AgentStatsPre {
 
-    private double rSigma;
-    private double rSigmaNeighborhood;
-    private double rPi;
-    private double rPiNeighborhood;
-    private boolean satisfied;
-    private double degree1;
-    private double closeness;
-    private double clustering;
-    private double betweennessNormalized;
-    private double assortativity;
-    private DiseaseGroup diseaseGroup;
-    private int timeToRecover;
-    private boolean forceInfected;
-    private Integer indexCaseDistance;
-
+    private final String id;
+    private final double rSigma;
+    private final double rSigmaNeighborhood;
+    private final double rPi;
+    private final double rPiNeighborhood;
+    private final int indexCaseDistance;
+    private final boolean satisfied;
+    private final double degree1;
+    private final double closeness;
+    private final double clustering;
+    private final double betweennessNormalized;
+    private final double assortativityRiskPerception;
+    private final double assortativityAge;
+    private final double assortativityProfession;
+    private final DiseaseGroup diseaseGroup;
+    private final int timeToRecover;
+    private final boolean forceInfected;
+    private final String profession;
 
     public AgentStatsPre(Agent agent, int simRound) {
-
+        this.id = agent.getId();
         this.rSigma = agent.getRSigma();
-        this.rPi = agent.getRPi();
-        this.diseaseGroup = agent.getDiseaseGroup();
-        if (agent.isInfected()) {
-            this.timeToRecover = agent.getTimeUntilRecovered();
-        } else {
-            this.timeToRecover = -1;
-        }
-        this.forceInfected = agent.isForceInfected();
-
         this.rSigmaNeighborhood = agent.getRSigmaNeighborhood();
+        this.rPi = agent.getRPi();
         this.rPiNeighborhood = agent.getRPiNeighborhood();
+        this.indexCaseDistance = agent.getInitialIndexCaseDistance();
         this.satisfied = agent.isSatisfied();
         this.degree1 = agent.getDegree();
         this.closeness = agent.getCloseness(simRound);
         this.clustering = agent.getClustering(simRound);
         this.betweennessNormalized = agent.getBetweennessNormalized(simRound);
-        this.assortativity = agent.getAssortativity(simRound);
-        this.indexCaseDistance = agent.getInitialIndexCaseDistance();
+        this.assortativityRiskPerception = agent.getAssortativity(simRound, AssortativityConditions.RISK_PERCEPTION);
+        this.assortativityAge = agent.getAssortativity(simRound, AssortativityConditions.AGE);
+        this.assortativityProfession = agent.getAssortativity(simRound, AssortativityConditions.PROFESSION);
+        this.diseaseGroup = agent.getDiseaseGroup();
+        this.timeToRecover = agent.getTimeUntilRecovered();
+        this.forceInfected = agent.isForceInfected();
+        this.profession = agent.getProfession();
     }
 
+
+    /**
+     * @return the id
+     */
+    public String getId() {
+        return this.id;
+    }
 
     /**
      * @return the rSigma
      */
     public double getrSigma() {
-        return rSigma;
+        return this.rSigma;
     }
 
     /**
      * @return the rSigmaNeighborhood
      */
     public double getrSigmaNeighborhood() {
-        return rSigmaNeighborhood;
+        return this.rSigmaNeighborhood;
     }
 
     /**
      * @return the rPi
      */
     public double getrPi() {
-        return rPi;
+        return this.rPi;
     }
 
     /**
      * @return the rPiNeighborhood
      */
     public double getrPiNeighborhood() {
-        return rPiNeighborhood;
+        return this.rPiNeighborhood;
     }
 
     /**
      * @return the indexCaseDistance
      */
     public Integer getIndexCaseDistance() {
-        return indexCaseDistance;
+        return this.indexCaseDistance;
     }
 
     /**
      * @return the satisfied
      */
     public boolean isSatisfied() {
-        return satisfied;
+        return this.satisfied;
     }
 
     /**
      * @return the degree1
      */
     public double getDegree1() {
-        return degree1;
+        return this.degree1;
     }
 
     /**
      * @return the closeness
      */
     public double getCloseness() {
-        return closeness;
+        return this.closeness;
     }
 
     /**
      * @return the clustering
      */
     public double getClustering() {
-        return clustering;
+        return this.clustering;
     }
 
     /**
      * @return the betweennessNormalized
      */
     public double getBetweennessNormalized() {
-        return betweennessNormalized;
+        return this.betweennessNormalized;
     }
 
     /**
-     * @return the assortativity
+     * @return the assortativityRiskPerception
      */
-    public double getAssortativity() {
-        return assortativity;
+    public double getAssortativityRiskPerception() {
+        return this.assortativityRiskPerception;
+    }
+
+    /**
+     * @return the assortativityAge
+     */
+    public double getAssortativityAge() {
+        return this.assortativityAge;
+    }
+
+    /**
+     * @return the assortativityProfession
+     */
+    public double getAssortativityProfession() {
+        return this.assortativityProfession;
     }
 
     /**
      * @return the diseaseGroup
      */
     public DiseaseGroup getDiseaseGroup() {
-        return diseaseGroup;
+        return this.diseaseGroup;
     }
 
     /**
      * @return the timeToRecover
      */
     public int getTimeToRecover() {
-        return timeToRecover;
+        return this.timeToRecover;
     }
 
     /**
      * @return the forceInfected
      */
     public boolean isForceInfected() {
-        return forceInfected;
+        return this.forceInfected;
+    }
+
+    /**
+     * @return the profession
+     */
+    public String getProfession() {
+        return this.profession;
     }
 
 }

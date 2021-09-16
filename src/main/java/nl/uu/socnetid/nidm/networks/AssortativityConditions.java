@@ -31,7 +31,8 @@ package nl.uu.socnetid.nidm.networks;
 public enum AssortativityConditions {
 
     RISK_PERCEPTION("ac.riskperception"),
-    AGE("ac.age");
+    AGE("ac.age"),
+    PROFESSION("ac.profession");
 
     // the name
     private String name;
@@ -53,6 +54,21 @@ public enum AssortativityConditions {
     @Override
     public String toString() {
         return name;
+    }
+
+    /**
+     * Creates the assortativity condition from a given string.
+     * @param text
+     *          the string to create the assortativity condition for
+     * @return the assortativity condition
+     */
+    public static AssortativityConditions fromString(String text) {
+        for (AssortativityConditions a : AssortativityConditions.values()) {
+            if (a.name.equalsIgnoreCase(text)) {
+                return a;
+            }
+        }
+        throw new IllegalArgumentException("No constant with text " + text + " found.");
     }
 
 }

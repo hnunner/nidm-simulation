@@ -25,6 +25,8 @@
  */
 package nl.uu.socnetid.nidm.stats;
 
+import java.util.Map;
+
 import nl.uu.socnetid.nidm.networks.Network;
 
 /**
@@ -35,23 +37,56 @@ public class NetworkStatsPre {
     private Network network;
 
     private final boolean stable;
-    private final double assortativity;
+    private double assortativityRiskPerception;
+    private double assortativityAge;
+    private double assortativityProfession;
     private final double avDegree;
     private final double avBetweenness;
     private final double avCloseness;
     private final double avClustering;
     private final double avPathLength;
+    private double avDegreeDiffTotal;
+    private double avDegreeDiffPercent;
+
+    private double avDegreeTheoretic;
+    private Map<String, Integer> nByProfession;
+    private Map<String, Double> avDegreesByProfession;
+    private Map<String, Double> avDegreesByProfessionTheoretic;
+    private Map<String, Double> degreesSdByProfession;
+    private Map<String, Double> degreesSdByProfessionTheoretic;
+
+    private final int nVaccinated;
+
+    private final double avDegreeVaccinated;
+    private final double avDegreeVaccinatedNot;
+    private final double avDegreeQuarantined;
+    private final double avDegreeQuarantinedNot;
 
 
     public NetworkStatsPre(Network network, int simRound) {
         this.network = network;
         this.stable = network.isStable();
-        this.assortativity = network.getAssortativity(simRound);
         this.avDegree = network.getAvDegree(simRound);
-        this.avBetweenness = network.getAvBetweenness(simRound);
-        this.avCloseness = network.getAvCloseness(simRound);
+        this.assortativityRiskPerception = network.getAssortativityRiskPerception(simRound);
+        this.assortativityAge = network.getAssortativityAge(simRound);
+        this.assortativityProfession = network.getAssortativityProfession(simRound);
+        this.avBetweenness = network.getAvBetweenness(simRound);                                          //network.getAvBetweenness(simRound);
+        this.avCloseness = network.getAvCloseness(simRound);                                            // network.getAvCloseness(simRound);
         this.avClustering = network.getAvClustering(simRound);
-        this.avPathLength = network.getAvPathLength(simRound);
+        this.avPathLength = network.getAvPathLength(simRound);                                           // network.getAvPathLength(simRound);
+
+        this.nByProfession = network.getNByProfessions();
+        this.avDegreesByProfession = network.getAvDegreesByProfessions();
+        this.avDegreesByProfessionTheoretic = null;
+        this.degreesSdByProfession = network.getDegreesSdByProfessions();
+        this.degreesSdByProfessionTheoretic = null;
+
+        this.nVaccinated = network.getVaccinated().size();
+
+        this.avDegreeVaccinated = network.getAvDegreeVaccinated();
+        this.avDegreeVaccinatedNot = network.getAvDegreeNotVaccinated();
+        this.avDegreeQuarantined = network.getAvDegreeQuarantined();
+        this.avDegreeQuarantinedNot = network.getAvDegreeNotQuarantined();
     }
 
     /**
@@ -76,10 +111,24 @@ public class NetworkStatsPre {
     }
 
     /**
-     * @return the assortativity
+     * @return the assortativityRiskPerception
      */
-    public double getAssortativity() {
-        return assortativity;
+    public double getAssortativityRiskPerception() {
+        return assortativityRiskPerception;
+    }
+
+    /**
+     * @return the assortativityAge
+     */
+    public double getAssortativityAge() {
+        return assortativityAge;
+    }
+
+    /**
+     * @return the assortativityProfession
+     */
+    public double getAssortativityProfession() {
+        return assortativityProfession;
     }
 
     /**
@@ -115,6 +164,142 @@ public class NetworkStatsPre {
      */
     public Double getAvPathLength() {
         return avPathLength;
+    }
+
+    /**
+     * @return the avDegreeDiffPercent
+     */
+    public double getAvDegreeDiffPercent() {
+        return avDegreeDiffPercent;
+    }
+
+    /**
+     * @param avDegreeDiffPercent the avDegreeDiffPercent to set
+     */
+    public void setAvDegreeDiffPercent(double avDegreeDiffPercent) {
+        this.avDegreeDiffPercent = avDegreeDiffPercent;
+    }
+
+    /**
+     * @return the avDegreeDiffTotal
+     */
+    public double getAvDegreeDiffTotal() {
+        return avDegreeDiffTotal;
+    }
+
+    /**
+     * @param avDegreeDiffTotal the avDegreeDiffTotal to set
+     */
+    public void setAvDegreeDiffTotal(double avDegreeDiffTotal) {
+        this.avDegreeDiffTotal = avDegreeDiffTotal;
+    }
+
+    /**
+     * @param profession
+     *          the profession to get average degree for
+     * @return the avDegree for profession
+     */
+    public double getNByProfession(String profession) {
+        return this.nByProfession.get(profession);
+    }
+
+    /**
+     * @param profession
+     *          the profession to get average degree for
+     * @return the avDegree for profession
+     */
+    public double getAvDegreeByProfession(String profession) {
+        return this.avDegreesByProfession.get(profession);
+    }
+
+    /**
+     * @param profession
+     *          the profession to get average degree for
+     * @return the avDegree for profession
+     */
+    public double getAvDegreeByProfessionTheoretic(String profession) {
+        return this.avDegreesByProfessionTheoretic.get(profession);
+    }
+
+    /**
+     * @param avDegreesByProfessionTheoretic the avDegreesByProfessionTheoretic to set
+     */
+    public void setAvDegreesByProfessionTheoretic(Map<String, Double> avDegreesByProfessionTheoretic) {
+        this.avDegreesByProfessionTheoretic = avDegreesByProfessionTheoretic;
+    }
+
+    /**
+     * @param profession
+     *          the profession to get average degree standard deviation for
+     * @return the avDegreeSd for profession
+     */
+    public double getDegreeSdByProfession(String profession) {
+        return this.degreesSdByProfession.get(profession);
+    }
+
+    /**
+     * @param profession
+     *          the profession to get average degree for
+     * @return the degreesSdByProfessionTheoretic
+     */
+    public double getDegreeSdByProfessionTheoretic(String profession) {
+        return degreesSdByProfessionTheoretic.get(profession);
+    }
+
+    /**
+     * @param degreesSdByProfessionTheoretic the degreesSdByProfessionTheoretic to set
+     */
+    public void setDegreesSdByProfessionTheoretic(Map<String, Double> degreesSdByProfessionTheoretic) {
+        this.degreesSdByProfessionTheoretic = degreesSdByProfessionTheoretic;
+    }
+
+    /**
+     * @return the avDegreeTheoretic
+     */
+    public double getAvDegreeTheoretic() {
+        return avDegreeTheoretic;
+    }
+
+    /**
+     * @param avDegreeTheoretic the avDegreeTheoretic to set
+     */
+    public void setAvDegreeTheoretic(double avDegreeTheoretic) {
+        this.avDegreeTheoretic = avDegreeTheoretic;
+    }
+
+    /**
+     * @return the nVaccinated
+     */
+    public int getNVaccinated() {
+        return nVaccinated;
+    }
+
+    /**
+     * @return the avDegreeVaccinated
+     */
+    public double getAvDegreeVaccinated() {
+        return avDegreeVaccinated;
+    }
+
+    /**
+     * @return the avDegreeVaccinatedNot
+     */
+    public double getAvDegreeVaccinatedNot() {
+        return avDegreeVaccinatedNot;
+    }
+
+    /**
+     * @return the avDegreeQuarantined
+     */
+    public double getAvDegreeQuarantined() {
+        return avDegreeQuarantined;
+    }
+
+    /**
+     * @return the avDegreeQuarantinedNot
+     */
+    public double getAvDegreeQuarantinedNot() {
+        return avDegreeQuarantinedNot;
     }
 
 }

@@ -210,7 +210,7 @@ public class NunnerBuskensPanel extends SharedUtilityPanel implements ChangeList
         sliderAlpha.setBounds(22, 116, 285, 29);
         sliderAlpha.setMaximum(100);
         sliderAlpha.setMinimum(0);
-        sliderAlpha.setValue(67);
+        sliderAlpha.setValue(0);
         add(sliderAlpha);
         sliderAlpha.addChangeListener(this);
 

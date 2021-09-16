@@ -27,6 +27,7 @@ package nl.uu.socnetid.nidm.io.generator.network;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -41,6 +42,7 @@ import org.apache.logging.log4j.Logger;
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.data.genetic.NunnerBuskensGene;
 import nl.uu.socnetid.nidm.data.in.AgeStructure;
+import nl.uu.socnetid.nidm.data.in.Professions;
 import nl.uu.socnetid.nidm.data.out.DataGeneratorData;
 import nl.uu.socnetid.nidm.data.out.NunnerBuskensGeneticParameters;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
@@ -92,6 +94,9 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
             PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getTargetAvDegree();        // controlled by c2
     private static final double TARGET_CLUSTERING =
             PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getTargetClustering();      // controlled by alpha
+
+    // assortativity conditions
+    private static final List<AssortativityConditions> ASSORTATIVITY_CONDITIONS = Arrays.asList(AssortativityConditions.AGE);
 
     // network
     private Network network;
@@ -158,7 +163,10 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
                 PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getPhi());
         this.dgData.getUtilityModelParams().setPsi(
                 PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getPsi());
-        this.dgData.getUtilityModelParams().setAssortativityCondition(AssortativityConditions.AGE);
+
+        // TODO move to config file!!!
+        // this.dgData.getUtilityModelParams().setAssortativityInitCondition(AssortativityConditions.AGE);
+        this.dgData.getUtilityModelParams().setAssortativityInitCondition(AssortativityConditions.PROFESSION);
     }
 
     /* (non-Javadoc)
@@ -173,9 +181,9 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
         }
     }
 
-    private void initNetwork(double targetAvC2, double targetAlpha) {
+    private void initNetworkByAge(double targetAvC2, double targetAlpha) {
 
-        this.network = new Network("Network of the infectious kind", AssortativityConditions.AGE);
+        this.network = new Network("Network of the infectious kind", ASSORTATIVITY_CONDITIONS);
         DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, 0, 0, 0, 0);    // not used
 
         double b1 = this.dgData.getUtilityModelParams().getB1();
@@ -231,7 +239,10 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
                         this.dgData.getUtilityModelParams().getPsi(),
                         this.dgData.getUtilityModelParams().getXi(),
                         age,
-                        this.dgData.getUtilityModelParams().isConsiderAge());
+                        this.dgData.getUtilityModelParams().isConsiderAge(),
+                        Professions.getInstance().getRandomProfession(),
+                        this.dgData.getUtilityModelParams().isConsiderProfession(),
+                        false);
             }
 
             logger.info("Theoretic average degree: " + (Math.round(this.network.getTheoreticAvDegree() * 100.0) / 100.0));
@@ -242,7 +253,6 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
         this.dgData.setAgents(new ArrayList<Agent>(this.network.getAgents()));
 
     }
-
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.io.generator.AbstractDataGenerator#generateData()
@@ -272,7 +282,18 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
 
     private void simulateSingleGene(NunnerBuskensGene nbg) {
 
-        initNetwork(nbg.getAvC2(), nbg.getAlpha());
+        // init network
+        AssortativityConditions aic = this.dgData.getUtilityModelParams().getAssortativityInitCondition();
+        switch (aic) {
+            case RISK_PERCEPTION:
+            case PROFESSION:
+                logger.warn("Assortativity init condition not implemented: " + aic + ". Using age instead");
+                //$FALL-THROUGH$
+            case AGE:
+            default:
+                initNetworkByAge(nbg.getAvC2(), nbg.getAlpha());
+                break;
+        }
 
         // simulate
         this.simulation = new Simulation(this.network);
@@ -375,7 +396,7 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
      */
     private void amendSummary() {
         this.dgData.getUtilityModelParams().setOffspring(this.currentOffspring);
-        this.dgData.setNetStatsCurrent(new NetworkStats(this.network, this.simulation.getRounds()));
+        this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
         this.nsWriter.writeCurrentData();
     }
 
@@ -445,6 +466,7 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
     public void notifySimulationStarted(Simulation simulation) {
         this.fitnessPrevRound = Double.MAX_VALUE;
         this.simFinished = false;
+
 
         this.dgData.getSimStats().setUid(this.currentOffspring.getId());
         this.dgData.getSimStats().setUpc(this.upc++);

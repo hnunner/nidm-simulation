@@ -225,12 +225,6 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
                                                                             <= this.dgData.getUtilityModelParams().
                                                                             getSimsPerParameterCombination()) {
 
-                                                                        // uid = "upc-sim"
-                                                                        this.dgData.getSimStats().setUid(
-                                                                                String.valueOf(this.dgData.getSimStats().getUpc()) +
-                                                                                "-" + String.valueOf(
-                                                                                        this.dgData.getSimStats().getSimPerUpc()));
-
                                                                         // simulate
                                                                         performSingleSimulation();
 
@@ -298,8 +292,8 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
         // begin: GEXF export
         if (PropertiesHandler.getInstance().isExportGexf()) {
             this.gexfWriter = new GEXFWriter();
-            this.dgData.setGexfExportFile(getExportPath() + this.dgData.getSimStats().getUid() + ".gexf");
-            gexfWriter.startRecording(network, this.dgData.getGexfExportFile());
+            this.dgData.setExportFileName(getExportPath() + this.dgData.getSimStats().getUid() + ".gexf");
+            gexfWriter.startRecording(network, this.dgData.getExportFileName());
         }
 
         // create utility
@@ -343,7 +337,7 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
         // write agent detail data if necessary
         if (!PropertiesHandler.getInstance().isExportAgentDetails() &&
                 PropertiesHandler.getInstance().isExportAgentDetailsReduced()) {
-            this.dgData.setNetStatsCurrent(new NetworkStats(this.network, this.simulation.getRounds()));
+            this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
             this.adWriter.writeCurrentData();
         }
 
@@ -464,7 +458,7 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
     @Override
     public void notifyRoundFinished(Simulation simulation) {
         if (PropertiesHandler.getInstance().isExportSummaryEachRound() || PropertiesHandler.getInstance().isExportAgentDetails()) {
-            this.dgData.setNetStatsCurrent(new NetworkStats(this.network, simulation.getRounds()));
+            this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
         }
         if (PropertiesHandler.getInstance().isExportSummaryEachRound()) {
             this.rsWriter.writeCurrentData();
@@ -486,7 +480,7 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
         // TODO improve
         if (!PropertiesHandler.getInstance().isExportAgentDetails() &&
                 PropertiesHandler.getInstance().isExportAgentDetailsReduced()) {
-            this.dgData.setNetStatsCurrent(new NetworkStats(this.network, simulation.getRounds()));
+            this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
             this.adWriter.writeCurrentData();
         }
     }
@@ -502,7 +496,7 @@ public class CidmDataGenerator extends AbstractDataGenerator implements AgentLis
             if (PropertiesHandler.getInstance().isExportSummaryEachRound() ||
                     PropertiesHandler.getInstance().isExportAgentDetails() ||
                     PropertiesHandler.getInstance().isExportAgentDetailsReduced()) {
-                this.dgData.setNetStatsCurrent(new NetworkStats(this.network, simulation.getRounds()));
+                this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
             }
             if (PropertiesHandler.getInstance().isExportSummaryEachRound()) {
                 this.rsWriter.writeCurrentData();

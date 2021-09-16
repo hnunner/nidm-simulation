@@ -25,7 +25,10 @@
  */
 package nl.uu.socnetid.nidm.data.out;
 
+import java.util.List;
+
 import nl.uu.socnetid.nidm.networks.AssortativityConditions;
+import nl.uu.socnetid.nidm.networks.LockdownConditions;
 
 /**
  * @author Hendrik Nunner
@@ -67,10 +70,16 @@ public abstract class UtilityModelParameters {
     private double omegaRandomMax;
     private double[] omegas;
     private double currOmega;
-    // ac - assortativity condition
-    private AssortativityConditions ac;     // TODO move to a more appropriate place (not really a utility parameter)
+    // assortativity
+    private AssortativityConditions aic;            // init condition
+    private List<AssortativityConditions> acs;      // earlier elements have higher priority
     // considering age
     private boolean considerAge;
+    // considering profession
+    private boolean considerProfession;
+    // lockdown conditions
+    private List<LockdownConditions> lcs;
+    private LockdownConditions currLc;
 
     // INFECTIONS
     // sigma - severity
@@ -115,6 +124,21 @@ public abstract class UtilityModelParameters {
     private int tauRandomMax;
     private int[] taus;
     private int currTau;
+    // vaccine efficacy
+    private boolean etaRandom;
+    private double etaRandomMin;
+    private double etaRandomMax;
+    private double[] etas;
+    private double currEta;
+    // vaccine availibility
+    private boolean thetaRandom;
+    private double thetaRandomMin;
+    private double thetaRandomMax;
+    private double[] thetas;
+    private double currTheta;
+    // vaccine distribution
+    private String[] vaxDists;
+    private String currVaxDist;
 
     // SIMULATION
     // time steps network initialization stage
@@ -645,10 +669,24 @@ public abstract class UtilityModelParameters {
     }
 
     /**
+     * @return the sigma
+     */
+    public double getSigma() {
+        return currSigma;
+    }
+
+    /**
      * @return the currSigma
      */
     public double getCurrSigma() {
         return currSigma;
+    }
+
+    /**
+     * @param sigma the sigma to set
+     */
+    public void setSigma(double sigma) {
+        this.currSigma = sigma;
     }
 
     /**
@@ -722,10 +760,24 @@ public abstract class UtilityModelParameters {
     }
 
     /**
+     * @return the gamma
+     */
+    public double getGamma() {
+        return currGamma;
+    }
+
+    /**
      * @param currGamma the currGamma to set
      */
     public void setCurrGamma(double currGamma) {
         this.currGamma = currGamma;
+    }
+
+    /**
+     * @param gamma the gamma to set
+     */
+    public void setGamma(double gamma) {
+        this.currGamma = gamma;
     }
 
     /**
@@ -1030,10 +1082,206 @@ public abstract class UtilityModelParameters {
     }
 
     /**
+     * @return the tau
+     */
+    public int getTau() {
+        return currTau;
+    }
+
+    /**
      * @param currTau the currTau to set
      */
     public void setCurrTau(int currTau) {
         this.currTau = currTau;
+    }
+
+    /**
+     * @param tau the tau to set
+     */
+    public void setTau(int tau) {
+        this.currTau = tau;
+    }
+
+    /**
+     * @return the etaRandom
+     */
+    public boolean isEtaRandom() {
+        return etaRandom;
+    }
+
+    /**
+     * @param etaRandom the etaRandom to set
+     */
+    public void setEtaRandom(boolean etaRandom) {
+        this.etaRandom = etaRandom;
+    }
+
+    /**
+     * @return the etaRandomMin
+     */
+    public double getEtaRandomMin() {
+        return etaRandomMin;
+    }
+
+    /**
+     * @param etaRandomMin the etaRandomMin to set
+     */
+    public void setEtaRandomMin(double etaRandomMin) {
+        this.etaRandomMin = etaRandomMin;
+    }
+
+    /**
+     * @return the etaRandomMax
+     */
+    public double getEtaRandomMax() {
+        return etaRandomMax;
+    }
+
+    /**
+     * @param etaRandomMax the etaRandomMax to set
+     */
+    public void setEtaRandomMax(double etaRandomMax) {
+        this.etaRandomMax = etaRandomMax;
+    }
+
+    /**
+     * @return the etas
+     */
+    public double[] getEtas() {
+        return etas;
+    }
+
+    /**
+     * @param etas the etas to set
+     */
+    public void setEtas(double[] etas) {
+        this.etas = etas;
+    }
+
+    /**
+     * @return the currEta
+     */
+    public double getCurrEta() {
+        return currEta;
+    }
+
+    /**
+     * @param currEta the currEta to set
+     */
+    public void setCurrEta(double currEta) {
+        this.currEta = currEta;
+    }
+
+    /**
+     * @return the currEta
+     */
+    public double getEta() {
+        return currEta;
+    }
+
+    /**
+     * @param currEta the currEta to set
+     */
+    public void setEta(double currEta) {
+        this.currEta = currEta;
+    }
+
+    /**
+     * @return the thetaRandom
+     */
+    public boolean isThetaRandom() {
+        return thetaRandom;
+    }
+
+    /**
+     * @param thetaRandom the thetaRandom to set
+     */
+    public void setThetaRandom(boolean thetaRandom) {
+        this.thetaRandom = thetaRandom;
+    }
+
+    /**
+     * @return the thetaRandomMin
+     */
+    public double getThetaRandomMin() {
+        return thetaRandomMin;
+    }
+
+    /**
+     * @param thetaRandomMin the thetaRandomMin to set
+     */
+    public void setThetaRandomMin(double thetaRandomMin) {
+        this.thetaRandomMin = thetaRandomMin;
+    }
+
+    /**
+     * @return the thetaRandomMax
+     */
+    public double getThetaRandomMax() {
+        return thetaRandomMax;
+    }
+
+    /**
+     * @param thetaRandomMax the thetaRandomMax to set
+     */
+    public void setThetaRandomMax(double thetaRandomMax) {
+        this.thetaRandomMax = thetaRandomMax;
+    }
+
+    /**
+     * @return the thetas
+     */
+    public double[] getThetas() {
+        return thetas;
+    }
+
+    /**
+     * @param thetas the thetas to set
+     */
+    public void setThetas(double[] thetas) {
+        this.thetas = thetas;
+    }
+
+    /**
+     * @return the currTheta
+     */
+    public double getCurrTheta() {
+        return currTheta;
+    }
+
+    /**
+     * @param currTheta the currTheta to set
+     */
+    public void setCurrTheta(double currTheta) {
+        this.currTheta = currTheta;
+    }
+
+    /**
+     * @return the vaxDists
+     */
+    public String[] getVaxDists() {
+        return vaxDists;
+    }
+
+    /**
+     * @param vaxDists the vaxDists to set
+     */
+    public void setVaxDists(String[] vaxDists) {
+        this.vaxDists = vaxDists;
+    }
+
+    /**
+     * @return the currCaxDist
+     */
+    public String getCurrVaxDist() {
+        return currVaxDist;
+    }
+
+    /**
+     * @param currVaxDist the currVaxDist to set
+     */
+    public void setCurrVaxDist(String currVaxDist) {
+        this.currVaxDist = currVaxDist;
     }
 
     /**
@@ -1216,17 +1464,31 @@ public abstract class UtilityModelParameters {
     }
 
     /**
-     * @return the ac
+     * @return the aic
      */
-    public AssortativityConditions getAssortativityCondition() {
-        return ac;
+    public AssortativityConditions getAssortativityInitCondition() {
+        return aic;
     }
 
     /**
-     * @param ac the ac to set
+     * @param aic the aic to set
      */
-    public void setAssortativityCondition(AssortativityConditions ac) {
-        this.ac = ac;
+    public void setAssortativityInitCondition(AssortativityConditions aic) {
+        this.aic = aic;
+    }
+
+    /**
+     * @return the acs
+     */
+    public List<AssortativityConditions> getAssortativityConditions() {
+        return acs;
+    }
+
+    /**
+     * @param acs the acs to set
+     */
+    public void setAssortativityConditions(List<AssortativityConditions> acs) {
+        this.acs = acs;
     }
 
     /**
@@ -1241,6 +1503,48 @@ public abstract class UtilityModelParameters {
      */
     public void setConsiderAge(boolean considerAge) {
         this.considerAge = considerAge;
+    }
+
+    /**
+     * @return the considerProfession
+     */
+    public boolean isConsiderProfession() {
+        return considerProfession;
+    }
+
+    /**
+     * @param considerProfession the considerProfession to set
+     */
+    public void setConsiderProfession(boolean considerProfession) {
+        this.considerProfession = considerProfession;
+    }
+
+    /**
+     * @return the lcs
+     */
+    public List<LockdownConditions> getLockdownConditions() {
+        return lcs;
+    }
+
+    /**
+     * @param lcs the lcs to set
+     */
+    public void setLockdownConditions(List<LockdownConditions> lcs) {
+        this.lcs = lcs;
+    }
+
+    /**
+     * @param lc the lc to set
+     */
+    public void setCurrLockdownCondition(LockdownConditions lc) {
+        this.currLc = lc;
+    }
+
+    /**
+     * @return the currLc
+     */
+    public LockdownConditions getCurrLockdownCondition() {
+        return this.currLc;
     }
 
 }

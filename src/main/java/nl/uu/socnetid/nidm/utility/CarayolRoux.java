@@ -27,6 +27,7 @@ package nl.uu.socnetid.nidm.utility;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,6 +42,10 @@ import nl.uu.socnetid.nidm.stats.StatsComputer;
  * @author Hendrik Nunner
  */
 public class CarayolRoux extends UtilityFunction implements CarayolRouxChangeListener {
+
+    private static final String OMEGA = "omega:";
+    private static final String DELTA = "delta:";
+    private static final String C = "c:";
 
     private static final Logger logger = LogManager.getLogger(BurgerBuskens.class);
 
@@ -90,13 +95,46 @@ public class CarayolRoux extends UtilityFunction implements CarayolRouxChangeLis
         }
     }
 
+    /**
+     * Constructor from a string array containing he utility function's details.
+     *
+     * @param ufSplit
+     *          the string array containing he utility function's details
+     */
+    protected CarayolRoux(String[] ufSplit) {
+
+        for (String value : ufSplit) {
+
+            if (value.contains(UF_TYPE)) {
+                continue;
+
+            } else if (value.contains(OMEGA)) {
+                value = value.replace(OMEGA, "");
+                this.crOmega = Double.valueOf(value);
+
+            } else if (value.contains(DELTA)) {
+                value = value.replace(DELTA, "");
+                this.delta = Double.valueOf(value);
+
+            } else if (value.contains(C)) {
+                value = value.replace(C, "");
+                this.c = Double.valueOf(value);
+
+            } else {
+                throw new IllegalAccessError("Unknown value: " + value);
+            }
+        }
+
+        this.crPanel = null;
+    }
+
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getStatsName()
      */
     @Override
     public String getStatsName() {
-        return "CR";
+        return TYPE_CARAYOL_ROUX;
     }
 
     /* (non-Javadoc)
@@ -160,18 +198,16 @@ public class CarayolRoux extends UtilityFunction implements CarayolRouxChangeLis
     }
 
     /* (non-Javadoc)
-     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#toString()
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getUtilityFunctionDetails()
      */
     @Override
-    public String toString() {
+    protected String getUtilityFunctionDetails() {
         StringBuilder sb = new StringBuilder();
-        sb.append("type:").append(getStatsName());
-        sb.append(" | omega:").append(this.crOmega);
-        sb.append(" | delta:").append(this.delta);
-        sb.append(" | c:").append(this.c);
+        sb.append(OMEGA).append(this.crOmega).append(STRING_DELIMITER);
+        sb.append(DELTA).append(this.delta).append(STRING_DELIMITER);
+        sb.append(C).append(this.c).append(STRING_DELIMITER);
         return sb.toString();
     }
-
 
     /* (non-Javadoc)
      * @see nl.uu.socnetid.nidm.gui.CarayolRouxChangeListener#notifyOmegaChanged()
@@ -195,6 +231,45 @@ public class CarayolRoux extends UtilityFunction implements CarayolRouxChangeLis
     @Override
     public void notifyCChanged() {
         this.c = this.crPanel.getC();
+    }
+
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals()
+     */
+    @Override
+    public boolean equals(Object o) {
+
+        // not null
+        if (o == null) {
+            return false;
+        }
+
+        // same object
+        if (o == this) {
+            return true;
+        }
+
+        // same type
+        if (!(o instanceof CarayolRoux)) {
+            return false;
+        }
+
+        CarayolRoux cr = (CarayolRoux) o;
+
+        // same values
+        return this.crOmega == cr.crOmega &&
+                this.delta == cr.delta &&
+                this.c == cr.c;
+
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.crOmega, this.delta, this.c);
     }
 
 }

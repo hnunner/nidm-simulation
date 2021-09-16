@@ -30,7 +30,8 @@ package nl.uu.socnetid.nidm.diseases.types;
  */
 public enum DiseaseType {
 
-    SIR("generic SIR");
+    SIR("generic SIR"),
+    SIRV("SIR with vaccinations");
 
     // the name
     private String name;
@@ -52,5 +53,20 @@ public enum DiseaseType {
     @Override
     public String toString() {
         return name;
+    }
+
+    /**
+     * Creates the disease type from a given string.
+     * @param text
+     *          the string to create the assortativity condition for
+     * @return the assortativity condition
+     */
+    public static DiseaseType fromString(String text) {
+        for (DiseaseType a : DiseaseType.values()) {
+            if (a.name.equalsIgnoreCase(text)) {
+                return a;
+            }
+        }
+        throw new IllegalArgumentException("No constant with text " + text + " found.");
     }
 }

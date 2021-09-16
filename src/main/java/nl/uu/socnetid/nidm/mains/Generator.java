@@ -42,10 +42,15 @@ import nl.uu.socnetid.nidm.io.generator.AbstractGenerator;
 import nl.uu.socnetid.nidm.io.generator.data.BurgerBuskensDataGenerator;
 import nl.uu.socnetid.nidm.io.generator.data.CarayolRouxDataGenerator;
 import nl.uu.socnetid.nidm.io.generator.data.CidmDataGenerator;
+import nl.uu.socnetid.nidm.io.generator.data.ExperimentDataGenerator;
 import nl.uu.socnetid.nidm.io.generator.data.NunnerBuskensDataGenerator;
+import nl.uu.socnetid.nidm.io.generator.data.NunnerBuskensProfessionsDataGenerator;
+import nl.uu.socnetid.nidm.io.generator.data.ProfessionsNetworkDataGenerator;
 import nl.uu.socnetid.nidm.io.generator.network.NunnerBuskensNetworkGenerator;
 import nl.uu.socnetid.nidm.io.generator.network.NunnerBuskensNetworkGeneratorGenetic;
 import nl.uu.socnetid.nidm.io.generator.network.NunnerBuskensNetworkGeneratorSimple;
+import nl.uu.socnetid.nidm.io.generator.network.ProfessionsNetworkGeneratorGenetic;
+import nl.uu.socnetid.nidm.io.generator.network.ProfessionsNetworkLockdownGenerator;
 import nl.uu.socnetid.nidm.system.PropertiesHandler;
 
 /**
@@ -202,6 +207,31 @@ public class Generator {
             dataGenerator = new NunnerBuskensNetworkGeneratorGenetic(getNetworkExportPath());
             dataGenerator.launch();
         }
+        // Nunner & Buskens (2019)
+        if (PropertiesHandler.getInstance().isGenerateNunnerBuskensNetworksProfessions()) {
+//            dataGenerator = new NunnerBuskensNetworkGeneratorProfessions(getNetworkExportPath());
+            dataGenerator = new NunnerBuskensProfessionsDataGenerator(getNetworkExportPath());
+            dataGenerator.launch();
+        }
+        // Professions
+        if (PropertiesHandler.getInstance().isGenerateProfessionNetworksGenetic()) {
+            dataGenerator = new ProfessionsNetworkGeneratorGenetic(getNetworkExportPath());
+            dataGenerator.launch();
+        }
+        // Professions lockdown
+        if (PropertiesHandler.getInstance().isGenerateProfessionNetworksLockdown()) {
+            dataGenerator = new ProfessionsNetworkLockdownGenerator(getNetworkExportPath());
+            dataGenerator.launch();
+        }
+        // Professions data
+        if (PropertiesHandler.getInstance().isGenerateProfessionNetworksData()) {
+            dataGenerator = new ProfessionsNetworkDataGenerator(getNetworkExportPath());
+            dataGenerator.launch();
+        }
+        // Professions data
+        if (PropertiesHandler.getInstance().isGenerateExperimentData()) {
+            dataGenerator = new ExperimentDataGenerator(getNetworkExportPath());
+            dataGenerator.launch();
+        }
     }
-
 }

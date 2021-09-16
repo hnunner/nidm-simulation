@@ -27,6 +27,7 @@ package nl.uu.socnetid.nidm.io.generator.network;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 
 import org.apache.commons.math3.distribution.ExponentialDistribution;
@@ -35,6 +36,7 @@ import org.apache.logging.log4j.Logger;
 
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.data.in.AgeStructure;
+import nl.uu.socnetid.nidm.data.in.Professions;
 import nl.uu.socnetid.nidm.data.out.DataGeneratorData;
 import nl.uu.socnetid.nidm.data.out.NunnerBuskensParameters;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
@@ -112,7 +114,7 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
         this.dgData.getUtilityModelParams().setCurrPhi(0.60);
         this.dgData.getUtilityModelParams().setCurrPsi(0.6);
         this.dgData.getUtilityModelParams().setCurrOmega(0.8);
-        this.dgData.getUtilityModelParams().setAssortativityCondition(AssortativityConditions.AGE);
+        this.dgData.getUtilityModelParams().setAssortativityInitCondition(AssortativityConditions.AGE);
     }
 
     /* (non-Javadoc)
@@ -144,11 +146,6 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
                 for (int run = 1; run <= 3; run++) {
                     logger.debug("run " + run + ": started.");
                     this.dgData.getSimStats().setSimPerUpc(run);
-                    // uid = "upc-sim"
-                    this.dgData.getSimStats().setUid(
-                            String.valueOf(this.dgData.getSimStats().getUpc()) +
-                            "#" + String.valueOf(
-                                    this.dgData.getSimStats().getSimPerUpc()));
 
                     // create vector of degree according to exponential distribution
                     long[] ties = new long[this.dgData.getUtilityModelParams().getCurrN()];
@@ -184,7 +181,7 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
                     this.dgData.getUtilityModelParams().setCurrC2(allC2s/this.dgData.getUtilityModelParams().getCurrN());
 
                     // create network
-                    this.network = new Network("Network of the infectious kind", false, AssortativityConditions.AGE);
+                    this.network = new Network("Network of the infectious kind", false, Arrays.asList(AssortativityConditions.AGE));
                     // disease specs - same for all
                     DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, 0, 0, 0, 0);
                     for (int i = 0; i < c2s.length; i++) {
@@ -206,7 +203,10 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
                                 this.dgData.getUtilityModelParams().getCurrPsi(),
                                 this.dgData.getUtilityModelParams().getXi(),
                                 AgeStructure.getInstance().getRandomAge(),
-                                this.dgData.getUtilityModelParams().isConsiderAge());
+                                this.dgData.getUtilityModelParams().isConsiderAge(),
+                                Professions.getInstance().getRandomProfession(),
+                                this.dgData.getUtilityModelParams().isConsiderProfession(),
+                                false);
                     }
                     this.dgData.setAgents(new ArrayList<Agent>(network.getAgents()));
                     logger.debug("theoretic mean degree: " + this.network.getTheoreticAvDegree());
@@ -307,7 +307,7 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
      * Amends the summary file by writing a row with the current state of the network.
      */
     private void amendSummary() {
-        this.dgData.setNetStatsCurrent(new NetworkStats(this.network, this.simulation.getRounds()));
+        this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
         this.nsWriter.writeCurrentData();
     }
 

@@ -25,11 +25,9 @@
  */
 package nl.uu.socnetid.nidm.stats;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.math.stat.correlation.PearsonsCorrelation;
@@ -139,7 +137,8 @@ public final class StatsComputer {
         connections /= 2;
 
         return new GlobalNetworkStats(network.isStable(), connections, avDegree,
-                diameter, avDistance, network.getAssortativity());
+                diameter, avDistance, network.getAssortativityRiskPerception(), network.getAssortativityAge(),
+                network.getAssortativityProfession());
     }
 
     /**
@@ -159,6 +158,7 @@ public final class StatsComputer {
         int nS = 0;
         int nI = 0;
         int nR = 0;
+        int nV = 0;
 
         // risk behavior
         // disease severity
@@ -191,6 +191,10 @@ public final class StatsComputer {
                     nR++;
                     break;
 
+                case VACCINATED:
+                    nV++;
+                    break;
+
                 default:
                     logger.warn("Unknown disease group: " + agent.getDiseaseGroup());
             }
@@ -219,7 +223,7 @@ public final class StatsComputer {
         }
 
         return new GlobalAgentStats(
-                n, nS, nI, nR,
+                n, nS, nI, nR, nV,
                 nRSigmaAverse, nRSigmaNeutral, nRSigmaSeeking, cumRSigma / n,
                 nRPiAverse, nRPiNeutral, nRPiSeeking, cumRPi / n);
     }
@@ -310,6 +314,12 @@ public final class StatsComputer {
                                         directConsByDiseaseGroupAtGeographicDistance.get(DiseaseGroup.RECOVERED).get(ggd) + 1 : 1);
                         break;
 
+                    case VACCINATED:
+                        directConsByDiseaseGroupAtGeographicDistance.get(DiseaseGroup.VACCINATED).put(ggd,
+                                directConsByDiseaseGroupAtGeographicDistance.get(DiseaseGroup.VACCINATED).get(ggd) != null ?
+                                        directConsByDiseaseGroupAtGeographicDistance.get(DiseaseGroup.VACCINATED).get(ggd) + 1 : 1);
+                        break;
+
                     default:
                         logger.warn("Unhandled disease group: " + otherAgent.getDiseaseGroup());
                 }
@@ -389,6 +399,12 @@ public final class StatsComputer {
                                         consByDiseaseGroupAtGeodesicDistance.get(DiseaseGroup.RECOVERED).get(gdd) + 1 : 1);
                         break;
 
+                    case VACCINATED:
+                        consByDiseaseGroupAtGeodesicDistance.get(DiseaseGroup.VACCINATED).put(gdd,
+                                consByDiseaseGroupAtGeodesicDistance.get(DiseaseGroup.VACCINATED).get(gdd) != null ?
+                                        consByDiseaseGroupAtGeodesicDistance.get(DiseaseGroup.VACCINATED).get(gdd) + 1 : 1);
+                        break;
+
                     default:
                         logger.warn("Unhandled disease group: " + otherAgent.getDiseaseGroup());
                 }
@@ -461,11 +477,13 @@ public final class StatsComputer {
         int nS = 0;
         int nI = 0;
         int nR = 0;
+        int nV = 0;
         // ties at distance 2
         int m = 0;
         int mS = 0;
         int mI = 0;
         int mR = 0;
+        int mV = 0;
         // open triads
         int y = 0;
         // closed triads
@@ -487,8 +505,8 @@ public final class StatsComputer {
             n = directConnections.size();
 
             Iterator<Agent> it = directConnections.iterator();
-            List<Agent> consideredAtDistance2 = new ArrayList<Agent>();
-            List<Agent> consideredDirectConnections = new ArrayList<Agent>(directConnections);
+//            List<Agent> consideredAtDistance2 = new ArrayList<Agent>();
+//            List<Agent> consideredDirectConnections = new ArrayList<Agent>(directConnections);
             while (it.hasNext()) {
                 Agent directConnection = it.next();
 
@@ -503,58 +521,67 @@ public final class StatsComputer {
                     case RECOVERED:
                         nR++;
                         break;
+                    case VACCINATED:
+                        nV++;
+                        break;
                     default:
                         logger.warn("Unknown disease state: " + directConnection.getDiseaseGroup());
                 }
 
-                // TODO implement distance 2 in different method and call only if needed
-                // connections at distance 2
-                Collection<Agent> connectionsAtDistance2 = directConnection.getConnections();
-                Iterator<Agent> cDist2It = connectionsAtDistance2.iterator();
-                while (cDist2It.hasNext()) {
-                    Agent connectionAtDistance2 = cDist2It.next();
-                    if (consideredAtDistance2.contains(connectionAtDistance2) ||
-                            directConnections.contains(connectionAtDistance2) ||
-                            agent.equals(connectionAtDistance2)) {
-                        continue;
-                    }
-                    m++;
-                    switch(connectionAtDistance2.getDiseaseGroup()) {
-                        case SUSCEPTIBLE:
-                            mS++;
-                            break;
-                        case INFECTED:
-                            mI++;
-                            break;
-                        case RECOVERED:
-                            mR++;
-                            break;
-                        default:
-                            logger.warn("Unknown disease state: " + directConnection.getDiseaseGroup());
-                    }
-                    consideredAtDistance2.add(connectionAtDistance2);
-                }
-                connectionsAtDistance2 = null;
 
-                // counting open and closed triads
-                consideredDirectConnections.remove(directConnection);
-                Iterator<Agent> cit = consideredDirectConnections.iterator();
-                while (cit.hasNext()) {
-                    Agent potentialTriad = cit.next();
-                    if (directConnection.isDirectlyConnectedTo(potentialTriad)) {
-                        z++;
-                    } else {
-                        y++;
-                    }
-                }
+                // XXX DISTANCE 2 STATS REMOVED FOR AGENTS
+//                // TODO implement distance 2 in different method and call only if needed
+//                // connections at distance 2
+//                Collection<Agent> connectionsAtDistance2 = directConnection.getConnections();
+//                Iterator<Agent> cDist2It = connectionsAtDistance2.iterator();
+//                while (cDist2It.hasNext()) {
+//                    Agent connectionAtDistance2 = cDist2It.next();
+//                    if (consideredAtDistance2.contains(connectionAtDistance2) ||
+//                            directConnections.contains(connectionAtDistance2) ||
+//                            agent.equals(connectionAtDistance2)) {
+//                        continue;
+//                    }
+//                    m++;
+//                    switch(connectionAtDistance2.getDiseaseGroup()) {
+//                        case SUSCEPTIBLE:
+//                            mS++;
+//                            break;
+//                        case INFECTED:
+//                            mI++;
+//                            break;
+//                        case RECOVERED:
+//                            mR++;
+//                            break;
+//                        case VACCINATED:
+//                            mV++;
+//                            break;
+//                        default:
+//                            logger.warn("Unknown disease state: " + directConnection.getDiseaseGroup());
+//                    }
+//                    consideredAtDistance2.add(connectionAtDistance2);
+//                }
+//                connectionsAtDistance2 = null;
+
+                // XXX TRIAD STATS REMOVED FOR AGENTS
+//                // counting open and closed triads
+//                consideredDirectConnections.remove(directConnection);
+//                Iterator<Agent> cit = consideredDirectConnections.iterator();
+//                while (cit.hasNext()) {
+//                    Agent potentialTriad = cit.next();
+//                    if (directConnection.isDirectlyConnectedTo(potentialTriad)) {
+//                        z++;
+//                    } else {
+//                        y++;
+//                    }
+//                }
             }
             //consideredAtDistance2 = null;
-            consideredDirectConnections = null;
+//            consideredDirectConnections = null;
         }
 
         directConnections = null;
 
-        return new LocalAgentConnectionsStats(n, nS, nI, nR, m, mS, mI, mR, y, z, netSize);
+        return new LocalAgentConnectionsStats(n, nS, nI, nR, nV, m, mS, mI, mR, mV, y, z, netSize);
     }
 
     /**
@@ -570,13 +597,41 @@ public final class StatsComputer {
         return 1 - Math.pow((1 - agent.getDiseaseSpecs().getGamma()), nI);
     }
 
+    /**
+     * Computes the pearson correlation coefficient for two attribute arrays.
+     *
+     * @param attributes1
+     *          attribute array 1
+     * @param attributes2
+     *          attribute array 2
+     * @return the pearson correlation coefficient
+     */
+    private static double getPearsonCorrelationCoefficient(double[] attributes1, double[] attributes2) {
+        double pcc = 0.0;
+        if (attributes1.length > 1 || attributes2.length > 1) {
+            try {
+                pcc = new PearsonsCorrelation().correlation(attributes1, attributes2);
+                if (Double.isNaN(pcc)) {
+                    pcc = 0.0;
+                }
+            } catch (Exception e) {
+                logger.error("Computation of Pearson's correlation coefficient failed: ", e);
+                pcc = 0.0;
+            }
+        }
+        return pcc;
+    }
+
     public static double computeAssortativity(Collection<Edge> edges, AssortativityConditions ac) {
 
         double a = 0.0;
 
-        // collect attributes of all node pairs
+        // TODO improve (e.g., one method per type of assortativity condition)
+        // collect attributes for numerical variables of all node pairs
         double[] attributes1 = new double[edges.size()];
         double[] attributes2 = new double[edges.size()];
+        // collect sum off all equal attributes for categorical variables
+        double equals = 0.0;
 
         Iterator<Edge> eIt = edges.iterator();
 
@@ -594,6 +649,11 @@ public final class StatsComputer {
                     attributes2[i] = ((Agent) edge.getNode1()).getRSigma() + ((Agent) edge.getNode1()).getRPi();
                     break;
 
+                case PROFESSION:
+                    equals += ((Agent) edge.getNode0()).getProfession().equals(((Agent) edge.getNode1()).getProfession()) ?
+                            1 : 0;
+                    break;
+
                 default:
                     logger.warn("assortativity not available for: " + ac);
                     break;
@@ -601,18 +661,23 @@ public final class StatsComputer {
             i++;
         }
 
-        // Pearson correlation coefficient
-        if (attributes1.length > 1 || attributes2.length > 1) {
-            try {
-                a = new PearsonsCorrelation().correlation(attributes1, attributes2);
-                if (Double.isNaN(a)) {
-                    a = 0.0;
-                }
-            } catch (Exception e) {
-                logger.error("Computation of Pearson's correlation coefficient failed: ", e);
-                a = 0.0;
-            }
+
+        switch (ac) {
+            // Pearson correlation coefficient for numerical variables
+            case AGE:
+            case RISK_PERCEPTION:
+                a = getPearsonCorrelationCoefficient(attributes1, attributes2);
+                break;
+
+            case PROFESSION:
+                a = equals / edges.size();
+                break;
+
+            default:
+                logger.warn("assortativity not available for: " + ac);
+                break;
         }
+
         return a;
 
     }

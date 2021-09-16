@@ -46,11 +46,11 @@ import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleNode;
 import org.graphstream.ui.graphicGraph.GraphPosLengthUtils;
 
-import nl.uu.socnetid.nidm.data.in.AgeStructure;
 import nl.uu.socnetid.nidm.diseases.Disease;
 import nl.uu.socnetid.nidm.diseases.DiseaseFactory;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseGroup;
+import nl.uu.socnetid.nidm.networks.AssortativityConditions;
 import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.stats.AgentConnectionStats;
 import nl.uu.socnetid.nidm.stats.DijkstraShortestPath;
@@ -71,9 +71,8 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     // concurrency lock
     private Lock lock;
 
-    // listeners
-    private final Set<AgentListener> agentListeners =
-            new CopyOnWriteArraySet<AgentListener>();
+    // agentListeners
+    private Set<AgentListener> agentListeners = new CopyOnWriteArraySet<AgentListener>();
 
 
     /**
@@ -111,10 +110,16 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      *          the age of the agent
      * @param considerAge
      *          whether age is considered for peer selection or not
+     * @param profession
+     *          the profession of the agent
+     * @param considerProfession
+     *          whether profession is considered for peer selection or not
+     * @param quarantined
+     *          whether the agent is quarantined or not
      */
     public void initAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs,
             Double riskFactorSigma, Double riskFactorPi, Double phi, Double psi, Double xi, Double omega,
-            Integer age, boolean considerAge) {
+            Integer age, boolean considerAge, String profession, boolean considerProfession, boolean quarantined) {
         this.addAttribute(AgentAttributes.UTILITY_FUNCTION, utilityFunction);
         this.addAttribute(AgentAttributes.DISEASE_SPECS, diseaseSpecs);
         DiseaseGroup diseaseGroup = DiseaseGroup.SUSCEPTIBLE;
@@ -132,9 +137,17 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         this.addAttribute(AgentAttributes.OMEGA, omega);
         this.addAttribute(AgentAttributes.SATISFIED, false);
         this.addAttribute(AgentAttributes.CONNECTION_STATS, new AgentConnectionStats());
+
+        // TODO make a list of properties usable for homophily, rather than hard coded properties
         this.addAttribute(AgentAttributes.AGE, age);
         this.addAttribute(AgentAttributes.CONSIDER_AGE, considerAge);
+        this.addAttribute(AgentAttributes.PROFESSION, profession);
+        this.addAttribute(AgentAttributes.CONSIDER_PROFESSION, considerProfession);
+
+        this.addAttribute(AgentAttributes.QUARANTINED, quarantined);
+
         this.addAttribute(AgentAttributes.FORCE_INFECTED, false);
+        this.addAttribute(AgentAttributes.WHEN_INFECTED, -1);
         this.addAttribute("ui.label", this.getId());
         this.addAttribute(AgentAttributes.CLOSENESS, -1);
         this.addAttribute(AgentAttributes.CLOSENESS_LAST_COMPUTATION, -1);
@@ -142,8 +155,33 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         this.addAttribute(AgentAttributes.BETWEENNESS_LAST_COMPUTATION, -1);
         this.addAttribute(AgentAttributes.CLUSTERING, -1);
         this.addAttribute(AgentAttributes.CLUSTERING_LAST_COMPUTATION, -1);
-        this.addAttribute(AgentAttributes.ASSORTATIVITY, -1);
-        this.addAttribute(AgentAttributes.ASSORTATIVITY_LAST_COMPUTATION, -1);
+
+        // TODO create assortativity interface, use list filled with instanciations of subclasses here
+        this.addAttribute(AgentAttributes.ASSORTATIVITY_RISK_PERCEPTION, -1);
+        this.addAttribute(AgentAttributes.ASSORTATIVITY_RISK_PERCEPTION_LAST_COMPUTATION, -1);
+        this.addAttribute(AgentAttributes.ASSORTATIVITY_AGE, -1);
+        this.addAttribute(AgentAttributes.ASSORTATIVITY_AGE_LAST_COMPUTATION, -1);
+        this.addAttribute(AgentAttributes.ASSORTATIVITY_PROFESSION, -1);
+        this.addAttribute(AgentAttributes.ASSORTATIVITY_PROFESSION_LAST_COMPUTATION, -1);
+
+        this.addAttribute(AgentAttributes.INITIAL_INDEX_CASE_DISTANCE, -1);
+    }
+
+    /**
+     * Reinitializes agent after reader import. That is, types are reinitialized from their string representation.
+     */
+    public void reinitAfterRead() {
+        String dgString = (String) this.getAttribute(AgentAttributes.DISEASE_GROUP);
+        this.addAttribute(AgentAttributes.DISEASE_GROUP, DiseaseGroup.fromString(dgString), false);
+
+        String csString = (String) this.getAttribute(AgentAttributes.CONNECTION_STATS);
+        this.addAttribute(AgentAttributes.CONNECTION_STATS, AgentConnectionStats.fromString(csString), false);
+
+        String dsString = (String) this.getAttribute(AgentAttributes.DISEASE_SPECS);
+        this.addAttribute(AgentAttributes.DISEASE_SPECS, DiseaseSpecs.fromString(dsString), false);
+
+        String ufString = (String) this.getAttribute(AgentAttributes.UTILITY_FUNCTION);
+        this.addAttribute(AgentAttributes.UTILITY_FUNCTION, UtilityFunction.fromString(ufString), false);
     }
 
     public String getLabel() {
@@ -202,7 +240,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
-     * Adds an attribute and notifies the listeners of the added attribute by default.
+     * Adds an attribute and notifies the agentListeners of the added attribute by default.
      *
      * @param attribute
      *          the attribute
@@ -221,7 +259,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      * @param value
      *          the value
      * @param notify
-     *          flag whether agent listeners ought to be notified of the added attribute
+     *          flag whether agent agentListeners ought to be notified of the added attribute
      */
     private void addAttribute(AgentAttributes attribute, Object value, boolean notify) {
         super.addAttribute(attribute.toString(), value);
@@ -231,7 +269,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
-     * Changes an attribute and notifies the listeners of the changed attribute by default.
+     * Changes an attribute and notifies the agentListeners of the changed attribute by default.
      *
      * @param attribute
      *          the attribute
@@ -254,7 +292,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      * @param newValue
      *          the new value
      * @param notify
-     *          flag whether agent listeners ought to be notified of the changed attribute
+     *          flag whether agent agentListeners ought to be notified of the changed attribute
      */
     private void changeAttribute(AgentAttributes attribute, Object oldValue, Object newValue, boolean notify) {
         super.changeAttribute(attribute.toString(), newValue);
@@ -264,7 +302,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
-     * Removes an attribute and notifies the listeners of the removed attribute by default.
+     * Removes an attribute and notifies the agentListeners of the removed attribute by default.
      *
      * @param attribute
      *          the attribute
@@ -281,7 +319,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      * @param value
      *          the value
      * @param notify
-     *          flag whether agent listeners ought to be notified of the added attribute
+     *          flag whether agent agentListeners ought to be notified of the added attribute
      */
     private void removeAttribute(AgentAttributes attribute, boolean notify) {
         super.removeAttribute(attribute.toString());
@@ -348,6 +386,25 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
+     * Updates the agent's risk factor for disease severity.
+     * @param rSigma
+     *          the new factor for disease severity
+     */
+    public void updateRSigma(double rSigma) {
+        this.changeAttribute(AgentAttributes.RISK_FACTOR_SIGMA, this.getRPi(), rSigma);
+    }
+
+    /**
+     * Updates the agent's risk scores.
+     * @param r
+     *          the new risk score
+     */
+    public void updateRiskScores(double r) {
+        this.updateRSigma(r);
+        this.updateRPi(r);
+    }
+
+    /**
      * Gets the agent's neighborhood's risk factor for disease severity.
      *
      * @return the agent's neighborhood's risk factor for disease severity
@@ -374,6 +431,15 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      */
     public double getRPi() {
         return (double) this.getAttribute(AgentAttributes.RISK_FACTOR_PI);
+    }
+
+    /**
+     * Updates the agent's risk factor for probability of infections.
+     * @param rPi
+     *          the new factor for probability of infections
+     */
+    public void updateRPi(double rPi) {
+        this.changeAttribute(AgentAttributes.RISK_FACTOR_PI, this.getRPi(), rPi);
     }
 
     /**
@@ -442,6 +508,36 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
+     * Updates the agent's utility function.
+     *
+     * @param uf
+     *          the utility function
+     */
+    public void updateUtilityFunction(UtilityFunction uf) {
+        if (uf.getClass().equals(this.getUtilityFunction().getClass())) {
+            this.changeAttribute(AgentAttributes.UTILITY_FUNCTION, this.getUtilityFunction(), uf);
+        } else {
+            logger.warn("Invalid utility function: " + uf.getClass() + ". Update aborted.");
+        }
+    }
+
+    /**
+     * Updates the agent's disease specs.
+     *
+     * @param disease
+     *          the diseaseSpecs
+     */
+    public void updateDisease(DiseaseSpecs disease) {
+        this.changeAttribute(AgentAttributes.DISEASE_SPECS, this.getDiseaseSpecs(), disease);
+    }
+
+    public void updateAgentSelection(double phi, double psi, double xi) {
+        this.changeAttribute(AgentAttributes.PHI, this.getPhi(), phi);
+        this.changeAttribute(AgentAttributes.PSI, this.getPsi(), psi);
+        this.changeAttribute(AgentAttributes.XI, this.getXi(), xi);
+    }
+
+    /**
      * Gets the agent's connections.
      *
      * @return the agent's connections
@@ -495,6 +591,33 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
+     * Gets the agent's co-agent ids sorted by distance, starting with the closest agents.
+     *
+     * @return the agent's co-agent ids sorted by distance, starting with the closest agents
+     */
+    public TreeMap<Integer, List<String>> getCoAgentsByDistance() {
+
+        TreeMap<Integer, List<String>> coAgentsByDistance = new TreeMap<Integer, List<String>>();
+
+        List<Agent> coAgents = new ArrayList<Agent>(getNetwork().getAgents());
+        coAgents.remove(this);
+
+        Iterator<Agent> aIt = coAgents.iterator();
+        while (aIt.hasNext()) {
+            Agent coAgent = aIt.next();
+            Integer dist = this.getGeodesicDistanceTo(coAgent);
+            List<String> currCoAgentsByDistance = coAgentsByDistance.get(dist);
+            if (currCoAgentsByDistance == null) {
+                currCoAgentsByDistance = new ArrayList<>();
+            }
+            currCoAgentsByDistance.add(coAgent.getId());
+            coAgentsByDistance.put(dist, currCoAgentsByDistance);
+        }
+
+        return coAgentsByDistance;
+    }
+
+    /**
      * Gets whether the agent is satisfied with the current connections.
      *
      * @return true if the agent is satisfied with the current connections, false otherwise
@@ -528,6 +651,33 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      */
     public boolean considerAge() {
         return (boolean) this.getAttribute(AgentAttributes.CONSIDER_AGE);
+    }
+
+    /**
+     * Gets the agent's profession.
+     *
+     * @return the agent's profession
+     */
+    public String getProfession() {
+        return (String) this.getAttribute(AgentAttributes.PROFESSION);
+    }
+
+    /**
+     * Gets whether the agent considers profession when selecting a peer for network decisions.
+     *
+     * @return true when the agent considers profession, false otherwise
+     */
+    public boolean considerProfession() {
+        return (boolean) this.getAttribute(AgentAttributes.CONSIDER_PROFESSION);
+    }
+
+    /**
+     * Gets whether the agent is quarantined or not.
+     *
+     * @return true when the agent is quarantined, false otherwise
+     */
+    public boolean isQuarantined() {
+        return (boolean) this.getAttribute(AgentAttributes.QUARANTINED);
     }
 
     /**
@@ -610,9 +760,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
             this.changeAttribute(AgentAttributes.BETWEENNESS,
                     this.getAttribute(AgentAttributes.BETWEENNESS),
                     bc.centrality(this));
-            this.changeAttribute(AgentAttributes.BETWEENNESS_LAST_COMPUTATION,
-                    lastComputation,
-                    simRound);
+            this.changeAttribute(AgentAttributes.BETWEENNESS_LAST_COMPUTATION, lastComputation, simRound);
         }
         return (double) this.getAttribute(AgentAttributes.BETWEENNESS);
     }
@@ -697,67 +845,84 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         return dsp.getShortestPathLength(agent);
     }
 
-    private int getAssortativityLastComputation() {
-        return (int) this.getAttribute(AgentAttributes.ASSORTATIVITY_LAST_COMPUTATION);
+    private int getAssortativityLastComputation(AssortativityConditions ac) {
+        switch (ac) {
+            case RISK_PERCEPTION:
+                return (int) this.getAttribute(AgentAttributes.ASSORTATIVITY_RISK_PERCEPTION_LAST_COMPUTATION);
+            case AGE:
+                return (int) this.getAttribute(AgentAttributes.ASSORTATIVITY_AGE_LAST_COMPUTATION);
+            case PROFESSION:
+                return (int) this.getAttribute(AgentAttributes.ASSORTATIVITY_PROFESSION_LAST_COMPUTATION);
+            default:
+                logger.warn("Unknown assortativity condition: " + ac);
+                return -1;
+        }
     }
 
-    public double getAssortativity(int simRound) {
-        int lastComputation = this.getAssortativityLastComputation();
+    private void updateAssortativity(AssortativityConditions ac, int simRound, int lastComputation) {
+        switch (ac) {
+            case RISK_PERCEPTION:
+                this.changeAttribute(AgentAttributes.ASSORTATIVITY_RISK_PERCEPTION,
+                        this.getAttribute(AgentAttributes.ASSORTATIVITY_RISK_PERCEPTION),
+                        StatsComputer.computeAssortativity(this.getEdgeSet(), AssortativityConditions.RISK_PERCEPTION));
+                this.changeAttribute(AgentAttributes.ASSORTATIVITY_RISK_PERCEPTION_LAST_COMPUTATION,
+                        lastComputation,
+                        simRound);
+                break;
+
+            case AGE:
+                this.changeAttribute(AgentAttributes.ASSORTATIVITY_AGE,
+                        this.getAttribute(AgentAttributes.ASSORTATIVITY_AGE),
+                        StatsComputer.computeAssortativity(this.getEdgeSet(), AssortativityConditions.AGE));
+
+                this.changeAttribute(AgentAttributes.ASSORTATIVITY_AGE_LAST_COMPUTATION,
+                        lastComputation,
+                        simRound);
+                break;
+
+            case PROFESSION:
+                this.changeAttribute(AgentAttributes.ASSORTATIVITY_PROFESSION,
+                        this.getAttribute(AgentAttributes.ASSORTATIVITY_PROFESSION),
+                        StatsComputer.computeAssortativity(this.getEdgeSet(), AssortativityConditions.PROFESSION));
+
+                this.changeAttribute(AgentAttributes.ASSORTATIVITY_PROFESSION_LAST_COMPUTATION,
+                        lastComputation,
+                        simRound);
+                break;
+
+            default:
+                logger.warn("Unknown assortativity condition: " + ac);
+        }
+    }
+
+    /**
+     * Gets the assortativity of the agent.
+     *
+     * @param simRound
+     *          the current simulation round
+     * @param ac
+     *          the assortativity condition
+     * @return the assortativity
+     */
+    public double getAssortativity(int simRound, AssortativityConditions ac) {
+        int lastComputation = this.getAssortativityLastComputation(ac);
+
         if (lastComputation < simRound) {
-            this.changeAttribute(AgentAttributes.ASSORTATIVITY,
-                    this.getAttribute(AgentAttributes.ASSORTATIVITY),
-                    StatsComputer.computeAssortativity(this.getEdgeSet(), this.getNetwork().getAssortativityCondition()));
-            this.changeAttribute(AgentAttributes.ASSORTATIVITY_LAST_COMPUTATION,
-                    lastComputation,
-                    simRound);
+            updateAssortativity(ac, simRound, lastComputation);
         }
-        return (double) this.getAttribute(AgentAttributes.ASSORTATIVITY);
-    }
 
-    /**
-     * Gets the value used for assortativity comparisons.
-     *
-     * @return the value used for assortativity comparisons
-     */
-    private double getAssortativityComparativeValue() {
-        switch (this.getNetwork().getAssortativityCondition()) {
-            case AGE:
-                return this.getAge();
-
+        switch (ac) {
             case RISK_PERCEPTION:
-                return (this.getRPi() + this.getRSigma());
-
-            default:
-                logger.warn("Unknown assortativity condition: " + this.getNetwork().getAssortativityCondition());
-                break;
-        }
-        return 0.0;
-    }
-
-    /**
-     * Gets the absolute difference between the comp(aritive) value and the actual value,
-     * according to the assortativity condition.
-     *
-     * @param comp
-     *          the value to compare to
-     * @return the absolute difference between the value to compare to and the actual value,
-     *         according to the assortativity condition
-     */
-    private double getAssortDiff(double comp) {
-        switch (this.getNetwork().getAssortativityCondition()) {
+                return (double) this.getAttribute(AgentAttributes.ASSORTATIVITY_RISK_PERCEPTION);
             case AGE:
-                return Math.abs((comp) - this.getAge());
-
-            case RISK_PERCEPTION:
-                return Math.abs((comp) - (this.getRPi() + this.getRSigma()));
-
+                return (double) this.getAttribute(AgentAttributes.ASSORTATIVITY_AGE);
+            case PROFESSION:
+                return (double) this.getAttribute(AgentAttributes.ASSORTATIVITY_PROFESSION);
             default:
-                logger.warn("Unknown assortativity condition: " + this.getNetwork().getAssortativityCondition());
-                break;
+                logger.warn("Unknown assortativity condition: " + ac);
         }
-        return 0.0;
+        return -1;
     }
-
 
     /**
      * Keeps track of actively broken ties.
@@ -870,7 +1035,26 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         boolean satisfied = true;
 
         int decisions = this.getNumberOfNetworkDecisions();
+
+        // helper collections
+        // agents that have been processed before
         Set<Agent> agentsProcessed = new HashSet<Agent>(decisions);
+        // distance 1
+        List<Agent> distance1AgentsAssorted = new ArrayList<Agent>(this.getConnections());
+        sortByAssortativityConditions(distance1AgentsAssorted);
+        List<Agent> distance1AgentsShuffled = new ArrayList<Agent>(this.getConnections());
+        Collections.shuffle(distance1AgentsShuffled);
+        // distance 2
+        List<Agent> distance2AgentsAssorted = new ArrayList<Agent>(this.getConnectionsAtDistance2());
+        sortByAssortativityConditions(distance2AgentsAssorted);
+        List<Agent> distance2AgentsShuffled = new ArrayList<Agent>(this.getConnectionsAtDistance2());
+        Collections.shuffle(distance2AgentsShuffled);
+        // any agents
+        List<Agent> allAgentsAssorted = new ArrayList<Agent>(this.getNetwork().getAgents());
+        sortByAssortativityConditions(allAgentsAssorted);
+        List<Agent> allAgentsShuffled = new ArrayList<Agent>(this.getNetwork().getAgents());
+        Collections.shuffle(allAgentsShuffled);
+
         while (agentsProcessed.size() < decisions) {
 
             // some delay before processing of each other agent (e.g., for animation processes)
@@ -882,28 +1066,50 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
                 }
             }
 
-            // selecting an agent to process
+            // creating a base list of agents to draw an agent from
             Agent other = null;
-            double rand = ThreadLocalRandom.current().nextDouble();
-            // direct connection
-            if (rand <= this.getPsi()) {
-                other = this.getRandomConnection(agentsProcessed);
+            double randPsi = ThreadLocalRandom.current().nextDouble();
+            double randOmega = ThreadLocalRandom.current().nextDouble();
+            HashSet<Agent> removals = new HashSet<Agent>(agentsProcessed);
+            removals.add(this);
+            List<Agent> drawBase = null;
+            // distance 1
+            if (randPsi <= this.getPsi()) {
+                if (randOmega <= this.getOmega()) {
+                    drawBase = distance1AgentsAssorted;
+                } else {
+                    drawBase = distance1AgentsShuffled;
+                }
+                drawBase.removeAll(removals);
             }
-            // connection at distance 2
-            if (other == null && rand <= (this.getPsi() + this.getXi())) {
-                other = this.getRandomConnectionAtDistance2(agentsProcessed);
+            // distance 2
+            if (randPsi <= (this.getPsi() + this.getXi())) {
+                if (randOmega <= this.getOmega()) {
+                    drawBase = distance2AgentsAssorted;
+                } else {
+                    drawBase = distance2AgentsShuffled;
+                }
+
+                drawBase.removeAll(removals);
             }
-            // random agent
-            if (other == null) {
-                other = this.getRandomPeer(agentsProcessed);
+            // all agents
+            if (drawBase == null || drawBase.isEmpty() || randPsi > (this.getPsi() + this.getXi())) {
+                if (randOmega <= this.getOmega()) {
+                    drawBase = allAgentsAssorted;
+                } else {
+                    drawBase = allAgentsShuffled;
+                }
+                drawBase.removeAll(removals);
             }
-            // no agent to process found (e.g., number of decisions ecxeeding population size)
-            if (other == null) {
+
+            // draw agent to process
+            if (drawBase.isEmpty()) {
                 logger.warn("No other agent found to process for agent " + this.getId());
                 return;
             }
+            other = drawBase.get(0);
 
-            // processing other agent
+            // processing drawn agent
             if (this.isDirectlyConnectedTo(other)) {
                 if (existingConnectionTooCostly(other)) {
                     disconnectFrom(other);
@@ -1010,48 +1216,154 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         trackBrokenTiePassive();
     }
 
+    /**
+     * Gets the normalized assortativity difference (0.0 - 1.0) between this agent
+     * and another agent depending on the assortativity condition.
+     *
+     * @param otherAgent
+     *          the agents to compute the assortativity difference for
+     * @return the normalized assortativity difference (0.0 - 1.0) between this agent and another agent
+     */
+    private double getNormalizedAssortativityDiff(Agent otherAgent, AssortativityConditions ac) {
+        switch (ac) {
+            case RISK_PERCEPTION:
+                return Math.abs((this.getRPi() + this.getRSigma()) - (otherAgent.getRPi() + otherAgent.getRSigma())) /
+                        (this.getNetwork().getMaxRPi() + this.getNetwork().getMaxRSigma());
 
+            case AGE:
+                return ((double) Math.abs(this.getAge() - otherAgent.getAge())) / ((double) this.getNetwork().getMaxAge());
 
+            case PROFESSION:
+                return Math.abs(this.getProfession().equals(otherAgent.getProfession()) ? 0 : 1);
+
+            default:
+                logger.warn("Unimplemented assortativity condition: " + ac);
+        }
+        return -1;
+    }
 
     /**
-     * Sorts the given list of agents by absolute difference of a comparative value.
+     * Creates a map of normalized assortativity differences (key) and list of agents with the same difference (value)
+     * for a given list of agents.
+     *
+     * @param agents
+     *          the list of agents to create the assortativity difference map for
+     * @return a map of assortativity differences (key) and list of agents with the same difference (value)
+     */
+    private TreeMap<Double, List<Agent>> getNormalizedAssortativityDiffMap(List<Agent> agents, AssortativityConditions ac) {
+        TreeMap<Double, List<Agent>> diffMap = new TreeMap<Double, List<Agent>>();
+        for (int i = 0; i < agents.size(); i++) {
+            Agent agent = agents.get(i);
+
+            double diff = getNormalizedAssortativityDiff(agent, ac);
+
+            if (diffMap.containsKey(diff)) {
+                List<Agent> list = diffMap.get(diff);
+                list.add(agent);
+                diffMap.put(diff, list);
+            } else {
+                List<Agent> list = new ArrayList<Agent>();
+                list.add(agents.get(i));
+                diffMap.put(diff, list);
+            }
+        }
+        return diffMap;
+    }
+
+
+
+    // TODO comments!!!
+    private TreeMap<Double, List<Agent>> reduceMaps(TreeMap<Double, List<Agent>> map1, TreeMap<Double, List<Agent>> map2) {
+
+        TreeMap<Double, List<Agent>> reducedMap = new TreeMap<Double, List<Agent>>();
+        double maxNewKey = 0.0;
+
+        Iterator<Double> key1It = map1.keySet().iterator();
+        while (key1It.hasNext()) {
+            Double key1 = key1It.next();
+            List<Agent> agents1 = map1.get(key1);
+
+
+            Iterator<Double> key2It = map2.keySet().iterator();
+            while (key2It.hasNext()) {
+                Double key2 = key2It.next();
+                List<Agent> agents2 = map2.get(key2);
+
+
+                Iterator<Agent> agents2It = agents2.iterator();
+                while (agents2It.hasNext()) {
+                    Agent agent = agents2It.next();
+
+                    if (agents1.contains(agent)) {
+                        Double newKey = key1 + key2;
+
+                        List<Agent> list = reducedMap.get(newKey);
+                        if (list != null) {
+                            list.add(agent);
+                        } else {
+                            list = new ArrayList<Agent>();
+                            list.add(agent);
+                            reducedMap.put(newKey, list);
+                        }
+
+                        if (newKey > maxNewKey) {
+                            maxNewKey = newKey;
+                        }
+                    }
+                }
+            }
+        }
+
+        // normalizing keys
+        TreeMap<Double, List<Agent>> normReducedMap = new TreeMap<Double, List<Agent>>();
+        Iterator<Double> it = reducedMap.keySet().iterator();
+        while (it.hasNext()) {
+            Double key = it.next();
+            normReducedMap.put(key/maxNewKey, reducedMap.get(key));
+        }
+
+        return normReducedMap;
+    }
+
+    /**
+     * Sorts the given list of agents by differences of assortativity conditions.
      *
      * @param agents
      *          the list of agents to sort
-     * @param comp
-     *          the comparative value to create the absolute difference for
      */
-    private void sortByRDiff(List<Agent> agents, double comp) {
+    public void sortByAssortativityConditions(List<Agent> agents) {
 
-            TreeMap<Double, ArrayList<Agent>> map = new TreeMap<>();
+        // struct used to create order depending on order of assortativity conditions
+        // first level: list per assortativity condition
+        // second level: map of assortativity differences (key) and list of agents with the same difference (value)
+        List<TreeMap<Double, List<Agent>>> diffList = new ArrayList<TreeMap<Double, List<Agent>>>();
 
-            // store values in map with difference as key
-            for (int i = 0; i < agents.size(); i++) {
+        Iterator<AssortativityConditions> acsIt = this.getNetwork().getAssortativityConditions().iterator();
+        while (acsIt.hasNext()) {
+            AssortativityConditions ac = acsIt.next();
+            diffList.add(getNormalizedAssortativityDiffMap(agents, ac));
+        }
 
-                Agent agent = agents.get(i);
-                double diff = agent.getAssortDiff(comp);
+        for (int i = diffList.size()-1; i > 0; i--) {
+            // combine last two maps into one, while combining the ordering of the two
+            diffList.add(reduceMaps(diffList.remove(i), diffList.remove(i-1)));
+        }
 
-                if (map.containsKey(diff)) {
-                    ArrayList<Agent> list = map.get(diff);
-                    list.add(agent);
-                    map.put(diff, list);
-                } else {
-                    ArrayList<Agent> list = new ArrayList<Agent>();
-                    list.add(agents.get(i));
-                    map.put(diff, list);
-                }
+        if (diffList.size() > 1) {
+            logger.error("Error during reduction of assortativity order maps.");
+            return;
+        }
+
+        // order list of agents according to assortativity order maps
+        TreeMap<Double, List<Agent>> map = diffList.get(0);
+        int index = 0;
+        for (Map.Entry<Double, List<Agent>> entry : map.entrySet()) {
+            List<Agent> list = map.get(entry.getKey());
+            for (int i = 0; i < list.size(); i++) {
+                    agents.set(index++, list.get(i));
             }
-
-            // Update the values of array
-            int index = 0;
-            for (Map.Entry<Double, ArrayList<Agent>> entry : map.entrySet()) {
-                ArrayList<Agent> list = map.get(entry.getKey());
-                for (int i = 0; i < list.size(); i++) {
-                        agents.set(index++, list.get(i));
-                }
-            }
+        }
     }
-
 
     private List<Agent> getRandomListOfAgents(List<Agent> agents, int amount) {
         List<Agent> res = new ArrayList<Agent>(amount);
@@ -1059,7 +1371,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         if (agents != null && !agents.isEmpty()) {
 
             // fill (omega share) according assortativity condition
-            sortByRDiff(agents, this.getAssortativityComparativeValue());
+            sortByAssortativityConditions(agents);
             Iterator<Agent> it = agents.iterator();
             long amountAss = Math.round(amount * this.getOmega());
             while (it.hasNext() &&
@@ -1078,7 +1390,6 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
                 }
             }
         }
-
         return res;
     }
 
@@ -1107,62 +1418,6 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
 
         Collections.shuffle(res);
         return res;
-    }
-
-    /**
-     * @param agents
-     * @return
-     */
-    private Agent drawRandomAgent(List<Agent> agents) {
-        // no feasible agent
-        if (agents.isEmpty()) {
-            return null;
-        }
-
-        if (ThreadLocalRandom.current().nextDouble() <= this.getOmega()) {
-            // assortativity condition
-            sortByRDiff(agents, this.getAssortativityComparativeValue());
-        } else {
-            // random selection
-            Collections.shuffle(agents);
-        }
-
-        if (this.considerAge()) {
-            int targetAge = AgeStructure.getInstance().sampleAgeFromAgeDependentDegreeDistribution(this.getAge());
-            Iterator<Agent> it = agents.iterator();
-            while (it.hasNext()) {
-                Agent agent = it.next();
-                if (agent.getAge() == targetAge) {
-                    return agent;
-                }
-            }
-        }
-
-        return agents.get(0);
-    }
-
-    private Agent getRandomConnection(Set<Agent> exclusions) {
-        HashSet<Agent> removals = new HashSet<Agent>(exclusions);
-        removals.add(this);
-        List<Agent> connections = this.getConnections();
-        connections.removeAll(removals);
-        return drawRandomAgent(connections);
-    }
-
-    private Agent getRandomConnectionAtDistance2(Set<Agent> exclusions) {
-        HashSet<Agent> removals = new HashSet<Agent>(exclusions);
-        removals.add(this);
-        List<Agent> connectionsDist2 = this.getConnectionsAtDistance2();
-        connectionsDist2.removeAll(removals);
-        return drawRandomAgent(connectionsDist2);
-    }
-
-    private Agent getRandomPeer(Set<Agent> exclusions) {
-        HashSet<Agent> removals = new HashSet<Agent>(exclusions);
-        removals.add(this);
-        List<Agent> peers = new ArrayList<Agent>(this.getNetwork().getAgents());
-        peers.removeAll(removals);
-        return drawRandomAgent(peers);
     }
 
     private Agent getAgent1(Agent agent1, Agent agent2) {
@@ -1397,12 +1652,30 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
+     * Gets the simulation round the agent was infected.
+     *
+     * @return the simulation round the agent was infected
+     */
+    public int getWhenInfected() {
+        return (int) this.getAttribute(AgentAttributes.WHEN_INFECTED);
+    }
+
+    /**
      * Checks whether the agent is recovered.
      *
      * @return true if the agent is recovered, false otherwise
      */
     public boolean isRecovered() {
         return this.getDiseaseGroup() == DiseaseGroup.RECOVERED;
+    }
+
+    /**
+     * Checks whether the agent is vaccinated.
+     *
+     * @return true if the agent is vaccinated, false otherwise
+     */
+    public boolean isVaccinated() {
+        return this.getDiseaseGroup() == DiseaseGroup.VACCINATED;
     }
 
     /**
@@ -1418,6 +1691,8 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         // --> no listener notifications
         this.changeAttribute(AgentAttributes.UI_CLASS,
                 prevDiseaseGroup.toString(), DiseaseGroup.SUSCEPTIBLE.toString(), false);
+
+        this.addAttribute(AgentAttributes.WHEN_INFECTED, -1);
     }
 
     /**
@@ -1434,13 +1709,16 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
 
     /**
      * Computes whether the agent is being infected by one of his infected connections.
+     *
+     * @param simRound
+     *          the simulation round of the infection
      */
-    public void computeDiseaseTransmission() {
+    public void computeDiseaseTransmission(int simRound) {
         if (this.isSusceptible()) {
             int nI = StatsComputer.computeLocalAgentConnectionsStats(this).getnI();
             if (ThreadLocalRandom.current().nextDouble() <=
                     StatsComputer.computeProbabilityOfInfection(this, nI)) {
-                this.infect(this.getDiseaseSpecs());
+                this.infect(this.getDiseaseSpecs(), simRound);
             }
         }
     }
@@ -1450,12 +1728,14 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      *
      * @param diseaseSpecs
      *          the specificationso of the disease the agent is infected with
+     * @param simRound
+     *          the simulation round of the infection
      */
-    public void infect(DiseaseSpecs diseaseSpecs) {
+    public void infect(DiseaseSpecs diseaseSpecs, int simRound) {
         if (isRecovered()) {
             return;
         }
-        this.infect(diseaseSpecs, false);
+        this.infect(diseaseSpecs, false, simRound);
     }
 
     /**
@@ -1465,10 +1745,22 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      *          the specificationso of the disease the agent is infected with
      */
     public void forceInfect(DiseaseSpecs diseaseSpecs) {
-        this.infect(diseaseSpecs, true);
+        this.infect(diseaseSpecs, true, 0);
     }
 
-    private void infect(DiseaseSpecs diseaseSpecs, boolean forceInfect) {
+    /**
+     * Forces an infection onto the agent no matter whether the agent is immune or not.
+     *
+     * @param diseaseSpecs
+     *          the specificationso of the disease the agent is infected with
+     * @param simRound
+     *          the simulation round of the infection
+     */
+    public void forceInfect(DiseaseSpecs diseaseSpecs, int simRound) {
+        this.infect(diseaseSpecs, true, simRound);
+    }
+
+    private void infect(DiseaseSpecs diseaseSpecs, boolean forceInfect, int simRound) {
         // coherence check
         if (!this.getDiseaseSpecs().equals(diseaseSpecs)) {
             throw new RuntimeException("Known disease and caught disease mismatch!");
@@ -1487,6 +1779,8 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
             // set force infected flag
             this.changeAttribute(AgentAttributes.FORCE_INFECTED, false, true);
         }
+
+        this.changeAttribute(AgentAttributes.WHEN_INFECTED, -1, simRound);
     }
 
     /**
@@ -1529,6 +1823,20 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         this.removeAttribute(AgentAttributes.DISEASE_INFECTION);
     }
 
+    /**
+     * Vaccinates the agent.
+     */
+    public void vaccinate() {
+        // cure
+        DiseaseGroup prevDiseaseGroup = this.getDiseaseGroup();
+        this.changeAttribute(AgentAttributes.DISEASE_GROUP, prevDiseaseGroup, DiseaseGroup.VACCINATED);
+        // ui-class required only for ui properties as defined in resources/graph-stream.css
+        // --> no listener notifications
+        this.changeAttribute(AgentAttributes.UI_CLASS,
+                prevDiseaseGroup.toString(), DiseaseGroup.VACCINATED.toString(), false);
+        this.removeAttribute(AgentAttributes.DISEASE_INFECTION);
+    }
+
 
     //////////////////////////////////////////// LISTENERS / NOTIFICATIONS ////////////////////////////////////////////
     /**
@@ -1552,7 +1860,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
-     * Notifies listeners of added attributes.
+     * Notifies agentListeners of added attributes.
      *
      * @param attribute
      *          the attribute
@@ -1567,7 +1875,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
-     * Notifies listeners of changed attributes.
+     * Notifies agentListeners of changed attributes.
      *
      * @param attribute
      *          the attribute
@@ -1584,7 +1892,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
-     * Notifies listeners of removed attributes.
+     * Notifies agentListeners of removed attributes.
      *
      * @param attribute
      *          the attribute
@@ -1597,7 +1905,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
-     * Notifies listeners of added connections.
+     * Notifies agentListeners of added connections.
      *
      * @param edge
      *          the new connection
@@ -1614,7 +1922,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
-     * Notifies the listeners of removed edges.
+     * Notifies the agentListeners of removed edges.
      *
      * @param edge
      *          the removed edge
@@ -1627,13 +1935,56 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
     /**
-     * Notifies listeners of finished agent rounds.
+     * Notifies agentListeners of finished agent rounds.
      */
     private final void notifyRoundFinished() {
         Iterator<AgentListener> listenersIt = this.agentListeners.iterator();
         while (listenersIt.hasNext()) {
             listenersIt.next().notifyRoundFinished(this);
         }
+    }
+
+    /**
+     * XXX Workaround: graphstream seems to use standard equals method (Object.equals) for tests before adding nodes
+     * to the network. This method was intended to replace the equals method, but caused conflicts with simple addition
+     * of nodes. Thus, it is only used for explicit calls to test agent (and not node) equality.
+     *
+     * @param o
+     *          the object to test for equality
+     * @return true if this and the provided objects are equal, false otherwise
+     */
+    public boolean same(Object o) {
+
+        // same object
+        if (o == this) {
+            return true;
+        }
+
+        // same type
+        if (!(o instanceof Agent)) {
+            return false;
+        }
+
+        Agent a = (Agent) o;
+
+        // same attributes
+        Iterator<String> akIt = this.getAttributeKeyIterator();
+        while (akIt.hasNext()) {
+            String ak = akIt.next();
+            if (ak.equals("ui.label") || ak.equals("xyz")) {
+                continue;
+            }
+
+            Object thisAttribute = this.getAttribute(ak);
+            Object otherAttribute = a.getAttribute(ak);
+
+            if (!thisAttribute.equals(otherAttribute)) {
+                logger.warn("Agents unequal: " + ak + "\tthis: " + thisAttribute + "\tother: " + otherAttribute);
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }

@@ -429,11 +429,6 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
 
         for (int simIteration = 1; simIteration <= this.dgData.getUtilityModelParams().getSimIterations(); simIteration++) {
 
-            // uid = "upc-n-m"      TODO remove m and use upc and sim count here!!!
-            this.dgData.getSimStats().setUid(String.valueOf(this.dgData.getSimStats().getUpc())
-                    + "-" + String.valueOf(this.dgData.getSimStats().getSimPerUpc())
-                    + "-" + simIteration);
-
             this.dgData.getSimStats().setSimIt(simIteration);
 
             // reset sim epidemic stats
@@ -445,9 +440,9 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
             // begin: GEXF export
             if (PropertiesHandler.getInstance().isExportGexf()) {
                 this.gexfWriter = new GEXFWriter();
-                this.dgData.setGexfExportFile(getExportPath() + this.dgData.getSimStats().getUid()
+                this.dgData.setExportFileName(getExportPath() + this.dgData.getSimStats().getUid()
                         + "-" + simIteration + "-" + ".gexf");
-                gexfWriter.startRecording(network, this.dgData.getGexfExportFile());
+                gexfWriter.startRecording(network, this.dgData.getExportFileName());
             }
 
             // add agents - with RPi == RSigma!!!
@@ -471,6 +466,10 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
                         this.dgData.getUtilityModelParams().getCurrXi(),
                         // TODO make age optional
                         AgeStructure.getInstance().getRandomAge(),
+                        false,
+                        // TODO make profession optional
+                        "NA",
+                        false,
                         false);
             }
             this.dgData.setAgents(new LinkedList<Agent>(network.getAgents()));
@@ -703,7 +702,7 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
         }
 
         if (PropertiesHandler.getInstance().isExportSummaryEachRound() || PropertiesHandler.getInstance().isExportAgentDetails()) {
-            this.dgData.setNetStatsCurrent(new NetworkStats(this.network, simulation.getRounds()));
+            this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
             this.dgData.setIndexCaseStatsCurrent(new AgentStatsPre(this.indexCase, simulation.getRounds()));
         }
         if (PropertiesHandler.getInstance().isExportSummaryEachRound()) {
@@ -742,7 +741,7 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
             if (PropertiesHandler.getInstance().isExportSummaryEachRound() ||
                     PropertiesHandler.getInstance().isExportAgentDetails() ||
                     PropertiesHandler.getInstance().isExportAgentDetailsReduced()) {
-                this.dgData.setNetStatsCurrent(new NetworkStats(this.network, simulation.getRounds()));
+                this.dgData.setNetStatsCurrent(new NetworkStats(this.network));
             }
             if (PropertiesHandler.getInstance().isExportSummaryEachRound()) {
                 this.rsWriter.writeCurrentData();

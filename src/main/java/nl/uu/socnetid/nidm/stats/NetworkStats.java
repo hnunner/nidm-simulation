@@ -25,6 +25,21 @@
  */
 package nl.uu.socnetid.nidm.stats;
 
+import java.io.File;
+import java.util.List;
+import java.util.Map;
+
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.io.importer.api.Container;
+import org.gephi.io.importer.api.EdgeDirectionDefault;
+import org.gephi.io.importer.api.ImportController;
+import org.gephi.io.processor.plugin.DefaultProcessor;
+import org.gephi.project.api.ProjectController;
+import org.gephi.project.api.Workspace;
+import org.gephi.statistics.plugin.GraphDistance;
+import org.openide.util.Lookup;
+
 import nl.uu.socnetid.nidm.networks.AssortativityConditions;
 import nl.uu.socnetid.nidm.networks.Network;
 
@@ -37,14 +52,20 @@ public class NetworkStats {
 
     // TODO make all initializations lazy
 
+    private int n;
+    private Map<String, Integer> nByProfessions;
     private boolean stable;
     private double density;
-    private AssortativityConditions ac;
-    private double assortativity;
+    private List<AssortativityConditions> acs;
+    private double assortativityRiskPerception;
+    private double assortativityAge;
+    private double assortativityProfession;
     private double avDegree;
     private Double avDegree2 = null;     // lazy initialization (very costly operations)
     private double avDegreeSatisfied;
     private double avDegreeUnsatisfied;
+    private Map<String, Double> avDegreesByProfession;
+    private Map<String, Double> degreeSdsByProfession;
     private Double avBetweenness = null;     // lazy initialization (very costly operations)
     private Double avCloseness = null;     // lazy initialization (very costly operations)
     private double avClustering;
@@ -53,30 +74,58 @@ public class NetworkStats {
     private double avSocialBenefits;
     private double avSocialCosts;
     private double avDiseaseCosts;
-    private int susceptiblesTotal;
-    private int infectedTotal;
-    private int recoveredTotal;
+    private Integer susceptiblesTotal = null;
+    private Integer infectedTotal = null;
+    private Integer recoveredTotal = null;
+    private Integer vaccinatedTotal = null;
     private int satisfiedTotal;
     private int unsatisfiedTotal;
-    private double susceptiblePercent;
-    private double infectedPercent;
-    private double recoveredPercent;
+    private Double susceptiblePercent = null;
+    private Double infectedPercent = null;
+    private Double recoveredPercent = null;
+    private Double vaccinatedPercent = null;
     private double satisfiedPercent;
     private double unsatisfiedPercent;
     private int tiesBrokenWithInfectionPresent = 0;
     private int networkChangesWithInfectionPresent = 0;
 
+    private String gexfFile;
 
-    public NetworkStats(Network network, int simRound) {
+
+    public NetworkStats(Network network) {
+        this(network, true, null);
+    }
+
+    public NetworkStats(Network network, String gexfFile) {
+        this(network, true, gexfFile);
+    }
+
+    public NetworkStats(Network network, boolean init) {
+        this(network, init, null);
+    }
+
+    public NetworkStats(Network network, boolean init, String gexfFile) {
+
         this.network = network;
+
+        if (!init) {
+            return;
+        }
+
+        this.n = network.getN();
+        this.nByProfessions = network.getNByProfessions();
         this.stable = network.isStable();
         this.density = network.getDensity();
-        this.ac = network.getAssortativityCondition();
-        this.assortativity = network.getAssortativity(simRound);
-        this.avDegree = network.getAvDegree(simRound);
+        this.acs = network.getAssortativityConditions();
+        this.assortativityRiskPerception = network.getAssortativityRiskPerception();
+        this.assortativityAge = network.getAssortativityAge();
+        this.assortativityProfession = network.getAssortativityProfession();
+        this.avDegree = network.getAvDegree();
         this.avDegreeSatisfied = network.getAvDegreeSatisfied();
         this.avDegreeUnsatisfied = network.getAvDegreeUnsatisfied();
-        this.avClustering = network.getAvClustering(simRound);
+        this.avDegreesByProfession = network.getAvDegreesByProfessions();
+        this.degreeSdsByProfession = network.getDegreesSdByProfessions();
+        this.avClustering = network.getAvClustering();
         this.avUtility = network.getAvUtility();
         this.avSocialBenefits = network.getAvSocialBenefits();
         this.avSocialCosts = network.getAvSocialCosts();
@@ -84,14 +133,37 @@ public class NetworkStats {
         this.susceptiblesTotal = network.getSusceptibles().size();
         this.infectedTotal = network.getInfected().size();
         this.recoveredTotal = network.getRecovered().size();
+        this.vaccinatedTotal = network.getVaccinated().size();
         this.satisfiedTotal = network.getSatisfied().size();
         this.unsatisfiedTotal = network.getUnsatisfied().size();
         double pct = 100D / network.getAgents().size();
         this.susceptiblePercent = pct * this.susceptiblesTotal;
         this.infectedPercent = pct * this.infectedTotal;
         this.recoveredPercent = pct * this.recoveredTotal;
+        this.vaccinatedPercent = pct * this.vaccinatedTotal;
         this.satisfiedPercent = pct * this.satisfiedTotal;
         this.unsatisfiedPercent = pct * this.unsatisfiedTotal;
+
+        this.gexfFile = gexfFile;
+    }
+
+
+    /**
+     * @return the n
+     */
+    public int getN() {
+        return n;
+    }
+
+    /**
+     * Gets the amount of agents by profession.
+     *
+     * @param profession
+     *          the profession
+     * @return the amount of agents by profession
+     */
+    public Integer getNByProfession(String profession) {
+        return nByProfessions.get(profession);
     }
 
     /**
@@ -123,24 +195,52 @@ public class NetworkStats {
     }
 
     /**
-     * @return the assortativity condition
+     * @return the assortativity conditions
      */
-    public AssortativityConditions getAssortativityCondition() {
-        return ac;
+    public List<AssortativityConditions> getAssortativityConditions() {
+        return acs;
     }
 
     /**
-     * @return the assortativity
+     * @return the assortativityRiskPerception
      */
-    public double getAssortativity() {
-        return assortativity;
+    public double getAssortativityRiskPerception() {
+        return assortativityRiskPerception;
     }
 
     /**
-     * @param assortativity the assortativity to set
+     * @param assortativityRiskPerception the assortativityRiskPerception to set
      */
-    public void setAssortativity(double assortativity) {
-        this.assortativity = assortativity;
+    public void setAssortativityRiskPerception(double assortativityRiskPerception) {
+        this.assortativityRiskPerception = assortativityRiskPerception;
+    }
+
+    /**
+     * @return the assortativityAge
+     */
+    public double getAssortativityAge() {
+        return assortativityAge;
+    }
+
+    /**
+     * @param assortativityAge the assortativityAge to set
+     */
+    public void setAssortativityAge(double assortativityAge) {
+        this.assortativityAge = assortativityAge;
+    }
+
+    /**
+     * @return the assortativityProfession
+     */
+    public double getAssortativityProfession() {
+        return assortativityProfession;
+    }
+
+    /**
+     * @param assortativityProfession the assortativityProfession to set
+     */
+    public void setAssortativityProfession(double assortativityProfession) {
+        this.assortativityProfession = assortativityProfession;
     }
 
     /**
@@ -155,6 +255,28 @@ public class NetworkStats {
      */
     public void setAvDegree(double avDegree) {
         this.avDegree = avDegree;
+    }
+
+    /**
+     * Gets the average degree by profession.
+     *
+     * @param profession
+     *          the profession
+     * @return the average degree by profession
+     */
+    public double getAvDegreeByProfession(String profession) {
+        return avDegreesByProfession.get(profession);
+    }
+
+    /**
+     * Gets the degree SD by profession.
+     *
+     * @param profession
+     *          the profession
+     * @return the degree SD by profession
+     */
+    public double getDegreeSdByProfession(String profession) {
+        return degreeSdsByProfession.get(profession);
     }
 
     /**
@@ -187,6 +309,13 @@ public class NetworkStats {
     }
 
     /**
+     * @return the avBetweenness
+     */
+    public double getAvBetweenness() {
+        return this.avBetweenness;
+    }
+
+    /**
      * @param avBetweenness the avBetweenness to set
      */
     public void setAvBetweenness(double avBetweenness) {
@@ -203,6 +332,13 @@ public class NetworkStats {
             this.avCloseness = network.getAvCloseness(simRound);
         }
         return avCloseness;
+    }
+
+    /**
+     * @return the avCloseness
+     */
+    public double getAvCloseness() {
+        return this.avCloseness;
     }
 
     /**
@@ -236,6 +372,88 @@ public class NetworkStats {
             this.avPathLength = network.getAvPathLength(simRound);
         }
         return avPathLength;
+    }
+
+    /**
+     * @return the avPathLength
+     */
+    public double getAvPathLength() {
+        if (this.avPathLength == null) {
+            if (this.gexfFile != null & !this.gexfFile.isEmpty()) {
+
+                //Init a project - and therefore a workspace
+                ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+                pc.newProject();
+                Workspace workspace = pc.getCurrentWorkspace();
+
+                //Import file
+                ImportController importController = Lookup.getDefault().lookup(ImportController.class);
+                Container container = null;
+                try {
+                    File file = new File(this.gexfFile);
+                    container = importController.importFile(file);
+                    container.getLoader().setEdgeDefault(EdgeDirectionDefault.UNDIRECTED); //Force UNDIRECTED
+                    container.getLoader().setAllowAutoNode(false); //Don’t create missing nodes
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                //Append imported data to GraphAPI
+                importController.process(container, new DefaultProcessor(), workspace);
+
+                System.out.println("Import successfull!!!");
+
+                //Get graph model and attribute model of current workspace
+                GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+
+                //Get Centrality
+                GraphDistance distance = new GraphDistance();
+                distance.setDirected(false);
+                distance.execute(graphModel);
+                this.avPathLength = distance.getPathLength();
+
+//                Graph graph = graphModel.getGraph();
+//                HashMap<Node, Integer> indicies = distance.createIndiciesMap(graph);
+//                Map<String, double[]> metrics = distance.calculateDistanceMetrics(graph, indicies, false, false);
+    //
+    //
+//                System.out.println("indicies:");
+    //
+//                Integer minId = Integer.MAX_VALUE;
+//                Integer maxId = Integer.MIN_VALUE;
+//                Iterator<Node> keys = indicies.keySet().iterator();
+//                while (keys.hasNext()) {
+//                    Node key = keys.next();
+//                    Integer id = Integer.valueOf((String) key.getId());
+    //
+//                    if (id < minId) {
+//                        minId = id;
+//                    }
+//                    if (id > maxId) {
+//                        maxId = id;
+//                    }
+    //
+    //
+//                    System.out.println("key id: " + id);
+//                    System.out.println("key store id: " + key.getStoreId());
+//                }
+//                System.out.println("min ID: " + minId);
+//                System.out.println("max ID: " + maxId);
+    //
+    //
+////                System.out.println(indicies.keySet().iterator().next().getAttributeKeys());
+////                System.out.println(indicies.keySet().iterator().next().getId());
+////                System.out.println(indicies.keySet().iterator().next().getStoreId());
+    //
+    //
+//                double[] eccentricity = metrics.get(GraphDistance.ECCENTRICITY);
+//                double[] closeness = metrics.get(GraphDistance.CLOSENESS);
+//                double[] harmonicCloseness = metrics.get(GraphDistance.HARMONIC_CLOSENESS);
+//                double[] betweenness = metrics.get(GraphDistance.BETWEENNESS);
+    //
+//                System.out.println("Av. path length: " + this.avPathLength);
+            }
+        }
+        return this.avPathLength;
     }
 
     /**
@@ -305,6 +523,9 @@ public class NetworkStats {
      * @return the susceptiblesTotal
      */
     public int getSusceptiblesTotal() {
+        if (this.susceptiblesTotal == null) {
+            this.susceptiblesTotal = network.getSusceptibles().size();
+        }
         return susceptiblesTotal;
     }
 
@@ -319,6 +540,9 @@ public class NetworkStats {
      * @return the infectedTotal
      */
     public int getInfectedTotal() {
+        if (this.infectedTotal == null) {
+            this.infectedTotal = network.getInfected().size();
+        }
         return infectedTotal;
     }
 
@@ -333,6 +557,9 @@ public class NetworkStats {
      * @return the recoveredTotal
      */
     public int getRecoveredTotal() {
+        if (this.recoveredTotal == null) {
+            this.recoveredTotal = network.getRecovered().size();
+        }
         return recoveredTotal;
     }
 
@@ -343,12 +570,24 @@ public class NetworkStats {
         this.recoveredTotal = recoveredTotal;
     }
 
-
+    /**
+     * @return the vaccinatedTotal
+     */
+    public int getVaccinatedTotal() {
+        if (this.vaccinatedTotal == null) {
+            this.vaccinatedTotal = network.getVaccinated().size();
+        }
+        return vaccinatedTotal;
+    }
 
     /**
      * @return the susceptiblePercent
      */
     public double getSusceptiblePercent() {
+        if (this.susceptiblePercent == null) {
+            double pct = 100D / network.getAgents().size();
+            this.susceptiblePercent = pct * this.getSusceptiblesTotal();
+        }
         return susceptiblePercent;
     }
 
@@ -363,6 +602,10 @@ public class NetworkStats {
      * @return the infectedPercent
      */
     public double getInfectedPercent() {
+        if (this.infectedPercent == null) {
+            double pct = 100D / network.getAgents().size();
+            this.infectedPercent = pct * this.getInfectedTotal();
+        }
         return infectedPercent;
     }
 
@@ -377,6 +620,10 @@ public class NetworkStats {
      * @return the recoveredPercent
      */
     public double getRecoveredPercent() {
+        if (this.recoveredPercent == null) {
+            double pct = 100D / network.getAgents().size();
+            this.recoveredPercent = pct * this.getRecoveredTotal();
+        }
         return recoveredPercent;
     }
 
@@ -385,6 +632,24 @@ public class NetworkStats {
      */
     public void setRecoveredPercent(double recoveredPercent) {
         this.recoveredPercent = recoveredPercent;
+    }
+
+    /**
+     * @return the vaccinatedPercent
+     */
+    public double getVaccinatedPercent() {
+        if (this.vaccinatedPercent == null) {
+            double pct = 100D / network.getAgents().size();
+            this.vaccinatedPercent = pct * this.getVaccinatedTotal();
+        }
+        return vaccinatedPercent;
+    }
+
+    /**
+     * @param vaccinatedPercent the vaccinatedPercent to set
+     */
+    public void setVaccinatedPercent(double vaccinatedPercent) {
+        this.vaccinatedPercent = vaccinatedPercent;
     }
 
     /**

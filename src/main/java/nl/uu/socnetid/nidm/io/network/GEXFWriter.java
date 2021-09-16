@@ -103,7 +103,7 @@ public class GEXFWriter implements AgentListener, NetworkListener {
             logger.error(e);
         }
     }
-
+    
     /**
      * Begins the recording of dynamic networks.
      *
@@ -174,8 +174,7 @@ public class GEXFWriter implements AgentListener, NetworkListener {
     @Override
     public void notifyAttributeAdded(Agent agent, String attribute, Object value) {
         this.fileSink.stepBegins(this.networkId, this.timeId, RECORD_STEP.getAndIncrement());
-        this.fileSink.nodeAttributeAdded(this.networkId, this.timeId,
-                String.valueOf(agent.getId()), attribute, value.toString());
+        this.fileSink.nodeAttributeAdded(this.networkId, this.timeId, agent.getId(), attribute, value);
         try {
             this.fileSink.flush();
         } catch (IOException e) {
@@ -191,8 +190,7 @@ public class GEXFWriter implements AgentListener, NetworkListener {
     @Override
     public void notifyAttributeChanged(Agent agent, String attribute, Object oldValue, Object newValue) {
         this.fileSink.stepBegins(this.networkId, this.timeId, RECORD_STEP.getAndIncrement());
-        this.fileSink.nodeAttributeChanged(this.networkId, this.timeId,
-                String.valueOf(agent.getId()), attribute, oldValue.toString(), newValue.toString());
+        this.fileSink.nodeAttributeChanged(this.networkId, this.timeId, agent.getId(), attribute, oldValue, newValue);
         try {
             this.fileSink.flush();
         } catch (IOException e) {
@@ -207,8 +205,7 @@ public class GEXFWriter implements AgentListener, NetworkListener {
     @Override
     public void notifyAttributeRemoved(Agent agent, String attribute) {
         this.fileSink.stepBegins(this.networkId, this.timeId, RECORD_STEP.getAndIncrement());
-        this.fileSink.nodeAttributeRemoved(this.networkId, this.timeId,
-                String.valueOf(agent.getId()), attribute);
+        this.fileSink.nodeAttributeRemoved(this.networkId, this.timeId, agent.getId(), attribute);
         try {
             this.fileSink.flush();
         } catch (IOException e) {
@@ -224,15 +221,13 @@ public class GEXFWriter implements AgentListener, NetworkListener {
     @Override
     public void notifyConnectionAdded(Edge edge, Agent agent1, Agent agent2) {
         this.fileSink.stepBegins(this.networkId, this.timeId, RECORD_STEP.getAndIncrement());
-        this.fileSink.edgeAdded(this.networkId, this.timeId, edge.getId(),
-                String.valueOf(agent1.getId()), String.valueOf(agent2.getId()), false);
+        this.fileSink.edgeAdded(this.networkId, this.timeId, edge.getId(), agent1.getId(), agent2.getId(), false);
         try {
             fileSink.flush();
         } catch (IOException e) {
             logger.error(e);
         }
     }
-
 
     /*
      * (non-Javadoc)
@@ -243,6 +238,55 @@ public class GEXFWriter implements AgentListener, NetworkListener {
     public void notifyConnectionRemoved(Agent agent, Edge edge) {
         this.fileSink.stepBegins(this.networkId, this.timeId, RECORD_STEP.getAndIncrement());
         this.fileSink.edgeRemoved(this.networkId, this.timeId, edge.getId());
+        try {
+            this.fileSink.flush();
+        } catch (IOException e) {
+            logger.error(e);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.networks.NetworkListener#notifyAttributeAdded(
+     * nl.uu.socnetid.nidm.networks.Network, java.lang.String, java.lang.Object)
+     */
+    // TODO create super class for agent and network that allows joined attribute handling
+    @Override
+    public void notifyAttributeAdded(Network network, String attribute, Object value) {
+        this.fileSink.stepBegins(this.networkId, this.timeId, RECORD_STEP.getAndIncrement());
+        this.fileSink.graphAttributeAdded(this.networkId, this.timeId, attribute, value);
+        try {
+            this.fileSink.flush();
+        } catch (IOException e) {
+            logger.error(e);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.networks.NetworkListener#notifyAttributeChanged(
+     * nl.uu.socnetid.nidm.networks.Network, java.lang.String, java.lang.Object, java.lang.Object)
+     */
+    @Override
+    public void notifyAttributeChanged(Network network, String attribute, Object oldValue, Object newValue) {
+        this.fileSink.stepBegins(this.networkId, this.timeId, RECORD_STEP.getAndIncrement());
+        this.fileSink.graphAttributeChanged(this.networkId, this.timeId, attribute, oldValue, newValue);
+        try {
+            this.fileSink.flush();
+        } catch (IOException e) {
+            logger.error(e);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.networks.NetworkListener#notifyAttributeRemoved(
+     * nl.uu.socnetid.nidm.networks.Network, java.lang.String)
+     */
+    @Override
+    public void notifyAttributeRemoved(Network network, String attribute) {
+        this.fileSink.stepBegins(this.networkId, this.timeId, RECORD_STEP.getAndIncrement());
+        this.fileSink.graphAttributeRemoved(this.networkId, this.timeId, attribute);
         try {
             this.fileSink.flush();
         } catch (IOException e) {

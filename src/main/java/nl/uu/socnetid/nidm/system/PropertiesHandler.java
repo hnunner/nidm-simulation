@@ -30,7 +30,9 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
@@ -43,6 +45,11 @@ import nl.uu.socnetid.nidm.data.out.EpidemicStructures;
 import nl.uu.socnetid.nidm.data.out.LogValues;
 import nl.uu.socnetid.nidm.data.out.NunnerBuskensGeneticParameters;
 import nl.uu.socnetid.nidm.data.out.NunnerBuskensParameters;
+import nl.uu.socnetid.nidm.data.out.NunnerBuskensProfessionsParameters;
+import nl.uu.socnetid.nidm.data.out.ProfessionNetworkGeneticParameters;
+import nl.uu.socnetid.nidm.networks.AssortativityConditions;
+import nl.uu.socnetid.nidm.networks.DegreeDistributionConditions;
+import nl.uu.socnetid.nidm.networks.LockdownConditions;
 
 
 /**
@@ -92,6 +99,20 @@ public class PropertiesHandler {
     // NunnerBuskens networks genetic parameters
     private boolean generateNunnerBuskensNetworksGenetic;
     private NunnerBuskensGeneticParameters nbgParameters;
+    // NunnerBuskens networks professions parameters
+    private boolean generateNunnerBuskensNetworksProfessions;
+    private NunnerBuskensProfessionsParameters nbpParameters;
+    // professions network genetic
+    private boolean generateProfessionNetworksGenetic;
+    private ProfessionNetworkGeneticParameters pngParameters;
+    // professions network lockdown
+    private boolean generateProfessionNetworksLockdown;
+    // professions network data
+    private boolean generateProfessionNetworksData;
+    // profession network agent stats
+    private boolean generateProfessionNetworksAgentStats;
+    // experiment data
+    private boolean generateExperimentData;
 
     // DATA EXPORT
     // types of data export
@@ -114,6 +135,7 @@ public class PropertiesHandler {
     private Path ageDistributionImportPath;
     private Path ageDegreesImportPath;
     private Path ageAssortativityImportPath;
+    private Path professionsImportPath;
 
 
     /**
@@ -329,7 +351,6 @@ public class PropertiesHandler {
         generateNunnerBuskensData = Boolean.parseBoolean(configProps.getProperty("nb.generate.data"));
         generateNunnerBuskensNetworks = Boolean.parseBoolean(configProps.getProperty("nb.generate.networks"));
         generateNunnerBuskensNetworksSimple = Boolean.parseBoolean(configProps.getProperty("nb.generate.networks.simple"));
-        generateNunnerBuskensNetworksGenetic = Boolean.parseBoolean(configProps.getProperty("nb.generate.networks.genetic"));
         nbParameters = new NunnerBuskensParameters();
         // network structure static during epidemics
         nbParameters.setEpStructure(EpidemicStructures.fromString(configProps.getProperty(LogValues.IV_NB_EP_STRUCTURE.toString())));
@@ -450,6 +471,62 @@ public class PropertiesHandler {
         nbgParameters.setInitialAlphaMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_INITIAL_ALPHA_MIN.toString())));
         nbgParameters.setInitialAlphaMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_INITIAL_ALPHA_MAX.toString())));
         nbgParameters.setConsiderAge(Boolean.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_CONSIDER_AGE.toString())));
+        nbgParameters.setConsiderProfession(Boolean.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_CONSIDER_PROFESSION.toString())));
+
+        // NunnerBuskens professions
+        generateNunnerBuskensNetworksProfessions = Boolean.parseBoolean(configProps.getProperty("nb.generate.networks.professions"));
+        nbpParameters = new NunnerBuskensProfessionsParameters();
+        nbpParameters.setN(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_N.toString())));
+        nbpParameters.setPhi(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_PHI.toString())));
+        nbpParameters.setPsi(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_PSI.toString())));
+        nbpParameters.setXi(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_XI.toString())));
+        nbpParameters.setZeta(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_ZETA.toString())));
+        nbpParameters.setB1(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_B1.toString())));
+        nbpParameters.setB2(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_B2.toString())));
+        nbpParameters.setC1(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_C1.toString())));
+        nbpParameters.setAlpha(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_ALPHA.toString())));
+        nbpParameters.setGamma(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_GAMMA.toString())));
+        nbpParameters.setTau(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_TAU.toString())));
+        nbpParameters.setConsiderAge(Boolean.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_CONSIDER_AGE.toString())));
+        nbpParameters.setConsiderProfession(Boolean.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_CONSIDER_PROFESSION.toString())));
+        nbpParameters.setAssortativityInitCondition(AssortativityConditions.fromString(configProps.getProperty(LogValues.IV_NB_PROF_ASSORTATIVITY_INIT_CONDITION.toString())));
+        String[] acsString = configProps.getProperty(LogValues.IV_NB_PROF_ASSORTATIVITY_CONDITIONS.toString()).split(",");
+        List<AssortativityConditions> acs = new ArrayList<AssortativityConditions>(acsString.length);
+        for (int i = 0; i < acsString.length; i++) {
+            acs.add(AssortativityConditions.fromString(acsString[i]));
+        }
+        nbpParameters.setAssortativityConditions(acs);
+        nbpParameters.setOmega(Double.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_OMEGA.toString())));
+        nbpParameters.setSimsPerParameterCombination(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_SIMS_PER_PC.toString())));
+        nbpParameters.setSimIterations(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_SIM_ITERATIONS.toString())));
+        String[] lcsString = configProps.getProperty(LogValues.IV_NB_PROF_LOCKDOWN_CONDITIONS.toString()).split(",");
+        List<LockdownConditions> lcs = new ArrayList<LockdownConditions>(lcsString.length);
+        for (int i = 0; i < lcsString.length; i++) {
+            lcs.add(LockdownConditions.fromString(lcsString[i]));
+        }
+        nbpParameters.setLockdownConditions(lcs);
+        String[] ddcsString = configProps.getProperty(LogValues.IV_NB_PROF_DEGREE_DISTRIBUTION_CONDITIONS.toString()).split(",");
+        List<DegreeDistributionConditions> ddcs = new ArrayList<DegreeDistributionConditions>(ddcsString.length);
+        for (int i = 0; i < ddcsString.length; i++) {
+            ddcs.add(DegreeDistributionConditions.fromString(ddcsString[i]));
+        }
+        nbpParameters.setDegreeDistributionConditions(ddcs);
+        nbpParameters.setRoundsMax(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_PROF_ROUNDS_MAX.toString())));
+
+        // profession networks genetic
+        generateProfessionNetworksGenetic = Boolean.parseBoolean(configProps.getProperty("prof.generate.genetic"));
+
+        // profession networks lockdown
+        generateProfessionNetworksLockdown = Boolean.parseBoolean(configProps.getProperty("prof.generate.lockdown"));
+
+        // profession networks data
+        generateProfessionNetworksData = Boolean.parseBoolean(configProps.getProperty("prof.generate.data"));
+
+        // profession networks agent stats
+        generateProfessionNetworksAgentStats = Boolean.parseBoolean(configProps.getProperty("prof.generate.agent.stats"));
+
+        // experiment data
+        generateExperimentData = Boolean.parseBoolean(configProps.getProperty("exp.generate.data"));
 
         // types of data export
         this.exportSummary = Boolean.parseBoolean(configProps.getProperty("export.summary"));
@@ -460,6 +537,8 @@ public class PropertiesHandler {
 
         // analyze data?
         this.analyzeData = Boolean.parseBoolean(configProps.getProperty("analyze.data"));
+        pngParameters = new ProfessionNetworkGeneticParameters();
+        // TODO move configuration to config.properties
 
         // data import
         try {
@@ -471,6 +550,12 @@ public class PropertiesHandler {
                     .getResource(configProps.getProperty("import.age.assortativity.path")).toURI());
         } catch (URISyntaxException use) {
             logger.error("Error while retrieving age structure paths: ", use);
+        }
+        try {
+            this.professionsImportPath = Paths.get(getClass().getClassLoader()
+                    .getResource(configProps.getProperty("import.professions.path")).toURI());
+        } catch (URISyntaxException use) {
+            logger.error("Error while retrieving profession structure path: ", use);
         }
 
     }
@@ -709,6 +794,15 @@ public class PropertiesHandler {
     }
 
     /**
+     * Gets whether to generate profession networks for the NunnerBuskens model or not.
+     *
+     * @return true if networks ought to be generated, false otherwise
+     */
+    public boolean isGenerateNunnerBuskensNetworksProfessions() {
+        return generateNunnerBuskensNetworksProfessions;
+    }
+
+    /**
      * Gets the NunnerBuskens parameters as defined in the config.properties
      *
      * @return the NunnerBuskens parameters as defined in the config.properties
@@ -718,12 +812,85 @@ public class PropertiesHandler {
     }
 
     /**
+     * Gets whether to generate profession networks using the genetic algorithm.
+     *
+     * @return true if networks ought to be generated, false otherwise
+     */
+    public boolean isGenerateProfessionNetworksGenetic() {
+        return generateProfessionNetworksGenetic;
+    }
+
+    /**
+     * @param generateProfessionNetworksGenetic the generateProfessionNetworksGenetic to set
+     */
+    public void setGenerateProfessionNetworksGenetic(boolean generateProfessionNetworksGenetic) {
+        this.generateProfessionNetworksGenetic = generateProfessionNetworksGenetic;
+    }
+
+    /**
+     * Gets whether to generate profession lockdown networks.
+     *
+     * @return true if networks ought to be generated, false otherwise
+     */
+    public boolean isGenerateProfessionNetworksLockdown() {
+        return generateProfessionNetworksLockdown;
+    }
+
+    /**
+     * Gets whether to generate profession network data.
+     *
+     * @return true if data ought to be generated, false otherwise
+     */
+    public boolean isGenerateProfessionNetworksData() {
+        return generateProfessionNetworksData;
+    }
+
+    /**
+     * @return the generateProfessionNetworksAgentStats
+     */
+    public boolean isGenerateProfessionNetworksAgentStats() {
+        return generateProfessionNetworksAgentStats;
+    }
+
+    /**
+     * @return the generateExperimentData
+     */
+    public boolean isGenerateExperimentData() {
+        return generateExperimentData;
+    }
+
+    /**
+     * @param generateProfessionNetworksLockdown the generateProfessionNetworksLockdown to set
+     */
+    public void setGenerateProfessionNetworksLockdown(boolean generateProfessionNetworksLockdown) {
+        this.generateProfessionNetworksLockdown = generateProfessionNetworksLockdown;
+    }
+
+    /**
+     * Gets the ProfessionNetworkGeneticParameters as defined in the config.properties
+     *
+     * @return the ProfessionNetworkGeneticParameters as defined in the config.properties
+     */
+    public ProfessionNetworkGeneticParameters getProfessionNetworkGeneticParameters() {
+        return pngParameters;
+    }
+
+    /**
      * Gets the NunnerBuskensGenetic parameters as defined in the config.properties
      *
      * @return the NunnerBuskens parameters as defined in the config.properties
      */
     public NunnerBuskensGeneticParameters getNunnerBuskensGeneticParameters() {
         return nbgParameters;
+    }
+
+    /**
+     * Gets the NunnerBuskensProfessions parameters as defined in the config.properties
+     *
+     * @return the NunnerBuskens parameters as defined in the config.properties
+     */
+    public NunnerBuskensProfessionsParameters getNunnerBuskensProfessionsParameters() {
+        return nbpParameters;
     }
 
     /**
@@ -787,6 +954,13 @@ public class PropertiesHandler {
      */
     public Path getAgeAssortativityImportPath() {
         return ageAssortativityImportPath;
+    }
+
+    /**
+     * @return the professionsImportPath
+     */
+    public Path getProfessionsImportPath() {
+        return professionsImportPath;
     }
 
 }

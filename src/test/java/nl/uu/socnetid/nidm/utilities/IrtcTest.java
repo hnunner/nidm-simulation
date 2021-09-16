@@ -92,9 +92,9 @@ public class IrtcTest {
         this.agent9 = this.network.addAgent(uf, ds, r, r, phi, omega);
 
         // infections
-        this.agent4.infect(ds);
-        this.agent6.infect(ds);
-        this.agent8.infect(ds);
+        this.agent4.infect(ds, 0);
+        this.agent6.infect(ds, 0);
+        this.agent8.infect(ds, 0);
 
         // connections
         this.agent1.addConnection(this.agent2);
