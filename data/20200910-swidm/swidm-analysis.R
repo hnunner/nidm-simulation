@@ -4441,7 +4441,7 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
   ## MAIN EFFECTS (ACTUAL NETWORK PROPERTIES RATHER THAN PARAMETERS TO CONTROL NETWORK PROPERTIES)
   # network changes
   model.2.netchanges.dynamic <- lm(net.changes.dv ~
-                                     degree.av +
+                                     # degree.av +
                                      clustering.av +
                                      pathlength.av +
                                      assortativity.av +
@@ -4484,7 +4484,7 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
   sigma.X.r.sigma.av                 <- sigma               * r.sigma.av
   gamma.X.r.sigma.av                 <- gamma               * r.sigma.av
   model.3.netchanges.dynamic <- lm(net.changes.dv ~
-                                     degree.av +
+                                     # degree.av +
                                      clustering.av +
                                      pathlength.av +
                                      assortativity.av +
@@ -4492,18 +4492,18 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
                                      gamma +
                                      r.sigma.av +
 
-                                     degree.av.X.clustering.av +
-                                     degree.av.X.pathlength.av +
+                                     # degree.av.X.clustering.av +
+                                     # degree.av.X.pathlength.av +
                                      # degree.av.X.assortativity.av +
                                      # degree.av.X.sigma +
                                      # degree.av.X.gamma +
                                      # degree.av.X.r.sigma.av +
                                      # clustering.av.X.pathlength.av +
-                                     clustering.av.X.assortativity.av +
+                                     # clustering.av.X.assortativity.av +
                                      # clustering.av.X.sigma +
                                      # clustering.av.X.gamma +
                                      # clustering.av.X.r.sigma.av +
-                                     # pathlength.av.X.assortativity.av +
+                                     pathlength.av.X.assortativity.av +
                                      # pathlength.av.X.sigma +
                                      pathlength.av.X.gamma +
                                      # pathlength.av.X.r.sigma.av +
@@ -4522,7 +4522,7 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
   # attack rate
   model.2.attackrate.dynamic <- glm(attack.rate ~
                                       net.changes +
-                                      degree.av +
+                                      # degree.av +
                                       clustering.av +
                                       pathlength.av +
                                       assortativity.av +
@@ -4576,7 +4576,7 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
 
   model.3.attackrate.dynamic <- glm(attack.rate ~
                                       net.changes +
-                                      degree.av +
+                                      # degree.av +
                                       clustering.av +
                                       pathlength.av +
                                       assortativity.av +
@@ -4598,13 +4598,13 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
                                       # degree.av.X.gamma +
                                       # degree.av.X.r.sigma.av +
                                       # clustering.av.X.pathlength.av +
-                                      # clustering.av.X.assortativity.av +
+                                      clustering.av.X.assortativity.av +
                                       # clustering.av.X.sigma +
                                       # clustering.av.X.gamma +
                                       # clustering.av.X.r.sigma.av +
                                       # pathlength.av.X.assortativity.av +
                                       # pathlength.av.X.sigma +
-                                      pathlength.av.X.gamma +
+                                      # pathlength.av.X.gamma +
                                       # pathlength.av.X.r.sigma.av +
                                       # assortativity.av.X.sigma +
                                       assortativity.av.X.gamma
@@ -4623,15 +4623,15 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
   # duration
   model.2.duration.dynamic <- lm(duration ~
                                    net.changes +
-                                   degree.av +
+                                   # degree.av +
                                    clustering.av +
                                    pathlength.av +
                                    assortativity.av +
                                    sigma +
                                    gamma +
-                                   r.sigma.av +
+                                   r.sigma.av
 
-                                   attack.rate.dyn.iv
+                                   # attack.rate.dyn.iv
                                  )
   if (print.summaries) {
     print(summary(model.2.duration.dynamic))
@@ -4639,7 +4639,7 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
   }
   model.3.duration.dynamic <- lm(duration ~
                                    net.changes +
-                                   degree.av +
+                                   # degree.av +
                                    clustering.av +
                                    pathlength.av +
                                    assortativity.av +
@@ -4647,9 +4647,9 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
                                    gamma +
                                    r.sigma.av +
 
-                                   attack.rate.dyn.iv +
+                                   # attack.rate.dyn.iv +
 
-                                   net.changes.X.degree.av +
+                                   # net.changes.X.degree.av +
                                    net.changes.X.clustering.av +
                                    net.changes.X.pathlength.av +
                                    # net.changes.X.assortativity.av +
@@ -4686,7 +4686,7 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
   # peak size
   model.2.peak.size.dynamic <- lm(peak.size ~
                                     net.changes +
-                                    degree.av +
+                                    # degree.av +
                                     clustering.av +
                                     pathlength.av +
                                     assortativity.av +
@@ -4701,7 +4701,7 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
 
   model.3.peak.size.dynamic <- lm(peak.size ~
                                     net.changes +
-                                    degree.av +
+                                    # degree.av +
                                     clustering.av +
                                     pathlength.av +
                                     assortativity.av +
@@ -4815,7 +4815,7 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
   ## MAIN EFFECTS (ACTUAL NETWORK PROPERTIES RATHER THAN PARAMETERS TO CONTROL NETWORK PROPERTIES)
   # attack rate
   model.2.attackrate.static <- glm(attack.rate ~
-                                     degree.av +
+                                     # degree.av +
                                      clustering.av +
                                      pathlength.av +
                                      assortativity.av +
@@ -4862,7 +4862,7 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
   gamma.X.r.sigma.av                 <- gamma               * r.sigma.av
 
   model.3.attackrate.static <- glm(attack.rate ~
-                                     degree.av +
+                                     # degree.av +
                                      clustering.av +
                                      pathlength.av +
                                      assortativity.av +
@@ -4901,7 +4901,7 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
 
   # duration
   model.2.duration.static <- lm(duration ~
-                                  degree.av +
+                                  # degree.av +
                                   clustering.av +
                                   pathlength.av +
                                   assortativity.av +
@@ -4915,7 +4915,7 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
   }
 
   model.3.duration.static <- lm(duration ~
-                                  degree.av +
+                                  # degree.av +
                                   clustering.av +
                                   pathlength.av +
                                   assortativity.av +
@@ -4927,7 +4927,7 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
                                   # degree.av.X.pathlength.av +
                                   # degree.av.X.assortativity.av +
                                   # degree.av.X.sigma +
-                                  degree.av.X.gamma +
+                                  # degree.av.X.gamma +
                                   # degree.av.X.r.sigma.av +
                                   # clustering.av.X.pathlength.av +
                                   # clustering.av.X.assortativity.av +
@@ -4952,7 +4952,7 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
 
   # peak size
   model.2.peak.size.static <- lm(peak.size ~
-                                   degree.av +
+                                   # degree.av +
                                    clustering.av +
                                    pathlength.av +
                                    assortativity.av +
@@ -4966,7 +4966,7 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
   }
 
   model.3.peak.size.static <- lm(peak.size ~
-                                   degree.av +
+                                   # degree.av +
                                    clustering.av +
                                    pathlength.av +
                                    assortativity.av +

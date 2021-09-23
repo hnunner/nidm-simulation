@@ -1,193 +1,170 @@
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+<meta charset="utf-8" />
 <title>Statistical models</title>
-<style type="text/css">
-table {
-border: none;
-}
-th {
-text-align: left;
-border-top: 2px solid black;
-border-bottom: 1px solid black;
-padding-right: 12px;
-}
-.midRule {
-border-top: 1px solid black;
-}
-.bottomRule {
-border-bottom: 2px solid black;
-}
-td {
-padding-right: 12px;
-border: none;
-}
-sup {
-vertical-align: 0px;
-}
+<style>
+table.texreg {margin: 10px auto;border-collapse: collapse;border-spacing: 0px;caption-side: bottom;color: #000000;border-top: 2px solid #000000;}
+table.texreg thead .rule {border-bottom: 1px solid #000000;}
+table.texreg tbody tr.rule td {border-top: 1px solid #000000;}
+table.texreg tbody tr.bottomrule td {border-bottom: 2px solid #000000;}
+table.texreg tfoot td {font-size: 0.8em;}
+table.texreg th, table.texreg td {padding-left: 5px;padding-right: 5px;}
 </style>
 </head>
-
 <body>
-<table cellspacing="0" align="center">
-<caption align="bottom" style="margin-top:0.3em;">Statistical models</caption>
+<table class="texreg">
+<caption>Statistical models</caption>
+<thead>
 <tr>
-<th><b></b></th>
-<th><b>Model 1</b></th>
-<th><b>Model 2</b></th>
-<th><b>Model 3</b></th>
+<th>&nbsp;</th>
+<th>Model 1</th>
+<th>Model 2</th>
+<th>Model 3</th>
 </tr>
-<tr>
+</thead>
+<tbody>
+<tr class="rule">
 <td>(Intercept)</td>
 <td>0.99<sup>***</sup></td>
-<td>2.89<sup>***</sup></td>
-<td>3.09<sup>***</sup></td>
+<td>2.88<sup>***</sup></td>
+<td>3.08<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
+<td>&nbsp;</td>
 <td>(0.01)</td>
 <td>(0.02)</td>
 <td>(0.03)</td>
 </tr>
 <tr>
-<td>degree.av</td>
-<td></td>
-<td>0.21<sup>***</sup></td>
-<td>0.21<sup>***</sup></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td>(0.03)</td>
-<td>(0.03)</td>
-</tr>
-<tr>
 <td>clustering.av</td>
-<td></td>
-<td>-0.01</td>
-<td>-0.24<sup>***</sup></td>
+<td>&nbsp;</td>
+<td>-0.13<sup>***</sup></td>
+<td>-0.37<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
-<td></td>
-<td>(0.04)</td>
-<td>(0.04)</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>(0.03)</td>
+<td>(0.03)</td>
 </tr>
 <tr>
 <td>pathlength.av</td>
-<td></td>
-<td>-0.58<sup>***</sup></td>
-<td>-0.62<sup>***</sup></td>
+<td>&nbsp;</td>
+<td>-0.65<sup>***</sup></td>
+<td>-0.69<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
-<td></td>
-<td>(0.04)</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>(0.03)</td>
 <td>(0.03)</td>
 </tr>
 <tr>
 <td>assortativity.av</td>
-<td></td>
-<td>-0.01</td>
+<td>&nbsp;</td>
 <td>-0.02</td>
+<td>-0.04<sup>**</sup></td>
 </tr>
 <tr>
-<td></td>
-<td></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
 <td>(0.01)</td>
 <td>(0.01)</td>
 </tr>
 <tr>
 <td>sigma</td>
-<td></td>
+<td>&nbsp;</td>
 <td>0.01</td>
 <td>0.01</td>
 </tr>
 <tr>
-<td></td>
-<td></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
 <td>(0.01)</td>
 <td>(0.01)</td>
 </tr>
 <tr>
 <td>gamma</td>
-<td></td>
+<td>&nbsp;</td>
 <td>3.57<sup>***</sup></td>
-<td>3.72<sup>***</sup></td>
+<td>3.71<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
-<td></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
 <td>(0.03)</td>
 <td>(0.03)</td>
 </tr>
 <tr>
 <td>r.sigma.av</td>
-<td></td>
+<td>&nbsp;</td>
 <td>0.01</td>
 <td>0.01</td>
 </tr>
 <tr>
-<td></td>
-<td></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
 <td>(0.01)</td>
 <td>(0.01)</td>
 </tr>
 <tr>
 <td>pathlength.av.X.gamma</td>
-<td></td>
-<td></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
 <td>-0.46<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
-<td></td>
-<td></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
 <td>(0.02)</td>
 </tr>
-<tr>
-<td class="midRule">AIC</td>
-<td class="midRule">91947.06</td>
-<td class="midRule">32400.63</td>
-<td class="midRule">32119.33</td>
+<tr class="rule">
+<td>AIC</td>
+<td>91947.06</td>
+<td>32445.79</td>
+<td>32175.25</td>
 </tr>
 <tr>
 <td>BIC</td>
 <td>91956.36</td>
-<td>32474.98</td>
-<td>32202.98</td>
+<td>32510.85</td>
+<td>32249.59</td>
 </tr>
 <tr>
 <td>Log Likelihood</td>
 <td>-45972.53</td>
-<td>-16192.31</td>
-<td>-16050.67</td>
+<td>-16215.90</td>
+<td>-16079.62</td>
 </tr>
 <tr>
 <td>Deviance</td>
 <td>71124.05</td>
-<td>17175.33</td>
-<td>16751.20</td>
+<td>17212.20</td>
+<td>16796.64</td>
 </tr>
-<tr>
-<td class="bottomRule">Num. obs.</td>
-<td class="bottomRule">80305</td>
-<td class="bottomRule">80305</td>
-<td class="bottomRule">80305</td>
+<tr class="bottomrule">
+<td>Num. obs.</td>
+<td>80305</td>
+<td>80305</td>
+<td>80305</td>
 </tr>
+</tbody>
+<tfoot>
 <tr>
-<td colspan="5"><span style="font-size:0.8em"></span></td>
+<td colspan="4"></span></td>
 </tr>
 <tr>
 <td class="bottomRule">adjusted R<sup>2</sup></td>
 <td class="bottomRule">0 (1)</td>
-<td class="bottomRule">0.7585 (0)</td>
-<td class="bottomRule">0.7645 (0)</td>
+<td class="bottomRule">0.758 (0)</td>
+<td class="bottomRule">0.7638 (0)</td>
  </span></td>
 </tr><tr>
-<td colspan="4"><span style="font-size:0.8em"><sup>***</sup>p &lt; 0.001, <sup>**</sup>p &lt; 0.01, <sup>*</sup>p &lt; 0.05</span></td></span></td>
+<td colspan="4"><span style="font-size:0.8em"><sup>***</sup>p &lt; 0.001, <sup>**</sup>p &lt; 0.01, <sup>*</sup>p &lt; 0.05</span></td></td>
 </tr>
+</tfoot>
 </table>
 </body>
 </html>

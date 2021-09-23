@@ -1,51 +1,37 @@
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+<meta charset="utf-8" />
 <title>Statistical models</title>
-<style type="text/css">
-table {
-border: none;
-}
-th {
-text-align: left;
-border-top: 2px solid black;
-border-bottom: 1px solid black;
-padding-right: 12px;
-}
-.midRule {
-border-top: 1px solid black;
-}
-.bottomRule {
-border-bottom: 2px solid black;
-}
-td {
-padding-right: 12px;
-border: none;
-}
-sup {
-vertical-align: 0px;
-}
+<style>
+table.texreg {margin: 10px auto;border-collapse: collapse;border-spacing: 0px;caption-side: bottom;color: #000000;border-top: 2px solid #000000;}
+table.texreg thead .rule {border-bottom: 1px solid #000000;}
+table.texreg tbody tr.rule td {border-top: 1px solid #000000;}
+table.texreg tbody tr.bottomrule td {border-bottom: 2px solid #000000;}
+table.texreg tfoot td {font-size: 0.8em;}
+table.texreg th, table.texreg td {padding-left: 5px;padding-right: 5px;}
 </style>
 </head>
-
 <body>
-<table cellspacing="0" align="center">
-<caption align="bottom" style="margin-top:0.3em;">Statistical models</caption>
+<table class="texreg">
+<caption>Statistical models</caption>
+<thead>
 <tr>
-<th><b></b></th>
-<th><b>Model 1</b></th>
-<th><b>Model 2</b></th>
-<th><b>Model 3</b></th>
+<th>&nbsp;</th>
+<th>Model 1</th>
+<th>Model 2</th>
+<th>Model 3</th>
 </tr>
-<tr>
+</thead>
+<tbody>
+<tr class="rule">
 <td>(Intercept)</td>
 <td>15.93<sup>***</sup></td>
 <td>15.93<sup>***</sup></td>
-<td>18.46<sup>***</sup></td>
+<td>18.43<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
+<td>&nbsp;</td>
 <td>(0.02)</td>
 <td>(0.02)</td>
 <td>(0.02)</td>
@@ -53,195 +39,168 @@ vertical-align: 0px;
 <tr>
 <td>net.changes</td>
 <td>8.33<sup>***</sup></td>
-<td>9.44<sup>***</sup></td>
-<td>10.89<sup>***</sup></td>
+<td>9.38<sup>***</sup></td>
+<td>10.83<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
+<td>&nbsp;</td>
 <td>(0.02)</td>
 <td>(0.02)</td>
 <td>(0.02)</td>
-</tr>
-<tr>
-<td>degree.av</td>
-<td></td>
-<td>-1.52<sup>***</sup></td>
-<td>-1.57<sup>***</sup></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td>(0.05)</td>
-<td>(0.05)</td>
 </tr>
 <tr>
 <td>clustering.av</td>
-<td></td>
-<td>-1.97<sup>***</sup></td>
-<td>-2.61<sup>***</sup></td>
+<td>&nbsp;</td>
+<td>-1.10<sup>***</sup></td>
+<td>-2.00<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
-<td></td>
-<td>(0.06)</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>(0.05)</td>
 <td>(0.05)</td>
 </tr>
 <tr>
 <td>pathlength.av</td>
-<td></td>
-<td>1.95<sup>***</sup></td>
-<td>3.19<sup>***</sup></td>
+<td>&nbsp;</td>
+<td>2.48<sup>***</sup></td>
+<td>4.08<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
-<td></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
 <td>(0.05)</td>
 <td>(0.05)</td>
 </tr>
 <tr>
 <td>assortativity.av</td>
-<td></td>
-<td>-1.03<sup>***</sup></td>
-<td>-0.55<sup>***</sup></td>
+<td>&nbsp;</td>
+<td>-0.95<sup>***</sup></td>
+<td>-0.53<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
-<td></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
 <td>(0.02)</td>
 <td>(0.02)</td>
 </tr>
 <tr>
 <td>sigma</td>
-<td></td>
-<td>-0.38<sup>***</sup></td>
-<td>-0.34<sup>***</sup></td>
+<td>&nbsp;</td>
+<td>-0.39<sup>***</sup></td>
+<td>-0.35<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
-<td></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
 <td>(0.02)</td>
 <td>(0.02)</td>
 </tr>
 <tr>
 <td>gamma</td>
-<td></td>
-<td>-1.50<sup>***</sup></td>
-<td>-2.70<sup>***</sup></td>
+<td>&nbsp;</td>
+<td>-1.47<sup>***</sup></td>
+<td>-2.67<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
-<td></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
 <td>(0.02)</td>
 <td>(0.02)</td>
 </tr>
 <tr>
 <td>r.sigma.av</td>
-<td></td>
-<td>-0.37<sup>***</sup></td>
+<td>&nbsp;</td>
+<td>-0.38<sup>***</sup></td>
 <td>-0.32<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
-<td></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
 <td>(0.02)</td>
 <td>(0.02)</td>
-</tr>
-<tr>
-<td>net.changes.X.degree.av</td>
-<td></td>
-<td></td>
-<td>-1.24<sup>***</sup></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-<td>(0.05)</td>
 </tr>
 <tr>
 <td>net.changes.X.clustering.av</td>
-<td></td>
-<td></td>
-<td>-3.31<sup>***</sup></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>-2.89<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
-<td></td>
-<td></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
 <td>(0.05)</td>
 </tr>
 <tr>
 <td>net.changes.X.pathlength.av</td>
-<td></td>
-<td></td>
-<td>3.88<sup>***</sup></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>4.72<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
-<td></td>
-<td></td>
-<td>(0.06)</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>(0.05)</td>
 </tr>
 <tr>
 <td>net.changes.X.gamma</td>
-<td></td>
-<td></td>
-<td>-3.65<sup>***</sup></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>-3.64<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
-<td></td>
-<td></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
 <td>(0.02)</td>
 </tr>
 <tr>
 <td>clustering.av.X.assortativity.av</td>
-<td></td>
-<td></td>
-<td>-0.22<sup>***</sup></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>-0.12<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
-<td></td>
-<td></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
 <td>(0.02)</td>
 </tr>
-<tr>
-<td class="midRule">R<sup>2</sup></td>
-<td class="midRule">0.67</td>
-<td class="midRule">0.72</td>
-<td class="midRule">0.80</td>
+<tr class="rule">
+<td>R<sup>2</sup></td>
+<td>0.67</td>
+<td>0.71</td>
+<td>0.80</td>
 </tr>
 <tr>
 <td>Adj. R<sup>2</sup></td>
 <td>0.67</td>
-<td>0.72</td>
+<td>0.71</td>
 <td>0.80</td>
 </tr>
-<tr>
+<tr class="bottomrule">
 <td>Num. obs.</td>
 <td>80305</td>
 <td>80305</td>
 <td>80305</td>
 </tr>
+</tbody>
+<tfoot>
 <tr>
-<td class="bottomRule">RMSE</td>
-<td class="bottomRule">5.79</td>
-<td class="bottomRule">5.39</td>
-<td class="bottomRule">4.50</td>
-</tr>
-<tr>
-<td colspan="5"><span style="font-size:0.8em"></span></td>
+<td colspan="4"></span></td>
 </tr>
 <tr>
 <td class="bottomRule">adjusted R<sup>2</sup></td>
 <td class="bottomRule">0.674 ()</td>
-<td class="bottomRule">0.7176 ()</td>
-<td class="bottomRule">0.8035 ()</td>
+<td class="bottomRule">0.7146 ()</td>
+<td class="bottomRule">0.8001 ()</td>
  </span></td>
 </tr><tr>
-<td colspan="4"><span style="font-size:0.8em"><sup>***</sup>p &lt; 0.001, <sup>**</sup>p &lt; 0.01, <sup>*</sup>p &lt; 0.05</span></td></span></td>
+<td colspan="4"><span style="font-size:0.8em"><sup>***</sup>p &lt; 0.001, <sup>**</sup>p &lt; 0.01, <sup>*</sup>p &lt; 0.05</span></td></td>
 </tr>
+</tfoot>
 </table>
 </body>
 </html>

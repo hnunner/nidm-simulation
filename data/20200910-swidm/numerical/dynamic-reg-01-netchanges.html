@@ -1,203 +1,157 @@
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+<meta charset="utf-8" />
 <title>Statistical models</title>
-<style type="text/css">
-table {
-border: none;
-}
-th {
-text-align: left;
-border-top: 2px solid black;
-border-bottom: 1px solid black;
-padding-right: 12px;
-}
-.midRule {
-border-top: 1px solid black;
-}
-.bottomRule {
-border-bottom: 2px solid black;
-}
-td {
-padding-right: 12px;
-border: none;
-}
-sup {
-vertical-align: 0px;
-}
+<style>
+table.texreg {margin: 10px auto;border-collapse: collapse;border-spacing: 0px;caption-side: bottom;color: #000000;border-top: 2px solid #000000;}
+table.texreg thead .rule {border-bottom: 1px solid #000000;}
+table.texreg tbody tr.rule td {border-top: 1px solid #000000;}
+table.texreg tbody tr.bottomrule td {border-bottom: 2px solid #000000;}
+table.texreg tfoot td {font-size: 0.8em;}
+table.texreg th, table.texreg td {padding-left: 5px;padding-right: 5px;}
 </style>
 </head>
-
 <body>
-<table cellspacing="0" align="center">
-<caption align="bottom" style="margin-top:0.3em;">Statistical models</caption>
+<table class="texreg">
+<caption>Statistical models</caption>
+<thead>
 <tr>
-<th><b></b></th>
-<th><b>Model 1</b></th>
-<th><b>Model 2</b></th>
+<th>&nbsp;</th>
+<th>Model 1</th>
+<th>Model 2</th>
 </tr>
-<tr>
+</thead>
+<tbody>
+<tr class="rule">
 <td>(Intercept)</td>
 <td>236.37<sup>***</sup></td>
-<td>305.79<sup>***</sup></td>
+<td>239.19<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
+<td>&nbsp;</td>
 <td>(0.66)</td>
-<td>(2.49)</td>
-</tr>
-<tr>
-<td>degree.av</td>
-<td>44.00<sup>***</sup></td>
-<td>-86.47<sup>***</sup></td>
-</tr>
-<tr>
-<td></td>
-<td>(1.78)</td>
-<td>(4.03)</td>
+<td>(0.66)</td>
 </tr>
 <tr>
 <td>clustering.av</td>
-<td>53.69<sup>***</sup></td>
-<td>35.18<sup>***</sup></td>
+<td>28.68<sup>***</sup></td>
+<td>37.32<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
-<td>(2.04)</td>
-<td>(3.50)</td>
+<td>&nbsp;</td>
+<td>(1.78)</td>
+<td>(1.78)</td>
 </tr>
 <tr>
 <td>pathlength.av</td>
-<td>-59.51<sup>***</sup></td>
-<td>-124.19<sup>***</sup></td>
+<td>-75.68<sup>***</sup></td>
+<td>-86.14<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
-<td>(1.89)</td>
-<td>(2.99)</td>
+<td>&nbsp;</td>
+<td>(1.78)</td>
+<td>(1.79)</td>
 </tr>
 <tr>
 <td>assortativity.av</td>
-<td>-12.42<sup>***</sup></td>
-<td>1.16</td>
+<td>-14.77<sup>***</sup></td>
+<td>-6.65<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
+<td>&nbsp;</td>
 <td>(0.67)</td>
-<td>(0.74)</td>
+<td>(0.71)</td>
 </tr>
 <tr>
 <td>sigma</td>
-<td>1.89<sup>**</sup></td>
-<td>1.85<sup>**</sup></td>
+<td>1.92<sup>**</sup></td>
+<td>1.94<sup>**</sup></td>
 </tr>
 <tr>
-<td></td>
+<td>&nbsp;</td>
 <td>(0.66)</td>
-<td>(0.64)</td>
+<td>(0.66)</td>
 </tr>
 <tr>
 <td>gamma</td>
-<td>127.79<sup>***</sup></td>
-<td>128.01<sup>***</sup></td>
+<td>127.84<sup>***</sup></td>
+<td>128.04<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
+<td>&nbsp;</td>
 <td>(0.66)</td>
-<td>(0.64)</td>
+<td>(0.66)</td>
 </tr>
 <tr>
 <td>r.sigma.av</td>
-<td>-4.48<sup>***</sup></td>
 <td>-4.50<sup>***</sup></td>
+<td>-4.43<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
+<td>&nbsp;</td>
 <td>(0.66)</td>
-<td>(0.64)</td>
+<td>(0.66)</td>
 </tr>
 <tr>
-<td>degree.av.X.clustering.av</td>
-<td></td>
-<td>136.44<sup>***</sup></td>
+<td>pathlength.av.X.assortativity.av</td>
+<td>&nbsp;</td>
+<td>-20.02<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
-<td></td>
-<td>(3.08)</td>
-</tr>
-<tr>
-<td>degree.av.X.pathlength.av</td>
-<td></td>
-<td>-65.32<sup>***</sup></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td>(1.75)</td>
-</tr>
-<tr>
-<td>clustering.av.X.assortativity.av</td>
-<td></td>
-<td>-23.55<sup>***</sup></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td>(0.68)</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>(0.63)</td>
 </tr>
 <tr>
 <td>pathlength.av.X.gamma</td>
-<td></td>
-<td>-12.12<sup>***</sup></td>
+<td>&nbsp;</td>
+<td>-12.15<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
-<td></td>
-<td>(0.65)</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>(0.66)</td>
 </tr>
 <tr>
 <td>assortativity.av.X.gamma</td>
-<td></td>
-<td>16.91<sup>***</sup></td>
+<td>&nbsp;</td>
+<td>16.83<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
-<td></td>
-<td>(0.65)</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>(0.66)</td>
 </tr>
-<tr>
-<td class="midRule">R<sup>2</sup></td>
-<td class="midRule">0.36</td>
-<td class="midRule">0.39</td>
+<tr class="rule">
+<td>R<sup>2</sup></td>
+<td>0.35</td>
+<td>0.37</td>
 </tr>
 <tr>
 <td>Adj. R<sup>2</sup></td>
-<td>0.36</td>
-<td>0.39</td>
+<td>0.35</td>
+<td>0.37</td>
 </tr>
-<tr>
+<tr class="bottomrule">
 <td>Num. obs.</td>
 <td>80305</td>
 <td>80305</td>
 </tr>
+</tbody>
+<tfoot>
 <tr>
-<td class="bottomRule">RMSE</td>
-<td class="bottomRule">187.20</td>
-<td class="bottomRule">182.40</td>
-</tr>
-<tr>
-<td colspan="4"><span style="font-size:0.8em"></span></td>
+<td colspan="3"></span></td>
 </tr>
 <tr>
 <td class="bottomRule">adjusted R<sup>2</sup></td>
-<td class="bottomRule">0.3582 ()</td>
-<td class="bottomRule">0.3907 ()</td>
+<td class="bottomRule">0.3534 ()</td>
+<td class="bottomRule">0.3682 ()</td>
  </span></td>
 </tr><tr>
-<td colspan="3"><span style="font-size:0.8em"><sup>***</sup>p &lt; 0.001, <sup>**</sup>p &lt; 0.01, <sup>*</sup>p &lt; 0.05</span></td></span></td>
+<td colspan="3"><span style="font-size:0.8em"><sup>***</sup>p &lt; 0.001, <sup>**</sup>p &lt; 0.01, <sup>*</sup>p &lt; 0.05</span></td></td>
 </tr>
+</tfoot>
 </table>
 </body>
 </html>

@@ -1,168 +1,130 @@
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+<meta charset="utf-8" />
 <title>Statistical models</title>
-<style type="text/css">
-table {
-border: none;
-}
-th {
-text-align: left;
-border-top: 2px solid black;
-border-bottom: 1px solid black;
-padding-right: 12px;
-}
-.midRule {
-border-top: 1px solid black;
-}
-.bottomRule {
-border-bottom: 2px solid black;
-}
-td {
-padding-right: 12px;
-border: none;
-}
-sup {
-vertical-align: 0px;
-}
+<style>
+table.texreg {margin: 10px auto;border-collapse: collapse;border-spacing: 0px;caption-side: bottom;color: #000000;border-top: 2px solid #000000;}
+table.texreg thead .rule {border-bottom: 1px solid #000000;}
+table.texreg tbody tr.rule td {border-top: 1px solid #000000;}
+table.texreg tbody tr.bottomrule td {border-bottom: 2px solid #000000;}
+table.texreg tfoot td {font-size: 0.8em;}
+table.texreg th, table.texreg td {padding-left: 5px;padding-right: 5px;}
 </style>
 </head>
-
 <body>
-<table cellspacing="0" align="center">
-<caption align="bottom" style="margin-top:0.3em;">Statistical models</caption>
+<table class="texreg">
+<caption>Statistical models</caption>
+<thead>
 <tr>
-<th><b></b></th>
-<th><b>Model 1</b></th>
-<th><b>Model 2</b></th>
-<th><b>Model 3</b></th>
+<th>&nbsp;</th>
+<th>Model 1</th>
+<th>Model 2</th>
+<th>Model 3</th>
 </tr>
-<tr>
+</thead>
+<tbody>
+<tr class="rule">
 <td>(Intercept)</td>
 <td>18.18<sup>***</sup></td>
 <td>18.18<sup>***</sup></td>
 <td>18.18<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
+<td>&nbsp;</td>
 <td>(0.03)</td>
 <td>(0.03)</td>
 <td>(0.03)</td>
-</tr>
-<tr>
-<td>degree.av</td>
-<td></td>
-<td>-0.45<sup>***</sup></td>
-<td>-0.47<sup>***</sup></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td>(0.09)</td>
-<td>(0.09)</td>
 </tr>
 <tr>
 <td>clustering.av</td>
-<td></td>
-<td>0.83<sup>***</sup></td>
-<td>0.84<sup>***</sup></td>
+<td>&nbsp;</td>
+<td>1.08<sup>***</sup></td>
+<td>1.10<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
-<td></td>
-<td>(0.10)</td>
-<td>(0.10)</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>(0.09)</td>
+<td>(0.09)</td>
 </tr>
 <tr>
 <td>pathlength.av</td>
-<td></td>
-<td>0.45<sup>***</sup></td>
-<td>0.42<sup>***</sup></td>
+<td>&nbsp;</td>
+<td>0.61<sup>***</sup></td>
+<td>0.59<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
-<td></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
 <td>(0.09)</td>
 <td>(0.09)</td>
 </tr>
 <tr>
 <td>assortativity.av</td>
-<td></td>
-<td>0.01</td>
-<td>0.00</td>
+<td>&nbsp;</td>
+<td>0.03</td>
+<td>0.03</td>
 </tr>
 <tr>
-<td></td>
-<td></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
 <td>(0.03)</td>
 <td>(0.03)</td>
 </tr>
 <tr>
 <td>sigma</td>
-<td></td>
-<td>0.02</td>
+<td>&nbsp;</td>
+<td>0.01</td>
 <td>0.01</td>
 </tr>
 <tr>
-<td></td>
-<td></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
 <td>(0.03)</td>
 <td>(0.03)</td>
 </tr>
 <tr>
 <td>gamma</td>
-<td></td>
+<td>&nbsp;</td>
 <td>-0.32<sup>***</sup></td>
 <td>-0.32<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
-<td></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
 <td>(0.03)</td>
 <td>(0.03)</td>
 </tr>
 <tr>
 <td>r.sigma.av</td>
-<td></td>
+<td>&nbsp;</td>
 <td>0.03</td>
 <td>0.02</td>
 </tr>
 <tr>
-<td></td>
-<td></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
 <td>(0.03)</td>
 <td>(0.03)</td>
-</tr>
-<tr>
-<td>degree.av.X.gamma</td>
-<td></td>
-<td></td>
-<td>-0.69<sup>***</sup></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-<td>(0.07)</td>
 </tr>
 <tr>
 <td>pathlength.av.X.gamma</td>
-<td></td>
-<td></td>
-<td>1.22<sup>***</sup></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>1.84<sup>***</sup></td>
 </tr>
 <tr>
-<td></td>
-<td></td>
-<td></td>
-<td>(0.07)</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>(0.03)</td>
 </tr>
-<tr>
-<td class="midRule">R<sup>2</sup></td>
-<td class="midRule">0.00</td>
-<td class="midRule">0.03</td>
-<td class="midRule">0.07</td>
+<tr class="rule">
+<td>R<sup>2</sup></td>
+<td>0.00</td>
+<td>0.03</td>
+<td>0.07</td>
 </tr>
 <tr>
 <td>Adj. R<sup>2</sup></td>
@@ -170,30 +132,27 @@ vertical-align: 0px;
 <td>0.03</td>
 <td>0.07</td>
 </tr>
-<tr>
+<tr class="bottomrule">
 <td>Num. obs.</td>
 <td>80305</td>
 <td>80305</td>
 <td>80305</td>
 </tr>
+</tbody>
+<tfoot>
 <tr>
-<td class="bottomRule">RMSE</td>
-<td class="bottomRule">9.32</td>
-<td class="bottomRule">9.16</td>
-<td class="bottomRule">8.97</td>
-</tr>
-<tr>
-<td colspan="5"><span style="font-size:0.8em"></span></td>
+<td colspan="4"></span></td>
 </tr>
 <tr>
 <td class="bottomRule">adjusted R<sup>2</sup></td>
 <td class="bottomRule">0 ()</td>
-<td class="bottomRule">0.0337 ()</td>
-<td class="bottomRule">0.0738 ()</td>
+<td class="bottomRule">0.0334 ()</td>
+<td class="bottomRule">0.0725 ()</td>
  </span></td>
 </tr><tr>
-<td colspan="4"><span style="font-size:0.8em"><sup>***</sup>p &lt; 0.001, <sup>**</sup>p &lt; 0.01, <sup>*</sup>p &lt; 0.05</span></td></span></td>
+<td colspan="4"><span style="font-size:0.8em"><sup>***</sup>p &lt; 0.001, <sup>**</sup>p &lt; 0.01, <sup>*</sup>p &lt; 0.05</span></td></td>
 </tr>
+</tfoot>
 </table>
 </body>
 </html>
