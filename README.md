@@ -1,6 +1,6 @@
 # Networking during Infectious Diseases Model (NIDM) Simulator
 
-Welcome to the NIDM Simulator project. This project is a stand-alone Java program of the **N**etworking during **I**nfectious **D**iseases **M**odel (Nunner, Buskens, & Kretzschmar, 2019) to simulate the dynamic interplay of social network formation and infectious diseases. The project comes in two versions:
+Welcome to the NIDM Simulator project. This project is a stand-alone Java program of the **N**etworking during **I**nfectious **D**iseases **M**odel (Nunner, Buskens, & Kretzschmar, 2021) to simulate the dynamic interplay of social network formation and infectious diseases. The project comes in two versions:
  1. A _GUI_ version that provides an easy to use graphical user interface, allows to play around with parameter settings, and produces a visualization and detailed real-time statistics of the resulting networks. This is suitable to investigate small networks with 50 agents max and test the immediate effects of different parameter combinations.
  2. A _Data Generator_ version that allows to produce large data with many different parameter combinations.
 
@@ -153,7 +153,7 @@ The _Data Generator_ uses a configuration file (_path.to.nidm.simulator.project.
 ## References ##
  * Bates, D., Mächler, M., Bolker, B., & Walker, S. (2015). Fitting linear mixed- effects models using lme4. Journal of Statistical Software, 67, 1–48.
  * Leifeld, P. (2013). texreg: Conversion of statistical model output in R to LATEX and HTML tables. Journal of Statistical Software, 55, 1–24.
- * Nunner, H., Buskens, V., & Kretzschmar, M. (2019). A model for the co-evolution of dynamic social networks and infectious diseases. Manuscript sumbitted for publication.
+ * Nunner, H., Buskens, V. & Kretzschmar, M. A model for the co-evolution of dynamic social networks and infectious disease dynamics. Comput Soc Netw 8, 19 (2021). https://doi.org/10.1186/s40649-021-00098-9
  * Pigné, Y., Dutot, A., Guinand, F., & Olivier, D. (2008). Graphstream: A tool for bridging the gap between complex systems and dynamic graphs. CoRR, abs/0803.2093 .
  * R Core Team (2019). R: A Language and Environment for Statistical Comput- ing. R Foundation for Statistical Computing Vienna, Austria.
  * Wickham, H. (2016). ggplot2: Elegant Graphics for Data Analysis. Springer- Verlag New York.
