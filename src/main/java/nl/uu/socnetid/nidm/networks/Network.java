@@ -215,6 +215,20 @@ public class Network extends SingleGraph implements SimulationListener {
     /**
      * Creates and adds an agent to the network.
      *
+     * @param id
+     *          the agent's identifier
+     * @return the newly added agent.
+     */
+    public Agent addAgent(String id) {
+        // TODO clean up addAgent methods -- too many special cases!!!
+        // TODO WARNING!!! THIS METHOD IS ONLY FOR STATIC ANALYSES AND DOES NOT ALLOW ANY FORM OF DYNAMICS!!!
+        return this.addNode(id);
+    }
+
+
+    /**
+     * Creates and adds an agent to the network.
+     *
      * @param utilityFunction
      *          the agent's utility function
      * @param diseaseSpecs
@@ -1726,6 +1740,7 @@ public class Network extends SingleGraph implements SimulationListener {
      * Checks whether the network is pairwise stable: there are no two players that
      * want to create a link and where neither one of them wants to delete a link.
      */
+    @SuppressWarnings("unused")
     private void computeStability() {
 
         Collection<String> checkedIds = new ArrayList<String>();
