@@ -752,6 +752,100 @@ export_correlations <- function(data.ss = load_simulation_summary_data()) {
          units = EXPORT_SIZE_UNITS,
          dpi = EXPORT_DPI,
          device = EXPORT_FILE_TYPE_PLOTS)
+  
+  
+  
+  
+  # plot
+  ggsave(paste(EXPORT_PATH_PLOTS, "cor-9a-clustering-degree", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         
+         plot_levels(df.1 = data.frame(x = data.ss$net.clustering.pre.epidemic.av,
+                                       y = data.ss$net.degree.pre.epidemic.av),
+                     
+                     name.x   = "clustering",
+                     limits.x = c(0, 1),
+                     breaks.x = seq(0, 1, 0.25),
+                     
+                     name.y   = "degree",
+                     limits.y = LIMITS_DEGREE,
+                     breaks.y = BREAKS_DEGREE,
+                     
+                     show.legend = FALSE,
+                     probability.infections = FALSE),
+         
+         # plot_correlation(data.ss,
+         #                  data.ss$nb.alpha, data.ss$net.clustering.pre.epidemic.av,
+         #                  "alpha", "Network clustering",
+         #                  c(0, 1), c(0, 1),
+         #                  seq(0, 1, 1/4), seq(0, 1, 1/4)),
+         
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_WIDTH,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  
+  # plot
+  ggsave(paste(EXPORT_PATH_PLOTS, "cor-9b-pathlength-degree", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         
+         plot_levels(df.1 = data.frame(x = data.ss$net.pathlength.pre.epidemic.av,
+                                       y = data.ss$net.degree.pre.epidemic.av),
+                     
+                     name.x   = "path length",
+                     limits.x = LIMITS_PATHLENGTH,
+                     breaks.x = BREAKS_PATHLENGTH,
+                     
+                     name.y   = "degree",
+                     limits.y = LIMITS_DEGREE,
+                     breaks.y = BREAKS_DEGREE,
+                     
+                     show.legend = FALSE,
+                     probability.infections = FALSE),
+         
+         # plot_correlation(data.ss,
+         #                  data.ss$nb.alpha, data.ss$net.clustering.pre.epidemic.av,
+         #                  "alpha", "Network clustering",
+         #                  c(0, 1), c(0, 1),
+         #                  seq(0, 1, 1/4), seq(0, 1, 1/4)),
+         
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_WIDTH,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  
+  # plot
+  ggsave(paste(EXPORT_PATH_PLOTS, "cor-9c-homopily-degree", EXPORT_FILE_EXTENSION_PLOTS, sep = ""),
+         
+         plot_levels(df.1 = data.frame(x = data.ss$net.assortativity.pre.epidemic,
+                                       y = data.ss$net.degree.pre.epidemic.av),
+                     
+                     name.x   = "homophily",
+                     limits.x = c(0, 1),
+                     breaks.x = seq(0, 1, 0.25),
+                     
+                     name.y   = "degree",
+                     limits.y = LIMITS_DEGREE,
+                     breaks.y = BREAKS_DEGREE,
+                     
+                     show.legend = FALSE,
+                     probability.infections = FALSE),
+         
+         # plot_correlation(data.ss,
+         #                  data.ss$nb.alpha, data.ss$net.clustering.pre.epidemic.av,
+         #                  "alpha", "Network clustering",
+         #                  c(0, 1), c(0, 1),
+         #                  seq(0, 1, 1/4), seq(0, 1, 1/4)),
+         
+         width = EXPORT_PLOT_WIDTH,
+         height = EXPORT_PLOT_WIDTH,
+         units = EXPORT_SIZE_UNITS,
+         dpi = EXPORT_DPI,
+         device = EXPORT_FILE_TYPE_PLOTS)
+  
+  
+  
+  
   # correlation
   # out <- paste(out, get_correlation_text(data.ss$nb.omega,
   #                                        data.ss$net.assortativity.pre.epidemic,
@@ -4221,6 +4315,146 @@ get_plots_peaksize <- function(data.ss = load_simulation_summary_data()) {
   return(plots)
 }
 
+
+get_interaction_plots <- function(data.ss = load_simulation_summary_data()) {
+  
+  data.ss$ass_groups <- cut(data.ss$net.assortativity.pre.epidemic, 
+                            breaks = c(-1.0, 0.33, 0.67, 1.0), 
+                            labels = c("low (<= 0.33)", "medium (> 0.33, <= 0.67)", "high (> 0.67)"))
+  mean(data.ss$net.assortativity.pre.epidemic)
+  
+  
+  
+  hist(data.ss$net.pathlength.pre.epidemic.av)
+  
+  pl.mean <- mean(data.ss$net.pathlength.pre.epidemic.av)
+  pl.sd <- sd(data.ss$net.pathlength.pre.epidemic.av)
+  
+  data.ss$pl_groups <- cut(data.ss$net.pathlength.pre.epidemic.av, 
+                           breaks = c(0.0, 2.5, 100),
+                           #breaks = c(0, pl.mean-pl.sd, pl.mean+pl.sd, 100), 
+                           labels = c("<= 2.5", "> 2.5"))
+  table(data.ss$pl_groups)
+  
+  
+  plots <- c(list(plot <- ggplot(data.ss,
+                                 aes(x = net.clustering.pre.epidemic.av,
+                                     y = net.static.pct.rec,
+                                     color = ass_groups)) +
+                    # geom_point(size = .9,
+                    #            alpha = .3) +
+                    geom_smooth(method = "lm") +
+                    theme_bw(base_size = THEME_BASE_SIZE) +
+                    scale_color_manual(values = c("low (<= 0.33)" = "#ff9090", 
+                                                  "medium (> 0.33, <= 0.67)" = "#d50000",
+                                                  "high (> 0.67)" = "#950000")) +
+                    labs(x = "Independent variable",
+                         y = "Dependent variable",
+                         color = "Moderator")),
+             "interactions-legend-h")
+  
+  
+  plots <- c(plots,
+             list(plot <- ggplot(data.ss,
+                                 aes(x = net.clustering.pre.epidemic.av,
+                                     y = net.dynamic.pct.rec,
+                                     color = ass_groups)) +
+                    # geom_point(size = .9,
+                    #            alpha = .3) +
+                    geom_smooth(method = "lm",
+                                fullrange = TRUE) +
+                    theme_bw(base_size = THEME_BASE_SIZE) +
+                    scale_color_manual(values = c("low (<= 0.33)" = "#ff9090", 
+                                                  "medium (> 0.33, <= 0.67)" = "#d50000",
+                                                  "high (> 0.67)" = "#950000")) +
+                    labs(x = "Clustering",
+                         y = "Final size",
+                         color = "Homophily") + 
+                    scale_x_continuous(limits = c(0.0, 1.0),
+                                       breaks = seq(0.0, 1.0, 0.25)) +
+                    scale_y_continuous(limits = c(0, 100),
+                                       breaks = seq(0, 100, 25)) +
+                    theme(
+                      legend.position = "none"
+                    )),
+             "interactions-hc-dynamic")
+  
+  plots <- c(plots,
+             list(plot <- ggplot(data.ss,
+                                 aes(x = nb.gamma,
+                                     y = net.dynamic.pct.rec,
+                                     color = ass_groups)) +
+                    # geom_point(size = .9,
+                    #            alpha = .3) +
+                    geom_smooth(method = "lm",
+                                fullrange = TRUE) +
+                    theme_bw(base_size = THEME_BASE_SIZE) +
+                    scale_color_manual(values = c("low (<= 0.33)" = "#ff9090", 
+                                                  "medium (> 0.33, <= 0.67)" = "#d50000",
+                                                  "high (> 0.67)" = "#950000")) +
+                    labs(x = "Probability of disease transmission per contact",
+                         y = "Final size",
+                         color = "Homophily") + 
+                    scale_x_continuous(limits = c(0.0, 0.2),
+                                       breaks = seq(0.0, 0.2, 0.05)) +
+                    scale_y_continuous(limits = c(0, 100),
+                                       breaks = seq(0, 100, 25)) +
+                    theme(
+                      legend.position = "none"
+                    )),
+             "interactions-hg-dynamic")
+  
+  plots <- c(plots,
+             list(plot <- ggplot(data.ss,
+                                 aes(x = nb.gamma,
+                                     y = net.dynamic.epidemic.peak.size,
+                                     color = pl_groups)) +
+                    # geom_point(size = .9,
+                    #            alpha = .3) +
+                    geom_smooth(method = "lm",
+                                fullrange = TRUE) +
+                    theme_bw(base_size = THEME_BASE_SIZE) +
+                    scale_color_manual(values = c("<= 2.5" = "#bb66ff", 
+                                                  "> 2.5" = "#450080")) +
+                    # scale_color_brewer(palette = "Purples") +
+                    labs(x = "Probability of disease transmission per contact",
+                         y = "Peak size",
+                         color = "Path length") + 
+                    scale_x_continuous(limits = c(0.0, 0.2),
+                                       breaks = seq(0.0, 0.2, 0.05)) +
+                    scale_y_continuous(limits = c(0, 100),
+                                       breaks = seq(0, 100, 25))),
+             "interactions-legend-p")
+  
+  plots <- c(plots,
+             list(plot <- ggplot(data.ss,
+                                 aes(x = nb.gamma,
+                                     y = net.dynamic.epidemic.peak.size,
+                                     color = pl_groups)) +
+                    # geom_point(size = .9,
+                    #            alpha = .3) +
+                    geom_smooth(method = "lm",
+                                fullrange = TRUE) +
+                    theme_bw(base_size = THEME_BASE_SIZE) +
+                    scale_color_manual(values = c("<= 2.5" = "#bb66ff", 
+                                                  "> 2.5" = "#450080")) +
+                    labs(x = "Probability of disease transmission per contact",
+                         y = "Peak size",
+                         color = "Homophily") + 
+                    scale_x_continuous(limits = c(0.0, 0.2),
+                                       breaks = seq(0.0, 0.2, 0.05)) +
+                    scale_y_continuous(limits = c(0, 75),
+                                       breaks = seq(0, 75, 25)) +
+                    theme(
+                      legend.position = "none"
+                    )),
+             "interactions-pg-dynamic")
+  
+  return(plots)
+  
+}
+
+
 export_plots <- function(plots, plot.square = FALSE) {
 
   # create directory if necessary
@@ -4520,6 +4754,45 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
   }
 
   # attack rate
+  model.2.attackrate.degree.dynamic <- glm(attack.rate ~
+                                      net.changes +
+                                      degree.av,
+                                    family = binomial)
+  if (print.summaries) {
+    print(summary(model.2.attackrate.degree.dynamic))
+    print(vif(model.2.attackrate.degree.dynamic))
+    print(print_r2(model.2.attackrate.degree.dynamic))
+  }
+  model.2.attackrate.netprops.dynamic <- glm(attack.rate ~
+                                               net.changes +
+                                               clustering.av +
+                                               pathlength.av +
+                                               assortativity.av,
+                                             family = binomial)
+  if (print.summaries) {
+    print(summary(model.2.attackrate.netprops.dynamic))
+    print(vif(model.2.attackrate.netprops.dynamic))
+    print(print_r2(model.2.attackrate.netprops.dynamic))
+  }
+  
+  model.2.attackrate.netprops.plus.degree.dynamic <- glm(attack.rate ~
+                                                           net.changes +
+                                                           degree.av +
+                                                           clustering.av +
+                                                           pathlength.av +
+                                                           assortativity.av,
+                                                         family = binomial)
+  if (print.summaries) {
+    print(summary(model.2.attackrate.netprops.plus.degree.dynamic))
+    print(vif(model.2.attackrate.netprops.plus.degree.dynamic))
+    print(print_r2(model.2.attackrate.netprops.plus.degree.dynamic))
+  }
+  
+  hist(degree.av)
+  cor.test(degree.av, assortativity.av,  method = "kendall")
+  cor.test(degree.av, clustering.av,  method = "kendall")
+  cor.test(degree.av, pathlength.av,  method = "kendall")
+
   model.2.attackrate.dynamic <- glm(attack.rate ~
                                       net.changes +
                                       # degree.av +
@@ -4535,7 +4808,7 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
     print(vif(model.2.attackrate.dynamic))
     print(print_r2(model.2.attackrate.dynamic))
   }
-
+  
   # export_interactions(c("net.changes",
   #                       "degree.av",
   #                       "clustering.av",
@@ -4619,7 +4892,7 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
     print(print_r2(model.3.attackrate.dynamic))
     print(vif(model.3.attackrate.dynamic))
   }
-
+  
   # duration
   model.2.duration.dynamic <- lm(duration ~
                                    net.changes +
@@ -4814,6 +5087,35 @@ export_network_models <- function(data.ss = load_simulation_summary_data(), file
 
   ## MAIN EFFECTS (ACTUAL NETWORK PROPERTIES RATHER THAN PARAMETERS TO CONTROL NETWORK PROPERTIES)
   # attack rate
+  model.2.attackrate.degree.static <- glm(attack.rate ~
+                                            degree.av,
+                                          family = binomial)
+  if (print.summaries) {
+    print(summary(model.2.attackrate.degree.static))
+    print(print_r2(model.2.attackrate.degree.static))
+  }
+  model.2.attackrate.netprops.static <- glm(attack.rate ~
+                                              clustering.av +
+                                              pathlength.av +
+                                              assortativity.av,
+                                            family = binomial)
+  if (print.summaries) {
+    print(summary(model.2.attackrate.netprops.static))
+    print(vif(model.2.attackrate.netprops.static))
+    print(print_r2(model.2.attackrate.netprops.static))
+  }
+  model.2.attackrate.netprops.plus.degree.static <- glm(attack.rate ~
+                                                          degree.av +
+                                                          clustering.av +
+                                                          pathlength.av +
+                                                          assortativity.av,
+                                                        family = binomial)
+  if (print.summaries) {
+    print(summary(model.2.attackrate.netprops.plus.degree.static))
+    print(vif(model.2.attackrate.netprops.plus.degree.static))
+    print(print_r2(model.2.attackrate.netprops.plus.degree.static))
+  }
+  
   model.2.attackrate.static <- glm(attack.rate ~
                                      # degree.av +
                                      clustering.av +
@@ -5754,5 +6056,40 @@ omega_to_assortativity <- function(data.ss = load_simulation_summary_data()) {
 
 
 }
+
+degree_on_final_size <- function() {
+  
+  data.ss <- load_simulation_summary_data()
+  
+  mean(data.ss$net.degree.pre.epidemic.av)
+  data.ss.deg.gtmean <- subset(data.ss, net.degree.pre.epidemic.av > mean(data.ss$net.degree.pre.epidemic.av))
+  data.ss.deg.leqmean <- subset(data.ss, net.degree.pre.epidemic.av <= mean(data.ss$net.degree.pre.epidemic.av))
+  
+  mean(data.ss.deg.gtmean$net.dynamic.pct.rec)
+  sd(data.ss.deg.gtmean$net.dynamic.pct.rec)
+  mean(data.ss.deg.leqmean$net.dynamic.pct.rec)
+  sd(data.ss.deg.leqmean$net.dynamic.pct.rec)
+  
+  t.test(data.ss.deg.gtmean$net.dynamic.pct.rec,
+         data.ss.deg.leqmean$net.dynamic.pct.rec)
+  
+  mean(data.ss.deg.gtmean$net.static.pct.rec)
+  sd(data.ss.deg.gtmean$net.static.pct.rec)
+  mean(data.ss.deg.leqmean$net.static.pct.rec)
+  sd(data.ss.deg.leqmean$net.static.pct.rec)
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
