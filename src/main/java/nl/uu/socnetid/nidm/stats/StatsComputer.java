@@ -25,10 +25,13 @@
  */
 package nl.uu.socnetid.nidm.stats;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.math.stat.correlation.PearsonsCorrelation;
 import org.apache.logging.log4j.LogManager;
@@ -251,12 +254,12 @@ public final class StatsComputer {
      *
      * @param agent
      *          the agent
-     * @param with
-     *          the potentially new connection
+     * @param withs
+     *          the additional connections to consider
      * @return the stats for a single agent's connections.
      */
-    public static LocalAgentConnectionsStats computeLocalAgentConnectionsStatsWith(Agent agent, Agent with) {
-        return StatsComputer.computeLocalAgentConnectionsStats(agent, with, null);
+    public static LocalAgentConnectionsStats computeLocalAgentConnectionsStatsWith(Agent agent, Set<Agent> withs) {
+        return StatsComputer.computeLocalAgentConnectionsStats(agent, withs, null);
     }
 
     /**
@@ -264,12 +267,12 @@ public final class StatsComputer {
      *
      * @param agent
      *          the agent
-     * @param without
-     *          the existing connection not to consider
+     * @param withouts
+     *          the existing connections not to consider
      * @return the stats for a single agent's connections.
      */
-    public static LocalAgentConnectionsStats computeLocalAgentConnectionsStatsWithout(Agent agent, Agent without) {
-        return StatsComputer.computeLocalAgentConnectionsStats(agent, null, without);
+    public static LocalAgentConnectionsStats computeLocalAgentConnectionsStatsWithout(Agent agent, Set<Agent> withouts) {
+        return StatsComputer.computeLocalAgentConnectionsStats(agent, null, withouts);
     }
 
     /**
@@ -470,7 +473,7 @@ public final class StatsComputer {
      *          the existing connection not to consider
      * @return the stats for a single agent's connections.
      */
-    public static LocalAgentConnectionsStats computeLocalAgentConnectionsStats(Agent agent, Agent with, Agent without) {
+    public static LocalAgentConnectionsStats computeLocalAgentConnectionsStats(Agent agent, Set<Agent> withs, Set<Agent> withouts) {
 
         // direct ties
         int n = 0;
@@ -493,20 +496,29 @@ public final class StatsComputer {
 
         // preparing the list of direct connections
         Collection<Agent> directConnections = agent.getConnections();
-        if (with != null) {
-            directConnections.add(with);
+        if (withs != null && !withs.isEmpty()) {
+        	Iterator<Agent> withsIt = withs.iterator();
+        	while (withsIt.hasNext()) {
+        		directConnections.add(withsIt.next());
+        	}
         }
-        if (without != null && !directConnections.isEmpty() && directConnections.contains(without)) {
-            directConnections.remove(without);
+        if (withouts != null && !withouts.isEmpty()) {
+        	Iterator<Agent> withoutsIt = withouts.iterator();
+        	while (withoutsIt.hasNext()) {
+        		Agent without = withoutsIt.next();
+        		if (!directConnections.isEmpty() && directConnections.contains(without)) {
+        			directConnections.remove(without);
+        		}
+        	}
         }
-
+        
         if (!directConnections.isEmpty()) {
 
             n = directConnections.size();
 
             Iterator<Agent> it = directConnections.iterator();
 //            List<Agent> consideredAtDistance2 = new ArrayList<Agent>();
-//            List<Agent> consideredDirectConnections = new ArrayList<Agent>(directConnections);
+            List<Agent> consideredDirectConnections = new ArrayList<Agent>(directConnections);
             while (it.hasNext()) {
                 Agent directConnection = it.next();
 
@@ -563,20 +575,20 @@ public final class StatsComputer {
 //                connectionsAtDistance2 = null;
 
                 // XXX TRIAD STATS REMOVED FOR AGENTS
-//                // counting open and closed triads
-//                consideredDirectConnections.remove(directConnection);
-//                Iterator<Agent> cit = consideredDirectConnections.iterator();
-//                while (cit.hasNext()) {
-//                    Agent potentialTriad = cit.next();
-//                    if (directConnection.isDirectlyConnectedTo(potentialTriad)) {
-//                        z++;
-//                    } else {
-//                        y++;
-//                    }
-//                }
+                // counting open and closed triads
+                consideredDirectConnections.remove(directConnection);
+                Iterator<Agent> cit = consideredDirectConnections.iterator();
+                while (cit.hasNext()) {
+                    Agent potentialTriad = cit.next();
+                    if (directConnection.isDirectlyConnectedTo(potentialTriad)) {
+                        z++;
+                    } else {
+                        y++;
+                    }
+                }
             }
             //consideredAtDistance2 = null;
-//            consideredDirectConnections = null;
+            consideredDirectConnections = null;
         }
 
         directConnections = null;

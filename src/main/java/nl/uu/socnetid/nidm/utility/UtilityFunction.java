@@ -25,6 +25,8 @@
  */
 package nl.uu.socnetid.nidm.utility;
 
+import java.util.Set;
+
 import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
 import nl.uu.socnetid.nidm.stats.StatsComputer;
@@ -62,12 +64,12 @@ public abstract class UtilityFunction {
      *
      * @param agent
      *          the agent to compute the utility for
-     * @param with
-     *          the agent to include as direct connection
+     * @param withs
+     *          the agents to include as direct connections
      * @return the agent's utility based on the connections
      */
-    public Utility getUtilityWith(Agent agent, Agent with) {
-        return this.getUtility(agent, with, null);
+    public Utility getUtilityWith(Agent agent, Set<Agent> withs) {
+        return this.getUtility(agent, withs, null);
     }
 
     /**
@@ -75,12 +77,12 @@ public abstract class UtilityFunction {
      *
      * @param agent
      *          the agent to compute the utility for
-     * @param without
-     *          the agent to exclude as direct connection
+     * @param withouts
+     *          the agents to exclude as direct connections
      * @return the agent's utility based on the connections
      */
-    public Utility getUtilityWithout(Agent agent, Agent without) {
-        return this.getUtility(agent, null, without);
+    public Utility getUtilityWithout(Agent agent, Set<Agent> withouts) {
+        return this.getUtility(agent, null, withouts);
     }
 
     /**
@@ -89,22 +91,21 @@ public abstract class UtilityFunction {
      *
      * @param agent
      *          the agent to compute the utility for
-     * @param with
-     *          the agent to include as direct connection
-     * @param without
-     *          the agent to exclude as direct connection
+     * @param withs
+     *          the agents to include as direct connections
+     * @param withouts
+     *          the agents to exclude as direct connections
      * @return the agent's utility based on the connections
      */
-    public Utility getUtility(Agent agent, Agent with, Agent without) {
+    public Utility getUtility(Agent agent, Set<Agent> withs, Set<Agent> withouts) {
 
-        LocalAgentConnectionsStats lacs = StatsComputer.computeLocalAgentConnectionsStats(agent, with, without);
+        LocalAgentConnectionsStats lacs = StatsComputer.computeLocalAgentConnectionsStats(agent, withs, withouts);
 
         return new Utility(
                 getSocialBenefits(lacs, agent),
                 getSocialCosts(lacs, agent),
                 getDiseaseCosts(lacs, agent));
     }
-
 
     /**
      * @return the name of the utility function to be used in the stats window

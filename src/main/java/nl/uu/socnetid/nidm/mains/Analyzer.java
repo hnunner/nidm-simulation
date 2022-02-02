@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 - 2020
+ * Copyright (C) 2017 - 2022
  *      Hendrik Nunner    <h.nunner@gmail.com>
  *
  * This file is part of the NIDM-Simulation project <https://github.com/hnunner/NIDM-simulation>.
@@ -31,7 +31,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import nl.uu.socnetid.nidm.io.analyzer.AbstractAnalyzer;
-import nl.uu.socnetid.nidm.io.analyzer.ExperimentNetworkAnalyzer;
+import nl.uu.socnetid.nidm.io.analyzer.ExperimentNetworksEachRoundAnalyzer;
 
 /**
  * @author Hendrik Nunner
@@ -52,7 +52,11 @@ public class Analyzer {
      *          created, or cannot be opened for any other reason
      */
     public static void main(String[] args) throws IOException {
-        AbstractAnalyzer analyzer = new ExperimentNetworkAnalyzer();
+    	
+    	initialize();
+    	
+//        AbstractAnalyzer analyzer = new ExperimentNetworkAnalyzer();
+    	AbstractAnalyzer analyzer = new ExperimentNetworksEachRoundAnalyzer();
         analyzer.launch();
     }
 
@@ -61,10 +65,10 @@ public class Analyzer {
      * Initializes the data generation, by logging the copyright agreement, preparing the export path,
      * and copying the properties file.
      */
-    protected void initialize() {
+    protected static void initialize() {
 
         logger.info("\n::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::\n" +
-                ":: Copyright (C) 2017 - 2020\n" +
+                ":: Copyright (C) 2017 - 2022\n" +
                 "::     Hendrik Nunner    <h.nunner@gmail.com>\n" +
                 "::\n" +
                 ":: This file is part of the NIDM-Simulation project <https://github.com/hnunner/NIDM-simulation>.\n" +
@@ -88,29 +92,6 @@ public class Analyzer {
                 "::     Nunner, H., Buskens, V., & Kretzschmar, M. (2019). A model for the co-evolution of dynamic\n" +
                 "::     social networks and infectious diseases. Manuscript sumbitted for publication.\n"
                 + "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::\n");
-
-    }
-
-
-
-    /**
-     * Performs generation of data, networks, ...
-     *
-     * @throws IOException
-     *          if the export file(s) exist(s) but is a directory rather
-     *          than a regular file, do(es) not exist but cannot be
-     *          created, or cannot be opened for any other reason
-     */
-    private void analyze() throws IOException {
-
-        // initialization
-        this.initialize();
-
-        // invoke data generators
-        AbstractAnalyzer dataAnalyzer;
-        // experiment
-        dataAnalyzer = new ExperimentNetworkAnalyzer();
-        dataAnalyzer.launch();
 
     }
 

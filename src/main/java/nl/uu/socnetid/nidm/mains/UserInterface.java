@@ -449,7 +449,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
         simulationDelay = new JSpinner();
         simulationDelay.setBounds(217, 516, 80, 26);
         simulationPane.add(simulationDelay);
-        simulationDelay.setValue(10);
+        simulationDelay.setValue(3);
 
         JButton btnStart = new JButton(" Start");
         btnStart.setBounds(39, 549, 258, 35);
@@ -874,12 +874,6 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
      * Runs the actual simulation of the network game.
      */
     private void startSimulation() {
-
-        Iterator<Agent> agentIterator = this.network.getAgentIterator();
-        while (agentIterator.hasNext()) {
-            Agent agent = agentIterator.next();
-            System.out.println(((NunnerBuskens) agent.getUtilityFunction()).getAlpha());
-        }
 
         // initializations
         // this.simulation = new ThreadedSimulation(this.network);

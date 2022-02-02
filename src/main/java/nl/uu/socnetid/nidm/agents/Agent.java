@@ -345,8 +345,10 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      *          the agent to include as direct connection
      * @return the utility for a agent based on a list of connections
      */
-    protected Utility getUtilityWith(Agent with) {
-        return this.getUtilityFunction().getUtilityWith(this, with);
+    public Utility getUtilityWith(Agent with) {
+    	Set<Agent> withs = new HashSet<Agent>();
+    	withs.add(with);
+        return this.getUtilityFunction().getUtilityWith(this, withs);
     }
 
     /**
@@ -356,8 +358,23 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      *          the agent to exclude as direct connection
      * @return the utility for a agent based on a list of connections
      */
-    protected Utility getUtilityWithout(Agent without) {
-        return this.getUtilityFunction().getUtilityWithout(this, without);
+    public Utility getUtilityWithout(Agent without) {
+    	Set<Agent> withouts = new HashSet<Agent>();
+    	withouts.add(without);
+        return this.getUtilityFunction().getUtilityWithout(this, withouts);
+    }
+
+    /**
+     * Gets the utility for an agent including and excluding agents as connections.
+     *
+     * @param withs
+     * 			the agents to include as direct connections
+     * @param withouts
+     *          the agents to exclude as direct connections
+     * @return the utility for a agent based on a list of connections
+     */
+    public Utility getUtility(Set<Agent> withs, Set<Agent> withouts) {
+        return this.getUtilityFunction().getUtility(this, withs, withouts);
     }
 
     /**

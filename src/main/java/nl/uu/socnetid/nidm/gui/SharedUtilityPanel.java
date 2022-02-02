@@ -119,7 +119,7 @@ public abstract class SharedUtilityPanel extends DeactivatablePanel {
         txtGamma.setColumns(10);
         txtGamma.setBounds(245, 386, 50, 20);
         add(txtGamma);
-        txtGamma.setValue(new Double(0.1));
+        txtGamma.setValue(new Double(0.3));
         txtGamma.setInputVerifier(GAMMA_VERIFIER);
 
         JLabel lblRiskPerception = new JLabel("Risk perception:");
@@ -223,7 +223,7 @@ public abstract class SharedUtilityPanel extends DeactivatablePanel {
         txtTau.setColumns(10);
         txtTau.setBounds(245, 411, 50, 20);
         add(txtTau);
-        txtTau.setValue(new Integer(10));
+        txtTau.setValue(new Integer(5));
         txtTau.setInputVerifier(TAU_VERIFIER);
 
         JLabel lblAssortativity = new JLabel("% assortativity");
@@ -245,11 +245,12 @@ public abstract class SharedUtilityPanel extends DeactivatablePanel {
         txtOmega.setInputVerifier(PERCENT_VERIFIER);
 
         rdbtnRRandomNo = new JRadioButton("manual");
+        rdbtnRRandomNo.setSelected(true);
         rdbtnRRandomNo.setBounds(150, 441, 75, 23);
         add(rdbtnRRandomNo);
 
         rdbtnRRandomYes = new JRadioButton("random");
-        rdbtnRRandomYes.setSelected(true);
+//        rdbtnRRandomYes.setSelected(true);
         rdbtnRRandomYes.setBounds(225, 441, 75, 23);
         add(rdbtnRRandomYes);
 
