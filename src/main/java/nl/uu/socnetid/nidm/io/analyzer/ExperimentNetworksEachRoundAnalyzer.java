@@ -121,9 +121,10 @@ public class ExperimentNetworksEachRoundAnalyzer extends AbstractAnalyzer {
 	        	// proportion of closed triads
 	            double y = stats.getY(); 		// open triads
 	            double z = stats.getZ();		// closed triads
-	        	eap.setNetPropTriadsClosed((y+z) == 0 ? 0 : z / (y + z));
+	        	double netPropTriadsClosedBefore = (y+z) == 0 ? 0 : z / (y + z);
+				eap.setNetPropTriadsClosed(netPropTriadsClosedBefore);
 
-	        	// UTILITY
+	        	// UTILITY & EXPECTED PROPORTION OF CLOSED TRIADS
 	        	// before
 	        	Utility utilBefore = agent.getUtility();
 				eap.setUtilBefore(utilBefore);
@@ -133,6 +134,12 @@ public class ExperimentNetworksEachRoundAnalyzer extends AbstractAnalyzer {
 	        	withs.addAll(eap.getNomInAccepted().get(agent.getId()));
 	        	Set<Agent> withouts = eap.getDisAccepted().get(agent.getId());
 	        	eap.setUtilExpAfterAll(agent.getUtility(withs, withouts));
+	        	
+	        	LocalAgentConnectionsStats statsAfterAll = StatsComputer.computeLocalAgentConnectionsStats(agent, withs, withouts);
+	            double yAfterAll = statsAfterAll.getY(); 		// open triads
+	            double zAfterAll = statsAfterAll.getZ();		// closed triads
+	            eap.setNetPropTriadsClosedExpAfterAll((yAfterAll+zAfterAll) == 0 ? 0 : zAfterAll / (yAfterAll + zAfterAll));
+	        	
 	        	// accepted nominations out
         		Iterator<Agent> nomOutsAcc = eap.getNomOutAccepted().get(agent.getId()).iterator();
         		while (nomOutsAcc.hasNext()) {
@@ -142,6 +149,12 @@ public class ExperimentNetworksEachRoundAnalyzer extends AbstractAnalyzer {
         			eap.setUtilExpAfterDecOpp(utilBefore);
         			eap.setOfferType(1);
         			eap.setOfferAccept(true);
+    	        	
+    	        	LocalAgentConnectionsStats statsAfterDec = StatsComputer.computeLocalAgentConnectionsStatsWith(agent, nomOutAcc);
+    	            double yAfterDec = statsAfterDec.getY(); 		// open triads
+    	            double zAfterDec = statsAfterDec.getZ();		// closed triads
+    	            eap.setNetPropTriadsClosedExpAfterDec((yAfterDec+zAfterDec) == 0 ? 0 : zAfterDec / (yAfterDec + zAfterDec));
+        			
         			this.eaWriter.writeCurrentData();
         		}	
 	        	// declined nominations out
@@ -153,6 +166,9 @@ public class ExperimentNetworksEachRoundAnalyzer extends AbstractAnalyzer {
         			eap.setUtilExpAfterDecOpp(agent.getUtilityWith(nomOutDec));
         			eap.setOfferType(1);
         			eap.setOfferAccept(false);
+    	        	
+    	            eap.setNetPropTriadsClosedExpAfterDec(netPropTriadsClosedBefore);
+    	            
         			this.eaWriter.writeCurrentData();
         		}	
 	        	// accepted dissolutions
@@ -164,6 +180,12 @@ public class ExperimentNetworksEachRoundAnalyzer extends AbstractAnalyzer {
         			eap.setUtilExpAfterDecOpp(utilBefore);
         			eap.setOfferType(2);
         			eap.setOfferAccept(true);
+    	        	
+    	        	LocalAgentConnectionsStats statsAfterDec = StatsComputer.computeLocalAgentConnectionsStatsWithout(agent, disAcc);
+    	            double yAfterDec = statsAfterDec.getY(); 		// open triads
+    	            double zAfterDec = statsAfterDec.getZ();		// closed triads
+    	            eap.setNetPropTriadsClosedExpAfterDec((yAfterDec+zAfterDec) == 0 ? 0 : zAfterDec / (yAfterDec + zAfterDec));
+        			
         			this.eaWriter.writeCurrentData();
         		}	
 	        	// declined dissolutions
@@ -175,6 +197,9 @@ public class ExperimentNetworksEachRoundAnalyzer extends AbstractAnalyzer {
         			eap.setUtilExpAfterDecOpp(agent.getUtilityWithout(disDec));
         			eap.setOfferType(2);
         			eap.setOfferAccept(false);
+    	        	
+    	            eap.setNetPropTriadsClosedExpAfterDec(netPropTriadsClosedBefore);
+    	            
         			this.eaWriter.writeCurrentData();
         		}	
 	        	// accepted nominations in
@@ -186,6 +211,12 @@ public class ExperimentNetworksEachRoundAnalyzer extends AbstractAnalyzer {
         			eap.setUtilExpAfterDecOpp(utilBefore);
         			eap.setOfferType(3);
         			eap.setOfferAccept(true);
+    	        	
+    	        	LocalAgentConnectionsStats statsAfterDec = StatsComputer.computeLocalAgentConnectionsStatsWith(agent, nomInAcc);
+    	            double yAfterDec = statsAfterDec.getY(); 		// open triads
+    	            double zAfterDec = statsAfterDec.getZ();		// closed triads
+    	            eap.setNetPropTriadsClosedExpAfterDec((yAfterDec+zAfterDec) == 0 ? 0 : zAfterDec / (yAfterDec + zAfterDec));
+        			
         			this.eaWriter.writeCurrentData();
         		}	
 	        	// declined nominations out
@@ -197,6 +228,9 @@ public class ExperimentNetworksEachRoundAnalyzer extends AbstractAnalyzer {
         			eap.setUtilExpAfterDecOpp(agent.getUtilityWith(nomInDec));
         			eap.setOfferType(3);
         			eap.setOfferAccept(false);
+    	        	
+    	            eap.setNetPropTriadsClosedExpAfterDec(netPropTriadsClosedBefore);
+    	            
         			this.eaWriter.writeCurrentData();
         		}	
         		

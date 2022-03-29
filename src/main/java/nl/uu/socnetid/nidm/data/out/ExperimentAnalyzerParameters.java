@@ -62,6 +62,8 @@ public class ExperimentAnalyzerParameters extends UtilityModelParameters {
 	// network
 	private int netTies;
 	private double netPropTriadsClosed;
+	private double netPropTriadsClosedExpAfterDec;
+	private double netPropTriadsClosedExpAfterAll;
 	private double netAvPathLength;
 	private double netHomophily;
 	
@@ -224,6 +226,22 @@ public class ExperimentAnalyzerParameters extends UtilityModelParameters {
 
 	public void setNetPropTriadsClosed(double netPropTriadsClosed) {
 		this.netPropTriadsClosed = netPropTriadsClosed;
+	}
+	
+	public double getNetPropTriadsClosedExpAfterDec() {
+		return netPropTriadsClosedExpAfterDec;
+	}
+
+	public void setNetPropTriadsClosedExpAfterDec(double netPropTriadsClosedExpAfterDec) {
+		this.netPropTriadsClosedExpAfterDec = netPropTriadsClosedExpAfterDec;
+	}
+	
+	public double getNetPropTriadsClosedExpAfterAll() {
+		return netPropTriadsClosedExpAfterAll;
+	}
+
+	public void setNetPropTriadsClosedExpAfterAll(double netPropTriadsClosedExpAfterAll) {
+		this.netPropTriadsClosedExpAfterAll = netPropTriadsClosedExpAfterAll;
 	}
 
 	public double getNetAvPathLength() {

@@ -28,6 +28,7 @@ package nl.uu.socnetid.nidm.stats;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -247,6 +248,36 @@ public final class StatsComputer {
      */
     public static LocalAgentConnectionsStats computeLocalAgentConnectionsStats(Agent agent) {
         return StatsComputer.computeLocalAgentConnectionsStats(agent, null, null);
+    }
+
+    /**
+     * Computes the stats for a single agent's connections with a potentially new connection.
+     *
+     * @param agent
+     *          the agent
+     * @param with
+     *          the additional connection to consider
+     * @return the stats for a single agent's connections.
+     */
+    public static LocalAgentConnectionsStats computeLocalAgentConnectionsStatsWith(Agent agent, Agent with) {
+    	HashSet<Agent> withs = new HashSet<Agent>();
+    	withs.add(with);
+        return StatsComputer.computeLocalAgentConnectionsStats(agent, withs, null);
+    }
+
+    /**
+     * Computes the stats for a single agent's connections without an existing connection.
+     *
+     * @param agent
+     *          the agent
+     * @param without
+     *          the existing connection not to consider
+     * @return the stats for a single agent's connections.
+     */
+    public static LocalAgentConnectionsStats computeLocalAgentConnectionsStatsWithout(Agent agent, Agent without) {
+    	HashSet<Agent> withouts = new HashSet<Agent>();
+    	withouts.add(without);
+        return StatsComputer.computeLocalAgentConnectionsStats(agent, null, withouts);
     }
 
     /**

@@ -95,6 +95,8 @@ public class ExperimentAnalyzerWriter extends CsvFileWriter<ExperimentAnalyzerPa
     	// network
         cols.add("net.ties");
         cols.add("net.prop.triads.closed");
+        cols.add("net.prop.triads.closed.exp.after.dec");
+        cols.add("net.prop.triads.closed.exp.after.all");
         cols.add("net.avpathlength");
         cols.add("net.homophily");
 
@@ -153,6 +155,8 @@ public class ExperimentAnalyzerWriter extends CsvFileWriter<ExperimentAnalyzerPa
         // network
         currData.add(String.valueOf(eap.getNetTies()));
         currData.add(String.valueOf(eap.getNetPropTriadsClosed()));
+        currData.add(String.valueOf(eap.getNetPropTriadsClosedExpAfterDec()));
+        currData.add(String.valueOf(eap.getNetPropTriadsClosedExpAfterAll()));
         currData.add(String.valueOf(eap.getNetAvPathLength()));
         currData.add(String.valueOf(eap.getNetHomophily()));
 
