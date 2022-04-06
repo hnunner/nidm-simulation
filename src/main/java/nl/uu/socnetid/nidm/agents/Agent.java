@@ -46,14 +46,17 @@ import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleNode;
 import org.graphstream.ui.graphicGraph.GraphPosLengthUtils;
 
+import nl.uu.socnetid.nidm.data.out.ExperimentParameters;
 import nl.uu.socnetid.nidm.diseases.Disease;
 import nl.uu.socnetid.nidm.diseases.DiseaseFactory;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseGroup;
+import nl.uu.socnetid.nidm.io.csv.DecisionsWriter;
 import nl.uu.socnetid.nidm.networks.AssortativityConditions;
 import nl.uu.socnetid.nidm.networks.Network;
 import nl.uu.socnetid.nidm.stats.AgentConnectionStats;
 import nl.uu.socnetid.nidm.stats.DijkstraShortestPath;
+import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
 import nl.uu.socnetid.nidm.stats.StatsComputer;
 import nl.uu.socnetid.nidm.utility.Utility;
 import nl.uu.socnetid.nidm.utility.UtilityFunction;
@@ -73,6 +76,8 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
 
     // agentListeners
     private Set<AgentListener> agentListeners = new CopyOnWriteArraySet<AgentListener>();
+    
+    private DecisionsWriter decWriter = null;
 
 
     /**
@@ -1036,7 +1041,11 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
 
     /////////////////////////////////////////////////// CONNECTIONS ///////////////////////////////////////////////////
     public void computeRound() {
-        this.computeRound(0);
+        this.computeRound(0, this.decWriter);
+    }
+
+    public void computeRound(DecisionsWriter decWriter) {
+        this.computeRound(0, decWriter);
     }
 
     /**
@@ -1046,7 +1055,9 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      * @param delay
      *          animation delay between two network decisions
      */
-    public void computeRound(int delay) {
+    public void computeRound(int delay, DecisionsWriter decWriter) {
+    	
+    	this.decWriter = decWriter;
 
         // starting assumption: current connections are not satisfactory
         boolean satisfied = true;
@@ -1125,17 +1136,149 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
                 return;
             }
             other = drawBase.get(0);
-
+            
             // processing drawn agent
             if (this.isDirectlyConnectedTo(other)) {
                 if (existingConnectionTooCostly(other)) {
+                	
+                	// ----------------------------------------------------------------------------------------------------------------------------------------
+                	// decision data (quick and dirty)
+                    ExperimentParameters ump = this.decWriter.getDgData().getUtilityModelParams();
+        			ump.setEgoId(this.getId());
+                    ump.setAlterId(other.getId());
+                	ump.setOfferType("2");
+                	ump.setOfferAccept("1");
+                	ump.setdStateNode(this.isSusceptible() ? "1" : (this.isInfected() ? "2" : (this.isRecovered() ? "3" : "NA")));
+                	ump.setdStateOffer(other.isSusceptible() ? "1" : (other.isInfected() ? "2" : (other.isRecovered() ? "3" : "NA")));
+                	Utility utilBefore = this.getUtility();
+					ump.setUtilBeforeNetwork(String.valueOf(utilBefore.getSocialBenefits() - utilBefore.getSocialCosts()));
+					ump.setUtilBeforeDisease(String.valueOf(utilBefore.getDiseaseCosts()));
+					ump.setUtilBeforeTotal(String.valueOf(utilBefore.getOverallUtility()));
+                	Utility utilExpAfterDec = this.getUtilityWithout(other);
+					ump.setUtilExpAfterDecNetwork(String.valueOf(utilExpAfterDec.getSocialBenefits() - utilExpAfterDec.getSocialCosts()));
+					ump.setUtilExpAfterDecDisease(String.valueOf(utilExpAfterDec.getDiseaseCosts()));
+					ump.setUtilExpAfterDecTotal(String.valueOf(utilExpAfterDec.getOverallUtility()));
+                	Utility utilExpAfterDecOpp = utilBefore;
+					ump.setUtilExpAfterDecOppNetwork(String.valueOf(utilExpAfterDecOpp.getSocialBenefits() - utilExpAfterDecOpp.getSocialCosts()));
+					ump.setUtilExpAfterDecOppDisease(String.valueOf(utilExpAfterDecOpp.getDiseaseCosts()));
+					ump.setUtilExpAfterDecOppTotal(String.valueOf(utilExpAfterDecOpp.getOverallUtility()));
+                	ump.setNetTies(String.valueOf(this.getDegree()));
+                	LocalAgentConnectionsStats lacs = StatsComputer.computeLocalAgentConnectionsStats(this);
+                	ump.setNetPropTriadsClosed(String.valueOf((lacs.getY() + lacs.getZ()) == 0 ? 0.0 : ((double) lacs.getZ()) / (lacs.getY() + lacs.getZ())));
+                	lacs = StatsComputer.computeLocalAgentConnectionsStatsWithout(this, other);
+                	ump.setNetPropTriadsClosedExpAfterDec(String.valueOf((lacs.getY() + lacs.getZ()) == 0 ? 0.0 : ((double) lacs.getZ()) / (lacs.getY() + lacs.getZ())));
+//                	ump.setNetAvPathLength(String.valueOf(this.getNetwork().getAvPathLength()));
+                	ump.setNetHomophily(String.valueOf(this.getNetwork().getAssortativityRiskPerception()));
+                	ump.setrScore(String.valueOf(this.getRSigma()));
+                    this.decWriter.writeCurrentData();
+                    // ----------------------------------------------------------------------------------------------------------------------------------------
+                    
                     disconnectFrom(other);
                     satisfied = false;
+                    
+                } else {
+                	
+                	// ----------------------------------------------------------------------------------------------------------------------------------------
+                	// decision data (quick and dirty)
+                    ExperimentParameters ump = this.decWriter.getDgData().getUtilityModelParams();
+        			ump.setEgoId(this.getId());
+                    ump.setAlterId(other.getId());
+                	ump.setOfferType("2");
+                	ump.setOfferAccept("0");
+                	ump.setdStateNode(this.isSusceptible() ? "1" : (this.isInfected() ? "2" : (this.isRecovered() ? "3" : "NA")));
+                	ump.setdStateOffer(other.isSusceptible() ? "1" : (other.isInfected() ? "2" : (other.isRecovered() ? "3" : "NA")));
+                	Utility utilBefore = this.getUtility();
+					ump.setUtilBeforeNetwork(String.valueOf(utilBefore.getSocialBenefits() - utilBefore.getSocialCosts()));
+					ump.setUtilBeforeDisease(String.valueOf(utilBefore.getDiseaseCosts()));
+					ump.setUtilBeforeTotal(String.valueOf(utilBefore.getOverallUtility()));
+                	Utility utilExpAfterDec = utilBefore;
+					ump.setUtilExpAfterDecNetwork(String.valueOf(utilExpAfterDec.getSocialBenefits() - utilExpAfterDec.getSocialCosts()));
+					ump.setUtilExpAfterDecDisease(String.valueOf(utilExpAfterDec.getDiseaseCosts()));
+					ump.setUtilExpAfterDecTotal(String.valueOf(utilExpAfterDec.getOverallUtility()));
+                	Utility utilExpAfterDecOpp = this.getUtilityWithout(other);
+					ump.setUtilExpAfterDecOppNetwork(String.valueOf(utilExpAfterDecOpp.getSocialBenefits() - utilExpAfterDecOpp.getSocialCosts()));
+					ump.setUtilExpAfterDecOppDisease(String.valueOf(utilExpAfterDecOpp.getDiseaseCosts()));
+					ump.setUtilExpAfterDecOppTotal(String.valueOf(utilExpAfterDecOpp.getOverallUtility()));
+                	ump.setNetTies(String.valueOf(this.getDegree()));
+                	LocalAgentConnectionsStats lacs = StatsComputer.computeLocalAgentConnectionsStats(this);
+                	ump.setNetPropTriadsClosed(String.valueOf((lacs.getY() + lacs.getZ()) == 0 ? 0.0 : ((double) lacs.getZ()) / (lacs.getY() + lacs.getZ())));
+                	ump.setNetPropTriadsClosedExpAfterDec(String.valueOf((lacs.getY() + lacs.getZ()) == 0 ? 0.0 : ((double) lacs.getZ()) / (lacs.getY() + lacs.getZ())));
+//                	ump.setNetAvPathLength(String.valueOf(this.getNetwork().getAvPathLength()));
+                	ump.setNetHomophily(String.valueOf(this.getNetwork().getAssortativityRiskPerception()));
+                	ump.setrScore(String.valueOf(this.getRSigma()));
+                    this.decWriter.writeCurrentData();
+                    // ----------------------------------------------------------------------------------------------------------------------------------------
                 }
+                
             } else {
                 if (newConnectionValuable(other)) {
+                	
+                	// ----------------------------------------------------------------------------------------------------------------------------------------
+                	// decision data (quick and dirty)
+                    ExperimentParameters ump = this.decWriter.getDgData().getUtilityModelParams();
+        			ump.setEgoId(this.getId());
+                    ump.setAlterId(other.getId());
+                	ump.setOfferType("1");
+                	ump.setOfferAccept("1");
+                	ump.setdStateNode(this.isSusceptible() ? "1" : (this.isInfected() ? "2" : (this.isRecovered() ? "3" : "NA")));
+                	ump.setdStateOffer(other.isSusceptible() ? "1" : (other.isInfected() ? "2" : (other.isRecovered() ? "3" : "NA")));
+                	Utility utilBefore = this.getUtility();
+					ump.setUtilBeforeNetwork(String.valueOf(utilBefore.getSocialBenefits() - utilBefore.getSocialCosts()));
+					ump.setUtilBeforeDisease(String.valueOf(utilBefore.getDiseaseCosts()));
+					ump.setUtilBeforeTotal(String.valueOf(utilBefore.getOverallUtility()));
+                	Utility utilExpAfterDec = this.getUtilityWith(other);
+					ump.setUtilExpAfterDecNetwork(String.valueOf(utilExpAfterDec.getSocialBenefits() - utilExpAfterDec.getSocialCosts()));
+					ump.setUtilExpAfterDecDisease(String.valueOf(utilExpAfterDec.getDiseaseCosts()));
+					ump.setUtilExpAfterDecTotal(String.valueOf(utilExpAfterDec.getOverallUtility()));
+                	Utility utilExpAfterDecOpp = utilBefore;
+					ump.setUtilExpAfterDecOppNetwork(String.valueOf(utilExpAfterDecOpp.getSocialBenefits() - utilExpAfterDecOpp.getSocialCosts()));
+					ump.setUtilExpAfterDecOppDisease(String.valueOf(utilExpAfterDecOpp.getDiseaseCosts()));
+					ump.setUtilExpAfterDecOppTotal(String.valueOf(utilExpAfterDecOpp.getOverallUtility()));
+                	ump.setNetTies(String.valueOf(this.getDegree()));
+                	LocalAgentConnectionsStats lacs = StatsComputer.computeLocalAgentConnectionsStats(this);
+                	ump.setNetPropTriadsClosed(String.valueOf((lacs.getY() + lacs.getZ()) == 0 ? 0.0 : ((double) lacs.getZ()) / (lacs.getY() + lacs.getZ())));
+                	lacs = StatsComputer.computeLocalAgentConnectionsStatsWith(this, other);
+                	ump.setNetPropTriadsClosedExpAfterDec(String.valueOf((lacs.getY() + lacs.getZ()) == 0 ? 0.0 : ((double) lacs.getZ()) / (lacs.getY() + lacs.getZ())));
+//                	ump.setNetAvPathLength(String.valueOf(this.getNetwork().getAvPathLength()));
+                	ump.setNetHomophily(String.valueOf(this.getNetwork().getAssortativityRiskPerception()));
+                	ump.setrScore(String.valueOf(this.getRSigma()));
+                    this.decWriter.writeCurrentData();
+                    // ----------------------------------------------------------------------------------------------------------------------------------------
+                    
                     connectTo(other);
                     satisfied = false;
+                } else {
+
+                	// ----------------------------------------------------------------------------------------------------------------------------------------
+                	// decision data (quick and dirty)
+                    ExperimentParameters ump = this.decWriter.getDgData().getUtilityModelParams();
+        			ump.setEgoId(this.getId());
+                    ump.setAlterId(other.getId());
+                	ump.setOfferType("1");
+                	ump.setOfferAccept("0");
+                	ump.setdStateNode(this.isSusceptible() ? "1" : (this.isInfected() ? "2" : (this.isRecovered() ? "3" : "NA")));
+                	ump.setdStateOffer(other.isSusceptible() ? "1" : (other.isInfected() ? "2" : (other.isRecovered() ? "3" : "NA")));
+                	Utility utilBefore = this.getUtility();
+					ump.setUtilBeforeNetwork(String.valueOf(utilBefore.getSocialBenefits() - utilBefore.getSocialCosts()));
+					ump.setUtilBeforeDisease(String.valueOf(utilBefore.getDiseaseCosts()));
+					ump.setUtilBeforeTotal(String.valueOf(utilBefore.getOverallUtility()));
+                	Utility utilExpAfterDec = utilBefore;
+					ump.setUtilExpAfterDecNetwork(String.valueOf(utilExpAfterDec.getSocialBenefits() - utilExpAfterDec.getSocialCosts()));
+					ump.setUtilExpAfterDecDisease(String.valueOf(utilExpAfterDec.getDiseaseCosts()));
+					ump.setUtilExpAfterDecTotal(String.valueOf(utilExpAfterDec.getOverallUtility()));
+                	Utility utilExpAfterDecOpp = this.getUtilityWith(other);
+					ump.setUtilExpAfterDecOppNetwork(String.valueOf(utilExpAfterDecOpp.getSocialBenefits() - utilExpAfterDecOpp.getSocialCosts()));
+					ump.setUtilExpAfterDecOppDisease(String.valueOf(utilExpAfterDecOpp.getDiseaseCosts()));
+					ump.setUtilExpAfterDecOppTotal(String.valueOf(utilExpAfterDecOpp.getOverallUtility()));
+                	ump.setNetTies(String.valueOf(this.getDegree()));
+                	LocalAgentConnectionsStats lacs = StatsComputer.computeLocalAgentConnectionsStats(this);
+                	ump.setNetPropTriadsClosed(String.valueOf((lacs.getY() + lacs.getZ()) == 0 ? 0.0 : ((double) lacs.getZ()) / (lacs.getY() + lacs.getZ())));
+                	ump.setNetPropTriadsClosedExpAfterDec(String.valueOf((lacs.getY() + lacs.getZ()) == 0 ? 0.0 : ((double) lacs.getZ()) / (lacs.getY() + lacs.getZ())));
+//                	ump.setNetAvPathLength(String.valueOf(this.getNetwork().getAvPathLength()));
+                	ump.setNetHomophily(String.valueOf(this.getNetwork().getAssortativityRiskPerception()));
+                	ump.setrScore(String.valueOf(this.getRSigma()));
+                    this.decWriter.writeCurrentData();
+                    // ----------------------------------------------------------------------------------------------------------------------------------------
                 }
             }
             agentsProcessed.add(other);
@@ -1173,11 +1316,76 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         double newUtility = agent.getUtility().getOverallUtility();
         agent.removeConnection(this);
         if (newUtility >= currUtility) {
+        	
+        	// ----------------------------------------------------------------------------------------------------------------------------------------
+        	// decision data (quick and dirty)
+            ExperimentParameters ump = this.decWriter.getDgData().getUtilityModelParams();
+			ump.setEgoId(agent.getId());
+            ump.setAlterId(this.getId());
+        	ump.setOfferType("3");
+        	ump.setOfferAccept("1");
+        	ump.setdStateNode(agent.isSusceptible() ? "1" : (agent.isInfected() ? "2" : (agent.isRecovered() ? "3" : "NA")));
+        	ump.setdStateOffer(this.isSusceptible() ? "1" : (this.isInfected() ? "2" : (this.isRecovered() ? "3" : "NA")));
+        	Utility utilBefore = agent.getUtility();
+			ump.setUtilBeforeNetwork(String.valueOf(utilBefore.getSocialBenefits() - utilBefore.getSocialCosts()));
+			ump.setUtilBeforeDisease(String.valueOf(utilBefore.getDiseaseCosts()));
+			ump.setUtilBeforeTotal(String.valueOf(utilBefore.getOverallUtility()));
+        	Utility utilExpAfterDec = agent.getUtilityWith(this);
+			ump.setUtilExpAfterDecNetwork(String.valueOf(utilExpAfterDec.getSocialBenefits() - utilExpAfterDec.getSocialCosts()));
+			ump.setUtilExpAfterDecDisease(String.valueOf(utilExpAfterDec.getDiseaseCosts()));
+			ump.setUtilExpAfterDecTotal(String.valueOf(utilExpAfterDec.getOverallUtility()));
+        	Utility utilExpAfterDecOpp = utilBefore;
+			ump.setUtilExpAfterDecOppNetwork(String.valueOf(utilExpAfterDecOpp.getSocialBenefits() - utilExpAfterDecOpp.getSocialCosts()));
+			ump.setUtilExpAfterDecOppDisease(String.valueOf(utilExpAfterDecOpp.getDiseaseCosts()));
+			ump.setUtilExpAfterDecOppTotal(String.valueOf(utilExpAfterDecOpp.getOverallUtility()));
+        	ump.setNetTies(String.valueOf(agent.getDegree()));
+        	LocalAgentConnectionsStats lacs = StatsComputer.computeLocalAgentConnectionsStats(agent);
+        	ump.setNetPropTriadsClosed(String.valueOf((lacs.getY() + lacs.getZ()) == 0 ? 0.0 : ((double) lacs.getZ()) / (lacs.getY() + lacs.getZ())));
+        	lacs = StatsComputer.computeLocalAgentConnectionsStatsWith(agent, this);
+        	ump.setNetPropTriadsClosedExpAfterDec(String.valueOf((lacs.getY() + lacs.getZ()) == 0 ? 0.0 : ((double) lacs.getZ()) / (lacs.getY() + lacs.getZ())));
+//        	ump.setNetAvPathLength(String.valueOf(agent.getNetwork().getAvPathLength()));
+        	ump.setNetHomophily(String.valueOf(agent.getNetwork().getAssortativityRiskPerception()));
+        	ump.setrScore(String.valueOf(agent.getRSigma()));
+            this.decWriter.writeCurrentData();
+            // ----------------------------------------------------------------------------------------------------------------------------------------
+        	
             addConnection(agent);
             trackAcceptedRequestOut();
             agent.trackAcceptedRequestIn();
             return true;
         }
+
+        // ----------------------------------------------------------------------------------------------------------------------------------------
+        // decision data (quick and dirty)
+        ExperimentParameters ump = this.decWriter.getDgData().getUtilityModelParams();
+        ump.setEgoId(agent.getId());
+        ump.setAlterId(this.getId());
+        ump.setOfferType("3");
+        ump.setOfferAccept("0");
+        ump.setdStateNode(agent.isSusceptible() ? "1" : (agent.isInfected() ? "2" : (agent.isRecovered() ? "3" : "NA")));
+        ump.setdStateOffer(this.isSusceptible() ? "1" : (this.isInfected() ? "2" : (this.isRecovered() ? "3" : "NA")));
+        Utility utilBefore = agent.getUtility();
+        ump.setUtilBeforeNetwork(String.valueOf(utilBefore.getSocialBenefits() - utilBefore.getSocialCosts()));
+        ump.setUtilBeforeDisease(String.valueOf(utilBefore.getDiseaseCosts()));
+        ump.setUtilBeforeTotal(String.valueOf(utilBefore.getOverallUtility()));
+        Utility utilExpAfterDec = utilBefore;
+        ump.setUtilExpAfterDecNetwork(String.valueOf(utilExpAfterDec.getSocialBenefits() - utilExpAfterDec.getSocialCosts()));
+        ump.setUtilExpAfterDecDisease(String.valueOf(utilExpAfterDec.getDiseaseCosts()));
+        ump.setUtilExpAfterDecTotal(String.valueOf(utilExpAfterDec.getOverallUtility()));
+        Utility utilExpAfterDecOpp = agent.getUtilityWith(this);
+        ump.setUtilExpAfterDecOppNetwork(String.valueOf(utilExpAfterDecOpp.getSocialBenefits() - utilExpAfterDecOpp.getSocialCosts()));
+        ump.setUtilExpAfterDecOppDisease(String.valueOf(utilExpAfterDecOpp.getDiseaseCosts()));
+        ump.setUtilExpAfterDecOppTotal(String.valueOf(utilExpAfterDecOpp.getOverallUtility()));
+        ump.setNetTies(String.valueOf(agent.getDegree()));
+        LocalAgentConnectionsStats lacs = StatsComputer.computeLocalAgentConnectionsStats(agent);
+        ump.setNetPropTriadsClosed(String.valueOf((lacs.getY() + lacs.getZ()) == 0 ? 0.0 : ((double) lacs.getZ()) / (lacs.getY() + lacs.getZ())));
+        ump.setNetPropTriadsClosedExpAfterDec(String.valueOf((lacs.getY() + lacs.getZ()) == 0 ? 0.0 : ((double) lacs.getZ()) / (lacs.getY() + lacs.getZ())));
+//        ump.setNetAvPathLength(String.valueOf(agent.getNetwork().getAvPathLength()));
+        ump.setNetHomophily(String.valueOf(agent.getNetwork().getAssortativityRiskPerception()));
+        ump.setrScore(String.valueOf(agent.getRSigma()));
+        this.decWriter.writeCurrentData();
+        // ----------------------------------------------------------------------------------------------------------------------------------------
+        
         trackDeclinedRequestOut();
         agent.trackDeclinedRequestIn();
         return false;

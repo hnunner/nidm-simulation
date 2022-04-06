@@ -45,6 +45,7 @@ import nl.uu.socnetid.nidm.data.out.DataGeneratorData;
 import nl.uu.socnetid.nidm.data.out.ExperimentParameters;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
+import nl.uu.socnetid.nidm.io.csv.DecisionsWriter;
 import nl.uu.socnetid.nidm.io.csv.ExperimentAgentDetailsWriter;
 import nl.uu.socnetid.nidm.io.csv.ExperimentRoundSummaryWriter;
 import nl.uu.socnetid.nidm.io.csv.ExperimentSimulationSummaryWriter;
@@ -101,6 +102,7 @@ public class ExperimentDataGenerator extends AbstractDataGenerator implements Si
     private ExperimentSimulationSummaryWriter ssWriter;
     private ExperimentRoundSummaryWriter rsWriter;
     private ExperimentAgentDetailsWriter adWriter;
+    private DecisionsWriter decWriter;
 
 
     /**
@@ -142,8 +144,7 @@ public class ExperimentDataGenerator extends AbstractDataGenerator implements Si
         ep.setGamma(0.15);
         ep.setSigma(0.34);
 
-        ep.setSimsPerParameterCombination(1000);
-        //        ep.setSimsPerParameterCombination(500);
+        ep.setSimsPerParameterCombination(48);
 
         this.dgData = new DataGeneratorData<ExperimentParameters>(ep);
     }
@@ -156,6 +157,7 @@ public class ExperimentDataGenerator extends AbstractDataGenerator implements Si
         this.ssWriter = new ExperimentSimulationSummaryWriter(getExportPath() + "simulation-summary.csv", this.dgData);
         this.rsWriter = new ExperimentRoundSummaryWriter(getExportPath() + "round-summary.csv", this.dgData);
         this.adWriter = new ExperimentAgentDetailsWriter(getExportPath() + "agent-details.csv", this.dgData);
+        this.decWriter = new DecisionsWriter(getExportPath() + "decisions.csv", this.dgData);
     }
 
 
@@ -169,7 +171,7 @@ public class ExperimentDataGenerator extends AbstractDataGenerator implements Si
         SimulationStats simStats = this.dgData.getSimStats();
 
         // SENSITIVITY ANALYSIS
-        int[] taus = {3};
+        int[] taus = {4};
         double[] phis = {0.2};
         double[] psis = {0.5};
         double[] xis = {0.3};
@@ -201,6 +203,8 @@ public class ExperimentDataGenerator extends AbstractDataGenerator implements Si
                             // BETWEEN SUBJECT CONDITION: random mixing (omega = 0.0) vs. assoratitive mixing (omega = 0.8)
                             ump.setOmega(simStats.getSimPerUpc() % 2 == 0 ? 0.0 : 0.8);
 
+                            this.decWriter.getDgData().getUtilityModelParams().setCondMixing(ump.getOmega() == 0.0 ? "1" : "2");
+
                             // CREATE EXPERIMENTAL SESSION WITH SAME SUBJECTS FOR CLUSTERING CONDITIONS
                             List<Double> riskScores = new ArrayList<>();
                             while (riskScores.size() < ump.getN()) {
@@ -229,12 +233,18 @@ public class ExperimentDataGenerator extends AbstractDataGenerator implements Si
                                 String indexCaseId;
                                 int[] riskScoreOrder;
                                 if (alpha == 0.0) {
+
+                                    this.decWriter.getDgData().getUtilityModelParams().setCondClustering("A");
+                                    
                                     ump.setInputNetworkFile(
                                             getClass().getClassLoader().getResource("low-clustering_experiment.dgs").getPath());
                                     indexCaseId = String.valueOf(INDEX_CASE_LC);
                                     riskScoreOrder = (
                                             ump.getOmega() == 0.0 ? RISK_SCORE_ORDER_LC_RAND : RISK_SCORE_ORDER_LC_ASS);
                                 } else {
+                                	
+                                    this.decWriter.getDgData().getUtilityModelParams().setCondClustering("B");
+                                	
                                     ump.setInputNetworkFile(
                                             getClass().getClassLoader().getResource(
                                                     "high-clustering_experiment.dgs").getPath());
@@ -296,7 +306,7 @@ public class ExperimentDataGenerator extends AbstractDataGenerator implements Si
                                 this.dgData.getSimStats().setRoundStartInfection(this.simulation.getRounds());
 
                                 // simulate
-                                this.simulation.simulateUntilEpidemicFinished();
+                                this.simulation.simulateUntilEpidemicFinished(decWriter);
 
                                 // save data of last round of post-epidemic stage
                                 this.dgData.setNetStatsPostDynamic(new NetworkStatsPost(this.network));
@@ -350,6 +360,8 @@ public class ExperimentDataGenerator extends AbstractDataGenerator implements Si
                 this.adWriter.flush();
                 this.adWriter.close();
             }
+            this.decWriter.flush();
+            this.decWriter.close();
         } catch (IOException e) {
             logger.error(e);
         }

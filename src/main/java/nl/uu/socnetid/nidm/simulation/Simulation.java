@@ -37,6 +37,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import nl.uu.socnetid.nidm.agents.Agent;
+import nl.uu.socnetid.nidm.io.csv.DecisionsWriter;
 import nl.uu.socnetid.nidm.networks.Network;
 
 /**
@@ -63,6 +64,8 @@ public class Simulation implements Runnable {
     private int rounds = 1;
     // flag whether network has active infection or not
     private boolean activeInfection;
+    // decision summary writer
+    private DecisionsWriter decWriter;
 
     // listeners
     private final Set<SimulationListener> simulationListeners =
@@ -232,12 +235,24 @@ public class Simulation implements Runnable {
         this.notifySimulationFinished();
     }
 
+    
     /**
      * Simulates the network dynamics (disease and agents) until the disease has disappeared.
      *
      * TODO: generalize with method above
      */
     public void simulateUntilEpidemicFinished() {
+    	this.simulateUntilEpidemicFinished(null);
+    }
+    
+    /**
+     * Simulates the network dynamics (disease and agents) until the disease has disappeared.
+     *
+     * TODO: generalize with method above
+     */
+    public void simulateUntilEpidemicFinished(DecisionsWriter decWriter) {
+    	
+    	this.decWriter = decWriter;
 
         notifySimulationStarted();
 
@@ -284,6 +299,8 @@ public class Simulation implements Runnable {
      */
     private void computeSingleRound() {
 
+    	this.decWriter.getDgData().getSimStats().setRounds(rounds);
+    	
         if (this.network.hasActiveInfection()) {
             computeDiseaseDynamics();
         }
@@ -406,7 +423,7 @@ public class Simulation implements Runnable {
      *          the {@link Agent} to compute the single round of play for
      */
     protected void computeAgentRound(Agent agent) {
-        agent.computeRound();
+        agent.computeRound(this.decWriter);
     }
 
     /**
@@ -418,7 +435,7 @@ public class Simulation implements Runnable {
      *          the delay between each network decision
      */
     protected void computeAgentRound(Agent agent, int delay) {
-        agent.computeRound(delay);
+        agent.computeRound(delay, this.decWriter);
     }
 
     /**
