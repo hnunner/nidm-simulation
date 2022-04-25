@@ -34,3 +34,6 @@ bfg-report*
 /exports
 /data/**/*.csv
 /data/20210331-c19_professions/profession-round-summary-prepared.csv
+/data/20210608-nidmexp_parameters/numerical/
+/data/20220413-nidmexp_rtnl-1.00_oest-1.00/data.zip
+/data/20220421-nidmexp_rtnl-0.46-0.58_oest-4.00-9.00/data.zip
