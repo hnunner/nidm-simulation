@@ -46,6 +46,8 @@ public abstract class UtilityFunction {
     protected static final String TYPE_NUNNER_BUSKENS = "NB";
     protected static final String TYPE_NUNNER_BUSKENS_2 = "NB2";
     protected static final String TYPE_TRUNCATED_CONNECTIONS = "TCM";
+    
+    private double overestimate = 1.0;
 
 
     /**
@@ -156,19 +158,18 @@ public abstract class UtilityFunction {
         double s;
         double rSigma = agent.getRSigma();
         double rPi = agent.getRPi();
-
+        
         // depending own agent's own risk group
         switch (agent.getDiseaseGroup()) {
             case SUSCEPTIBLE:
-                p = Math.pow(StatsComputer.computeProbabilityOfInfection(agent, nI), (2 - rPi));
-                s = Math.pow(agent.getDiseaseSpecs().getSigma(), rSigma) ;
+                p = Math.pow(StatsComputer.computeProbabilityOfInfection(agent, nI), (2 - rPi)) * this.overestimate;
+                s = Math.pow(agent.getDiseaseSpecs().getSigma(), rSigma) * this.overestimate;
                 break;
 
             case INFECTED:
                 p = 1;
                 s = agent.getDiseaseSpecs().getSigma();
                 break;
-
 
             case RECOVERED:
             case VACCINATED:
@@ -179,7 +180,7 @@ public abstract class UtilityFunction {
             default:
                 throw new RuntimeException("Unknown disease group: " + agent.getDiseaseGroup());
         }
-
+        
         return p * s;
     }
 
@@ -250,6 +251,9 @@ public abstract class UtilityFunction {
         return uf;
     }
 
+    protected void setOverestimate(double overestimate) {
+    	this.overestimate = overestimate;
+    }
 
     /* (non-Javadoc)
      * @see java.lang.Object#equals()

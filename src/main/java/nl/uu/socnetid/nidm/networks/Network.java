@@ -224,7 +224,7 @@ public class Network extends SingleGraph implements SimulationListener {
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs) {
         // TODO clean up addAgent methods -- too many special cases!!!
         return this.addAgent(utilityFunction, diseaseSpecs, RISK_FACTOR_NEUTRAL, RISK_FACTOR_NEUTRAL, STANDARD_PHI,
-                STANDARD_OMEGA, STANDARD_PSI, STANDARD_XI, AgeStructure.getInstance().getRandomAge(), false, "NA", false, false);
+                STANDARD_OMEGA, STANDARD_PSI, STANDARD_XI, AgeStructure.getInstance().getRandomAge(), false, "NA", false, false, 1.0, 1.0);
     }
 
     /**
@@ -249,7 +249,7 @@ public class Network extends SingleGraph implements SimulationListener {
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
             double omega) {
         return this.addAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, omega, STANDARD_PSI,
-                STANDARD_XI, AgeStructure.getInstance().getRandomAge(), false, "NA", false, false);
+                STANDARD_XI, AgeStructure.getInstance().getRandomAge(), false, "NA", false, false, 1.0, 1.0);
     }
 
     /**
@@ -283,16 +283,20 @@ public class Network extends SingleGraph implements SimulationListener {
      *          whether profession is considered for peer selection or not
      * @param quarantined
      *          whether the agent is quarantined or not
+     * @param rational
+     * 			degree of rationality -- proportion of decisions that are made in order to only maximize utility
+     * @param rationalInfectedNeighbor
+     * 			degree of rationality towards infected neighbors
      * @return the newly added agent.
      */
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
             double omega, double psi, double xi, int age, boolean considerAge, String profession, boolean considerProfession,
-            boolean quarantined) {
+            boolean quarantined, double rational, double rationalInfectedNeighbor) {
         Agent agent = this.addNode(String.valueOf(this.getNodeCount() + 1));
 
         // age randomly drawn from /resources/age-dist.csv
         agent.initAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, psi, xi, omega, age, considerAge,
-                profession, considerProfession, quarantined);
+                profession, considerProfession, quarantined, rational, rationalInfectedNeighbor);
         notifyAgentAdded(agent);
 
         // re-position agents if auto-layout is disabled

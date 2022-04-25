@@ -391,7 +391,8 @@ public class ProfessionsNetworkGeneratorGenetic extends AbstractGenerator implem
                         umps.isConsiderAge(),
                         profession,
                         umps.isConsiderProfession(),
-                        false);
+                        false,
+                        1.0, 1.0);
             }
         }
 //                break;

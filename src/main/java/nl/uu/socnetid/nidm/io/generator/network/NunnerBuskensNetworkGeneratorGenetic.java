@@ -242,7 +242,8 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
                         this.dgData.getUtilityModelParams().isConsiderAge(),
                         Professions.getInstance().getRandomProfession(),
                         this.dgData.getUtilityModelParams().isConsiderProfession(),
-                        false);
+                        false,
+                        1.0, 1.0);
             }
 
             logger.info("Theoretic average degree: " + (Math.round(this.network.getTheoreticAvDegree() * 100.0) / 100.0));

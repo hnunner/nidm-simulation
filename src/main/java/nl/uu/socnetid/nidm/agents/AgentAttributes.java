@@ -51,6 +51,8 @@ public enum AgentAttributes {
     PROFESSION("profession"),
     CONSIDER_PROFESSION("consider.profession"),
     QUARANTINED("quarantined"),
+    RATIONAL("rational"),
+    RATIONAL_INFECTED_NEIGHBOR("rational.infected.neighbor"),
     FORCE_INFECTED("force.infected"),
     WHEN_INFECTED("when.infected"),
     INITIAL_INDEX_CASE_DISTANCE("initial.index.case.distance"),

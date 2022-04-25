@@ -79,6 +79,9 @@ public class ExperimentRoundSummaryWriter extends CsvFileWriter<ExperimentParame
         cols.add(LogValues.IV_NB_TAU.toString());
         cols.add(LogValues.IV_NB_R_AV.toString());
         cols.add(LogValues.IV_NB_R_ABOVE_AV.toString());
+        cols.add("rationality");
+        cols.add("overestimate");
+        cols.add("rationality.infected.neighbor");
 
         // PROPERTIES
         // simulation
@@ -127,6 +130,9 @@ public class ExperimentRoundSummaryWriter extends CsvFileWriter<ExperimentParame
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getTau()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getAverageRiskScore()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().isAboveAverage()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getRationality()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getOverestimate()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getRationalityInfectedNeighbor()));
 
 
         // PROPERTIES

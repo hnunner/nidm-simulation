@@ -65,6 +65,10 @@ public class DecisionsWriter extends CsvFileWriter<ExperimentParameters> {
     protected void initCols() {
         List<String> cols = new LinkedList<String>();
 
+        cols.add("rationality");
+        cols.add("overestimate");
+        cols.add("rationality.infected.neighbor");
+        
         cols.add("session.id");
         cols.add("level.game");
         cols.add("level.node");
@@ -113,6 +117,10 @@ public class DecisionsWriter extends CsvFileWriter<ExperimentParameters> {
     public void writeCurrentData() {
     	
     	List<String> currData = new LinkedList<String>();
+    	
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getRationality()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getOverestimate()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getRationalityInfectedNeighbor()));
     	
     	currData.add(String.valueOf(this.dgData.getSimStats().getSimPerUpc()));
     	currData.add(String.valueOf((this.dgData.getSimStats().getSimPerUpc() * 2) + (this.dgData.getSimStats().getSimIt() - 2)));

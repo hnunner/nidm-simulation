@@ -65,6 +65,10 @@ public class ExperimentParameters extends UtilityModelParameters {
     private String netHomophily;
     private String rScore;
 
+    private double rationality;
+    private double rationalityInfectedNeighbor;
+    private double overestimate;
+
 
     /**
      * @return the b1
@@ -360,6 +364,30 @@ public class ExperimentParameters extends UtilityModelParameters {
 
 	public void setrScore(String rScore) {
 		this.rScore = rScore;
+	}
+
+	public double getRationality() {
+		return rationality;
+	}
+
+	public void setRationality(double rationality) {
+		this.rationality = rationality;
+	}
+
+	public double getOverestimate() {
+		return overestimate;
+	}
+
+	public void setOverestimate(double overestimate) {
+		this.overestimate = overestimate;
+	}
+
+	public double getRationalityInfectedNeighbor() {
+		return rationalityInfectedNeighbor;
+	}
+
+	public void setRationalityInfectedNeighbor(double rationalityInfectedNeighbor) {
+		this.rationalityInfectedNeighbor = rationalityInfectedNeighbor;
 	}
 
 }

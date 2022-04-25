@@ -206,7 +206,8 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
                                 this.dgData.getUtilityModelParams().isConsiderAge(),
                                 Professions.getInstance().getRandomProfession(),
                                 this.dgData.getUtilityModelParams().isConsiderProfession(),
-                                false);
+                                false,
+                                1.0, 1.0);
                     }
                     this.dgData.setAgents(new ArrayList<Agent>(network.getAgents()));
                     logger.debug("theoretic mean degree: " + this.network.getTheoreticAvDegree());

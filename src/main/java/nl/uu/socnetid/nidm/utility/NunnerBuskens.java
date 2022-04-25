@@ -72,7 +72,25 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
      *          the preference shift between open and closed triads
      */
     public NunnerBuskens(double b1, double b2, double alpha, double c1, double c2) {
-        this(b1, b2, alpha, c1, c2, null);
+        this(b1, b2, alpha, c1, c2, null, 1.0);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param b1
+     *          the benefits of direct connections
+     * @param c1
+     *          the costs of direct connections
+     * @param c2
+     *          the quadratic costs of additional direct connections
+     * @param b2
+     *          the weight of benefits for triads
+     * @param alpha
+     *          the preference shift between open and closed triads
+     */
+    public NunnerBuskens(double b1, double b2, double alpha, double c1, double c2, double overestimate) {
+        this(b1, b2, alpha, c1, c2, null, overestimate);
     }
 
     /**
@@ -133,6 +151,26 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
      *          the panel to track GUI parameter changes from
      */
     public NunnerBuskens(double b1, double b2, double alpha, double c1, double c2, NunnerBuskensPanel nbPanel) {
+    	this(b1, b2, alpha, c1, c2, nbPanel, 1.0);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param b1
+     *          the benefits of direct connections
+     * @param c1
+     *          the costs of direct connections
+     * @param c2
+     *          the quadratic costs of additional direct connections
+     * @param b2
+     *          the weight of benefits for triads
+     * @param alpha
+     *          the preference shift between open and closed triads
+     * @param nbPanel
+     *          the panel to track GUI parameter changes from
+     */
+    public NunnerBuskens(double b1, double b2, double alpha, double c1, double c2, NunnerBuskensPanel nbPanel, double overestimate) {
         this.b1 = b1;
         this.b2 = b2;
         this.alpha = alpha;
@@ -142,6 +180,7 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
         if (this.nbPanel != null) {
             this.nbPanel.addParameterChangeListener(this);
         }
+        this.setOverestimate(overestimate);
     }
 
 

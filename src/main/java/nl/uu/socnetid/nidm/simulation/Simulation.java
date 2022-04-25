@@ -298,8 +298,15 @@ public class Simulation implements Runnable {
      * composed of disease and agent dynamics.
      */
     private void computeSingleRound() {
+    	
 
     	this.decWriter.getDgData().getSimStats().setRounds(rounds);
+    	
+//    	logger.info("################# - Round " + rounds + " - #################");
+    	
+        if (!this.network.hasActiveInfection() || (this.network.hasActiveInfection() && !this.epStatic)) {
+            computeAgentDynamics();
+        }
     	
         if (this.network.hasActiveInfection()) {
             computeDiseaseDynamics();
@@ -313,9 +320,6 @@ public class Simulation implements Runnable {
         if (this.activeInfection && !this.network.hasActiveInfection()) {
             this.activeInfection = false;
             notifyInfectionDefeated();
-        }
-        if (!this.network.hasActiveInfection() || (this.network.hasActiveInfection() && !this.epStatic)) {
-            computeAgentDynamics();
         }
 
         // notifications

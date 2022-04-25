@@ -521,7 +521,8 @@ public class NunnerBuskensProfessionsDataGenerator extends AbstractGenerator imp
                     umps.isConsiderAge(),
                     profession,
                     umps.isConsiderProfession(),
-                    currentQuarantined);
+                    currentQuarantined,
+                    1.0, 1.0);
         }
 
         this.avDegreeTheoretic = this.network.getTheoreticAvDegree();
