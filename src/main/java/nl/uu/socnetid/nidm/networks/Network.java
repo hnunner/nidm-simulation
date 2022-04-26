@@ -53,6 +53,7 @@ import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.simulation.Simulation;
 import nl.uu.socnetid.nidm.simulation.SimulationListener;
 import nl.uu.socnetid.nidm.stats.DijkstraShortestPath;
+import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
 import nl.uu.socnetid.nidm.stats.StatsComputer;
 import nl.uu.socnetid.nidm.utility.UtilityFunction;
 
@@ -692,6 +693,26 @@ public class Network extends SingleGraph implements SimulationListener {
         this.changeAttribute(NetworkAttributes.AV_CLUSTERING, this.getAttribute(NetworkAttributes.AV_CLUSTERING),
                 Toolkit.averageClusteringCoefficient(this));
         return (double) this.getAttribute(NetworkAttributes.AV_CLUSTERING);
+    }
+
+    /**
+     * Gets the average proportion of closed vs. open triads.
+     *
+     * @return the average clustering
+     */
+    public double getAvPropTriadsClosed() {
+        
+    	double propClosedTriads = 0.0;
+    	
+        Iterator<Agent> agents = this.getAgentIterator();
+        while (agents.hasNext()) {
+        	Agent agent = agents.next();
+        	
+        	LocalAgentConnectionsStats lacs = StatsComputer.computeLocalAgentConnectionsStats(agent);
+    		propClosedTriads += (lacs.getY() + lacs.getZ()) == 0 ? 0.0 : ((double) lacs.getZ()) / (lacs.getY() + lacs.getZ());
+        }
+        
+        return propClosedTriads / this.getN();
     }
 
     /**

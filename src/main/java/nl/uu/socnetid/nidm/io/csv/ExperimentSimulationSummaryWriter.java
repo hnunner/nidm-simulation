@@ -85,6 +85,7 @@ public class ExperimentSimulationSummaryWriter extends CsvFileWriter<ExperimentP
         cols.add("rationality");
         cols.add("overestimate");
         cols.add("rationality.infected.neighbor");
+        cols.add("c2");
 
         // PRE-EPIDEMIC
         // network
@@ -148,6 +149,7 @@ public class ExperimentSimulationSummaryWriter extends CsvFileWriter<ExperimentP
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getRationality()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getOverestimate()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getRationalityInfectedNeighbor()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getC2()));
 
         // PRE-EPIDEMIC
         // network

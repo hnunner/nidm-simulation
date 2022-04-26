@@ -299,8 +299,9 @@ public class Simulation implements Runnable {
      */
     private void computeSingleRound() {
     	
-
-    	this.decWriter.getDgData().getSimStats().setRounds(rounds);
+    	if (this.decWriter != null) {
+    		this.decWriter.getDgData().getSimStats().setRounds(rounds);
+    	}
     	
 //    	logger.info("################# - Round " + rounds + " - #################");
     	

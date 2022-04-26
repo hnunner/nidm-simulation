@@ -69,6 +69,7 @@ public class NetworkStats {
     private Double avBetweenness = null;     // lazy initialization (very costly operations)
     private Double avCloseness = null;     // lazy initialization (very costly operations)
     private double avClustering;
+    private double avPropTriadsClosed;
     private Double avPathLength = null;     // lazy initialization (very costly operations)
     private double avUtility;
     private double avSocialBenefits;
@@ -126,6 +127,7 @@ public class NetworkStats {
         this.avDegreesByProfession = network.getAvDegreesByProfessions();
         this.degreeSdsByProfession = network.getDegreesSdByProfessions();
         this.avClustering = network.getAvClustering();
+        this.avPropTriadsClosed = network.getAvPropTriadsClosed();
         this.avUtility = network.getAvUtility();
         this.avSocialBenefits = network.getAvSocialBenefits();
         this.avSocialCosts = network.getAvSocialCosts();
@@ -362,7 +364,11 @@ public class NetworkStats {
         this.avClustering = avClustering;
     }
 
-    /**
+    public double getAvPropTriadsClosed() {
+		return avPropTriadsClosed;
+	}
+
+	/**
      * @param simRound
      *          the simulation round to get the average path length for
      * @return the avPathLength

@@ -46,8 +46,6 @@ import nl.uu.socnetid.nidm.data.out.DataGeneratorData;
 import nl.uu.socnetid.nidm.data.out.ExperimentParameters;
 import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
-import nl.uu.socnetid.nidm.io.csv.DecisionsWriter;
-import nl.uu.socnetid.nidm.io.csv.ExperimentAgentDetailsWriter;
 import nl.uu.socnetid.nidm.io.csv.ExperimentRoundSummaryWriter;
 import nl.uu.socnetid.nidm.io.csv.ExperimentSimulationSummaryWriter;
 import nl.uu.socnetid.nidm.io.network.DGSReader;
@@ -102,8 +100,6 @@ public class ExperimentDataGenerator extends AbstractDataGenerator implements Si
     private DataGeneratorData<ExperimentParameters> dgData;
     private ExperimentSimulationSummaryWriter ssWriter;
     private ExperimentRoundSummaryWriter rsWriter;
-    private ExperimentAgentDetailsWriter adWriter;
-    private DecisionsWriter decWriter;
 
 
     /**
@@ -144,15 +140,13 @@ public class ExperimentDataGenerator extends AbstractDataGenerator implements Si
 //        ep.setC2(0.067);		// 6 ties
 //        ep.setC2(0.061538462);		// 6.5 ties
 //        ep.setC2(0.059701493);		// 6.7 ties
-        ep.setC2(0.05714);		// 7ties
+//        ep.setC2(0.05714);		// 7ties
 //        ep.setC2(0.05);		// 8ties
 
         ep.setGamma(0.15);
         ep.setSigma(0.34);
 //        ep.setSigma(5.00);
 
-        ep.setSimsPerParameterCombination(48);
-//        ep.setSimsPerParameterCombination(1000);
 
         this.dgData = new DataGeneratorData<ExperimentParameters>(ep);
     }
@@ -164,8 +158,6 @@ public class ExperimentDataGenerator extends AbstractDataGenerator implements Si
     protected void initWriters() throws IOException {
         this.ssWriter = new ExperimentSimulationSummaryWriter(getExportPath() + "sim-simulation-summary.csv", this.dgData);
         this.rsWriter = new ExperimentRoundSummaryWriter(getExportPath() + "sim-round-summary.csv", this.dgData);
-        this.adWriter = new ExperimentAgentDetailsWriter(getExportPath() + "sim-agent-details.csv", this.dgData);
-        this.decWriter = new DecisionsWriter(getExportPath() + "sim-decisions.csv", this.dgData);
     }
 
 
@@ -179,229 +171,208 @@ public class ExperimentDataGenerator extends AbstractDataGenerator implements Si
         SimulationStats simStats = this.dgData.getSimStats();
 
         // SENSITIVITY ANALYSIS
-        int[] taus = {4};
-        double[] phis = {0.2};
-        double[] psis = {0.5};
-        double[] xis = {0.3};
+        ump.setTau(4);
+        ump.setPhi(0.2);
+        ump.setPsi(0.5);
+        ump.setXi(0.3);
+    	ump.setRationalityInfectedNeighbor(1.0);
 
-        double[] rationalities = {0.47, 0.48, 0.49};
-        double[] overestimates = {7.0, 7.25, 7.50, 7.75, 8.0, 8.25, 8.50, 8.75, 9.0};
-        
-        boolean sameRationalities = false;
-        double[] rationalitiesInfectedNeighbor = {1.00}; 
-        
-        simStats.setUpcs(taus.length *
-                phis.length *
-                psis.length *
-                xis.length);
+        for (int upc = 1; upc <= 4; upc++) {
+	        simStats.setUpc(upc);
+	        
+	        for (int simPerUpc = 1; simPerUpc <= 100; simPerUpc++) {
+		        simStats.setSimPerUpc(simPerUpc);
+		        
+		        switch (upc) {
+		        // unchanged
+		        case 1:
+		        	ump.setRationality(1.0);
+		        	ump.setOverestimate(1.0);
+		        	ump.setC2(0.067);
+		        	break;
+		        	
+		        // random rationality
+		        case 2:
+		        	ump.setRationality(ThreadLocalRandom.current().nextDouble());
+		        	ump.setOverestimate(1.0);
+		        	ump.setC2(0.067);
+		        	break;
 
-        // loop over all possible parameter combinations
+	        	// random overestimate
+		        case 3:
+		        	ump.setRationality(1.0);
+		        	ump.setOverestimate(ThreadLocalRandom.current().nextDouble(1.0, 9.0));
+		        	ump.setC2(0.067);
+		        	break;
 
-        for (int tau : taus) {
-            ump.setTau(tau);
+		        // random c2
+		        case 4:
+		        	ump.setRationality(1.0);
+		        	ump.setOverestimate(1.0);
+		        	ump.setC2(ThreadLocalRandom.current().nextDouble(0.05, 0.07));
+		        	break;
 
-            for (double phi : phis) {
-                ump.setPhi(phi);
-
-                for (double psi : psis) {
-                    ump.setPsi(psi);
-
-                    for (double xi : xis) {
-                        ump.setXi(xi);
-
-                        for (double rationality : rationalities) {
-                            ump.setRationality(rationality);
-                            if (sameRationalities) {
-                            	logger.info(" --- Rationalities same for all disease states. ---");
-                            	rationalitiesInfectedNeighbor[0] = rationality;
-                            }
-
-                            for (double overestimate : overestimates) {
-                                ump.setOverestimate(overestimate);
-
-                                for (double rationalityInfectedNeighbor : rationalitiesInfectedNeighbor) {
-                                    ump.setRationalityInfectedNeighbor(rationalityInfectedNeighbor);
-                                    logger.info("Rationality infected neighbor: " + rationalityInfectedNeighbor);
-
-			                        simStats.incUpc();
-			                        simStats.setSimPerUpc(1);
-			
-			                        List<Double> initialHomophilies = new ArrayList<Double>(ump.getSimsPerParameterCombination());
-			                        
-			                        while (simStats.getSimPerUpc() <= ump.getSimsPerParameterCombination()) {
-			
-			                            // BETWEEN SUBJECT CONDITION: random mixing (omega = 0.0) vs. assoratitive mixing (omega = 0.8)
-			                            ump.setOmega(simStats.getSimPerUpc() % 2 == 0 ? 0.0 : 0.8);
-			
-			                            this.decWriter.getDgData().getUtilityModelParams().setCondMixing(ump.getOmega() == 0.0 ? "1" : "2");
-			
-			                            // CREATE EXPERIMENTAL SESSION WITH SAME SUBJECTS FOR CLUSTERING CONDITIONS
-			                            List<Double> riskScores = new ArrayList<>();
-			                            while (riskScores.size() < ump.getN()) {
-			                                // expected average risk score and standard deviation - taken from Vriens & Buskens (2021) and
-			                                // rescaled to range between 0.0 and 2.0: 19.7/31*2 = 1.27, 6.98/31*2 = 0.45
-//			                                double meanRiskScore = 1.27;
-//											NormalDistribution nd = new NormalDistribution(meanRiskScore, 0.45);
-			                            	
-			                                // expected average risk score and standard deviation - taken from NIDM experiment and
-			                                // rescaled to range between 0.0 and 2.0: 
-			                            	// > mean(d.users$r_score)
-			                            	// [1] 13.03264
-			                            	// > convert_risk_score_from_experiment(13.03264)
-			                            	// [1] 1.223701
-			                            	// > sd(d.users$r_score)
-			                            	//[1] 5.863769
-			                            	// > convert_risk_score_from_experiment(13.03264) - convert_risk_score_from_experiment(5.863769)
-			                            	// [1] -0.4625078
-			                            	// > 1.223701 - (2-1.223701)
-			                            	// [1] 0.447402
-			                            	double meanRiskScore = 1.223701;
-											NormalDistribution nd = new NormalDistribution(meanRiskScore, 0.4625078);
-			                                double riskScore = -1.0;
-			                                while (riskScore > 2.0 || riskScore < 0.447402) {
-			                                    riskScore = nd.sample();
-			                                }
-			                                riskScores.add(riskScore);
-			                            }
-			                            double averageRiskScore = riskScores.stream().mapToDouble(Double::doubleValue).sum() /
-			                                    riskScores.size();
-			                            ump.setAverageRiskScore(averageRiskScore);
-			                            Collections.sort(riskScores);
-			                            ump.setCurrRMin(riskScores.get(0));
-			                            Collections.sort(riskScores, Collections.reverseOrder());
-			                            ump.setCurrRMax(riskScores.get(riskScores.size()-1));
-			
-			                            this.dgData.getSimStats().setSimIt(0);
-			                            // WITHIN SUBJECT CONDITION: high vs. low clustering
-			                            double[] alphas = {0.0, 0.667};
-			                            for (double alpha : alphas) {
-			                                ump.setAlpha(alpha);
-			                                String indexCaseId;
-			                                int[] riskScoreOrder;
-			                                if (alpha == 0.0) {
-			
-			                                    this.decWriter.getDgData().getUtilityModelParams().setCondClustering("A");
-			                                    
-			                                    ump.setInputNetworkFile(
-			                                            getClass().getClassLoader().getResource("low-clustering_experiment.dgs").getPath());
-			                                    indexCaseId = String.valueOf(INDEX_CASE_LC);
-			                                    riskScoreOrder = (
-			                                            ump.getOmega() == 0.0 ? RISK_SCORE_ORDER_LC_RAND : RISK_SCORE_ORDER_LC_ASS);
-			                                } else {
-			                                	
-			                                    this.decWriter.getDgData().getUtilityModelParams().setCondClustering("B");
-			                                	
-			                                    ump.setInputNetworkFile(
-			                                            getClass().getClassLoader().getResource(
-			                                                    "high-clustering_experiment.dgs").getPath());
-			                                    indexCaseId = String.valueOf(INDEX_CASE_HC);
-			                                    riskScoreOrder = (
-			                                            ump.getOmega() == 0.0 ? RISK_SCORE_ORDER_HC_RAND : RISK_SCORE_ORDER_HC_ASS);
-			                                }
-			
-			                                this.dgData.getSimStats().incSimIt();
-			
-			                                // import network
-			                                DGSReader dgsReader = new DGSReader();
-			                                this.network = dgsReader.readNetwork(ump.getInputNetworkFile());
-			                                if (this.network.getN() != ump.getN()) {
-			                                    logger.error("Mismatch between network size  (" + this.network.getN() +
-			                                            ") and intended network size (" + ump.getN() + ")!");
-			                                    return;
-			                                }
-			                                this.network.updateRiskScores(-1.0);
-			                                UtilityFunction uf = new NunnerBuskens(ump.getB1(),
-			                                        ump.getB2(), ump.getAlpha(), ump.getC1(), ump.getC2(), ump.getOverestimate());
-			                                this.network.updateUtility(uf);
-			                                DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR,
-			                                        ump.getTau(), ump.getSigma(), ump.getGamma(), 0);
-			                                this.network.updateDisease(ds);
-			                                this.network.updateAgentSelection(phi, psi, xi);
-			                                
-			                                // assign index case, risk scores, and degree of rationality
-			                                this.indexCase = this.network.getAgent(indexCaseId);
-			                                Collections.sort(riskScores, Collections.reverseOrder());
-			                                for (int i = 0; i < this.network.getN(); i++) {
-			                                    Agent agent = this.network.getAgent(String.valueOf(riskScoreOrder[i]));
-												agent.updateRiskScores(riskScores.get(i));
-												agent.updateDegreeOfRationality(rationality);
-												agent.updateDegreeOfRationalityInfectedNeighbor(rationalityInfectedNeighbor);
-												agent.updateOmega(ump.getOmega());
-												
-												
-												// make proportion of 0.86 agents irrational (trying to have 12+ ties)
-												if (ThreadLocalRandom.current().nextDouble() >= 0.8597222) {
-													agent.updateUtilityFunction(new NunnerBuskens(ump.getB1(),ump.getB2(), ump.getAlpha(), ump.getC1(), 0.02, ump.getOverestimate()));
-												}
-			                                }
-			
-			                                // reset disease
-			                                this.network.resetDiseaseStates();
-			                                this.dgData.getSimStats().resetEpidemicStats();
-			                                this.indexCase.forceInfect(ds);
-			
-			                                // initialize simulation
-			                                this.simulation = new Simulation(network, false);
-			                                this.simulation.addSimulationListener(this);
-			
-			                                // store data before the epidemic
-			                                this.dgData.setAgents(new ArrayList<Agent>(this.network.getAgents()));
-			                                this.dgData.setNetStatsPre(new NetworkStatsPre(this.network, this.simulation.getRounds()));
-			                                HashMap<String, AgentStatsPre> agentStats = new HashMap<String, AgentStatsPre>();
-			                                Iterator<Agent> aIt = this.network.getAgentIterator();
-			                                while (aIt.hasNext()) {
-			                                    Agent agent = aIt.next();
-			                                    agent.setInitialIndexCaseDistance(this.indexCase);
-			                                    agentStats.put(agent.getId(), new AgentStatsPre(agent, this.simulation.getRounds()));
-			                                }
-			                                this.dgData.setAgentStatsPre(agentStats);
-			                                this.dgData.setIndexCaseStats(new AgentStatsPre(this.indexCase, this.simulation.getRounds()));
-			
-			                                this.dgData.getSimStats().setSimStage(SimulationStage.ACTIVE_EPIDEMIC);
-			                                this.dgData.getSimStats().setRoundStartInfection(this.simulation.getRounds());
-			                                
-			                                initialHomophilies.add(this.network.getAssortativityRiskPerception());
-			                                
-			                                // simulate
-			                                this.simulation.simulateUntilEpidemicFinished(decWriter);
-			                                
-			                                
-			                                logger.info("final size: " + network.getRecovered().size());
-			                                
-			
-			                                // save data of last round of post-epidemic stage
-			                                this.dgData.setNetStatsPostDynamic(new NetworkStatsPost(this.network));
-			                                HashMap<String, AgentStatsPost> agentStatsDynamic = new HashMap<String, AgentStatsPost>();
-			                                Iterator<Agent> aItDynamic = this.network.getAgentIterator();
-			                                while (aItDynamic.hasNext()) {
-			                                    Agent agent = aItDynamic.next();
-			                                    agentStatsDynamic.put(agent.getId(), new AgentStatsPost(agent));
-			                                }
-			                                this.dgData.setAgentStatsPostDynamic(agentStatsDynamic);
-			
-			                                // write summary data
-			                                this.ssWriter.writeCurrentData();
-			
-			                                // write agent data
-			                                this.adWriter.writeCurrentData();
-			
-			                                logger.debug("Finished - "
-			                                        + "UPC: " + this.dgData.getSimStats().getUpc() + "/"
-			                                        + this.dgData.getSimStats().getUpcs()
-			                                        + ", simulation: "  + this.dgData.getSimStats().getSimPerUpc() + "/"
-			                                        + this.dgData.getUtilityModelParams().getSimsPerParameterCombination()
-			                                        + ", iteration: " + this.dgData.getSimStats().getSimIt() + "/2");
-			                            }
-			                            simStats.incSimPerUpc();
-			                        }
-
-	                                logger.info("Initial homophily: " + initialHomophilies);
-                                }
-		                    }
-                        }
-                	}
-                }
-            }
+		        default:
+		        	throw new RuntimeException("Unknown UPC: " + upc);
+		        }
+		
+		        List<Double> initialHomophilies = new ArrayList<Double>(ump.getSimsPerParameterCombination());
+		        
+	            for (int simIt = 1; simIt <= 10; simIt++) {
+	            	simStats.setSimIt(simIt);
+			        
+		            // BETWEEN SUBJECT CONDITION: random mixing (omega = 0.0) vs. assoratitive mixing (omega = 0.8)
+		            ump.setOmega(simStats.getSimIt() % 2 == 0 ? 0.0 : 0.8);
+		
+		            // CREATE EXPERIMENTAL SESSION WITH SAME SUBJECTS FOR CLUSTERING CONDITIONS
+		            List<Double> riskScores = new ArrayList<>();
+		            while (riskScores.size() < ump.getN()) {
+		                // expected average risk score and standard deviation - taken from Vriens & Buskens (2021) and
+		                // rescaled to range between 0.0 and 2.0: 19.7/31*2 = 1.27, 6.98/31*2 = 0.45
+		//			                                double meanRiskScore = 1.27;
+		//											NormalDistribution nd = new NormalDistribution(meanRiskScore, 0.45);
+		            	
+		                // expected average risk score and standard deviation - taken from NIDM experiment and
+		                // rescaled to range between 0.0 and 2.0: 
+		            	// > mean(d.users$r_score)
+		            	// [1] 13.03264
+		            	// > convert_risk_score_from_experiment(13.03264)
+		            	// [1] 1.223701
+		            	// > sd(d.users$r_score)
+		            	//[1] 5.863769
+		            	// > convert_risk_score_from_experiment(13.03264) - convert_risk_score_from_experiment(5.863769)
+		            	// [1] -0.4625078
+		            	// > 1.223701 - (2-1.223701)
+		            	// [1] 0.447402
+		            	double meanRiskScore = 1.223701;
+						NormalDistribution nd = new NormalDistribution(meanRiskScore, 0.4625078);
+		                double riskScore = -1.0;
+		                while (riskScore > 2.0 || riskScore < 0.447402) {
+		                    riskScore = nd.sample();
+		                }
+		                riskScores.add(riskScore);
+		            }
+		            double averageRiskScore = riskScores.stream().mapToDouble(Double::doubleValue).sum() /
+		                    riskScores.size();
+		            ump.setAverageRiskScore(averageRiskScore);
+		            Collections.sort(riskScores);
+		            ump.setCurrRMin(riskScores.get(0));
+		            Collections.sort(riskScores, Collections.reverseOrder());
+		            ump.setCurrRMax(riskScores.get(riskScores.size()-1));
+		
+		            // WITHIN SUBJECT CONDITION: high vs. low clustering
+		            double[] alphas = {0.0, 0.667};
+		            for (double alpha : alphas) {
+		                ump.setAlpha(alpha);
+		                String indexCaseId;
+		                int[] riskScoreOrder;
+		                if (alpha == 0.0) {
+		
+		                    ump.setInputNetworkFile(
+		                            getClass().getClassLoader().getResource("low-clustering_experiment.dgs").getPath());
+		                    indexCaseId = String.valueOf(INDEX_CASE_LC);
+		                    riskScoreOrder = (
+		                            ump.getOmega() == 0.0 ? RISK_SCORE_ORDER_LC_RAND : RISK_SCORE_ORDER_LC_ASS);
+		                } else {
+		                	
+		                    ump.setInputNetworkFile(
+		                            getClass().getClassLoader().getResource(
+		                                    "high-clustering_experiment.dgs").getPath());
+		                    indexCaseId = String.valueOf(INDEX_CASE_HC);
+		                    riskScoreOrder = (
+		                            ump.getOmega() == 0.0 ? RISK_SCORE_ORDER_HC_RAND : RISK_SCORE_ORDER_HC_ASS);
+		                }
+		
+		                // import network
+		                DGSReader dgsReader = new DGSReader();
+		                this.network = dgsReader.readNetwork(ump.getInputNetworkFile());
+		                if (this.network.getN() != ump.getN()) {
+		                    logger.error("Mismatch between network size  (" + this.network.getN() +
+		                            ") and intended network size (" + ump.getN() + ")!");
+		                    return;
+		                }
+		                this.network.updateRiskScores(-1.0);
+		                UtilityFunction uf = new NunnerBuskens(ump.getB1(),
+		                        ump.getB2(), ump.getAlpha(), ump.getC1(), ump.getC2(), ump.getOverestimate());
+		                this.network.updateUtility(uf);
+		                DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR,
+		                        ump.getTau(), ump.getSigma(), ump.getGamma(), 0);
+		                this.network.updateDisease(ds);
+		                this.network.updateAgentSelection(ump.getPhi(), ump.getPsi(), ump.getXi());
+		                
+		                // assign index case, risk scores, and degree of rationality
+		                this.indexCase = this.network.getAgent(indexCaseId);
+		                Collections.sort(riskScores, Collections.reverseOrder());
+		                for (int i = 0; i < this.network.getN(); i++) {
+		                    Agent agent = this.network.getAgent(String.valueOf(riskScoreOrder[i]));
+							agent.updateRiskScores(riskScores.get(i));
+							agent.updateDegreeOfRationality(ump.getRationality());
+							agent.updateDegreeOfRationalityInfectedNeighbor(ump.getRationalityInfectedNeighbor());
+							agent.updateOmega(ump.getOmega());
+							
+							
+							// make proportion of 0.86 agents irrational (trying to have 12+ ties)
+							if (ThreadLocalRandom.current().nextDouble() >= 0.8597222) {
+								agent.updateUtilityFunction(new NunnerBuskens(ump.getB1(),ump.getB2(), ump.getAlpha(), ump.getC1(), 0.02, ump.getOverestimate()));
+							}
+		                }
+		
+		                // reset disease
+		                this.network.resetDiseaseStates();
+		                this.dgData.getSimStats().resetEpidemicStats();
+		                this.indexCase.forceInfect(ds);
+		
+		                // initialize simulation
+		                this.simulation = new Simulation(network, false);
+		                this.simulation.addSimulationListener(this);
+		
+		                // store data before the epidemic
+		                this.dgData.setAgents(new ArrayList<Agent>(this.network.getAgents()));
+		                this.dgData.setNetStatsPre(new NetworkStatsPre(this.network, this.simulation.getRounds()));
+		                HashMap<String, AgentStatsPre> agentStats = new HashMap<String, AgentStatsPre>();
+		                Iterator<Agent> aIt = this.network.getAgentIterator();
+		                while (aIt.hasNext()) {
+		                    Agent agent = aIt.next();
+		                    agent.setInitialIndexCaseDistance(this.indexCase);
+		                    agentStats.put(agent.getId(), new AgentStatsPre(agent, this.simulation.getRounds()));
+		                }
+		                this.dgData.setAgentStatsPre(agentStats);
+		                this.dgData.setIndexCaseStats(new AgentStatsPre(this.indexCase, this.simulation.getRounds()));
+		
+		                this.dgData.getSimStats().setSimStage(SimulationStage.ACTIVE_EPIDEMIC);
+		                this.dgData.getSimStats().setRoundStartInfection(this.simulation.getRounds());
+		                
+		                initialHomophilies.add(this.network.getAssortativityRiskPerception());
+		                
+		                // simulate
+		                this.simulation.simulateUntilEpidemicFinished();
+		                
+		                
+		                logger.info("final size: " + network.getRecovered().size());
+		                
+		
+		                // save data of last round of post-epidemic stage
+		                this.dgData.setNetStatsPostDynamic(new NetworkStatsPost(this.network));
+		                HashMap<String, AgentStatsPost> agentStatsDynamic = new HashMap<String, AgentStatsPost>();
+		                Iterator<Agent> aItDynamic = this.network.getAgentIterator();
+		                while (aItDynamic.hasNext()) {
+		                    Agent agent = aItDynamic.next();
+		                    agentStatsDynamic.put(agent.getId(), new AgentStatsPost(agent));
+		                }
+		                this.dgData.setAgentStatsPostDynamic(agentStatsDynamic);
+		
+		                // write summary data
+		                this.ssWriter.writeCurrentData();
+		
+		                logger.debug("Finished - "
+		                        + "UPC: " + this.dgData.getSimStats().getUpc() + "/4"
+		                        + ", simulation: "  + this.dgData.getSimStats().getSimPerUpc() + "/100"
+		                        + ", iteration: " + this.dgData.getSimStats().getSimIt() + "/48");
+		            }
+	            }
+	            
+		        logger.info("Initial homophily: " + initialHomophilies);
+	        }
         }
 
         // finish data generation
@@ -421,13 +392,6 @@ public class ExperimentDataGenerator extends AbstractDataGenerator implements Si
                 this.rsWriter.flush();
                 this.rsWriter.close();
             }
-            if (PropertiesHandler.getInstance().isExportAgentDetails() ||
-                    PropertiesHandler.getInstance().isExportAgentDetailsReduced()) {
-                this.adWriter.flush();
-                this.adWriter.close();
-            }
-            this.decWriter.flush();
-            this.decWriter.close();
         } catch (IOException e) {
             logger.error(e);
         }

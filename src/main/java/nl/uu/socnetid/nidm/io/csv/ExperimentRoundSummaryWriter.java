@@ -82,26 +82,18 @@ public class ExperimentRoundSummaryWriter extends CsvFileWriter<ExperimentParame
         cols.add("rationality");
         cols.add("overestimate");
         cols.add("rationality.infected.neighbor");
+        cols.add("c2");
 
         // PROPERTIES
         // simulation
         cols.add(LogValues.DV_SIM_STAGE.toString());
         // network
         cols.add(LogValues.DV_NET_AV_DEGREE.toString());
-        cols.add(LogValues.DV_NET_AV_CLUSTERING.toString());
-        cols.add(LogValues.DV_NET_AV_PATHLENGTH.toString());
-        cols.add(LogValues.DV_NET_AV_BETWEENNESS.toString());
-        cols.add(LogValues.DV_NET_AV_CLOSENESS.toString());
+        cols.add("prop.triads.closed");
         cols.add(LogValues.DV_NET_ASSORTATIVITY_RISK_PERCEPTION.toString());
         cols.add(LogValues.DV_NET_PERCENTAGE_SUSCEPTIBLE.toString());
         cols.add(LogValues.DV_NET_PERCENTAGE_INFECTED.toString());
         cols.add(LogValues.DV_NET_PERCENTAGE_RECOVERED.toString());
-        // index case
-        cols.add(LogValues.DV_INDEX_DEGREE1.toString());
-        cols.add(LogValues.DV_INDEX_CLUSTERING.toString());
-        cols.add(LogValues.DV_INDEX_BETWEENNESS_NORMALIZED.toString());
-        cols.add(LogValues.DV_INDEX_CLOSENESS.toString());
-        cols.add(LogValues.DV_INDEX_ASSORTATIVITY_RISK_PERCEPTION.toString());
 
         // FILE SYSTEM
         writeLine(cols);
@@ -133,6 +125,7 @@ public class ExperimentRoundSummaryWriter extends CsvFileWriter<ExperimentParame
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getRationality()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getOverestimate()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getRationalityInfectedNeighbor()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getC2()));
 
 
         // PROPERTIES
@@ -140,20 +133,11 @@ public class ExperimentRoundSummaryWriter extends CsvFileWriter<ExperimentParame
         currData.add(String.valueOf(this.dgData.getSimStats().getSimStage()));
         // network
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvDegree()));
-        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvClustering()));
-        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvPathLength(this.dgData.getSimStats().getCurrRound())));
-        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvBetweenness(this.dgData.getSimStats().getCurrRound())));
-        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvCloseness(this.dgData.getSimStats().getCurrRound())));
+        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvPropTriadsClosed()));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAssortativityRiskPerception()));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getSusceptiblePercent()));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getInfectedPercent()));
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getRecoveredPercent()));
-        // index case
-        currData.add(String.valueOf(this.dgData.getIndexCaseStatsCurrent().getDegree1()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStatsCurrent().getClustering()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStatsCurrent().getBetweennessNormalized()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStatsCurrent().getCloseness()));
-        currData.add(String.valueOf(this.dgData.getIndexCaseStatsCurrent().getAssortativityRiskPerception()));
 
         writeLine(currData);
     }

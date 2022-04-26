@@ -1271,6 +1271,11 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     
 
 	private void logDecisionProposeDeny(Agent other) {
+		
+		if (this.decWriter == null) {
+			return;
+		}
+		
 		// ----------------------------------------------------------------------------------------------------------------------------------------
 		// decision data (quick and dirty)
 		ExperimentParameters ump = this.decWriter.getDgData().getUtilityModelParams();
@@ -1307,6 +1312,11 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
 	}
 
 	private void logDecisionProposeAccept(Agent other) {
+		
+		if (this.decWriter == null) {
+			return;
+		}
+		
 		// ----------------------------------------------------------------------------------------------------------------------------------------
 		// decision data (quick and dirty)
 		ExperimentParameters ump = this.decWriter.getDgData().getUtilityModelParams();
@@ -1344,6 +1354,11 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
 	}
 
 	private void logDecisionMaintain(Agent other) {
+		
+		if (this.decWriter == null) {
+			return;
+		}
+		
 		// ----------------------------------------------------------------------------------------------------------------------------------------
 		// decision data (quick and dirty)
 		ExperimentParameters ump = this.decWriter.getDgData().getUtilityModelParams();
@@ -1380,6 +1395,11 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
 	}
 
 	private void logDecisionDisconnect(Agent other) {
+		
+		if (this.decWriter == null) {
+			return;
+		}
+		
 		// ----------------------------------------------------------------------------------------------------------------------------------------
 		// decision data (quick and dirty)
 		ExperimentParameters ump = this.decWriter.getDgData().getUtilityModelParams();
@@ -1471,6 +1491,11 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
     }
 
 	private void logDecisionCreateDeclined(Agent agent, Utility newUtility) {
+		
+		if (this.decWriter == null) {
+			return;
+		}
+		
 		// ----------------------------------------------------------------------------------------------------------------------------------------
         // decision data (quick and dirty)
         ExperimentParameters ump = this.decWriter.getDgData().getUtilityModelParams();
@@ -1507,6 +1532,11 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
 	}
 
 	private void logDecisionCreateAccept(Agent agent, Utility newUtility) {
+		
+		if (this.decWriter == null) {
+			return;
+		}
+		
 		// ----------------------------------------------------------------------------------------------------------------------------------------
 		// decision data (quick and dirty)
 		ExperimentParameters ump = this.decWriter.getDgData().getUtilityModelParams();
