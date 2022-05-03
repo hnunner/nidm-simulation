@@ -59,6 +59,7 @@ public class ExperimentParameters extends UtilityModelParameters {
     private String utilExpAfterDecOppDisease;
     private String utilExpAfterDecOppTotal;
     private String netTies;
+    private String netTiesInf;
     private String netPropTriadsClosed;
     private String netPropTriadsClosedExpAfterDec;
     private String netAvPathLength;
@@ -324,6 +325,14 @@ public class ExperimentParameters extends UtilityModelParameters {
 
 	public void setNetTies(String netTies) {
 		this.netTies = netTies;
+	}
+
+	public String getNetTiesInf() {
+		return netTiesInf;
+	}
+
+	public void setNetTiesInf(String netTiesInf) {
+		this.netTiesInf = netTiesInf;
 	}
 
 	public String getNetPropTriadsClosed() {

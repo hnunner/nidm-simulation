@@ -99,6 +99,7 @@ public class DecisionsWriter extends CsvFileWriter<ExperimentParameters> {
 //        cols.add("util.exp.after.all.total");
         
         cols.add("net.ties");
+        cols.add("net.ties.inf");
         cols.add("net.prop.triads.closed");
         cols.add("net.prop.triads.closed.exp.after.dec");
 //        cols.add("net.prop.triads.closed.exp.after.all");
@@ -146,8 +147,9 @@ public class DecisionsWriter extends CsvFileWriter<ExperimentParameters> {
     	currData.add(this.dgData.getUtilityModelParams().getUtilExpAfterDecOppNetwork());
     	currData.add(this.dgData.getUtilityModelParams().getUtilExpAfterDecOppDisease());
     	currData.add(this.dgData.getUtilityModelParams().getUtilExpAfterDecOppTotal());
-    	
+
     	currData.add(this.dgData.getUtilityModelParams().getNetTies());
+    	currData.add(this.dgData.getUtilityModelParams().getNetTiesInf());
     	currData.add(this.dgData.getUtilityModelParams().getNetPropTriadsClosed());
     	currData.add(this.dgData.getUtilityModelParams().getNetPropTriadsClosedExpAfterDec());
 //    	currData.add(this.dgData.getUtilityModelParams().getNetAvPathLength());

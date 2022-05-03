@@ -345,6 +345,23 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         }
     }
 
+    
+    /**
+     * Gets the agent's degree of infected neighbors.
+     *
+     * @return the agent's degree of infected neighbors
+     */
+    public int getDegreeInf() {
+    	int degreeInf = 0;
+    	Iterator<Agent> neighbors = this.getNeighborNodeIterator();
+    	while (neighbors.hasNext()) {
+    		Agent neighbor = neighbors.next();
+    		if (neighbor.isInfected()) {
+    			degreeInf++;
+    		}
+    	}
+    	return degreeInf;
+    }
 
     /**
      * Gets the agent's utility.
@@ -1301,6 +1318,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
 		ump.setUtilExpAfterDecOppTotal(String.valueOf(
 				this.isInfected() ? utilExpAfterDecOpp.getOverallUtility() : utilExpAfterDecOpp.getSocialBenefits() - utilExpAfterDecOpp.getSocialCosts()));
 		ump.setNetTies(String.valueOf(this.getDegree()));
+		ump.setNetTiesInf(String.valueOf(this.getDegreeInf()));
 		LocalAgentConnectionsStats lacs = StatsComputer.computeLocalAgentConnectionsStats(this);
 		ump.setNetPropTriadsClosed(String.valueOf((lacs.getY() + lacs.getZ()) == 0 ? 0.0 : ((double) lacs.getZ()) / (lacs.getY() + lacs.getZ())));
 		ump.setNetPropTriadsClosedExpAfterDec(String.valueOf((lacs.getY() + lacs.getZ()) == 0 ? 0.0 : ((double) lacs.getZ()) / (lacs.getY() + lacs.getZ())));
@@ -1342,6 +1360,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
 		ump.setUtilExpAfterDecOppTotal(String.valueOf(
 				this.isInfected() ? utilExpAfterDecOpp.getOverallUtility() : utilExpAfterDecOpp.getSocialBenefits() - utilExpAfterDecOpp.getSocialCosts()));
 		ump.setNetTies(String.valueOf(this.getDegree()));
+		ump.setNetTiesInf(String.valueOf(this.getDegreeInf()));
 		LocalAgentConnectionsStats lacs = StatsComputer.computeLocalAgentConnectionsStats(this);
 		ump.setNetPropTriadsClosed(String.valueOf((lacs.getY() + lacs.getZ()) == 0 ? 0.0 : ((double) lacs.getZ()) / (lacs.getY() + lacs.getZ())));
 		lacs = StatsComputer.computeLocalAgentConnectionsStatsWith(this, other);
@@ -1384,6 +1403,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
 		ump.setUtilExpAfterDecOppTotal(String.valueOf(
 				this.isInfected() ? utilExpAfterDecOpp.getOverallUtility() : utilExpAfterDecOpp.getSocialBenefits() - utilExpAfterDecOpp.getSocialCosts()));
 		ump.setNetTies(String.valueOf(this.getDegree()));
+		ump.setNetTiesInf(String.valueOf(this.getDegreeInf()));
 		LocalAgentConnectionsStats lacs = StatsComputer.computeLocalAgentConnectionsStats(this);
 		ump.setNetPropTriadsClosed(String.valueOf((lacs.getY() + lacs.getZ()) == 0 ? 0.0 : ((double) lacs.getZ()) / (lacs.getY() + lacs.getZ())));
 		ump.setNetPropTriadsClosedExpAfterDec(String.valueOf((lacs.getY() + lacs.getZ()) == 0 ? 0.0 : ((double) lacs.getZ()) / (lacs.getY() + lacs.getZ())));
@@ -1425,6 +1445,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
 		ump.setUtilExpAfterDecOppTotal(String.valueOf(
 				this.isInfected() ? utilExpAfterDecOpp.getOverallUtility() : utilExpAfterDecOpp.getSocialBenefits() - utilExpAfterDecOpp.getSocialCosts()));
 		ump.setNetTies(String.valueOf(this.getDegree()));
+		ump.setNetTiesInf(String.valueOf(this.getDegreeInf()));
 		LocalAgentConnectionsStats lacs = StatsComputer.computeLocalAgentConnectionsStats(this);
 		ump.setNetPropTriadsClosed(String.valueOf((lacs.getY() + lacs.getZ()) == 0 ? 0.0 : ((double) lacs.getZ()) / (lacs.getY() + lacs.getZ())));
 		lacs = StatsComputer.computeLocalAgentConnectionsStatsWithout(this, other);
@@ -1521,6 +1542,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
 		ump.setUtilExpAfterDecOppTotal(String.valueOf(
 				this.isInfected() ? utilExpAfterDecOpp.getOverallUtility() : utilExpAfterDecOpp.getSocialBenefits() - utilExpAfterDecOpp.getSocialCosts()));
         ump.setNetTies(String.valueOf(agent.getDegree()));
+		ump.setNetTiesInf(String.valueOf(agent.getDegreeInf()));
         LocalAgentConnectionsStats lacs = StatsComputer.computeLocalAgentConnectionsStats(agent);
         ump.setNetPropTriadsClosed(String.valueOf((lacs.getY() + lacs.getZ()) == 0 ? 0.0 : ((double) lacs.getZ()) / (lacs.getY() + lacs.getZ())));
         ump.setNetPropTriadsClosedExpAfterDec(String.valueOf((lacs.getY() + lacs.getZ()) == 0 ? 0.0 : ((double) lacs.getZ()) / (lacs.getY() + lacs.getZ())));
@@ -1562,6 +1584,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
 		ump.setUtilExpAfterDecOppTotal(String.valueOf(
 				this.isInfected() ? utilExpAfterDecOpp.getOverallUtility() : utilExpAfterDecOpp.getSocialBenefits() - utilExpAfterDecOpp.getSocialCosts()));
 		ump.setNetTies(String.valueOf(agent.getDegree()));
+		ump.setNetTiesInf(String.valueOf(agent.getDegreeInf()));
 		LocalAgentConnectionsStats lacs = StatsComputer.computeLocalAgentConnectionsStats(agent);
 		ump.setNetPropTriadsClosed(String.valueOf((lacs.getY() + lacs.getZ()) == 0 ? 0.0 : ((double) lacs.getZ()) / (lacs.getY() + lacs.getZ())));
 		lacs = StatsComputer.computeLocalAgentConnectionsStatsWith(agent, this);
