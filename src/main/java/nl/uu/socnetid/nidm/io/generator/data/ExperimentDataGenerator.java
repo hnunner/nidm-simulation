@@ -187,7 +187,7 @@ public class ExperimentDataGenerator extends AbstractDataGenerator implements Si
         double[] xis = {0.3};
 
         double[] rationalities = {0.656122};
-        double[] overestimates = {2.2};
+        double[] overestimates = {2.5};
         
         boolean sameRationalities = false;
         double[] rationalitiesInfectedNeighbor = {1.00}; 

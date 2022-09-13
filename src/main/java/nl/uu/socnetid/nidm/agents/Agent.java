@@ -1241,13 +1241,20 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
 	                	logDecisionMaintain(other);
 	                }
             	} else {
-            		if (ThreadLocalRandom.current().nextDouble() <= 0.5) {
-            			logDecisionDisconnect(other);
-	                    disconnectFrom(other);
-	                    satisfied = false;
-            		} else {
-	                	logDecisionMaintain(other);
-            		}
+//            		if (ThreadLocalRandom.current().nextDouble() <= 0.5) {
+//            			logDecisionDisconnect(other);
+//	                    disconnectFrom(other);
+//	                    satisfied = false;
+//            		} else {
+//	                	logDecisionMaintain(other);
+//            		}
+            		if (existingConnectionTooCostly(other)) {
+            			logDecisionMaintain(other);
+	                } else {
+	                	logDecisionDisconnect(other);
+	                	disconnectFrom(other);
+	                	satisfied = false;
+	                }
             	} 
                 
             } else {									// not connected
@@ -1262,12 +1269,19 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
             		}
             	}
             	else {
-            		if (ThreadLocalRandom.current().nextDouble() <= 0.5) {
+//            		if (ThreadLocalRandom.current().nextDouble() <= 0.5) {
+//            			logDecisionProposeAccept(other);
+//            			connectTo(other);
+//            			satisfied = false;
+//            		} else {
+//            			logDecisionProposeDeny(other);
+//            		}
+            		if (newConnectionValuable(other)) {
+            			logDecisionProposeDeny(other);
+            		} else {
             			logDecisionProposeAccept(other);
             			connectTo(other);
             			satisfied = false;
-            		} else {
-            			logDecisionProposeDeny(other);
             		}
             	}
             }
