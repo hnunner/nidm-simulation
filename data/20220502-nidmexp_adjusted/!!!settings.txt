@@ -1,0 +1,49 @@
+
+ep.setC2(0.067);		// 6 ties
+
+double[] rationalities = {0.656122};		
+// 0.656122 of all decisions were maximizing reward 
+// d.dec <- load_experiment_decision_data()  
+// nrow(d.dec %>% filter(util.exp.after.dec.total >= util.exp.after.dec.opp.total)) / nrow(d.dec)
+
+
+boolean sameRationalities = false;
+double[] rationalitiesInfectedNeighbor = {1.00};
+// participants avoid infected more than agents --> no random decision and ...
+double[] overestimates = {2.2};
+// ... best fit for varied overestimation
+
+
+
+
+
+// expected average risk score and standard deviation - taken from NIDM experiment and
+// rescaled to range between 0.0 and 2.0: 
+// > mean(d.users$r_score)
+// [1] 13.03264
+// > convert_risk_score_from_experiment(13.03264)
+// [1] 1.223701
+// > sd(d.users$r_score)
+//[1] 5.863769
+// > convert_risk_score_from_experiment(13.03264) - convert_risk_score_from_experiment(5.863769)
+// [1] -0.4625078
+// > 1.223701 - (2-1.223701)
+// [1] 0.447402
+double meanRiskScore = 1.223701;
+NormalDistribution nd = new NormalDistribution(meanRiskScore, 0.4625078);
+double riskScore = -1.0;
+while (riskScore > 2.0 || riskScore < 0.447402) {
+    riskScore = nd.sample();
+}
+riskScores.add(riskScore);
+
+
+// make proportion of 0.86 agents irrational (trying to have 12+ ties) :: 0.02 == 20 ties :: 0.8597222 == proportion of participants with irr_rounds > 0
+if (ThreadLocalRandom.current().nextDouble() >= 0.8597222) {
+	agent.updateUtilityFunction(new NunnerBuskens(ump.getB1(),ump.getB2(), ump.getAlpha(), ump.getC1(), 0.02, ump.getOverestimate()));
+}
+
+> nrow(d.users %>% dplyr::filter(irr_rounds > 0))
+[1] 404
+> 1- 404 /2880
+[1] 0.8597222

@@ -1,0 +1,17 @@
+ep.setC2(0.067);		// 6 ties
+
+double[] rationalities = {1.0};
+double[] overestimates = {1.0};
+
+boolean sameRationalities = true;
+
+
+// expected average risk score and standard deviation - taken from Vriens & Buskens (2021) and
+// rescaled to range between 0.0 and 2.0: 19.7/31*2 = 1.27, 6.98/31*2 = 0.45
+double meanRiskScore = 1.27;
+NormalDistribution nd = new NormalDistribution(meanRiskScore, 0.45);
+double riskScore = -1.0;
+while (riskScore > 2.0 || riskScore < 0.3) {
+    riskScore = nd.sample();
+}
+riskScores.add(riskScore);
