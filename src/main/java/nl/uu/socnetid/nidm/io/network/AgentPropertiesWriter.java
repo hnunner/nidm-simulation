@@ -39,6 +39,7 @@ import nl.uu.socnetid.nidm.networks.Network;
 public class AgentPropertiesWriter implements NetworkWriter {
 
     private static final String AGENT_COLUMN = "agent";
+    private static final String RISKPERCEPTION_COLUMN = "risk.perception";
     private static final String AGE_COLUMN = "age";
     private static final String PROFESSION_COLUMN = "profession";
 
@@ -67,6 +68,7 @@ public class AgentPropertiesWriter implements NetworkWriter {
         if (agentsIt == null) {
             // first row
             sb.append(AGENT_COLUMN);
+            sb.append(VALUE_SEPERATOR).append(RISKPERCEPTION_COLUMN);
             sb.append(VALUE_SEPERATOR).append(AGE_COLUMN);
             sb.append(VALUE_SEPERATOR).append(PROFESSION_COLUMN);
             sb.append(System.getProperty("line.separator"));
@@ -81,6 +83,7 @@ public class AgentPropertiesWriter implements NetworkWriter {
         while (agentsIt.hasNext() && currNumAgents <= numAgents) {
             Agent currAgent = agentsIt.next();
             sb.append(currAgent.getId());
+            sb.append(VALUE_SEPERATOR).append(currAgent.getRSigma());
             sb.append(VALUE_SEPERATOR).append(currAgent.getAge());
             sb.append(VALUE_SEPERATOR).append(currAgent.getProfession());
             sb.append(System.getProperty("line.separator"));

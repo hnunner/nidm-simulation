@@ -15,12 +15,15 @@ public class NunnerBuskensGene implements Comparable<NunnerBuskensGene> {
 
     private double avC2;
     private double alpha;
+    private double omega;
 
     private final double targetAvDegree;
     private final double targetClustering;
+    private final double targetHomophily;
 
     private double fitnessAvDegree;
     private double fitnessClustering;
+    private double fitnessHomophily;
     private double fitnessOverall;
 
     /**
@@ -40,14 +43,16 @@ public class NunnerBuskensGene implements Comparable<NunnerBuskensGene> {
      *          the average marginal costs
      * @param alpha
      *          the proportion of closed triads
+     * @param omega
+     * 			the omega
      * @param targetAvDegree
      *          the target average degree
      * @param targetClustering
      *          the target clustering
      */
     public NunnerBuskensGene(int generation, String id, String simpleId, String mother, String father,
-            double avC2, double alpha,
-            double targetAvDegree, double targetClustering) {
+            double avC2, double alpha, double omega,
+            double targetAvDegree, double targetClustering, double targetHomophily) {
 
         this.generation = generation;
         this.id = id;
@@ -57,9 +62,11 @@ public class NunnerBuskensGene implements Comparable<NunnerBuskensGene> {
 
         this.avC2 = avC2;
         this.alpha = alpha;
+        this.omega = omega;
 
         this.targetAvDegree = targetAvDegree;
         this.targetClustering = targetClustering;
+        this.targetHomophily = targetHomophily;
     }
 
     /**
@@ -112,6 +119,13 @@ public class NunnerBuskensGene implements Comparable<NunnerBuskensGene> {
     }
 
     /**
+     * @return the omega
+     */
+    public double getOmega() {
+        return omega;
+    }
+
+    /**
      * @return the targetAvDegree
      */
     public double getTargetAvDegree() {
@@ -137,6 +151,13 @@ public class NunnerBuskensGene implements Comparable<NunnerBuskensGene> {
      */
     public double getFitnessClustering() {
         return fitnessClustering;
+    }
+
+    /**
+     * @return the fitnessHomophily
+     */
+    public double getFitnessHomophily() {
+        return fitnessHomophily;
     }
 
     /**
@@ -167,11 +188,16 @@ public class NunnerBuskensGene implements Comparable<NunnerBuskensGene> {
      *          the average degree
      * @param clustering
      *          the clustering
+     * @param homophily
+     * 			the homophily
      * @return the fitness of the gene
      */
-    public double getFitnessOverall(double avDegree, double clustering) {
-        return computePercentageError(avDegree, targetAvDegree) +
-                computePercentageError(clustering, targetClustering);
+    public double getFitnessOverall(double avDegree, double clustering, double homophily) {
+        double fitnessAvDegree = computePercentageError(avDegree, targetAvDegree);
+		double fitnessClustering = computePercentageError(clustering, targetClustering);
+		return fitnessAvDegree + fitnessClustering;
+//		double fitnessHomophily = computePercentageError(homophily, targetHomophily);
+//		return fitnessAvDegree + fitnessClustering + fitnessHomophily;
     }
 
     /**
@@ -181,11 +207,14 @@ public class NunnerBuskensGene implements Comparable<NunnerBuskensGene> {
      *          the average degree
      * @param clustering
      *          the clustering
+     * @param homophily
+     * 			the homophily
      */
-    public void setFitness(double avDegree, double clustering) {
+    public void setFitness(double avDegree, double clustering, double homophily) {
         this.fitnessAvDegree = computePercentageError(avDegree, targetAvDegree);
         this.fitnessClustering = computePercentageError(clustering, targetClustering);
-        this.fitnessOverall = this.fitnessAvDegree + this.fitnessClustering ;
+        this.fitnessHomophily = computePercentageError(homophily, targetHomophily);
+        this.fitnessOverall = this.fitnessAvDegree + this.fitnessClustering; // + fitnessHomophily;
     }
 
 

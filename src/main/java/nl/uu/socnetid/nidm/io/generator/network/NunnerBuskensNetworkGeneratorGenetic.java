@@ -94,6 +94,8 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
             PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getTargetAvDegree();        // controlled by c2
     private static final double TARGET_CLUSTERING =
             PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getTargetClustering();      // controlled by alpha
+    private static final double TARGET_HOMOPHILY =
+    		PropertiesHandler.getInstance().getNunnerBuskensGeneticParameters().getTargetHomophily();      // controlled by omega
 
     // assortativity conditions
     private static final List<AssortativityConditions> ASSORTATIVITY_CONDITIONS = Arrays.asList(AssortativityConditions.AGE);
@@ -166,7 +168,7 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
 
         // TODO move to config file!!!
         // this.dgData.getUtilityModelParams().setAssortativityInitCondition(AssortativityConditions.AGE);
-        this.dgData.getUtilityModelParams().setAssortativityInitCondition(AssortativityConditions.PROFESSION);
+        this.dgData.getUtilityModelParams().setAssortativityInitCondition(AssortativityConditions.RISK_PERCEPTION);
     }
 
     /* (non-Javadoc)
@@ -252,7 +254,56 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
         this.dgData.getUtilityModelParams().setAlpha(targetAlpha);
         logger.info("Network initialization successful.");
         this.dgData.setAgents(new ArrayList<Agent>(this.network.getAgents()));
+    }
 
+    private void initNetworkByRiskPerception(double targetAvC2, double targetAlpha) {
+
+        this.network = new Network("Network of the infectious kind", ASSORTATIVITY_CONDITIONS);
+        DiseaseSpecs ds = new DiseaseSpecs(DiseaseType.SIR, 0, 0, 0, 0);    // not used
+
+        double b1 = this.dgData.getUtilityModelParams().getB1();
+        double b2 = this.dgData.getUtilityModelParams().getB2();
+        double c1 = this.dgData.getUtilityModelParams().getC1();
+
+        double targetAvDegree = NunnerBuskens.getAvDegreeFromC2(b1, c1, targetAvC2);
+
+        while ((Math.round(this.network.getTheoreticAvDegree() * 100.0) / 100.0) != (Math.round(targetAvDegree * 100.0) / 100.0)) {
+//            this.network.clear();
+            this.network = new Network("Network of the infectious kind", ASSORTATIVITY_CONDITIONS);
+            double allC2s = 0;
+            for (int i = 0; i < this.dgData.getUtilityModelParams().getN(); i++) {
+                double rSigma = ThreadLocalRandom.current().nextDouble(0.0, 2.0);
+
+                double c2 = NunnerBuskens.getC2FromAvDegree(b1, c1, targetAvDegree);
+                allC2s += c2;
+
+                // utility
+                UtilityFunction uf = new NunnerBuskens(b1, b2, targetAlpha, c1, c2);
+
+                // add agents
+                this.network.addAgent(
+                        uf,
+                        ds,
+                        rSigma,
+                        rSigma,
+                        this.dgData.getUtilityModelParams().getPhi(),
+                        this.dgData.getUtilityModelParams().getOmega(),
+                        this.dgData.getUtilityModelParams().getPsi(),
+                        this.dgData.getUtilityModelParams().getXi(),
+                        0,
+                        this.dgData.getUtilityModelParams().isConsiderAge(),
+                        Professions.getInstance().getRandomProfession(),
+                        this.dgData.getUtilityModelParams().isConsiderProfession(),
+                        false,
+                        1.0, 1.0);
+            }
+
+            logger.info("Theoretic average degree: " + (Math.round(this.network.getTheoreticAvDegree() * 100.0) / 100.0));
+            this.dgData.getUtilityModelParams().setC2(allC2s/this.dgData.getUtilityModelParams().getN());
+        }
+        this.dgData.getUtilityModelParams().setAlpha(targetAlpha);
+        logger.info("Network initialization successful.");
+        this.dgData.setAgents(new ArrayList<Agent>(this.network.getAgents()));
     }
 
     /* (non-Javadoc)
@@ -287,6 +338,8 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
         AssortativityConditions aic = this.dgData.getUtilityModelParams().getAssortativityInitCondition();
         switch (aic) {
             case RISK_PERCEPTION:
+            	initNetworkByRiskPerception(nbg.getAvC2(), nbg.getAlpha());
+            	break;
             case PROFESSION:
                 logger.warn("Assortativity init condition not implemented: " + aic + ". Using age instead");
                 //$FALL-THROUGH$
@@ -328,6 +381,7 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
                 double alpha = ThreadLocalRandom.current().nextDouble(
                         this.dgData.getUtilityModelParams().getInitialAlphaMin(),
                         this.dgData.getUtilityModelParams().getInitialAlphaMax());
+                double omega = this.dgData.getUtilityModelParams().getTargetHomophily();
 
                 offspring.add(new NunnerBuskensGene(
                         generation,                                                                         // generation
@@ -335,8 +389,8 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
                                 + "(god;god)#" + String.valueOf(progenitor),                                // id
                         generation + "-" + progenitor,                                                      // simpleId
                         "god", "god",                                                                       // parents
-                        avC2, alpha,                                                                        // settings
-                        TARGET_AV_DEGREE, TARGET_CLUSTERING));                                              // targets
+                        avC2, alpha, omega,                                                             // settings
+                        TARGET_AV_DEGREE, TARGET_CLUSTERING, TARGET_HOMOPHILY));                            // targets
             }
 
         } else {
@@ -354,6 +408,7 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
                         // GENE SELECTION
                         double avC2 = ThreadLocalRandom.current().nextBoolean() ? mother.getAvC2() : father.getAvC2();
                         double alpha = ThreadLocalRandom.current().nextBoolean() ? mother.getAlpha() : father.getAlpha();
+                        double omega = ThreadLocalRandom.current().nextBoolean() ? mother.getOmega() : father.getOmega();
 
                         // GENE MUTATION
                         avC2 += new NormalDistribution(0, avC2 * MUTATION_SD).sample();
@@ -366,8 +421,8 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
                                         + "(" + mother.getSimpleId() + ";" + father.getSimpleId() + ")#" + child,   // id
                                 generation + "-" + child,                                                           // simpleId
                                 mother.getId(), father.getId(),                                                     // parents
-                                avC2, alpha,                                                                        // settings
-                                TARGET_AV_DEGREE, TARGET_CLUSTERING));                                              // targets
+                                avC2, alpha, omega,                                                             // settings
+                                TARGET_AV_DEGREE, TARGET_CLUSTERING, TARGET_HOMOPHILY));                            // targets
                     }
                 }
             }
@@ -446,8 +501,11 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
         this.dgData.getSimStats().incCurrRound();
 
         // simulation finished when fitness is not improving anymore
-        this.simFinished = this.fitnessPrevRound < this.currentOffspring.getFitnessOverall(
-                this.network.getAvDegree(simulation.getRounds()), this.network.getAvClustering(simulation.getRounds()));
+        double fitnessOverall = this.currentOffspring.getFitnessOverall(
+                this.network.getAvDegree(simulation.getRounds()),
+                this.network.getAvClustering(simulation.getRounds()),
+                this.network.getAssortativityRiskPerception(simulation.getRounds()));
+		this.simFinished = this.fitnessPrevRound < fitnessOverall;
 
         if (simFinished) {
             // stop simulation
@@ -455,7 +513,9 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
         } else {
             // fitness
             this.currentOffspring.setFitness(
-                    this.network.getAvDegree(simulation.getRounds()), this.network.getAvClustering(simulation.getRounds()));
+                    this.network.getAvDegree(simulation.getRounds()), 
+                    this.network.getAvClustering(simulation.getRounds()),
+                    this.network.getAssortativityRiskPerception(simulation.getRounds()));
             this.fitnessPrevRound = this.currentOffspring.getFitnessOverall();
             // exports only when fitness is still improving
             amendSummary();         // amend summary CSV

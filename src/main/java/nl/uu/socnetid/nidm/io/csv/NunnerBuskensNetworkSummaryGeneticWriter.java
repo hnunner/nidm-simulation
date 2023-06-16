@@ -72,6 +72,7 @@ public class NunnerBuskensNetworkSummaryGeneticWriter extends NetworkSummaryWrit
 
         cols.add(LogValues.IV_NB_GEN_TARGET_AVDEGREE.toString());
         cols.add(LogValues.IV_NB_GEN_TARGET_CLUSTERING.toString());
+        cols.add(LogValues.IV_NB_GEN_TARGET_HOMOPHILY.toString());
 
         cols.add(LogValues.IV_NB_GEN_GENERATION.toString());
         cols.add(LogValues.IV_NB_GEN_SIMPLE_ID.toString());
@@ -80,6 +81,7 @@ public class NunnerBuskensNetworkSummaryGeneticWriter extends NetworkSummaryWrit
 
         cols.add(LogValues.DV_NET_GEN_FITNESS_AV_DEGREE.toString());
         cols.add(LogValues.DV_NET_GEN_FITNESS_CLUSTERING.toString());
+        cols.add(LogValues.DV_NET_GEN_FITNESS_HOMOPHILY.toString());
         cols.add(LogValues.DV_NET_GEN_FITNESS_OVERALL.toString());
 
         return cols;
@@ -102,6 +104,7 @@ public class NunnerBuskensNetworkSummaryGeneticWriter extends NetworkSummaryWrit
 
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getTargetAvDegree()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getTargetClustering()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getTargetHomophily()));
 
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getOffspring().getGeneration()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getOffspring().getSimpleId()));
@@ -110,6 +113,7 @@ public class NunnerBuskensNetworkSummaryGeneticWriter extends NetworkSummaryWrit
 
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getOffspring().getFitnessAvDegree()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getOffspring().getFitnessClustering()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getOffspring().getFitnessHomophily()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getOffspring().getFitnessOverall()));
 
         return currData;

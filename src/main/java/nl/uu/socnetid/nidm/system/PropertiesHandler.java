@@ -468,6 +468,7 @@ public class PropertiesHandler {
         nbgParameters.setN(Integer.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_N.toString())));
         nbgParameters.setTargetAvDegree(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_TARGET_AVDEGREE.toString())));
         nbgParameters.setTargetClustering(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_TARGET_CLUSTERING.toString())));
+        nbgParameters.setTargetHomophily(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_TARGET_HOMOPHILY.toString())));
         nbgParameters.setInitialAlphaMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_INITIAL_ALPHA_MIN.toString())));
         nbgParameters.setInitialAlphaMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_INITIAL_ALPHA_MAX.toString())));
         nbgParameters.setConsiderAge(Boolean.valueOf(configProps.getProperty(LogValues.IV_NB_GEN_CONSIDER_AGE.toString())));

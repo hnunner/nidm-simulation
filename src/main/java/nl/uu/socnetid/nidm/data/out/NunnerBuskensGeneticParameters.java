@@ -54,6 +54,7 @@ public class NunnerBuskensGeneticParameters extends UtilityModelParameters {
     // targets
     private double targetAvDegree;
     private double targetClustering;
+    private double targetHomophily;
 
     // initial settings
     private double initialAlphaMin;
@@ -246,6 +247,13 @@ public class NunnerBuskensGeneticParameters extends UtilityModelParameters {
     }
 
     /**
+     * @param targetHomophily the targetHomophily to set
+     */
+    public void setTargetHomophily(double targetHomophily) {
+        this.targetHomophily = targetHomophily;
+    }
+
+    /**
      * @return the targetAvDegree
      */
     public double getTargetAvDegree() {
@@ -257,6 +265,13 @@ public class NunnerBuskensGeneticParameters extends UtilityModelParameters {
      */
     public double getTargetClustering() {
         return targetClustering;
+    }
+
+    /**
+     * @return the targetHomophily
+     */
+    public double getTargetHomophily() {
+        return targetHomophily;
     }
 
     /**
