@@ -40,6 +40,8 @@ import nl.uu.socnetid.nidm.diseases.DiseaseSpecs;
 import nl.uu.socnetid.nidm.diseases.types.DiseaseType;
 import nl.uu.socnetid.nidm.io.csv.NunnerBuskensNetworkSummaryWriter;
 import nl.uu.socnetid.nidm.io.generator.AbstractGenerator;
+import nl.uu.socnetid.nidm.io.network.AgentPropertiesWriter;
+import nl.uu.socnetid.nidm.io.network.DGSWriter;
 import nl.uu.socnetid.nidm.io.network.EdgeListWriter;
 import nl.uu.socnetid.nidm.io.network.GEXFWriter;
 import nl.uu.socnetid.nidm.io.network.NetworkFileWriter;
@@ -101,6 +103,7 @@ public class NunnerBuskensNetworkGenerator extends AbstractGenerator implements 
     @Override
     protected void initData() {
         this.dgData = new DataGeneratorData<NunnerBuskensParameters>(PropertiesHandler.getInstance().getNunnerBuskensParameters());
+        this.dgData.getUtilityModelParams().setSimsPerParameterCombination(3);
     }
 
     /* (non-Javadoc)
@@ -155,6 +158,7 @@ public class NunnerBuskensNetworkGenerator extends AbstractGenerator implements 
                 alphas.length *
                 c1s.length *
                 c2s.length *
+                omegas.length *
                 Ns.length *
                 iotas.length *
                 phis.length *
@@ -383,6 +387,16 @@ public class NunnerBuskensNetworkGenerator extends AbstractGenerator implements 
         GEXFWriter gexfWriter = new GEXFWriter();
         gexfWriter.writeStaticNetwork(this.network, getExportPath() + this.dgData.getSimStats().getUid() +
                 "-" + nameAppendix + ".gexf");
+        
+        DGSWriter dgsWriter = new DGSWriter();
+        dgsWriter.writeNetwork(this.network, 
+        		getExportPath() + this.dgData.getSimStats().getUid() + "-" + nameAppendix + ".dgs");
+
+        NetworkFileWriter ageWriter = new NetworkFileWriter(getExportPath(),
+        		this.dgData.getSimStats().getUid() + "-" + nameAppendix + ".agnt",
+                new AgentPropertiesWriter(),
+                this.network);
+        ageWriter.write();
     }
 
     /**
@@ -400,7 +414,7 @@ public class NunnerBuskensNetworkGenerator extends AbstractGenerator implements 
 
     @Override
     public void notifyRoundFinished(Simulation simulation) {
-        if (simulation.getRounds() % 1000 == 0) {
+        if (simulation.getRounds() % 1 == 0) {
             exportNetworks("round_" + simulation.getRounds());
             amendSummary();
         }

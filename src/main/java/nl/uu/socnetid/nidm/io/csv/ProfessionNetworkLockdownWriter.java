@@ -74,7 +74,7 @@ public class ProfessionNetworkLockdownWriter extends CsvFileWriter<ProfessionNet
         // varied parameters
         cols.add(LogValues.IV_NB_OMEGA.toString());
         cols.add(LogValues.IV_NB_ALPHA.toString());
-        cols.add(LogValues.IV_NB_PROF_LOCKDOWN_CONDITION.toString());
+//        cols.add(LogValues.IV_NB_PROF_LOCKDOWN_CONDITION.toString());
 
         // network
         cols.add(LogValues.IV_NB_NET_SIZE.toString());
@@ -82,19 +82,19 @@ public class ProfessionNetworkLockdownWriter extends CsvFileWriter<ProfessionNet
         cols.add(LogValues.DV_NET_AV_CLUSTERING.toString());
 //        cols.add(LogValues.DV_NET_AV_BETWEENNESS.toString());
 //        cols.add(LogValues.DV_NET_AV_CLOSENESS.toString());
-        cols.add(LogValues.DV_NET_AV_PATHLENGTH.toString());
-        cols.add(LogValues.DV_NET_ASSORTATIVITY_PROFESSION.toString());
+//        cols.add(LogValues.DV_NET_AV_PATHLENGTH.toString());
+        cols.add(LogValues.DV_NET_ASSORTATIVITY_RISK_PERCEPTION.toString());
 
         // fitness : degree
-        Iterator<String> professionIt = Professions.getInstance().getProfessionsIterator();
-        while (professionIt.hasNext()) {
-            String profession = professionIt.next();
-            cols.add(LogValues.DV_NB_PROF_N + profession.replaceAll("\\s+", "_").toLowerCase());
-            cols.add(LogValues.DV_NB_PROF_DEGREE + profession.replaceAll("\\s+", "_").toLowerCase());
-            cols.add(LogValues.DV_NB_PROF_DEGREE_BELOT + profession.replaceAll("\\s+", "_").toLowerCase());
-            cols.add(LogValues.DV_NB_PROF_DEGREE_SD + profession.replaceAll("\\s+", "_").toLowerCase());
-            cols.add(LogValues.DV_NB_PROF_DEGREE_SD_BELOT + profession.replaceAll("\\s+", "_").toLowerCase());
-        }
+//        Iterator<String> professionIt = Professions.getInstance().getProfessionsIterator();
+//        while (professionIt.hasNext()) {
+//            String profession = professionIt.next();
+//            cols.add(LogValues.DV_NB_PROF_N + profession.replaceAll("\\s+", "_").toLowerCase());
+//            cols.add(LogValues.DV_NB_PROF_DEGREE + profession.replaceAll("\\s+", "_").toLowerCase());
+//            cols.add(LogValues.DV_NB_PROF_DEGREE_BELOT + profession.replaceAll("\\s+", "_").toLowerCase());
+//            cols.add(LogValues.DV_NB_PROF_DEGREE_SD + profession.replaceAll("\\s+", "_").toLowerCase());
+//            cols.add(LogValues.DV_NB_PROF_DEGREE_SD_BELOT + profession.replaceAll("\\s+", "_").toLowerCase());
+//        }
 
         // export file
         cols.add(LogValues.EXPORT_FILENAME.toString());
@@ -116,7 +116,7 @@ public class ProfessionNetworkLockdownWriter extends CsvFileWriter<ProfessionNet
         // varied parameters
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getOmega()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getAlpha()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrLockdownCondition()));
+//        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrLockdownCondition()));
 
         // network
         currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getN()));
@@ -126,37 +126,37 @@ public class ProfessionNetworkLockdownWriter extends CsvFileWriter<ProfessionNet
 //        currData.add("NA");
 //        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvCloseness()));
 //        currData.add("NA");
-        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvPathLength()));
+//        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvPathLength()));
 //        currData.add("NA");
-        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAssortativityProfession()));
+        currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAssortativityRiskPerception()));
 
         // fitness : degree
-        Iterator<String> professionIt = Professions.getInstance().getProfessionsIterator();
-        while (professionIt.hasNext()) {
-            String profession = professionIt.next();
-            // number of agents
-            double nByProfession = this.dgData.getNetStatsCurrent().getNByProfession(profession);
-            currData.add(String.valueOf(nByProfession));
-            if (nByProfession > 0) {
-                // degree by profession
-                currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvDegreeByProfession(profession)));
-                currData.add(this.dgData.getUtilityModelParams().getCurrLockdownCondition().equals(LockdownConditions.PRE) ?
-                        String.valueOf(Professions.getInstance().getDegreePreLockdown(profession)) :
-                            String.valueOf(Professions.getInstance().getDegreeDuringLockdown(profession)));
-                // av degree standard deviation by profession
-                currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getDegreeSdByProfession(profession)));
-                currData.add(this.dgData.getUtilityModelParams().getCurrLockdownCondition().equals(LockdownConditions.PRE) ?
-                        String.valueOf(Professions.getInstance().getDegreeErrorPreLockdown(profession)) :
-                            String.valueOf(Professions.getInstance().getDegreeErrorDuringLockdown(profession)));
-            } else {
-                // degree by profession
-                currData.add("NA");
-                currData.add("NA");
-                // av degree standard deviation by profession
-                currData.add("NA");
-                currData.add("NA");
-            }
-        }
+//        Iterator<String> professionIt = Professions.getInstance().getProfessionsIterator();
+//        while (professionIt.hasNext()) {
+//            String profession = professionIt.next();
+//            // number of agents
+//            double nByProfession = this.dgData.getNetStatsCurrent().getNByProfession(profession);
+//            currData.add(String.valueOf(nByProfession));
+//            if (nByProfession > 0) {
+//                // degree by profession
+//                currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getAvDegreeByProfession(profession)));
+//                currData.add(this.dgData.getUtilityModelParams().getCurrLockdownCondition().equals(LockdownConditions.PRE) ?
+//                        String.valueOf(Professions.getInstance().getDegreePreLockdown(profession)) :
+//                            String.valueOf(Professions.getInstance().getDegreeDuringLockdown(profession)));
+//                // av degree standard deviation by profession
+//                currData.add(String.valueOf(this.dgData.getNetStatsCurrent().getDegreeSdByProfession(profession)));
+//                currData.add(this.dgData.getUtilityModelParams().getCurrLockdownCondition().equals(LockdownConditions.PRE) ?
+//                        String.valueOf(Professions.getInstance().getDegreeErrorPreLockdown(profession)) :
+//                            String.valueOf(Professions.getInstance().getDegreeErrorDuringLockdown(profession)));
+//            } else {
+//                // degree by profession
+//                currData.add("NA");
+//                currData.add("NA");
+//                // av degree standard deviation by profession
+//                currData.add("NA");
+//                currData.add("NA");
+//            }
+//        }
 
         // RELATED IMPORTS / EXPORTS
         currData.add(this.dgData.getExportFileName());

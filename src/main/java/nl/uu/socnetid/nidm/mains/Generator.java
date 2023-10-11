@@ -46,6 +46,7 @@ import nl.uu.socnetid.nidm.io.generator.data.ExperimentDataGenerator;
 import nl.uu.socnetid.nidm.io.generator.data.NunnerBuskensDataGenerator;
 import nl.uu.socnetid.nidm.io.generator.data.NunnerBuskensProfessionsDataGenerator;
 import nl.uu.socnetid.nidm.io.generator.data.ProfessionsNetworkDataGenerator;
+import nl.uu.socnetid.nidm.io.generator.network.FabioNetworkGenerator;
 import nl.uu.socnetid.nidm.io.generator.network.NunnerBuskensNetworkGenerator;
 import nl.uu.socnetid.nidm.io.generator.network.NunnerBuskensNetworkGeneratorGenetic;
 import nl.uu.socnetid.nidm.io.generator.network.NunnerBuskensNetworkGeneratorSimple;
@@ -171,67 +172,64 @@ public class Generator {
         this.initialize();
 
         // invoke data generators
-        AbstractGenerator dataGenerator;
+        AbstractGenerator dataGenerator = null;
         // CIDM (Nunner, Buskens & Kretzschmar, 2019)
         if (PropertiesHandler.getInstance().isGenerateCidmData()) {
             dataGenerator = new CidmDataGenerator(getDataExportPath());
-            dataGenerator.launch();
         }
         // Burger & Buskens (2009)
         if (PropertiesHandler.getInstance().isGenerateBurgerBuskensData()) {
             dataGenerator = new BurgerBuskensDataGenerator(getDataExportPath());
-            dataGenerator.launch();
         }
         // Carayol & Roux (2009)
         if (PropertiesHandler.getInstance().isGenerateCarayolRouxData()) {
             dataGenerator = new CarayolRouxDataGenerator(getDataExportPath());
-            dataGenerator.launch();
         }
         // Nunner & Buskens (2019)
         if (PropertiesHandler.getInstance().isGenerateNunnerBuskensData()) {
             dataGenerator = new NunnerBuskensDataGenerator(getDataExportPath());
-            dataGenerator.launch();
         }
         // Nunner & Buskens (2019)
         if (PropertiesHandler.getInstance().isGenerateNunnerBuskensNetworks()) {
             dataGenerator = new NunnerBuskensNetworkGenerator(getNetworkExportPath());
-            dataGenerator.launch();
         }
         // Nunner & Buskens (2019)
         if (PropertiesHandler.getInstance().isGenerateNunnerBuskensNetworksSimple()) {
             dataGenerator = new NunnerBuskensNetworkGeneratorSimple(getNetworkExportPath());
-            dataGenerator.launch();
         }
         // Nunner & Buskens (2019)
         if (PropertiesHandler.getInstance().isGenerateNunnerBuskensNetworksGenetic()) {
             dataGenerator = new NunnerBuskensNetworkGeneratorGenetic(getNetworkExportPath());
-            dataGenerator.launch();
         }
         // Nunner & Buskens (2019)
         if (PropertiesHandler.getInstance().isGenerateNunnerBuskensNetworksProfessions()) {
 //            dataGenerator = new NunnerBuskensNetworkGeneratorProfessions(getNetworkExportPath());
             dataGenerator = new NunnerBuskensProfessionsDataGenerator(getNetworkExportPath());
-            dataGenerator.launch();
         }
         // Professions
         if (PropertiesHandler.getInstance().isGenerateProfessionNetworksGenetic()) {
             dataGenerator = new ProfessionsNetworkGeneratorGenetic(getNetworkExportPath());
-            dataGenerator.launch();
         }
         // Professions lockdown
         if (PropertiesHandler.getInstance().isGenerateProfessionNetworksLockdown()) {
             dataGenerator = new ProfessionsNetworkLockdownGenerator(getNetworkExportPath());
-            dataGenerator.launch();
         }
         // Professions data
         if (PropertiesHandler.getInstance().isGenerateProfessionNetworksData()) {
             dataGenerator = new ProfessionsNetworkDataGenerator(getNetworkExportPath());
-            dataGenerator.launch();
         }
         // Professions data
         if (PropertiesHandler.getInstance().isGenerateExperimentData()) {
             dataGenerator = new ExperimentDataGenerator(getNetworkExportPath());
-            dataGenerator.launch();
         }
+        // Fabio
+        if (PropertiesHandler.getInstance().isGenerateFabio()) {
+            dataGenerator = new FabioNetworkGenerator(getNetworkExportPath());
+        }
+        
+        if (dataGenerator != null) {
+        	dataGenerator.launch();
+        }
+           
     }
 }

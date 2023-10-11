@@ -113,6 +113,8 @@ public class PropertiesHandler {
     private boolean generateProfessionNetworksAgentStats;
     // experiment data
     private boolean generateExperimentData;
+    // Fabio
+    private boolean generateFabio;
 
     // DATA EXPORT
     // types of data export
@@ -529,6 +531,9 @@ public class PropertiesHandler {
         // experiment data
         generateExperimentData = Boolean.parseBoolean(configProps.getProperty("exp.generate.data"));
 
+        // Fabio
+        generateFabio = Boolean.parseBoolean(configProps.getProperty("generate.fabio"));
+
         // types of data export
         this.exportSummary = Boolean.parseBoolean(configProps.getProperty("export.summary"));
         this.exportSummaryEachRound = Boolean.parseBoolean(configProps.getProperty("export.summary.each.round"));
@@ -858,6 +863,13 @@ public class PropertiesHandler {
      */
     public boolean isGenerateExperimentData() {
         return generateExperimentData;
+    }
+
+    /**
+     * @return the generateFabio
+     */
+    public boolean isGenerateFabio() {
+        return generateFabio;
     }
 
     /**

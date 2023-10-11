@@ -67,19 +67,19 @@ public class DoubleInputVerifier extends InputVerifier {
     public boolean verify(JComponent input) {
         double number;
 
-        // integer
-        try {
-            number = Double.parseDouble(((JTextField)input).getText());
-        } catch (Exception e) {
-            error();
-            return false;
-        }
-
-        // value range validity
-        if ((min != null && Double.compare(number, min) < 0) || (max != null && Double.compare(number, max) > 0)) {
-            error();
-            return false;
-        }
+//        // integer
+//        try {
+//            number = Double.parseDouble(((JTextField)input).getText());
+//        } catch (Exception e) {
+//            error();
+//            return false;
+//        }
+//
+//        // value range validity
+//        if ((min != null && Double.compare(number, min) < 0) || (max != null && Double.compare(number, max) > 0)) {
+//            error();
+//            return false;
+//        }
 
         return true;
     }
