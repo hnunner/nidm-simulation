@@ -186,11 +186,11 @@ public class ExperimentDataGenerator extends AbstractDataGenerator implements Si
         double[] psis = {0.5};
         double[] xis = {0.3};
 
-        double[] rationalities = {0.656122};
+        double[] rationalities = {0.653922};
         double[] overestimates = {2.5};
         
         boolean sameRationalities = false;
-        double[] rationalitiesInfectedNeighbor = {1.00}; 
+        double[] rationalitiesInfectedNeighbor = {0.756075}; 
         
         simStats.setUpcs(taus.length *
                 phis.length *
