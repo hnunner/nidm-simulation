@@ -36,7 +36,7 @@ import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
  * @author Hendrik Nunner
  */
 public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChangeListener {
-
+	
     private static final String B1 = "b1:";
     private static final String B2 = "b2:";
     private static final String C1 = "c1:";
@@ -193,6 +193,19 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
     @Override
     public double getTheoreticDegree() {
         return NunnerBuskens.getAvDegreeFromC2(this.getB1(), this.getC1(), this.getC2());
+    }
+
+    /* (non-Javadoc)
+     * @see nl.uu.socnetid.nidm.utility.UtilityFunction#getDiseaseCosts(
+     * nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats, nl.uu.socnetid.nidm.agents.Agent)
+     */
+    @Override
+    protected double getDiseaseCosts(LocalAgentConnectionsStats lacs, Agent agent) {
+    	// original perceived disease costs (perceived risk of infection * perceived probability to get infected) ...
+    	// ... plus perceived risk through prevalence of the disease 
+    	double perceivedRiskOfInfection = super.getDiseaseCosts(lacs, agent);
+		double perceivedPrevalence = lacs.getN() * (Math.pow(lacs.getDisPrev(), (2 - agent.getRPi())));
+		return perceivedRiskOfInfection + perceivedPrevalence;
     }
 
     /**

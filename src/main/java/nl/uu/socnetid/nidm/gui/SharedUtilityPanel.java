@@ -106,7 +106,7 @@ public abstract class SharedUtilityPanel extends DeactivatablePanel {
         txtSigma.setColumns(10);
         txtSigma.setBounds(245, 361, 50, 20);
         add(txtSigma);
-        txtSigma.setValue(new Double(50));
+        txtSigma.setValue(new Double(2));
         txtSigma.setInputVerifier(SIGMA_VERIFIER);
 
         JLabel lblGamma2 = new JLabel("(γ):");

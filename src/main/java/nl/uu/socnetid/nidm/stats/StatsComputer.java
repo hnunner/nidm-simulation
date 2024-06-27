@@ -490,6 +490,7 @@ public final class StatsComputer {
         int z = 0;
         // network size
         int netSize = agent.getNetwork().getN();
+        double disPrev = (double) agent.getNetwork().getInfected().size() / (double) netSize;
 
         // preparing the list of direct connections
         Collection<Agent> directConnections = agent.getConnections();
@@ -581,7 +582,7 @@ public final class StatsComputer {
 
         directConnections = null;
 
-        return new LocalAgentConnectionsStats(n, nS, nI, nR, nV, m, mS, mI, mR, mV, y, z, netSize);
+        return new LocalAgentConnectionsStats(n, nS, nI, nR, nV, m, mS, mI, mR, mV, y, z, netSize, disPrev);
     }
 
     /**

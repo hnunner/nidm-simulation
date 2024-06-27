@@ -29,6 +29,8 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.io.importer.api.Container;
@@ -42,12 +44,15 @@ import org.openide.util.Lookup;
 
 import nl.uu.socnetid.nidm.networks.AssortativityConditions;
 import nl.uu.socnetid.nidm.networks.Network;
+import nl.uu.socnetid.nidm.utility.NunnerBuskens;
 
 /**
  * @author Hendrik Nunner
  */
 public class NetworkStats {
 
+    private static final Logger logger = LogManager.getLogger(NetworkStats.class);
+	
     private Network network;
 
     // TODO make all initializations lazy
@@ -400,7 +405,7 @@ public class NetworkStats {
                 //Append imported data to GraphAPI
                 importController.process(container, new DefaultProcessor(), workspace);
 
-                System.out.println("Import successfull!!!");
+                logger.info("Import successfull!!!");
 
                 //Get graph model and attribute model of current workspace
                 GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();

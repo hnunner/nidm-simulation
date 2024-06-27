@@ -878,7 +878,7 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
         Iterator<Agent> agentIterator = this.network.getAgentIterator();
         while (agentIterator.hasNext()) {
             Agent agent = agentIterator.next();
-            System.out.println(((NunnerBuskens) agent.getUtilityFunction()).getAlpha());
+//            System.out.println(((NunnerBuskens) agent.getUtilityFunction()).getAlpha());
         }
 
         // initializations

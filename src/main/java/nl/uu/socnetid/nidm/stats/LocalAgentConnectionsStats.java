@@ -43,6 +43,7 @@ public class LocalAgentConnectionsStats {
     private final int y;
     private final int z;
     private final int netSize;
+    private final double disPrev;
 
     /**
      * Constructor.
@@ -73,9 +74,11 @@ public class LocalAgentConnectionsStats {
      *          the amount of closed triads the agent is part of
      * @param netSize
      *          the network size
+     * @param nInfected
+     *          the 
      */
     public LocalAgentConnectionsStats(int n, int nS, int nI, int nR, int nV, int m, int mS, int mI, int mR, int mV,
-            int y, int z, int netSize) {
+            int y, int z, int netSize, double disPrev) {
         this.n = n;
         this.nS = nS;
         this.nI = nI;
@@ -89,6 +92,7 @@ public class LocalAgentConnectionsStats {
         this.y = y;
         this.z = z;
         this.netSize = netSize;
+        this.disPrev = disPrev;
     }
 
 
@@ -182,5 +186,12 @@ public class LocalAgentConnectionsStats {
     public int getmV() {
         return mV;
     }
+
+    /**
+     * @return the disPrev
+     */
+	public double getDisPrev() {
+		return disPrev;
+	}
 
 }
