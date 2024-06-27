@@ -385,6 +385,7 @@ public class ProfessionsNetworkGeneratorGenetic extends AbstractGenerator implem
                         1.0,
                         umps.getPhi(),
                         umps.getOmega(),
+                        umps.isCurrSelective(),
                         umps.getPsi(),
                         umps.getXi(),
                         AgeStructure.getInstance().getRandomAge(),

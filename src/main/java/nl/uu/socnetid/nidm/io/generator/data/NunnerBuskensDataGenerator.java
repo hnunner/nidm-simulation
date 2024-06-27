@@ -188,6 +188,8 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
                 new double[1] : this.dgData.getUtilityModelParams().getPhis();
         double[] omegas = this.dgData.getUtilityModelParams().isOmegaRandom() ?
                 new double[1] : this.dgData.getUtilityModelParams().getOmegas();
+        boolean[] selectives = this.dgData.getUtilityModelParams().isSelectiveRandom() ?
+                new boolean[1] : this.dgData.getUtilityModelParams().getSelectives();
 
         // unique parameter combinations
         this.dgData.getSimStats().setUpcs(
@@ -208,7 +210,8 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
                 Ns.length *
                 iotas.length *
                 phis.length *
-                omegas.length);
+                omegas.length *
+                selectives.length);
 
         // loop over all possible parameter combinations
         for (double b1 : b1s) {
@@ -236,35 +239,37 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
                                                     for (boolean rSigmaRandomHomogeneous : rSigmaRandomHomogeneouses) {
                                                         this.dgData.getUtilityModelParams().setCurrRSigmaRandomHomogeneous(rSigmaRandomHomogeneous);
                                                         for (double rPi : rPis) {
-                                                            this.dgData.getUtilityModelParams().setCurrRPi(rPi);
-                                                            for (boolean rPiRandomHomogeneous : rPiRandomHomogeneouses) {
-                                                                this.dgData.getUtilityModelParams().setCurrRPiRandomHomogeneous(rPiRandomHomogeneous);
-                                                                for (int N : Ns) {
-                                                                    this.dgData.getUtilityModelParams().setCurrN(N);
-                                                                    for (boolean iota : iotas) {
-                                                                        this.dgData.getUtilityModelParams().setCurrIota(iota);
-                                                                        for (double phi : phis) {
-                                                                            this.dgData.getUtilityModelParams().setCurrPhi(phi);
-                                                                            for (double omega : omegas) {
-                                                                                this.dgData.getUtilityModelParams().setCurrOmega(omega);
+                                                        	this.dgData.getUtilityModelParams().setCurrRPi(rPi);
+                                                        	for (boolean rPiRandomHomogeneous : rPiRandomHomogeneouses) {
+                                                        		this.dgData.getUtilityModelParams().setCurrRPiRandomHomogeneous(rPiRandomHomogeneous);
+                                                        		for (int N : Ns) {
+                                                        			this.dgData.getUtilityModelParams().setCurrN(N);
+                                                        			for (boolean iota : iotas) {
+                                                        				this.dgData.getUtilityModelParams().setCurrIota(iota);
+                                                        				for (double phi : phis) {
+                                                        					this.dgData.getUtilityModelParams().setCurrPhi(phi);
+                                                        					for (double omega : omegas) {
+                                                        						this.dgData.getUtilityModelParams().setCurrOmega(omega);
+                                                        						for (boolean selective : selectives) {
+                                                        							this.dgData.getUtilityModelParams().setCurrSelective(selective);
 
-                                                                                this.dgData.getSimStats().incUpc();
+                                                        							this.dgData.getSimStats().incUpc();
+                                                        							// multiple simulations for same parameter combination
+                                                        							this.dgData.getSimStats().setSimPerUpc(1);
+                                                        							while (this.dgData.getSimStats().getSimPerUpc()
+                                                        									<= this.dgData.getUtilityModelParams().
+                                                        									getSimsPerParameterCombination()) {
 
-                                                                                // multiple simulations for same parameter combination
-                                                                                this.dgData.getSimStats().setSimPerUpc(1);
-                                                                                while (this.dgData.getSimStats().getSimPerUpc()
-                                                                                        <= this.dgData.getUtilityModelParams().
-                                                                                        getSimsPerParameterCombination()) {
+                                                        								// simulate
+                                                        								performSingleSimulation();
 
-                                                                                    // simulate
-                                                                                    performSingleSimulation();
-
-                                                                                    this.dgData.getSimStats().incSimPerUpc();
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
+                                                        								this.dgData.getSimStats().incSimPerUpc();
+                                                        							}
+                                                        						}
+                                                        					}
+                                                        				}
+                                                        			}
+                                                        		}
                                                             }
                                                         }
                                                     }
@@ -410,6 +415,10 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
                     this.dgData.getUtilityModelParams().getOmegaRandomMin(),
                     this.dgData.getUtilityModelParams().getOmegaRandomMax()));
         }
+        // selective
+        if (this.dgData.getUtilityModelParams().isSelectiveRandom()) {
+            this.dgData.getUtilityModelParams().setCurrSelective(ThreadLocalRandom.current().nextBoolean());
+        }
 
         // create utility
         UtilityFunction uf = new NunnerBuskens(
@@ -462,6 +471,7 @@ public class NunnerBuskensDataGenerator extends AbstractDataGenerator implements
                         rPi,
                         this.dgData.getUtilityModelParams().getCurrPhi(),
                         this.dgData.getUtilityModelParams().getCurrOmega(),
+                        this.dgData.getUtilityModelParams().isCurrSelective(),
                         this.dgData.getUtilityModelParams().getCurrPsi(),
                         this.dgData.getUtilityModelParams().getCurrXi(),
                         // TODO make age optional

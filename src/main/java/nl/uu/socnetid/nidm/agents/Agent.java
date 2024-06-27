@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -106,6 +107,8 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      *          the proportion of ties at distance 2 to evaluate per round
      * @param omega
      *          the share of peers to select assortatively
+     * @param selective
+     *          whether the agent chooses similar agents during an outbreak
      * @param age
      *          the age of the agent
      * @param considerAge
@@ -118,7 +121,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      *          whether the agent is quarantined or not
      */
     public void initAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs,
-            Double riskFactorSigma, Double riskFactorPi, Double phi, Double psi, Double xi, Double omega,
+            Double riskFactorSigma, Double riskFactorPi, Double phi, Double psi, Double xi, Double omega, boolean selective,
             Integer age, boolean considerAge, String profession, boolean considerProfession, boolean quarantined) {
         this.addAttribute(AgentAttributes.UTILITY_FUNCTION, utilityFunction);
         this.addAttribute(AgentAttributes.DISEASE_SPECS, diseaseSpecs);
@@ -135,6 +138,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         this.addAttribute(AgentAttributes.PSI, psi);
         this.addAttribute(AgentAttributes.XI, xi);
         this.addAttribute(AgentAttributes.OMEGA, omega);
+        this.addAttribute(AgentAttributes.SELECTIVE, false);
         this.addAttribute(AgentAttributes.SATISFIED, false);
         this.addAttribute(AgentAttributes.CONNECTION_STATS, new AgentConnectionStats());
 
@@ -496,6 +500,15 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      */
     public double getOmega() {
         return (double) this.getAttribute(AgentAttributes.OMEGA);
+    }
+
+    /**
+     * Gets whether the agent is selectively choosing similar agents during an outbreak.
+     *
+     * @return true, if the agent selectively chooses similar agents during an outbreak, false otherwise
+     */
+    public boolean isSelective() {
+        return (boolean) this.getAttribute(AgentAttributes.SELECTIVE);
     }
 
     /**
@@ -1041,19 +1054,62 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         Set<Agent> agentsProcessed = new HashSet<Agent>(decisions);
         // distance 1
         List<Agent> distance1AgentsAssorted = new ArrayList<Agent>(this.getConnections());
-        sortByAssortativityConditions(distance1AgentsAssorted);
+        sortByAssortativityConditions(distance1AgentsAssorted, false);
         List<Agent> distance1AgentsShuffled = new ArrayList<Agent>(this.getConnections());
         Collections.shuffle(distance1AgentsShuffled);
+       
         // distance 2
         List<Agent> distance2AgentsAssorted = new ArrayList<Agent>(this.getConnectionsAtDistance2());
-        sortByAssortativityConditions(distance2AgentsAssorted);
+        sortByAssortativityConditions(distance2AgentsAssorted, true);
         List<Agent> distance2AgentsShuffled = new ArrayList<Agent>(this.getConnectionsAtDistance2());
         Collections.shuffle(distance2AgentsShuffled);
-        // any agents
+        
+        // all other agents
         List<Agent> allAgentsAssorted = new ArrayList<Agent>(this.getNetwork().getAgents());
-        sortByAssortativityConditions(allAgentsAssorted);
+        allAgentsAssorted.removeAll(distance1AgentsAssorted);
+        allAgentsAssorted.removeAll(distance2AgentsAssorted);
+        sortByAssortativityConditions(allAgentsAssorted, true);
         List<Agent> allAgentsShuffled = new ArrayList<Agent>(this.getNetwork().getAgents());
         Collections.shuffle(allAgentsShuffled);
+        allAgentsShuffled.removeAll(distance1AgentsShuffled);
+        allAgentsAssorted.removeAll(distance2AgentsShuffled);
+        
+        
+        
+        
+        
+        if (this.getId().equals("1")) {
+        	double scale = Math.pow(10,  4);
+        	Iterator<Agent> agents = distance1AgentsAssorted.iterator();
+        	logger.info(":::: DISTANCE 1 CONNECTIONS ::::");
+        	while (agents.hasNext()) {
+        		Agent other = agents.next();
+        		logger.info("my r: " + (Math.round(this.getRPi() * scale) / scale) + 
+        				", \tagent " + other.getId() + "'s r: \t" + (Math.round(other.getRPi() * scale) / scale) + 
+        				",  \tdiff: \t" + (Math.round(Math.abs(this.getRPi() - other.getRPi()) * scale) / scale));
+        	}
+        	agents = distance2AgentsAssorted.iterator();
+        	logger.info(":::: DISTANCE 2 CONNECTIONS ::::");
+        	while (agents.hasNext()) {
+        		Agent other = agents.next();
+        		logger.info("my r: " + (Math.round(this.getRPi() * scale) / scale) + 
+        				", \tagent " + other.getId() + "'s r: \t" + (Math.round(other.getRPi() * scale) / scale) + 
+        				",  \tdiff: \t " + (Math.round(Math.abs(this.getRPi() - other.getRPi()) * scale) / scale));
+        	}
+        	agents = allAgentsAssorted.iterator();
+        	logger.info(":::: ALL OTHERS ::::");
+        	while (agents.hasNext()) {
+        		Agent other = agents.next();
+        		logger.info("my r: " + (Math.round(this.getRPi() * scale) / scale) + 
+        				", \tagent " + other.getId() + "'s r: \t" + (Math.round(other.getRPi() * scale) / scale) + ", diff: " +  
+        				",  \tdiff: \t" + (Math.round(Math.abs(this.getRPi() - other.getRPi()) * scale) / scale));
+        	}
+        }
+        
+        
+        
+        
+        
 
         while (agentsProcessed.size() < decisions) {
 
@@ -1069,7 +1125,16 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
             // creating a base list of agents to draw an agent from
             Agent other = null;
             double randPsi = ThreadLocalRandom.current().nextDouble();
-            double randOmega = ThreadLocalRandom.current().nextDouble();
+            
+            
+            // double randOmega = ThreadLocalRandom.current().nextDouble();
+            // CHANGE: do not consider homophily towards risk perception during network formation --> randomly mixed networks
+            double randOmega =  1.0;
+    		// during an outbreak ... 
+            if (this.getNetwork().hasActiveInfection() && this.isSelective()) {
+            	randOmega = 0.0;
+            }
+            
             HashSet<Agent> removals = new HashSet<Agent>(agentsProcessed);
             removals.add(this);
             List<Agent> drawBase = null;
@@ -1332,6 +1397,18 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
      *          the list of agents to sort
      */
     public void sortByAssortativityConditions(List<Agent> agents) {
+    	this.sortByAssortativityConditions(agents, true);
+    }
+
+    /**
+     * Sorts the given list of agents by differences of assortativity conditions.
+     *
+     * @param agents
+     *          the list of agents to sort
+     * @param mostSimilarFirst
+     *          whether the list should start with the most similar (true) or most different (false) agent 
+     */
+    public void sortByAssortativityConditions(List<Agent> agents, boolean mostSimilarFirst) {
 
         // struct used to create order depending on order of assortativity conditions
         // first level: list per assortativity condition
@@ -1357,11 +1434,30 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         // order list of agents according to assortativity order maps
         TreeMap<Double, List<Agent>> map = diffList.get(0);
         int index = 0;
-        for (Map.Entry<Double, List<Agent>> entry : map.entrySet()) {
+        
+        Set<Entry<Double, List<Agent>>> entrySet = map.entrySet();
+        if (!mostSimilarFirst) {
+        	entrySet = map.descendingMap().entrySet();
+        }
+        
+		for (Map.Entry<Double, List<Agent>> entry : entrySet) {
             List<Agent> list = map.get(entry.getKey());
+            
+            
             for (int i = 0; i < list.size(); i++) {
-                    agents.set(index++, list.get(i));
+                agents.set(index++, list.get(i));
             }
+            
+            
+//            if (mostSimilarFirst) {
+//                for (int i = 0; i < list.size(); i++) {
+//                    agents.set(index++, list.get(i));
+//                }
+//            } else {
+//                for (int i = list.size() - 1; i >= 0; i--) {
+//                    agents.set(index++, list.get(i));
+//                }
+//            }
         }
     }
 

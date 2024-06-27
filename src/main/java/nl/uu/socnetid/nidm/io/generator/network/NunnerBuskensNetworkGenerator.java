@@ -301,6 +301,7 @@ public class NunnerBuskensNetworkGenerator extends AbstractGenerator implements 
                     1.0,
                     this.dgData.getUtilityModelParams().getCurrPhi(),
                     0.0,
+                    this.dgData.getUtilityModelParams().isCurrSelective(),
                     this.dgData.getUtilityModelParams().getCurrPsi(),
                     this.dgData.getUtilityModelParams().getXi(),
                     // TODO make age optional

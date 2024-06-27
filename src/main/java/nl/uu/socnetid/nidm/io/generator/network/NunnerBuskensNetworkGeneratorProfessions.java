@@ -254,6 +254,7 @@ public class NunnerBuskensNetworkGeneratorProfessions extends AbstractGenerator 
                     1.0,
                     umps.getPhi(),
                     umps.getOmega(),
+                    umps.isCurrSelective(),
                     umps.getPsi(),
                     umps.getXi(),
                     AgeStructure.getInstance().getRandomAge(),

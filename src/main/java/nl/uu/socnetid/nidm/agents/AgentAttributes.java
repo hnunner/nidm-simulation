@@ -44,6 +44,7 @@ public enum AgentAttributes {
     XI("xi"),
     OMEGA("omega"),
     OMEGA_SHUFFLE("omega.shuffle"),
+    SELECTIVE("selective"),
     SATISFIED("satisfied"),
     CONNECTION_STATS("connection.stats"),
     AGE("age"),

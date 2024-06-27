@@ -74,6 +74,8 @@ public class Network extends SingleGraph implements SimulationListener {
     private static final double STANDARD_XI = 0.25;
     // standard share to select assortatively
     private static final double STANDARD_OMEGA = 0.0;
+    // standard for agents being selective
+    private static final boolean STANDARD_SELECTIVE = false;
     // standard shuffling of assortatively selected co-agents
     private static final List<AssortativityConditions> STANDARD_ACS = Arrays.asList(AssortativityConditions.RISK_PERCEPTION);
     // stability
@@ -224,7 +226,7 @@ public class Network extends SingleGraph implements SimulationListener {
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs) {
         // TODO clean up addAgent methods -- too many special cases!!!
         return this.addAgent(utilityFunction, diseaseSpecs, RISK_FACTOR_NEUTRAL, RISK_FACTOR_NEUTRAL, STANDARD_PHI,
-                STANDARD_OMEGA, STANDARD_PSI, STANDARD_XI, AgeStructure.getInstance().getRandomAge(), false, "NA", false, false);
+                STANDARD_OMEGA, STANDARD_SELECTIVE, STANDARD_PSI, STANDARD_XI, AgeStructure.getInstance().getRandomAge(), false, "NA", false, false);
     }
 
     /**
@@ -248,7 +250,7 @@ public class Network extends SingleGraph implements SimulationListener {
      */
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
             double omega) {
-        return this.addAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, omega, STANDARD_PSI,
+        return this.addAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, omega, STANDARD_SELECTIVE, STANDARD_PSI,
                 STANDARD_XI, AgeStructure.getInstance().getRandomAge(), false, "NA", false, false);
     }
 
@@ -269,6 +271,8 @@ public class Network extends SingleGraph implements SimulationListener {
      *          the share of peers an agent evaluates per round
      * @param omega
      *          the share of peers to select assortatively
+     * @param selective
+     *          whether the agent chooses similar agents during an outbreak
      * @param psi
      *          the proportion of direct ties an agent evaluates per round
      * @param xi
@@ -286,12 +290,12 @@ public class Network extends SingleGraph implements SimulationListener {
      * @return the newly added agent.
      */
     public Agent addAgent(UtilityFunction utilityFunction, DiseaseSpecs diseaseSpecs, double rSigma, double rPi, double phi,
-            double omega, double psi, double xi, int age, boolean considerAge, String profession, boolean considerProfession,
+            double omega, boolean selective, double psi, double xi, int age, boolean considerAge, String profession, boolean considerProfession,
             boolean quarantined) {
         Agent agent = this.addNode(String.valueOf(this.getNodeCount() + 1));
 
         // age randomly drawn from /resources/age-dist.csv
-        agent.initAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, psi, xi, omega, age, considerAge,
+        agent.initAgent(utilityFunction, diseaseSpecs, rSigma, rPi, phi, psi, xi, omega, selective, age, considerAge,
                 profession, considerProfession, quarantined);
         notifyAgentAdded(agent);
 

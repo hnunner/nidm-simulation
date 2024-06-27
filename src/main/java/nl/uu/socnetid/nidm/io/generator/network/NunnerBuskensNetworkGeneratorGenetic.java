@@ -236,6 +236,7 @@ public class NunnerBuskensNetworkGeneratorGenetic extends AbstractGenerator impl
                         1.0,
                         this.dgData.getUtilityModelParams().getPhi(),
                         this.dgData.getUtilityModelParams().getOmega(),
+                        this.dgData.getUtilityModelParams().isCurrSelective(),
                         this.dgData.getUtilityModelParams().getPsi(),
                         this.dgData.getUtilityModelParams().getXi(),
                         age,

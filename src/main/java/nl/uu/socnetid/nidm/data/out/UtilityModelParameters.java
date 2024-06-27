@@ -70,6 +70,10 @@ public abstract class UtilityModelParameters {
     private double omegaRandomMax;
     private double[] omegas;
     private double currOmega;
+    // selective - whether the agent chooses similar agents during an outbreak
+    private boolean selectiveRandom;
+    private boolean[] selectives;
+    private boolean currSelective;
     // assortativity
     private AssortativityConditions aic;            // init condition
     private List<AssortativityConditions> acs;      // earlier elements have higher priority
@@ -612,7 +616,31 @@ public abstract class UtilityModelParameters {
         this.currOmega = omega;
     }
 
-    /**
+    public boolean isSelectiveRandom() {
+		return selectiveRandom;
+	}
+
+	public void setSelectiveRandom(boolean selectiveRandom) {
+		this.selectiveRandom = selectiveRandom;
+	}
+
+	public boolean[] getSelectives() {
+		return selectives;
+	}
+
+	public void setSelectives(boolean[] selectives) {
+		this.selectives = selectives;
+	}
+
+	public boolean isCurrSelective() {
+		return currSelective;
+	}
+
+	public void setCurrSelective(boolean currSelective) {
+		this.currSelective = currSelective;
+	}
+
+	/**
      * @return the sigmaRandom
      */
     public boolean isSigmaRandom() {

@@ -200,6 +200,7 @@ public class NunnerBuskensNetworkGeneratorSimple extends AbstractGenerator imple
                                 1.0,
                                 this.dgData.getUtilityModelParams().getCurrPhi(),
                                 this.dgData.getUtilityModelParams().getCurrOmega(),
+                                this.dgData.getUtilityModelParams().isCurrSelective(),
                                 this.dgData.getUtilityModelParams().getCurrPsi(),
                                 this.dgData.getUtilityModelParams().getXi(),
                                 AgeStructure.getInstance().getRandomAge(),
