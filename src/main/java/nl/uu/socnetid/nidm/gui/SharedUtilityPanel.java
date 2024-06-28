@@ -199,7 +199,7 @@ public abstract class SharedUtilityPanel extends DeactivatablePanel {
         txtPhi.setColumns(10);
         txtPhi.setBounds(245, 564, 50, 20);
         add(txtPhi);
-        txtPhi.setValue(new Double(0.4));
+        txtPhi.setValue(new Double(0.2));
         txtPhi.setInputVerifier(PERCENT_VERIFIER);
 
         JSeparator separator_5 = new JSeparator(SwingConstants.HORIZONTAL);

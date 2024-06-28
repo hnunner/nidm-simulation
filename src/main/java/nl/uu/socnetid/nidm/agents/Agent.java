@@ -1074,43 +1074,6 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         allAgentsShuffled.removeAll(distance1AgentsShuffled);
         allAgentsAssorted.removeAll(distance2AgentsShuffled);
         
-        
-        
-        
-        
-        if (this.getId().equals("1")) {
-        	double scale = Math.pow(10,  4);
-        	Iterator<Agent> agents = distance1AgentsAssorted.iterator();
-        	logger.info(":::: DISTANCE 1 CONNECTIONS ::::");
-        	while (agents.hasNext()) {
-        		Agent other = agents.next();
-        		logger.info("my r: " + (Math.round(this.getRPi() * scale) / scale) + 
-        				", \tagent " + other.getId() + "'s r: \t" + (Math.round(other.getRPi() * scale) / scale) + 
-        				",  \tdiff: \t" + (Math.round(Math.abs(this.getRPi() - other.getRPi()) * scale) / scale));
-        	}
-        	agents = distance2AgentsAssorted.iterator();
-        	logger.info(":::: DISTANCE 2 CONNECTIONS ::::");
-        	while (agents.hasNext()) {
-        		Agent other = agents.next();
-        		logger.info("my r: " + (Math.round(this.getRPi() * scale) / scale) + 
-        				", \tagent " + other.getId() + "'s r: \t" + (Math.round(other.getRPi() * scale) / scale) + 
-        				",  \tdiff: \t " + (Math.round(Math.abs(this.getRPi() - other.getRPi()) * scale) / scale));
-        	}
-        	agents = allAgentsAssorted.iterator();
-        	logger.info(":::: ALL OTHERS ::::");
-        	while (agents.hasNext()) {
-        		Agent other = agents.next();
-        		logger.info("my r: " + (Math.round(this.getRPi() * scale) / scale) + 
-        				", \tagent " + other.getId() + "'s r: \t" + (Math.round(other.getRPi() * scale) / scale) + ", diff: " +  
-        				",  \tdiff: \t" + (Math.round(Math.abs(this.getRPi() - other.getRPi()) * scale) / scale));
-        	}
-        }
-        
-        
-        
-        
-        
-
         while (agentsProcessed.size() < decisions) {
 
             // some delay before processing of each other agent (e.g., for animation processes)

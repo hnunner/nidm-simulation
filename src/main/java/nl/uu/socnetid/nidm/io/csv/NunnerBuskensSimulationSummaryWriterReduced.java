@@ -184,33 +184,39 @@ public class NunnerBuskensSimulationSummaryWriterReduced extends CsvFileWriter<N
 
         // POST-EDIDEMIC
         // static
-        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getRecoveredPercent()));
-        currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getInfectedPercent()));
-        currData.add(String.valueOf(this.dgData.getSimStats().getEpidemicDurationStatic()));
-        currData.add(String.valueOf(this.dgData.getSimStats().getEpidemicPeakStatic()));
-        currData.add(String.valueOf(this.dgData.getSimStats().getEpidemicPeakSizeStatic()));
+        if (this.dgData.getNetStatsPostStatic() == null) {
+        	for (int i = 0; i < 11; i++) {
+        		currData.add("NA");
+        	}
+        } else {
+        	currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getRecoveredPercent()));
+        	currData.add(String.valueOf(this.dgData.getNetStatsPostStatic().getInfectedPercent()));
+        	currData.add(String.valueOf(this.dgData.getSimStats().getEpidemicDurationStatic()));
+        	currData.add(String.valueOf(this.dgData.getSimStats().getEpidemicPeakStatic()));
+        	currData.add(String.valueOf(this.dgData.getSimStats().getEpidemicPeakSizeStatic()));
 
-        int brokenTiesActiveEpidemic = 0;
-        int brokenTiesPassiveEpidemic = 0;
-        int acceptedRequestsOutEpidemic = 0;
-        int declinedRequestsOutEpidemic  = 0;
-        int acceptedRequestsInEpidemic  = 0;
-        int declinedRequestsInEpidemic  = 0;
-        for (Entry<String, AgentStatsPost> entry:this.dgData.getAgentStatsPostStatic().entrySet()) {
-            AgentStatsPost agentStats = entry.getValue();
-            brokenTiesActiveEpidemic += agentStats.getBrokenTiesActiveEpidemic();
-            brokenTiesPassiveEpidemic += agentStats.getBrokenTiesPassiveEpidemic();
-            acceptedRequestsOutEpidemic += agentStats.getAcceptedRequestsOutEpidemic();
-            declinedRequestsOutEpidemic += agentStats.getDeclinedRequestsOutEpidemic();
-            acceptedRequestsInEpidemic += agentStats.getAcceptedRequestsInEpidemic();
-            declinedRequestsInEpidemic += agentStats.getDeclinedRequestsInEpidemic();
+        	int brokenTiesActiveEpidemic = 0;
+        	int brokenTiesPassiveEpidemic = 0;
+        	int acceptedRequestsOutEpidemic = 0;
+        	int declinedRequestsOutEpidemic  = 0;
+        	int acceptedRequestsInEpidemic  = 0;
+        	int declinedRequestsInEpidemic  = 0;
+        	for (Entry<String, AgentStatsPost> entry:this.dgData.getAgentStatsPostStatic().entrySet()) {
+        		AgentStatsPost agentStats = entry.getValue();
+        		brokenTiesActiveEpidemic += agentStats.getBrokenTiesActiveEpidemic();
+        		brokenTiesPassiveEpidemic += agentStats.getBrokenTiesPassiveEpidemic();
+        		acceptedRequestsOutEpidemic += agentStats.getAcceptedRequestsOutEpidemic();
+        		declinedRequestsOutEpidemic += agentStats.getDeclinedRequestsOutEpidemic();
+        		acceptedRequestsInEpidemic += agentStats.getAcceptedRequestsInEpidemic();
+        		declinedRequestsInEpidemic += agentStats.getDeclinedRequestsInEpidemic();
+        	}
+        	currData.add(String.valueOf(brokenTiesActiveEpidemic));
+        	currData.add(String.valueOf(brokenTiesPassiveEpidemic));
+        	currData.add(String.valueOf(acceptedRequestsOutEpidemic));
+        	currData.add(String.valueOf(declinedRequestsOutEpidemic));
+        	currData.add(String.valueOf(acceptedRequestsInEpidemic));
+        	currData.add(String.valueOf(declinedRequestsInEpidemic));
         }
-        currData.add(String.valueOf(brokenTiesActiveEpidemic));
-        currData.add(String.valueOf(brokenTiesPassiveEpidemic));
-        currData.add(String.valueOf(acceptedRequestsOutEpidemic));
-        currData.add(String.valueOf(declinedRequestsOutEpidemic));
-        currData.add(String.valueOf(acceptedRequestsInEpidemic));
-        currData.add(String.valueOf(declinedRequestsInEpidemic));
 
         // dynamic
         currData.add(String.valueOf(this.dgData.getNetStatsPostDynamic().getRecoveredPercent()));
@@ -219,12 +225,12 @@ public class NunnerBuskensSimulationSummaryWriterReduced extends CsvFileWriter<N
         currData.add(String.valueOf(this.dgData.getSimStats().getEpidemicPeakDynamic()));
         currData.add(String.valueOf(this.dgData.getSimStats().getEpidemicPeakSizeDynamic()));
 
-        brokenTiesActiveEpidemic = 0;
-        brokenTiesPassiveEpidemic = 0;
-        acceptedRequestsOutEpidemic = 0;
-        declinedRequestsOutEpidemic  = 0;
-        acceptedRequestsInEpidemic  = 0;
-        declinedRequestsInEpidemic  = 0;
+        int brokenTiesActiveEpidemic = 0;
+        int brokenTiesPassiveEpidemic = 0;
+        int acceptedRequestsOutEpidemic = 0;
+        int declinedRequestsOutEpidemic  = 0;
+        int acceptedRequestsInEpidemic  = 0;
+        int declinedRequestsInEpidemic  = 0;
         for (Entry<String, AgentStatsPost> entry:this.dgData.getAgentStatsPostDynamic().entrySet()) {
             AgentStatsPost agentStats = entry.getValue();
             brokenTiesActiveEpidemic += agentStats.getBrokenTiesActiveEpidemic();

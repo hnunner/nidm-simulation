@@ -59,7 +59,10 @@ public class AgentStatsPre {
         this.rSigmaNeighborhood = agent.getRSigmaNeighborhood();
         this.rPi = agent.getRPi();
         this.rPiNeighborhood = agent.getRPiNeighborhood();
-        this.indexCaseDistance = agent.getInitialIndexCaseDistance();
+        // TODO fix this properly; this is a quick fix, because this is only used for index case in 
+        // NunnerBuskens round summary writer and thus uses only stats for index case itself.
+//        this.indexCaseDistance = agent.getInitialIndexCaseDistance(); 
+        this.indexCaseDistance = -1;
         this.satisfied = agent.isSatisfied();
         this.degree1 = agent.getDegree();
         this.closeness = agent.getCloseness(simRound);

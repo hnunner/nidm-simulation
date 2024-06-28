@@ -237,10 +237,8 @@ public enum LogValues {
     IV_NB_OMEGA_RANDOM_MIN("nb.omega.random.min"),
     IV_NB_OMEGA_RANDOM_MAX("nb.omega.random.max"),
     IV_NB_OMEGA("nb.omega"),
-    
     IV_NB_SELECTIVE_RANDOM("nb.selective.random"),
     IV_NB_SELECTIVE("nb.selective"),
-    
     IV_NB_ZETA("nb.zeta"),
     IV_NB_EPSILON("nb.epsilon"),
     IV_NB_SIMS_PER_PC("nb.n"),

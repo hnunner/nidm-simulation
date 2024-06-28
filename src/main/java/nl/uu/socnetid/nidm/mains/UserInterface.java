@@ -1056,6 +1056,9 @@ public class UserInterface implements NodeClickListener, SimulationListener, Age
             return;
         }
         this.statsFrame.refreshLocalAgentStats(statsAgent);
+        
+        
+        logger.info("clustering: " + this.network.getAvClustering());
     }
 
     /* (non-Javadoc)

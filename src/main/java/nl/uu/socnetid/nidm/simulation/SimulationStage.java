@@ -32,6 +32,7 @@ public enum SimulationStage {
 
     PRE_EPIDEMIC("pre-epidemic"),
     ACTIVE_EPIDEMIC("active-epidemic"),
+    STOPPED_EPIDEMIC("stopped-epidemic"),
     POST_EPIDEMIC("post-epidemic"),
     FINISHED("finished");
 
