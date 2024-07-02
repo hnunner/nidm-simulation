@@ -63,6 +63,20 @@ public class NunnerBuskensParameters extends UtilityModelParameters {
     private double c2RandomMax;
     private double[] c2s;
     private double currC2;
+    
+    // disease costs
+    private boolean d1Random;
+    private double d1RandomMin;
+    private double d1RandomMax;
+    private double[] d1s;
+    private double currD1;
+
+    private boolean d2Random;
+    private double d2RandomMin;
+    private double d2RandomMax;
+    private double[] d2s;
+    private double currD2;
+    
 
 
     /**
@@ -443,4 +457,84 @@ public class NunnerBuskensParameters extends UtilityModelParameters {
         this.currEpStructure = currEpStructure;
     }
 
+	public boolean isD1Random() {
+		return d1Random;
+	}
+
+	public void setD1Random(boolean d1Random) {
+		this.d1Random = d1Random;
+	}
+
+	public double getD1RandomMin() {
+		return d1RandomMin;
+	}
+
+	public void setD1RandomMin(double d1RandomMin) {
+		this.d1RandomMin = d1RandomMin;
+	}
+
+	public double getD1RandomMax() {
+		return d1RandomMax;
+	}
+
+	public void setD1RandomMax(double d1RandomMax) {
+		this.d1RandomMax = d1RandomMax;
+	}
+
+	public double[] getD1s() {
+		return d1s;
+	}
+
+	public void setD1s(double[] d1s) {
+		this.d1s = d1s;
+	}
+
+	public double getCurrD1() {
+		return currD1;
+	}
+
+	public void setCurrD1(double currD1) {
+		this.currD1 = currD1;
+	}
+
+	public boolean isD2Random() {
+		return d2Random;
+	}
+
+	public void setD2Random(boolean d2Random) {
+		this.d2Random = d2Random;
+	}
+
+	public double getD2RandomMin() {
+		return d2RandomMin;
+	}
+
+	public void setD2RandomMin(double d2RandomMin) {
+		this.d2RandomMin = d2RandomMin;
+	}
+
+	public double getD2RandomMax() {
+		return d2RandomMax;
+	}
+
+	public void setD2RandomMax(double d2RandomMax) {
+		this.d2RandomMax = d2RandomMax;
+	}
+
+	public double[] getD2s() {
+		return d2s;
+	}
+
+	public void setD2s(double[] d2s) {
+		this.d2s = d2s;
+	}
+
+	public double getCurrD2() {
+		return currD2;
+	}
+
+	public void setCurrD2(double currD2) {
+		this.currD2 = currD2;
+	}
+	
 }

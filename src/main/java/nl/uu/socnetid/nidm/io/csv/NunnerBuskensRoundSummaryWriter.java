@@ -67,6 +67,8 @@ public class NunnerBuskensRoundSummaryWriter extends RoundSummaryWriter<NunnerBu
         cols.add(LogValues.IV_NB_R_PI_AV.toString());
         cols.add(LogValues.IV_NB_OMEGA.toString());
         cols.add(LogValues.IV_NB_SELECTIVE.toString());
+        cols.add(LogValues.IV_NB_D1.toString());
+        cols.add(LogValues.IV_NB_D2.toString());
         return cols;
     }
 
@@ -83,6 +85,8 @@ public class NunnerBuskensRoundSummaryWriter extends RoundSummaryWriter<NunnerBu
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getRPiAv()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrOmega()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().isCurrSelective()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrD1()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrD2()));
         return currData;
     }
 

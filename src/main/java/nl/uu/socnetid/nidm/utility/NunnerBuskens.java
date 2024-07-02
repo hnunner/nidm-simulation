@@ -41,7 +41,12 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
     private static final String B2 = "b2:";
     private static final String C1 = "c1:";
     private static final String C2 = "c2:";
+    private static final String D1 = "d1:";
+    private static final String D2 = "d2:";
     private static final String ALPHA = "alpha:";
+
+    private static final double STANDARD_D1 = 1.0;
+    private static final double STANDARD_D2 = 0.0;
 
     // benefits of direct connections
     private double b1;
@@ -53,6 +58,10 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
     private double c1;
     // quadratic costs of additional direct connections
     private double c2;
+    // weight of perceived risk of infection
+    private double d1;
+    // weight of perceived prevalence
+    private double d2;
     // the panel to track GUI parameter changes from
     private NunnerBuskensPanel nbPanel;
 
@@ -62,17 +71,44 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
      *
      * @param b1
      *          the benefits of direct connections
+     * @param b2
+     *          the weight of benefits for triads
      * @param c1
      *          the costs of direct connections
      * @param c2
      *          the quadratic costs of additional direct connections
-     * @param b2
-     *          the weight of benefits for triads
+     * @param d1
+     *          the weight of perceived risk of infection
+     * @param d2
+     *          the weight of perceived prevalence
      * @param alpha
      *          the preference shift between open and closed triads
      */
     public NunnerBuskens(double b1, double b2, double alpha, double c1, double c2) {
-        this(b1, b2, alpha, c1, c2, null);
+        this(b1, b2, alpha, c1, c2, STANDARD_D1, STANDARD_D2, null);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param b1
+     *          the benefits of direct connections
+     * @param b2
+     *          the weight of benefits for triads
+     * @param c1
+     *          the costs of direct connections
+     * @param c2
+     *          the quadratic costs of additional direct connections
+     * @param d1
+     *          the weight of perceived risk of infection
+     * @param d2
+     *          the weight of perceived prevalence
+     * @param alpha
+     *          the preference shift between open and closed triads
+     */
+    public NunnerBuskens(double b1, double b2, double alpha, double c1, double c2, double d1, double d2) {
+        this(b1, b2, alpha, c1, c2, d1, d2, null);
     }
 
     /**
@@ -133,11 +169,33 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
      *          the panel to track GUI parameter changes from
      */
     public NunnerBuskens(double b1, double b2, double alpha, double c1, double c2, NunnerBuskensPanel nbPanel) {
+        this(b1, b2, alpha, c1, c2, STANDARD_D1, STANDARD_D2, nbPanel);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param b1
+     *          the benefits of direct connections
+     * @param c1
+     *          the costs of direct connections
+     * @param c2
+     *          the quadratic costs of additional direct connections
+     * @param b2
+     *          the weight of benefits for triads
+     * @param alpha
+     *          the preference shift between open and closed triads
+     * @param nbPanel
+     *          the panel to track GUI parameter changes from
+     */
+    public NunnerBuskens(double b1, double b2, double alpha, double c1, double c2, double d1, double d2, NunnerBuskensPanel nbPanel) {
         this.b1 = b1;
         this.b2 = b2;
         this.alpha = alpha;
         this.c1 = c1;
         this.c2 = c2;
+        this.d1 = d1;
+        this.d2 = d2;
         this.nbPanel = nbPanel;
         if (this.nbPanel != null) {
             this.nbPanel.addParameterChangeListener(this);
@@ -202,10 +260,12 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
     @Override
     protected double getDiseaseCosts(LocalAgentConnectionsStats lacs, Agent agent) {
     	// original perceived disease costs (perceived risk of infection * perceived probability to get infected) ...
-    	// ... plus perceived risk through prevalence of the disease 
     	double perceivedRiskOfInfection = super.getDiseaseCosts(lacs, agent);
+    	// ... plus perceived risk through prevalence of the disease 
 		double perceivedPrevalence = lacs.getN() * (Math.pow(lacs.getDisPrev(), (2 - agent.getRPi())));
-		return (0.5 * perceivedRiskOfInfection) + (0.5 * perceivedPrevalence);
+		return 
+				this.d1 * perceivedRiskOfInfection + 
+				this.d2 * perceivedPrevalence;
     }
 
     /**
