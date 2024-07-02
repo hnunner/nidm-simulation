@@ -122,6 +122,8 @@ public abstract class UtilityModelParameters {
     private double[] rPis;
     private double currRPi;
     private double[] currRPis;
+    private double rSigmaAv;
+    private double rPiAv;
     // recovery time in timesteps
     private boolean tauRandom;
     private int tauRandomMin;
@@ -633,7 +635,7 @@ public abstract class UtilityModelParameters {
 	}
 
 	public boolean isCurrSelective() {
-		return currSelective;
+		return this.currSelective;
 	}
 
 	public void setCurrSelective(boolean currSelective) {
@@ -1453,12 +1455,28 @@ public abstract class UtilityModelParameters {
         this.currRPiRandomHomogeneous = currRPiRandomHomogeneous;
     }
 
-    /**
+    public double getRSigmaAv() {
+		return rSigmaAv;
+	}
+
+	public void setRSigmaAv(double rSigmaAv) {
+		this.rSigmaAv = rSigmaAv;
+	}
+
+	public double getRPiAv() {
+		return rPiAv;
+	}
+
+	public void setRPiAv(double rPiAv) {
+		this.rPiAv = rPiAv;
+	}
+
+	/**
      * Gets the avergae r_sigma
      *
      * @return the avergae r_sigma
      */
-    public double getRSigmaAv() {
+    public double computeRSigmaAv() {
 
         if (this.currRSigmas == null || this.currRSigmas.length == 0) {
             return this.currRSigma;
@@ -1477,7 +1495,7 @@ public abstract class UtilityModelParameters {
      *
      * @return the avergae r_pi
      */
-    public double getRPiAv() {
+    public double computeRPiAv() {
 
         if (this.currRPis == null || this.currRPis.length == 0) {
             return this.currRPi;

@@ -205,7 +205,7 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
     	// ... plus perceived risk through prevalence of the disease 
     	double perceivedRiskOfInfection = super.getDiseaseCosts(lacs, agent);
 		double perceivedPrevalence = lacs.getN() * (Math.pow(lacs.getDisPrev(), (2 - agent.getRPi())));
-		return perceivedRiskOfInfection + perceivedPrevalence;
+		return (0.5 * perceivedRiskOfInfection) + (0.5 * perceivedPrevalence);
     }
 
     /**

@@ -46,6 +46,7 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleNode;
 import org.graphstream.ui.graphicGraph.GraphPosLengthUtils;
+import org.jfree.util.Log;
 
 import nl.uu.socnetid.nidm.diseases.Disease;
 import nl.uu.socnetid.nidm.diseases.DiseaseFactory;
@@ -138,7 +139,7 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
         this.addAttribute(AgentAttributes.PSI, psi);
         this.addAttribute(AgentAttributes.XI, xi);
         this.addAttribute(AgentAttributes.OMEGA, omega);
-        this.addAttribute(AgentAttributes.SELECTIVE, false);
+        this.addAttribute(AgentAttributes.SELECTIVE, selective);
         this.addAttribute(AgentAttributes.SATISFIED, false);
         this.addAttribute(AgentAttributes.CONNECTION_STATS, new AgentConnectionStats());
 
@@ -1098,20 +1099,36 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
             	randOmega = 0.0;
             }
             
+            StringBuilder sb = new StringBuilder();
+            if (this.getId().equals("1")) {
+            	sb.append("Starting to compute social network dynamics for agent").append(this.getId()).append(" (r = ").append(String.valueOf(this.getRSigma()).substring(0, 4)).append(")\n");
+        		sb.append("\tActive outbreak:\t").append(String.valueOf(this.getNetwork().hasActiveInfection())).append("\n");
+        		sb.append("\tIs selective:\t\t").append(String.valueOf(this.isSelective())).append("\n");
+            }
+            
             HashSet<Agent> removals = new HashSet<Agent>(agentsProcessed);
             removals.add(this);
             List<Agent> drawBase = null;
             // distance 1
             if (randPsi <= this.getPsi()) {
+            	if (this.getId().equals("1")) {
+            		sb.append("\tEvaluating alter:\tat distance 1 (randPsi=").append(String.valueOf(randPsi).substring(0, 4)).append(", Psi=").append(this.getPsi()).append(", Xi=").append(this.getXi()).append(")\n");
+            	}
                 if (randOmega <= this.getOmega()) {
                     drawBase = distance1AgentsAssorted;
                 } else {
                     drawBase = distance1AgentsShuffled;
                 }
                 drawBase.removeAll(removals);
+                if (drawBase.isEmpty() && this.getId().equals("1")) {
+            		sb.append("\tdraw base at distance 1 is empty\n");
+            	}
             }
             // distance 2
-            if (randPsi <= (this.getPsi() + this.getXi())) {
+            if ((randPsi > this.getPsi()) && (randPsi <= (this.getPsi() + this.getXi()))) {
+            	if (this.getId().equals("1")) {
+            		sb.append("\tEvaluating alter:\tat distance 2 (randPsi=").append(String.valueOf(randPsi).substring(0, 4)).append(", Psi=").append(this.getPsi()).append(", Xi=").append(this.getXi()).append(")\n");
+            	}
                 if (randOmega <= this.getOmega()) {
                     drawBase = distance2AgentsAssorted;
                 } else {
@@ -1119,15 +1136,43 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
                 }
 
                 drawBase.removeAll(removals);
+                if (drawBase.isEmpty() && this.getId().equals("1")) {
+            		sb.append("\tdraw base at distance 2 is empty\n");
+            	}
             }
             // all agents
-            if (drawBase == null || drawBase.isEmpty() || randPsi > (this.getPsi() + this.getXi())) {
+            if ((drawBase == null) || (drawBase.isEmpty() || ((randPsi > (this.getPsi() + this.getXi())) && (randPsi > (this.getPsi() + this.getXi()))))) {
+            	if (this.getId().equals("1")) {
+            		sb.append("\tEvaluating alter:\tat distance 2+ (randPsi=").append(String.valueOf(randPsi).substring(0, 4)).append(", Psi=").append(this.getPsi()).append(", Xi=").append(this.getXi()).append(")\n");
+            	}
                 if (randOmega <= this.getOmega()) {
                     drawBase = allAgentsAssorted;
                 } else {
                     drawBase = allAgentsShuffled;
                 }
                 drawBase.removeAll(removals);
+            }
+            if (this.getId().equals("1")) {
+            	sb.append("\tSorting:\t\t\t");
+            	Iterator<Agent> it = drawBase.iterator();
+            	int i = 1;
+            	while(it.hasNext()) {
+            		Agent a = it.next();
+            		if (i <= 10) {
+	            		sb.append(a.getId()).append(" (").append(
+	            				"r=").append(String.valueOf(a.getRSigma()).substring(0, 4)).append(", ").append(
+	            						"diff=").append(String.valueOf(Math.abs(a.getRSigma() - this.getRSigma())).substring(0, 4)).append(")");
+            		}
+            		if (i == 10) {
+            			sb.append("\n\t\t\t\t\t\t...");
+            		}
+            		if(it.hasNext() && i < 10) {
+            			sb.append("\n\t\t\t\t\t\t");
+//            			sb.append(", ");
+            		}
+            		i++;
+            	}
+            	sb.append("\n");
             }
 
             // draw agent to process
@@ -1142,14 +1187,38 @@ public class Agent extends SingleNode implements Comparable<Agent>, Runnable {
                 if (existingConnectionTooCostly(other)) {
                     disconnectFrom(other);
                     satisfied = false;
+                    if (this.getId().equals("1")) {
+                    	sb.append("\tDisconnect:\t\t\t");
+                    }
+                } else {
+                    if (this.getId().equals("1")) {
+                    	sb.append("\tMaintain:\t\t\t");
+                    }
                 }
             } else {
                 if (newConnectionValuable(other)) {
-                    connectTo(other);
+                    boolean success = connectTo(other);
                     satisfied = false;
+                    if (this.getId().equals("1") && success) {
+                    	sb.append("\tConnect:\t\t\t");
+                    }
+                    if (this.getId().equals("1") && !success) {
+                    	sb.append("\tRejected:\t\t\t");
+                    }
+                } else {
+                    if (this.getId().equals("1")) {
+                    	sb.append("\tNo connect:\t\t\t");
+                    }
                 }
             }
+            if (this.getId().equals("1")) {
+            	sb.append(other.getId()).append(" (r=").append(
+            			String.valueOf(other.getRSigma()).substring(0, 4)).append(", diff = ").append(
+            					String.valueOf(Math.abs(other.getRSigma() - this.getRSigma())).substring(0, 4)).append(")");
+//            	logger.info(sb.toString());
+            }
             agentsProcessed.add(other);
+            
         }
 
         // update satisfaction
