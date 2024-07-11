@@ -31,6 +31,7 @@ import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.gui.NunnerBuskensChangeListener;
 import nl.uu.socnetid.nidm.gui.NunnerBuskensPanel;
 import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
+import nl.uu.socnetid.nidm.stats.StatsComputer;
 
 /**
  * @author Hendrik Nunner
@@ -261,8 +262,26 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
     protected double getDiseaseCosts(LocalAgentConnectionsStats lacs, Agent agent) {
     	// original perceived disease costs (perceived risk of infection * perceived probability to get infected) ...
     	double perceivedRiskOfInfection = super.getDiseaseCosts(lacs, agent);
-    	// ... plus perceived risk through prevalence of the disease 
-		double perceivedPrevalence = lacs.getN() * (Math.pow(lacs.getDisPrev(), (2 - agent.getRPi())));
+    	
+    	double perceivedPrevalence;
+    	
+    	// perceived risk of disease prevalence depending own agent's own risk group
+        switch (agent.getDiseaseGroup()) {
+            case SUSCEPTIBLE:
+            	perceivedPrevalence = lacs.getN() * (Math.pow(lacs.getDisPrev(), (2 - agent.getRPi())));
+                break;
+
+            case INFECTED:
+            case RECOVERED:
+            case VACCINATED:
+            	perceivedPrevalence = 0.0;
+                break;
+
+            default:
+                throw new RuntimeException("Unknown disease group: " + agent.getDiseaseGroup());
+        }    	
+    	
+		
 		return 
 				this.d1 * perceivedRiskOfInfection + 
 				this.d2 * perceivedPrevalence;
