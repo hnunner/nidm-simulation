@@ -375,15 +375,10 @@ public class PropertiesHandler {
         nbParameters.setB2RandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_B2_RANDOM_MAX.toString())));
         nbParameters.setB2s(parseDoubleArray(configProps.getProperty(LogValues.IV_NB_B2.toString())));
         // d1
-        nbParameters.setD1Random(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_D1_RANDOM.toString())));
-        nbParameters.setD1RandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_D1_RANDOM_MIN.toString())));
-        nbParameters.setD1RandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_D1_RANDOM_MAX.toString())));
-        nbParameters.setD1s(parseDoubleArray(configProps.getProperty(LogValues.IV_NB_D1.toString())));
-        // d2
-        nbParameters.setD2Random(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_D2_RANDOM.toString())));
-        nbParameters.setD2RandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_D2_RANDOM_MIN.toString())));
-        nbParameters.setD2RandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_D2_RANDOM_MAX.toString())));
-        nbParameters.setD2s(parseDoubleArray(configProps.getProperty(LogValues.IV_NB_D2.toString())));
+        nbParameters.setDRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_D_RANDOM.toString())));
+        nbParameters.setDRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_D_RANDOM_MIN.toString())));
+        nbParameters.setDRandomMax(Double.valueOf(configProps.getProperty(LogValues.IV_NB_D_RANDOM_MAX.toString())));
+        nbParameters.setDs(parseDoubleArray(configProps.getProperty(LogValues.IV_NB_D.toString())));
         // alpha
         nbParameters.setAlphaRandom(Boolean.parseBoolean(configProps.getProperty(LogValues.IV_NB_ALPHA_RANDOM.toString())));
         nbParameters.setAlphaRandomMin(Double.valueOf(configProps.getProperty(LogValues.IV_NB_ALPHA_RANDOM_MIN.toString())));

@@ -31,7 +31,6 @@ import nl.uu.socnetid.nidm.agents.Agent;
 import nl.uu.socnetid.nidm.gui.NunnerBuskensChangeListener;
 import nl.uu.socnetid.nidm.gui.NunnerBuskensPanel;
 import nl.uu.socnetid.nidm.stats.LocalAgentConnectionsStats;
-import nl.uu.socnetid.nidm.stats.StatsComputer;
 
 /**
  * @author Hendrik Nunner
@@ -42,12 +41,10 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
     private static final String B2 = "b2:";
     private static final String C1 = "c1:";
     private static final String C2 = "c2:";
-    private static final String D1 = "d1:";
-    private static final String D2 = "d2:";
+    private static final String D  = "d1:";
     private static final String ALPHA = "alpha:";
 
-    private static final double STANDARD_D1 = 1.0;
-    private static final double STANDARD_D2 = 0.0;
+    private static final double STANDARD_D = 1.0;
 
     // benefits of direct connections
     private double b1;
@@ -60,9 +57,7 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
     // quadratic costs of additional direct connections
     private double c2;
     // weight of perceived risk of infection
-    private double d1;
-    // weight of perceived prevalence
-    private double d2;
+    private double d;
     // the panel to track GUI parameter changes from
     private NunnerBuskensPanel nbPanel;
 
@@ -78,15 +73,11 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
      *          the costs of direct connections
      * @param c2
      *          the quadratic costs of additional direct connections
-     * @param d1
-     *          the weight of perceived risk of infection
-     * @param d2
-     *          the weight of perceived prevalence
      * @param alpha
      *          the preference shift between open and closed triads
      */
     public NunnerBuskens(double b1, double b2, double alpha, double c1, double c2) {
-        this(b1, b2, alpha, c1, c2, STANDARD_D1, STANDARD_D2, null);
+        this(b1, b2, alpha, c1, c2, STANDARD_D, null);
     }
 
 
@@ -101,15 +92,13 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
      *          the costs of direct connections
      * @param c2
      *          the quadratic costs of additional direct connections
-     * @param d1
+     * @param d
      *          the weight of perceived risk of infection
-     * @param d2
-     *          the weight of perceived prevalence
      * @param alpha
      *          the preference shift between open and closed triads
      */
-    public NunnerBuskens(double b1, double b2, double alpha, double c1, double c2, double d1, double d2) {
-        this(b1, b2, alpha, c1, c2, d1, d2, null);
+    public NunnerBuskens(double b1, double b2, double alpha, double c1, double c2, double d) {
+        this(b1, b2, alpha, c1, c2, d, null);
     }
 
     /**
@@ -145,6 +134,10 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
                 value = value.replace(C2, "");
                 this.c2 = Double.valueOf(value);
 
+            } else if (value.contains(D)) {
+                value = value.replace(D, "");
+                this.d = Double.valueOf(value);
+
             } else {
                 throw new IllegalAccessError("Unknown value: " + value);
             }
@@ -170,7 +163,7 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
      *          the panel to track GUI parameter changes from
      */
     public NunnerBuskens(double b1, double b2, double alpha, double c1, double c2, NunnerBuskensPanel nbPanel) {
-        this(b1, b2, alpha, c1, c2, STANDARD_D1, STANDARD_D2, nbPanel);
+        this(b1, b2, alpha, c1, c2, STANDARD_D, nbPanel);
     }
 
     /**
@@ -186,17 +179,18 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
      *          the weight of benefits for triads
      * @param alpha
      *          the preference shift between open and closed triads
+     * @param d
+     *          the weight of perceived risk of infection
      * @param nbPanel
      *          the panel to track GUI parameter changes from
      */
-    public NunnerBuskens(double b1, double b2, double alpha, double c1, double c2, double d1, double d2, NunnerBuskensPanel nbPanel) {
+    public NunnerBuskens(double b1, double b2, double alpha, double c1, double c2, double d, NunnerBuskensPanel nbPanel) {
         this.b1 = b1;
         this.b2 = b2;
         this.alpha = alpha;
         this.c1 = c1;
         this.c2 = c2;
-        this.d1 = d1;
-        this.d2 = d2;
+        this.d = d;
         this.nbPanel = nbPanel;
         if (this.nbPanel != null) {
             this.nbPanel.addParameterChangeListener(this);
@@ -261,30 +255,37 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
     @Override
     protected double getDiseaseCosts(LocalAgentConnectionsStats lacs, Agent agent) {
     	// original perceived disease costs (perceived risk of infection * perceived probability to get infected) ...
-    	double perceivedRiskOfInfection = super.getDiseaseCosts(lacs, agent);
+    	double perceivedLocalRisk = super.getDiseaseCosts(lacs, agent);
     	
-    	double perceivedPrevalence;
+    	double perceivedGlobalRisk;
     	
     	// perceived risk of disease prevalence depending own agent's own risk group
         switch (agent.getDiseaseGroup()) {
             case SUSCEPTIBLE:
-            	perceivedPrevalence = lacs.getN() * (Math.pow(lacs.getDisPrev(), (2 - agent.getRPi())));
+            	
+            	double gamma = agent.getDiseaseSpecs().getGamma();
+				double rPi = agent.getRPi();
+				double sigma = agent.getDiseaseSpecs().getSigma();
+				double rSigma = agent.getRSigma();
+				
+				double rho = 1 - Math.pow(1 - (lacs.getDisPrev() * gamma), lacs.getN());
+				
+				perceivedGlobalRisk = Math.pow(rho, (2 - rPi)) * Math.pow(sigma, rSigma);
                 break;
 
             case INFECTED:
             case RECOVERED:
             case VACCINATED:
-            	perceivedPrevalence = 0.0;
+            	perceivedGlobalRisk = 0.0;
                 break;
 
             default:
                 throw new RuntimeException("Unknown disease group: " + agent.getDiseaseGroup());
         }    	
-    	
 		
 		return 
-				this.d1 * perceivedRiskOfInfection + 
-				this.d2 * perceivedPrevalence;
+				this.d * perceivedLocalRisk + 
+				(1 - this.d) * perceivedGlobalRisk;
     }
 
     /**
@@ -327,6 +328,7 @@ public class NunnerBuskens extends UtilityFunction implements NunnerBuskensChang
         sb.append(B2).append(this.b2).append(STRING_DELIMITER);
         sb.append(C1).append(this.c1).append(STRING_DELIMITER);
         sb.append(C2).append(this.c2).append(STRING_DELIMITER);
+        sb.append(D).append(this.d).append(STRING_DELIMITER);
         sb.append(ALPHA).append(this.alpha).append(STRING_DELIMITER);
         return sb.toString();
     }

@@ -76,8 +76,7 @@ public class NunnerBuskensSimulationSummaryWriterReduced extends CsvFileWriter<N
         cols.add(LogValues.IV_NB_ALPHA.toString());
         cols.add(LogValues.IV_NB_OMEGA.toString());
         cols.add(LogValues.IV_NB_SELECTIVE.toString());
-        cols.add(LogValues.IV_NB_D1.toString());
-        cols.add(LogValues.IV_NB_D2.toString());
+        cols.add(LogValues.IV_NB_D.toString());
         cols.add(LogValues.IV_NB_SIGMA.toString());
         cols.add(LogValues.IV_NB_GAMMA.toString());
         cols.add(LogValues.IV_NB_R_MIN.toString());
@@ -156,8 +155,7 @@ public class NunnerBuskensSimulationSummaryWriterReduced extends CsvFileWriter<N
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrAlpha()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrOmega()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().isCurrSelective()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrD1()));
-        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrD2()));
+        currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrD()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrSigma()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrGamma()));
         currData.add(String.valueOf(this.dgData.getUtilityModelParams().getCurrRMin()));
